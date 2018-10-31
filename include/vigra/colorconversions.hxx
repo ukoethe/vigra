@@ -29,69 +29,74 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
- 
+
+
 #ifndef VIGRA_COLORCONVERSIONS_HXX
 #define VIGRA_COLORCONVERSIONS_HXX
 
-#include <cmath>
-#include <string>
+#include "functortraits.hxx"
 #include "mathutil.hxx"
 #include "rgbvalue.hxx"
-#include "functortraits.hxx"
+#include <cmath>
+#include <string>
 
-namespace vigra {
+namespace vigra
+{
 
 namespace detail
 {
 
 template<class ValueType>
-inline ValueType gammaCorrection(double value, double gamma)
+inline ValueType
+gammaCorrection(double value, double gamma)
 {
     typedef typename NumericTraits<ValueType>::RealPromote Promote;
     return NumericTraits<ValueType>::fromRealPromote(
-              RequiresExplicitCast<Promote>::cast(
-                (value < 0.0) 
-                    ? -std::pow(-value, gamma) 
-                    : std::pow(value, gamma)));
+        RequiresExplicitCast<Promote>::cast(
+            (value < 0.0)
+                ? -std::pow(-value, gamma)
+                : std::pow(value, gamma)));
 }
 
 template<class ValueType>
-inline ValueType gammaCorrection(double value, double gamma, double norm)
+inline ValueType
+gammaCorrection(double value, double gamma, double norm)
 {
     typedef typename NumericTraits<ValueType>::RealPromote Promote;
     return NumericTraits<ValueType>::fromRealPromote(
-              RequiresExplicitCast<Promote>::cast(
-                (value < 0.0) 
-                    ? -norm*std::pow(-value/norm, gamma)
-                    : norm*std::pow(value/norm, gamma)));
+        RequiresExplicitCast<Promote>::cast(
+            (value < 0.0)
+                ? -norm * std::pow(-value / norm, gamma)
+                : norm * std::pow(value / norm, gamma)));
 }
 
 template<class ValueType>
-inline ValueType sRGBCorrection(double value, double norm)
+inline ValueType
+sRGBCorrection(double value, double norm)
 {
     value /= norm;
     typedef typename NumericTraits<ValueType>::RealPromote Promote;
     return NumericTraits<ValueType>::fromRealPromote(
-              RequiresExplicitCast<Promote>::cast(
-                (value <= 0.0031308) 
-                    ? norm*12.92*value 
-                    : norm*(1.055*std::pow(value, 0.41666666666666667) - 0.055)));
+        RequiresExplicitCast<Promote>::cast(
+            (value <= 0.0031308)
+                ? norm * 12.92 * value
+                : norm * (1.055 * std::pow(value, 0.41666666666666667) - 0.055)));
 }
 
 template<class ValueType>
-inline ValueType inverse_sRGBCorrection(double value, double norm)
+inline ValueType
+inverse_sRGBCorrection(double value, double norm)
 {
     value /= norm;
     typedef typename NumericTraits<ValueType>::RealPromote Promote;
     return NumericTraits<ValueType>::fromRealPromote(
-             RequiresExplicitCast<Promote>::cast(
-                (value <= 0.04045) 
-                    ? norm*value / 12.92
-                    : norm*VIGRA_CSTD::pow((value + 0.055)/1.055, 2.4)));
+        RequiresExplicitCast<Promote>::cast(
+            (value <= 0.04045)
+                ? norm * value / 12.92
+                : norm * VIGRA_CSTD::pow((value + 0.055) / 1.055, 2.4)));
 }
 
 
@@ -273,107 +278,107 @@ inline ValueType inverse_sRGBCorrection(double value, double norm)
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
     */
-template <class From, class To = From>
+template<class From, class To = From>
 class RGB2RGBPrimeFunctor
 {
-  public:
-  
-        /** the functor's argument type
+public:
+    /** the functor's argument type
         */
     typedef TinyVector<From, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<To, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<To, 3> value_type;
-  
-        /** the result component's promote type
+
+    /** the result component's promote type
         */
     typedef typename NumericTraits<To>::RealPromote component_type;
-    
-        /** Default constructor.
+
+    /** Default constructor.
             The maximum value for each RGB component defaults to 255
         */
     RGB2RGBPrimeFunctor()
-    : max_(255.0)
-    {}
-    
-        /** constructor
+        : max_(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGB2RGBPrimeFunctor(component_type max)
-    : max_(max)
-    {}
-    
-        /** apply the transformation
+        : max_(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & rgb) const
+    template<class V>
+    result_type operator()(V const& rgb) const
     {
         return TinyVector<To, 3>(
             detail::gammaCorrection<To>(rgb[0], 0.45, max_),
             detail::gammaCorrection<To>(rgb[1], 0.45, max_),
             detail::gammaCorrection<To>(rgb[2], 0.45, max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
     }
-    
-  private:
-    component_type max_;    
+
+private:
+    component_type max_;
 };
 
-template <>
+template<>
 class RGB2RGBPrimeFunctor<unsigned char, unsigned char>
 {
     unsigned char lut_[256];
-        
-  public:
-  
+
+public:
     typedef TinyVector<unsigned char, 3> argument_type;
-    
+
     typedef TinyVector<unsigned char, 3> result_type;
-    
+
     typedef TinyVector<unsigned char, 3> value_type;
-    
+
     RGB2RGBPrimeFunctor()
     {
-        for(int i=0; i<256; ++i)
+        for (int i = 0; i < 256; ++i)
         {
             lut_[i] = detail::gammaCorrection<unsigned char>(i, 0.45, 255.0);
         }
     }
-    
+
     RGB2RGBPrimeFunctor(double max)
     {
-        for(int i=0; i<256; ++i)
+        for (int i = 0; i < 256; ++i)
         {
             lut_[i] = detail::gammaCorrection<unsigned char>(i, 0.45, max);
         }
     }
-    
-    template <class V>
-    TinyVector<unsigned char, 3> operator()(V const & rgb) const
+
+    template<class V>
+    TinyVector<unsigned char, 3> operator()(V const& rgb) const
     {
         return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
     }
 };
 
-template <class From, class To>
-class FunctorTraits<RGB2RGBPrimeFunctor<From, To> >
-: public FunctorTraitsBase<RGB2RGBPrimeFunctor<From, To> >
+template<class From, class To>
+class FunctorTraits<RGB2RGBPrimeFunctor<From, To>>
+    : public FunctorTraitsBase<RGB2RGBPrimeFunctor<From, To>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -401,107 +406,107 @@ class FunctorTraits<RGB2RGBPrimeFunctor<From, To> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
     */
-template <class From, class To = From>
+template<class From, class To = From>
 class RGB2sRGBFunctor
 {
-  public:
-  
-        /** the functor's argument type
+public:
+    /** the functor's argument type
         */
     typedef TinyVector<From, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<To, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<To, 3> value_type;
-  
-        /** the result component's promote type
+
+    /** the result component's promote type
         */
     typedef typename NumericTraits<To>::RealPromote component_type;
-    
-        /** Default constructor.
+
+    /** Default constructor.
             The maximum value for each RGB component defaults to 255
         */
     RGB2sRGBFunctor()
-    : max_(255.0)
-    {}
-    
-        /** constructor
+        : max_(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGB2sRGBFunctor(component_type max)
-    : max_(max)
-    {}
-    
-        /** apply the transformation
+        : max_(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & rgb) const
+    template<class V>
+    result_type operator()(V const& rgb) const
     {
         return TinyVector<To, 3>(
             detail::sRGBCorrection<To>(rgb[0], max_),
             detail::sRGBCorrection<To>(rgb[1], max_),
             detail::sRGBCorrection<To>(rgb[2], max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "sRGB";
     }
-    
-  private:
-    component_type max_;    
+
+private:
+    component_type max_;
 };
 
-template <>
+template<>
 class RGB2sRGBFunctor<unsigned char, unsigned char>
 {
     unsigned char lut_[256];
-        
-  public:
-  
+
+public:
     typedef TinyVector<unsigned char, 3> argument_type;
-    
+
     typedef TinyVector<unsigned char, 3> result_type;
-    
+
     typedef TinyVector<unsigned char, 3> value_type;
-    
+
     RGB2sRGBFunctor()
     {
-        for(int i=0; i<256; ++i)
+        for (int i = 0; i < 256; ++i)
         {
             lut_[i] = detail::sRGBCorrection<unsigned char>(i, 255.0);
         }
     }
-    
+
     RGB2sRGBFunctor(double max)
     {
-        for(int i=0; i<256; ++i)
+        for (int i = 0; i < 256; ++i)
         {
             lut_[i] = detail::sRGBCorrection<unsigned char>(i, max);
         }
     }
-    
-    template <class V>
-    TinyVector<unsigned char, 3> operator()(V const & rgb) const
+
+    template<class V>
+    TinyVector<unsigned char, 3> operator()(V const& rgb) const
     {
         return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
     }
-    
+
     static std::string targetColorSpace()
     {
         return "sRGB";
     }
 };
 
-template <class From, class To>
-class FunctorTraits<RGB2sRGBFunctor<From, To> >
-: public FunctorTraitsBase<RGB2sRGBFunctor<From, To> >
+template<class From, class To>
+class FunctorTraits<RGB2sRGBFunctor<From, To>>
+    : public FunctorTraitsBase<RGB2sRGBFunctor<From, To>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -526,107 +531,107 @@ class FunctorTraits<RGB2sRGBFunctor<From, To> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class From, class To = From>
+template<class From, class To = From>
 class RGBPrime2RGBFunctor
 {
-  public:
-  
-        /** the functor's argument type
+public:
+    /** the functor's argument type
         */
     typedef TinyVector<From, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<To, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<To, 3> value_type;
-  
-        /** the result component's promote type
+
+    /** the result component's promote type
         */
     typedef typename NumericTraits<To>::RealPromote component_type;
-    
-        /** Default constructor.
+
+    /** Default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2RGBFunctor()
-    : max_(255.0), gamma_(1.0/0.45)
-    {}
-    
-        /** constructor
+        : max_(255.0), gamma_(1.0 / 0.45)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2RGBFunctor(component_type max)
-    : max_(max), gamma_(1.0/0.45)
-    {}
-    
-        /** apply the transformation
+        : max_(max), gamma_(1.0 / 0.45)
+    {
+    }
+
+    /** apply the transformation
         */
-    result_type operator()(argument_type const & rgb) const
+    result_type operator()(argument_type const& rgb) const
     {
         return TinyVector<To, 3>(
             detail::gammaCorrection<To>(rgb[0], gamma_, max_),
             detail::gammaCorrection<To>(rgb[1], gamma_, max_),
             detail::gammaCorrection<To>(rgb[2], gamma_, max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB";
     }
 
-  private:
+private:
     component_type max_;
     double gamma_;
 };
 
-template <>
+template<>
 class RGBPrime2RGBFunctor<unsigned char, unsigned char>
-{    
+{
     unsigned char lut_[256];
-        
-  public:
-  
+
+public:
     typedef TinyVector<unsigned char, 3> argument_type;
-    
+
     typedef TinyVector<unsigned char, 3> result_type;
-    
+
     typedef TinyVector<unsigned char, 3> value_type;
-    
+
     RGBPrime2RGBFunctor()
     {
-        for(int i=0; i<256; ++i)
+        for (int i = 0; i < 256; ++i)
         {
-            lut_[i] = detail::gammaCorrection<unsigned char>(i, 1.0/0.45, 255.0);
+            lut_[i] = detail::gammaCorrection<unsigned char>(i, 1.0 / 0.45, 255.0);
         }
     }
-    
+
     RGBPrime2RGBFunctor(double max)
     {
-        for(int i=0; i<256; ++i)
+        for (int i = 0; i < 256; ++i)
         {
-            lut_[i] = detail::gammaCorrection<unsigned char>(i, 1.0/0.45, max);
+            lut_[i] = detail::gammaCorrection<unsigned char>(i, 1.0 / 0.45, max);
         }
     }
-    
-    template <class V>
-    TinyVector<unsigned char, 3> operator()(V const & rgb) const
+
+    template<class V>
+    TinyVector<unsigned char, 3> operator()(V const& rgb) const
     {
         return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB";
     }
 };
 
-template <class From, class To>
-class FunctorTraits<RGBPrime2RGBFunctor<From, To> >
-: public FunctorTraitsBase<RGBPrime2RGBFunctor<From, To> >
+template<class From, class To>
+class FunctorTraits<RGBPrime2RGBFunctor<From, To>>
+    : public FunctorTraitsBase<RGBPrime2RGBFunctor<From, To>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -654,106 +659,106 @@ class FunctorTraits<RGBPrime2RGBFunctor<From, To> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class From, class To = From>
+template<class From, class To = From>
 class sRGB2RGBFunctor
 {
-  public:
-  
-        /** the functor's argument type
+public:
+    /** the functor's argument type
         */
     typedef TinyVector<From, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<To, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<To, 3> value_type;
-  
-        /** the result component's promote type
+
+    /** the result component's promote type
         */
     typedef typename NumericTraits<To>::RealPromote component_type;
-    
-        /** Default constructor.
+
+    /** Default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     sRGB2RGBFunctor()
-    : max_(255.0)
-    {}
-    
-        /** constructor
+        : max_(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     sRGB2RGBFunctor(component_type max)
-    : max_(max)
-    {}
-    
-        /** apply the transformation
+        : max_(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    result_type operator()(argument_type const & rgb) const
+    result_type operator()(argument_type const& rgb) const
     {
         return TinyVector<To, 3>(
             detail::inverse_sRGBCorrection<To>(rgb[0], max_),
             detail::inverse_sRGBCorrection<To>(rgb[1], max_),
             detail::inverse_sRGBCorrection<To>(rgb[2], max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB";
     }
 
-  private:
+private:
     component_type max_;
 };
 
-template <>
+template<>
 class sRGB2RGBFunctor<unsigned char, unsigned char>
-{    
+{
     unsigned char lut_[256];
-        
-  public:
-  
+
+public:
     typedef TinyVector<unsigned char, 3> argument_type;
-    
+
     typedef TinyVector<unsigned char, 3> result_type;
-    
+
     typedef TinyVector<unsigned char, 3> value_type;
-    
+
     sRGB2RGBFunctor()
     {
-        for(int i=0; i<256; ++i)
+        for (int i = 0; i < 256; ++i)
         {
             lut_[i] = detail::inverse_sRGBCorrection<unsigned char>(i, 255.0);
         }
     }
-    
+
     sRGB2RGBFunctor(double max)
     {
-        for(int i=0; i<256; ++i)
+        for (int i = 0; i < 256; ++i)
         {
             lut_[i] = detail::inverse_sRGBCorrection<unsigned char>(i, max);
         }
     }
-    
-    template <class V>
-    TinyVector<unsigned char, 3> operator()(V const & rgb) const
+
+    template<class V>
+    TinyVector<unsigned char, 3> operator()(V const& rgb) const
     {
         return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB";
     }
 };
 
-template <class From, class To>
-class FunctorTraits<sRGB2RGBFunctor<From, To> >
-: public FunctorTraitsBase<sRGB2RGBFunctor<From, To> >
+template<class From, class To>
+class FunctorTraits<sRGB2RGBFunctor<From, To>>
+    : public FunctorTraitsBase<sRGB2RGBFunctor<From, To>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -784,70 +789,71 @@ class FunctorTraits<sRGB2RGBFunctor<From, To> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class RGB2XYZFunctor
 {
-  public:
-  
-        /** the result's component type
+public:
+    /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
 
-        /** the functor's argument type
+    /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGB2XYZFunctor()
-    : max_(255.0)
-    {}
-    
-        /** constructor
+        : max_(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGB2XYZFunctor(component_type max)
-    : max_(max)
-    {}
-    
-        /** apply the transformation
+        : max_(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    result_type operator()(argument_type const & rgb) const
+    result_type operator()(argument_type const& rgb) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
         result_type result;
-        result[0] = Convert::cast(0.412453*red + 0.357580*green + 0.180423*blue);
-        result[1] = Convert::cast(0.212671*red + 0.715160*green + 0.072169*blue);
-        result[2] = Convert::cast(0.019334*red + 0.119193*green + 0.950227*blue);
+        result[0] = Convert::cast(0.412453 * red + 0.357580 * green + 0.180423 * blue);
+        result[1] = Convert::cast(0.212671 * red + 0.715160 * green + 0.072169 * blue);
+        result[2] = Convert::cast(0.019334 * red + 0.119193 * green + 0.950227 * blue);
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "XYZ";
     }
 
-  private:
+private:
     component_type max_;
 };
 
-template <class T>
-class FunctorTraits<RGB2XYZFunctor<T> >
-: public FunctorTraitsBase<RGB2XYZFunctor<T> >
+template<class T>
+class FunctorTraits<RGB2XYZFunctor<T>>
+    : public FunctorTraitsBase<RGB2XYZFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -869,71 +875,72 @@ class FunctorTraits<RGB2XYZFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class RGBPrime2XYZFunctor
 {
-  public:
-  
-        /** the result's component type
+public:
+    /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
 
-        /** the functor's argument type
+    /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
-        /** default constructor
+
+    /** default constructor
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2XYZFunctor()
-    : gamma_(1.0/ 0.45), max_(component_type(255.0))
-    {}
-    
-        /** constructor
+        : gamma_(1.0 / 0.45), max_(component_type(255.0))
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2XYZFunctor(component_type max)
-    : gamma_(1.0/ 0.45), max_(max)
-    {}
-    
-        /** apply the transformation
+        : gamma_(1.0 / 0.45), max_(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    result_type operator()(argument_type const & rgb) const
+    result_type operator()(argument_type const& rgb) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
-        component_type red = detail::gammaCorrection<component_type>(rgb[0]/max_, gamma_);
-        component_type green = detail::gammaCorrection<component_type>(rgb[1]/max_, gamma_);
-        component_type blue = detail::gammaCorrection<component_type>(rgb[2]/max_, gamma_);
+        component_type red = detail::gammaCorrection<component_type>(rgb[0] / max_, gamma_);
+        component_type green = detail::gammaCorrection<component_type>(rgb[1] / max_, gamma_);
+        component_type blue = detail::gammaCorrection<component_type>(rgb[2] / max_, gamma_);
         result_type result;
-        result[0] = Convert::cast(0.412453*red + 0.357580*green + 0.180423*blue);
-        result[1] = Convert::cast(0.212671*red + 0.715160*green + 0.072169*blue);
-        result[2] = Convert::cast(0.019334*red + 0.119193*green + 0.950227*blue);
+        result[0] = Convert::cast(0.412453 * red + 0.357580 * green + 0.180423 * blue);
+        result[1] = Convert::cast(0.212671 * red + 0.715160 * green + 0.072169 * blue);
+        result[2] = Convert::cast(0.019334 * red + 0.119193 * green + 0.950227 * blue);
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "XYZ";
     }
 
-  private:
+private:
     double gamma_;
     component_type max_;
 };
 
-template <class T>
-class FunctorTraits<RGBPrime2XYZFunctor<T> >
-: public FunctorTraitsBase<RGBPrime2XYZFunctor<T> >
+template<class T>
+class FunctorTraits<RGBPrime2XYZFunctor<T>>
+    : public FunctorTraitsBase<RGBPrime2XYZFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -959,67 +966,69 @@ class FunctorTraits<RGBPrime2XYZFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class XYZ2RGBFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     component_type max_;
-    
-  public:
-        /** the functor's argument type. (Actually, the argument type
+
+public:
+    /** the functor's argument type. (Actually, the argument type
             is more general: <TT>V</TT> with arbitrary
             <TT>V</TT>. But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<T, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<T, 3> value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     XYZ2RGBFunctor()
-    : max_(255.0)
-    {}
-    
-        /** constructor
+        : max_(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     XYZ2RGBFunctor(component_type max)
-    : max_(max)
-    {}
-    
-        /** apply the transformation
+        : max_(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & xyz) const
+    template<class V>
+    result_type operator()(V const& xyz) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
-        component_type red   = Convert::cast( 3.2404813432*xyz[0] - 1.5371515163*xyz[1] - 0.4985363262*xyz[2]);
-        component_type green = Convert::cast(-0.9692549500*xyz[0] + 1.8759900015*xyz[1] + 0.0415559266*xyz[2]);
-        component_type blue  = Convert::cast( 0.0556466391*xyz[0] - 0.2040413384*xyz[1] + 1.0573110696*xyz[2]);
+        component_type red = Convert::cast(3.2404813432 * xyz[0] - 1.5371515163 * xyz[1] - 0.4985363262 * xyz[2]);
+        component_type green = Convert::cast(-0.9692549500 * xyz[0] + 1.8759900015 * xyz[1] + 0.0415559266 * xyz[2]);
+        component_type blue = Convert::cast(0.0556466391 * xyz[0] - 0.2040413384 * xyz[1] + 1.0573110696 * xyz[2]);
         return value_type(NumericTraits<T>::fromRealPromote(red * max_),
                           NumericTraits<T>::fromRealPromote(green * max_),
                           NumericTraits<T>::fromRealPromote(blue * max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB";
     }
 };
 
-template <class T>
-class FunctorTraits<XYZ2RGBFunctor<T> >
-: public FunctorTraitsBase<XYZ2RGBFunctor<T> >
+template<class T>
+class FunctorTraits<XYZ2RGBFunctor<T>>
+    : public FunctorTraitsBase<XYZ2RGBFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -1041,70 +1050,71 @@ class FunctorTraits<XYZ2RGBFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class XYZ2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     double gamma_;
     component_type max_;
-    
-  public:
-  
-  public:
-        /** the functor's argument type. (actually, the argument type
+
+public:
+public:
+    /** the functor's argument type. (actually, the argument type
             can be any vector type with the same interface. 
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<T, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<T, 3> value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     XYZ2RGBPrimeFunctor()
-    : gamma_(0.45), max_(component_type(255.0))
-    {}
-    
-        /** constructor
+        : gamma_(0.45), max_(component_type(255.0))
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     XYZ2RGBPrimeFunctor(component_type max)
-    : gamma_(0.45), max_(max)
-    {}
-    
-        /** apply the transformation
+        : gamma_(0.45), max_(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & xyz) const
+    template<class V>
+    result_type operator()(V const& xyz) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
-        component_type red   = Convert::cast( 3.2404813432*xyz[0] - 1.5371515163*xyz[1] - 0.4985363262*xyz[2]);
-        component_type green = Convert::cast(-0.9692549500*xyz[0] + 1.8759900015*xyz[1] + 0.0415559266*xyz[2]);
-        component_type blue  = Convert::cast( 0.0556466391*xyz[0] - 0.2040413384*xyz[1] + 1.0573110696*xyz[2]);
+        component_type red = Convert::cast(3.2404813432 * xyz[0] - 1.5371515163 * xyz[1] - 0.4985363262 * xyz[2]);
+        component_type green = Convert::cast(-0.9692549500 * xyz[0] + 1.8759900015 * xyz[1] + 0.0415559266 * xyz[2]);
+        component_type blue = Convert::cast(0.0556466391 * xyz[0] - 0.2040413384 * xyz[1] + 1.0573110696 * xyz[2]);
         return value_type(NumericTraits<T>::fromRealPromote(detail::gammaCorrection<component_type>(red, gamma_) * max_),
                           NumericTraits<T>::fromRealPromote(detail::gammaCorrection<component_type>(green, gamma_) * max_),
                           NumericTraits<T>::fromRealPromote(detail::gammaCorrection<component_type>(blue, gamma_) * max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
     }
 };
 
-template <class T>
-class FunctorTraits<XYZ2RGBPrimeFunctor<T> >
-: public FunctorTraitsBase<XYZ2RGBPrimeFunctor<T> >
+template<class T>
+class FunctorTraits<XYZ2RGBPrimeFunctor<T>>
+    : public FunctorTraitsBase<XYZ2RGBPrimeFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -1141,38 +1151,38 @@ class FunctorTraits<XYZ2RGBPrimeFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class XYZ2LuvFunctor
 {
-  public:
-  
-        /** the result's component type
+public:
+    /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
 
-        /** the functor's argument type
+    /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
+
     XYZ2LuvFunctor()
-    : gamma_(1.0/3.0),
-      kappa_(24389.0/27.0),
-      epsilon_(216.0/24389.0)
-    {}
-    
-    template <class V>
-    result_type operator()(V const & xyz) const
+        : gamma_(1.0 / 3.0),
+          kappa_(24389.0 / 27.0),
+          epsilon_(216.0 / 24389.0)
+    {
+    }
+
+    template<class V>
+    result_type operator()(V const& xyz) const
     {
         result_type result;
-        if(xyz[1] == NumericTraits<T>::zero())
+        if (xyz[1] == NumericTraits<T>::zero())
         {
             result[0] = NumericTraits<component_type>::zero();
             result[1] = NumericTraits<component_type>::zero();
@@ -1182,33 +1192,33 @@ class XYZ2LuvFunctor
         {
             typedef detail::RequiresExplicitCast<component_type> Convert;
             component_type L = Convert::cast(
-                                  xyz[1] < epsilon_
-                                      ? kappa_ * xyz[1]
-                                      : 116.0 * VIGRA_CSTD::pow((double)xyz[1], gamma_) - 16.0);
-            component_type denom = Convert::cast(xyz[0] + 15.0*xyz[1] + 3.0*xyz[2]);
+                xyz[1] < epsilon_
+                    ? kappa_ * xyz[1]
+                    : 116.0 * VIGRA_CSTD::pow((double)xyz[1], gamma_) - 16.0);
+            component_type denom = Convert::cast(xyz[0] + 15.0 * xyz[1] + 3.0 * xyz[2]);
             component_type uprime = Convert::cast(4.0 * xyz[0] / denom);
             component_type vprime = Convert::cast(9.0 * xyz[1] / denom);
             result[0] = L;
-            result[1] = Convert::cast(13.0*L*(uprime - 0.197839));
-            result[2] = Convert::cast(13.0*L*(vprime - 0.468342));
+            result[1] = Convert::cast(13.0 * L * (uprime - 0.197839));
+            result[2] = Convert::cast(13.0 * L * (vprime - 0.468342));
         }
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Luv";
     }
 
-  private:
+private:
     double gamma_, kappa_, epsilon_;
 };
 
-template <class T>
-class FunctorTraits<XYZ2LuvFunctor<T> >
-: public FunctorTraitsBase<XYZ2LuvFunctor<T> >
+template<class T>
+class FunctorTraits<XYZ2LuvFunctor<T>>
+    : public FunctorTraitsBase<XYZ2LuvFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -1223,39 +1233,39 @@ class FunctorTraits<XYZ2LuvFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class Luv2XYZFunctor
 {
-  public:
-  
-        /** the result's component type
+public:
+    /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
 
-        /** the functor's argument type
+    /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
+
     Luv2XYZFunctor()
-    : gamma_(3.0),
-      ikappa_(27.0/24389.0)
-    {}
-    
-        /** apply the transformation
+        : gamma_(3.0),
+          ikappa_(27.0 / 24389.0)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & luv) const
+    template<class V>
+    result_type operator()(V const& luv) const
     {
         result_type result;
-        if(luv[0] == NumericTraits<T>::zero())
+        if (luv[0] == NumericTraits<T>::zero())
         {
             result[0] = NumericTraits<component_type>::zero();
             result[1] = NumericTraits<component_type>::zero();
@@ -1268,29 +1278,29 @@ class Luv2XYZFunctor
             component_type vprime = Convert::cast(luv[2] / 13.0 / luv[0] + 0.468342);
 
             result[1] = Convert::cast(
-                            luv[0] < 8.0 
-                                ? luv[0] * ikappa_ 
-                                : VIGRA_CSTD::pow((luv[0] + 16.0) / 116.0, gamma_));
-            result[0] = Convert::cast(9.0*uprime*result[1] / 4.0 / vprime);
-            result[2] = Convert::cast(((9.0 / vprime - 15.0)*result[1] - result[0])/ 3.0);
+                luv[0] < 8.0
+                    ? luv[0] * ikappa_
+                    : VIGRA_CSTD::pow((luv[0] + 16.0) / 116.0, gamma_));
+            result[0] = Convert::cast(9.0 * uprime * result[1] / 4.0 / vprime);
+            result[2] = Convert::cast(((9.0 / vprime - 15.0) * result[1] - result[0]) / 3.0);
         }
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "XYZ";
     }
 
-  private:
+private:
     double gamma_, ikappa_;
 };
 
-template <class T>
-class FunctorTraits<Luv2XYZFunctor<T> >
-: public FunctorTraitsBase<Luv2XYZFunctor<T> >
+template<class T>
+class FunctorTraits<Luv2XYZFunctor<T>>
+    : public FunctorTraitsBase<Luv2XYZFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -1324,67 +1334,67 @@ class FunctorTraits<Luv2XYZFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class XYZ2LabFunctor
 {
-  public:
-  
-        /** the result's component type
+public:
+    /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
 
-        /** the functor's argument type
+    /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
+
     XYZ2LabFunctor()
-    : gamma_(1.0/3.0),
-      kappa_(24389.0/27.0),
-      epsilon_(216.0/24389.0)
-    {}
-    
-        /** apply the transformation
+        : gamma_(1.0 / 3.0),
+          kappa_(24389.0 / 27.0),
+          epsilon_(216.0 / 24389.0)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & xyz) const
+    template<class V>
+    result_type operator()(V const& xyz) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
         component_type xgamma = Convert::cast(std::pow(xyz[0] / 0.950456, gamma_));
         component_type ygamma = Convert::cast(std::pow((double)xyz[1], gamma_));
         component_type zgamma = Convert::cast(std::pow(xyz[2] / 1.088754, gamma_));
         component_type L = Convert::cast(
-                              xyz[1] < epsilon_ 
-                                  ? kappa_ * xyz[1] 
-                                  : 116.0 * ygamma - 16.0);
+            xyz[1] < epsilon_
+                ? kappa_ * xyz[1]
+                : 116.0 * ygamma - 16.0);
         result_type result;
         result[0] = L;
-        result[1] = Convert::cast(500.0*(xgamma - ygamma));
-        result[2] = Convert::cast(200.0*(ygamma - zgamma));
+        result[1] = Convert::cast(500.0 * (xgamma - ygamma));
+        result[2] = Convert::cast(200.0 * (ygamma - zgamma));
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Lab";
     }
 
-  private:
+private:
     double gamma_, kappa_, epsilon_;
 };
 
-template <class T>
-class FunctorTraits<XYZ2LabFunctor<T> >
-: public FunctorTraitsBase<XYZ2LabFunctor<T> >
+template<class T>
+class FunctorTraits<XYZ2LabFunctor<T>>
+    : public FunctorTraitsBase<XYZ2LabFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -1399,44 +1409,44 @@ class FunctorTraits<XYZ2LabFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class Lab2XYZFunctor
 {
-  public:
-  
-        /** the result's component type
+public:
+    /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
 
-        /** the functor's argument type
+    /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
-        /** the functor's value type
+
+    /** the functor's value type
         */
     Lab2XYZFunctor()
-    : gamma_(3.0),
-      ikappa_(27.0/24389.0)
-    {}
-    
-        /** apply the transformation
+        : gamma_(3.0),
+          ikappa_(27.0 / 24389.0)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & lab) const
+    template<class V>
+    result_type operator()(V const& lab) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
         component_type Y = Convert::cast(
-                              lab[0] < 8.0
-                                  ? lab[0] * ikappa_
-                                  : std::pow((lab[0] + 16.0) / 116.0, gamma_));
+            lab[0] < 8.0
+                ? lab[0] * ikappa_
+                : std::pow((lab[0] + 16.0) / 116.0, gamma_));
         component_type ygamma = Convert::cast(std::pow((double)Y, 1.0 / gamma_));
         component_type X = Convert::cast(std::pow(lab[1] / 500.0 + ygamma, gamma_) * 0.950456);
         component_type Z = Convert::cast(std::pow(-lab[2] / 200.0 + ygamma, gamma_) * 1.088754);
@@ -1446,21 +1456,21 @@ class Lab2XYZFunctor
         result[2] = Z;
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "XYZ";
     }
 
-  private:
+private:
     double gamma_, ikappa_;
 };
 
-template <class T>
-class FunctorTraits<Lab2XYZFunctor<T> >
-: public FunctorTraitsBase<Lab2XYZFunctor<T> >
+template<class T>
+class FunctorTraits<Lab2XYZFunctor<T>>
+    : public FunctorTraitsBase<Lab2XYZFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -1490,7 +1500,7 @@ class FunctorTraits<Lab2XYZFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class RGB2LuvFunctor
 {
     /*
@@ -1500,61 +1510,62 @@ class RGB2LuvFunctor
     maximum saturation: 179.04 
     red = [53.2406, 175.015, 37.7522]
     */
-  public:
-  
-        /** the result's component type
+public:
+    /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
 
-        /** the functor's argument type
+    /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef typename XYZ2LuvFunctor<component_type>::result_type result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef typename XYZ2LuvFunctor<component_type>::result_type value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGB2LuvFunctor()
-    : rgb2xyz(255.0)
-    {}
-    
-        /** constructor
+        : rgb2xyz(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGB2LuvFunctor(component_type max)
-    : rgb2xyz(max)
-    {}
-    
-        /** apply the transformation
+        : rgb2xyz(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & rgb) const
+    template<class V>
+    result_type operator()(V const& rgb) const
     {
         return xyz2luv(rgb2xyz(rgb));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Luv";
     }
 
-  private:
+private:
     RGB2XYZFunctor<T> rgb2xyz;
     XYZ2LuvFunctor<component_type> xyz2luv;
 };
 
-template <class T>
-class FunctorTraits<RGB2LuvFunctor<T> >
-: public FunctorTraitsBase<RGB2LuvFunctor<T> >
+template<class T>
+class FunctorTraits<RGB2LuvFunctor<T>>
+    : public FunctorTraitsBase<RGB2LuvFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -1584,7 +1595,7 @@ class FunctorTraits<RGB2LuvFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class RGB2LabFunctor
 {
     /*
@@ -1594,61 +1605,62 @@ class RGB2LabFunctor
     maximum saturation: 133.809
     red = [53.2406, 80.0942, 67.2015]
     */
-  public:
-  
-        /** the result's component type
+public:
+    /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
 
-        /** the functor's argument type
+    /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef typename XYZ2LabFunctor<component_type>::result_type result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef typename XYZ2LabFunctor<component_type>::result_type value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGB2LabFunctor()
-    : rgb2xyz(255.0)
-    {}
-    
-        /** constructor
+        : rgb2xyz(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGB2LabFunctor(component_type max)
-    : rgb2xyz(max)
-    {}
-    
-        /** apply the transformation
+        : rgb2xyz(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & rgb) const
+    template<class V>
+    result_type operator()(V const& rgb) const
     {
         return xyz2lab(rgb2xyz(rgb));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Lab";
     }
 
-  private:
+private:
     RGB2XYZFunctor<T> rgb2xyz;
     XYZ2LabFunctor<component_type> xyz2lab;
 };
 
-template <class T>
-class FunctorTraits<RGB2LabFunctor<T> >
-: public FunctorTraitsBase<RGB2LabFunctor<T> >
+template<class T>
+class FunctorTraits<RGB2LabFunctor<T>>
+    : public FunctorTraitsBase<RGB2LabFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -1663,56 +1675,58 @@ class FunctorTraits<RGB2LabFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class Luv2RGBFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     XYZ2RGBFunctor<T> xyz2rgb;
     Luv2XYZFunctor<component_type> luv2xyz;
-    
-  public:
-        /** the functor's argument type. (Actually, the argument type
+
+public:
+    /** the functor's argument type. (Actually, the argument type
             can be any vector type with the same interface. 
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef typename XYZ2RGBFunctor<T>::result_type result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef typename XYZ2RGBFunctor<T>::result_type value_type;
-    
+
     Luv2RGBFunctor()
-    : xyz2rgb(255.0)
-    {}
-    
+        : xyz2rgb(255.0)
+    {
+    }
+
     Luv2RGBFunctor(component_type max)
-    : xyz2rgb(max)
-    {}
-    
-        /** apply the transformation
+        : xyz2rgb(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & luv) const
+    template<class V>
+    result_type operator()(V const& luv) const
     {
         return xyz2rgb(luv2xyz(luv));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB";
     }
 };
 
-template <class T>
-class FunctorTraits<Luv2RGBFunctor<T> >
-: public FunctorTraitsBase<Luv2RGBFunctor<T> >
+template<class T>
+class FunctorTraits<Luv2RGBFunctor<T>>
+    : public FunctorTraitsBase<Luv2RGBFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -1727,63 +1741,64 @@ class FunctorTraits<Luv2RGBFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class Lab2RGBFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     XYZ2RGBFunctor<T> xyz2rgb;
     Lab2XYZFunctor<component_type> lab2xyz;
-    
-  public:
-  
-        /** the functor's argument type. (Actually, the argument type
+
+public:
+    /** the functor's argument type. (Actually, the argument type
             can be any vector type with the same interface. 
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef typename XYZ2RGBFunctor<T>::result_type result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef typename XYZ2RGBFunctor<T>::result_type value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     Lab2RGBFunctor()
-    : xyz2rgb(255.0)
-    {}
-    
-        /** constructor
+        : xyz2rgb(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     Lab2RGBFunctor(component_type max)
-    : xyz2rgb(max)
-    {}
-    
-        /** apply the transformation
+        : xyz2rgb(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & lab) const
+    template<class V>
+    result_type operator()(V const& lab) const
     {
         return xyz2rgb(lab2xyz(lab));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB";
     }
 };
 
-template <class T>
-class FunctorTraits<Lab2RGBFunctor<T> >
-: public FunctorTraitsBase<Lab2RGBFunctor<T> >
+template<class T>
+class FunctorTraits<Lab2RGBFunctor<T>>
+    : public FunctorTraitsBase<Lab2RGBFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -1813,64 +1828,65 @@ class FunctorTraits<Lab2RGBFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class RGBPrime2LuvFunctor
 {
-  public:
-  
-        /** the result's component type
+public:
+    /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
 
-        /** the functor's argument type
+    /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef typename XYZ2LuvFunctor<component_type>::result_type result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef typename XYZ2LuvFunctor<component_type>::result_type value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2LuvFunctor()
-    : rgb2xyz(255.0)
-    {}
-    
-        /** constructor
+        : rgb2xyz(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2LuvFunctor(component_type max)
-    : rgb2xyz(max)
-    {}
-    
-        /** apply the transformation
+        : rgb2xyz(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & rgb) const
+    template<class V>
+    result_type operator()(V const& rgb) const
     {
         return xyz2luv(rgb2xyz(rgb));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Luv";
     }
 
-  private:
+private:
     RGBPrime2XYZFunctor<T> rgb2xyz;
     XYZ2LuvFunctor<component_type> xyz2luv;
 };
 
-template <class T>
-class FunctorTraits<RGBPrime2LuvFunctor<T> >
-: public FunctorTraitsBase<RGBPrime2LuvFunctor<T> >
+template<class T>
+class FunctorTraits<RGBPrime2LuvFunctor<T>>
+    : public FunctorTraitsBase<RGBPrime2LuvFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -1900,64 +1916,65 @@ class FunctorTraits<RGBPrime2LuvFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class RGBPrime2LabFunctor
 {
-  public:
-  
-        /** the result's component type
+public:
+    /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
 
-        /** the functor's argument type
+    /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef typename XYZ2LabFunctor<component_type>::result_type result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef typename XYZ2LabFunctor<component_type>::result_type value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2LabFunctor()
-    : rgb2xyz(255.0)
-    {}
-    
-        /** constructor
+        : rgb2xyz(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2LabFunctor(component_type max)
-    : rgb2xyz(max)
-    {}
-    
-        /** apply the transformation
+        : rgb2xyz(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & rgb) const
+    template<class V>
+    result_type operator()(V const& rgb) const
     {
         return xyz2lab(rgb2xyz(rgb));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Lab";
     }
 
-  private:
+private:
     RGBPrime2XYZFunctor<T> rgb2xyz;
     XYZ2LabFunctor<component_type> xyz2lab;
 };
 
-template <class T>
-class FunctorTraits<RGBPrime2LabFunctor<T> >
-: public FunctorTraitsBase<RGBPrime2LabFunctor<T> >
+template<class T>
+class FunctorTraits<RGBPrime2LabFunctor<T>>
+    : public FunctorTraitsBase<RGBPrime2LabFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -1972,63 +1989,64 @@ class FunctorTraits<RGBPrime2LabFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class Luv2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     XYZ2RGBPrimeFunctor<T> xyz2rgb;
     Luv2XYZFunctor<component_type> luv2xyz;
-    
-  public:
-  
-        /** the functor's argument type. (Actually, the argument type
+
+public:
+    /** the functor's argument type. (Actually, the argument type
             can be any vector type with the same interface. 
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef typename XYZ2RGBFunctor<T>::result_type result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef typename XYZ2RGBFunctor<T>::result_type value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     Luv2RGBPrimeFunctor()
-    : xyz2rgb(255.0)
-    {}
-    
-        /** constructor
+        : xyz2rgb(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     Luv2RGBPrimeFunctor(component_type max)
-    : xyz2rgb(max)
-    {}
-    
-        /** apply the transformation
+        : xyz2rgb(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & luv) const
+    template<class V>
+    result_type operator()(V const& luv) const
     {
         return xyz2rgb(luv2xyz(luv));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
     }
 };
 
-template <class T>
-class FunctorTraits<Luv2RGBPrimeFunctor<T> >
-: public FunctorTraitsBase<Luv2RGBPrimeFunctor<T> >
+template<class T>
+class FunctorTraits<Luv2RGBPrimeFunctor<T>>
+    : public FunctorTraitsBase<Luv2RGBPrimeFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -2043,63 +2061,64 @@ class FunctorTraits<Luv2RGBPrimeFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class Lab2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     XYZ2RGBPrimeFunctor<T> xyz2rgb;
     Lab2XYZFunctor<component_type> lab2xyz;
-    
-  public:
-  
-        /** the functor's argument type. (Actually, the argument type
+
+public:
+    /** the functor's argument type. (Actually, the argument type
             can be any vector type with the same interface. 
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef typename XYZ2RGBFunctor<T>::result_type result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef typename XYZ2RGBFunctor<T>::result_type value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     Lab2RGBPrimeFunctor()
-    : xyz2rgb(255.0)
-    {}
-    
-        /** constructor
+        : xyz2rgb(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     Lab2RGBPrimeFunctor(component_type max)
-    : xyz2rgb(max)
-    {}
-    
-        /** apply the transformation
+        : xyz2rgb(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & lab) const
+    template<class V>
+    result_type operator()(V const& lab) const
     {
         return xyz2rgb(lab2xyz(lab));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
     }
 };
 
-template <class T>
-class FunctorTraits<Lab2RGBPrimeFunctor<T> >
-: public FunctorTraitsBase<Lab2RGBPrimeFunctor<T> >
+template<class T>
+class FunctorTraits<Lab2RGBPrimeFunctor<T>>
+    : public FunctorTraitsBase<Lab2RGBPrimeFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -2135,7 +2154,7 @@ class FunctorTraits<Lab2RGBPrimeFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class RGBPrime2YPrimePbPrFunctor
 {
     /*
@@ -2145,69 +2164,70 @@ class RGBPrime2YPrimePbPrFunctor
     maximum saturation: 0.533887
     red = [0.299, -0.168736, 0.5]
     */
-  public:
-  
-        /** the result's component type
+public:
+    /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
 
-        /** the functor's argument type
+    /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2YPrimePbPrFunctor()
-    : max_(255.0)
-    {}
-    
-        /** constructor
+        : max_(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2YPrimePbPrFunctor(component_type max)
-    : max_(max)
-    {}
-    
-        /** apply the transformation
+        : max_(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & rgb) const
+    template<class V>
+    result_type operator()(V const& rgb) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
-        
+
         result_type result;
-        result[0] = Convert::cast(0.299*red + 0.587*green + 0.114*blue);
-        result[1] = Convert::cast(-0.1687358916*red - 0.3312641084*green + 0.5*blue);
-        result[2] = Convert::cast(0.5*red - 0.4186875892*green - 0.0813124108*blue);
+        result[0] = Convert::cast(0.299 * red + 0.587 * green + 0.114 * blue);
+        result[1] = Convert::cast(-0.1687358916 * red - 0.3312641084 * green + 0.5 * blue);
+        result[2] = Convert::cast(0.5 * red - 0.4186875892 * green - 0.0813124108 * blue);
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Y'PbPr";
     }
 
-  private:
+private:
     component_type max_;
 };
 
-template <class T>
-class FunctorTraits<RGBPrime2YPrimePbPrFunctor<T> >
-: public FunctorTraitsBase<RGBPrime2YPrimePbPrFunctor<T> >
+template<class T>
+class FunctorTraits<RGBPrime2YPrimePbPrFunctor<T>>
+    : public FunctorTraitsBase<RGBPrime2YPrimePbPrFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -2222,68 +2242,69 @@ class FunctorTraits<RGBPrime2YPrimePbPrFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class YPrimePbPr2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     component_type max_;
-    
-  public:
-  
-        /** the functor's argument type. (Actually, the argument type
+
+public:
+    /** the functor's argument type. (Actually, the argument type
             can be any vector type with the same interface. 
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<T, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<T, 3> value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     YPrimePbPr2RGBPrimeFunctor()
-    : max_(255.0)
-    {}
-    
-        /** constructor
+        : max_(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     YPrimePbPr2RGBPrimeFunctor(component_type max)
-    : max_(max)
-    {}
-    
-        /** apply the transformation
+        : max_(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & ypbpr) const
+    template<class V>
+    result_type operator()(V const& ypbpr) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
-        component_type nred   = Convert::cast(ypbpr[0] + 1.402*ypbpr[2]);
-        component_type ngreen = Convert::cast(ypbpr[0] - 0.3441362862*ypbpr[1] - 0.7141362862*ypbpr[2]);
-        component_type nblue  = Convert::cast(ypbpr[0] + 1.772*ypbpr[1]);
+        component_type nred = Convert::cast(ypbpr[0] + 1.402 * ypbpr[2]);
+        component_type ngreen = Convert::cast(ypbpr[0] - 0.3441362862 * ypbpr[1] - 0.7141362862 * ypbpr[2]);
+        component_type nblue = Convert::cast(ypbpr[0] + 1.772 * ypbpr[1]);
         return result_type(NumericTraits<T>::fromRealPromote(nred * max_),
                            NumericTraits<T>::fromRealPromote(ngreen * max_),
                            NumericTraits<T>::fromRealPromote(nblue * max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
     }
 };
 
-template <class T>
-class FunctorTraits<YPrimePbPr2RGBPrimeFunctor<T> >
-: public FunctorTraitsBase<YPrimePbPr2RGBPrimeFunctor<T> >
+template<class T>
+class FunctorTraits<YPrimePbPr2RGBPrimeFunctor<T>>
+    : public FunctorTraitsBase<YPrimePbPr2RGBPrimeFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -2318,7 +2339,7 @@ class FunctorTraits<YPrimePbPr2RGBPrimeFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class RGBPrime2YPrimeIQFunctor
 {
     /*
@@ -2328,69 +2349,70 @@ class RGBPrime2YPrimeIQFunctor
     maximum saturation: 0.632582
     red = [0.299, 0.596, 0.212]
     */
-  public:
-  
-        /** the result's component type
+public:
+    /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
 
-        /** the functor's argument type
+    /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2YPrimeIQFunctor()
-    : max_(255.0)
-    {}
-    
-        /** constructor
+        : max_(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2YPrimeIQFunctor(component_type max)
-    : max_(max)
-    {}
-    
-        /** apply the transformation
+        : max_(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & rgb) const
+    template<class V>
+    result_type operator()(V const& rgb) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
-        
+
         result_type result;
-        result[0] = Convert::cast(0.299*red + 0.587*green + 0.114*blue);
-        result[1] = Convert::cast(0.596*red - 0.274*green - 0.322*blue);
-        result[2] = Convert::cast(0.212*red - 0.523*green + 0.311*blue);
+        result[0] = Convert::cast(0.299 * red + 0.587 * green + 0.114 * blue);
+        result[1] = Convert::cast(0.596 * red - 0.274 * green - 0.322 * blue);
+        result[2] = Convert::cast(0.212 * red - 0.523 * green + 0.311 * blue);
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Y'IQ";
     }
 
-  private:
+private:
     component_type max_;
 };
 
-template <class T>
-class FunctorTraits<RGBPrime2YPrimeIQFunctor<T> >
-: public FunctorTraitsBase<RGBPrime2YPrimeIQFunctor<T> >
+template<class T>
+class FunctorTraits<RGBPrime2YPrimeIQFunctor<T>>
+    : public FunctorTraitsBase<RGBPrime2YPrimeIQFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -2405,68 +2427,69 @@ class FunctorTraits<RGBPrime2YPrimeIQFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class YPrimeIQ2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     component_type max_;
-    
-  public:
-  
-        /** the functor's argument type. (Actually, the argument type
+
+public:
+    /** the functor's argument type. (Actually, the argument type
             can be any vector type with the same interface. 
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<T, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<T, 3> value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     YPrimeIQ2RGBPrimeFunctor()
-    : max_(255.0)
-    {}
-    
-        /** constructor
+        : max_(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     YPrimeIQ2RGBPrimeFunctor(component_type max)
-    : max_(max)
-    {}
-    
-        /** apply the transformation
+        : max_(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & yiq) const
+    template<class V>
+    result_type operator()(V const& yiq) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
-        component_type nred   = Convert::cast(yiq[0] + 0.9548892043*yiq[1] + 0.6221039350*yiq[2]);
-        component_type ngreen = Convert::cast(yiq[0] - 0.2713547827*yiq[1] - 0.6475120259*yiq[2]);
-        component_type nblue  = Convert::cast(yiq[0] - 1.1072510054*yiq[1] + 1.7024603738*yiq[2]);
+        component_type nred = Convert::cast(yiq[0] + 0.9548892043 * yiq[1] + 0.6221039350 * yiq[2]);
+        component_type ngreen = Convert::cast(yiq[0] - 0.2713547827 * yiq[1] - 0.6475120259 * yiq[2]);
+        component_type nblue = Convert::cast(yiq[0] - 1.1072510054 * yiq[1] + 1.7024603738 * yiq[2]);
         return result_type(NumericTraits<T>::fromRealPromote(nred * max_),
                            NumericTraits<T>::fromRealPromote(ngreen * max_),
                            NumericTraits<T>::fromRealPromote(nblue * max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
     }
 };
 
-template <class T>
-class FunctorTraits<YPrimeIQ2RGBPrimeFunctor<T> >
-: public FunctorTraitsBase<YPrimeIQ2RGBPrimeFunctor<T> >
+template<class T>
+class FunctorTraits<YPrimeIQ2RGBPrimeFunctor<T>>
+    : public FunctorTraitsBase<YPrimeIQ2RGBPrimeFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -2501,7 +2524,7 @@ class FunctorTraits<YPrimeIQ2RGBPrimeFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class RGBPrime2YPrimeUVFunctor
 {
     /*
@@ -2511,69 +2534,70 @@ class RGBPrime2YPrimeUVFunctor
     maximum saturation: 0.632324
     red = [0.299, -0.147, 0.615]
     */
-  public:
-  
-        /** the result's component type
+public:
+    /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
 
-        /** the functor's argument type
+    /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2YPrimeUVFunctor()
-    : max_(255.0)
-    {}
-    
-        /** constructor
+        : max_(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2YPrimeUVFunctor(component_type max)
-    : max_(max)
-    {}
-    
-        /** apply the transformation
+        : max_(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & rgb) const
+    template<class V>
+    result_type operator()(V const& rgb) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
-        
+
         result_type result;
-        result[0] = Convert::cast(0.299*red + 0.587*green + 0.114*blue);
-        result[1] = Convert::cast(-0.1471376975*red - 0.2888623025*green + 0.436*blue);
-        result[2] = Convert::cast(0.6149122807*red - 0.5149122807*green - 0.100*blue);
+        result[0] = Convert::cast(0.299 * red + 0.587 * green + 0.114 * blue);
+        result[1] = Convert::cast(-0.1471376975 * red - 0.2888623025 * green + 0.436 * blue);
+        result[2] = Convert::cast(0.6149122807 * red - 0.5149122807 * green - 0.100 * blue);
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Y'UV";
     }
 
-  private:
+private:
     component_type max_;
 };
 
-template <class T>
-class FunctorTraits<RGBPrime2YPrimeUVFunctor<T> >
-: public FunctorTraitsBase<RGBPrime2YPrimeUVFunctor<T> >
+template<class T>
+class FunctorTraits<RGBPrime2YPrimeUVFunctor<T>>
+    : public FunctorTraitsBase<RGBPrime2YPrimeUVFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -2588,68 +2612,69 @@ class FunctorTraits<RGBPrime2YPrimeUVFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class YPrimeUV2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     component_type max_;
-    
-  public:
-  
-        /** the functor's argument type. (Actually, the argument type
+
+public:
+    /** the functor's argument type. (Actually, the argument type
             can be any vector type with the same interface. 
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<T, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<T, 3> value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     YPrimeUV2RGBPrimeFunctor()
-    : max_(255.0)
-    {}
-    
-        /** constructor
+        : max_(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     YPrimeUV2RGBPrimeFunctor(component_type max)
-    : max_(max)
-    {}
-    
-        /** apply the transformation
+        : max_(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & yuv) const
+    template<class V>
+    result_type operator()(V const& yuv) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
-        component_type nred   = Convert::cast(yuv[0] + 1.140*yuv[2]);
-        component_type ngreen = Convert::cast(yuv[0] - 0.3946517044*yuv[1] - 0.580681431*yuv[2]);
-        component_type nblue  = Convert::cast(yuv[0] + 2.0321100920*yuv[1]);
+        component_type nred = Convert::cast(yuv[0] + 1.140 * yuv[2]);
+        component_type ngreen = Convert::cast(yuv[0] - 0.3946517044 * yuv[1] - 0.580681431 * yuv[2]);
+        component_type nblue = Convert::cast(yuv[0] + 2.0321100920 * yuv[1]);
         return result_type(NumericTraits<T>::fromRealPromote(nred * max_),
                            NumericTraits<T>::fromRealPromote(ngreen * max_),
                            NumericTraits<T>::fromRealPromote(nblue * max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
     }
 };
 
-template <class T>
-class FunctorTraits<YPrimeUV2RGBPrimeFunctor<T> >
-: public FunctorTraitsBase<YPrimeUV2RGBPrimeFunctor<T> >
+template<class T>
+class FunctorTraits<YPrimeUV2RGBPrimeFunctor<T>>
+    : public FunctorTraitsBase<YPrimeUV2RGBPrimeFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -2674,7 +2699,7 @@ class FunctorTraits<YPrimeUV2RGBPrimeFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class RGBPrime2YPrimeCbCrFunctor
 {
     /*
@@ -2684,69 +2709,70 @@ class RGBPrime2YPrimeCbCrFunctor
     maximum saturation: 119.591
     red = [81.481, 90.203, 240]
     */
-  public:
-  
-        /** the result's component type
+public:
+    /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
 
-        /** the functor's argument type
+    /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2YPrimeCbCrFunctor()
-    : max_(255.0)
-    {}
-    
-        /** constructor
+        : max_(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2YPrimeCbCrFunctor(component_type max)
-    : max_(max)
-    {}
-    
-        /** apply the transformation
+        : max_(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & rgb) const
+    template<class V>
+    result_type operator()(V const& rgb) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
-        
+
         result_type result;
-        result[0] = Convert::cast(16.0 + 65.481*red + 128.553*green + 24.966*blue);
-        result[1] = Convert::cast(128.0 - 37.79683972*red - 74.20316028*green + 112.0*blue);
-        result[2] = Convert::cast(128.0 + 112.0*red - 93.78601998*green - 18.21398002*blue);
+        result[0] = Convert::cast(16.0 + 65.481 * red + 128.553 * green + 24.966 * blue);
+        result[1] = Convert::cast(128.0 - 37.79683972 * red - 74.20316028 * green + 112.0 * blue);
+        result[2] = Convert::cast(128.0 + 112.0 * red - 93.78601998 * green - 18.21398002 * blue);
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Y'CbCr";
     }
 
-  private:
+private:
     component_type max_;
 };
 
-template <class T>
-class FunctorTraits<RGBPrime2YPrimeCbCrFunctor<T> >
-: public FunctorTraitsBase<RGBPrime2YPrimeCbCrFunctor<T> >
+template<class T>
+class FunctorTraits<RGBPrime2YPrimeCbCrFunctor<T>>
+    : public FunctorTraitsBase<RGBPrime2YPrimeCbCrFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -2761,72 +2787,73 @@ class FunctorTraits<RGBPrime2YPrimeCbCrFunctor<T> >
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template <class T>
+template<class T>
 class YPrimeCbCr2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     component_type max_;
-    
-  public:
-  
-        /** the functor's argument type. (Actually, the argument type
+
+public:
+    /** the functor's argument type. (Actually, the argument type
             can be any vector type with the same interface. 
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef TinyVector<T, 3> result_type;
-  
-        /** \deprecated use argument_type and result_type
+
+    /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<T, 3> value_type;
-    
-        /** default constructor.
+
+    /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     YPrimeCbCr2RGBPrimeFunctor()
-    : max_(255.0)
-    {}
-    
-        /** constructor
+        : max_(255.0)
+    {
+    }
+
+    /** constructor
             \arg max - the maximum value for each RGB component
         */
     YPrimeCbCr2RGBPrimeFunctor(component_type max)
-    : max_(max)
-    {}
-    
-        /** apply the transformation
+        : max_(max)
+    {
+    }
+
+    /** apply the transformation
         */
-    template <class V>
-    result_type operator()(V const & ycbcr) const
+    template<class V>
+    result_type operator()(V const& ycbcr) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
-        component_type y  = Convert::cast(ycbcr[0] - 16.0);
+        component_type y = Convert::cast(ycbcr[0] - 16.0);
         component_type cb = Convert::cast(ycbcr[1] - 128.0);
         component_type cr = Convert::cast(ycbcr[2] - 128.0);
-        
-        component_type nred   = Convert::cast(0.00456621*y + 0.006258928571*cr);
-        component_type ngreen = Convert::cast(0.00456621*y - 0.001536322706*cb - 0.003188108420*cr);
-        component_type nblue  = Convert::cast(0.00456621*y + 0.007910714286*cb);
+
+        component_type nred = Convert::cast(0.00456621 * y + 0.006258928571 * cr);
+        component_type ngreen = Convert::cast(0.00456621 * y - 0.001536322706 * cb - 0.003188108420 * cr);
+        component_type nblue = Convert::cast(0.00456621 * y + 0.007910714286 * cb);
         return result_type(NumericTraits<T>::fromRealPromote(nred * max_),
                            NumericTraits<T>::fromRealPromote(ngreen * max_),
                            NumericTraits<T>::fromRealPromote(nblue * max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
     }
 };
 
-template <class T>
-class FunctorTraits<YPrimeCbCr2RGBPrimeFunctor<T> >
-: public FunctorTraitsBase<YPrimeCbCr2RGBPrimeFunctor<T> >
+template<class T>
+class FunctorTraits<YPrimeCbCr2RGBPrimeFunctor<T>>
+    : public FunctorTraitsBase<YPrimeCbCr2RGBPrimeFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -2936,20 +2963,20 @@ YUV: white = [229.992, 1, 9.81512e-17]
 inline TinyVector<float, 3>
 polar2Lab(double color, double brightness, double saturation)
 {
-    double angle = (color+39.9977)/180.0*M_PI;
-    double normsat = saturation*133.809;
-    
+    double angle = (color + 39.9977) / 180.0 * M_PI;
+    double normsat = saturation * 133.809;
+
     TinyVector<float, 3> result;
-    result[0] = float(100.0*brightness);
-    result[1] = float(normsat*VIGRA_CSTD::cos(angle));
-    result[2] = float(normsat*VIGRA_CSTD::sin(angle));
+    result[0] = float(100.0 * brightness);
+    result[1] = float(normsat * VIGRA_CSTD::cos(angle));
+    result[2] = float(normsat * VIGRA_CSTD::sin(angle));
     return result;
 }
 
 
-template <class V>
+template<class V>
 TinyVector<float, 3>
-polar2Lab(V const & polar)
+polar2Lab(V const& polar)
 {
     return polar2Lab(polar[0], polar[1], polar[2]);
 }
@@ -2970,19 +2997,17 @@ polar2Lab(V const & polar)
     This realizes the inverse of the transformation described in 
     \ref polar2Lab().
 */
-template <class V>
+template<class V>
 TinyVector<float, 3>
-lab2Polar(V const & lab)
+lab2Polar(V const& lab)
 {
     TinyVector<float, 3> result;
-    result[1] = float(lab[0]/100.0);
+    result[1] = float(lab[0] / 100.0);
     double angle = (lab[1] == 0.0 && lab[2] == 0.0)
-        ? 0.0
-        : VIGRA_CSTD::atan2(lab[2], lab[1])/M_PI*180.0-39.9977;
-    result[0] = angle < 0.0 ?
-                    float(angle + 360.0) :
-                    float(angle);
-    result[2] = float(VIGRA_CSTD::sqrt(lab[1]*lab[1] + lab[2]*lab[2])/133.809);
+                       ? 0.0
+                       : VIGRA_CSTD::atan2(lab[2], lab[1]) / M_PI * 180.0 - 39.9977;
+    result[0] = angle < 0.0 ? float(angle + 360.0) : float(angle);
+    result[2] = float(VIGRA_CSTD::sqrt(lab[1] * lab[1] + lab[2] * lab[2]) / 133.809);
     return result;
 }
 
@@ -3022,19 +3047,19 @@ lab2Polar(V const & lab)
 inline TinyVector<float, 3>
 polar2Luv(double color, double brightness, double saturation)
 {
-    double angle = (color+12.1727)/180.0*M_PI;
-    double normsat = saturation*179.04;
-    
+    double angle = (color + 12.1727) / 180.0 * M_PI;
+    double normsat = saturation * 179.04;
+
     TinyVector<float, 3> result;
-    result[0] = float(100.0*brightness);
-    result[1] = float(normsat*VIGRA_CSTD::cos(angle));
-    result[2] = float(normsat*VIGRA_CSTD::sin(angle));
+    result[0] = float(100.0 * brightness);
+    result[1] = float(normsat * VIGRA_CSTD::cos(angle));
+    result[2] = float(normsat * VIGRA_CSTD::sin(angle));
     return result;
 }
 
-template <class V>
+template<class V>
 TinyVector<float, 3>
-polar2Luv(V const & polar)
+polar2Luv(V const& polar)
 {
     return polar2Luv(polar[0], polar[1], polar[2]);
 }
@@ -3055,19 +3080,17 @@ polar2Luv(V const & polar)
     This realizes the inverse of the transformation described in 
     \ref polar2Luv().
 */
-template <class V>
+template<class V>
 TinyVector<float, 3>
-luv2Polar(V const & luv)
+luv2Polar(V const& luv)
 {
     TinyVector<float, 3> result;
-    result[1] = float(luv[0]/100.0);
+    result[1] = float(luv[0] / 100.0);
     double angle = (luv[1] == 0.0 && luv[2] == 0.0)
-        ? 0.0
-        : VIGRA_CSTD::atan2(luv[2], luv[1])/M_PI*180.0-12.1727;
-    result[0] = angle < 0.0 ?
-                    float(angle + 360.0) :
-                    float(angle);
-    result[2] = float(VIGRA_CSTD::sqrt(luv[1]*luv[1] + luv[2]*luv[2])/179.04);
+                       ? 0.0
+                       : VIGRA_CSTD::atan2(luv[2], luv[1]) / M_PI * 180.0 - 12.1727;
+    result[0] = angle < 0.0 ? float(angle + 360.0) : float(angle);
+    result[2] = float(VIGRA_CSTD::sqrt(luv[1] * luv[1] + luv[2] * luv[2]) / 179.04);
     return result;
 }
 
@@ -3107,19 +3130,19 @@ luv2Polar(V const & luv)
 inline TinyVector<float, 3>
 polar2YPrimePbPr(double color, double brightness, double saturation)
 {
-    double angle = (color+18.6481)/180.0*M_PI;
-    double normsat = saturation*0.533887;
-    
+    double angle = (color + 18.6481) / 180.0 * M_PI;
+    double normsat = saturation * 0.533887;
+
     TinyVector<float, 3> result;
     result[0] = float(brightness);
-    result[1] = float(-normsat*VIGRA_CSTD::sin(angle));
-    result[2] = float(normsat*VIGRA_CSTD::cos(angle));
+    result[1] = float(-normsat * VIGRA_CSTD::sin(angle));
+    result[2] = float(normsat * VIGRA_CSTD::cos(angle));
     return result;
 }
 
-template <class V>
+template<class V>
 TinyVector<float, 3>
-polar2YPrimePbPr(V const & polar)
+polar2YPrimePbPr(V const& polar)
 {
     return polar2YPrimePbPr(polar[0], polar[1], polar[2]);
 }
@@ -3140,19 +3163,17 @@ polar2YPrimePbPr(V const & polar)
     This realizes the inverse of the transformation described in 
     \ref polar2YPrimePbPr().
 */
-template <class V>
+template<class V>
 TinyVector<float, 3>
-yPrimePbPr2Polar(V const & ypbpr)
+yPrimePbPr2Polar(V const& ypbpr)
 {
     TinyVector<float, 3> result;
     result[1] = float(ypbpr[0]);
     double angle = (ypbpr[1] == 0.0 && ypbpr[2] == 0.0)
-        ? 0.0
-        : VIGRA_CSTD::atan2(-ypbpr[1], ypbpr[2])/M_PI*180.0-18.6481;
-    result[0] = angle < 0.0 ?
-                    float(angle + 360.0) :
-                    float(angle);
-    result[2] = float(VIGRA_CSTD::sqrt(ypbpr[1]*ypbpr[1] + ypbpr[2]*ypbpr[2])/0.533887);
+                       ? 0.0
+                       : VIGRA_CSTD::atan2(-ypbpr[1], ypbpr[2]) / M_PI * 180.0 - 18.6481;
+    result[0] = angle < 0.0 ? float(angle + 360.0) : float(angle);
+    result[2] = float(VIGRA_CSTD::sqrt(ypbpr[1] * ypbpr[1] + ypbpr[2] * ypbpr[2]) / 0.533887);
     return result;
 }
 
@@ -3192,19 +3213,19 @@ yPrimePbPr2Polar(V const & ypbpr)
 inline TinyVector<float, 3>
 polar2YPrimeCbCr(double color, double brightness, double saturation)
 {
-    double angle = (color+18.6482)/180.0*M_PI;
-    double normsat = saturation*119.591;
-    
+    double angle = (color + 18.6482) / 180.0 * M_PI;
+    double normsat = saturation * 119.591;
+
     TinyVector<float, 3> result;
-    result[0] = float(brightness*219.0 + 16.0);
-    result[1] = float(-normsat*VIGRA_CSTD::sin(angle)+128.0);
-    result[2] = float(normsat*VIGRA_CSTD::cos(angle)+128.0);
+    result[0] = float(brightness * 219.0 + 16.0);
+    result[1] = float(-normsat * VIGRA_CSTD::sin(angle) + 128.0);
+    result[2] = float(normsat * VIGRA_CSTD::cos(angle) + 128.0);
     return result;
 }
 
-template <class V>
+template<class V>
 TinyVector<float, 3>
-polar2YPrimeCbCr(V const & polar)
+polar2YPrimeCbCr(V const& polar)
 {
     return polar2YPrimeCbCr(polar[0], polar[1], polar[2]);
 }
@@ -3225,21 +3246,19 @@ polar2YPrimeCbCr(V const & polar)
     This realizes the inverse of the transformation described in 
     \ref polar2YPrimeCbCr().
 */
-template <class V>
+template<class V>
 TinyVector<float, 3>
-yPrimeCbCr2Polar(V const & ycbcr)
+yPrimeCbCr2Polar(V const& ycbcr)
 {
     TinyVector<float, 3> result;
-    result[1] = float((ycbcr[0]-16.0)/219.0);
-    double cb = ycbcr[1]-128.0;
-    double cr = ycbcr[2]-128.0;
+    result[1] = float((ycbcr[0] - 16.0) / 219.0);
+    double cb = ycbcr[1] - 128.0;
+    double cr = ycbcr[2] - 128.0;
     double angle = (cb == 0.0 && cr == 0.0)
-        ? 0.0
-        : VIGRA_CSTD::atan2(-cb, cr)/M_PI*180.0-18.6482;
-    result[0] = angle < 0.0 ?
-                    float(angle + 360.0) :
-                    float(angle);
-    result[2] = float(VIGRA_CSTD::sqrt(cb*cb + cr*cr)/119.591);
+                       ? 0.0
+                       : VIGRA_CSTD::atan2(-cb, cr) / M_PI * 180.0 - 18.6482;
+    result[0] = angle < 0.0 ? float(angle + 360.0) : float(angle);
+    result[2] = float(VIGRA_CSTD::sqrt(cb * cb + cr * cr) / 119.591);
     return result;
 }
 
@@ -3279,19 +3298,19 @@ yPrimeCbCr2Polar(V const & ycbcr)
 inline TinyVector<float, 3>
 polar2YPrimeIQ(double color, double brightness, double saturation)
 {
-    double angle = (color-19.5807)/180.0*M_PI;
-    double normsat = saturation*0.632582;
-    
+    double angle = (color - 19.5807) / 180.0 * M_PI;
+    double normsat = saturation * 0.632582;
+
     TinyVector<float, 3> result;
     result[0] = float(brightness);
-    result[1] = float(normsat*VIGRA_CSTD::cos(angle));
-    result[2] = float(-normsat*VIGRA_CSTD::sin(angle));
+    result[1] = float(normsat * VIGRA_CSTD::cos(angle));
+    result[2] = float(-normsat * VIGRA_CSTD::sin(angle));
     return result;
 }
 
-template <class V>
+template<class V>
 TinyVector<float, 3>
-polar2YPrimeIQ(V const & polar)
+polar2YPrimeIQ(V const& polar)
 {
     return polar2YPrimeIQ(polar[0], polar[1], polar[2]);
 }
@@ -3312,19 +3331,17 @@ polar2YPrimeIQ(V const & polar)
     This realizes the inverse of the transformation described in 
     \ref polar2YPrimeIQ().
 */
-template <class V>
+template<class V>
 TinyVector<float, 3>
-yPrimeIQ2Polar(V const & yiq)
+yPrimeIQ2Polar(V const& yiq)
 {
     TinyVector<float, 3> result;
     result[1] = float(yiq[0]);
     double angle = (yiq[1] == 0.0 && yiq[2] == 0.0)
-        ? 0.0
-        : VIGRA_CSTD::atan2(-yiq[2], yiq[1])/M_PI*180.0+19.5807;
-    result[0] = angle < 0.0 ?
-                    float(angle + 360.0) :
-                    float(angle);
-    result[2] = float(VIGRA_CSTD::sqrt(yiq[1]*yiq[1] + yiq[2]*yiq[2])/0.632582);
+                       ? 0.0
+                       : VIGRA_CSTD::atan2(-yiq[2], yiq[1]) / M_PI * 180.0 + 19.5807;
+    result[0] = angle < 0.0 ? float(angle + 360.0) : float(angle);
+    result[2] = float(VIGRA_CSTD::sqrt(yiq[1] * yiq[1] + yiq[2] * yiq[2]) / 0.632582);
     return result;
 }
 
@@ -3364,19 +3381,19 @@ yPrimeIQ2Polar(V const & yiq)
 inline TinyVector<float, 3>
 polar2YPrimeUV(double color, double brightness, double saturation)
 {
-    double angle = (color+13.4569)/180.0*M_PI;
-    double normsat = saturation*0.632324;
-    
+    double angle = (color + 13.4569) / 180.0 * M_PI;
+    double normsat = saturation * 0.632324;
+
     TinyVector<float, 3> result;
     result[0] = float(brightness);
-    result[1] = float(-normsat*VIGRA_CSTD::sin(angle));
-    result[2] = float(normsat*VIGRA_CSTD::cos(angle));
+    result[1] = float(-normsat * VIGRA_CSTD::sin(angle));
+    result[2] = float(normsat * VIGRA_CSTD::cos(angle));
     return result;
 }
 
-template <class V>
+template<class V>
 TinyVector<float, 3>
-polar2YPrimeUV(V const & polar)
+polar2YPrimeUV(V const& polar)
 {
     return polar2YPrimeUV(polar[0], polar[1], polar[2]);
 }
@@ -3397,24 +3414,22 @@ polar2YPrimeUV(V const & polar)
     This realizes the inverse of the transformation described in 
     \ref polar2YPrimeUV().
 */
-template <class V>
+template<class V>
 TinyVector<float, 3>
-yPrimeUV2Polar(V const & yuv)
+yPrimeUV2Polar(V const& yuv)
 {
     TinyVector<float, 3> result;
     result[1] = float(yuv[0]);
     double angle = (yuv[1] == 0.0 && yuv[2] == 0.0)
-        ? 0.0
-        : VIGRA_CSTD::atan2(-yuv[1], yuv[2])/M_PI*180.0-13.4569;
-    result[0] = angle < 0.0 ?
-                    float(angle + 360.0) :
-                    float(angle);
-    result[2] = float(VIGRA_CSTD::sqrt(yuv[1]*yuv[1] + yuv[2]*yuv[2])/0.632324);
+                       ? 0.0
+                       : VIGRA_CSTD::atan2(-yuv[1], yuv[2]) / M_PI * 180.0 - 13.4569;
+    result[0] = angle < 0.0 ? float(angle + 360.0) : float(angle);
+    result[2] = float(VIGRA_CSTD::sqrt(yuv[1] * yuv[1] + yuv[2] * yuv[2]) / 0.632324);
     return result;
 }
 
 //@}
 
-} // namespace vigra 
+} // namespace vigra
 
 #endif /* VIGRA_COLORCONVERSIONS_HXX */

@@ -36,32 +36,33 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
 //#define NO_IMPORT_ARRAY
 
-#include <vigra/numpy_array.hxx>
-#include <vigra/numpy_array_converters.hxx>
 #include <vigra/graphs.hxx>
 #include <vigra/metrics.hxx>
+#include <vigra/numpy_array.hxx>
+#include <vigra/numpy_array_converters.hxx>
 
 namespace python = boost::python;
 
-namespace vigra{
+namespace vigra
+{
 
 
 
+void
+defineInvalid()
+{
+    python::class_<lemon::Invalid>("Invalid", python::init<>());
+}
+
+void defineAdjacencyListGraph();
+void defineGridGraph2d();
+void defineGridGraph3d();
+void defineGridGraphImplicitEdgeMap();
+template<unsigned int DIM>
+void defineGridRag();
 
 
-	void defineInvalid(){
-        python::class_<lemon::Invalid>("Invalid",python::init<>());
-    }
-
-	void defineAdjacencyListGraph();
-	void defineGridGraph2d();
-    void defineGridGraph3d();
-    void defineGridGraphImplicitEdgeMap();
-    template<unsigned int DIM>
-    void defineGridRag();
-
-
-    //void defineEccentricity();
+//void defineEccentricity();
 } // namespace vigra
 
 using namespace vigra;
@@ -85,9 +86,8 @@ BOOST_PYTHON_MODULE_INIT(graphs)
         .value("norm", metrics::NormMetric)
         .value("manhattan", metrics::ManhattanMetric)
         .value("symetricKl", metrics::SymetricKlMetric)
-        .value("bhattacharya", metrics::BhattacharyaMetric)
-        ;
-    
+        .value("bhattacharya", metrics::BhattacharyaMetric);
+
 
 
     // all graph classes itself (GridGraph , AdjacencyListGraph)
@@ -97,5 +97,4 @@ BOOST_PYTHON_MODULE_INIT(graphs)
 
     // implicit edge maps
     defineGridGraphImplicitEdgeMap();
-
 }

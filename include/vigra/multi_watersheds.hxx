@@ -36,95 +36,98 @@
 #ifndef VIGRA_MULTI_WATERSHEDS_HXX
 #define VIGRA_MULTI_WATERSHEDS_HXX
 
-#include <functional>
-#include <limits>
+#include "bucket_queue.hxx"
 #include "mathutil.hxx"
 #include "multi_array.hxx"
-#include "multi_math.hxx"
 #include "multi_gridgraph.hxx"
-#include "multi_localminmax.hxx"
 #include "multi_labeling.hxx"
-#include "watersheds.hxx"
-#include "bucket_queue.hxx"
+#include "multi_localminmax.hxx"
+#include "multi_math.hxx"
 #include "union_find.hxx"
+#include "watersheds.hxx"
+#include <functional>
+#include <limits>
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup Superpixels
 */
 //@{
-namespace lemon_graph {
+namespace lemon_graph
+{
 
-namespace graph_detail {
+namespace graph_detail
+{
 
-    // select the neighbor ID for union-find watersheds
-    // standard behavior: use global node ID
-template <class Graph>
+// select the neighbor ID for union-find watersheds
+// standard behavior: use global node ID
+template<class Graph>
 struct NeighborIndexFunctor
 {
     typedef typename Graph::index_type index_type;
 
-    template <class NodeIter, class ArcIter>
-    static index_type get(Graph const & g, NodeIter const &, ArcIter const & a)
+    template<class NodeIter, class ArcIter>
+    static index_type get(Graph const& g, NodeIter const&, ArcIter const& a)
     {
         return g.id(g.target(*a));
     }
 
-    template <class NodeIter, class ArcIter>
-    static index_type getOpposite(Graph const & g, NodeIter const & n, ArcIter const &)
+    template<class NodeIter, class ArcIter>
+    static index_type getOpposite(Graph const& g, NodeIter const& n, ArcIter const&)
     {
         return g.id(*n);
     }
 
-    static index_type invalidIndex(Graph const &)
+    static index_type invalidIndex(Graph const&)
     {
         return std::numeric_limits<index_type>::max();
     }
 };
 
-    // select the neighbor ID for union-find watersheds
-    // GridGraph optimization: use local neighbor index (needs only 1/4 of the memory)
+// select the neighbor ID for union-find watersheds
+// GridGraph optimization: use local neighbor index (needs only 1/4 of the memory)
 template<unsigned int N, class DirectedTag>
-struct NeighborIndexFunctor<GridGraph<N, DirectedTag> >
+struct NeighborIndexFunctor<GridGraph<N, DirectedTag>>
 {
     typedef GridGraph<N, DirectedTag> Graph;
     typedef UInt16 index_type;
 
-    template <class NodeIter, class ArcIter>
-    static index_type get(Graph const &, NodeIter const &, ArcIter const & a)
+    template<class NodeIter, class ArcIter>
+    static index_type get(Graph const&, NodeIter const&, ArcIter const& a)
     {
         return a.neighborIndex();
     }
 
-    template <class NodeIter, class ArcIter>
-    static index_type getOpposite(Graph const & g, NodeIter const &, ArcIter const & a)
+    template<class NodeIter, class ArcIter>
+    static index_type getOpposite(Graph const& g, NodeIter const&, ArcIter const& a)
     {
         return g.oppositeIndex(a.neighborIndex());
     }
-    static index_type invalidIndex(Graph const &)
+    static index_type invalidIndex(Graph const&)
     {
         return std::numeric_limits<index_type>::max();
     }
 };
 
-template <class Graph, class T1Map, class T2Map>
+template<class Graph, class T1Map, class T2Map>
 void
-prepareWatersheds(Graph const & g,
-                  T1Map const & data,
-                  T2Map & lowestNeighborIndex)
+prepareWatersheds(Graph const& g,
+                  T1Map const& data,
+                  T2Map& lowestNeighborIndex)
 {
-    typedef typename Graph::NodeIt    graph_scanner;
-    typedef typename Graph::OutArcIt  neighbor_iterator;
+    typedef typename Graph::NodeIt graph_scanner;
+    typedef typename Graph::OutArcIt neighbor_iterator;
     typedef NeighborIndexFunctor<Graph> IndexFunctor;
 
     for (graph_scanner node(g); node != INVALID; ++node)
     {
-        typename T1Map::value_type lowestValue  = data[*node];
-        typename T2Map::value_type lowestIndex  = IndexFunctor::invalidIndex(g);
+        typename T1Map::value_type lowestValue = data[*node];
+        typename T2Map::value_type lowestIndex = IndexFunctor::invalidIndex(g);
 
-        for(neighbor_iterator arc(g, *node); arc != INVALID; ++arc)
+        for (neighbor_iterator arc(g, *node); arc != INVALID; ++arc)
         {
-            if(data[g.target(*arc)] < lowestValue)
+            if (data[g.target(*arc)] < lowestValue)
             {
                 lowestValue = data[g.target(*arc)];
                 lowestIndex = IndexFunctor::get(g, node, arc);
@@ -135,19 +138,19 @@ prepareWatersheds(Graph const & g,
 }
 
 
-template <class Graph, class T1Map, class T2Map, class T3Map>
+template<class Graph, class T1Map, class T2Map, class T3Map>
 typename T2Map::value_type
-unionFindWatersheds(Graph const & g,
-                    T1Map const &,
-                    T2Map const & lowestNeighborIndex,
-                    T3Map & labels)
+unionFindWatersheds(Graph const& g,
+                    T1Map const&,
+                    T2Map const& lowestNeighborIndex,
+                    T3Map& labels)
 {
-    typedef typename Graph::NodeIt       graph_scanner;
+    typedef typename Graph::NodeIt graph_scanner;
     typedef typename Graph::OutBackArcIt neighbor_iterator;
-    typedef typename T3Map::value_type   LabelType;
-    typedef NeighborIndexFunctor<Graph>  IndexFunctor;
+    typedef typename T3Map::value_type LabelType;
+    typedef NeighborIndexFunctor<Graph> IndexFunctor;
 
-    vigra::UnionFindArray<LabelType>  regions;
+    vigra::UnionFindArray<LabelType> regions;
 
     // pass 1: find connected components
     for (graph_scanner node(g); node != INVALID; ++node)
@@ -158,10 +161,10 @@ unionFindWatersheds(Graph const & g,
         for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
         {
             // merge regions if current target is center's lowest neighbor or vice versa
-            if((lowestNeighborIndex[*node] == IndexFunctor::invalidIndex(g) &&
-                lowestNeighborIndex[g.target(*arc)] == IndexFunctor::invalidIndex(g)) ||
-               (lowestNeighborIndex[*node] == IndexFunctor::get(g, node, arc)) ||
-               (lowestNeighborIndex[g.target(*arc)] == IndexFunctor::getOpposite(g, node, arc)))
+            if ((lowestNeighborIndex[*node] == IndexFunctor::invalidIndex(g) &&
+                 lowestNeighborIndex[g.target(*arc)] == IndexFunctor::invalidIndex(g)) ||
+                (lowestNeighborIndex[*node] == IndexFunctor::get(g, node, arc)) ||
+                (lowestNeighborIndex[g.target(*arc)] == IndexFunctor::getOpposite(g, node, arc)))
             {
                 currentIndex = regions.makeUnion(labels[g.target(*arc)], currentIndex);
             }
@@ -181,40 +184,41 @@ unionFindWatersheds(Graph const & g,
     return count;
 }
 
-template <class Graph, class T1Map, class T2Map>
+template<class Graph, class T1Map, class T2Map>
 typename T2Map::value_type
-generateWatershedSeeds(Graph const & g,
-                       T1Map const & data,
-                       T2Map & seeds,
-                       SeedOptions const & options = SeedOptions())
+generateWatershedSeeds(Graph const& g,
+                       T1Map const& data,
+                       T2Map& seeds,
+                       SeedOptions const& options = SeedOptions())
 {
     typedef typename T1Map::value_type DataType;
     typedef unsigned char MarkerType;
 
-    typename Graph::template NodeMap<MarkerType>  minima(g);
+    typename Graph::template NodeMap<MarkerType> minima(g);
 
-    if(options.mini == SeedOptions::LevelSets)
+    if (options.mini == SeedOptions::LevelSets)
     {
         vigra_precondition(options.thresholdIsValid<DataType>(),
-            "generateWatershedSeeds(): SeedOptions.levelSets() must be specified with threshold.");
+                           "generateWatershedSeeds(): SeedOptions.levelSets() must be specified with threshold.");
 
         using namespace multi_math;
-        for(typename Graph::NodeIt iter(g);iter!=lemon::INVALID;++iter){
-            minima[*iter]= data[*iter] <= DataType(options.thresh);
+        for (typename Graph::NodeIt iter(g); iter != lemon::INVALID; ++iter)
+        {
+            minima[*iter] = data[*iter] <= DataType(options.thresh);
         }
     }
     else
     {
         DataType threshold = options.thresholdIsValid<DataType>()
-                                ? options.thresh
-                                : NumericTraits<DataType>::max();
+                                 ? options.thresh
+                                 : NumericTraits<DataType>::max();
 
-        if(options.mini == SeedOptions::ExtendedMinima)
+        if (options.mini == SeedOptions::ExtendedMinima)
             extendedLocalMinMaxGraph(g, data, minima, MarkerType(1), threshold,
                                      std::less<DataType>(), std::equal_to<DataType>(), true);
         else
             lemon_graph::localMinMaxGraph(g, data, minima, MarkerType(1), threshold,
-                             std::less<DataType>(), true);
+                                          std::less<DataType>(), true);
     }
     return labelGraphWithBackground(g, minima, seeds, MarkerType(0), std::equal_to<MarkerType>());
 }
@@ -224,18 +228,18 @@ generateWatershedSeeds(Graph const & g,
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #endif
 
-template <class Graph, class T1Map, class T2Map>
+template<class Graph, class T1Map, class T2Map>
 typename T2Map::value_type
-seededWatersheds(Graph const & g,
-                 T1Map const & data,
-                 T2Map & labels,
-                 WatershedOptions const & options)
+seededWatersheds(Graph const& g,
+                 T1Map const& data,
+                 T2Map& labels,
+                 WatershedOptions const& options)
 {
-    typedef typename Graph::Node        Node;
-    typedef typename Graph::NodeIt      graph_scanner;
-    typedef typename Graph::OutArcIt    neighbor_iterator;
-    typedef typename T1Map::value_type  CostType;
-    typedef typename T2Map::value_type  LabelType;
+    typedef typename Graph::Node Node;
+    typedef typename Graph::NodeIt graph_scanner;
+    typedef typename Graph::OutArcIt neighbor_iterator;
+    typedef typename T1Map::value_type CostType;
+    typedef typename T2Map::value_type LabelType;
 
     PriorityQueue<Node, CostType, true> pqueue;
 
@@ -245,17 +249,17 @@ seededWatersheds(Graph const & g,
     for (graph_scanner node(g); node != INVALID; ++node)
     {
         LabelType label = labels[*node];
-        if(label != 0)
+        if (label != 0)
         {
-            if(maxRegionLabel < label)
+            if (maxRegionLabel < label)
                 maxRegionLabel = label;
 
             for (neighbor_iterator arc(g, *node); arc != INVALID; ++arc)
             {
-                if(labels[g.target(*arc)] == 0)
+                if (labels[g.target(*arc)] == 0)
                 {
                     // register all seeds that have an unlabeled neighbor
-                    if(label == options.biased_label)
+                    if (label == options.biased_label)
                         pqueue.push(*node, data[*node] * options.bias);
                     else
                         pqueue.push(*node, data[*node]);
@@ -265,51 +269,51 @@ seededWatersheds(Graph const & g,
         }
     }
 
-    LabelType contourLabel = maxRegionLabel + 1;  // temporary contour label
+    LabelType contourLabel = maxRegionLabel + 1; // temporary contour label
 
     // perform region growing
-    while(!pqueue.empty())
+    while (!pqueue.empty())
     {
         Node node = pqueue.top();
         CostType cost = pqueue.topPriority();
         pqueue.pop();
 
-        if((options.terminate & StopAtThreshold) && (cost > options.max_cost))
+        if ((options.terminate & StopAtThreshold) && (cost > options.max_cost))
             break;
 
         LabelType label = labels[node];
 
-        if(label == contourLabel)
+        if (label == contourLabel)
             continue;
 
         // Put the unlabeled neighbors in the priority queue.
         for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
         {
             LabelType neighborLabel = labels[g.target(*arc)];
-            if(neighborLabel == 0)
+            if (neighborLabel == 0)
             {
                 labels[g.target(*arc)] = label;
                 CostType priority = (label == options.biased_label)
-                                       ? data[g.target(*arc)] * options.bias
-                                       : data[g.target(*arc)];
-                if(priority < cost)
+                                        ? data[g.target(*arc)] * options.bias
+                                        : data[g.target(*arc)];
+                if (priority < cost)
                     priority = cost;
                 pqueue.push(g.target(*arc), priority);
             }
-            else if(keepContours && (label != neighborLabel) && (neighborLabel != contourLabel))
+            else if (keepContours && (label != neighborLabel) && (neighborLabel != contourLabel))
             {
                 // The present neighbor is adjacent to more than one region
                 // => mark it as contour.
                 CostType priority = (neighborLabel == options.biased_label)
-                                       ? data[g.target(*arc)] * options.bias
-                                       : data[g.target(*arc)];
-                if(cost < priority) // neighbor not yet processed
+                                        ? data[g.target(*arc)] * options.bias
+                                        : data[g.target(*arc)];
+                if (cost < priority) // neighbor not yet processed
                     labels[g.target(*arc)] = contourLabel;
             }
         }
     }
 
-    if(keepContours)
+    if (keepContours)
     {
         // Replace the temporary contour label with label 0.
         ///typename T2Map::iterator k   = labels.begin(),
@@ -318,9 +322,10 @@ seededWatersheds(Graph const & g,
         ///    if(*k == contourLabel)
         ///        *k = 0;
 
-        for(typename Graph::NodeIt iter(g);iter!=lemon::INVALID;++iter){
-            if(labels[*iter]==contourLabel)
-                labels[*iter]=0;
+        for (typename Graph::NodeIt iter(g); iter != lemon::INVALID; ++iter)
+        {
+            if (labels[*iter] == contourLabel)
+                labels[*iter] = 0;
         }
     }
 
@@ -333,42 +338,42 @@ seededWatersheds(Graph const & g,
 
 } // namespace graph_detail
 
-template <class Graph, class T1Map, class T2Map>
+template<class Graph, class T1Map, class T2Map>
 typename T2Map::value_type
-watershedsGraph(Graph const & g,
-                T1Map const & data,
-                T2Map & labels,
-                WatershedOptions const & options)
+watershedsGraph(Graph const& g,
+                T1Map const& data,
+                T2Map& labels,
+                WatershedOptions const& options)
 {
-    if(options.method == WatershedOptions::UnionFind)
+    if (options.method == WatershedOptions::UnionFind)
     {
         typedef typename graph_detail::NeighborIndexFunctor<Graph>::index_type index_type;
 
         vigra_precondition((index_type)g.maxDegree() <= NumericTraits<index_type>::max(),
-            "watershedsGraph(): cannot handle nodes with degree > 65535.");
+                           "watershedsGraph(): cannot handle nodes with degree > 65535.");
 
-        typename Graph::template NodeMap<index_type>  lowestNeighborIndex(g);
+        typename Graph::template NodeMap<index_type> lowestNeighborIndex(g);
 
         graph_detail::prepareWatersheds(g, data, lowestNeighborIndex);
         return graph_detail::unionFindWatersheds(g, data, lowestNeighborIndex, labels);
     }
-    else if(options.method == WatershedOptions::RegionGrowing)
+    else if (options.method == WatershedOptions::RegionGrowing)
     {
         SeedOptions seed_options;
 
         // check if the user has explicitly requested seed computation
-        if(options.seed_options.mini != SeedOptions::Unspecified)
+        if (options.seed_options.mini != SeedOptions::Unspecified)
         {
             seed_options = options.seed_options;
         }
         else
         {
             // otherwise, don't compute seeds if 'labels' already contains them
-            if(labels.any())
+            if (labels.any())
                 seed_options.mini = SeedOptions::Unspecified;
         }
 
-        if(seed_options.mini != SeedOptions::Unspecified)
+        if (seed_options.mini != SeedOptions::Unspecified)
         {
             graph_detail::generateWatershedSeeds(g, data, labels, seed_options);
         }
@@ -378,7 +383,7 @@ watershedsGraph(Graph const & g,
     else
     {
         vigra_precondition(false,
-           "watershedsGraph(): invalid method in watershed options.");
+                           "watershedsGraph(): invalid method in watershed options.");
         return 0;
     }
 }
@@ -386,17 +391,17 @@ watershedsGraph(Graph const & g,
 
 } // namespace lemon_graph
 
-    // documentation is in watersheds.hxx
-template <unsigned int N, class T, class S1,
-                          class Label, class S2>
+// documentation is in watersheds.hxx
+template<unsigned int N, class T, class S1,
+         class Label, class S2>
 inline Label
-generateWatershedSeeds(MultiArrayView<N, T, S1> const & data,
+generateWatershedSeeds(MultiArrayView<N, T, S1> const& data,
                        MultiArrayView<N, Label, S2> seeds,
                        NeighborhoodType neighborhood = IndirectNeighborhood,
-                       SeedOptions const & options = SeedOptions())
+                       SeedOptions const& options = SeedOptions())
 {
     vigra_precondition(data.shape() == seeds.shape(),
-        "generateWatershedSeeds(): Shape mismatch between input and output.");
+                       "generateWatershedSeeds(): Shape mismatch between input and output.");
 
     GridGraph<N, undirected_tag> graph(data.shape(), neighborhood);
     return lemon_graph::graph_detail::generateWatershedSeeds(graph, data, seeds, options);
@@ -543,18 +548,18 @@ generateWatershedSeeds(MultiArrayView<N, T, S1> const & data,
     }
     \endcode
 */
-doxygen_overloaded_function(template <...> Label watershedsMultiArray)
+doxygen_overloaded_function(template<...> Label watershedsMultiArray)
 
-template <unsigned int N, class T, class S1,
-                          class Label, class S2>
-inline Label
-watershedsMultiArray(MultiArrayView<N, T, S1> const & data,
-                     MultiArrayView<N, Label, S2> labels,  // may also hold input seeds
-                     NeighborhoodType neighborhood = DirectNeighborhood,
-                     WatershedOptions const & options = WatershedOptions())
+    template<unsigned int N, class T, class S1,
+             class Label, class S2>
+    inline Label
+    watershedsMultiArray(MultiArrayView<N, T, S1> const& data,
+                         MultiArrayView<N, Label, S2> labels, // may also hold input seeds
+                         NeighborhoodType neighborhood = DirectNeighborhood,
+                         WatershedOptions const& options = WatershedOptions())
 {
     vigra_precondition(data.shape() == labels.shape(),
-        "watershedsMultiArray(): Shape mismatch between input and output.");
+                       "watershedsMultiArray(): Shape mismatch between input and output.");
 
     GridGraph<N, undirected_tag> graph(data.shape(), neighborhood);
     return lemon_graph::watershedsGraph(graph, data, labels, options);

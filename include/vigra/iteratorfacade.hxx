@@ -29,56 +29,60 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 #ifndef VIGRA_ITERATORFACADE_HXX
 #define VIGRA_ITERATORFACADE_HXX
 
 /*std*/
-#include <iterator> 
+#include <iterator>
 
 /*vigra*/
 #include "metaprogramming.hxx"
 
-namespace vigra {
+namespace vigra
+{
 
-// facade needs to make this class 
+// facade needs to make this class
 // a friend class
-class IteratorFacadeCoreAccess{
+class IteratorFacadeCoreAccess
+{
 public:
     template<class F>
-    static bool equal(const F & fa,const F & fb){
+    static bool equal(const F& fa, const F& fb)
+    {
         return fa.equal(fb);
     }
 
-    template<class F,class REFERENCE>
-    static REFERENCE dereference(const F & f){
+    template<class F, class REFERENCE>
+    static REFERENCE dereference(const F& f)
+    {
         return f.dereference();
     }
 
     template<class F>
-    static void increment(F & f){
+    static void increment(F& f)
+    {
         f.increment();
     }
 };
 
 
-// see boost iterator facade 
-template<class FACADE,class VALUE_TYPE,bool IS_CONST = true>
-class ForwardIteratorFacade{
+// see boost iterator facade
+template<class FACADE, class VALUE_TYPE, bool IS_CONST = true>
+class ForwardIteratorFacade
+{
 private:
-    
 public:
-
     typedef std::forward_iterator_tag iterator_category;
     typedef typename UnqualifiedType<VALUE_TYPE>::type value_type;
-    typedef typename IfBool<IS_CONST, value_type const * , value_type *>::type  pointer;
-    typedef typename IfBool<IS_CONST, const value_type  & , value_type &>::type  reference;
+    typedef typename IfBool<IS_CONST, value_type const*, value_type*>::type pointer;
+    typedef typename IfBool<IS_CONST, const value_type&, value_type&>::type reference;
     typedef std::ptrdiff_t difference_type;
-    
 
-    FACADE & operator++()
+
+    FACADE& operator++()
     {
         IteratorFacadeCoreAccess::increment(getF());
         return getF();
@@ -91,81 +95,86 @@ public:
         return res;
     }
 
-    bool operator ==(const FACADE & f)const{
-        return IteratorFacadeCoreAccess::equal(getF(),f);
+    bool operator==(const FACADE& f) const
+    {
+        return IteratorFacadeCoreAccess::equal(getF(), f);
     }
-    bool operator !=(const FACADE & f)const{
-        return !IteratorFacadeCoreAccess::equal(getF(),f);
-    }
-
-    reference operator*()const{
-        return IteratorFacadeCoreAccess:: template dereference<FACADE,reference>(getF());
+    bool operator!=(const FACADE& f) const
+    {
+        return !IteratorFacadeCoreAccess::equal(getF(), f);
     }
 
-    pointer operator->()const{
-        return &IteratorFacadeCoreAccess:: template dereference<FACADE,reference>(getF());
+    reference operator*() const
+    {
+        return IteratorFacadeCoreAccess::template dereference<FACADE, reference>(getF());
+    }
+
+    pointer operator->() const
+    {
+        return &IteratorFacadeCoreAccess::template dereference<FACADE, reference>(getF());
     }
 
 private:
-
-
-    const FACADE & getF()const{
-        return *static_cast<FACADE const *>(this);
+    const FACADE& getF() const
+    {
+        return *static_cast<FACADE const*>(this);
     }
-    FACADE & getF(){
-        return *static_cast<FACADE *>(this);
+    FACADE& getF()
+    {
+        return *static_cast<FACADE*>(this);
     }
 };
 
 template<class MAP>
 class MapKeyIterator
- : public ForwardIteratorFacade<MapKeyIterator<MAP>,typename MAP::key_type,true>
+    : public ForwardIteratorFacade<MapKeyIterator<MAP>, typename MAP::key_type, true>
 {
 
 public:
-    typedef ForwardIteratorFacade<MapKeyIterator<MAP>,typename MAP::key_type,true> BaseType;
+    typedef ForwardIteratorFacade<MapKeyIterator<MAP>, typename MAP::key_type, true> BaseType;
     typedef typename MAP::const_iterator InternalIterator;
     typedef typename BaseType::value_type value_type;
     typedef typename BaseType::reference reference;
     typedef typename BaseType::pointer pointer;
-    
+
     MapKeyIterator(InternalIterator i)
-    : iter_(i)
-    {}
+        : iter_(i)
+    {
+    }
 
-  private:
-
+private:
     friend class IteratorFacadeCoreAccess;
-    
-    bool equal(const MapKeyIterator & other) const{
+
+    bool equal(const MapKeyIterator& other) const
+    {
         return iter_ == other.iter_;
     }
 
-    void increment(){
+    void increment()
+    {
         ++iter_;
     }
-    
-    reference dereference()const{
+
+    reference dereference() const
+    {
         return iter_->first;
     }
-    
+
     InternalIterator iter_;
 };
 
-template <class MAP>
+template<class MAP>
 inline MapKeyIterator<MAP>
-key_begin(MAP const & m)
+key_begin(MAP const& m)
 {
     return MapKeyIterator<MAP>(m.begin());
-
 }
 
-template <class MAP>
+template<class MAP>
 inline MapKeyIterator<MAP>
-key_end(MAP const & m)
+key_end(MAP const& m)
 {
     return MapKeyIterator<MAP>(m.end());
-
 }
 
 } // namespace vigra

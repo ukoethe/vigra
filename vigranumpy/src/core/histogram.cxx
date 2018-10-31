@@ -36,151 +36,157 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpyhistogram_PyArray_API
 //#define NO_IMPORT_ARRAY
 
+#include <vigra/multi_histogram.hxx>
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <vigra/multi_histogram.hxx>
 namespace python = boost::python;
 
-namespace vigra{
+namespace vigra
+{
 
 
-    template<unsigned int DIM,unsigned int CHANNELS>
-    NumpyAnyArray pyMultiGaussianHistogram(
-        NumpyArray<DIM,TinyVector<float,CHANNELS> > image,
-        const TinyVector<float,CHANNELS> minVals,
-        const TinyVector<float,CHANNELS> maxVals,
-        const size_t bins,
-        const float  sigma,
-        const float sigmaBin,
-        NumpyArray<DIM+2,float> histogram = NumpyArray<DIM+2,float>()
-    ){
-        typename NumpyArray<DIM+2,float>::difference_type  outShape;
-        for(size_t d=0;d<DIM;++d){
-            outShape[d]=image.shape(d);
-        }
-        outShape[DIM]=bins;
-        outShape[DIM+1]=CHANNELS;
-        histogram.reshapeIfEmpty(outShape);
-        {
-            PyAllowThreads _pythread;
-            multiGaussianHistogram<DIM,float,CHANNELS,float>(image,minVals,maxVals,bins,
-                sigma,sigmaBin,histogram);
-        }
-        return histogram;
+template<unsigned int DIM, unsigned int CHANNELS>
+NumpyAnyArray
+pyMultiGaussianHistogram(
+    NumpyArray<DIM, TinyVector<float, CHANNELS>> image,
+    const TinyVector<float, CHANNELS> minVals,
+    const TinyVector<float, CHANNELS> maxVals,
+    const size_t bins,
+    const float sigma,
+    const float sigmaBin,
+    NumpyArray<DIM + 2, float> histogram = NumpyArray<DIM + 2, float>())
+{
+    typename NumpyArray<DIM + 2, float>::difference_type outShape;
+    for (size_t d = 0; d < DIM; ++d)
+    {
+        outShape[d] = image.shape(d);
     }
-
-
-    template<unsigned int DIM>
-    NumpyAnyArray pyMultiGaussianCoHistogram(
-        NumpyArray<DIM,float > imageA,
-        NumpyArray<DIM,float > imageB,
-        const TinyVector<float,2> minVals,
-        const TinyVector<float,2> maxVals,
-        const TinyVector<int,2> bins,
-        const TinyVector<float,3> sigma,
-        NumpyArray<DIM+2,float> histogram = NumpyArray<DIM+2,float>()
-    ){
-        typename NumpyArray<DIM+2,float>::difference_type  outShape;
-        for(size_t d=0;d<DIM;++d){
-           outShape[d]=imageA.shape(d);
-        }
-        outShape[DIM]=bins[0];
-        outShape[DIM+1]=bins[1];
-        histogram.reshapeIfEmpty(outShape);
-        {
-            PyAllowThreads _pythread;
-            multiGaussianCoHistogram<DIM,float,float>(imageA,imageB,minVals,maxVals,bins,
-            sigma,histogram);
-        }
-        return histogram;
+    outShape[DIM] = bins;
+    outShape[DIM + 1] = CHANNELS;
+    histogram.reshapeIfEmpty(outShape);
+    {
+        PyAllowThreads _pythread;
+        multiGaussianHistogram<DIM, float, CHANNELS, float>(image, minVals, maxVals, bins,
+                                                            sigma, sigmaBin, histogram);
     }
+    return histogram;
+}
 
 
-
-
-    template<unsigned int DIM>
-    NumpyAnyArray pyMultiGaussianRankOrder(
-        const NumpyArray<DIM, float>      & image,
-        const float                         minVal,
-        const float                         maxVal,
-        const size_t                        bins,
-        const NumpyArray<1, float>        & sigmas,  
-        const NumpyArray<1, float>        & ranks,
-        NumpyArray<DIM+1, float>            out
-    ){
-        // reshape 
-        typename NumpyArray<DIM+1,float>::difference_type  outShape;
-        for(size_t d=0;d<DIM;++d){
-           outShape[d]=image.shape(d);
-        }
-        outShape[DIM]=ranks.size();
-        out.reshapeIfEmpty(outShape);
-
-        // FIXME: check the length of sigmas and ranks
-
-        {
-            PyAllowThreads _pythread;
-            TinyVector<double, DIM+1> sigmaVec;
-            std::copy(sigmas.begin(),sigmas.end(),sigmaVec.begin());
-
-            multiGaussianRankOrder<DIM, float, float, float>(image, minVal, maxVal,
-                                   bins, sigmaVec, ranks, out);
-        }
-        return out;
+template<unsigned int DIM>
+NumpyAnyArray
+pyMultiGaussianCoHistogram(
+    NumpyArray<DIM, float> imageA,
+    NumpyArray<DIM, float> imageB,
+    const TinyVector<float, 2> minVals,
+    const TinyVector<float, 2> maxVals,
+    const TinyVector<int, 2> bins,
+    const TinyVector<float, 3> sigma,
+    NumpyArray<DIM + 2, float> histogram = NumpyArray<DIM + 2, float>())
+{
+    typename NumpyArray<DIM + 2, float>::difference_type outShape;
+    for (size_t d = 0; d < DIM; ++d)
+    {
+        outShape[d] = imageA.shape(d);
     }
-
-
-
-    template<unsigned int DIM,unsigned int CHANNELS>
-    void defineMultiGaussianHistogram(){
-
-        python::def("gaussianHistogram_",registerConverters(&pyMultiGaussianHistogram<DIM,CHANNELS>),
-            (
-                python::arg("image"),
-                python::arg("minVals"),
-                python::arg("maxVals"),
-                python::arg("bins")=30,
-                python::arg("sigma")=3.0,
-                python::arg("sigmaBin")=2.0,
-                python::arg("out")=python::object()
-            )
-        );
+    outShape[DIM] = bins[0];
+    outShape[DIM + 1] = bins[1];
+    histogram.reshapeIfEmpty(outShape);
+    {
+        PyAllowThreads _pythread;
+        multiGaussianCoHistogram<DIM, float, float>(imageA, imageB, minVals, maxVals, bins,
+                                                    sigma, histogram);
     }
+    return histogram;
+}
 
 
-    template<unsigned int DIM>
-    void defineMultiGaussianCoHistogram(){
 
-        python::def("gaussianCoHistogram",registerConverters(&pyMultiGaussianCoHistogram<DIM>),
-            (
-                python::arg("imageA"),
-                python::arg("imageB"),
-                python::arg("minVals"),
-                python::arg("maxVals"),
-                python::arg("bins"),
-                python::arg("sigma"),
-                python::arg("out")=python::object()
-            )
-        );
+template<unsigned int DIM>
+NumpyAnyArray
+pyMultiGaussianRankOrder(
+    const NumpyArray<DIM, float>& image,
+    const float minVal,
+    const float maxVal,
+    const size_t bins,
+    const NumpyArray<1, float>& sigmas,
+    const NumpyArray<1, float>& ranks,
+    NumpyArray<DIM + 1, float> out)
+{
+    // reshape
+    typename NumpyArray<DIM + 1, float>::difference_type outShape;
+    for (size_t d = 0; d < DIM; ++d)
+    {
+        outShape[d] = image.shape(d);
     }
+    outShape[DIM] = ranks.size();
+    out.reshapeIfEmpty(outShape);
 
+    // FIXME: check the length of sigmas and ranks
 
-    template<unsigned int DIM>
-    void defineMultiGaussianRank(){
+    {
+        PyAllowThreads _pythread;
+        TinyVector<double, DIM + 1> sigmaVec;
+        std::copy(sigmas.begin(), sigmas.end(), sigmaVec.begin());
 
-        python::def("_gaussianRankOrder",registerConverters(&pyMultiGaussianRankOrder<DIM>),
-            (
-                python::arg("image"),
-                python::arg("minVal"),
-                python::arg("maxVal"),
-                python::arg("bins"),
-                python::arg("sigmas"),
-                python::arg("ranks"),
-                python::arg("out")=python::object()
-            )
-        );
+        multiGaussianRankOrder<DIM, float, float, float>(image, minVal, maxVal,
+                                                         bins, sigmaVec, ranks, out);
     }
-    
+    return out;
+}
+
+
+
+template<unsigned int DIM, unsigned int CHANNELS>
+void
+defineMultiGaussianHistogram()
+{
+
+    python::def("gaussianHistogram_", registerConverters(&pyMultiGaussianHistogram<DIM, CHANNELS>),
+                (
+                    python::arg("image"),
+                    python::arg("minVals"),
+                    python::arg("maxVals"),
+                    python::arg("bins") = 30,
+                    python::arg("sigma") = 3.0,
+                    python::arg("sigmaBin") = 2.0,
+                    python::arg("out") = python::object()));
+}
+
+
+template<unsigned int DIM>
+void
+defineMultiGaussianCoHistogram()
+{
+
+    python::def("gaussianCoHistogram", registerConverters(&pyMultiGaussianCoHistogram<DIM>),
+                (
+                    python::arg("imageA"),
+                    python::arg("imageB"),
+                    python::arg("minVals"),
+                    python::arg("maxVals"),
+                    python::arg("bins"),
+                    python::arg("sigma"),
+                    python::arg("out") = python::object()));
+}
+
+
+template<unsigned int DIM>
+void
+defineMultiGaussianRank()
+{
+
+    python::def("_gaussianRankOrder", registerConverters(&pyMultiGaussianRankOrder<DIM>),
+                (
+                    python::arg("image"),
+                    python::arg("minVal"),
+                    python::arg("maxVal"),
+                    python::arg("bins"),
+                    python::arg("sigmas"),
+                    python::arg("ranks"),
+                    python::arg("out") = python::object()));
+}
+
 
 
 } // namespace vigra
@@ -190,17 +196,16 @@ using namespace boost::python;
 
 
 
-
 BOOST_PYTHON_MODULE_INIT(histogram)
 {
     import_vigranumpy();
 
     // all exporters needed for graph exporters (like lemon::INVALID)
-    defineMultiGaussianHistogram<2,1>();
-    defineMultiGaussianHistogram<2,3>();
-    defineMultiGaussianHistogram<3,1>();
-    defineMultiGaussianHistogram<3,3>();
-    defineMultiGaussianHistogram<3,10>();
+    defineMultiGaussianHistogram<2, 1>();
+    defineMultiGaussianHistogram<2, 3>();
+    defineMultiGaussianHistogram<3, 1>();
+    defineMultiGaussianHistogram<3, 3>();
+    defineMultiGaussianHistogram<3, 10>();
 
     defineMultiGaussianCoHistogram<2>();
     defineMultiGaussianCoHistogram<3>();

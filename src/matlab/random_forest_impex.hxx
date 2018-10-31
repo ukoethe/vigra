@@ -37,52 +37,55 @@
 #ifndef VIGRA_RANDOM_FOREST_IMPEX_HXX
 #define VIGRA_RANDOM_FOREST_IMPEX_HXX
 
-#include <set>
 #include <memory>
+#include <set>
 #include <vigra/matlab.hxx>
 #include <vigra/random_forest.hxx>
 
-namespace vigra {
-namespace matlab {
+namespace vigra
+{
+namespace matlab
+{
 
 template<class T>
-void importRandomForest(vigra::RandomForest<T> &rf,ConstCellArray cells)
+void
+importRandomForest(vigra::RandomForest<T>& rf, ConstCellArray cells)
 {
     // read RF parameters
     MultiArrayView<1, UInt32> e_param = getArray<UInt32>(cells[0]);
-    rf.ext_param_.unserialize(e_param.data(), e_param.data()+ e_param.size());
+    rf.ext_param_.unserialize(e_param.data(), e_param.data() + e_param.size());
 
     MultiArrayView<1, UInt32> opt = getArray<UInt32>(cells[1]);
-    rf.options_.unserialize(opt.data(), opt.data()+ opt.size());
+    rf.options_.unserialize(opt.data(), opt.data() + opt.size());
 
 
     rf.trees_.resize(rf.options_.tree_count_, rf.ext_param_);
     // for all decision trees
-    for(UInt32 k=0; k<rf.options_.tree_count_; ++k)
+    for (UInt32 k = 0; k < rf.options_.tree_count_; ++k)
     {
-        
+
         // read int tree array
-        MultiArrayView<1, Int32> tree = getArray<Int32>(cells[2*k+2]);
+        MultiArrayView<1, Int32> tree = getArray<Int32>(cells[2 * k + 2]);
         rf.tree(k).topology_.resize(tree.size());
         std::copy(tree.traverser_begin(), tree.traverser_end(),
                   rf.tree(k).topology_.begin());
 
-        
-        MultiArrayView<1, double> weight = getArray<double>(cells[2*k+3]);
+
+        MultiArrayView<1, double> weight = getArray<double>(cells[2 * k + 3]);
         rf.tree(k).parameters_.resize(weight.size());
         std::copy(weight.traverser_begin(), weight.traverser_end(),
                   rf.tree(k).parameters_.begin());
     }
 }
 
-template <class T>
+template<class T>
 void
-exportRandomForest(RandomForest<T> const & rf, CellArray cells)
+exportRandomForest(RandomForest<T> const& rf, CellArray cells)
 {
     // write RF parameters
     int parameterCount = rf.ext_param_.serialized_size();
     MultiArrayView<1, UInt32> parameters = createArray<UInt32>(parameterCount, cells[0]);
-    rf.ext_param_.serialize(parameters.data(), parameters.data()+parameterCount);
+    rf.ext_param_.serialize(parameters.data(), parameters.data() + parameterCount);
 
 
     int optCount = rf.options_.serialized_size();
@@ -90,24 +93,25 @@ exportRandomForest(RandomForest<T> const & rf, CellArray cells)
     rf.options_.serialize(opt.data(), opt.data() + optCount);
 
     // for all decision trees
-    for(int k=0; k<rf.options_.tree_count_; ++k)
+    for (int k = 0; k < rf.options_.tree_count_; ++k)
     {
         // write int topology array
         MultiArrayView<1, Int32> tree =
-            createArray<Int32>(rf.tree(k).topology_.size(), cells[2*k+2]);
+            createArray<Int32>(rf.tree(k).topology_.size(), cells[2 * k + 2]);
         std::copy(rf.tree(k).topology_.begin(),
                   rf.tree(k).topology_.end(),
                   tree.data());
 
         // write double parameters array
         MultiArrayView<1, double> weights =
-            createArray<double>(rf.tree(k).parameters_.size(), cells[2*k+3]);
+            createArray<double>(rf.tree(k).parameters_.size(), cells[2 * k + 3]);
         std::copy(rf.tree(k).parameters_.begin(),
                   rf.tree(k).parameters_.end(),
                   weights.data());
     }
 }
 
-}} // namespace vigra::matlab
+} // namespace matlab
+} // namespace vigra
 
 #endif // VIGRA_RANDOM_FOREST_IMPEX_HXX

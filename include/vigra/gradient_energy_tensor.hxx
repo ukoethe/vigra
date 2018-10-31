@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -37,17 +37,18 @@
 #ifndef VIGRA_GRADIENT_ENERGY_TENSOR_HXX
 #define VIGRA_GRADIENT_ENERGY_TENSOR_HXX
 
-#include <cmath>
-#include <functional>
-#include "utilities.hxx"
 #include "array_vector.hxx"
 #include "basicimage.hxx"
 #include "combineimages.hxx"
-#include "numerictraits.hxx"
 #include "convolution.hxx"
 #include "multi_shape.hxx"
+#include "numerictraits.hxx"
+#include "utilities.hxx"
+#include <cmath>
+#include <functional>
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup TensorImaging Tensor Image Processing
 */
@@ -144,82 +145,81 @@ namespace vigra {
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void gradientEnergyTensor)
+doxygen_overloaded_function(template<...> void gradientEnergyTensor)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void gradientEnergyTensor(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
-                          DestIterator dupperleft, DestAccessor dest,
-                          Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    void gradientEnergyTensor(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
+                              DestIterator dupperleft, DestAccessor dest,
+                              Kernel1D<double> const& derivKernel, Kernel1D<double> const& smoothKernel)
 {
     vigra_precondition(dest.size(dupperleft) == 3,
                        "gradientEnergyTensor(): output image must have 3 bands.");
 
     int w = slowerright.x - supperleft.x;
     int h = slowerright.y - supperleft.y;
-    
-    typedef typename 
-       NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
-    typedef BasicImage<TmpType> TmpImage;    
-    TmpImage gx(w, h), gy(w, h), 
-             gxx(w, h), gxy(w, h), gyy(w, h), 
-             laplace(w, h), gx3(w, h), gy3(w, h);
-    
-    convolveImage(srcIterRange(supperleft, slowerright, src), destImage(gx), 
+
+    typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+    typedef BasicImage<TmpType> TmpImage;
+    TmpImage gx(w, h), gy(w, h),
+        gxx(w, h), gxy(w, h), gyy(w, h),
+        laplace(w, h), gx3(w, h), gy3(w, h);
+
+    convolveImage(srcIterRange(supperleft, slowerright, src), destImage(gx),
                   derivKernel, smoothKernel);
-    convolveImage(srcIterRange(supperleft, slowerright, src), destImage(gy), 
+    convolveImage(srcIterRange(supperleft, slowerright, src), destImage(gy),
                   smoothKernel, derivKernel);
-    convolveImage(srcImageRange(gx), destImage(gxx), 
+    convolveImage(srcImageRange(gx), destImage(gxx),
                   derivKernel, smoothKernel);
-    convolveImage(srcImageRange(gx), destImage(gxy), 
+    convolveImage(srcImageRange(gx), destImage(gxy),
                   smoothKernel, derivKernel);
-    convolveImage(srcImageRange(gy), destImage(gyy), 
+    convolveImage(srcImageRange(gy), destImage(gyy),
                   smoothKernel, derivKernel);
-    combineTwoImages(srcImageRange(gxx), srcImage(gyy), destImage(laplace), 
+    combineTwoImages(srcImageRange(gxx), srcImage(gyy), destImage(laplace),
                      std::plus<TmpType>());
-    convolveImage(srcImageRange(laplace), destImage(gx3), 
+    convolveImage(srcImageRange(laplace), destImage(gx3),
                   derivKernel, smoothKernel);
-    convolveImage(srcImageRange(laplace), destImage(gy3), 
+    convolveImage(srcImageRange(laplace), destImage(gy3),
                   smoothKernel, derivKernel);
-    typename TmpImage::iterator gxi  = gx.begin(),
-                                gyi  = gy.begin(),
+    typename TmpImage::iterator gxi = gx.begin(),
+                                gyi = gy.begin(),
                                 gxxi = gxx.begin(),
                                 gxyi = gxy.begin(),
                                 gyyi = gyy.begin(),
                                 gx3i = gx3.begin(),
                                 gy3i = gy3.begin();
-    for(int y = 0; y < h; ++y, ++dupperleft.y)
+    for (int y = 0; y < h; ++y, ++dupperleft.y)
     {
-        typename DestIterator::row_iterator d = dupperleft.rowIterator(); 
-        for(int x = 0; x < w; ++x, ++d, ++gxi, ++gyi, ++gxxi, ++gxyi, ++gyyi, ++gx3i, ++gy3i)
+        typename DestIterator::row_iterator d = dupperleft.rowIterator();
+        for (int x = 0; x < w; ++x, ++d, ++gxi, ++gyi, ++gxxi, ++gxyi, ++gyyi, ++gx3i, ++gy3i)
         {
             dest.setComponent(sq(*gxxi) + sq(*gxyi) - *gxi * *gx3i, d, 0);
-            dest.setComponent(- *gxyi * (*gxxi + *gyyi) + 0.5 * (*gxi * *gy3i + *gyi * *gx3i), d, 1);
+            dest.setComponent(-*gxyi * (*gxxi + *gyyi) + 0.5 * (*gxi * *gy3i + *gyi * *gx3i), d, 1);
             dest.setComponent(sq(*gxyi) + sq(*gyyi) - *gyi * *gy3i, d, 2);
         }
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 gradientEnergyTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                      pair<DestIterator, DestAccessor> dest,
-                     Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel)
+                     Kernel1D<double> const& derivKernel, Kernel1D<double> const& smoothKernel)
 {
     gradientEnergyTensor(src.first, src.second, src.third,
                          dest.first, dest.second, derivKernel, smoothKernel);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-gradientEnergyTensor(MultiArrayView<2, T1, S1> const & src,
-                     MultiArrayView<2, T2, S2> dest,
-                     Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel)
+    gradientEnergyTensor(MultiArrayView<2, T1, S1> const& src,
+                         MultiArrayView<2, T2, S2> dest,
+                         Kernel1D<double> const& derivKernel, Kernel1D<double> const& smoothKernel)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "gradientEnergyTensor(): shape mismatch between input and output.");
+                       "gradientEnergyTensor(): shape mismatch between input and output.");
     gradientEnergyTensor(srcImageRange(src),
                          destImage(dest), derivKernel, smoothKernel);
 }

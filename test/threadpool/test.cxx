@@ -33,11 +33,11 @@
 /*                                                                      */
 /************************************************************************/
 
-#include <vigra/unittest.hxx>
+#include <numeric>
 #include <vigra/threading.hxx>
 #include <vigra/threadpool.hxx>
 #include <vigra/timing.hxx>
-#include <numeric>
+#include <vigra/unittest.hxx>
 
 using namespace vigra;
 
@@ -51,21 +51,19 @@ struct ThreadPoolTests
         for (size_t i = 0; i < v.size(); ++i)
         {
             pool.enqueue(
-                [&v, i](size_t /*thread_id*/)
-                {
+                [&v, i](size_t /*thread_id*/) {
                     v[i] = 0;
-                    for (size_t k = 0; k < i+1; ++k)
+                    for (size_t k = 0; k < i + 1; ++k)
                     {
                         v[i] += k;
                     }
-                }
-            );
+                });
         }
         pool.waitFinished();
 
         std::vector<int> v_expected(n);
         for (size_t i = 0; i < v_expected.size(); ++i)
-            v_expected[i] = i*(i+1)/2;
+            v_expected[i] = i * (i + 1) / 2;
 
         shouldEqualSequence(v.begin(), v.end(), v_expected.begin());
     }
@@ -76,26 +74,23 @@ struct ThreadPoolTests
         std::string exception_string = "the test exception";
         std::vector<int> v(10000);
         ThreadPool pool(4);
-        std::vector<threading::future<void> > futures;
+        std::vector<threading::future<void>> futures;
         for (size_t i = 0; i < v.size(); ++i)
         {
             futures.emplace_back(
                 pool.enqueue(
-                    [&v, &exception_string, i](size_t /*thread_id*/)
-                    {
+                    [&v, &exception_string, i](size_t /*thread_id*/) {
                         v[i] = 1;
                         if (i == 5000)
                             throw std::runtime_error(exception_string);
-                    }
-                )
-            );
+                    }));
         }
         try
         {
-            for (auto & fut : futures)
+            for (auto& fut : futures)
                 fut.get();
         }
-        catch (std::runtime_error & ex)
+        catch (std::runtime_error& ex)
         {
             if (ex.what() == exception_string)
                 caught = true;
@@ -110,15 +105,13 @@ struct ThreadPoolTests
         std::iota(v_in.begin(), v_in.end(), 0);
         std::vector<int> v_out(n);
         parallel_foreach(4, v_in.begin(), v_in.end(),
-            [&v_out](size_t /*thread_id*/, int x)
-            {
-                v_out[x] = x*(x+1)/2;
-            }
-        );
+                         [&v_out](size_t /*thread_id*/, int x) {
+                             v_out[x] = x * (x + 1) / 2;
+                         });
 
         std::vector<int> v_expected(n);
         for (size_t i = 0; i < v_expected.size(); ++i)
-            v_expected[i] = i*(i+1)/2;
+            v_expected[i] = i * (i + 1) / 2;
 
         shouldEqualSequence(v_out.begin(), v_out.end(), v_expected.begin());
     }
@@ -134,15 +127,13 @@ struct ThreadPoolTests
         try
         {
             parallel_foreach(4, v_in.begin(), v_in.end(),
-                [&v_out, &exception_string](size_t /*thread_id*/, int x)
-                {
-                    if (x == 5000)
-                        throw std::runtime_error(exception_string);
-                    v_out[x] = x;
-                }
-            );
+                             [&v_out, &exception_string](size_t /*thread_id*/, int x) {
+                                 if (x == 5000)
+                                     throw std::runtime_error(exception_string);
+                                 v_out[x] = x;
+                             });
         }
-        catch (std::runtime_error & ex)
+        catch (std::runtime_error& ex)
         {
             if (ex.what() == exception_string)
                 caught = true;
@@ -159,14 +150,12 @@ struct ThreadPoolTests
         std::vector<size_t> results(n_threads, 0);
 
         parallel_foreach(n_threads, input.begin(), input.end(),
-            [&results](size_t thread_id, size_t x)
-            {
-                results[thread_id] += x;
-            }
-        );
+                         [&results](size_t thread_id, size_t x) {
+                             results[thread_id] += x;
+                         });
 
         size_t const sum = std::accumulate(results.begin(), results.end(), 0);
-        shouldEqual(sum, (n*(n-1))/2);
+        shouldEqual(sum, (n * (n - 1)) / 2);
     }
 
     void test_parallel_foreach_sum_serial()
@@ -178,14 +167,12 @@ struct ThreadPoolTests
         std::vector<size_t> results(1, 0);
 
         parallel_foreach(ParallelOptions::NoThreads, input.begin(), input.end(),
-            [&results](size_t thread_id, size_t x)
-            {
-                results[thread_id] += x;
-            }
-        );
+                         [&results](size_t thread_id, size_t x) {
+                             results[thread_id] += x;
+                         });
 
         size_t const sum = std::accumulate(results.begin(), results.end(), 0);
-        shouldEqual(sum, (n*(n-1))/2);
+        shouldEqual(sum, (n * (n - 1)) / 2);
     }
 
     void test_parallel_foreach_sum_auto()
@@ -199,14 +186,12 @@ struct ThreadPoolTests
         std::vector<size_t> results(opt.getActualNumThreads(), 0);
 
         parallel_foreach(opt.getNumThreads(), input.begin(), input.end(),
-            [&results](size_t thread_id, size_t x)
-            {
-                results[thread_id] += x;
-            }
-        );
+                         [&results](size_t thread_id, size_t x) {
+                             results[thread_id] += x;
+                         });
 
         size_t const sum = std::accumulate(results.begin(), results.end(), 0);
-        shouldEqual(sum, (n*(n-1))/2);
+        shouldEqual(sum, (n * (n - 1)) / 2);
     }
 
     void test_parallel_foreach_timing()
@@ -221,11 +206,9 @@ struct ThreadPoolTests
         std::vector<size_t> results(n_threads, 0);
         TIC;
         parallel_foreach(n_threads, input.begin(), input.end(),
-            [&results](size_t thread_id, size_t /*x*/)
-            {
-                results[thread_id] += 1;
-            }
-        );
+                         [&results](size_t thread_id, size_t /*x*/) {
+                             results[thread_id] += 1;
+                         });
         std::cout << "parallel_foreach took " << TOCS << std::endl;
 
         size_t const sum = std::accumulate(results.begin(), results.end(), 0);
@@ -236,8 +219,7 @@ struct ThreadPoolTests
 struct ThreadPoolTestSuite : public test_suite
 {
     ThreadPoolTestSuite()
-        :
-        test_suite("ThreadPool test")
+        : test_suite("ThreadPool test")
     {
         add(testCase(&ThreadPoolTests::test_threadpool));
         add(testCase(&ThreadPoolTests::test_threadpool_exception));
@@ -253,7 +235,8 @@ struct ThreadPoolTestSuite : public test_suite
     }
 };
 
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
     ThreadPoolTestSuite threadpool_test;
     int failed = threadpool_test.run(testsToBeExecuted(argc, argv));

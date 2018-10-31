@@ -50,82 +50,87 @@
 
 // PNG - Portable Network Graphics
 
-namespace vigra {
+namespace vigra
+{
 
-    struct PngDecoderImpl;
-    struct PngEncoderImpl;
+struct PngDecoderImpl;
+struct PngEncoderImpl;
 
-    struct PngCodecFactory : public CodecFactory
+struct PngCodecFactory : public CodecFactory
+{
+    CodecDesc getCodecDesc() const;
+    VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
+    VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
+};
+
+class PngDecoder : public Decoder
+{
+    PngDecoderImpl* pimpl;
+
+public:
+    PngDecoder()
+        : pimpl(0)
     {
-        CodecDesc getCodecDesc() const;
-        VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
-        VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
-    };
+    }
 
-    class PngDecoder : public Decoder
-    {
-        PngDecoderImpl * pimpl;
+    ~PngDecoder();
 
-    public:
+    void init(const std::string&);
+    void close();
+    void abort();
 
-        PngDecoder() : pimpl(0) {}
+    std::string getFileType() const;
+    std::string getPixelType() const;
 
-        ~PngDecoder();
-
-        void init( const std::string & );
-        void close();
-        void abort();
-
-        std::string getFileType() const;
-        std::string getPixelType() const;
-
-        unsigned int getWidth() const;
-        unsigned int getHeight() const;
-        unsigned int getNumBands() const;
-        unsigned int getNumExtraBands() const;
+    unsigned int getWidth() const;
+    unsigned int getHeight() const;
+    unsigned int getNumBands() const;
+    unsigned int getNumExtraBands() const;
     float getXResolution() const;
     float getYResolution() const;
-        Diff2D getPosition() const;
+    Diff2D getPosition() const;
 
-        unsigned int getOffset() const;
+    unsigned int getOffset() const;
 
-        const void * currentScanlineOfBand( unsigned int ) const;
-        void nextScanline();
-    };
+    const void* currentScanlineOfBand(unsigned int) const;
+    void nextScanline();
+};
 
-    class PngEncoder : public Encoder
+class PngEncoder : public Encoder
+{
+    PngEncoderImpl* pimpl;
+
+public:
+    PngEncoder()
+        : pimpl(0)
     {
-        PngEncoderImpl * pimpl;
+    }
 
-    public:
+    ~PngEncoder();
 
-        PngEncoder() : pimpl(0) {}
+    void init(const std::string&);
+    void close();
+    void abort();
 
-        ~PngEncoder();
+    std::string getFileType() const;
+    unsigned int getOffset() const;
 
-        void init( const std::string & );
-        void close();
-        void abort();
+    void setWidth(unsigned int);
+    void setHeight(unsigned int);
+    void setNumBands(unsigned int);
+    void setCompressionType(const std::string&, int = -1);
+    void setPixelType(const std::string&);
 
-        std::string getFileType() const;
-        unsigned int getOffset() const;
+    void setPosition(const Diff2D& pos);
+    void setXResolution(float xres);
+    void setYResolution(float yres);
 
-        void setWidth( unsigned int );
-        void setHeight( unsigned int );
-        void setNumBands( unsigned int );
-        void setCompressionType( const std::string &, int = -1 );
-        void setPixelType( const std::string & );
+    void finalizeSettings();
 
-        void setPosition( const Diff2D & pos );
-        void setXResolution( float xres );
-        void setYResolution( float yres );
-
-        void finalizeSettings();
-
-        void * currentScanlineOfBand( unsigned int );
-        void nextScanline();
-        void setICCProfile(const ICCProfile & data);
-    };
-}
+    void* currentScanlineOfBand(unsigned int);
+    void nextScanline();
+    void setICCProfile(const ICCProfile& data);
+};
+} // namespace vigra
 
 #endif // VIGRA_IMPEX_PNG_HXX

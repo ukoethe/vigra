@@ -29,54 +29,57 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
-#include <iostream>
-#include "vigra/unittest.hxx"
-#include "vigra/stdimage.hxx"
 #include "vigra/basicimageview.hxx"
+#include "vigra/contourcirculator.hxx"
+#include "vigra/imagecontainer.hxx"
 #include "vigra/imageiterator.hxx"
 #include "vigra/impex.hxx"
-#include "vigra/imagecontainer.hxx"
 #include "vigra/inspectimage.hxx"
 #include "vigra/pixelneighborhood.hxx"
-#include "vigra/contourcirculator.hxx"
+#include "vigra/stdimage.hxx"
+#include "vigra/unittest.hxx"
+#include <iostream>
 
 using vigra::Diff2D;
 using namespace vigra;
 
-unsigned char * testData(unsigned char)
+unsigned char*
+testData(unsigned char)
 {
-    static unsigned char data[] = {1,2,3,4,5,6,7,8,9};
+    static unsigned char data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     return data;
 }
 
-double * testData(double)
+double*
+testData(double)
 {
-    static double data[] = {1.1,2.2,3.3,4.4,5.5,6.6,7.7,8.8,9.9};
+    static double data[] = {1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9};
     return data;
 }
 
-RGBValue<unsigned char> * testData(RGBValue<unsigned char>)
+RGBValue<unsigned char>*
+testData(RGBValue<unsigned char>)
 {
     typedef RGBValue<unsigned char> BRGB;
     static BRGB data[] = {
-        BRGB(1,1,1),
-        BRGB(2,2,2),
-        BRGB(3,3,3),
-        BRGB(4,4,4),
-        BRGB(5,5,5),
-        BRGB(6,6,6),
-        BRGB(7,7,7),
-        BRGB(8,8,8),
-        BRGB(9,9,9)
-    };
+        BRGB(1, 1, 1),
+        BRGB(2, 2, 2),
+        BRGB(3, 3, 3),
+        BRGB(4, 4, 4),
+        BRGB(5, 5, 5),
+        BRGB(6, 6, 6),
+        BRGB(7, 7, 7),
+        BRGB(8, 8, 8),
+        BRGB(9, 9, 9)};
     return data;
 }
 
-RGBValue<float> * testData(RGBValue<float>)
+RGBValue<float>*
+testData(RGBValue<float>)
 {
     typedef vigra::RGBValue<float> FRGB;
     static FRGB data[] = {
@@ -88,26 +91,25 @@ RGBValue<float> * testData(RGBValue<float>)
         FRGB(6.6f, 6.6f, 6.6f),
         FRGB(7.7f, 7.7f, 7.7f),
         FRGB(8.8f, 8.8f, 8.8f),
-        FRGB(9.9f, 9.9f, 9.9f)
-    };
+        FRGB(9.9f, 9.9f, 9.9f)};
     return data;
 }
 
-template <class IMAGE>
+template<class IMAGE>
 struct ImageTest
 {
     typedef IMAGE Image;
     typedef typename Image::value_type value_type;
     value_type internalMemory[9];
-    value_type * data;
+    value_type* data;
 
-    ImageTest(IMAGE const & image) :
-            data(testData(value_type())),
-            img(image)
+    ImageTest(IMAGE const& image)
+        : data(testData(value_type())),
+          img(image)
     {
         typename Image::Accessor acc = img.accessor();
         typename Image::iterator i = img.begin();
-        
+
         acc.set(data[0], i);
         ++i;
         acc.set(data[1], i);
@@ -129,7 +131,7 @@ struct ImageTest
         should(i == img.end());
     }
 
-    template <class Iterator>
+    template<class Iterator>
     void scanImage(Iterator ul, Iterator lr)
     {
         Iterator y = ul;
@@ -162,10 +164,10 @@ struct ImageTest
         should(y.y == lr.y);
 
         y = ul;
-        should(acc(y, vigra::Diff2D(1,1)) == data[4]);
+        should(acc(y, vigra::Diff2D(1, 1)) == data[4]);
     }
 
-    template <class Iterator>
+    template<class Iterator>
     void scanRows(Iterator r1, Iterator r2, Iterator r3, int w)
     {
         Iterator end = r1 + w;
@@ -198,7 +200,7 @@ struct ImageTest
         should(r3 == end);
     }
 
-    template <class Iterator>
+    template<class Iterator>
     void scanColumns(Iterator c1, Iterator c2, Iterator c3, int h)
     {
         Iterator end = c1 + h;
@@ -237,14 +239,14 @@ struct ImageTest
         typename Image::Iterator lr = img.lowerRight();
 
         scanImage(ul, lr);
-        scanRows(ul.rowIterator(), (ul+Diff2D(0,1)).rowIterator(),
-                 (ul+Diff2D(0,2)).rowIterator(), img.width());
+        scanRows(ul.rowIterator(), (ul + Diff2D(0, 1)).rowIterator(),
+                 (ul + Diff2D(0, 2)).rowIterator(), img.width());
         scanRows(img.rowBegin(0), img.rowBegin(1),
                  img.rowBegin(2), img.width());
-        scanColumns(ul.columnIterator(), (ul+Diff2D(1,0)).columnIterator(),
-                 (ul+Diff2D(2,0)).columnIterator(), img.height());
+        scanColumns(ul.columnIterator(), (ul + Diff2D(1, 0)).columnIterator(),
+                    (ul + Diff2D(2, 0)).columnIterator(), img.height());
         scanColumns(img.columnBegin(0), img.columnBegin(1),
-                 img.columnBegin(2), img.height());
+                    img.columnBegin(2), img.height());
 
         typename Image::Accessor acc = img.accessor();
         typename Image::iterator i = img.begin();
@@ -253,12 +255,12 @@ struct ImageTest
 
     void testIndex()
     {
-        for (int y=0; y<img.height(); ++y)
+        for (int y = 0; y < img.height(); ++y)
         {
-            for(int x=0; x<img.width(); ++x)
+            for (int x = 0; x < img.width(); ++x)
             {
-                shouldEqual(data[y*img.width()+x], img[Diff2D(x,y)]);
-                shouldEqual(data[y*img.width()+x], img(x,y));
+                shouldEqual(data[y * img.width() + x], img[Diff2D(x, y)]);
+                shouldEqual(data[y * img.width() + x], img(x, y));
             }
         }
     }
@@ -266,13 +268,13 @@ struct ImageTest
     void testConstructor()
     {
         Image img1(img.width(), img.height(), data);
-        
+
         shouldEqual(img1.width(), img.width());
         shouldEqual(img1.height(), img.height());
         shouldEqualSequence(img.begin(), img.end(), img1.begin());
-        
+
         Image img2(img.width(), img.height(), SkipInitialization);
-        
+
         shouldEqual(img2.width(), img.width());
         shouldEqual(img2.height(), img.height());
     }
@@ -286,22 +288,22 @@ struct ImageTest
         typename Image::iterator i1 = img1.begin();
         typename Image::Accessor acc = img.accessor();
 
-        for(; i != img.end(); ++i, ++i1)
+        for (; i != img.end(); ++i, ++i1)
         {
             should(acc(i) == acc(i1));
         }
 
         img.init(NumericTraits<Value>::zero());
-        for(; i != img.end(); ++i)
+        for (; i != img.end(); ++i)
         {
             should(acc(i) == NumericTraits<Value>::zero());
         }
-        img(1,1) = Value(200);
+        img(1, 1) = Value(200);
         img1 = img;
         i = img.begin();
         i1 = img1.begin();
 
-        for(; i != img.end(); ++i, ++i1)
+        for (; i != img.end(); ++i, ++i1)
         {
             should(acc(i) == acc(i1));
         }
@@ -310,13 +312,14 @@ struct ImageTest
     Image img;
 };
 
-template <class IMAGE>
+template<class IMAGE>
 struct BasicImageTest
-: public ImageTest<IMAGE>
+    : public ImageTest<IMAGE>
 {
     BasicImageTest()
-    : ImageTest<IMAGE>(IMAGE(Diff2D(3,3)))
-    {}
+        : ImageTest<IMAGE>(IMAGE(Diff2D(3, 3)))
+    {
+    }
 
     // next lines needed due to gcc 2.95 bug
     void testIterator()
@@ -341,28 +344,29 @@ struct BasicImageTest
 
     void swapImage()
     {
-        IMAGE other(1,1);
-        other(0,0) = this->data[2];
-        
+        IMAGE other(1, 1);
+        other(0, 0) = this->data[2];
+
         this->img.swap(other);
-        
+
         shouldEqual(this->img.width(), 1);
         shouldEqual(this->img.height(), 1);
-        shouldEqual(this->img(0,0), this->data[2]);
+        shouldEqual(this->img(0, 0), this->data[2]);
         shouldEqual(other.width(), 3);
         shouldEqual(other.height(), 3);
-        shouldEqual(other(2,2), this->data[8]);
+        shouldEqual(other(2, 2), this->data[8]);
     }
 };
 
-template <class IMAGE>
+template<class IMAGE>
 struct BasicImageViewTest
-: public ImageTest<IMAGE>
+    : public ImageTest<IMAGE>
 {
-    
+
     BasicImageViewTest()
-    : ImageTest<IMAGE>(IMAGE(ImageTest<IMAGE>::internalMemory, Diff2D(3,3)))
-    {}
+        : ImageTest<IMAGE>(IMAGE(ImageTest<IMAGE>::internalMemory, Diff2D(3, 3)))
+    {
+    }
 
     // next lines needed due to gcc 2.95 bug
     void testIterator()
@@ -381,28 +385,29 @@ struct BasicImageViewTest
     }
 };
 
-template <class T>
+template<class T>
 struct StridedImageIteratorTest
 {
-    T * data_;
-    
+    T* data_;
+
     StridedImageIteratorTest()
-    : data_(testData(T()))
-    {}
+        : data_(testData(T()))
+    {
+    }
 
     void testIterator()
     {
         int w = 3, h = 3;
         int xskip = 2, yskip = 2;
         int ws = w / xskip + 1, hs = h / yskip + 1;
-        
+
         StridedImageIterator<T> ul(data_, w, xskip, yskip);
         StridedImageIterator<T> lr = ul + Diff2D(ws, hs);
-        
+
         shouldEqual(ws, lr.x - ul.x);
         shouldEqual(hs, lr.y - ul.y);
         shouldEqual(Diff2D(ws, hs), lr - ul);
-        
+
         StridedImageIterator<T> x = ul;
         typename StridedImageIterator<T>::row_iterator r = ul.rowIterator();
         typename StridedImageIterator<T>::row_iterator rend = r + ws;
@@ -420,7 +425,7 @@ struct StridedImageIteratorTest
         ++r;
         should(x.x == lr.x);
         should(r == rend);
-        
+
         ++ul.y;
         x = ul;
         r = ul.rowIterator();
@@ -447,45 +452,45 @@ struct StridedImageIteratorTest
 
 
 struct ImageTestSuite
-: public vigra::test_suite
+    : public vigra::test_suite
 {
     ImageTestSuite()
-    : vigra::test_suite("ImageTestSuite")
+        : vigra::test_suite("ImageTestSuite")
     {
-        add( testCase( &BasicImageTest<BasicImage<unsigned char> >::testIterator));
-        add( testCase( &BasicImageTest<BasicImage<unsigned char> >::testIndex));
-        add( testCase( &BasicImageTest<BasicImage<unsigned char> >::testConstructor));
-        add( testCase( &BasicImageTest<BasicImage<unsigned char> >::copyImage));
-        add( testCase( &BasicImageTest<BasicImage<unsigned char> >::swapImage));
-        add( testCase( &BasicImageTest<BasicImage<double> >::testIterator));
-        add( testCase( &BasicImageTest<BasicImage<double> >::testIndex));
-        add( testCase( &BasicImageTest<BasicImage<double> >::testConstructor));
-        add( testCase( &BasicImageTest<BasicImage<double> >::copyImage));
-        add( testCase( &BasicImageTest<BasicImage<double> >::swapImage));
-        add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::testIterator));
-        add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::testIndex));
-        add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::testConstructor));
-        add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::copyImage));
-        add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::swapImage));
-        add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::testIterator));
-        add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::testIndex));
-        add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::testConstructor));
-        add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::copyImage));
-        add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::swapImage));
-        add( testCase( &BasicImageViewTest<BasicImageView<unsigned char> >::testIterator));
-        add( testCase( &BasicImageViewTest<BasicImageView<unsigned char> >::testIndex));
-        add( testCase( &BasicImageViewTest<BasicImageView<unsigned char> >::copyImage));
-        add( testCase( &BasicImageViewTest<BasicImageView<double> >::testIterator));
-        add( testCase( &BasicImageViewTest<BasicImageView<double> >::testIndex));
-        add( testCase( &BasicImageViewTest<BasicImageView<double> >::copyImage));
-        add( testCase( &BasicImageViewTest<BasicImageView<RGBValue<unsigned char> > >::testIterator));
-        add( testCase( &BasicImageViewTest<BasicImageView<RGBValue<unsigned char> > >::testIndex));
-        add( testCase( &BasicImageViewTest<BasicImageView<RGBValue<unsigned char> > >::copyImage));
-        add( testCase( &BasicImageViewTest<BasicImageView<RGBValue<float> > >::testIterator));
-        add( testCase( &BasicImageViewTest<BasicImageView<RGBValue<float> > >::testIndex));
-        add( testCase( &BasicImageViewTest<BasicImageView<RGBValue<float> > >::copyImage));
-        add( testCase( &StridedImageIteratorTest<unsigned char>::testIterator));
-        add( testCase( &StridedImageIteratorTest<RGBValue<float> >::testIterator));
+        add(testCase(&BasicImageTest<BasicImage<unsigned char>>::testIterator));
+        add(testCase(&BasicImageTest<BasicImage<unsigned char>>::testIndex));
+        add(testCase(&BasicImageTest<BasicImage<unsigned char>>::testConstructor));
+        add(testCase(&BasicImageTest<BasicImage<unsigned char>>::copyImage));
+        add(testCase(&BasicImageTest<BasicImage<unsigned char>>::swapImage));
+        add(testCase(&BasicImageTest<BasicImage<double>>::testIterator));
+        add(testCase(&BasicImageTest<BasicImage<double>>::testIndex));
+        add(testCase(&BasicImageTest<BasicImage<double>>::testConstructor));
+        add(testCase(&BasicImageTest<BasicImage<double>>::copyImage));
+        add(testCase(&BasicImageTest<BasicImage<double>>::swapImage));
+        add(testCase(&BasicImageTest<BasicImage<RGBValue<unsigned char>>>::testIterator));
+        add(testCase(&BasicImageTest<BasicImage<RGBValue<unsigned char>>>::testIndex));
+        add(testCase(&BasicImageTest<BasicImage<RGBValue<unsigned char>>>::testConstructor));
+        add(testCase(&BasicImageTest<BasicImage<RGBValue<unsigned char>>>::copyImage));
+        add(testCase(&BasicImageTest<BasicImage<RGBValue<unsigned char>>>::swapImage));
+        add(testCase(&BasicImageTest<BasicImage<RGBValue<float>>>::testIterator));
+        add(testCase(&BasicImageTest<BasicImage<RGBValue<float>>>::testIndex));
+        add(testCase(&BasicImageTest<BasicImage<RGBValue<float>>>::testConstructor));
+        add(testCase(&BasicImageTest<BasicImage<RGBValue<float>>>::copyImage));
+        add(testCase(&BasicImageTest<BasicImage<RGBValue<float>>>::swapImage));
+        add(testCase(&BasicImageViewTest<BasicImageView<unsigned char>>::testIterator));
+        add(testCase(&BasicImageViewTest<BasicImageView<unsigned char>>::testIndex));
+        add(testCase(&BasicImageViewTest<BasicImageView<unsigned char>>::copyImage));
+        add(testCase(&BasicImageViewTest<BasicImageView<double>>::testIterator));
+        add(testCase(&BasicImageViewTest<BasicImageView<double>>::testIndex));
+        add(testCase(&BasicImageViewTest<BasicImageView<double>>::copyImage));
+        add(testCase(&BasicImageViewTest<BasicImageView<RGBValue<unsigned char>>>::testIterator));
+        add(testCase(&BasicImageViewTest<BasicImageView<RGBValue<unsigned char>>>::testIndex));
+        add(testCase(&BasicImageViewTest<BasicImageView<RGBValue<unsigned char>>>::copyImage));
+        add(testCase(&BasicImageViewTest<BasicImageView<RGBValue<float>>>::testIterator));
+        add(testCase(&BasicImageViewTest<BasicImageView<RGBValue<float>>>::testIndex));
+        add(testCase(&BasicImageViewTest<BasicImageView<RGBValue<float>>>::copyImage));
+        add(testCase(&StridedImageIteratorTest<unsigned char>::testIterator));
+        add(testCase(&StridedImageIteratorTest<RGBValue<float>>::testIterator));
     }
 };
 
@@ -493,13 +498,20 @@ struct CompareFunctor
 {
     double sumDifference_;
 
-    CompareFunctor(): sumDifference_(0) {}
+    CompareFunctor()
+        : sumDifference_(0)
+    {
+    }
 
-    void operator()(const float &a, const float &b)
-    { sumDifference_+=  VIGRA_CSTD::abs(a-b); }
+    void operator()(const float& a, const float& b)
+    {
+        sumDifference_ += VIGRA_CSTD::abs(a - b);
+    }
 
     double operator()()
-        { return sumDifference_; }
+    {
+        return sumDifference_;
+    }
 };
 
 struct ImageContainerTests
@@ -525,7 +537,7 @@ struct ImageContainerTests
 
         Diff2D newsize(50, 50);
         threeLennas.resizeImages(newsize);
-        for (ImageArray<FImage>::iterator it= threeLennas.begin(); it!= threeLennas.end(); it++)
+        for (ImageArray<FImage>::iterator it = threeLennas.begin(); it != threeLennas.end(); it++)
             shouldEqual((*it).size(), newsize);
     }
 
@@ -534,14 +546,14 @@ struct ImageContainerTests
         Diff2D testsize(50, 50);
         ImageArray<FImage> ia(6, testsize);
 
-        for (unsigned int i=0; i<ia.size(); i++)
+        for (unsigned int i = 0; i < ia.size(); i++)
             shouldEqual(ia[i].size(), testsize);
 
         ImageArray<FImage> ia2(ia.begin(), ia.end());
         shouldEqual(ia2.imageSize(), testsize);
 
-        ia2.erase(ia2.begin()+1);
-        shouldEqual(ia2.size(), ia.size()-1);
+        ia2.erase(ia2.begin() + 1);
+        shouldEqual(ia2.size(), ia.size() - 1);
 
         ia.clear();
         shouldEqual(ia.size(), 0u);
@@ -549,22 +561,22 @@ struct ImageContainerTests
 };
 
 struct ImageContainerTestSuite
-: public vigra::test_suite
+    : public vigra::test_suite
 {
     ImageContainerTestSuite()
-    : vigra::test_suite("ImageContainerTestSuite")
+        : vigra::test_suite("ImageContainerTestSuite")
     {
-        add( testCase( &ImageContainerTests::initArrayWithImageTest ) );
-        add( testCase( &ImageContainerTests::initArrayWithSizeTest ) );
+        add(testCase(&ImageContainerTests::initArrayWithImageTest));
+        add(testCase(&ImageContainerTests::initArrayWithSizeTest));
     }
 };
 
 struct NeighborhoodCirculatorTest
 {
     typedef vigra::NeighborhoodCirculator<vigra::BImage::Iterator, vigra::EightNeighborCode>
-    EightCirculator;
+        EightCirculator;
     typedef vigra::NeighborhoodCirculator<vigra::BImage::Iterator, vigra::FourNeighborCode>
-    FourCirculator;
+        FourCirculator;
 
     vigra::BImage img;
     EightCirculator eightCirc;
@@ -575,9 +587,9 @@ struct NeighborhoodCirculatorTest
           eightCirc(img.upperLeft() + vigra::Diff2D(1, 1)),
           fourCirc(img.upperLeft() + vigra::Diff2D(1, 1))
     {
-        for(int y= 0; y<img.height(); y++)
-            for(int x= 0; x<img.width(); x++)
-                img(x, y)= y*img.width() + x;
+        for (int y = 0; y < img.height(); y++)
+            for (int x = 0; x < img.width(); x++)
+                img(x, y) = y * img.width() + x;
     }
 
     void testInit()
@@ -654,9 +666,9 @@ struct NeighborhoodCirculatorTest
 
     void testIsDiagonal()
     {
-        for(int i=0; i<10; i++, eightCirc++, fourCirc++)
+        for (int i = 0; i < 10; i++, eightCirc++, fourCirc++)
         {
-            if(i%2)
+            if (i % 2)
                 should(eightCirc.isDiagonal());
             else
                 should(!eightCirc.isDiagonal());
@@ -693,14 +705,14 @@ struct NeighborhoodCirculatorTest
 
     void testTurning()
     {
-        for(int i=0; i<4; i++)
+        for (int i = 0; i < 4; i++)
         {
             shouldEqual(*fourCirc, *eightCirc);
             fourCirc.turnRight();
             eightCirc.turnRight();
         }
 
-        for(int i=0; i<4; i++)
+        for (int i = 0; i < 4; i++)
         {
             shouldEqual(*fourCirc, *eightCirc);
             fourCirc.turnLeft();
@@ -731,7 +743,7 @@ struct NeighborhoodCirculatorTest
         eightCirc++;
         shouldEqual(*eightCirc, 7); // looking east again
 
-        eightCirc+= 4; // looking west again
+        eightCirc += 4; // looking west again
         eightCirc.moveCenterToNeighbor();
         shouldEqual(*eightCirc, 4);
     }
@@ -743,7 +755,7 @@ struct NeighborhoodCirculatorTest
 
         // test operator -
         EightCirculator eightCirc2 = eightCirc;
-        for(int i=0; i<7; i++, eightCirc2++)
+        for (int i = 0; i < 7; i++, eightCirc2++)
             shouldEqual(eightCirc2 - eightCirc, i);
 
         // test operator[]
@@ -768,7 +780,7 @@ struct CrackContourCirculatorTest
     vigra::BImage img;
 
     CrackContourCirculatorTest()
-            : img(8,8)
+        : img(8, 8)
     {
         static int imdata[] = {
             0, 0, 0, 0, 0, 0, 0, 0,
@@ -778,10 +790,9 @@ struct CrackContourCirculatorTest
             0, 0, 0, 1, 1, 0, 0, 0,
             0, 0, 1, 1, 1, 1, 1, 0,
             0, 0, 1, 1, 1, 1, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0
-        };
-    
-        for(int i = 0; i<img.width()*img.height(); ++i)
+            0, 0, 0, 0, 0, 0, 0, 0};
+
+        for (int i = 0; i < img.width() * img.height(); ++i)
             img.begin()[i] = imdata[i];
     }
 
@@ -789,7 +800,7 @@ struct CrackContourCirculatorTest
     {
         CrackCirc crackCirc(img.upperLeft() + vigra::Diff2D(1, 1));
         CrackCirc end = crackCirc;
-        
+
         should(crackCirc.pos() == vigra::Diff2D(0, 0));
         ++crackCirc;
         should(crackCirc.pos() == vigra::Diff2D(0, 1));
@@ -856,52 +867,52 @@ struct CrackContourCirculatorTest
         ++crackCirc;
         should(crackCirc == end);
     }
-
 };
 
 struct NeighborhoodCirculatorTestSuite
-: public vigra::test_suite
+    : public vigra::test_suite
 {
     NeighborhoodCirculatorTestSuite()
-    : vigra::test_suite("NeighborhoodCirculatorTestSuite")
+        : vigra::test_suite("NeighborhoodCirculatorTestSuite")
     {
-        add( testCase( &NeighborhoodCirculatorTest::testInit));
-        add( testCase( &NeighborhoodCirculatorTest::testEightCirculateForward));
-        add( testCase( &NeighborhoodCirculatorTest::testEightCirculateReverse));
-        add( testCase( &NeighborhoodCirculatorTest::testFourCirculateForward));
-        add( testCase( &NeighborhoodCirculatorTest::testFourCirculateReverse));
-        add( testCase( &NeighborhoodCirculatorTest::testIsDiagonal));
-        add( testCase( &NeighborhoodCirculatorTest::testEquality));
-        add( testCase( &NeighborhoodCirculatorTest::testTurning));
-        add( testCase( &NeighborhoodCirculatorTest::testMoving));
-        add( testCase( &NeighborhoodCirculatorTest::testMiscellaneous));
-   }
+        add(testCase(&NeighborhoodCirculatorTest::testInit));
+        add(testCase(&NeighborhoodCirculatorTest::testEightCirculateForward));
+        add(testCase(&NeighborhoodCirculatorTest::testEightCirculateReverse));
+        add(testCase(&NeighborhoodCirculatorTest::testFourCirculateForward));
+        add(testCase(&NeighborhoodCirculatorTest::testFourCirculateReverse));
+        add(testCase(&NeighborhoodCirculatorTest::testIsDiagonal));
+        add(testCase(&NeighborhoodCirculatorTest::testEquality));
+        add(testCase(&NeighborhoodCirculatorTest::testTurning));
+        add(testCase(&NeighborhoodCirculatorTest::testMoving));
+        add(testCase(&NeighborhoodCirculatorTest::testMiscellaneous));
+    }
 };
 
 struct CrackContourCirculatorTestSuite
-: public vigra::test_suite
+    : public vigra::test_suite
 {
     CrackContourCirculatorTestSuite()
-    : vigra::test_suite("CrackContourCirculatorTestSuite")
+        : vigra::test_suite("CrackContourCirculatorTestSuite")
     {
-        add( testCase( &CrackContourCirculatorTest::testInit));
-   }
+        add(testCase(&CrackContourCirculatorTest::testInit));
+    }
 };
 
 struct ImageTestCollection
-: public vigra::test_suite
+    : public vigra::test_suite
 {
     ImageTestCollection()
-    : vigra::test_suite("ImageTestCollection")
+        : vigra::test_suite("ImageTestCollection")
     {
-        add( new ImageTestSuite);
-        add( new ImageContainerTestSuite);
-        add( new NeighborhoodCirculatorTestSuite);
-        add( new CrackContourCirculatorTestSuite);
-   }
+        add(new ImageTestSuite);
+        add(new ImageContainerTestSuite);
+        add(new NeighborhoodCirculatorTestSuite);
+        add(new CrackContourCirculatorTestSuite);
+    }
 };
 
-int main(int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
     ImageTestCollection test;
 
@@ -911,4 +922,3 @@ int main(int argc, char ** argv)
 
     return (failed != 0);
 }
-

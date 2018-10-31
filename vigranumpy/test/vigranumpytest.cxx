@@ -36,31 +36,34 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpytest_PyArray_API
 
 #include <Python.h>
-#include <iostream>
-#include <vigra/config.hxx>
 #include <boost/python.hpp>
 #include <boost/python/signature.hpp>
+#include <iostream>
+#include <vigra/config.hxx>
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 
 namespace python = boost::python;
 
-namespace vigra {
+namespace vigra
+{
 
-python::tuple testAny(NumpyAnyArray array)
+python::tuple
+testAny(NumpyAnyArray array)
 {
     NumpyAnyArray copy(array, true);
     return python::make_tuple(array.shape(), copy, python::object(), python::object());
 }
 
-template <unsigned int N, class T, class Stride>
-python::tuple test(NumpyArray<N, T, Stride> const & array)
+template<unsigned int N, class T, class Stride>
+python::tuple
+test(NumpyArray<N, T, Stride> const& array)
 {
     NumpyAnyArray anyarray(array);
-    
+
     NumpyArray<N, T> copy(array, true);
-    vigra_postcondition(copy.pyObject()->ob_refcnt == 1, 
-          "freshly created NumpyArray<N, T> has reference count > 1.");
+    vigra_postcondition(copy.pyObject()->ob_refcnt == 1,
+                        "freshly created NumpyArray<N, T> has reference count > 1.");
 
     NumpyArray<N, T> same_shape(array.shape());
     same_shape = array;
@@ -68,12 +71,12 @@ python::tuple test(NumpyArray<N, T, Stride> const & array)
     NumpyArray<N, T> same_shape_and_tags(array.taggedShape());
     same_shape_and_tags = anyarray;
 
-    return python::make_tuple(anyarray.shape(), copy, 
-                               same_shape, same_shape_and_tags);
+    return python::make_tuple(anyarray.shape(), copy,
+                              same_shape, same_shape_and_tags);
 }
 
-template <unsigned int N, class T, class Stride>
-typename MultiArrayShape<N>::type 
+template<unsigned int N, class T, class Stride>
+typename MultiArrayShape<N>::type
 testView(MultiArrayView<N, T, Stride> array)
 {
     array[typename MultiArrayShape<N>::type()] = NumericTraits<T>::one();
@@ -81,7 +84,8 @@ testView(MultiArrayView<N, T, Stride> array)
 }
 
 // FIXME: make this to a real test (right now, it's a compile-only test)
-void testMakeReferenceUnsafe()
+void
+testMakeReferenceUnsafe()
 {
     MultiArray<2, vigra::UInt8> cpp_memory(MultiArrayShape<2>::type(100, 100));
 
@@ -89,31 +93,31 @@ void testMakeReferenceUnsafe()
     python_view.makeUnsafeReference(cpp_memory);
 }
 
-template <unsigned int N, class T>
-python::tuple 
+template<unsigned int N, class T>
+python::tuple
 checkTaggedShape(NumpyArray<N, T> in)
 {
-    NumpyArray<3, Multiband<float> > res1(in);
-    
-    NumpyArray<3, Multiband<float> > res2;
+    NumpyArray<3, Multiband<float>> res1(in);
+
+    NumpyArray<3, Multiband<float>> res2;
     res2.reshapeIfEmpty(in.taggedShape().setChannelDescription("res2"), "res2 failed");
-    
-    NumpyArray<3, Multiband<float> > res3;
-    res3.reshapeIfEmpty(in.taggedShape().setChannelCount(1).setChannelDescription("res3"), 
+
+    NumpyArray<3, Multiband<float>> res3;
+    res3.reshapeIfEmpty(in.taggedShape().setChannelCount(1).setChannelDescription("res3"),
                         "res3 failed");
-    
-    NumpyArray<3, Multiband<float> > res4;
-    res4.reshapeIfEmpty(in.taggedShape().setChannelCount(3).setChannelDescription("res4"), 
+
+    NumpyArray<3, Multiband<float>> res4;
+    res4.reshapeIfEmpty(in.taggedShape().setChannelCount(3).setChannelDescription("res4"),
                         "res4 failed");
-    
-    NumpyArray<2, Singleband<float> > res5;
+
+    NumpyArray<2, Singleband<float>> res5;
     res5.reshapeIfEmpty(in.taggedShape().setChannelDescription("res5"), "res5 failed");
-    
-    NumpyArray<2, RGBValue<float> > res6;
-    res6.reshapeIfEmpty(in.taggedShape().setChannelDescription("res6"), 
+
+    NumpyArray<2, RGBValue<float>> res6;
+    res6.reshapeIfEmpty(in.taggedShape().setChannelDescription("res6"),
                         "res6 failed");
-    
-    return python::make_tuple(res1, res2, res3, res4, res5, res6); 
+
+    return python::make_tuple(res1, res2, res3, res4, res5, res6);
 }
 
 } // namespace vigra
@@ -124,55 +128,55 @@ using namespace vigra;
 BOOST_PYTHON_MODULE_INIT(vigranumpytest)
 {
     import_vigranumpy();
-    
+
     def("testAny", &testAny);
 
     def("testArray2Strided", registerConverters(&test<2, float, StridedArrayTag>));
     def("testImageSinglebandStrided", registerConverters(&test<2, Singleband<float>, StridedArrayTag>));
-    def("testImageRGBStrided", registerConverters(&test<2, RGBValue<float>, StridedArrayTag >));
-    def("testImageVector2Strided", registerConverters(&test<2, TinyVector<float, 2>, StridedArrayTag >));
-    def("testImageMultibandStrided", registerConverters(&test<3, Multiband<float>, StridedArrayTag >));
-    
+    def("testImageRGBStrided", registerConverters(&test<2, RGBValue<float>, StridedArrayTag>));
+    def("testImageVector2Strided", registerConverters(&test<2, TinyVector<float, 2>, StridedArrayTag>));
+    def("testImageMultibandStrided", registerConverters(&test<3, Multiband<float>, StridedArrayTag>));
+
     def("testArray2Unstrided", registerConverters(&test<2, float, UnstridedArrayTag>));
     def("testImageSinglebandUnstrided", registerConverters(&test<2, Singleband<float>, UnstridedArrayTag>));
-    def("testImageRGBUnstrided", registerConverters(&test<2, RGBValue<float>, UnstridedArrayTag >));
-    def("testImageVector2Unstrided", registerConverters(&test<2, TinyVector<float, 2>, UnstridedArrayTag >));
-    def("testImageMultibandUnstrided", registerConverters(&test<3, Multiband<float>, UnstridedArrayTag >));
+    def("testImageRGBUnstrided", registerConverters(&test<2, RGBValue<float>, UnstridedArrayTag>));
+    def("testImageVector2Unstrided", registerConverters(&test<2, TinyVector<float, 2>, UnstridedArrayTag>));
+    def("testImageMultibandUnstrided", registerConverters(&test<3, Multiband<float>, UnstridedArrayTag>));
 
     def("testArray3Strided", registerConverters(&test<3, float, StridedArrayTag>));
     def("testVolumeSinglebandStrided", registerConverters(&test<3, Singleband<float>, StridedArrayTag>));
-    def("testVolumeRGBStrided", registerConverters(&test<3, RGBValue<float>, StridedArrayTag >));
-    def("testVolumeVector2Strided", registerConverters(&test<3, TinyVector<float, 2>, StridedArrayTag >));
-    def("testVolumeMultibandStrided", registerConverters(&test<4, Multiband<float>, StridedArrayTag >));
-    
+    def("testVolumeRGBStrided", registerConverters(&test<3, RGBValue<float>, StridedArrayTag>));
+    def("testVolumeVector2Strided", registerConverters(&test<3, TinyVector<float, 2>, StridedArrayTag>));
+    def("testVolumeMultibandStrided", registerConverters(&test<4, Multiband<float>, StridedArrayTag>));
+
     def("testArray3Unstrided", registerConverters(&test<3, float, UnstridedArrayTag>));
     def("testVolumeSinglebandUnstrided", registerConverters(&test<3, Singleband<float>, UnstridedArrayTag>));
-    def("testVolumeRGBUnstrided", registerConverters(&test<3, RGBValue<float>, UnstridedArrayTag >));
-    def("testVolumeVector2Unstrided", registerConverters(&test<3, TinyVector<float, 2>, UnstridedArrayTag >));
-    def("testVolumeMultibandUnstrided", registerConverters(&test<4, Multiband<float>, UnstridedArrayTag >));
+    def("testVolumeRGBUnstrided", registerConverters(&test<3, RGBValue<float>, UnstridedArrayTag>));
+    def("testVolumeVector2Unstrided", registerConverters(&test<3, TinyVector<float, 2>, UnstridedArrayTag>));
+    def("testVolumeMultibandUnstrided", registerConverters(&test<4, Multiband<float>, UnstridedArrayTag>));
 
     def("testArray4Strided", registerConverters(&test<4, float, StridedArrayTag>));
     def("testArray4Unstrided", registerConverters(&test<4, float, UnstridedArrayTag>));
 
     def("viewArray2Strided", registerConverters(&testView<2, float, StridedArrayTag>));
-    def("viewImageRGBStrided", registerConverters(&testView<2, RGBValue<float>, StridedArrayTag >));
-    def("viewImageVector2Strided", registerConverters(&testView<2, TinyVector<float, 2>, StridedArrayTag >));
-    
+    def("viewImageRGBStrided", registerConverters(&testView<2, RGBValue<float>, StridedArrayTag>));
+    def("viewImageVector2Strided", registerConverters(&testView<2, TinyVector<float, 2>, StridedArrayTag>));
+
     def("viewArray2Unstrided", registerConverters(&testView<2, float, UnstridedArrayTag>));
-    def("viewImageRGBUnstrided", registerConverters(&testView<2, RGBValue<float>, UnstridedArrayTag >));
-    def("viewImageVector2Unstrided", registerConverters(&testView<2, TinyVector<float, 2>, UnstridedArrayTag >));
+    def("viewImageRGBUnstrided", registerConverters(&testView<2, RGBValue<float>, UnstridedArrayTag>));
+    def("viewImageVector2Unstrided", registerConverters(&testView<2, TinyVector<float, 2>, UnstridedArrayTag>));
 
     def("viewArray3Strided", registerConverters(&testView<3, float, StridedArrayTag>));
-    def("viewVolumeRGBStrided", registerConverters(&testView<3, RGBValue<float>, StridedArrayTag >));
-    def("viewVolumeVector2Strided", registerConverters(&testView<3, TinyVector<float, 2>, StridedArrayTag >));
-    
+    def("viewVolumeRGBStrided", registerConverters(&testView<3, RGBValue<float>, StridedArrayTag>));
+    def("viewVolumeVector2Strided", registerConverters(&testView<3, TinyVector<float, 2>, StridedArrayTag>));
+
     def("viewArray3Unstrided", registerConverters(&testView<3, float, UnstridedArrayTag>));
-    def("viewVolumeRGBUnstrided", registerConverters(&testView<3, RGBValue<float>, UnstridedArrayTag >));
-    def("viewVolumeVector2Unstrided", registerConverters(&testView<3, TinyVector<float, 2>, UnstridedArrayTag >));    
+    def("viewVolumeRGBUnstrided", registerConverters(&testView<3, RGBValue<float>, UnstridedArrayTag>));
+    def("viewVolumeVector2Unstrided", registerConverters(&testView<3, TinyVector<float, 2>, UnstridedArrayTag>));
 
     def("viewArray4Strided", registerConverters(&testView<4, float, StridedArrayTag>));
     def("viewArray4Unstrided", registerConverters(&testView<4, float, UnstridedArrayTag>));
-    
-    def("checkTaggedShapeMultiband", registerConverters(&checkTaggedShape<3, Multiband<float> >));
-    def("checkTaggedShapeSingleband", registerConverters(&checkTaggedShape<2, Singleband<float> >));
+
+    def("checkTaggedShapeMultiband", registerConverters(&checkTaggedShape<3, Multiband<float>>));
+    def("checkTaggedShapeSingleband", registerConverters(&checkTaggedShape<2, Singleband<float>>));
 }

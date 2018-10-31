@@ -33,13 +33,13 @@
 /*                                                                      */
 /************************************************************************/
 
-#include <iostream>
 #include <chrono>
+#include <iostream>
 
-#include <vigra/unittest.hxx>
+#include <vigra/accumulator.hxx>
 #include <vigra/multi_array.hxx>
 #include <vigra/polytope.hxx>
-#include <vigra/accumulator.hxx>
+#include <vigra/unittest.hxx>
 
 namespace chrono = std::chrono;
 
@@ -51,9 +51,9 @@ using namespace acc;
 struct ConvexHullBenchmark
 {
 
-    typedef chrono::steady_clock   clock_type;
+    typedef chrono::steady_clock clock_type;
 
-    template <unsigned int N>
+    template<unsigned int N>
     void testTypical()
     {
         std::cout << "# Benchmark for typical case with dim = " << N << ". ";
@@ -63,19 +63,20 @@ struct ConvexHullBenchmark
         {
             ArrayVector<double> times = constructPolytopeTypical<N>(size, 32);
             AccumulatorChain<
-                    MultiArrayIndex,
-                    Select<Minimum, Maximum, Mean, StdDev> > acc_chain;
+                MultiArrayIndex,
+                Select<Minimum, Maximum, Mean, StdDev>>
+                acc_chain;
             extractFeatures(times.begin(), times.end(), acc_chain);
             std::cout
-                    << size << ", "
-                    << get<Minimum>(acc_chain) << ", "
-                    << get<Mean   >(acc_chain) << ", "
-                    << get<Maximum>(acc_chain) << ", "
-                    << get<StdDev >(acc_chain) << std::endl;
+                << size << ", "
+                << get<Minimum>(acc_chain) << ", "
+                << get<Mean>(acc_chain) << ", "
+                << get<Maximum>(acc_chain) << ", "
+                << get<StdDev>(acc_chain) << std::endl;
         }
     }
 
-    template <unsigned int N>
+    template<unsigned int N>
     void testWorst()
     {
         std::cout << "# Benchmark for worst case with dim = " << N << ". ";
@@ -85,19 +86,20 @@ struct ConvexHullBenchmark
         {
             ArrayVector<double> times = constructPolytopeWorst<N>(size, 32);
             AccumulatorChain<
-                    MultiArrayIndex,
-                    Select<Minimum, Maximum, Mean, StdDev> > acc_chain;
+                MultiArrayIndex,
+                Select<Minimum, Maximum, Mean, StdDev>>
+                acc_chain;
             extractFeatures(times.begin(), times.end(), acc_chain);
             std::cout
-                    << size << ", "
-                    << get<Minimum>(acc_chain) << ", "
-                    << get<Mean   >(acc_chain) << ", "
-                    << get<Maximum>(acc_chain) << ", "
-                    << get<StdDev >(acc_chain) << std::endl;
+                << size << ", "
+                << get<Minimum>(acc_chain) << ", "
+                << get<Mean>(acc_chain) << ", "
+                << get<Maximum>(acc_chain) << ", "
+                << get<StdDev>(acc_chain) << std::endl;
         }
     }
 
-    template <unsigned int N>
+    template<unsigned int N>
     ArrayVector<double> constructPolytopeTypical(int size, int iterations) const
     {
         ArrayVector<double> ret;
@@ -108,7 +110,7 @@ struct ConvexHullBenchmark
         return ret;
     }
 
-    template <unsigned int N>
+    template<unsigned int N>
     double constructPolytopeTypical(int size) const
     {
         clock_type::time_point start = clock_type::now();
@@ -121,7 +123,7 @@ struct ConvexHullBenchmark
             vec[n] = 1.;
             if (n > 0)
             {
-                vec[n-1] = 0.;
+                vec[n - 1] = 0.;
             }
             poly.addVertex(vec);
         }
@@ -134,17 +136,16 @@ struct ConvexHullBenchmark
             {
                 for (int dim = 0; dim < N; dim++)
                 {
-                    vec[dim] = (2*rand() - 1)/static_cast<double>(RAND_MAX);
+                    vec[dim] = (2 * rand() - 1) / static_cast<double>(RAND_MAX);
                 }
-            }
-            while (vec.magnitude() > 1.);
+            } while (vec.magnitude() > 1.);
             poly.addExtremeVertex(vec);
         }
         clock_type::time_point stop = clock_type::now();
         return chrono::duration_cast<chrono::microseconds>(stop - start).count();
     }
 
-    template <unsigned int N>
+    template<unsigned int N>
     ArrayVector<double> constructPolytopeWorst(int size, int iterations) const
     {
         ArrayVector<double> ret;
@@ -155,7 +156,7 @@ struct ConvexHullBenchmark
         return ret;
     }
 
-    template <unsigned int N>
+    template<unsigned int N>
     double constructPolytopeWorst(int size) const
     {
         clock_type::time_point start = clock_type::now();
@@ -168,7 +169,7 @@ struct ConvexHullBenchmark
             vec[n] = 1.;
             if (n > 0)
             {
-                vec[n-1] = 0.;
+                vec[n - 1] = 0.;
             }
             poly.addVertex(vec);
         }
@@ -179,7 +180,7 @@ struct ConvexHullBenchmark
         {
             for (int dim = 0; dim < N; dim++)
             {
-                vec[dim] = (2*rand() - 1)/static_cast<double>(RAND_MAX);
+                vec[dim] = (2 * rand() - 1) / static_cast<double>(RAND_MAX);
             }
             vec /= norm(vec);
             poly.addExtremeVertex(vec);
@@ -192,7 +193,7 @@ struct ConvexHullBenchmark
 struct ConvexHullBenchmarkSuite : public test_suite
 {
     ConvexHullBenchmarkSuite()
-    : test_suite("ConvexHullBenchmarkSuite")
+        : test_suite("ConvexHullBenchmarkSuite")
     {
         // add(testCase(&ConvexHullBenchmark::testTypical<2>));
         // add(testCase(&ConvexHullBenchmark::testTypical<3>));
@@ -205,7 +206,8 @@ struct ConvexHullBenchmarkSuite : public test_suite
 
 } // namespace vigra
 
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
     vigra::ConvexHullBenchmarkSuite benchmark;
     const int failed = benchmark.run(vigra::testsToBeExecuted(argc, argv));

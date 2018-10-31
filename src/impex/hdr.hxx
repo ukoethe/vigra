@@ -37,81 +37,86 @@
 #ifndef VIGRA_IMPEX_HDR_HXX
 #define VIGRA_IMPEX_HDR_HXX
 
-#include <vector>
-#include "vigra/diff2d.hxx"
 #include "vigra/codec.hxx"
+#include "vigra/diff2d.hxx"
+#include <vector>
 
-namespace vigra {
+namespace vigra
+{
 
-    struct HDRCodecFactory : public CodecFactory
+struct HDRCodecFactory : public CodecFactory
+{
+    CodecDesc getCodecDesc() const;
+    VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
+    VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
+};
+
+class HDRDecoderImpl;
+class HDREncoderImpl;
+
+class HDRDecoder : public Decoder
+{
+    HDRDecoderImpl* pimpl;
+
+public:
+    HDRDecoder()
+        : pimpl(0)
     {
-        CodecDesc getCodecDesc() const;
-        VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
-        VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
-    };
+    }
 
-    class HDRDecoderImpl;
-    class HDREncoderImpl;
+    ~HDRDecoder();
 
-    class HDRDecoder : public Decoder
+    std::string getFileType() const;
+    unsigned int getWidth() const;
+    unsigned int getHeight() const;
+    unsigned int getNumBands() const;
+
+    const void* currentScanlineOfBand(unsigned int) const;
+    void nextScanline();
+
+    std::string getPixelType() const;
+    unsigned int getOffset() const;
+
+    void init(const std::string&);
+    void close();
+    void abort();
+};
+
+class HDREncoder : public Encoder
+{
+    HDREncoderImpl* pimpl;
+
+public:
+    HDREncoder()
+        : pimpl(0)
     {
-        HDRDecoderImpl * pimpl;
+    }
 
-    public:
+    ~HDREncoder();
 
-        HDRDecoder() : pimpl(0) {}
+    std::string getFileType() const;
+    void setWidth(unsigned int);
+    void setHeight(unsigned int);
+    void setNumBands(unsigned int);
 
-        ~HDRDecoder();
+    void setCompressionType(const std::string&, int = -1);
+    void setPixelType(const std::string&);
 
-        std::string getFileType() const;
-        unsigned int getWidth() const;
-        unsigned int getHeight() const;
-        unsigned int getNumBands() const;
+    void setPosition(const vigra::Diff2D& pos);
+    void setXResolution(float xres);
+    void setYResolution(float yres);
 
-        const void * currentScanlineOfBand( unsigned int ) const;
-        void nextScanline();
+    unsigned int getOffset() const;
 
-        std::string getPixelType() const;
-        unsigned int getOffset() const;
+    void finalizeSettings();
 
-        void init( const std::string & );
-        void close();
-        void abort();
-    };
+    void* currentScanlineOfBand(unsigned int);
+    void nextScanline();
 
-    class HDREncoder : public Encoder
-    {
-        HDREncoderImpl * pimpl;
-
-    public:
-
-        HDREncoder() : pimpl(0) {}
-
-        ~HDREncoder();
-
-        std::string getFileType() const;
-        void setWidth( unsigned int );
-        void setHeight( unsigned int );
-        void setNumBands( unsigned int );
-
-        void setCompressionType( const std::string &, int = -1 );
-        void setPixelType( const std::string & );
-
-        void setPosition( const vigra::Diff2D & pos );
-        void setXResolution( float xres );
-        void setYResolution( float yres );
-
-        unsigned int getOffset() const;
-
-        void finalizeSettings();
-
-        void * currentScanlineOfBand( unsigned int );
-        void nextScanline();
-
-        void init( const std::string & );
-        void close();
-        void abort();
-    };
-}
+    void init(const std::string&);
+    void close();
+    void abort();
+};
+} // namespace vigra
 
 #endif // VIGRA_IMPEX_HDR_HXX

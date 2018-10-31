@@ -41,83 +41,88 @@
 
 // EXR - OpenEXR
 
-namespace vigra {
+namespace vigra
+{
 
-    struct ExrDecoderImpl;
-    struct ExrEncoderImpl;
+struct ExrDecoderImpl;
+struct ExrEncoderImpl;
 
-    struct ExrCodecFactory : public CodecFactory
+struct ExrCodecFactory : public CodecFactory
+{
+    CodecDesc getCodecDesc() const;
+    VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
+    VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
+};
+
+class ExrDecoder : public Decoder
+{
+    ExrDecoderImpl* pimpl;
+
+public:
+    ExrDecoder()
+        : pimpl(0)
     {
-        CodecDesc getCodecDesc() const;
-        VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
-        VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
-    };
+    }
 
-    class ExrDecoder : public Decoder
+    ~ExrDecoder();
+
+    void init(const std::string&);
+    void close();
+    void abort();
+
+    std::string getFileType() const;
+    std::string getPixelType() const;
+
+    unsigned int getWidth() const;
+    unsigned int getHeight() const;
+    unsigned int getNumBands() const;
+    unsigned int getNumExtraBands() const;
+    float getXResolution() const;
+    float getYResolution() const;
+    Diff2D getPosition() const;
+    Size2D getCanvasSize() const;
+
+    unsigned int getOffset() const;
+
+    const void* currentScanlineOfBand(unsigned int) const;
+    void nextScanline();
+};
+
+class ExrEncoder : public Encoder
+{
+    ExrEncoderImpl* pimpl;
+
+public:
+    ExrEncoder()
+        : pimpl(0)
     {
-        ExrDecoderImpl * pimpl;
+    }
 
-    public:
+    ~ExrEncoder();
 
-        ExrDecoder() : pimpl(0) {}
+    void init(const std::string&);
+    void close();
+    void abort();
 
-        ~ExrDecoder();
+    std::string getFileType() const;
+    unsigned int getOffset() const;
 
-        void init( const std::string & );
-        void close();
-        void abort();
+    void setWidth(unsigned int);
+    void setHeight(unsigned int);
+    void setNumBands(unsigned int);
+    void setCompressionType(const std::string&, int = -1);
+    void setPixelType(const std::string&);
 
-        std::string getFileType() const;
-        std::string getPixelType() const;
+    void setPosition(const Diff2D& pos);
+    void setCanvasSize(const Size2D& pos);
+    void setXResolution(float xres);
+    void setYResolution(float yres);
 
-        unsigned int getWidth() const;
-        unsigned int getHeight() const;
-        unsigned int getNumBands() const;
-        unsigned int getNumExtraBands() const;
-        float getXResolution() const;
-        float getYResolution() const;
-        Diff2D getPosition() const;
-        Size2D getCanvasSize() const;
+    void finalizeSettings();
 
-        unsigned int getOffset() const;
-
-        const void * currentScanlineOfBand( unsigned int ) const;
-        void nextScanline();
-    };
-
-    class ExrEncoder : public Encoder
-    {
-        ExrEncoderImpl * pimpl;
-
-    public:
-
-        ExrEncoder() : pimpl(0) {}
-
-        ~ExrEncoder();
-
-        void init( const std::string & );
-        void close();
-        void abort();
-
-        std::string getFileType() const;
-        unsigned int getOffset() const;
-
-        void setWidth( unsigned int );
-        void setHeight( unsigned int );
-        void setNumBands( unsigned int );
-        void setCompressionType( const std::string &, int = -1 );
-        void setPixelType( const std::string & );
-
-        void setPosition( const Diff2D & pos );
-        void setCanvasSize( const Size2D & pos );
-        void setXResolution( float xres );
-        void setYResolution( float yres );
-
-        void finalizeSettings();
-
-        void * currentScanlineOfBand( unsigned int );
-        void nextScanline();
-    };
-}
+    void* currentScanlineOfBand(unsigned int);
+    void nextScanline();
+};
+} // namespace vigra
 
 #endif // VIGRA_IMPEX_EXR_HXX

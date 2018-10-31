@@ -8,8 +8,8 @@ namespace vigra
 {
 
 typedef double KernelValueType;
-typedef Kernel2D< KernelValueType > TwoDKernel;
-typedef Kernel1D< KernelValueType > Kernel;
+typedef Kernel2D<KernelValueType> TwoDKernel;
+typedef Kernel1D<KernelValueType> Kernel;
 
 } // namespace vigra
 

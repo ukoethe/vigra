@@ -36,9 +36,9 @@
 /*++++++++++++++++++++INCLUDES+and+Definitions++++++++++++++++++++++++*/
 
 //#define VIGRA_CHECK_BOUNDS
-#include <vigra/matlab.hxx>
 #include <vigra/labelimage.hxx>
 #include <vigra/labelvolume.hxx>
+#include <vigra/matlab.hxx>
 #include <vigra/matlab_FLEXTYPE.hxx>
 
 
@@ -52,25 +52,27 @@ using namespace matlab;
 
 
 //#define RN_DEBUG
-#define cP3_(a, b , c) cP3<a, b, c>::value
-template <class T>
-void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
+#define cP3_(a, b, c) cP3<a, b, c>::value
+template<class T>
+void
+vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
+{
 
     /***************************************************************************************************
     **              INIT PART                                                                         **
     ***************************************************************************************************/
     typedef UInt32 OutputType;
-    MultiArrayView<3,T> in3D        =       inputs.getMultiArray<3,T>(0, v_required());
-    BasicImageView<T>   in          =       makeBasicImageView(in3D.bindOuter(0));
-    Int32               numOfDim    =       inputs.getDimOfInput(0, v_required());
+    MultiArrayView<3, T> in3D = inputs.getMultiArray<3, T>(0, v_required());
+    BasicImageView<T> in = makeBasicImageView(in3D.bindOuter(0));
+    Int32 numOfDim = inputs.getDimOfInput(0, v_required());
 
-    Int32               v2Dconn[2]  = {8, 4};
-    Int32               v3Dconn[2]  = {26, 6};
-    Int32               connectivity= inputs.getScalarVals2D3D<Int32>("conn", 
-                                                                      numOfDim == 2 ? v_default(8) : v_default(26),
-                                                                      v2Dconn, v2Dconn+2,
-                                                                      v3Dconn, v3Dconn+2,
-                                                                      numOfDim);
+    Int32 v2Dconn[2] = {8, 4};
+    Int32 v3Dconn[2] = {26, 6};
+    Int32 connectivity = inputs.getScalarVals2D3D<Int32>("conn",
+                                                         numOfDim == 2 ? v_default(8) : v_default(26),
+                                                         v2Dconn, v2Dconn + 2,
+                                                         v3Dconn, v3Dconn + 2,
+                                                         numOfDim);
     /*{
         if(numOfDim == 2 && connectivity!= 8 && connectivity != 4)
             mexErrMsgTxt("Connectivity for 2D data must be 8 or 4");
@@ -79,81 +81,82 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     }*/
 
 
-    bool                    hasBackground;
-    T                       backgroundValue = inputs.getScalar<T>("backgroundValue", v_optional(hasBackground));
+    bool hasBackground;
+    T backgroundValue = inputs.getScalar<T>("backgroundValue", v_optional(hasBackground));
 
-    MultiArrayView<3,OutputType>     out3D  = outputs.createMultiArray      <3,OutputType>   (0, v_required(), in3D.shape());
-    BasicImageView<OutputType>       out(out3D.data(), in3D.shape(0), in3D.shape(1));
+    MultiArrayView<3, OutputType> out3D = outputs.createMultiArray<3, OutputType>(0, v_required(), in3D.shape());
+    BasicImageView<OutputType> out(out3D.data(), in3D.shape(0), in3D.shape(1));
 
-    Int32                     max_region_label = (hasBackground == true)? 1: 0;
+    Int32 max_region_label = (hasBackground == true) ? 1 : 0;
 
-    /***************************************************************************************************
+/***************************************************************************************************
     **              CODE PART                                                                         **
     ****************************************************************************************************/
-    #ifdef RN_DEBUG
+#ifdef RN_DEBUG
     mexPrintf("---%d---%d---%d---", max_region_label, numOfDim, connectivity);
-    #endif
-    switch(cantorPair(hasBackground , numOfDim, connectivity)){
+#endif
+    switch (cantorPair(hasBackground, numOfDim, connectivity))
+    {
         //cP is the templated version o f the cantorPair function first value is Dimension of Inputimage, second the connectivity setting
         //Code is basically the code on the VIGRA-reference page
         case cP3_(0, IMAGE, 8):
-            #ifdef RN_DEBUG
+#ifdef RN_DEBUG
             mexWarnMsgTxt("0, IMAGE, 8");
-            #endif
+#endif
             max_region_label = labelImage(srcImageRange(in), destImage(out), true);
             break;
         case cP3_(0, IMAGE, 4):
-            #ifdef RN_DEBUG
+#ifdef RN_DEBUG
             mexWarnMsgTxt("0, IMAGE, 4");
-            #endif
+#endif
             max_region_label = labelImage(srcImageRange(in), destImage(out), false);
             break;
         case cP3_(0, VOLUME, 6):
-            #ifdef RN_DEBUG
+#ifdef RN_DEBUG
             mexWarnMsgTxt("0, VOLUME, 26");
-            #endif
+#endif
             max_region_label = labelVolumeSix(srcMultiArrayRange(in3D), destMultiArray(out3D));
             break;
         case cP3_(0, VOLUME, 26):
-            #ifdef RN_DEBUG
+#ifdef RN_DEBUG
             mexWarnMsgTxt("0, VOLUME, 6");
-            #endif
+#endif
             max_region_label = labelVolume(srcMultiArrayRange(in3D), destMultiArray(out3D), NeighborCode3DTwentySix());
             break;
         case cP3_(1, IMAGE, 8):
-            #ifdef RN_DEBUG
+#ifdef RN_DEBUG
             mexWarnMsgTxt("1, IMAGE, 8");
-            #endif
+#endif
             max_region_label = labelImageWithBackground(srcImageRange(in), destImage(out), true, backgroundValue);
             break;
         case cP3_(1, IMAGE, 4):
-            #ifdef RN_DEBUG
+#ifdef RN_DEBUG
             mexWarnMsgTxt("1, IMAGE, 4");
-            #endif
+#endif
             max_region_label = labelImageWithBackground(srcImageRange(in), destImage(out), false, backgroundValue);
             break;
         case cP3_(1, VOLUME, 26):
-            #ifdef RN_DEBUG
+#ifdef RN_DEBUG
             mexWarnMsgTxt("1, VOLUME, 26");
-            #endif
+#endif
             max_region_label = labelVolumeWithBackground(srcMultiArrayRange(in3D), destMultiArray(out3D),
-                                                                                        NeighborCode3DTwentySix(), backgroundValue);
+                                                         NeighborCode3DTwentySix(), backgroundValue);
             break;
         case cP3_(1, VOLUME, 6):
-            #ifdef RN_DEBUG
+#ifdef RN_DEBUG
             mexWarnMsgTxt("1, VOLUME, 6");
-            #endif
+#endif
             max_region_label = labelVolumeWithBackground(srcMultiArrayRange(in3D), destMultiArray(out3D),
-                                                                                        NeighborCode3DSix(), backgroundValue);
-            #ifdef RN_DEBUG
+                                                         NeighborCode3DSix(), backgroundValue);
+#ifdef RN_DEBUG
             mexWarnMsgTxt("DONE");
-            #endif
+#endif
             break;
         default:
             mexErrMsgTxt("Something went wrong");
     }
 
-    outputs.createScalar<int> (1, v_optional(), max_region_label);
+    outputs.createScalar<int>(1, v_optional(), max_region_label);
 }
 
 
@@ -161,10 +164,11 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 /***************************************************************************************************
 **           VIGRA GATEWAY                                                                        **
 ****************************************************************************************************/
-void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
+void
+vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
     //Add classes as you feel
-    switch(inputs.typeOf(0))
+    switch (inputs.typeOf(0))
     {
         ALLOW_FD
         ALLOW_UINT_8_64

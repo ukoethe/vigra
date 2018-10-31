@@ -39,93 +39,86 @@
 #define WITH_BOOST_GRAPH
 
 /*vigra*/
-#include "export_graph_visitor.hxx"
-#include "export_graph_rag_visitor.hxx"
 #include "export_graph_algorithm_visitor.hxx"
-#include "export_graph_shortest_path_visitor.hxx"
 #include "export_graph_hierarchical_clustering_visitor.hxx"
+#include "export_graph_rag_visitor.hxx"
+#include "export_graph_shortest_path_visitor.hxx"
+#include "export_graph_visitor.hxx"
 
-#include <vigra/numpy_array.hxx>
-#include <vigra/numpy_array_converters.hxx>
-#include <vigra/multi_gridgraph.hxx>
 #include <vigra/adjacency_list_graph.hxx>
 #include <vigra/graph_algorithms.hxx>
+#include <vigra/multi_gridgraph.hxx>
+#include <vigra/numpy_array.hxx>
+#include <vigra/numpy_array_converters.hxx>
 #include <vigra/python_graph.hxx>
 
 
 namespace python = boost::python;
 
-namespace vigra{
+namespace vigra
+{
 
 
 
+template<unsigned int DIM>
+NumpyAnyArray
+pySerializeAffiliatedEdges(
+    const GridGraph<DIM, boost::undirected_tag>& gridGraph,
+    const AdjacencyListGraph& rag,
+    const typename AdjacencyListGraph::template EdgeMap<std::vector<typename GridGraph<DIM, boost::undirected_tag>::Edge>>& affiliatedEdges,
+    NumpyArray<1, UInt32> out)
+{
+    // reshape
+    const size_t sSize = affiliatedEdgesSerializationSize(gridGraph, rag, affiliatedEdges);
+    out.reshapeIfEmpty(typename NumpyArray<1, UInt32>::difference_type(sSize));
+
+    // do serialization
+    serializeAffiliatedEdges(gridGraph, rag, affiliatedEdges, out.begin());
+
+    // return
+    return out;
+}
 
 
-    template<unsigned int DIM>
-    NumpyAnyArray pySerializeAffiliatedEdges(
-        const GridGraph<DIM, boost::undirected_tag> & gridGraph,
-        const AdjacencyListGraph & rag,
-        const typename AdjacencyListGraph:: template EdgeMap< std::vector<  typename GridGraph<DIM, boost::undirected_tag >::Edge   > > & affiliatedEdges,
-        NumpyArray<1,UInt32> out
-    ){
-        // reshape
-        const size_t sSize = affiliatedEdgesSerializationSize(gridGraph, rag, affiliatedEdges);
-        out.reshapeIfEmpty( typename NumpyArray<1,UInt32>::difference_type(sSize) );
+template<unsigned int DIM>
+AdjacencyListGraph::template EdgeMap<std::vector<typename GridGraph<DIM, boost::undirected_tag>::Edge>>*
+pyDeserializeAffiliatedEdges(
+    const GridGraph<DIM, boost::undirected_tag>& gridGraph,
+    const AdjacencyListGraph& rag,
+    NumpyArray<1, UInt32> serialization)
+{
 
-        // do serialization
-        serializeAffiliatedEdges(gridGraph, rag, affiliatedEdges, out.begin());
+    AdjacencyListGraph::template EdgeMap<std::vector<typename GridGraph<DIM, boost::undirected_tag>::Edge>>* affEdges_ = new AdjacencyListGraph::template EdgeMap<std::vector<typename GridGraph<DIM, boost::undirected_tag>::Edge>>();
 
-        // return 
-        return out;
+    // do serialization
+    deserializeAffiliatedEdges(gridGraph, rag, *affEdges_, serialization.begin(), serialization.end());
 
-    }
-
-
-    template<unsigned int DIM>
-    AdjacencyListGraph:: template EdgeMap< std::vector<  typename GridGraph<DIM, boost::undirected_tag >::Edge   > > * 
-    pyDeserializeAffiliatedEdges(
-        const GridGraph<DIM, boost::undirected_tag> & gridGraph,
-        const AdjacencyListGraph & rag,
-        NumpyArray<1,UInt32> serialization
-    ){
-
-        AdjacencyListGraph:: template EdgeMap< std::vector<  typename GridGraph<DIM, boost::undirected_tag >::Edge   > > * affEdges_
-        = new AdjacencyListGraph:: template EdgeMap< std::vector<  typename GridGraph<DIM, boost::undirected_tag >::Edge   > > () ; 
-
-        // do serialization
-        deserializeAffiliatedEdges(gridGraph, rag, *affEdges_, serialization.begin(), serialization.end());
-
-        // return 
-        return affEdges_;
-    }
+    // return
+    return affEdges_;
+}
 
 
 
+template<unsigned int DIM>
+void
+defineGridGraphRagSerialization()
+{
+    python::def("_serialzieGridGraphAffiliatedEdges", registerConverters(&pySerializeAffiliatedEdges<DIM>),
+                (
+                    python::arg("gridGraph"),
+                    python::arg("rag"),
+                    python::arg("affiliatedEdges"),
+                    python::arg("out") = python::object()));
 
-    template<unsigned int DIM>
-    void defineGridGraphRagSerialization(){
-        python::def("_serialzieGridGraphAffiliatedEdges",registerConverters(&pySerializeAffiliatedEdges<DIM>),
-            (
-                python::arg("gridGraph"),
-                python::arg("rag"),
-                python::arg("affiliatedEdges"),
-                python::arg("out") = python::object()
-            )
-        );
+    python::def("_deserialzieGridGraphAffiliatedEdges", registerConverters(&pyDeserializeAffiliatedEdges<DIM>),
+                (
+                    python::arg("gridGraph"),
+                    python::arg("rag"),
+                    python::arg("serialization")),
+                python::return_value_policy<python::manage_new_object>());
+};
 
-        python::def("_deserialzieGridGraphAffiliatedEdges",registerConverters(&pyDeserializeAffiliatedEdges<DIM>),
-            (
-                python::arg("gridGraph"),
-                python::arg("rag"),
-                python::arg("serialization")
-            ),
-            python::return_value_policy<python::manage_new_object>()
-        );
-    };
+template void defineGridGraphRagSerialization<2>();
+template void defineGridGraphRagSerialization<3>();
 
-    template void defineGridGraphRagSerialization< 2 >();
-    template void defineGridGraphRagSerialization< 3  >();
-
-} 
-
-
+} // namespace vigra

@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -40,7 +40,8 @@
 #include "accessor.hxx"
 #include "imageiteratoradapter.hxx"
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup ImageIterators
 */
@@ -105,40 +106,39 @@ namespace vigra {
     <b>\#include</b> \<vigra/iteratortraits.hxx\>
     Namespace: vigra
 */
-template <class T>
+template<class T>
 struct IteratorTraits
 {
-    typedef T                                          Iterator;
-    typedef Iterator                                   iterator;
-    typedef typename iterator::iterator_category       iterator_category;
-    typedef typename iterator::value_type              value_type;
-    typedef typename iterator::reference               reference;
-    typedef typename iterator::index_reference         index_reference;
-    typedef typename iterator::pointer                 pointer;
-    typedef typename iterator::difference_type         difference_type;
-    typedef typename iterator::row_iterator            row_iterator;
-    typedef typename iterator::column_iterator         column_iterator;
-    typedef typename
-        AccessorTraits<value_type>::default_accessor   DefaultAccessor;
-    typedef DefaultAccessor                            default_accessor;
+    typedef T Iterator;
+    typedef Iterator iterator;
+    typedef typename iterator::iterator_category iterator_category;
+    typedef typename iterator::value_type value_type;
+    typedef typename iterator::reference reference;
+    typedef typename iterator::index_reference index_reference;
+    typedef typename iterator::pointer pointer;
+    typedef typename iterator::difference_type difference_type;
+    typedef typename iterator::row_iterator row_iterator;
+    typedef typename iterator::column_iterator column_iterator;
+    typedef typename AccessorTraits<value_type>::default_accessor DefaultAccessor;
+    typedef DefaultAccessor default_accessor;
 
     // default: disable the constant strides optimization
-    typedef VigraFalseType                             hasConstantStrides;
+    typedef VigraFalseType hasConstantStrides;
 };
 
-template <class T>
+template<class T>
 struct IteratorTraitsBase
 {
-    typedef T                                     Iterator;
-    typedef Iterator                              iterator;
-    typedef typename iterator::iterator_category  iterator_category;
-    typedef typename iterator::value_type         value_type;
-    typedef typename iterator::reference          reference;
-    typedef typename iterator::index_reference    index_reference;
-    typedef typename iterator::pointer            pointer;
-    typedef typename iterator::difference_type    difference_type;
-    typedef typename iterator::row_iterator       row_iterator;
-    typedef typename iterator::column_iterator    column_iterator;
+    typedef T Iterator;
+    typedef Iterator iterator;
+    typedef typename iterator::iterator_category iterator_category;
+    typedef typename iterator::value_type value_type;
+    typedef typename iterator::reference reference;
+    typedef typename iterator::index_reference index_reference;
+    typedef typename iterator::pointer pointer;
+    typedef typename iterator::difference_type difference_type;
+    typedef typename iterator::row_iterator row_iterator;
+    typedef typename iterator::column_iterator column_iterator;
 };
 
 
@@ -613,87 +613,87 @@ struct IteratorTraitsBase
     </table>
 */
 
-template <class Iterator, class Accessor>
+template<class Iterator, class Accessor>
 inline triple<Iterator, Iterator, Accessor>
-srcIterRange(Iterator const & upperleft, Iterator const & lowerright, Accessor a)
+srcIterRange(Iterator const& upperleft, Iterator const& lowerright, Accessor a)
 {
     return triple<Iterator, Iterator, Accessor>(upperleft, lowerright, a);
 }
 
-template <class Iterator, class Accessor>
+template<class Iterator, class Accessor>
 inline pair<Iterator, Accessor>
-srcIter(Iterator const & upperleft, Accessor a)
+srcIter(Iterator const& upperleft, Accessor a)
 {
     return pair<Iterator, Accessor>(upperleft, a);
 }
 
-template <class Iterator, class Accessor>
+template<class Iterator, class Accessor>
 inline pair<Iterator, Accessor>
-maskIter(Iterator const & upperleft, Accessor a)
+maskIter(Iterator const& upperleft, Accessor a)
 {
     return pair<Iterator, Accessor>(upperleft, a);
 }
 
-template <class Iterator, class Accessor>
+template<class Iterator, class Accessor>
 inline pair<Iterator, Accessor>
-destIter(Iterator const & upperleft, Accessor a)
+destIter(Iterator const& upperleft, Accessor a)
 {
     return pair<Iterator, Accessor>(upperleft, a);
 }
 
 
-template <class Iterator, class Accessor>
+template<class Iterator, class Accessor>
 inline triple<Iterator, Iterator, Accessor>
-destIterRange(Iterator const & upperleft, Iterator const & lowerright, Accessor a)
+destIterRange(Iterator const& upperleft, Iterator const& lowerright, Accessor a)
 {
     return triple<Iterator, Iterator, Accessor>(upperleft, lowerright, a);
 }
 
-template <class Iterator>
+template<class Iterator>
 inline pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
-srcIter(Iterator const & upperleft)
+srcIter(Iterator const& upperleft)
 {
     return pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>(
-                  upperleft,
-                  typename IteratorTraits<Iterator>::DefaultAccessor());
+        upperleft,
+        typename IteratorTraits<Iterator>::DefaultAccessor());
 }
 
-template <class Iterator>
+template<class Iterator>
 inline triple<Iterator, Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
-srcIterRange(Iterator const & upperleft, Iterator const & lowerright)
+srcIterRange(Iterator const& upperleft, Iterator const& lowerright)
 {
     return triple<Iterator, Iterator,
                   typename IteratorTraits<Iterator>::DefaultAccessor>(
-                  upperleft, lowerright,
-                  typename IteratorTraits<Iterator>::DefaultAccessor());
+        upperleft, lowerright,
+        typename IteratorTraits<Iterator>::DefaultAccessor());
 }
 
-template <class Iterator>
+template<class Iterator>
 inline pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
-maskIter(Iterator const & upperleft)
+maskIter(Iterator const& upperleft)
 {
     return pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>(
-                  upperleft,
-                  typename IteratorTraits<Iterator>::DefaultAccessor());
+        upperleft,
+        typename IteratorTraits<Iterator>::DefaultAccessor());
 }
 
-template <class Iterator>
+template<class Iterator>
 inline pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
-destIter(Iterator const & upperleft)
+destIter(Iterator const& upperleft)
 {
     return pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>(
-                  upperleft,
-                  typename IteratorTraits<Iterator>::DefaultAccessor());
+        upperleft,
+        typename IteratorTraits<Iterator>::DefaultAccessor());
 }
 
-template <class Iterator>
+template<class Iterator>
 inline triple<Iterator, Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
-destIterRange(Iterator const & upperleft, Iterator const & lowerright)
+destIterRange(Iterator const& upperleft, Iterator const& lowerright)
 {
     return triple<Iterator, Iterator,
                   typename IteratorTraits<Iterator>::DefaultAccessor>(
-                  upperleft, lowerright,
-                  typename IteratorTraits<Iterator>::DefaultAccessor());
+        upperleft, lowerright,
+        typename IteratorTraits<Iterator>::DefaultAccessor());
 }
 
 } // namespace vigra

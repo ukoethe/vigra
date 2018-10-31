@@ -29,15 +29,16 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
- 
+
+
 #ifndef VIGRA_BORDERTREATMENT_HXX
 #define VIGRA_BORDERTREATMENT_HXX
 
-namespace vigra {
+namespace vigra
+{
 
 
 /** \page BorderTreatmentMode BorderTreatmentMode
@@ -74,15 +75,15 @@ namespace vigra {
        BORDER_TREATMENT_ZEROPAD
     };
     \endcode
-*/   
-enum BorderTreatmentMode 
+*/
+enum BorderTreatmentMode
 {
-   BORDER_TREATMENT_AVOID, 
-   BORDER_TREATMENT_CLIP, 
-   BORDER_TREATMENT_REPEAT,
-   BORDER_TREATMENT_REFLECT, 
-   BORDER_TREATMENT_WRAP,
-   BORDER_TREATMENT_ZEROPAD
+    BORDER_TREATMENT_AVOID,
+    BORDER_TREATMENT_CLIP,
+    BORDER_TREATMENT_REPEAT,
+    BORDER_TREATMENT_REFLECT,
+    BORDER_TREATMENT_WRAP,
+    BORDER_TREATMENT_ZEROPAD
 };
 
 } // namespace vigra

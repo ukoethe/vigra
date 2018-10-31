@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -40,7 +40,8 @@
 #include "accessor.hxx"
 #include "diff2d.hxx"
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup DataAccessors
 */
@@ -77,10 +78,10 @@ namespace vigra {
 
     \endcode
 */
-template <class ACCESSOR, class VALUETYPE>
+template<class ACCESSOR, class VALUETYPE>
 class BilinearInterpolatingAccessor
 {
-  public:
+public:
     /** the iterators' pixel type
     */
     typedef VALUETYPE value_type;
@@ -88,16 +89,17 @@ class BilinearInterpolatingAccessor
     /** init from given accessor
     */
     BilinearInterpolatingAccessor(ACCESSOR a)
-    : a_(a)
-    {}
+        : a_(a)
+    {
+    }
 
     /** Interpolate the data item at a non-integer position.
         Ensure that no outside pixels are accessed if
         (x, y) is near the image border (as long as
         0 <= x <= width-1, 0 <= y <= height-1).
     */
-    template <class ITERATOR>
-    value_type operator()(ITERATOR const & i, float x, float y) const
+    template<class ITERATOR>
+    value_type operator()(ITERATOR const& i, float x, float y) const
     {
         int ix = int(x);
         int iy = int(y);
@@ -107,34 +109,34 @@ class BilinearInterpolatingAccessor
         value_type ret;
 
         // avoid dereferencing the iterator outside its range
-        if(dx == 0.0)
+        if (dx == 0.0)
         {
-            if(dy == 0.0)
+            if (dy == 0.0)
             {
                 ret = a_(i, Diff2D(ix, iy));
             }
             else
             {
                 ret = detail::RequiresExplicitCast<value_type>::cast(
-                  (1.0 - dy) * a_(i, Diff2D(ix, iy)) +
-                  dy * a_(i, Diff2D(ix, iy + 1)));
+                    (1.0 - dy) * a_(i, Diff2D(ix, iy)) +
+                    dy * a_(i, Diff2D(ix, iy + 1)));
             }
         }
         else
         {
-            if(dy == 0.0)
+            if (dy == 0.0)
             {
                 ret = detail::RequiresExplicitCast<value_type>::cast(
-                  (1.0 - dx) * a_(i, Diff2D(ix, iy)) +
-                  dx * a_(i, Diff2D(ix + 1, iy)));
+                    (1.0 - dx) * a_(i, Diff2D(ix, iy)) +
+                    dx * a_(i, Diff2D(ix + 1, iy)));
             }
             else
             {
                 ret = detail::RequiresExplicitCast<value_type>::cast(
-                  (1.0 - dx) * (1.0 - dy) * a_(i, Diff2D(ix, iy)) +
-                  dx * (1.0 - dy) * a_(i, Diff2D(ix + 1, iy)) +
-                  (1.0 - dx) * dy * a_(i, Diff2D(ix, iy + 1)) +
-                  dx * dy * a_(i, Diff2D(ix + 1, iy + 1)));
+                    (1.0 - dx) * (1.0 - dy) * a_(i, Diff2D(ix, iy)) +
+                    dx * (1.0 - dy) * a_(i, Diff2D(ix + 1, iy)) +
+                    (1.0 - dx) * dy * a_(i, Diff2D(ix, iy + 1)) +
+                    dx * dy * a_(i, Diff2D(ix + 1, iy + 1)));
             }
         }
 
@@ -145,21 +147,21 @@ class BilinearInterpolatingAccessor
         This function works as long as 0 <= x < width-1,
         0 <= y < height-1. It is slightly faster than <TT>operator()</TT>.
     */
-    template <class ITERATOR>
-    value_type unchecked(ITERATOR const & i, float x, float y) const
+    template<class ITERATOR>
+    value_type unchecked(ITERATOR const& i, float x, float y) const
     {
         int ix = int(x);
         int iy = int(y);
         float dx = x - ix;
         float dy = y - iy;
         return detail::RequiresExplicitCast<value_type>::cast(
-               (1.0 - dx) * (1.0 - dy) * a_(i, Diff2D(ix, iy)) +
-               dx * (1.0 - dy) * a_(i, Diff2D(ix + 1, iy)) +
-               (1.0 - dx) * dy * a_(i, Diff2D(ix, iy + 1)) +
-               dx * dy * a_(i, Diff2D(ix + 1, iy + 1)));
+            (1.0 - dx) * (1.0 - dy) * a_(i, Diff2D(ix, iy)) +
+            dx * (1.0 - dy) * a_(i, Diff2D(ix + 1, iy)) +
+            (1.0 - dx) * dy * a_(i, Diff2D(ix, iy + 1)) +
+            dx * dy * a_(i, Diff2D(ix + 1, iy + 1)));
     }
 
-  private:
+private:
     ACCESSOR a_;
 };
 

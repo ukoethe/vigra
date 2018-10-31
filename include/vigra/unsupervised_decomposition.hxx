@@ -37,11 +37,11 @@
 #ifndef VIGRA_UNSUPERVISED_DECOMPOSITION_HXX
 #define VIGRA_UNSUPERVISED_DECOMPOSITION_HXX
 
-#include <numeric>
 #include "mathutil.hxx"
 #include "matrix.hxx"
-#include "singular_value_decomposition.hxx"
 #include "random.hxx"
+#include "singular_value_decomposition.hxx"
+#include <numeric>
 
 namespace vigra
 {
@@ -58,7 +58,7 @@ namespace vigra
 /*                                                               */
 /*****************************************************************/
 
-   /** \brief Decompose a matrix according to the PCA algorithm.
+/** \brief Decompose a matrix according to the PCA algorithm.
 
         This function implements the PCA algorithm (principal component analysis).
 
@@ -115,11 +115,11 @@ namespace vigra
         double meanSquaredError = squaredNorm(data - model) / numSamples;
         \endcode
    */
-template <class T, class C1, class C2, class C3>
+template<class T, class C1, class C2, class C3>
 void
-principalComponents(MultiArrayView<2, T, C1> const & features,
-                    MultiArrayView<2, T, C2> fz,
-                    MultiArrayView<2, T, C3> zv)
+    principalComponents(MultiArrayView<2, T, C1> const& features,
+                        MultiArrayView<2, T, C2> fz,
+                        MultiArrayView<2, T, C3> zv)
 {
     using namespace linalg; // activate matrix multiplication and arithmetic functions
 
@@ -127,18 +127,18 @@ principalComponents(MultiArrayView<2, T, C1> const & features,
     int numSamples = columnCount(features);
     int numComponents = columnCount(fz);
     vigra_precondition(numSamples >= numFeatures,
-      "principalComponents(): The number of samples has to be larger than the number of features.");
+                       "principalComponents(): The number of samples has to be larger than the number of features.");
     vigra_precondition(numFeatures >= numComponents && numComponents >= 1,
-      "principalComponents(): The number of features has to be larger or equal to the number of components in which the feature matrix is decomposed.");
+                       "principalComponents(): The number of features has to be larger or equal to the number of components in which the feature matrix is decomposed.");
     vigra_precondition(rowCount(fz) == numFeatures,
-      "principalComponents(): The output matrix fz has to be of dimension numFeatures*numComponents.");
+                       "principalComponents(): The output matrix fz has to be of dimension numFeatures*numComponents.");
     vigra_precondition(columnCount(zv) == numSamples && rowCount(zv) == numComponents,
-      "principalComponents(): The output matrix zv has to be of dimension numComponents*numSamples.");
+                       "principalComponents(): The output matrix zv has to be of dimension numComponents*numSamples.");
 
     Matrix<T> U(numSamples, numFeatures), S(numFeatures, 1), V(numFeatures, numFeatures);
     singularValueDecomposition(features.transpose(), U, S, V);
 
-    for(int k=0; k<numComponents; ++k)
+    for (int k = 0; k < numComponents; ++k)
     {
         rowVector(zv, k) = columnVector(U, k).transpose() * S(k, 0);
         columnVector(fz, k) = columnVector(V, k);
@@ -153,51 +153,52 @@ principalComponents(MultiArrayView<2, T, C1> const & features,
 /*                                                               */
 /*****************************************************************/
 
-   /** \brief Option object for the \ref pLSA algorithm.
+/** \brief Option object for the \ref pLSA algorithm.
    */
 class PLSAOptions
 {
-  public:
-        /** Initialize all options with default values.
+public:
+    /** Initialize all options with default values.
         */
     PLSAOptions()
-    : min_rel_gain(1e-4),
-      max_iterations(50),
-      normalized_component_weights(true)
-    {}
+        : min_rel_gain(1e-4),
+          max_iterations(50),
+          normalized_component_weights(true)
+    {
+    }
 
-        /** Maximum number of iterations which is performed by the pLSA algorithm.
+    /** Maximum number of iterations which is performed by the pLSA algorithm.
 
             default: 50
         */
-    PLSAOptions & maximumNumberOfIterations(unsigned int n)
+    PLSAOptions& maximumNumberOfIterations(unsigned int n)
     {
         vigra_precondition(n >= 1,
-            "PLSAOptions::maximumNumberOfIterations(): number must be a positive integer.");
+                           "PLSAOptions::maximumNumberOfIterations(): number must be a positive integer.");
         max_iterations = n;
         return *this;
     }
 
-        /** Minimum relative gain which is required for the algorithm to continue the iterations.
+    /** Minimum relative gain which is required for the algorithm to continue the iterations.
 
             default: 1e-4
         */
-    PLSAOptions & minimumRelativeGain(double g)
+    PLSAOptions& minimumRelativeGain(double g)
     {
         vigra_precondition(g >= 0.0,
-            "PLSAOptions::minimumRelativeGain(): number must be positive or zero.");
+                           "PLSAOptions::minimumRelativeGain(): number must be positive or zero.");
         min_rel_gain = g;
         return *this;
     }
 
-        /** Normalize the entries of the zv result array.
+    /** Normalize the entries of the zv result array.
 
             If true, the columns of zv sum to one. Otherwise, they have the same
             column sum as the original feature matrix.
 
             default: true
         */
-    PLSAOptions & normalizedComponentWeights(bool v = true)
+    PLSAOptions& normalizedComponentWeights(bool v = true)
     {
         normalized_component_weights = v;
         return *this;
@@ -208,7 +209,7 @@ class PLSAOptions
     bool normalized_component_weights;
 };
 
-   /** \brief Decompose a matrix according to the pLSA algorithm.
+/** \brief Decompose a matrix according to the pLSA algorithm.
 
         This function implements the pLSA algorithm (probabilistic latent semantic analysis)
         proposed in
@@ -285,16 +286,15 @@ class PLSAOptions
         double meanSquaredError = (words - model).squaredNorm() / numDocuments;
         \endcode
    */
-doxygen_overloaded_function(template <...> void pLSA)
+doxygen_overloaded_function(template<...> void pLSA)
 
 
-template <class U, class C1, class C2, class C3, class Random>
-void
-pLSA(MultiArrayView<2, U, C1> const & features,
-     MultiArrayView<2, U, C2> fz,
-     MultiArrayView<2, U, C3> zv,
-     Random const& random,
-     PLSAOptions const & options = PLSAOptions())
+    template<class U, class C1, class C2, class C3, class Random>
+    void pLSA(MultiArrayView<2, U, C1> const& features,
+              MultiArrayView<2, U, C2> fz,
+              MultiArrayView<2, U, C3> zv,
+              Random const& random,
+              PLSAOptions const& options = PLSAOptions())
 {
     using namespace linalg; // activate matrix multiplication and arithmetic functions
 
@@ -302,11 +302,11 @@ pLSA(MultiArrayView<2, U, C1> const & features,
     int numSamples = columnCount(features);
     int numComponents = columnCount(fz);
     vigra_precondition(numFeatures >= numComponents && numComponents >= 1,
-      "pLSA(): The number of features has to be larger or equal to the number of components in which the feature matrix is decomposed.");
+                       "pLSA(): The number of features has to be larger or equal to the number of components in which the feature matrix is decomposed.");
     vigra_precondition(rowCount(fz) == numFeatures,
-      "pLSA(): The output matrix fz has to be of dimension numFeatures*numComponents.");
+                       "pLSA(): The output matrix fz has to be of dimension numFeatures*numComponents.");
     vigra_precondition(columnCount(zv) == numSamples && rowCount(zv) == numComponents,
-      "pLSA(): The output matrix zv has to be of dimension numComponents*numSamples.");
+                       "pLSA(): The output matrix zv has to be of dimension numComponents*numSamples.");
 
     // random initialization of result matrices, subsequent normalization
     UniformRandomFunctor<Random> randf(random);
@@ -316,7 +316,7 @@ pLSA(MultiArrayView<2, U, C1> const & features,
     prepareColumns(zv, zv, UnitSum);
 
     // init vars
-    double eps = 1.0/NumericTraits<U>::max(); // epsilon > 0
+    double eps = 1.0 / NumericTraits<U>::max();  // epsilon > 0
     double lastChange = NumericTraits<U>::max(); // infinity
     double err = 0;
     double err_old;
@@ -327,14 +327,14 @@ pLSA(MultiArrayView<2, U, C1> const & features,
     features.sum(columnSums);
     Matrix<U> expandedSums = ones<U>(numFeatures, 1) * columnSums;
 
-    while(iteration < options.max_iterations && (lastChange > options.min_rel_gain))
+    while (iteration < options.max_iterations && (lastChange > options.min_rel_gain))
     {
-        Matrix<U> fzv = fz*zv;
+        Matrix<U> fzv = fz * zv;
 
         //if(iteration%25 == 0)
         //{
-            //std::cout << "iteration: " << iteration << std::endl;
-            //std::cout << "last relative change: " << lastChange << std::endl;
+        //std::cout << "iteration: " << iteration << std::endl;
+        //std::cout << "last relative change: " << lastChange << std::endl;
         //}
 
         Matrix<U> factor = features / pointWise(fzv + (U)eps);
@@ -348,7 +348,7 @@ pLSA(MultiArrayView<2, U, C1> const & features,
         err_old = err;
         err = (features - model).squaredNorm();
         //std::cout << "error: " << err << std::endl;
-        lastChange = abs((err-err_old) / (U)(err + eps));
+        lastChange = abs((err - err_old) / (U)(err + eps));
         //std::cout << "lastChange: " << lastChange << std::endl;
 
         iteration += 1;
@@ -356,20 +356,20 @@ pLSA(MultiArrayView<2, U, C1> const & features,
     //std::cout << "Terminated after " << iteration << " iterations." << std::endl;
     //std::cout << "Last relative change was " << lastChange << "." << std::endl;
 
-    if(!options.normalized_component_weights)
+    if (!options.normalized_component_weights)
     {
         // undo the normalization
-        for(int k=0; k<numSamples; ++k)
+        for (int k = 0; k < numSamples; ++k)
             columnVector(zv, k) *= columnSums(0, k);
     }
 }
 
-template <class U, class C1, class C2, class C3>
+template<class U, class C1, class C2, class C3>
 inline void
-pLSA(MultiArrayView<2, U, C1> const & features,
-     MultiArrayView<2, U, C2> & fz,
-     MultiArrayView<2, U, C3> & zv,
-     PLSAOptions const & options = PLSAOptions())
+    pLSA(MultiArrayView<2, U, C1> const& features,
+         MultiArrayView<2, U, C2>& fz,
+         MultiArrayView<2, U, C3>& zv,
+         PLSAOptions const& options = PLSAOptions())
 {
     RandomNumberGenerator<> generator(RandomSeed);
     pLSA(features, fz, zv, generator, options);
@@ -381,4 +381,3 @@ pLSA(MultiArrayView<2, U, C1> const & features,
 
 
 #endif // VIGRA_UNSUPERVISED_DECOMPOSITION_HXX
-

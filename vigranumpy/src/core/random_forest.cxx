@@ -40,23 +40,23 @@
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/random_forest.hxx>
 #ifdef HasHDF5
-# include <vigra/random_forest_hdf5_impex.hxx>
+#include <vigra/random_forest_hdf5_impex.hxx>
 #endif
-#include <vigra/timing.hxx>
-#include <vigra/random.hxx>
-#include <set>
+#include <boost/python.hpp>
 #include <cmath>
 #include <memory>
-#include <boost/python.hpp>
-#include<vigra/random_forest/rf_earlystopping.hxx>
+#include <set>
+#include <vigra/random.hxx>
+#include <vigra/random_forest/rf_earlystopping.hxx>
+#include <vigra/timing.hxx>
 
 namespace python = boost::python;
 namespace vigra
 {
 
 template<class FeatureType>
-OnlinePredictionSet<FeatureType>* 
-pythonConstructOnlinePredictioSet(NumpyArray<2,FeatureType> features, int num_sets)
+OnlinePredictionSet<FeatureType>*
+    pythonConstructOnlinePredictioSet(NumpyArray<2, FeatureType> features, int num_sets)
 {
     return new OnlinePredictionSet<FeatureType>(features, num_sets);
 }
@@ -71,35 +71,35 @@ pythonConstructRandomForest(int treeCount,
                             bool sample_with_replacement,
                             bool sample_classes_individually,
                             bool prepare_online,
-                            ArrayVector<MultiArrayIndex> const & labels = ArrayVector<MultiArrayIndex>())
+                            ArrayVector<MultiArrayIndex> const& labels = ArrayVector<MultiArrayIndex>())
 
 
 {
     RandomForestOptions options;
-    options .sample_with_replacement(sample_with_replacement)
-            .tree_count(treeCount)
-            .prepare_online_learning(prepare_online)
-            .min_split_node_size(min_split_node_size);
+    options.sample_with_replacement(sample_with_replacement)
+        .tree_count(treeCount)
+        .prepare_online_learning(prepare_online)
+        .min_split_node_size(min_split_node_size);
 
 
-    if(mtry  > 0)
+    if (mtry > 0)
         options.features_per_node(mtry);
 
-    if(training_set_size != 0)
+    if (training_set_size != 0)
         options.samples_per_tree(training_set_size);
     else
         options.samples_per_tree(training_set_proportions);
 
-    if(sample_classes_individually)
+    if (sample_classes_individually)
         options.use_stratification(RF_EQUAL);
 
     ProblemSpec<LabelType> ext_param;
-    
-    if(labels.size() > 0)
+
+    if (labels.size() > 0)
     {
         ext_param.classes_(labels.begin(), labels.end());
     }
-    
+
     RandomForest<LabelType>* rf = new RandomForest<LabelType>(options, ext_param);
 
     return rf;
@@ -107,27 +107,27 @@ pythonConstructRandomForest(int treeCount,
 
 #ifdef HasHDF5
 template<class LabelType>
-RandomForest<LabelType> * 
-pythonImportRandomForestFromHDF5(std::string filename, 
-                                 std::string pathname = "")
-{ 
-    VIGRA_UNIQUE_PTR<RandomForest<LabelType> > rf(new RandomForest<LabelType>);
-    
-    vigra_precondition(rf_import_HDF5(*rf, filename, pathname),
-           "RandomForest(): Unable to load from HDF5 file.");
-           
-    return rf.release();
-}                   
-
-template<class LabelType>
-RandomForest<LabelType> *
-pythonImportRandomForestFromHDF5id(hid_t inf_id,
+RandomForest<LabelType>*
+pythonImportRandomForestFromHDF5(std::string filename,
                                  std::string pathname = "")
 {
-    VIGRA_UNIQUE_PTR<RandomForest<LabelType> > rf(new RandomForest<LabelType>);
+    VIGRA_UNIQUE_PTR<RandomForest<LabelType>> rf(new RandomForest<LabelType>);
+
+    vigra_precondition(rf_import_HDF5(*rf, filename, pathname),
+                       "RandomForest(): Unable to load from HDF5 file.");
+
+    return rf.release();
+}
+
+template<class LabelType>
+RandomForest<LabelType>*
+pythonImportRandomForestFromHDF5id(hid_t inf_id,
+                                   std::string pathname = "")
+{
+    VIGRA_UNIQUE_PTR<RandomForest<LabelType>> rf(new RandomForest<LabelType>);
 
     vigra_precondition(rf_import_HDF5(*rf, inf_id, pathname),
-           "RandomForest(): Unable to load from HDF5 file.");
+                       "RandomForest(): Unable to load from HDF5 file.");
 
     return rf.release();
 }
@@ -135,59 +135,59 @@ pythonImportRandomForestFromHDF5id(hid_t inf_id,
 
 template<class LabelType, class FeatureType>
 python::tuple
-pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf, 
-                                            NumpyArray<2,FeatureType> trainData, 
-                                            NumpyArray<2,LabelType> trainLabels,
-                                            UInt32 randomSeed=0)
+pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType>& rf,
+                                            NumpyArray<2, FeatureType> trainData,
+                                            NumpyArray<2, LabelType> trainLabels,
+                                            UInt32 randomSeed = 0)
 {
     vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
                        "RandomForest.learnRFWithFeatureSelection(): training data and labels must not\n"
                        "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
-    
+
     using namespace rf;
     visitors::VariableImportanceVisitor var_imp;
-    visitors::OOB_Error                 oob_v;
-    
+    visitors::OOB_Error oob_v;
+
     {
         PyAllowThreads _pythread;
         RandomNumberGenerator<> rnd(randomSeed, randomSeed == 0);
         rf.learn(trainData, trainLabels,
-                visitors::create_visitor(var_imp, oob_v),
-                vigra::rf_default(), vigra::rf_default(),
-                rnd);
+                 visitors::create_visitor(var_imp, oob_v),
+                 vigra::rf_default(), vigra::rf_default(),
+                 rnd);
     }
-    
+
     double oob = oob_v.oob_breiman;
     // std::cout << "out of bag: " << oob << std::endl;
-    NumpyArray<2,double> res(var_imp.variable_importance_);
+    NumpyArray<2, double> res(var_imp.variable_importance_);
 
     return python::make_tuple(oob, res);
 }
 
 template<class LabelType, class FeatureType>
 double
-pythonLearnRandomForest(RandomForest<LabelType> & rf, 
-                        NumpyArray<2,FeatureType> trainData, 
-                        NumpyArray<2,LabelType> trainLabels, // FIXME why are the labels 2d ?!
-                        UInt32 randomSeed=0,
-                        int maxdepth=-1,
-                        int minsize=0)
+pythonLearnRandomForest(RandomForest<LabelType>& rf,
+                        NumpyArray<2, FeatureType> trainData,
+                        NumpyArray<2, LabelType> trainLabels, // FIXME why are the labels 2d ?!
+                        UInt32 randomSeed = 0,
+                        int maxdepth = -1,
+                        int minsize = 0)
 {
     vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
                        "RandomForest.learnRF(): training data and labels must not\n"
                        "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
-    
+
     using namespace rf;
     visitors::OOB_Error oob_v;
 
 
-    vigra::DepthAndSizeStopping earlystop(maxdepth,minsize);
+    vigra::DepthAndSizeStopping earlystop(maxdepth, minsize);
     {
         PyAllowThreads _pythread;
         RandomNumberGenerator<> rnd(randomSeed, randomSeed == 0);
         rf.learn(trainData, trainLabels, visitors::create_visitor(oob_v),
-                vigra::rf_default(), earlystop,
-                rnd);
+                 vigra::rf_default(), earlystop,
+                 rnd);
     }
     double oob = oob_v.oob_breiman;
 
@@ -195,61 +195,61 @@ pythonLearnRandomForest(RandomForest<LabelType> & rf,
     return oob;
 }
 
-template<class LabelType,class FeatureType>
-void 
-pythonRFOnlineLearn(RandomForest<LabelType> & rf,
-                    NumpyArray<2,FeatureType> trainData,
-                    NumpyArray<2,LabelType> trainLabels,
+template<class LabelType, class FeatureType>
+void
+pythonRFOnlineLearn(RandomForest<LabelType>& rf,
+                    NumpyArray<2, FeatureType> trainData,
+                    NumpyArray<2, LabelType> trainLabels,
                     int startIndex,
-                    bool adjust_thresholds=false,
-                    UInt32 randomSeed=0)
+                    bool adjust_thresholds = false,
+                    UInt32 randomSeed = 0)
 {
     vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
                        "RandomForest.onlineLearn(): training data and labels must not\n"
                        "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
-    
+
     PyAllowThreads _pythread;
     RandomNumberGenerator<> rnd(randomSeed, randomSeed == 0);
     rf.onlineLearn(trainData, trainLabels, startIndex,
-            vigra::rf_default(), vigra::rf_default(), vigra::rf_default(),
-            rnd, adjust_thresholds);
+                   vigra::rf_default(), vigra::rf_default(), vigra::rf_default(),
+                   rnd, adjust_thresholds);
 }
 
-template<class LabelType,class FeatureType>
-void 
-pythonRFReLearnTree(RandomForest<LabelType> & rf,
-                    NumpyArray<2,FeatureType> trainData,
-                    NumpyArray<2,LabelType> trainLabels,
-                    int treeId, UInt32 randomSeed=0)
+template<class LabelType, class FeatureType>
+void
+pythonRFReLearnTree(RandomForest<LabelType>& rf,
+                    NumpyArray<2, FeatureType> trainData,
+                    NumpyArray<2, LabelType> trainLabels,
+                    int treeId, UInt32 randomSeed = 0)
 {
     vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
                        "RandomForest.reLearnTree(): training data and labels must not\n"
                        "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
-    
+
     PyAllowThreads _pythread;
     RandomNumberGenerator<> rnd(randomSeed, randomSeed == 0);
     rf.reLearnTree(trainData, trainLabels, treeId,
-            vigra::rf_default(), vigra::rf_default(), vigra::rf_default(),
-            rnd);
+                   vigra::rf_default(), vigra::rf_default(), vigra::rf_default(),
+                   rnd);
 }
 
-template<class LabelType,class FeatureType>
-NumpyAnyArray 
-pythonRFPredictLabels(RandomForest<LabelType> const & rf,
-                      NumpyArray<2,FeatureType> testData,
+template<class LabelType, class FeatureType>
+NumpyAnyArray
+pythonRFPredictLabels(RandomForest<LabelType> const& rf,
+                      NumpyArray<2, FeatureType> testData,
                       python::object pyNaNLabel,
-                      NumpyArray<2,LabelType> res)
+                      NumpyArray<2, LabelType> res)
 {
     vigra_precondition(!testData.axistags() && !res.axistags(),
                        "RandomForest.predictLabels(): test data and output array must not have axistags\n"
                        "(use 'array.view(numpy.ndarray)' to remove them).");
-    
+
     res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), 1),
                        "RandomForest.predictLabels(): Output array has wrong dimensions.");
-    
+
     python::extract<LabelType> nanLabel(pyNaNLabel);
-    
-    if(nanLabel.check())
+
+    if (nanLabel.check())
     {
         LabelType nan_label(nanLabel());
         PyAllowThreads _pythread;
@@ -264,15 +264,15 @@ pythonRFPredictLabels(RandomForest<LabelType> const & rf,
 }
 
 template<class LabelType, class FeatureType>
-NumpyAnyArray 
-pythonRFPredictProbabilities(RandomForest<LabelType> & rf,
-                             NumpyArray<2,FeatureType> testData, 
-                             NumpyArray<2,float> res)
+NumpyAnyArray
+pythonRFPredictProbabilities(RandomForest<LabelType>& rf,
+                             NumpyArray<2, FeatureType> testData,
+                             NumpyArray<2, float> res)
 {
     vigra_precondition(!testData.axistags() && !res.axistags(),
                        "RandomForest.predictProbabilities(): test data and output array must not\n"
                        "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
-    
+
     res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), rf.ext_param_.class_count_),
                        "RandomForest.predictProbabilities(): Output array has wrong dimensions.");
     {
@@ -282,18 +282,18 @@ pythonRFPredictProbabilities(RandomForest<LabelType> & rf,
     return res;
 }
 
-template<class LabelType,class FeatureType>
-NumpyAnyArray 
-pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
-                                          OnlinePredictionSet<FeatureType> & predSet,
-                                          NumpyArray<2,float> res)
+template<class LabelType, class FeatureType>
+NumpyAnyArray
+pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType>& rf,
+                                          OnlinePredictionSet<FeatureType>& predSet,
+                                          NumpyArray<2, float> res)
 {
     vigra_precondition(!res.axistags(),
                        "RandomForest.predictProbabilities(): output array must not have axistags\n"
                        "(use 'array.view(numpy.ndarray)' to remove them).");
-    
+
     res.reshapeIfEmpty(MultiArrayShape<2>::type(predSet.features.shape(0),
-                                                 rf.ext_param_.class_count_),
+                                                rf.ext_param_.class_count_),
                        "RandomForest.predictProbabilities(): Output array has wrong dimenstions.");
     USETICTOC;
     TIC;
@@ -307,64 +307,48 @@ pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
 }
 
 
-void defineRandomForest()
+void
+defineRandomForest()
 {
     using namespace python;
-    
+
     docstring_options doc_options(true, true, false);
 
-    class_<OnlinePredictionSet<float> > pred_set_class("RF_OnlinePredictionSet",python::no_init);
+    class_<OnlinePredictionSet<float>> pred_set_class("RF_OnlinePredictionSet", python::no_init);
     pred_set_class
         .def("__init__",
-                python::make_constructor(registerConverters(&pythonConstructOnlinePredictioSet<float>),
-                                         boost::python::default_call_policies(),
-                                         (arg("features"))),
-                                         "docu")
+             python::make_constructor(registerConverters(&pythonConstructOnlinePredictioSet<float>),
+                                      boost::python::default_call_policies(),
+                                      (arg("features"))),
+             "docu")
 
-        .def("get_worsed_tree",&OnlinePredictionSet<float>::get_worsed_tree,
-           "doku")
-    
-        .def("invalidateTree",&OnlinePredictionSet<float>::reset_tree,
-         (arg("treeId")),
-         "doku")
-    ;
+        .def("get_worsed_tree", &OnlinePredictionSet<float>::get_worsed_tree,
+             "doku")
+
+        .def("invalidateTree", &OnlinePredictionSet<float>::reset_tree,
+             (arg("treeId")),
+             "doku");
 
     enum_<RF_OptionTag>("RF_MTRY_SWITCH")
-        .value("RF_MTRY_LOG",RF_LOG)
-        .value("RF_MTRY_SQRT",RF_SQRT)
-        .value("RF_MTRY_ALL",RF_ALL);
+        .value("RF_MTRY_LOG", RF_LOG)
+        .value("RF_MTRY_SQRT", RF_SQRT)
+        .value("RF_MTRY_ALL", RF_ALL);
 
     typedef UInt32 LabelType;
-    class_<RandomForest<LabelType> > rfclass_new("RandomForest",python::no_init);
+    class_<RandomForest<LabelType>> rfclass_new("RandomForest", python::no_init);
 
     rfclass_new
 #ifdef HasHDF5
-        .def("__init__",python::make_constructor(&pythonImportRandomForestFromHDF5id<LabelType>,
-                                                 boost::python::default_call_policies(),
-                                                 ( arg("file_id"),
-                                                   arg("pathInFile")="")),
+        .def("__init__", python::make_constructor(&pythonImportRandomForestFromHDF5id<LabelType>, boost::python::default_call_policies(), (arg("file_id"), arg("pathInFile") = "")),
              "\nLoad from an open HDF5 file id (note that the keyword 'file_id' must\n"
              "be specified explicitly, otherwise the argument will be interpreted as\n"
              "the number of trees to be used)::\n\n"
              "  RandomForest(file_id=id, pathInFile='/path/to/dataset')\n\n")
-         .def("__init__",python::make_constructor(&pythonImportRandomForestFromHDF5<LabelType>,
-                                                 boost::python::default_call_policies(),
-                                                 ( arg("filename"),
-                                                   arg("pathInFile")="")),
+        .def("__init__", python::make_constructor(&pythonImportRandomForestFromHDF5<LabelType>, boost::python::default_call_policies(), (arg("filename"), arg("pathInFile") = "")),
              "\nLoad from HDF5 file::\n\n"
              "  RandomForest(filename, pathInFile)\n\n")
 #endif // HasHDF5
-       .def("__init__",python::make_constructor(registerConverters(&pythonConstructRandomForest<LabelType,float>),
-                                                 boost::python::default_call_policies(),
-                                                 ( arg("treeCount")=255,
-                                                   arg("mtry")= -1,
-                                                   arg("min_split_node_size")=1,
-                                                   arg("training_set_size")=0,
-                                                   arg("training_set_proportions")=1.0,
-                                                   arg("sample_with_replacement")=true,
-                                                   arg("sample_classes_individually")=false,
-                                                   arg("prepare_online_learning")=false,
-                                                   arg("labels")=python::list())),
+        .def("__init__", python::make_constructor(registerConverters(&pythonConstructRandomForest<LabelType, float>), boost::python::default_call_policies(), (arg("treeCount") = 255, arg("mtry") = -1, arg("min_split_node_size") = 1, arg("training_set_size") = 0, arg("training_set_proportions") = 1.0, arg("sample_with_replacement") = true, arg("sample_classes_individually") = false, arg("prepare_online_learning") = false, arg("labels") = python::list())),
              "\nConstruct a new random forest::\n\n"
              "  RandomForest(treeCount = 255, mtry=RF_SQRT, min_split_node_size=1,\n"
              "               training_set_size=0, training_set_proportions=1.0,\n"
@@ -380,63 +364,63 @@ void defineRandomForest()
              "See RandomForest_ and RandomForestOptions_ in the C++ documentation "
              "for the meaning of the other parameters.\n")
         .def("featureCount",
-            &RandomForest<LabelType>::column_count,
+             &RandomForest<LabelType>::column_count,
              "Returns the number of features the RandomForest works with.\n")
         .def("labelCount",
-            &RandomForest<LabelType>::class_count,
+             &RandomForest<LabelType>::class_count,
              "Returns the number of labels, the RandomForest knows.\n")
         .def("treeCount",
              &RandomForest<LabelType>::tree_count,
              "Returns the 'treeCount', that was set when constructing the RandomForest.\n")
         .def("predictLabels",
-             registerConverters(&pythonRFPredictLabels<LabelType,float>),
-             (arg("testData"), arg("nanLabel")=object(), arg("out")=object()),
+             registerConverters(&pythonRFPredictLabels<LabelType, float>),
+             (arg("testData"), arg("nanLabel") = object(), arg("out") = object()),
              "Predict labels on 'testData'.\n\n"
              "If a 'nanLabel' is provided, it will be returned for all rows of\n"
              "the 'testData' that contain an NaN value. Otherwise, an exception is\n"
              "thrown whenever Nan is encountered.\n\n"
              "The output is an array containing a label for every test samples.\n")
         .def("predictProbabilities",
-             registerConverters(&pythonRFPredictProbabilities<LabelType,float>),
-             (arg("testData"), arg("out")=object()),
+             registerConverters(&pythonRFPredictProbabilities<LabelType, float>),
+             (arg("testData"), arg("out") = object()),
              "Predict probabilities for different classes on 'testData'.\n\n"
              "The output is an array containing a probability for every test sample and class.\n")
         .def("predictProbabilities",
-             registerConverters(&pythonRFPredictProbabilitiesOnlinePredSet<LabelType,float>),
-             (arg("testData"), arg("out")=object()),
+             registerConverters(&pythonRFPredictProbabilitiesOnlinePredSet<LabelType, float>),
+             (arg("testData"), arg("out") = object()),
              "The output is an array containing a probability for every test sample and class.\n")
         .def("learnRF",
-             registerConverters(&pythonLearnRandomForest<LabelType,float>),
-             (arg("trainData"), arg("trainLabels"), arg("randomSeed")=0,
-              arg("maxDepth")=-1, arg("minSize")=0),
+             registerConverters(&pythonLearnRandomForest<LabelType, float>),
+             (arg("trainData"), arg("trainLabels"), arg("randomSeed") = 0,
+              arg("maxDepth") = -1, arg("minSize") = 0),
              "Trains a random Forest using 'trainData' and 'trainLabels'.\n\n"
              "and returns the OOB. See the vigra documentation for the meaning af the rest of the parameters.\n")
         .def("reLearnTree",
-             registerConverters(&pythonRFReLearnTree<LabelType,float>),
-            (arg("trainData"), arg("trainLabels"), arg("treeId"),
-             arg("randomSeed")=0),
+             registerConverters(&pythonRFReLearnTree<LabelType, float>),
+             (arg("trainData"), arg("trainLabels"), arg("treeId"),
+              arg("randomSeed") = 0),
              "Re-learn one tree of the forest using 'trainData' and 'trainLabels'.\n\n"
              "and returns the OOB. This might be helpful in an online learning setup to improve the classifier.\n")
         .def("learnRFWithFeatureSelection",
-             registerConverters(&pythonLearnRandomForestWithFeatureSelection<LabelType,float>),
-             (arg("trainData"), arg("trainLabels"), arg("randomSeed")=0),
+             registerConverters(&pythonLearnRandomForestWithFeatureSelection<LabelType, float>),
+             (arg("trainData"), arg("trainLabels"), arg("randomSeed") = 0),
              "Train a random Forest using 'trainData' and 'trainLabels'.\n\n"
              "and returns the OOB and the Variable importance"
              "See the vigra documentation for the meaning af the rest of the paremeters.\n")
         .def("onlineLearn",
-             registerConverters(&pythonRFOnlineLearn<LabelType,float>),
-             (arg("trainData"),arg("trainLabels"),arg("startIndex"),
-              arg("adjust_thresholds")=false, arg("randomSeed")=0),
+             registerConverters(&pythonRFOnlineLearn<LabelType, float>),
+             (arg("trainData"), arg("trainLabels"), arg("startIndex"),
+              arg("adjust_thresholds") = false, arg("randomSeed") = 0),
              "Learn online.\n\n"
              "Works only if forest has been created with prepare_online_learning=true. "
              "Needs the old training data and the new appened, starting at startIndex.\n\n")
 #ifdef HasHDF5
-        .def("writeHDF5", (void (*)(const RandomForest<LabelType, ClassificationTag> &, std::string const &, std::string const &))&rf_export_HDF5,
-             (arg("filename"), arg("pathInFile")=""),
+        .def("writeHDF5", (void (*)(const RandomForest<LabelType, ClassificationTag>&, std::string const&, std::string const&)) & rf_export_HDF5,
+             (arg("filename"), arg("pathInFile") = ""),
              "Store the random forest in the given HDF5 file 'filename' under the internal\n"
              "path 'pathInFile'.\n")
-        .def("writeHDF5", (void (*)(const RandomForest<LabelType, ClassificationTag> &, hid_t, std::string const &))&rf_export_HDF5,
-             (arg("file_id"), arg("pathInFile")=""),
+        .def("writeHDF5", (void (*)(const RandomForest<LabelType, ClassificationTag>&, hid_t, std::string const&)) & rf_export_HDF5,
+             (arg("file_id"), arg("pathInFile") = ""),
              "Store the random forest in the HDF5 file with given 'file_id' \n"
              "under the internal path 'pathInFile'.\n")
 #endif // HasHDF5
@@ -444,5 +428,3 @@ void defineRandomForest()
 }
 
 } // namespace vigra
-
-

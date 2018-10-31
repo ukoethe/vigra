@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -39,58 +39,66 @@
 // based on the static assertion design in boost::mpl (see www.boost.org)
 
 #define VIGRA_PREPROCESSOR_CONCATENATE(a, b) VIGRA_PREPROCESSOR_CONCATENATE_IMPL(a, b)
-#define VIGRA_PREPROCESSOR_CONCATENATE_IMPL(a, b) a ## b
+#define VIGRA_PREPROCESSOR_CONCATENATE_IMPL(a, b) a##b
 
-namespace vigra {
+namespace vigra
+{
 
-namespace staticAssert {
+namespace staticAssert
+{
 
-template <bool Predicate>
+template<bool Predicate>
 struct AssertBool;
 
-template <>
+template<>
 struct AssertBool<true>
 {
     typedef int type;
-    typedef void * not_type;
+    typedef void* not_type;
 };
 
-template <>
+template<>
 struct AssertBool<false>
 {
-    typedef void * type;
+    typedef void* type;
     typedef int not_type;
 };
 
-template <class T>
+template<class T>
 struct Assert;
 
-template <>
+template<>
 struct Assert<VigraTrueType>
 {
     typedef int type;
-    typedef void * not_type;
+    typedef void* not_type;
 };
 
-template <>
+template<>
 struct Assert<VigraFalseType>
 {
-    typedef void * type;
+    typedef void* type;
     typedef int not_type;
 };
 
-struct failure{};
-struct success {};
-inline int check( success ) { return 0; }
+struct failure
+{
+};
+struct success
+{
+};
+inline int check(success)
+{
+    return 0;
+}
 
-template< typename Predicate >
-failure ************ (Predicate::************ 
-      assertImpl( void (*)(Predicate), typename Predicate::not_type )
-    );
+template<typename Predicate>
+failure************(Predicate::************
+                        assertImpl(void (*)(Predicate), typename Predicate::not_type));
 
-template< typename Predicate >
+template<typename Predicate>
 success
-assertImpl( void (*)(Predicate), typename Predicate::type );
+assertImpl(void (*)(Predicate), typename Predicate::type);
 
 /* Usage:
 
@@ -114,14 +122,13 @@ assertImpl( void (*)(Predicate), typename Predicate::type );
 TODO: provide more assertion base classes for other (non boolean) types of tests
 */
 #if !defined(__GNUC__) || __GNUC__ > 2
-#define VIGRA_STATIC_ASSERT(Predicate) \
-enum { \
-    VIGRA_PREPROCESSOR_CONCATENATE(vigra_assertion_in_line_, __LINE__) = sizeof( \
-         staticAssert::check( \
-              staticAssert::assertImpl( (void (*) Predicate)0, 1 ) \
-            ) \
-        ) \
-}
+#define VIGRA_STATIC_ASSERT(Predicate)                                               \
+    enum                                                                             \
+    {                                                                                \
+        VIGRA_PREPROCESSOR_CONCATENATE(vigra_assertion_in_line_, __LINE__) = sizeof( \
+            staticAssert::check(                                                     \
+                staticAssert::assertImpl((void(*) Predicate)0, 1)))                  \
+    }
 #else
 #define VIGRA_STATIC_ASSERT(Predicate)
 #endif

@@ -36,10 +36,11 @@
 #ifndef VIGRA_MESHGRID_HXX
 #define VIGRA_MESHGRID_HXX
 
-#include "tinyvector.hxx"
 #include "diff2d.hxx"
+#include "tinyvector.hxx"
 
-namespace vigra{
+namespace vigra
+{
 /** \addtogroup RangesAndPoints */
 //@{
 
@@ -57,24 +58,24 @@ namespace vigra{
 */
 struct MeshGridAccessor
 {
-        /** the value_type of a mesh grid is a 2D vector
+    /** the value_type of a mesh grid is a 2D vector
         */
     typedef TinyVector<Diff2D::MoveX, 2> value_type;
 
-        /** read the current data item
+    /** read the current data item
         */
-    template <class ITERATOR>
-    value_type operator()(ITERATOR const & i) const
+    template<class ITERATOR>
+    value_type operator()(ITERATOR const& i) const
     {
         return value_type(i->x, i->y);
     }
 
-        /** read the data item at an offset (can be 1D or 2D or higher order difference).
+    /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
-    template <class ITERATOR, class DIFFERENCE>
-    value_type operator()(ITERATOR const & i, DIFFERENCE const & diff) const
+    template<class ITERATOR, class DIFFERENCE>
+    value_type operator()(ITERATOR const& i, DIFFERENCE const& diff) const
     {
-        return value_type(i->x+diff.x, i->y+diff.y);
+        return value_type(i->x + diff.x, i->y + diff.y);
     }
 };
 
@@ -114,20 +115,18 @@ struct MeshGridAccessor
                    norm(Arg1()));
     \endcode
 */
-inline
-triple<Diff2D, Diff2D, MeshGridAccessor>
+inline triple<Diff2D, Diff2D, MeshGridAccessor>
 meshGrid(Diff2D upperLeft, Diff2D lowerRight)
 {
     return triple<Diff2D, Diff2D, MeshGridAccessor>(upperLeft, lowerRight, MeshGridAccessor());
 }
 
-inline
-triple<Diff2D, Diff2D, MeshGridAccessor>
-meshGrid(Rect2D const & r)
+inline triple<Diff2D, Diff2D, MeshGridAccessor>
+meshGrid(Rect2D const& r)
 {
     return triple<Diff2D, Diff2D, MeshGridAccessor>(r.upperLeft(), r.lowerRight(), MeshGridAccessor());
 }
 
-}//namespace vigra
+} //namespace vigra
 //@}
 #endif //VIGRA_MESHGRID_HXX

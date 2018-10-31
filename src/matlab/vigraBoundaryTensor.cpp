@@ -35,9 +35,9 @@
 
 /*++++++++++++++++++++INCLUDES+and+Definitions++++++++++++++++++++++++*/
 
-#include <vigra/matlab.hxx>
 #include <string>
 #include <vigra/boundarytensor.hxx>
+#include <vigra/matlab.hxx>
 
 
 using namespace vigra;
@@ -45,28 +45,28 @@ using namespace matlab;
 
 
 
-
-
-template <class T>
-void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
+template<class T>
+void
+vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
+{
     /***************************************************************************************************
     **              INIT PART                                                                         **
     ****************************************************************************************************/
-    BasicImageView<T>   in      =   inputs.getImage<T>(0, v_required());
-    double              scale   =   inputs.getScalarMinMax<double>(1, v_default(1.0), 0.0, "inf");
+    BasicImageView<T> in = inputs.getImage<T>(0, v_required());
+    double scale = inputs.getScalarMinMax<double>(1, v_default(1.0), 0.0, "inf");
 
-    MultiArrayView<3,T> res     =   outputs.createMultiArray<3,T>   (0, v_required(), 
-                                                   MultiArrayShape<3>::type(3, in.width(), in.height()));
-    
-    vigra_precondition(sizeof(TinyVector<T, 3>) == sizeof(T)*res.stride(1),
-           "vigraBoundaryTensor(): Internal error (unsuitable memory layout).");
+    MultiArrayView<3, T> res = outputs.createMultiArray<3, T>(0, v_required(),
+                                                              MultiArrayShape<3>::type(3, in.width(), in.height()));
+
+    vigra_precondition(sizeof(TinyVector<T, 3>) == sizeof(T) * res.stride(1),
+                       "vigraBoundaryTensor(): Internal error (unsuitable memory layout).");
 
     /***************************************************************************************************
     **              CODE PART                                                                         **
     ****************************************************************************************************/
 
-    BasicImageView<TinyVector<T, 3> >  out(reinterpret_cast<TinyVector<T, 3> *>(res.data()),
-                                            in.width(), in.height());
+    BasicImageView<TinyVector<T, 3>> out(reinterpret_cast<TinyVector<T, 3>*>(res.data()),
+                                         in.width(), in.height());
     boundaryTensor(srcImageRange(in), destImage(out), scale);
 }
 
@@ -75,10 +75,11 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 /***************************************************************************************************
 **         VIGRA GATEWAY                                                                          **
 ****************************************************************************************************/
-void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
+void
+vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
     //Add classes as you feel
-    switch(inputs.typeOf(0))
+    switch (inputs.typeOf(0))
     {
         ALLOW_FD
         default:

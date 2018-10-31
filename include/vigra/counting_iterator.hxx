@@ -37,18 +37,20 @@
 #define VIGRA_COUNTING_ITERATOR_HXX
 
 
+#include "error.hxx"
+#include "tinyvector.hxx"
 #include <cmath>
 #include <iterator>
 #include <limits>
 #include <type_traits>
-#include "error.hxx"
-#include "tinyvector.hxx"
 
-namespace vigra {
+namespace vigra
+{
 
-namespace detail  {
+namespace detail
+{
 
-template <class T, bool is_float=false>
+template<class T, bool is_float = false>
 struct CountingIteratorCompare
 {
     // use exact comparison for integer counting
@@ -65,26 +67,26 @@ struct CountingIteratorCompare
         // NOTE: the more efficient '(right - left)*step > 0'
         //       fails for unsigned arguments
         return step > 0
-                ? left < right
-                : left > right;
+                   ? left < right
+                   : left > right;
     }
     static bool less_equal(T left, T right, T step)
     {
         return step > 0
-                ? left <= right
-                : left >= right;
+                   ? left <= right
+                   : left >= right;
     }
     static bool greater(T left, T right, T step)
     {
         return step > 0
-                ? left > right
-                : left < right;
+                   ? left > right
+                   : left < right;
     }
     static bool greater_equal(T left, T right, T step)
     {
         return step > 0
-                ? left >= right
-                : left <= right;
+                   ? left >= right
+                   : left <= right;
     }
     // integer counting: if the raw distance is not divisible by step,
     // we must round upwards
@@ -92,12 +94,12 @@ struct CountingIteratorCompare
     {
         const double diff = (double(to) - double(from)) / double(step);
         return diff > 0.0
-                 ? (std::ptrdiff_t)std::ceil(diff)
-                 : (std::ptrdiff_t)std::floor(diff);
+                   ? (std::ptrdiff_t)std::ceil(diff)
+                   : (std::ptrdiff_t)std::floor(diff);
     }
 };
 
-template <class T>
+template<class T>
 struct CountingIteratorCompare<T, true>
 {
     typedef std::numeric_limits<T> limit;
@@ -106,35 +108,35 @@ struct CountingIteratorCompare<T, true>
     // (the natural epsilon is 0.5*step)
     static bool equal(T left, T right, T step)
     {
-        return std::fabs(right-left) <= 0.5*std::fabs(step);
+        return std::fabs(right - left) <= 0.5 * std::fabs(step);
     }
     static bool not_equal(T left, T right, T step)
     {
-        return std::fabs(right-left) > 0.5*std::fabs(step);
+        return std::fabs(right - left) > 0.5 * std::fabs(step);
     }
     static bool less(T left, T right, T step)
     {
         return step > 0.0
-                ? right - left > 0.5*step
-                : right - left < 0.5*step;
+                   ? right - left > 0.5 * step
+                   : right - left < 0.5 * step;
     }
     static bool less_equal(T left, T right, T step)
     {
         return step > 0.0
-                ? left - right < 0.5*step
-                : left - right > 0.5*step;
+                   ? left - right < 0.5 * step
+                   : left - right > 0.5 * step;
     }
     static bool greater(T left, T right, T step)
     {
         return step > 0.0
-                ? left - right > 0.5*step
-                : left - right < 0.5*step;
+                   ? left - right > 0.5 * step
+                   : left - right < 0.5 * step;
     }
     static bool greater_equal(T left, T right, T step)
     {
         return step > 0.0
-                ? right - left < 0.5*step
-                : right - left > 0.5*step;
+                   ? right - left < 0.5 * step
+                   : right - left > 0.5 * step;
     }
     // floating-point counting: if the raw distance is not divisible by step,
     // we round to nearest if the difference is small, otherwise upwards
@@ -142,8 +144,8 @@ struct CountingIteratorCompare<T, true>
     {
         const double diff = (double(to) - double(from)) / double(step);
         return diff > 0.0
-                 ? (std::ptrdiff_t)std::ceil(diff*(1.0-2.0*limit::epsilon()))
-                 : (std::ptrdiff_t)std::floor(diff*(1.0-2.0*limit::epsilon()));
+                   ? (std::ptrdiff_t)std::ceil(diff * (1.0 - 2.0 * limit::epsilon()))
+                   : (std::ptrdiff_t)std::floor(diff * (1.0 - 2.0 * limit::epsilon()));
     }
 };
 
@@ -153,7 +155,7 @@ struct CountingIteratorCompare<T, true>
 */
 //@{
 
-    /** \brief Iterator that counts upwards or downwards with a given step size.
+/** \brief Iterator that counts upwards or downwards with a given step size.
 
         This iterator replicates the functionality of Python's
         well-known range-function. It is especially convenient in
@@ -241,44 +243,37 @@ struct CountingIteratorCompare<T, true>
     */
 template<class T = std::ptrdiff_t>
 class CountingIterator
-: public std::iterator<std::random_access_iterator_tag,
-                       T, std::ptrdiff_t, T const *, T>
+    : public std::iterator<std::random_access_iterator_tag,
+                           T, std::ptrdiff_t, T const*, T>
 {
-  public:
+public:
     CountingIterator()
-    : begin_(0)
-    , end_(0)
-    , step_(1)
-    {}
+        : begin_(0), end_(0), step_(1)
+    {
+    }
 
     CountingIterator(T begin, T end)
-    : begin_(begin)
-    , end_(end)
-    , step_(1)
+        : begin_(begin), end_(end), step_(1)
     {
         vigra_precondition(begin <= end,
-            "CountingIterator(): begin must be less or equal to end.");
+                           "CountingIterator(): begin must be less or equal to end.");
     }
 
     CountingIterator(T begin, T end, T step)
-    : begin_(begin)
-    , end_(end)
-    , step_(step)
+        : begin_(begin), end_(end), step_(step)
     {
         vigra_precondition(step != 0,
-            "CountingIterator(): step must be non-zero.");
+                           "CountingIterator(): step must be non-zero.");
         vigra_precondition((step > 0 && begin <= end) || (step < 0 && begin >= end),
-            "CountingIterator(): sign mismatch between step and (end-begin).");
+                           "CountingIterator(): sign mismatch between step and (end-begin).");
     }
 
-    CountingIterator(CountingIterator const & other, ReverseCopyTag)
-    : begin_(other.end_)
-    , end_(other.begin_)
-    , step_(-other.step_)
-    {}
+    CountingIterator(CountingIterator const& other, ReverseCopyTag)
+        : begin_(other.end_), end_(other.begin_), step_(-other.step_)
+    {
+    }
 
-  public:
-
+public:
     CountingIterator begin() const
     {
         return *this;
@@ -288,7 +283,7 @@ class CountingIterator
     {
         // since the range-based for-loop checks "iter != end",
         // (end - begin) must be a multiple of step to avoid infinite loops
-        T end = begin_ + step_*Compare::distance(begin_, end_, step_);
+        T end = begin_ + step_ * Compare::distance(begin_, end_, step_);
         return CountingIterator(end, end, step_);
     }
 
@@ -297,14 +292,32 @@ class CountingIterator
         return Compare::greater_equal(begin_, end_, step_);
     }
 
-    CountingIterator& operator++()    {begin_ += step_; return *this;} // prefix++
-    CountingIterator  operator++(int) {CountingIterator tmp(*this); ++(*this); return tmp;} // postfix++
-    CountingIterator& operator--()    {begin_ -= step_; return *this;} // prefix--
-    CountingIterator  operator--(int) {CountingIterator tmp(*this); --(*this); return tmp;} // postfix--
+    CountingIterator& operator++()
+    {
+        begin_ += step_;
+        return *this;
+    } // prefix++
+    CountingIterator operator++(int)
+    {
+        CountingIterator tmp(*this);
+        ++(*this);
+        return tmp;
+    } // postfix++
+    CountingIterator& operator--()
+    {
+        begin_ -= step_;
+        return *this;
+    } // prefix--
+    CountingIterator operator--(int)
+    {
+        CountingIterator tmp(*this);
+        --(*this);
+        return tmp;
+    } // postfix--
 
     CountingIterator& operator+=(std::ptrdiff_t n)
     {
-        begin_ += n*step_;
+        begin_ += n * step_;
         return *this;
     }
 
@@ -315,7 +328,7 @@ class CountingIterator
 
     CountingIterator& operator-=(std::ptrdiff_t n)
     {
-        begin_ -= n*step_;
+        begin_ -= n * step_;
         return *this;
     }
 
@@ -329,22 +342,22 @@ class CountingIterator
         return Compare::distance(other.begin_, begin_, step_);
     }
 
-    bool operator<(CountingIterator const & other) const
+    bool operator<(CountingIterator const& other) const
     {
         return Compare::less(begin_, other.begin_, step_);
     }
 
-    bool operator<=(CountingIterator const & other) const
+    bool operator<=(CountingIterator const& other) const
     {
         return Compare::less_equal(begin_, other.begin_, step_);
     }
 
-    bool operator>(CountingIterator const & other) const
+    bool operator>(CountingIterator const& other) const
     {
         return Compare::greater(begin_, other.begin_, step_);
     }
 
-    bool operator>=(CountingIterator const & other) const
+    bool operator>=(CountingIterator const& other) const
     {
         return Compare::greater_equal(begin_, other.begin_, step_);
     }
@@ -359,41 +372,43 @@ class CountingIterator
         return Compare::not_equal(begin_, other.begin_, step_);
     }
 
-    T operator[](std::ptrdiff_t n) const {
-        return begin_ + n*step_;
+    T operator[](std::ptrdiff_t n) const
+    {
+        return begin_ + n * step_;
     }
 
-    T operator*() const {
-        return  begin_;
+    T operator*() const
+    {
+        return begin_;
     }
 
-    T const * operator->() const{
+    T const* operator->() const
+    {
         return &begin_;
     }
 
-  private:
-
+private:
     typedef detail::CountingIteratorCompare<T, std::is_floating_point<T>::value> Compare;
 
     T begin_, end_, step_;
 };
 
 
-template <class T1, class T2, class T3>
+template<class T1, class T2, class T3>
 inline CountingIterator<T1>
 range(T1 begin, T2 end, T3 step)
 {
     return CountingIterator<T1>(begin, end, step);
 }
 
-template <class T1, class T2>
+template<class T1, class T2>
 inline CountingIterator<T1>
 range(T1 begin, T2 end)
 {
     return CountingIterator<T1>(begin, end, 1);
 }
 
-template <class T>
+template<class T>
 inline CountingIterator<T>
 range(T end)
 {

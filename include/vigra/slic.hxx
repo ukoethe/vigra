@@ -36,14 +36,15 @@
 #ifndef VIGRA_SLIC_HXX
 #define VIGRA_SLIC_HXX
 
+#include "accumulator.hxx"
+#include "array_vector.hxx"
 #include "multi_array.hxx"
 #include "multi_convolution.hxx"
 #include "multi_labeling.hxx"
 #include "numerictraits.hxx"
-#include "accumulator.hxx"
-#include "array_vector.hxx"
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup Superpixels
 */
@@ -107,42 +108,42 @@ namespace vigra {
 
     For more details and examples see slicSuperpixels().
 */
-doxygen_overloaded_function(template <...> unsigned int generateSlicSeeds)
+doxygen_overloaded_function(template<...> unsigned int generateSlicSeeds)
 
-template <unsigned int N, class T, class S1,
-                          class Label, class S2>
-unsigned int
-generateSlicSeeds(MultiArrayView<N, T, S1> const & boundaryIndicatorImage,
-                  MultiArrayView<N, Label, S2>     seeds,
-                  unsigned int                     seedDist,
-                  unsigned int                     searchRadius = 1)
+    template<unsigned int N, class T, class S1,
+             class Label, class S2>
+    unsigned int generateSlicSeeds(MultiArrayView<N, T, S1> const& boundaryIndicatorImage,
+                                   MultiArrayView<N, Label, S2> seeds,
+                                   unsigned int seedDist,
+                                   unsigned int searchRadius = 1)
 {
-    typedef typename MultiArrayShape<N>::type   Shape;
+    typedef typename MultiArrayShape<N>::type Shape;
 
     seeds.init(0);
     Shape shape(boundaryIndicatorImage.shape()),
-          seedShape(floor(shape / double(seedDist))),
-          offset((shape - (seedShape - Shape(1))*seedDist) / 2);
+        seedShape(floor(shape / double(seedDist))),
+        offset((shape - (seedShape - Shape(1)) * seedDist) / 2);
 
     unsigned int label = 0;
     MultiCoordinateIterator<N> iter(seedShape),
-                               end = iter.getEndIterator();
-    for(; iter != end; ++iter)
+        end = iter.getEndIterator();
+    for (; iter != end; ++iter)
     {
         // define search window around current seed center
-        Shape center = (*iter)*seedDist + offset;
-        Shape startCoord = max(Shape(0), center-Shape(searchRadius));
-        Shape endCoord   = min(center+Shape(searchRadius+1), shape);
+        Shape center = (*iter) * seedDist + offset;
+        Shape startCoord = max(Shape(0), center - Shape(searchRadius));
+        Shape endCoord = min(center + Shape(searchRadius + 1), shape);
 
         // find the coordinate of minimum boundary indicator in window
         using namespace acc;
         AccumulatorChain<CoupledArrays<N, T>,
-                         Select<WeightArg<1>, Coord<ArgMinWeight> > > a;
+                         Select<WeightArg<1>, Coord<ArgMinWeight>>>
+            a;
         extractFeatures(boundaryIndicatorImage.subarray(startCoord, endCoord), a);
 
         // add seed at minimum position, if not already occupied
-        Shape minCoord = get<Coord<ArgMinWeight> >(a) + startCoord;
-        if(seeds[minCoord] == 0)
+        Shape minCoord = get<Coord<ArgMinWeight>>(a) + startCoord;
+        if (seeds[minCoord] == 0)
             seeds[minCoord] = ++label;
     }
     return label;
@@ -156,32 +157,33 @@ generateSlicSeeds(MultiArrayView<N, T, S1> const & boundaryIndicatorImage,
 */
 struct SlicOptions
 {
-        /** \brief Create options object with default settings.
+    /** \brief Create options object with default settings.
 
             Defaults are: perform 10 iterations, determine a size limit for superpixels automatically.
         */
     SlicOptions()
-    : iter(10),
-      sizeLimit(0)
-    {}
+        : iter(10),
+          sizeLimit(0)
+    {
+    }
 
-        /** \brief Number of iterations.
+    /** \brief Number of iterations.
 
             Default: 10
         */
-    SlicOptions & iterations(unsigned int i)
+    SlicOptions& iterations(unsigned int i)
     {
         iter = i;
         return *this;
     }
 
-        /** \brief Minimum superpixel size.
+    /** \brief Minimum superpixel size.
 
             If you set this to 1, no size filtering will be performed.
 
             Default: 0 (determine size limit automatically as <tt>average size / 4</tt>)
         */
-    SlicOptions & minSize(unsigned int s)
+    SlicOptions& minSize(unsigned int s)
     {
         sizeLimit = s;
         return *this;
@@ -191,42 +193,42 @@ struct SlicOptions
     unsigned int sizeLimit;
 };
 
-namespace detail {
+namespace detail
+{
 
-template <unsigned int N, class T, class Label>
+template<unsigned int N, class T, class Label>
 class Slic
 {
-  public:
+public:
     //
-    typedef MultiArrayView<N, T>                    DataImageType;
-    typedef MultiArrayView<N, Label>                LabelImageType;
+    typedef MultiArrayView<N, T> DataImageType;
+    typedef MultiArrayView<N, Label> LabelImageType;
     typedef typename DataImageType::difference_type ShapeType;
     typedef typename PromoteTraits<
-                   typename NormTraits<T>::NormType,
-                   typename NormTraits<MultiArrayIndex>::NormType
-             >::Promote                             DistanceType;
+        typename NormTraits<T>::NormType,
+        typename NormTraits<MultiArrayIndex>::NormType>::Promote DistanceType;
 
     Slic(DataImageType dataImage,
          LabelImageType labelImage,
          DistanceType intensityScaling,
          int maxRadius,
-         SlicOptions const & options = SlicOptions());
+         SlicOptions const& options = SlicOptions());
 
     unsigned int execute();
 
-  private:
+private:
     void updateAssigments();
     unsigned int postProcessing();
 
-    typedef MultiArray<N,DistanceType>  DistanceImageType;
+    typedef MultiArray<N, DistanceType> DistanceImageType;
 
-    ShapeType                       shape_;
-    DataImageType                   dataImage_;
-    LabelImageType                  labelImage_;
-    DistanceImageType               distance_;
-    int                             max_radius_;
-    DistanceType                    normalization_;
-    SlicOptions                     options_;
+    ShapeType shape_;
+    DataImageType dataImage_;
+    LabelImageType labelImage_;
+    DistanceImageType distance_;
+    int max_radius_;
+    DistanceType normalization_;
+    SlicOptions options_;
 
     typedef acc::Select<acc::DataArg<1>, acc::LabelArg<2>, acc::Mean, acc::RegionCenter> Statistics;
     typedef acc::AccumulatorChainArray<CoupledArrays<N, T, Label>, Statistics> RegionFeatures;
@@ -235,29 +237,30 @@ class Slic
 
 
 
-template <unsigned int N, class T, class Label>
+template<unsigned int N, class T, class Label>
 Slic<N, T, Label>::Slic(
-    DataImageType         dataImage,
-    LabelImageType        labelImage,
-    DistanceType          intensityScaling,
-    int                   maxRadius,
-    SlicOptions const &   options)
-:   shape_(dataImage.shape()),
-    dataImage_(dataImage),
-    labelImage_(labelImage),
-    distance_(shape_),
-    max_radius_(maxRadius),
-    normalization_(sq(intensityScaling) / sq(max_radius_)),
-    options_(options)
+    DataImageType dataImage,
+    LabelImageType labelImage,
+    DistanceType intensityScaling,
+    int maxRadius,
+    SlicOptions const& options)
+    : shape_(dataImage.shape()),
+      dataImage_(dataImage),
+      labelImage_(labelImage),
+      distance_(shape_),
+      max_radius_(maxRadius),
+      normalization_(sq(intensityScaling) / sq(max_radius_)),
+      options_(options)
 {
     clusters_.ignoreLabel(0);
 }
 
-template <unsigned int N, class T, class Label>
-unsigned int Slic<N, T, Label>::execute()
+template<unsigned int N, class T, class Label>
+unsigned int
+Slic<N, T, Label>::execute()
 {
     // Do SLIC
-    for(size_t i=0; i<options_.iter; ++i)
+    for (size_t i = 0; i < options_.iter; ++i)
     {
         // update mean for each cluster
         clusters_.reset();
@@ -270,15 +273,15 @@ unsigned int Slic<N, T, Label>::execute()
     return postProcessing();
 }
 
-template <unsigned int N, class T, class Label>
+template<unsigned int N, class T, class Label>
 void
 Slic<N, T, Label>::updateAssigments()
 {
     using namespace acc;
     distance_.init(NumericTraits<DistanceType>::max());
-    for(unsigned int c=1; c<=clusters_.maxRegionLabel(); ++c)
+    for (unsigned int c = 1; c <= clusters_.maxRegionLabel(); ++c)
     {
-        if(get<Count>(clusters_, c) == 0) // label doesn't exist
+        if (get<Count>(clusters_, c) == 0) // label doesn't exist
             continue;
 
         typedef typename LookupTag<RegionCenter, RegionFeatures>::value_type CenterType;
@@ -286,25 +289,24 @@ Slic<N, T, Label>::updateAssigments()
 
         // get ROI limits around region center
         ShapeType pixelCenter(round(center)),
-                  startCoord(max(ShapeType(0), pixelCenter - ShapeType(max_radius_))),
-                  endCoord(min(shape_, pixelCenter + ShapeType(max_radius_+1)));
+            startCoord(max(ShapeType(0), pixelCenter - ShapeType(max_radius_))),
+            endCoord(min(shape_, pixelCenter + ShapeType(max_radius_ + 1)));
         center -= startCoord; // need center relative to ROI
 
         // setup iterators for ROI
         typedef typename CoupledArrays<N, T, Label, DistanceType>::IteratorType Iterator;
-        Iterator iter = createCoupledIterator(dataImage_, labelImage_, distance_).
-                            restrictToSubarray(startCoord, endCoord),
+        Iterator iter = createCoupledIterator(dataImage_, labelImage_, distance_).restrictToSubarray(startCoord, endCoord),
                  end = iter.getEndIterator();
 
         // only pixels within the ROI can be assigned to a cluster
-        for(; iter != end; ++iter)
+        for (; iter != end; ++iter)
         {
             // compute distance between cluster center and pixel
-            DistanceType spatialDist   = squaredNorm(center-iter.point());
-            DistanceType colorDist     = squaredNorm(get<Mean>(clusters_, c)-iter.template get<1>());
-            DistanceType dist =  colorDist + normalization_*spatialDist;
+            DistanceType spatialDist = squaredNorm(center - iter.point());
+            DistanceType colorDist = squaredNorm(get<Mean>(clusters_, c) - iter.template get<1>());
+            DistanceType dist = colorDist + normalization_ * spatialDist;
             // update label?
-            if(dist < iter.template get<3>())
+            if (dist < iter.template get<3>())
             {
                 iter.template get<2>() = static_cast<Label>(c);
                 iter.template get<3>() = dist;
@@ -313,49 +315,49 @@ Slic<N, T, Label>::updateAssigments()
     }
 }
 
-template <unsigned int N, class T, class Label>
+template<unsigned int N, class T, class Label>
 unsigned int
 Slic<N, T, Label>::postProcessing()
 {
     // get rid of regions below a size limit
-    MultiArray<N,Label> tmpLabelImage(labelImage_);
+    MultiArray<N, Label> tmpLabelImage(labelImage_);
     unsigned int maxLabel = labelMultiArray(tmpLabelImage, labelImage_, DirectNeighborhood);
 
     unsigned int sizeLimit = options_.sizeLimit == 0
                                  ? (unsigned int)(0.25 * labelImage_.size() / maxLabel)
                                  : options_.sizeLimit;
-    if(sizeLimit == 1)
+    if (sizeLimit == 1)
         return maxLabel;
 
     // determine region size
     using namespace acc;
-    AccumulatorChainArray<CoupledArrays<N, Label>, Select<LabelArg<1>, Count> > sizes;
+    AccumulatorChainArray<CoupledArrays<N, Label>, Select<LabelArg<1>, Count>> sizes;
     extractFeatures(labelImage_, sizes);
 
     typedef GridGraph<N, undirected_tag> Graph;
     Graph graph(labelImage_.shape(), DirectNeighborhood);
 
-    typedef typename Graph::NodeIt        graph_scanner;
-    typedef typename Graph::OutBackArcIt  neighbor_iterator;
+    typedef typename Graph::NodeIt graph_scanner;
+    typedef typename Graph::OutBackArcIt neighbor_iterator;
 
-    vigra::UnionFindArray<Label>  regions(maxLabel+1);
-    ArrayVector<unsigned char>    done(maxLabel+1, false);
+    vigra::UnionFindArray<Label> regions(maxLabel + 1);
+    ArrayVector<unsigned char> done(maxLabel + 1, false);
 
     // make sure that all regions exceed the sizeLimit
     for (graph_scanner node(graph); node != lemon::INVALID; ++node)
     {
         Label label = labelImage_[*node];
 
-        if(done[label])
-            continue;   // already processed
+        if (done[label])
+            continue; // already processed
 
-        if(get<Count>(sizes, label) < sizeLimit)
+        if (get<Count>(sizes, label) < sizeLimit)
         {
             // region is too small => merge into a neighbor
             for (neighbor_iterator arc(graph, node); arc != lemon::INVALID; ++arc)
             {
                 Label other = labelImage_[graph.target(*arc)];
-                if(label != other)
+                if (label != other)
                 {
                     regions.makeUnion(label, other);
                     done[label] = true;
@@ -455,19 +457,18 @@ Slic<N, T, Label>::postProcessing()
 
     This works for arbitrary-dimensional arrays.
 */
-doxygen_overloaded_function(template <...> unsigned int slicSuperpixels)
+doxygen_overloaded_function(template<...> unsigned int slicSuperpixels)
 
-template <unsigned int N, class T, class S1,
-                          class Label, class S2,
-          class DistanceType>
-unsigned int
-slicSuperpixels(MultiArrayView<N, T, S1> const &  src,
-                MultiArrayView<N, Label, S2>      labels,
-                DistanceType                      intensityScaling,
-                unsigned int                      seedDistance,
-                SlicOptions const &               options = SlicOptions())
+    template<unsigned int N, class T, class S1,
+             class Label, class S2,
+             class DistanceType>
+    unsigned int slicSuperpixels(MultiArrayView<N, T, S1> const& src,
+                                 MultiArrayView<N, Label, S2> labels,
+                                 DistanceType intensityScaling,
+                                 unsigned int seedDistance,
+                                 SlicOptions const& options = SlicOptions())
 {
-    if(!labels.any())
+    if (!labels.any())
     {
         typedef typename NormTraits<T>::NormType TmpType;
         MultiArray<N, TmpType> grad(src.shape());

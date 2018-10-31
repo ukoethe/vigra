@@ -37,41 +37,42 @@
 #define VIGRA_RANDOM_FOREST_IMPEX_HDF5_HXX
 
 #include "config.hxx"
-#include "random_forest.hxx"
 #include "hdf5impex.hxx"
+#include "random_forest.hxx"
 #include <string>
 
-namespace vigra 
+namespace vigra
 {
 
-static const char *const rf_hdf5_options       = "_options";
-static const char *const rf_hdf5_ext_param     = "_ext_param";
-static const char *const rf_hdf5_labels        = "labels";
-static const char *const rf_hdf5_topology      = "topology";
-static const char *const rf_hdf5_parameters    = "parameters";
-static const char *const rf_hdf5_tree          = "Tree_";
-static const char *const rf_hdf5_version_group = ".";
-static const char *const rf_hdf5_version_tag   = "vigra_random_forest_version";
-static const double      rf_hdf5_version       =  0.1;
+static const char* const rf_hdf5_options = "_options";
+static const char* const rf_hdf5_ext_param = "_ext_param";
+static const char* const rf_hdf5_labels = "labels";
+static const char* const rf_hdf5_topology = "topology";
+static const char* const rf_hdf5_parameters = "parameters";
+static const char* const rf_hdf5_tree = "Tree_";
+static const char* const rf_hdf5_version_group = ".";
+static const char* const rf_hdf5_version_tag = "vigra_random_forest_version";
+static const double rf_hdf5_version = 0.1;
 
 namespace detail
 {
 
-VIGRA_EXPORT void options_import_HDF5(HDF5File &, RandomForestOptions &,
-                                      const std::string &);
+VIGRA_EXPORT void options_import_HDF5(HDF5File&, RandomForestOptions&,
+                                      const std::string&);
 
-VIGRA_EXPORT void options_export_HDF5(HDF5File &, const RandomForestOptions &,
-                                      const std::string &);
+VIGRA_EXPORT void options_export_HDF5(HDF5File&, const RandomForestOptions&,
+                                      const std::string&);
 
-VIGRA_EXPORT void dt_import_HDF5(HDF5File &, detail::DecisionTree &,
-                                 const std::string &);
+VIGRA_EXPORT void dt_import_HDF5(HDF5File&, detail::DecisionTree&,
+                                 const std::string&);
 
-VIGRA_EXPORT void dt_export_HDF5(HDF5File &, const detail::DecisionTree &,
-                                 const std::string &);
+VIGRA_EXPORT void dt_export_HDF5(HDF5File&, const detail::DecisionTree&,
+                                 const std::string&);
 
 template<class X>
-void rf_import_HDF5_to_map(HDF5File & h5context, X & param,
-                           const char *const ignored_label = 0)
+void
+rf_import_HDF5_to_map(HDF5File& h5context, X& param,
+                      const char* const ignored_label = 0)
 {
     // read a map containing all the double fields
     typedef typename X::map_type map_type;
@@ -92,19 +93,19 @@ void rf_import_HDF5_to_map(HDF5File & h5context, X & param,
             continue;
         }
         // get sort of an iterator to a new empty array vector in the map ...
-        inserter_type new_array
-            = serialized_param.insert(value_type(*j, mapped_type()));
+        inserter_type new_array = serialized_param.insert(value_type(*j, mapped_type()));
         // ... and read the data into that place.
         h5context.readAndResize(*j, (*(new_array.first)).second);
     }
     vigra_precondition(ignored_seen, "rf_import_HDF5_to_map(): "
-                                                         "labels are missing.");
+                                     "labels are missing.");
     param.make_from_map(serialized_param);
 }
 
 template<class T>
-void problemspec_import_HDF5(HDF5File & h5context, ProblemSpec<T> & param,
-                             const std::string & name)
+void
+problemspec_import_HDF5(HDF5File& h5context, ProblemSpec<T>& param,
+                        const std::string& name)
 {
     h5context.cd(name);
     rf_import_HDF5_to_map(h5context, param, rf_hdf5_labels);
@@ -116,7 +117,8 @@ void problemspec_import_HDF5(HDF5File & h5context, ProblemSpec<T> & param,
 }
 
 template<class X>
-void rf_export_map_to_HDF5(HDF5File & h5context, const X & param)
+void
+rf_export_map_to_HDF5(HDF5File& h5context, const X& param)
 {
     typedef typename X::map_type map_type;
     map_type serialized_param;
@@ -128,8 +130,9 @@ void rf_export_map_to_HDF5(HDF5File & h5context, const X & param)
 }
 
 template<class T>
-void problemspec_export_HDF5(HDF5File & h5context, ProblemSpec<T> const & param,
-                             const std::string & name)
+void
+problemspec_export_HDF5(HDF5File& h5context, ProblemSpec<T> const& param,
+                        const std::string& name)
 {
     h5context.cd_mk(name);
     rf_export_map_to_HDF5(h5context, param);
@@ -142,16 +145,19 @@ class VIGRA_EXPORT padded_number_string
 {
 private:
     padded_number_string_data* padded_number;
+
 protected:
-    padded_number_string(const padded_number_string &);
-    void operator=(const padded_number_string &);
+    padded_number_string(const padded_number_string&);
+    void operator=(const padded_number_string&);
+
 public:
     padded_number_string(int n);
     std::string operator()(int k) const;
     ~padded_number_string();
 };
 
-inline std::string get_cwd(HDF5File & h5context)
+inline std::string
+get_cwd(HDF5File& h5context)
 {
     return h5context.get_absolute_path(h5context.pwd());
 }
@@ -173,12 +179,14 @@ inline std::string get_cwd(HDF5File & h5context)
                      be either relative or absolute.
 */
 template<class T, class Tag>
-void rf_export_HDF5(const RandomForest<T, Tag> & rf,
-                    HDF5File & h5context,
-                    const std::string & pathname = "")
+void
+rf_export_HDF5(const RandomForest<T, Tag>& rf,
+               HDF5File& h5context,
+               const std::string& pathname = "")
 {
     std::string cwd;
-    if (pathname.size()) {
+    if (pathname.size())
+    {
         cwd = detail::get_cwd(h5context);
         h5context.cd_mk(pathname);
     }
@@ -195,7 +203,7 @@ void rf_export_HDF5(const RandomForest<T, Tag> & rf,
     detail::padded_number_string tree_number(tree_count);
     for (int i = 0; i < tree_count; ++i)
         detail::dt_export_HDF5(h5context, rf.tree(i),
-                                                 rf_hdf5_tree + tree_number(i));
+                               rf_hdf5_tree + tree_number(i));
 
     if (pathname.size())
         h5context.cd(cwd);
@@ -216,11 +224,12 @@ void rf_export_HDF5(const RandomForest<T, Tag> & rf,
                     to the root group).
 */
 template<class T, class Tag>
-void rf_export_HDF5(const RandomForest<T, Tag> & rf,
-                    const std::string & filename, 
-                    const std::string & pathname = "")
+void
+rf_export_HDF5(const RandomForest<T, Tag>& rf,
+               const std::string& filename,
+               const std::string& pathname = "")
 {
-    HDF5File h5context(filename , HDF5File::Open);
+    HDF5File h5context(filename, HDF5File::Open);
     rf_export_HDF5(rf, h5context, pathname);
 }
 
@@ -242,9 +251,10 @@ void rf_export_HDF5(const RandomForest<T, Tag> & rf,
                     to the root group).
 */
 template<class T, class Tag>
-void rf_export_HDF5(const RandomForest<T, Tag> & rf,
-                    hid_t outf_id,
-                    const std::string & pathname = "")
+void
+rf_export_HDF5(const RandomForest<T, Tag>& rf,
+               hid_t outf_id,
+               const std::string& pathname = "")
 {
     HDF5HandleShared fileHandle(outf_id, NULL, "");
     HDF5File h5context(fileHandle, pathname);
@@ -265,12 +275,14 @@ void rf_export_HDF5(const RandomForest<T, Tag> & rf,
                      be either relative or absolute.
 */
 template<class T, class Tag>
-bool rf_import_HDF5(RandomForest<T, Tag> & rf,
-                    HDF5File & h5context,
-                    const std::string & pathname = "")
+bool
+rf_import_HDF5(RandomForest<T, Tag>& rf,
+               HDF5File& h5context,
+               const std::string& pathname = "")
 {
     std::string cwd;
-    if (pathname.size()) {
+    if (pathname.size())
+    {
         cwd = detail::get_cwd(h5context);
         h5context.cd(pathname);
     }
@@ -281,7 +293,7 @@ bool rf_import_HDF5(RandomForest<T, Tag> & rf,
         h5context.readAttribute(rf_hdf5_version_group, rf_hdf5_version_tag,
                                 read_version);
         vigra_precondition(read_version <= rf_hdf5_version,
-                          "rf_import_HDF5(): unexpected file format version.");
+                           "rf_import_HDF5(): unexpected file format version.");
     }
     // get serialized options
     detail::options_import_HDF5(h5context, rf.options_, rf_hdf5_options);
@@ -320,9 +332,10 @@ bool rf_import_HDF5(RandomForest<T, Tag> & rf,
                      be either relative or absolute.
 */
 template<class T, class Tag>
-bool rf_import_HDF5(RandomForest<T, Tag> & rf,
-                    const std::string & filename, 
-                    const std::string & pathname = "")
+bool
+rf_import_HDF5(RandomForest<T, Tag>& rf,
+               const std::string& filename,
+               const std::string& pathname = "")
 {
     HDF5File h5context(filename, HDF5File::OpenReadOnly);
     return rf_import_HDF5(rf, h5context, pathname);
@@ -346,9 +359,10 @@ bool rf_import_HDF5(RandomForest<T, Tag> & rf,
                      be either relative or absolute.
 */
 template<class T, class Tag>
-bool rf_import_HDF5(RandomForest<T, Tag> & rf, 
-                    hid_t inf_id,
-                    const std::string & pathname = "")
+bool
+rf_import_HDF5(RandomForest<T, Tag>& rf,
+               hid_t inf_id,
+               const std::string& pathname = "")
 {
     HDF5HandleShared fileHandle(inf_id, NULL, "");
     HDF5File h5context(fileHandle, pathname, true);

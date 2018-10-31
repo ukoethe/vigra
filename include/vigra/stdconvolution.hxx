@@ -37,38 +37,40 @@
 #ifndef VIGRA_STDCONVOLUTION_HXX
 #define VIGRA_STDCONVOLUTION_HXX
 
-#include <cmath>
-#include "stdimage.hxx"
 #include "bordertreatment.hxx"
-#include "separableconvolution.hxx"
-#include "utilities.hxx"
-#include "sized_int.hxx"
 #include "multi_iterator.hxx"
 #include "multi_shape.hxx"
+#include "separableconvolution.hxx"
+#include "sized_int.hxx"
+#include "stdimage.hxx"
+#include "utilities.hxx"
+#include <cmath>
 
-namespace vigra {
+namespace vigra
+{
 
-template <class ARITHTYPE>
+template<class ARITHTYPE>
 class Kernel2D;
 
 /** \addtogroup ConvolutionFilters
 */
 //@{
 
-    // documentation is in convolution.hxx
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class KernelIterator, class KernelAccessor>
-void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
-                   DestIterator dest_ul, DestAccessor dest_acc,
-                   KernelIterator ki, KernelAccessor ak,
-                   Diff2D kul, Diff2D klr, BorderTreatmentMode border)
+// documentation is in convolution.hxx
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class KernelIterator, class KernelAccessor>
+void
+convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
+              DestIterator dest_ul, DestAccessor dest_acc,
+              KernelIterator ki, KernelAccessor ak,
+              Diff2D kul, Diff2D klr, BorderTreatmentMode border)
 {
-    vigra_precondition((border == BORDER_TREATMENT_CLIP    ||
-                        border == BORDER_TREATMENT_AVOID   ||
+    vigra_precondition((border == BORDER_TREATMENT_CLIP ||
+                        border == BORDER_TREATMENT_AVOID ||
                         border == BORDER_TREATMENT_REFLECT ||
-                        border == BORDER_TREATMENT_REPEAT  ||
-                        border == BORDER_TREATMENT_WRAP    ||
+                        border == BORDER_TREATMENT_REPEAT ||
+                        border == BORDER_TREATMENT_WRAP ||
                         border == BORDER_TREATMENT_ZEROPAD),
                        "convolveImage():\n"
                        "  Border treatment must be one of follow treatments:\n"
@@ -87,11 +89,9 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
                        "kernel's lower right must be >= 0.");
 
     // use traits to determine SumType as to prevent possible overflow
-    typedef typename
-        PromoteTraits<typename SrcAccessor::value_type,
-                      typename KernelAccessor::value_type>::Promote SumType;
-    typedef typename
-        NumericTraits<typename KernelAccessor::value_type>::RealPromote KernelSumType;
+    typedef typename PromoteTraits<typename SrcAccessor::value_type,
+                                   typename KernelAccessor::value_type>::Promote SumType;
+    typedef typename NumericTraits<typename KernelAccessor::value_type>::RealPromote KernelSumType;
     typedef typename DestAccessor::value_type DestType;
 
     // calculate width and height of the image
@@ -99,129 +99,129 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
     int h = src_lr.y - src_ul.y;
 
     // calculate width and height of the kernel
-    int kernel_width  = klr.x - kul.x + 1;
+    int kernel_width = klr.x - kul.x + 1;
     int kernel_height = klr.y - kul.y + 1;
 
     vigra_precondition(w >= std::max(klr.x, -kul.x) + 1 && h >= std::max(klr.y, -kul.y) + 1,
                        "convolveImage(): kernel larger than image.");
 
     KernelSumType norm = KernelSumType();
-    if(border == BORDER_TREATMENT_CLIP)
+    if (border == BORDER_TREATMENT_CLIP)
     {
         // calculate the sum of the kernel elements for renormalization
-        KernelIterator yk  = ki + klr;
+        KernelIterator yk = ki + klr;
 
         // determine sum within kernel (= norm)
-        for(int y = 0; y < kernel_height; ++y, --yk.y)
+        for (int y = 0; y < kernel_height; ++y, --yk.y)
         {
-            KernelIterator xk  = yk;
-            for(int x = 0; x < kernel_width; ++x, --xk.x)
+            KernelIterator xk = yk;
+            for (int x = 0; x < kernel_width; ++x, --xk.x)
             {
                 norm += ak(xk);
             }
         }
         vigra_precondition(norm != NumericTraits<KernelSumType>::zero(),
-            "convolveImage(): Cannot use BORDER_TREATMENT_CLIP with a DC-free kernel");
+                           "convolveImage(): Cannot use BORDER_TREATMENT_CLIP with a DC-free kernel");
     }
 
     DestIterator yd = dest_ul;
     SrcIterator ys = src_ul;
 
     // iterate over the interior part
-    for(int y=0; y<h; ++y, ++ys.y, ++yd.y)
+    for (int y = 0; y < h; ++y, ++ys.y, ++yd.y)
     {
         // create x iterators
         DestIterator xd(yd);
         SrcIterator xs(ys);
 
-        for(int x=0; x < w; ++x, ++xs.x, ++xd.x)
+        for (int x = 0; x < w; ++x, ++xs.x, ++xd.x)
         {
             // init the sum
             SumType sum = NumericTraits<SumType>::zero();
-            KernelIterator ykernel  = ki + klr;
+            KernelIterator ykernel = ki + klr;
 
-            if(x >= klr.x && y >= klr.y && x < w + kul.x && y < h + kul.y)
+            if (x >= klr.x && y >= klr.y && x < w + kul.x && y < h + kul.y)
             {
                 // kernel is entirely inside the image
                 SrcIterator yys = xs - klr;
                 SrcIterator yyend = xs - kul;
 
-                for(; yys.y <= yyend.y; ++yys.y, --ykernel.y)
+                for (; yys.y <= yyend.y; ++yys.y, --ykernel.y)
                 {
                     typename SrcIterator::row_iterator xxs = yys.rowIterator();
                     typename SrcIterator::row_iterator xxe = xxs + kernel_width;
-                    typename KernelIterator::row_iterator xkernel= ykernel.rowIterator();
+                    typename KernelIterator::row_iterator xkernel = ykernel.rowIterator();
 
-                    for(; xxs < xxe; ++xxs, --xkernel)
+                    for (; xxs < xxe; ++xxs, --xkernel)
                     {
                         sum += ak(xkernel) * src_acc(xxs);
                     }
                 }
             }
-            else if(border == BORDER_TREATMENT_REPEAT)
+            else if (border == BORDER_TREATMENT_REPEAT)
             {
                 Diff2D diff;
-                for(int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
+                for (int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
                 {
-                    diff.y = std::min(std::max(y - yk, 0), h-1);
-                    typename KernelIterator::row_iterator xkernel  = ykernel.rowIterator();
+                    diff.y = std::min(std::max(y - yk, 0), h - 1);
+                    typename KernelIterator::row_iterator xkernel = ykernel.rowIterator();
 
-                    for(int xk = klr.x; xk >= kul.x; --xk, --xkernel)
+                    for (int xk = klr.x; xk >= kul.x; --xk, --xkernel)
                     {
-                        diff.x = std::min(std::max(x - xk, 0), w-1);
+                        diff.x = std::min(std::max(x - xk, 0), w - 1);
                         sum += ak(xkernel) * src_acc(src_ul, diff);
                     }
                 }
             }
-            else if(border == BORDER_TREATMENT_REFLECT)
+            else if (border == BORDER_TREATMENT_REFLECT)
             {
                 Diff2D diff;
-                for(int yk = klr.y; yk >= kul.y; --yk , --ykernel.y)
+                for (int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
                 {
                     diff.y = abs(y - yk);
-                    if(diff.y >= h)
-                        diff.y = 2*h - 2 - diff.y;
-                    typename KernelIterator::row_iterator xkernel  = ykernel.rowIterator();
+                    if (diff.y >= h)
+                        diff.y = 2 * h - 2 - diff.y;
+                    typename KernelIterator::row_iterator xkernel = ykernel.rowIterator();
 
-                    for(int xk = klr.x; xk >= kul.x; --xk, --xkernel)
+                    for (int xk = klr.x; xk >= kul.x; --xk, --xkernel)
                     {
                         diff.x = abs(x - xk);
-                        if(diff.x >= w)
-                            diff.x = 2*w - 2 - diff.x;
+                        if (diff.x >= w)
+                            diff.x = 2 * w - 2 - diff.x;
                         sum += ak(xkernel) * src_acc(src_ul, diff);
                     }
                 }
             }
-            else if(border == BORDER_TREATMENT_WRAP)
+            else if (border == BORDER_TREATMENT_WRAP)
             {
                 Diff2D diff;
-                for(int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
+                for (int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
                 {
                     diff.y = (y - yk + h) % h;
-                    typename KernelIterator::row_iterator xkernel  = ykernel.rowIterator();
+                    typename KernelIterator::row_iterator xkernel = ykernel.rowIterator();
 
-                    for(int xk = klr.x; xk >= kul.x; --xk, --xkernel)
+                    for (int xk = klr.x; xk >= kul.x; --xk, --xkernel)
                     {
                         diff.x = (x - xk + w) % w;
                         sum += ak(xkernel) * src_acc(src_ul, diff);
                     }
                 }
             }
-            else if(border == BORDER_TREATMENT_CLIP)
+            else if (border == BORDER_TREATMENT_CLIP)
             {
                 KernelSumType ksum = NumericTraits<KernelSumType>::zero();
                 Diff2D diff;
-                for(int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
+                for (int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
                 {
                     diff.y = y - yk;
-                    if(diff.y < 0 || diff.y >= h)
+                    if (diff.y < 0 || diff.y >= h)
                         continue;
-                    typename KernelIterator::row_iterator xkernel  = ykernel.rowIterator();
+                    typename KernelIterator::row_iterator xkernel = ykernel.rowIterator();
 
-                    for(int xk = klr.x; xk >= kul.x; --xk, --xkernel)
+                    for (int xk = klr.x; xk >= kul.x; --xk, --xkernel)
                     {
                         diff.x = x - xk;
-                        if(diff.x < 0 || diff.x >= w)
+                        if (diff.x < 0 || diff.x >= w)
                             continue;
                         ksum += ak(xkernel);
                         sum += ak(xkernel) * src_acc(src_ul, diff);
@@ -230,26 +230,26 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
 
                 sum *= norm / ksum;
             }
-            else if(border == BORDER_TREATMENT_ZEROPAD)
+            else if (border == BORDER_TREATMENT_ZEROPAD)
             {
                 Diff2D diff;
-                for(int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
+                for (int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
                 {
                     diff.y = y - yk;
-                    if(diff.y < 0 || diff.y >= h)
+                    if (diff.y < 0 || diff.y >= h)
                         continue;
-                    typename KernelIterator::row_iterator xkernel  = ykernel.rowIterator();
+                    typename KernelIterator::row_iterator xkernel = ykernel.rowIterator();
 
-                    for(int xk = klr.x; xk >= kul.x; --xk, --xkernel)
+                    for (int xk = klr.x; xk >= kul.x; --xk, --xkernel)
                     {
                         diff.x = x - xk;
-                        if(diff.x < 0 || diff.x >= w)
+                        if (diff.x < 0 || diff.x >= w)
                             continue;
                         sum += ak(xkernel) * src_acc(src_ul, diff);
                     }
                 }
             }
-            else if(border == BORDER_TREATMENT_AVOID)
+            else if (border == BORDER_TREATMENT_AVOID)
             {
                 continue;
             }
@@ -260,14 +260,15 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class KernelIterator, class KernelAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class KernelIterator, class KernelAccessor>
 inline void
 convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
               pair<DestIterator, DestAccessor> dest,
               tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D,
-              BorderTreatmentMode> kernel)
+                     BorderTreatmentMode>
+                  kernel)
 {
     convolveImage(src.first, src.second, src.third,
                   dest.first, dest.second,
@@ -275,16 +276,16 @@ convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                   kernel.fourth, kernel.fifth);
 }
 
-template <class T1, class S1,
-          class T2, class S2,
-          class T3>
+template<class T1, class S1,
+         class T2, class S2,
+         class T3>
 inline void
-convolveImage(MultiArrayView<2, T1, S1> const & src,
-              MultiArrayView<2, T2, S2> dest,
-              Kernel2D<T3> const & kernel)
+    convolveImage(MultiArrayView<2, T1, S1> const& src,
+                  MultiArrayView<2, T2, S2> dest,
+                  Kernel2D<T3> const& kernel)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "convolveImage(): shape mismatch between input and output.");
+                       "convolveImage(): shape mismatch between input and output.");
     convolveImage(srcImageRange(src),
                   destImage(dest),
                   kernel2d(kernel));
@@ -451,20 +452,19 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
     <li> <tt>border == BORDER_TREATMENT_CLIP || border == BORDER_TREATMENT_AVOID</tt>
     </ul>
 */
-doxygen_overloaded_function(template <...> void normalizedConvolveImage)
+doxygen_overloaded_function(template<...> void normalizedConvolveImage)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class MaskIterator, class MaskAccessor,
-          class KernelIterator, class KernelAccessor>
-void
-normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
-                        MaskIterator mul, MaskAccessor am,
-                        DestIterator dest_ul, DestAccessor dest_acc,
-                        KernelIterator ki, KernelAccessor ak,
-                        Diff2D kul, Diff2D klr, BorderTreatmentMode border)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor,
+             class MaskIterator, class MaskAccessor,
+             class KernelIterator, class KernelAccessor>
+    void normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
+                                 MaskIterator mul, MaskAccessor am,
+                                 DestIterator dest_ul, DestAccessor dest_acc,
+                                 KernelIterator ki, KernelAccessor ak,
+                                 Diff2D kul, Diff2D klr, BorderTreatmentMode border)
 {
-    vigra_precondition((border == BORDER_TREATMENT_CLIP  ||
+    vigra_precondition((border == BORDER_TREATMENT_CLIP ||
                         border == BORDER_TREATMENT_AVOID),
                        "normalizedConvolveImage(): "
                        "Border treatment must be BORDER_TREATMENT_CLIP or BORDER_TREATMENT_AVOID.");
@@ -475,12 +475,9 @@ normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_
                        "normalizedConvolveImage(): right borders must be >= 0.");
 
     // use traits to determine SumType as to prevent possible overflow
-    typedef typename
-        NumericTraits<typename SrcAccessor::value_type>::RealPromote SumType;
-    typedef typename
-        NumericTraits<typename KernelAccessor::value_type>::RealPromote KSumType;
-    typedef
-        NumericTraits<typename DestAccessor::value_type> DestTraits;
+    typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote SumType;
+    typedef typename NumericTraits<typename KernelAccessor::value_type>::RealPromote KSumType;
+    typedef NumericTraits<typename DestAccessor::value_type> DestTraits;
 
     // calculate width and height of the image
     int w = src_lr.x - src_ul.x;
@@ -488,11 +485,11 @@ normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_
     int kernel_width = klr.x - kul.x + 1;
     int kernel_height = klr.y - kul.y + 1;
 
-    int x,y;
-    int ystart = (border == BORDER_TREATMENT_AVOID) ?  klr.y : 0;
-    int yend   = (border == BORDER_TREATMENT_AVOID) ? h+kul.y : h;
-    int xstart = (border == BORDER_TREATMENT_AVOID) ?  klr.x : 0;
-    int xend   = (border == BORDER_TREATMENT_AVOID) ? w+kul.x : w;
+    int x, y;
+    int ystart = (border == BORDER_TREATMENT_AVOID) ? klr.y : 0;
+    int yend = (border == BORDER_TREATMENT_AVOID) ? h + kul.y : h;
+    int xstart = (border == BORDER_TREATMENT_AVOID) ? klr.x : 0;
+    int xend = (border == BORDER_TREATMENT_AVOID) ? w + kul.x : w;
 
     // create y iterators
     DestIterator yd = dest_ul + Diff2D(xstart, ystart);
@@ -501,12 +498,12 @@ normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_
 
     KSumType norm = ak(ki);
     int xx, yy;
-    KernelIterator yk  = ki + klr;
-    for(yy=0; yy<kernel_height; ++yy, --yk.y)
+    KernelIterator yk = ki + klr;
+    for (yy = 0; yy < kernel_height; ++yy, --yk.y)
     {
-        KernelIterator xk  = yk;
+        KernelIterator xk = yk;
 
-        for(xx=0; xx<kernel_width; ++xx, --xk.x)
+        for (xx = 0; xx < kernel_width; ++xx, --xk.x)
         {
             norm += ak(xk);
         }
@@ -514,22 +511,22 @@ normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_
     norm -= ak(ki);
 
 
-    for(y=ystart; y < yend; ++y, ++ys.y, ++yd.y, ++ym.y)
+    for (y = ystart; y < yend; ++y, ++ys.y, ++yd.y, ++ym.y)
     {
         // create x iterators
         DestIterator xd(yd);
         SrcIterator xs(ys);
         MaskIterator xm(ym);
 
-        for(x=xstart; x < xend; ++x, ++xs.x, ++xd.x, ++xm.x)
+        for (x = xstart; x < xend; ++x, ++xs.x, ++xd.x, ++xm.x)
         {
             // how much of the kernel fits into the image ?
             int x0, y0, x1, y1;
 
-            y0 = (y<klr.y) ? -y : -klr.y;
-            y1 = (h-y-1<-kul.y) ? h-y-1 : -kul.y;
-            x0 = (x<klr.x) ? -x : -klr.x;
-            x1 = (w-x-1<-kul.x) ? w-x-1 : -kul.x;
+            y0 = (y < klr.y) ? -y : -klr.y;
+            y1 = (h - y - 1 < -kul.y) ? h - y - 1 : -kul.y;
+            x0 = (x < klr.x) ? -x : -klr.x;
+            x1 = (w - x - 1 < -kul.x) ? w - x - 1 : -kul.x;
 
             bool first = true;
             // init the sum
@@ -538,23 +535,24 @@ normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_
 
             SrcIterator yys = xs + Diff2D(x0, y0);
             MaskIterator yym = xm + Diff2D(x0, y0);
-            KernelIterator yk  = ki - Diff2D(x0, y0);
+            KernelIterator yk = ki - Diff2D(x0, y0);
 
             int kernel_width, kernel_height;
             kernel_width = x1 - x0 + 1;
             kernel_height = y1 - y0 + 1;
-            for(yy=0; yy<kernel_height; ++yy, ++yys.y, --yk.y, ++yym.y)
+            for (yy = 0; yy < kernel_height; ++yy, ++yys.y, --yk.y, ++yym.y)
             {
                 typename SrcIterator::row_iterator xxs = yys.rowIterator();
                 typename SrcIterator::row_iterator xxend = xxs + kernel_width;
                 typename MaskIterator::row_iterator xxm = yym.rowIterator();
-                typename KernelIterator::row_iterator xk  = yk.rowIterator();
+                typename KernelIterator::row_iterator xk = yk.rowIterator();
 
-                for(xx=0; xxs < xxend; ++xxs, --xk, ++xxm)
+                for (xx = 0; xxs < xxend; ++xxs, --xk, ++xxm)
                 {
-                    if(!am(xxm)) continue;
+                    if (!am(xxm))
+                        continue;
 
-                    if(first)
+                    if (first)
                     {
                         sum = detail::RequiresExplicitCast<SumType>::cast(ak(xk) * src_acc(xxs));
                         ksum = ak(xk);
@@ -568,26 +566,28 @@ normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_
                 }
             }
             // store average in destination pixel
-            if(ksum != NumericTraits<KSumType>::zero())
+            if (ksum != NumericTraits<KSumType>::zero())
             {
                 dest_acc.set(DestTraits::fromRealPromote(
-                             detail::RequiresExplicitCast<SumType>::cast((norm / ksum) * sum)), xd);
+                                 detail::RequiresExplicitCast<SumType>::cast((norm / ksum) * sum)),
+                             xd);
             }
         }
     }
 }
 
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class MaskIterator, class MaskAccessor,
-          class KernelIterator, class KernelAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class MaskIterator, class MaskAccessor,
+         class KernelIterator, class KernelAccessor>
 inline void
 normalizedConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         pair<MaskIterator, MaskAccessor> mask,
                         pair<DestIterator, DestAccessor> dest,
                         tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D,
-                        BorderTreatmentMode> kernel)
+                               BorderTreatmentMode>
+                            kernel)
 {
     normalizedConvolveImage(src.first, src.second, src.third,
                             mask.first, mask.second,
@@ -596,18 +596,18 @@ normalizedConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             kernel.fourth, kernel.fifth);
 }
 
-template <class T1, class S1,
-          class T2, class S2,
-          class TM, class SM,
-          class T3>
+template<class T1, class S1,
+         class T2, class S2,
+         class TM, class SM,
+         class T3>
 inline void
-normalizedConvolveImage(MultiArrayView<2, T1, S1> const & src,
-                        MultiArrayView<2, TM, SM> const & mask,
-                        MultiArrayView<2, T2, S2> dest,
-                        Kernel2D<T3> const & kernel)
+    normalizedConvolveImage(MultiArrayView<2, T1, S1> const& src,
+                            MultiArrayView<2, TM, SM> const& mask,
+                            MultiArrayView<2, T2, S2> dest,
+                            Kernel2D<T3> const& kernel)
 {
     vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
-        "normalizedConvolveImage(): shape mismatch between input and output.");
+                       "normalizedConvolveImage(): shape mismatch between input and output.");
     normalizedConvolveImage(srcImageRange(src),
                             maskImage(mask),
                             destImage(dest),
@@ -668,18 +668,17 @@ normalizedConvolveImage(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void convolveImageWithMask)
+doxygen_overloaded_function(template<...> void convolveImageWithMask)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class MaskIterator, class MaskAccessor,
-          class KernelIterator, class KernelAccessor>
-inline void
-convolveImageWithMask(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
-                      MaskIterator mul, MaskAccessor am,
-                      DestIterator dest_ul, DestAccessor dest_acc,
-                      KernelIterator ki, KernelAccessor ak,
-                      Diff2D kul, Diff2D klr, BorderTreatmentMode border)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor,
+             class MaskIterator, class MaskAccessor,
+             class KernelIterator, class KernelAccessor>
+    inline void convolveImageWithMask(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
+                                      MaskIterator mul, MaskAccessor am,
+                                      DestIterator dest_ul, DestAccessor dest_acc,
+                                      KernelIterator ki, KernelAccessor ak,
+                                      Diff2D kul, Diff2D klr, BorderTreatmentMode border)
 {
     normalizedConvolveImage(src_ul, src_lr, src_acc,
                             mul, am,
@@ -687,17 +686,18 @@ convolveImageWithMask(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_ac
                             ki, ak, kul, klr, border);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class MaskIterator, class MaskAccessor,
-          class KernelIterator, class KernelAccessor>
-inline
-void convolveImageWithMask(
-                           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                           pair<MaskIterator, MaskAccessor> mask,
-                           pair<DestIterator, DestAccessor> dest,
-                           tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D,
-                           BorderTreatmentMode> kernel)
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class MaskIterator, class MaskAccessor,
+         class KernelIterator, class KernelAccessor>
+inline void
+convolveImageWithMask(
+    triple<SrcIterator, SrcIterator, SrcAccessor> src,
+    pair<MaskIterator, MaskAccessor> mask,
+    pair<DestIterator, DestAccessor> dest,
+    tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D,
+           BorderTreatmentMode>
+        kernel)
 {
     normalizedConvolveImage(src.first, src.second, src.third,
                             mask.first, mask.second,
@@ -756,40 +756,40 @@ void convolveImageWithMask(
 
     See also the init functions.
 */
-template <class ARITHTYPE = double>
+template<class ARITHTYPE = double>
 class Kernel2D
 {
 public:
-        /** the kernel's value type
+    /** the kernel's value type
          */
     typedef ARITHTYPE value_type;
 
-        /** 2D random access iterator over the kernel's values
+    /** 2D random access iterator over the kernel's values
          */
     typedef typename BasicImage<value_type>::traverser Iterator;
 
-        /** const 2D random access iterator over the kernel's values
+    /** const 2D random access iterator over the kernel's values
          */
     typedef typename BasicImage<value_type>::const_traverser ConstIterator;
 
-        /** the kernel's accessor
+    /** the kernel's accessor
          */
     typedef typename BasicImage<value_type>::Accessor Accessor;
 
-        /** the kernel's const accessor
+    /** the kernel's const accessor
          */
     typedef typename BasicImage<value_type>::ConstAccessor ConstAccessor;
 
     struct InitProxy
     {
-        typedef typename
-        BasicImage<value_type>::ScanOrderIterator Iterator;
+        typedef typename BasicImage<value_type>::ScanOrderIterator Iterator;
 
-        InitProxy(Iterator i, int count, value_type & norm)
+        InitProxy(Iterator i, int count, value_type& norm)
             : iter_(i), base_(i),
               count_(count), sum_(count),
               norm_(norm)
-        {}
+        {
+        }
 
         ~InitProxy()
 #if _MSC_VER >= 1900 || __cplusplus >= 201103L
@@ -803,9 +803,10 @@ public:
                                "Too few init values.");
         }
 
-        InitProxy & operator,(value_type const & v)
+        InitProxy& operator,(value_type const& v)
         {
-            if(count_ == sum_)  norm_ = *iter_;
+            if (count_ == sum_)
+                norm_ = *iter_;
 
             --count_;
             vigra_precondition(count_ > 0,
@@ -822,12 +823,15 @@ public:
 
         Iterator iter_, base_;
         int count_, sum_;
-        value_type & norm_;
+        value_type& norm_;
     };
 
-    static value_type one() { return NumericTraits<value_type>::one(); }
+    static value_type one()
+    {
+        return NumericTraits<value_type>::one();
+    }
 
-        /** Default constructor.
+    /** Default constructor.
             Creates a kernel of size 1x1 which would copy the signal
             unchanged.
         */
@@ -837,23 +841,25 @@ public:
           right_(0, 0),
           norm_(one()),
           border_treatment_(BORDER_TREATMENT_REFLECT)
-    {}
+    {
+    }
 
-        /** Copy constructor.
+    /** Copy constructor.
          */
-    Kernel2D(Kernel2D const & k)
+    Kernel2D(Kernel2D const& k)
         : kernel_(k.kernel_),
           left_(k.left_),
           right_(k.right_),
           norm_(k.norm_),
           border_treatment_(k.border_treatment_)
-    {}
-
-        /** Copy assignment.
-         */
-    Kernel2D & operator=(Kernel2D const & k)
     {
-        if(this != &k)
+    }
+
+    /** Copy assignment.
+         */
+    Kernel2D& operator=(Kernel2D const& k)
+    {
+        if (this != &k)
         {
             kernel_ = k.kernel_;
             left_ = k.left_;
@@ -864,7 +870,7 @@ public:
         return *this;
     }
 
-        /** Initialization.
+    /** Initialization.
             This initializes the kernel with the given constant. The norm becomes
             v*width()*height().
 
@@ -883,22 +889,23 @@ public:
             In this case, the norm will be set to the sum of the init values.
             An initializer list of wrong length will result in a run-time error.
         */
-    InitProxy operator=(value_type const & v)
+    InitProxy operator=(value_type const& v)
     {
         int size = (right_.x - left_.x + 1) *
                    (right_.y - left_.y + 1);
         kernel_ = v;
-        norm_ = (double)size*v;
+        norm_ = (double)size * v;
 
         return InitProxy(kernel_.begin(), size, norm_);
     }
 
-        /** Destructor.
+    /** Destructor.
          */
     ~Kernel2D()
-    {}
+    {
+    }
 
-        /** Init the 2D kernel as the cartesian product of two 1D kernels
+    /** Init the 2D kernel as the cartesian product of two 1D kernels
             of type \ref Kernel1D. The norm becomes the product of the two original
             norms.
 
@@ -911,8 +918,8 @@ public:
             v = v * v;
             \endcode
         */
-    void initSeparable(Kernel1D<value_type> const & kx,
-                             Kernel1D<value_type> const & ky)
+    void initSeparable(Kernel1D<value_type> const& kx,
+                       Kernel1D<value_type> const& ky)
     {
         left_ = Diff2D(kx.left(), ky.left());
         right_ = Diff2D(kx.right(), ky.right());
@@ -928,18 +935,18 @@ public:
         KIter kiy = ky.center() + left_.y;
         Iterator iy = center() + left_;
 
-        for(int y=left_.y; y<=right_.y; ++y, ++kiy, ++iy.y)
+        for (int y = left_.y; y <= right_.y; ++y, ++kiy, ++iy.y)
         {
             KIter kix = kx.center() + left_.x;
             Iterator ix = iy;
-            for(int x=left_.x; x<=right_.x; ++x, ++kix, ++ix.x)
+            for (int x = left_.x; x <= right_.x; ++x, ++kix, ++ix.x)
             {
                 *ix = ka(kix) * ka(kiy);
             }
         }
     }
 
-        /** Init the 2D kernel as the cartesian product of two 1D kernels
+    /** Init the 2D kernel as the cartesian product of two 1D kernels
             given explicitly by iterators and sizes. The norm becomes the
             sum of the resulting kernel values.
 
@@ -962,9 +969,9 @@ public:
             yright >= 0;
             \endcode
         */
-    template <class KernelIterator>
+    template<class KernelIterator>
     void initSeparable(KernelIterator kxcenter, int xleft, int xright,
-                             KernelIterator kycenter, int yleft, int yright)
+                       KernelIterator kycenter, int yleft, int yright)
     {
         vigra_precondition(xleft <= 0 && yleft <= 0,
                            "Kernel2D::initSeparable(): left borders must be <= 0.");
@@ -981,11 +988,11 @@ public:
         KernelIterator kiy = kycenter + left_.y;
         Iterator iy = center() + left_;
 
-        for(int y=left_.y; y<=right_.y; ++y, ++kiy, ++iy.y)
+        for (int y = left_.y; y <= right_.y; ++y, ++kiy, ++iy.y)
         {
             KernelIterator kix = kxcenter + left_.x;
             Iterator ix = iy;
-            for(int x=left_.x; x<=right_.x; ++x, ++kix, ++ix.x)
+            for (int x = left_.x; x <= right_.x; ++x, ++kix, ++ix.x)
             {
                 *ix = *kix * *kiy;
             }
@@ -996,13 +1003,13 @@ public:
         norm_ = *i;
         ++i;
 
-        for(; i!= iend; ++i)
+        for (; i != iend; ++i)
         {
             norm_ += *i;
         }
     }
 
-        /** Init as a 2D box filter with given radius.
+    /** Init as a 2D box filter with given radius.
          */
     void initAveraging(int radius)
     {
@@ -1011,7 +1018,7 @@ public:
         return initSeparable(avg, avg);
     }
 
-        /** Init as a 2D Gaussian function with given standard deviation and norm.
+    /** Init as a 2D Gaussian function with given standard deviation and norm.
          */
     void initGaussian(double std_dev, value_type norm)
     {
@@ -1020,14 +1027,14 @@ public:
         return initSeparable(gauss, gauss);
     }
 
-        /** Init as a 2D Gaussian function with given standard deviation and unit norm.
+    /** Init as a 2D Gaussian function with given standard deviation and unit norm.
          */
     void initGaussian(double std_dev)
     {
         return initGaussian(std_dev, NumericTraits<value_type>::one());
     }
 
-        /** Init the 2D kernel as a circular averaging filter. The norm will be
+    /** Init the 2D kernel as a circular averaging filter. The norm will be
             calculated as
             <TT>NumericTraits<value_type>::one() / (number of non-zero kernel values)</TT>.
             The kernel's value_type must be a linear space.
@@ -1063,14 +1070,14 @@ public:
         double count = 0.0;
 
         Iterator k = center();
-        double r2 = (double)radius*radius;
+        double r2 = (double)radius * radius;
 
         int i;
-        for(i=0; i<= radius; ++i)
+        for (i = 0; i <= radius; ++i)
         {
-            double r = (double) i - 0.5;
-            int w = (int)(VIGRA_CSTD::sqrt(r2 - r*r) + 0.5);
-            for(int j=-w; j<=w; ++j)
+            double r = (double)i - 0.5;
+            int w = (int)(VIGRA_CSTD::sqrt(r2 - r * r) + 0.5);
+            for (int j = -w; j <= w; ++j)
             {
                 k(j, i) = NumericTraits<value_type>::one();
                 k(j, -i) = NumericTraits<value_type>::one();
@@ -1080,16 +1087,16 @@ public:
 
         count = 1.0 / count;
 
-        for(int y=-radius; y<=radius; ++y)
+        for (int y = -radius; y <= radius; ++y)
         {
-            for(int x=-radius; x<=radius; ++x)
+            for (int x = -radius; x <= radius; ++x)
             {
-                k(x,y) = count * k(x,y);
+                k(x, y) = count * k(x, y);
             }
         }
     }
 
-        /** Init the kernel by an explicit initializer list.
+    /** Init the kernel by an explicit initializer list.
             The upper left and lower right corners (inclusive) of the kernel must be passed
             either as <tt>Shape2</tt> or <tt>Diff2D</tt> objects. A comma-separated initializer
             list for the kernel's weights is given after the assignment operator like this:
@@ -1127,7 +1134,7 @@ public:
             is 1 or equals the size of the kernel.
             \endcode
         */
-    Kernel2D & initExplicitly(Shape2 const & upperleft, Shape2 const & lowerright)
+    Kernel2D& initExplicitly(Shape2 const& upperleft, Shape2 const& lowerright)
     {
         vigra_precondition(upperleft[0] <= 0 && upperleft[1] <= 0,
                            "Kernel2D::initExplicitly(): left borders must be <= 0.");
@@ -1144,12 +1151,12 @@ public:
         return *this;
     }
 
-    Kernel2D & initExplicitly(Diff2D const & upperleft, Diff2D const & lowerright)
+    Kernel2D& initExplicitly(Diff2D const& upperleft, Diff2D const& lowerright)
     {
         return initExplicitly(Shape2(upperleft), Shape2(lowerright));
     }
 
-        /** Init the kernel by providing a BasicImage with the kernel values.
+    /** Init the kernel by providing a BasicImage with the kernel values.
 
             The kernel's origin is placed at the center of the given image.
             The norm is set to the sum of the image values.
@@ -1158,13 +1165,13 @@ public:
 
             odd image width and height;
         */
-    Kernel2D & initExplicitly(BasicImage<value_type> const & image)
+    Kernel2D& initExplicitly(BasicImage<value_type> const& image)
     {
         vigra_precondition(image.width() % 2 != 0 && image.height() % 2 != 0,
                            "Kernel2D::initExplicitly(): kernel sizes must be odd.");
 
-        left_  = Point2D((image.width() - 1) / -2, (image.height() - 1) / -2);
-        right_ = Point2D((image.width() - 1) /  2, (image.height() - 1) /  2);
+        left_ = Point2D((image.width() - 1) / -2, (image.height() - 1) / -2);
+        right_ = Point2D((image.width() - 1) / 2, (image.height() - 1) / 2);
 
         norm_ = 0;
         for (auto iter = image.begin(); iter != image.end(); ++iter)
@@ -1177,63 +1184,98 @@ public:
         return *this;
     }
 
-        /** Coordinates of the upper left corner of the kernel.
+    /** Coordinates of the upper left corner of the kernel.
          */
-    Point2D upperLeft() const { return left_; }
+    Point2D upperLeft() const
+    {
+        return left_;
+    }
 
-        /** Coordinates of the lower right corner of the kernel.
+    /** Coordinates of the lower right corner of the kernel.
          */
-    Point2D lowerRight() const { return right_; }
+    Point2D lowerRight() const
+    {
+        return right_;
+    }
 
-        /** Width of the kernel.
+    /** Width of the kernel.
          */
-    int width() const { return right_.x - left_.x + 1; }
+    int width() const
+    {
+        return right_.x - left_.x + 1;
+    }
 
-        /** Height of the kernel.
+    /** Height of the kernel.
          */
-    int height() const { return right_.y - left_.y + 1; }
+    int height() const
+    {
+        return right_.y - left_.y + 1;
+    }
 
-        /** ImageIterator that points to the center of the kernel (coordinate (0,0)).
+    /** ImageIterator that points to the center of the kernel (coordinate (0,0)).
          */
-    Iterator center() { return kernel_.upperLeft() - left_; }
+    Iterator center()
+    {
+        return kernel_.upperLeft() - left_;
+    }
 
-        /** ImageIterator that points to the center of the kernel (coordinate (0,0)).
+    /** ImageIterator that points to the center of the kernel (coordinate (0,0)).
          */
-    ConstIterator center() const { return kernel_.upperLeft() - left_; }
+    ConstIterator center() const
+    {
+        return kernel_.upperLeft() - left_;
+    }
 
-        /** Access kernel entry at given position.
+    /** Access kernel entry at given position.
          */
-    value_type & operator()(int x, int y)
-    { return kernel_[Diff2D(x,y) - left_]; }
+    value_type& operator()(int x, int y)
+    {
+        return kernel_[Diff2D(x, y) - left_];
+    }
 
-        /** Read kernel entry at given position.
+    /** Read kernel entry at given position.
          */
     value_type operator()(int x, int y) const
-    { return kernel_[Diff2D(x,y) - left_]; }
+    {
+        return kernel_[Diff2D(x, y) - left_];
+    }
 
-        /** Access kernel entry at given position.
+    /** Access kernel entry at given position.
          */
-    value_type & operator[](Diff2D const & d)
-    { return kernel_[d - left_]; }
+    value_type& operator[](Diff2D const& d)
+    {
+        return kernel_[d - left_];
+    }
 
-        /** Read kernel entry at given position.
+    /** Read kernel entry at given position.
          */
-    value_type operator[](Diff2D const & d) const
-    { return kernel_[d - left_]; }
+    value_type operator[](Diff2D const& d) const
+    {
+        return kernel_[d - left_];
+    }
 
-        /** Norm of the kernel (i.e. sum of its elements).
+    /** Norm of the kernel (i.e. sum of its elements).
          */
-    value_type norm() const { return norm_; }
+    value_type norm() const
+    {
+        return norm_;
+    }
 
-        /** The kernels default accessor.
+    /** The kernels default accessor.
          */
-    Accessor accessor() { return Accessor(); }
+    Accessor accessor()
+    {
+        return Accessor();
+    }
 
-        /** The kernels default const accessor.
+    /** The kernels default const accessor.
          */
-    ConstAccessor accessor() const { return ConstAccessor(); }
+    ConstAccessor accessor() const
+    {
+        return ConstAccessor();
+    }
 
-        /** Normalize the kernel to the given value. (The norm is the sum of all kernel
+    /** Normalize the kernel to the given value. (The norm is the sum of all kernel
             elements.) The kernel's value_type must be a division algebra or
             algebraic field.
 
@@ -1255,14 +1297,14 @@ public:
         typename NumericTraits<value_type>::RealPromote sum = *i;
         ++i;
 
-        for(; i!= iend; ++i)
+        for (; i != iend; ++i)
         {
             sum += *i;
         }
 
         sum = norm / sum;
         i = kernel_.begin();
-        for(; i != iend; ++i)
+        for (; i != iend; ++i)
         {
             *i = *i * sum;
         }
@@ -1270,28 +1312,30 @@ public:
         norm_ = norm;
     }
 
-        /** Normalize the kernel to norm 1.
+    /** Normalize the kernel to norm 1.
          */
     void normalize()
     {
         normalize(one());
     }
 
-        /** current border treatment mode
+    /** current border treatment mode
          */
     BorderTreatmentMode borderTreatment() const
-    { return border_treatment_; }
+    {
+        return border_treatment_;
+    }
 
-        /** Set border treatment mode.
+    /** Set border treatment mode.
             Only <TT>BORDER_TREATMENT_CLIP</TT> and <TT>BORDER_TREATMENT_AVOID</TT> are currently
             allowed.
         */
-    void setBorderTreatment( BorderTreatmentMode new_mode)
+    void setBorderTreatment(BorderTreatmentMode new_mode)
     {
-        vigra_precondition((new_mode == BORDER_TREATMENT_CLIP    ||
-                            new_mode == BORDER_TREATMENT_AVOID   ||
+        vigra_precondition((new_mode == BORDER_TREATMENT_CLIP ||
+                            new_mode == BORDER_TREATMENT_AVOID ||
                             new_mode == BORDER_TREATMENT_REFLECT ||
-                            new_mode == BORDER_TREATMENT_REPEAT  ||
+                            new_mode == BORDER_TREATMENT_REPEAT ||
                             new_mode == BORDER_TREATMENT_WRAP),
                            "convolveImage():\n"
                            "  Border treatment must be one of follow treatments:\n"
@@ -1320,52 +1364,46 @@ private:
 /*                                                            */
 /**************************************************************/
 
-template <class KernelIterator, class KernelAccessor>
-inline
-tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D, BorderTreatmentMode>
+template<class KernelIterator, class KernelAccessor>
+inline tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D, BorderTreatmentMode>
 kernel2d(KernelIterator ik, KernelAccessor ak, Diff2D kul, Diff2D klr,
          BorderTreatmentMode border)
 
 {
-    return
-        tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D, BorderTreatmentMode> (
-                                                             ik, ak, kul, klr, border);
+    return tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D, BorderTreatmentMode>(
+        ik, ak, kul, klr, border);
 }
 
-template <class T>
-inline
-tuple5<typename Kernel2D<T>::ConstIterator,
-       typename Kernel2D<T>::ConstAccessor,
-       Diff2D, Diff2D, BorderTreatmentMode>
-kernel2d(Kernel2D<T> const & k)
+template<class T>
+inline tuple5<typename Kernel2D<T>::ConstIterator,
+              typename Kernel2D<T>::ConstAccessor,
+              Diff2D, Diff2D, BorderTreatmentMode>
+kernel2d(Kernel2D<T> const& k)
 
 {
-    return
-        tuple5<typename Kernel2D<T>::ConstIterator,
-               typename Kernel2D<T>::ConstAccessor,
-               Diff2D, Diff2D, BorderTreatmentMode>(
-            k.center(),
-            k.accessor(),
-            k.upperLeft(), k.lowerRight(),
-            k.borderTreatment());
+    return tuple5<typename Kernel2D<T>::ConstIterator,
+                  typename Kernel2D<T>::ConstAccessor,
+                  Diff2D, Diff2D, BorderTreatmentMode>(
+        k.center(),
+        k.accessor(),
+        k.upperLeft(), k.lowerRight(),
+        k.borderTreatment());
 }
 
-template <class T>
-inline
-tuple5<typename Kernel2D<T>::ConstIterator,
-       typename Kernel2D<T>::ConstAccessor,
-       Diff2D, Diff2D, BorderTreatmentMode>
-kernel2d(Kernel2D<T> const & k, BorderTreatmentMode border)
+template<class T>
+inline tuple5<typename Kernel2D<T>::ConstIterator,
+              typename Kernel2D<T>::ConstAccessor,
+              Diff2D, Diff2D, BorderTreatmentMode>
+kernel2d(Kernel2D<T> const& k, BorderTreatmentMode border)
 
 {
-    return
-        tuple5<typename Kernel2D<T>::ConstIterator,
-               typename Kernel2D<T>::ConstAccessor,
-               Diff2D, Diff2D, BorderTreatmentMode>(
-            k.center(),
-            k.accessor(),
-            k.upperLeft(), k.lowerRight(),
-            border);
+    return tuple5<typename Kernel2D<T>::ConstIterator,
+                  typename Kernel2D<T>::ConstAccessor,
+                  Diff2D, Diff2D, BorderTreatmentMode>(
+        k.center(),
+        k.accessor(),
+        k.upperLeft(), k.lowerRight(),
+        border);
 }
 
 

@@ -35,16 +35,18 @@
 
 #ifdef HasHDF5
 
-#include "vigra/random_forest_hdf5_impex.hxx"
 #include "vigra/multi_array.hxx"
-#include <iostream>
-#include <string>
-#include <sstream>
+#include "vigra/random_forest_hdf5_impex.hxx"
 #include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <string>
 
-namespace vigra {
+namespace vigra
+{
 
-namespace detail {
+namespace detail
+{
 
 struct padded_number_string_data : public std::ostringstream
 {
@@ -56,7 +58,8 @@ padded_number_string::padded_number_string(int n)
     (*padded_number) << (n - 1);
     padded_number->w = padded_number->str().size();
 }
-std::string padded_number_string::operator()(int k) const
+std::string
+padded_number_string::operator()(int k) const
 {
     padded_number->str("");
     (*padded_number) << std::setw(padded_number->w) << std::setfill('0') << k;
@@ -67,25 +70,28 @@ padded_number_string::~padded_number_string()
     delete padded_number;
 }
 
-void options_import_HDF5(HDF5File & h5context,
-                        RandomForestOptions & opt,
-                        const std::string & name)
+void
+options_import_HDF5(HDF5File& h5context,
+                    RandomForestOptions& opt,
+                    const std::string& name)
 {
     h5context.cd(name);
     rf_import_HDF5_to_map(h5context, opt);
     h5context.cd_up();
 }
 
-void options_export_HDF5(HDF5File & h5context, RandomForestOptions const & opt,
-                         const std::string & name)
+void
+options_export_HDF5(HDF5File& h5context, RandomForestOptions const& opt,
+                    const std::string& name)
 {
     h5context.cd_mk(name);
     rf_export_map_to_HDF5(h5context, opt);
     h5context.cd_up();
 }
 
-void dt_import_HDF5(HDF5File & h5context, detail::DecisionTree & tree,
-                            const std::string & name)
+void
+dt_import_HDF5(HDF5File& h5context, detail::DecisionTree& tree,
+               const std::string& name)
 {
     // check if ext_param was written(?) and read it if not
     if (tree.ext_param_.actual_msample_ == 0)
@@ -101,9 +107,10 @@ void dt_import_HDF5(HDF5File & h5context, detail::DecisionTree & tree,
     h5context.cd_up();
 }
 
-void dt_export_HDF5(HDF5File & h5context,
-                    detail::DecisionTree const & tree,
-                    const std::string & name)
+void
+dt_export_HDF5(HDF5File& h5context,
+               detail::DecisionTree const& tree,
+               const std::string& name)
 {
     // make the folder for the tree.
     h5context.cd_mk(name);

@@ -37,23 +37,28 @@
 #define NO_IMPORT_ARRAY
 
 #include <Python.h>
+#include <boost/python.hpp>
+#include <boost/python/to_python_converter.hpp>
+// clang-format off
+#include <numpy/ndarraytypes.h>
+#include <numpy/npy_common.h>
+#include <numpy/arrayscalars.h>
+// clang-format on
 #include <vigra/matrix.hxx>
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <boost/python.hpp>
-#include <boost/python/to_python_converter.hpp>
-#include <numpy/arrayscalars.h>
 
 namespace python = boost::python;
 
-namespace vigra {
+namespace vigra
+{
 
-#define VIGRA_NUMPY_TYPECHECKER(type) \
-    if(python::object((python::detail::new_reference)PyArray_TypeObjectFromType(type)).ptr() == obj) \
+#define VIGRA_NUMPY_TYPECHECKER(type)                                                                 \
+    if (python::object((python::detail::new_reference)PyArray_TypeObjectFromType(type)).ptr() == obj) \
         return obj;
 
-#define VIGRA_NUMPY_TYPECONVERTER(type) \
-    if(python::object((python::detail::new_reference)PyArray_TypeObjectFromType(type)).ptr() == obj) \
+#define VIGRA_NUMPY_TYPECONVERTER(type)                                                               \
+    if (python::object((python::detail::new_reference)PyArray_TypeObjectFromType(type)).ptr() == obj) \
         typeID = type;
 
 struct NumpyTypenumConverter
@@ -68,11 +73,11 @@ struct NumpyTypenumConverter
     static void* convertible(PyObject* obj)
     {
         // FIXME: there should be a more elegant way to program this...
-        if(obj == 0)
+        if (obj == 0)
             return 0;
-        if(obj->ob_type == &PyArrayDescr_Type)
+        if (obj->ob_type == &PyArrayDescr_Type)
             return obj;
-        if(!PyType_Check(obj))
+        if (!PyType_Check(obj))
             return 0;
         VIGRA_NUMPY_TYPECHECKER(NPY_BOOL)
         VIGRA_NUMPY_TYPECHECKER(NPY_INT8)
@@ -96,14 +101,14 @@ struct NumpyTypenumConverter
 
     // from Python
     static void construct(PyObject* obj,
-        python::converter::rvalue_from_python_stage1_data* data)
+                          python::converter::rvalue_from_python_stage1_data* data)
     {
         void* const storage =
-            ((python::converter::rvalue_from_python_storage<NumpyAnyArray>* ) data)->storage.bytes;
+            ((python::converter::rvalue_from_python_storage<NumpyAnyArray>*)data)->storage.bytes;
 
         // FIXME: there should be a more elegant way to program this...
         int typeID = -1;
-        if(obj->ob_type == &PyArrayDescr_Type)
+        if (obj->ob_type == &PyArrayDescr_Type)
             typeID = (NPY_TYPES)((PyArray_Descr*)obj)->type_num;
         VIGRA_NUMPY_TYPECONVERTER(NPY_BOOL)
         VIGRA_NUMPY_TYPECONVERTER(NPY_INT8)
@@ -150,18 +155,18 @@ struct NumpyAnyArrayConverter
     static void* convertible(PyObject* obj)
     {
         return obj && (obj == Py_None || PyArray_Check(obj))
-                 ? obj
-                 : 0;
+                   ? obj
+                   : 0;
     }
 
     // from Python
     static void construct(PyObject* obj,
-        python::converter::rvalue_from_python_stage1_data* data)
+                          python::converter::rvalue_from_python_stage1_data* data)
     {
         void* const storage =
-            ((python::converter::rvalue_from_python_storage<NumpyAnyArray>* ) data)->storage.bytes;
+            ((python::converter::rvalue_from_python_storage<NumpyAnyArray>*)data)->storage.bytes;
 
-        if(obj == Py_None)
+        if (obj == Py_None)
             obj = 0;
 
         new (storage) NumpyAnyArray(obj);
@@ -175,33 +180,34 @@ struct NumpyAnyArrayConverter
     }
 };
 
-namespace detail {
+namespace detail
+{
 
-template <int N, class T>
+template<int N, class T>
 struct MultiArrayShapeConverterTraits
 {
     typedef TinyVector<T, N> ShapeType;
 
-    static void construct(void* const storage, PyObject * obj)
+    static void construct(void* const storage, PyObject* obj)
     {
-        ShapeType * shape = new (storage) ShapeType();
-        for(int i=0; i<PySequence_Length(obj); ++i)
+        ShapeType* shape = new (storage) ShapeType();
+        for (int i = 0; i < PySequence_Length(obj); ++i)
             (*shape)[i] = python::extract<T>(PySequence_ITEM(obj, i));
     }
 };
 
-template <class T>
+template<class T>
 struct MultiArrayShapeConverterTraits<0, T>
 {
     typedef ArrayVector<T> ShapeType;
 
-    static void construct(void* const storage, PyObject * obj)
+    static void construct(void* const storage, PyObject* obj)
     {
         int len = (obj == Py_None)
-                           ? 0
-                           : PySequence_Length(obj);
-        ShapeType * shape = new (storage) ShapeType(len);
-        for(int i=0; i<len; ++i)
+                      ? 0
+                      : PySequence_Length(obj);
+        ShapeType* shape = new (storage) ShapeType(len);
+        for (int i = 0; i < len; ++i)
             (*shape)[i] = python::extract<T>(PySequence_ITEM(obj, i));
     }
 };
@@ -209,7 +215,7 @@ struct MultiArrayShapeConverterTraits<0, T>
 } // namespace detail
 
 
-template <int M, class T>
+template<int M, class T>
 struct MultiArrayShapeConverter
 {
 
@@ -224,24 +230,24 @@ struct MultiArrayShapeConverter
 
     static void* convertible(PyObject* obj)
     {
-        if(obj == 0)
+        if (obj == 0)
             return 0;
-        if(M == 0 && obj == Py_None)
+        if (M == 0 && obj == Py_None)
             return obj;
-        if(!PySequence_Check(obj) || (M != 0 && PySequence_Length(obj) != M))
+        if (!PySequence_Check(obj) || (M != 0 && PySequence_Length(obj) != M))
             return 0;
-        for(int i=0; i<PySequence_Length(obj); ++i)
-            if(!PyNumber_Check(PySequence_ITEM(obj, i)))
+        for (int i = 0; i < PySequence_Length(obj); ++i)
+            if (!PyNumber_Check(PySequence_ITEM(obj, i)))
                 return 0;
         return obj;
     }
 
     // from Python
     static void construct(PyObject* obj,
-        python::converter::rvalue_from_python_stage1_data* data)
+                          python::converter::rvalue_from_python_stage1_data* data)
     {
         void* const storage =
-            ((python::converter::rvalue_from_python_storage<ShapeType>* ) data)->storage.bytes;
+            ((python::converter::rvalue_from_python_storage<ShapeType>*)data)->storage.bytes;
 
         detail::MultiArrayShapeConverterTraits<M, T>::construct(storage, obj);
         data->convertible = storage;
@@ -254,12 +260,13 @@ struct MultiArrayShapeConverter
     }
 };
 
-python_ptr point2DToPythonTuple(Point2D const & point)
+python_ptr
+point2DToPythonTuple(Point2D const& point)
 {
     python_ptr tuple(PyTuple_New(2), python_ptr::keep_count);
     pythonToCppException(tuple);
-    PyTuple_SET_ITEM((PyTupleObject *)tuple.get(), 0 ,pythonFromData(point.x).release());
-    PyTuple_SET_ITEM((PyTupleObject *)tuple.get(), 1 ,pythonFromData(point.y).release());
+    PyTuple_SET_ITEM((PyTupleObject*)tuple.get(), 0, pythonFromData(point.x).release());
+    PyTuple_SET_ITEM((PyTupleObject*)tuple.get(), 1, pythonFromData(point.y).release());
     return tuple;
 }
 
@@ -274,11 +281,11 @@ struct Point2DConverter
 
     static void* convertible(PyObject* obj)
     {
-        if(obj == 0 || !PySequence_Check(obj) || (PySequence_Length(obj) !=2))
+        if (obj == 0 || !PySequence_Check(obj) || (PySequence_Length(obj) != 2))
             return 0;
-        if(!PyNumber_Check(PySequence_Fast_GET_ITEM(obj,0)))
+        if (!PyNumber_Check(PySequence_Fast_GET_ITEM(obj, 0)))
             return 0;
-        if(!PyNumber_Check(PySequence_Fast_GET_ITEM(obj,0)))
+        if (!PyNumber_Check(PySequence_Fast_GET_ITEM(obj, 0)))
             return 0;
         return obj;
     }
@@ -287,9 +294,9 @@ struct Point2DConverter
     static void construct(PyObject* obj, python::converter::rvalue_from_python_stage1_data* data)
     {
         void* const storage =
-            ((python::converter::rvalue_from_python_storage<Point2D>*) data)->storage.bytes;
-        new (storage) Point2D(python::extract<int>(PySequence_Fast_GET_ITEM(obj,0)),
-                              python::extract<int>(PySequence_Fast_GET_ITEM(obj,1)));
+            ((python::converter::rvalue_from_python_storage<Point2D>*)data)->storage.bytes;
+        new (storage) Point2D(python::extract<int>(PySequence_Fast_GET_ITEM(obj, 0)),
+                              python::extract<int>(PySequence_Fast_GET_ITEM(obj, 1)));
         data->convertible = storage;
     }
 
@@ -298,16 +305,17 @@ struct Point2DConverter
     {
         return point2DToPythonTuple(p).release();
     }
-
 };
 
-void registerNumpyPoint2DConverter()
+void
+registerNumpyPoint2DConverter()
 {
     Point2DConverter();
 }
 
-template <class T>
-void registerNumpyShapeConvertersOneType()
+template<class T>
+void
+registerNumpyShapeConvertersOneType()
 {
     MultiArrayShapeConverter<0, T>();
     MultiArrayShapeConverter<1, T>();
@@ -322,15 +330,16 @@ void registerNumpyShapeConvertersOneType()
     MultiArrayShapeConverter<10, T>();
 }
 
-void registerNumpyShapeConvertersAllTypes()
+void
+registerNumpyShapeConvertersAllTypes()
 {
     registerNumpyShapeConvertersOneType<MultiArrayIndex>();
     registerNumpyShapeConvertersOneType<float>();
     registerNumpyShapeConvertersOneType<double>();
     registerNumpyShapeConvertersOneType<short>();
-    if(typeid(int) != typeid(MultiArrayIndex))
+    if (typeid(int) != typeid(MultiArrayIndex))
         registerNumpyShapeConvertersOneType<int>();
-    if(typeid(npy_intp) != typeid(MultiArrayIndex))
+    if (typeid(npy_intp) != typeid(MultiArrayIndex))
         MultiArrayShapeConverter<0, npy_intp>();
 }
 
@@ -365,14 +374,14 @@ constructNumpyArrayFromArray(python::object type, NumpyAnyArray array,
 }
 #endif
 
-PyObject *
-constructArrayFromAxistags(python::object type, ArrayVector<npy_intp> const & shape,
-                           NPY_TYPES typeCode, AxisTags const & axistags, bool init)
+PyObject*
+constructArrayFromAxistags(python::object type, ArrayVector<npy_intp> const& shape,
+                           NPY_TYPES typeCode, AxisTags const& axistags, bool init)
 {
     PyAxisTags pyaxistags(python_ptr(python::object(axistags).ptr()));
 
     ArrayVector<npy_intp> norm_shape(shape);
-    if(pyaxistags.size() > 0)
+    if (pyaxistags.size() > 0)
     {
         ArrayVector<npy_intp> permutation(pyaxistags.permutationToNormalOrder());
         applyPermutation(permutation.begin(), permutation.end(), shape.begin(), norm_shape.begin());
@@ -380,11 +389,11 @@ constructArrayFromAxistags(python::object type, ArrayVector<npy_intp> const & sh
 
     TaggedShape tagged_shape(norm_shape, pyaxistags);
 
-	// FIXME: check that type is an array class?
-	return constructArray(tagged_shape, typeCode, init, python_ptr(type.ptr()));
+    // FIXME: check that type is an array class?
+    return constructArray(tagged_shape, typeCode, init, python_ptr(type.ptr()));
 }
 
-template <class T>
+template<class T>
 struct MatrixConverter
 {
     typedef linalg::Matrix<T> ArrayType;
@@ -398,27 +407,27 @@ struct MatrixConverter
     }
 };
 
-template <class T>
+template<class T>
 MatrixConverter<T>::MatrixConverter()
 {
     using namespace boost::python;
 
-    converter::registration const * reg = converter::registry::query(type_id<ArrayType>());
+    converter::registration const* reg = converter::registry::query(type_id<ArrayType>());
 
     // register the to_python_converter only once
-    if(!reg || !reg->rvalue_chain)
+    if (!reg || !reg->rvalue_chain)
     {
         to_python_converter<ArrayType, MatrixConverter>();
     }
 }
 
-template <typename ScalarType>
+template<typename ScalarType>
 struct NumpyScalarConverter
 {
     NumpyScalarConverter()
     {
         using namespace boost::python;
-        converter::registry::push_back( &convertible, &construct, type_id<ScalarType>());
+        converter::registry::push_back(&convertible, &construct, type_id<ScalarType>());
     }
 
     // Determine if obj_ptr is a supported numpy.number
@@ -426,13 +435,13 @@ struct NumpyScalarConverter
     {
         if (PyArray_IsScalar(obj_ptr, Float32) ||
             PyArray_IsScalar(obj_ptr, Float64) ||
-            PyArray_IsScalar(obj_ptr, Int8)    ||
-            PyArray_IsScalar(obj_ptr, Int16)   ||
-            PyArray_IsScalar(obj_ptr, Int32)   ||
-            PyArray_IsScalar(obj_ptr, Int64)   ||
-            PyArray_IsScalar(obj_ptr, UInt8)   ||
-            PyArray_IsScalar(obj_ptr, UInt16)  ||
-            PyArray_IsScalar(obj_ptr, UInt32)  ||
+            PyArray_IsScalar(obj_ptr, Int8) ||
+            PyArray_IsScalar(obj_ptr, Int16) ||
+            PyArray_IsScalar(obj_ptr, Int32) ||
+            PyArray_IsScalar(obj_ptr, Int64) ||
+            PyArray_IsScalar(obj_ptr, UInt8) ||
+            PyArray_IsScalar(obj_ptr, UInt16) ||
+            PyArray_IsScalar(obj_ptr, UInt32) ||
             PyArray_IsScalar(obj_ptr, UInt64))
         {
             return obj_ptr;
@@ -440,15 +449,15 @@ struct NumpyScalarConverter
         return 0;
     }
 
-    static void construct( PyObject* obj_ptr, boost::python::converter::rvalue_from_python_stage1_data* data)
+    static void construct(PyObject* obj_ptr, boost::python::converter::rvalue_from_python_stage1_data* data)
     {
         using namespace boost::python;
 
         // Grab pointer to memory into which to construct the C++ scalar
-        void* storage = ((converter::rvalue_from_python_storage<ScalarType>*) data)->storage.bytes;
+        void* storage = ((converter::rvalue_from_python_storage<ScalarType>*)data)->storage.bytes;
 
         // in-place construct the new scalar value
-        ScalarType * scalar = new (storage) ScalarType;
+        ScalarType* scalar = new (storage) ScalarType;
 
         if (PyArray_IsScalar(obj_ptr, Float32))
             (*scalar) = PyArrayScalar_VAL(obj_ptr, Float32);
@@ -477,7 +486,8 @@ struct NumpyScalarConverter
 };
 
 
-void registerNumpyArrayConverters()
+void
+registerNumpyArrayConverters()
 {
     NumpyTypenumConverter();
     registerNumpyShapeConvertersAllTypes();
@@ -507,4 +517,3 @@ void registerNumpyArrayConverters()
 }
 
 } // namespace vigra
-

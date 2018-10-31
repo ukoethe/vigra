@@ -37,13 +37,15 @@
 #define VIGRA_NUMPY_ARRAY_TRAITS_HXX
 
 #ifndef NPY_NO_DEPRECATED_API
-# define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #endif
 
-#include "numerictraits.hxx"
 #include "multi_array.hxx"
+#include "numerictraits.hxx"
 #include "numpy_array_taggedshape.hxx"
-namespace vigra {
+
+namespace vigra
+{
 
 /********************************************************/
 /*                                                      */
@@ -52,12 +54,14 @@ namespace vigra {
 /********************************************************/
 
 template<class ValueType>
-struct ERROR_NumpyArrayValuetypeTraits_not_specialized_for_ { };
+struct ERROR_NumpyArrayValuetypeTraits_not_specialized_for_
+{
+};
 
 template<class ValueType>
 struct NumpyArrayValuetypeTraits
 {
-    static bool isValuetypeCompatible(PyArrayObject const *)
+    static bool isValuetypeCompatible(PyArrayObject const*)
     {
         return ERROR_NumpyArrayValuetypeTraits_not_specialized_for_<ValueType>();
     }
@@ -74,74 +78,74 @@ struct NumpyArrayValuetypeTraits
         return std::string("ERROR: NumpyArrayValuetypeTraits not specialized for this case");
     }
 
-    static PyObject * typeObject()
+    static PyObject* typeObject()
     {
-        return (PyObject *)0;
+        return (PyObject*)0;
     }
 };
 
 template<class ValueType>
 ERROR_NumpyArrayValuetypeTraits_not_specialized_for_<ValueType> NumpyArrayValuetypeTraits<ValueType>::typeCode;
 
-#define VIGRA_NUMPY_VALUETYPE_TRAITS(type, typeID, numpyTypeName, impexTypeName) \
-template <> \
-struct NumpyArrayValuetypeTraits<type > \
-{ \
-    static bool isValuetypeCompatible(PyArrayObject const * obj) /* obj must not be NULL */ \
-    { \
-        return PyArray_EquivTypenums(typeID, PyArray_DESCR((PyArrayObject *)obj)->type_num) && \
-               PyArray_ITEMSIZE((PyArrayObject *)obj) == sizeof(type); \
-    } \
-    \
-    static NPY_TYPES const typeCode = typeID; \
-    \
-    static std::string typeName() \
-    { \
-        return #numpyTypeName; \
-    } \
-    \
-    static std::string typeNameImpex() \
-    { \
-        return impexTypeName; \
-    } \
-    \
-    static PyObject * typeObject() \
-    { \
-        return PyArray_TypeObjectFromType(typeID); \
-    } \
-};
+#define VIGRA_NUMPY_VALUETYPE_TRAITS(type, typeID, numpyTypeName, impexTypeName)                  \
+    template<>                                                                                    \
+    struct NumpyArrayValuetypeTraits<type>                                                        \
+    {                                                                                             \
+        static bool isValuetypeCompatible(PyArrayObject const* obj) /* obj must not be NULL */    \
+        {                                                                                         \
+            return PyArray_EquivTypenums(typeID, PyArray_DESCR((PyArrayObject*)obj)->type_num) && \
+                   PyArray_ITEMSIZE((PyArrayObject*)obj) == sizeof(type);                         \
+        }                                                                                         \
+                                                                                                  \
+        static NPY_TYPES const typeCode = typeID;                                                 \
+                                                                                                  \
+        static std::string typeName()                                                             \
+        {                                                                                         \
+            return #numpyTypeName;                                                                \
+        }                                                                                         \
+                                                                                                  \
+        static std::string typeNameImpex()                                                        \
+        {                                                                                         \
+            return impexTypeName;                                                                 \
+        }                                                                                         \
+                                                                                                  \
+        static PyObject* typeObject()                                                             \
+        {                                                                                         \
+            return PyArray_TypeObjectFromType(typeID);                                            \
+        }                                                                                         \
+    };
 
 
-VIGRA_NUMPY_VALUETYPE_TRAITS(bool,           NPY_BOOL, bool, "UINT8")
-VIGRA_NUMPY_VALUETYPE_TRAITS(signed char,    NPY_INT8, int8, "INT16")
-VIGRA_NUMPY_VALUETYPE_TRAITS(unsigned char,  NPY_UINT8, uint8, "UINT8")
-VIGRA_NUMPY_VALUETYPE_TRAITS(short,          NPY_INT16, int16, "INT16")
+VIGRA_NUMPY_VALUETYPE_TRAITS(bool, NPY_BOOL, bool, "UINT8")
+VIGRA_NUMPY_VALUETYPE_TRAITS(signed char, NPY_INT8, int8, "INT16")
+VIGRA_NUMPY_VALUETYPE_TRAITS(unsigned char, NPY_UINT8, uint8, "UINT8")
+VIGRA_NUMPY_VALUETYPE_TRAITS(short, NPY_INT16, int16, "INT16")
 VIGRA_NUMPY_VALUETYPE_TRAITS(unsigned short, NPY_UINT16, uint16, "UINT16")
 
 #if VIGRA_BITSOF_LONG == 32
-VIGRA_NUMPY_VALUETYPE_TRAITS(long,           NPY_INT32, int32, "INT32")
-VIGRA_NUMPY_VALUETYPE_TRAITS(unsigned long,  NPY_UINT32, uint32, "UINT32")
+VIGRA_NUMPY_VALUETYPE_TRAITS(long, NPY_INT32, int32, "INT32")
+VIGRA_NUMPY_VALUETYPE_TRAITS(unsigned long, NPY_UINT32, uint32, "UINT32")
 #elif VIGRA_BITSOF_LONG == 64
-VIGRA_NUMPY_VALUETYPE_TRAITS(long,           NPY_INT64, int64, "DOUBLE")
-VIGRA_NUMPY_VALUETYPE_TRAITS(unsigned long,  NPY_UINT64, uint64, "DOUBLE")
+VIGRA_NUMPY_VALUETYPE_TRAITS(long, NPY_INT64, int64, "DOUBLE")
+VIGRA_NUMPY_VALUETYPE_TRAITS(unsigned long, NPY_UINT64, uint64, "DOUBLE")
 #endif
 
 #if VIGRA_BITSOF_INT == 32
-VIGRA_NUMPY_VALUETYPE_TRAITS(int,            NPY_INT32, int32, "INT32")
-VIGRA_NUMPY_VALUETYPE_TRAITS(unsigned int,   NPY_UINT32, uint32, "UINT32")
+VIGRA_NUMPY_VALUETYPE_TRAITS(int, NPY_INT32, int32, "INT32")
+VIGRA_NUMPY_VALUETYPE_TRAITS(unsigned int, NPY_UINT32, uint32, "UINT32")
 #elif VIGRA_BITSOF_INT == 64
-VIGRA_NUMPY_VALUETYPE_TRAITS(int,            NPY_INT64, int64, "DOUBLE")
-VIGRA_NUMPY_VALUETYPE_TRAITS(unsigned int,   NPY_UINT64, uint64, "DOUBLE")
+VIGRA_NUMPY_VALUETYPE_TRAITS(int, NPY_INT64, int64, "DOUBLE")
+VIGRA_NUMPY_VALUETYPE_TRAITS(unsigned int, NPY_UINT64, uint64, "DOUBLE")
 #endif
 
 #ifdef PY_LONG_LONG
-# if VIGRA_BITSOF_LONG_LONG == 32
-VIGRA_NUMPY_VALUETYPE_TRAITS(long long,            NPY_INT32, int32, "INT32")
-VIGRA_NUMPY_VALUETYPE_TRAITS(unsigned long long,   NPY_UINT32, uint32, "UINT32")
-# elif VIGRA_BITSOF_LONG_LONG == 64
-VIGRA_NUMPY_VALUETYPE_TRAITS(long long,          NPY_INT64, int64, "DOUBLE")
+#if VIGRA_BITSOF_LONG_LONG == 32
+VIGRA_NUMPY_VALUETYPE_TRAITS(long long, NPY_INT32, int32, "INT32")
+VIGRA_NUMPY_VALUETYPE_TRAITS(unsigned long long, NPY_UINT32, uint32, "UINT32")
+#elif VIGRA_BITSOF_LONG_LONG == 64
+VIGRA_NUMPY_VALUETYPE_TRAITS(long long, NPY_INT64, int64, "DOUBLE")
 VIGRA_NUMPY_VALUETYPE_TRAITS(unsigned long long, NPY_UINT64, uint64, "DOUBLE")
-# endif
+#endif
 #endif
 
 VIGRA_NUMPY_VALUETYPE_TRAITS(npy_float32, NPY_FLOAT32, float32, "FLOAT")
@@ -179,17 +183,17 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     typedef NumpyArrayValuetypeTraits<T> ValuetypeTraits;
     static NPY_TYPES const typeCode = ValuetypeTraits::typeCode;
 
-    static bool isArray(PyObject * obj)
+    static bool isArray(PyObject* obj)
     {
         return obj && PyArray_Check(obj);
     }
 
-    static bool isValuetypeCompatible(PyArrayObject * obj)  /* obj must not be NULL */
+    static bool isValuetypeCompatible(PyArrayObject* obj) /* obj must not be NULL */
     {
         return ValuetypeTraits::isValuetypeCompatible(obj);
     }
 
-    static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
+    static bool isShapeCompatible(PyArrayObject* array) /* array must not be NULL */
     {
         int ndim = PyArray_NDIM(array);
 
@@ -200,15 +204,15 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     // from a Python numpy.ndarray to check whether types and memory layout are
     // compatible. During overload resolution, boost::python iterates through the list
     // of overloads and invokes the first function where all arguments pass this check.
-    static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
+    static bool isPropertyCompatible(PyArrayObject* obj) /* obj must not be NULL */
     {
         return isShapeCompatible(obj) && isValuetypeCompatible(obj);
     }
 
     // Construct a tagged shape from a 'shape - axistags' pair (called in
     // NumpyArray::taggedShape()).
-    template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape, PyAxisTags axistags)
+    template<class U>
+    static TaggedShape taggedShape(TinyVector<U, N> const& shape, PyAxisTags axistags)
     {
         return TaggedShape(shape, axistags);
     }
@@ -216,9 +220,9 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     // Construct a tagged shape from a 'shape - order' pair by creating
     // the appropriate axistags object for that order and NumpyArray type.
     // (called in NumpyArray constructors via NumpyArray::init())
-    template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape,
-                                   std::string const & /* order */ = "")
+    template<class U>
+    static TaggedShape taggedShape(TinyVector<U, N> const& shape,
+                                   std::string const& /* order */ = "")
     {
         // We ignore the 'order' parameter, because we don't know the axis meaning
         // in a plain array (use Singleband, Multiband, TinyVector etc. instead).
@@ -229,10 +233,10 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
 
     // Adjust a TaggedShape that was created by another array to the properties of
     // the present NumpyArray type (called in NumpyArray::reshapeIfEmpty()).
-    static void finalizeTaggedShape(TaggedShape & tagged_shape)
+    static void finalizeTaggedShape(TaggedShape& tagged_shape)
     {
         vigra_precondition(tagged_shape.size() == N,
-                  "reshapeIfEmpty(): tagged_shape has wrong size.");
+                           "reshapeIfEmpty(): tagged_shape has wrong size.");
     }
 
     // This function is used to synchronize the axis re-ordering of 'data'
@@ -240,17 +244,17 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     // with a different scale for each axis, 'data' would contains those scales,
     // and permuteLikewise() would make sure that the scales are applied to the right
     // axes, regardless of axis re-ordering.
-    template <class ARRAY>
-    static void permuteLikewise(python_ptr array, ARRAY const & data, ARRAY & res)
+    template<class ARRAY>
+    static void permuteLikewise(python_ptr array, ARRAY const& data, ARRAY& res)
     {
         vigra_precondition((int)data.size() == N,
-            "NumpyArray::permuteLikewise(): size mismatch.");
+                           "NumpyArray::permuteLikewise(): size mismatch.");
 
         ArrayVector<npy_intp> permute;
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                        AxisInfo::AllAxes, true);
 
-        if(permute.size() != 0)
+        if (permute.size() != 0)
         {
             applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
         }
@@ -258,13 +262,13 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
 
     // This function is called in NumpyArray::setupArrayView() to determine the
     // desired axis re-ordering.
-    template <class U>
-    static void permutationToSetupOrder(python_ptr array, ArrayVector<U> & permute)
+    template<class U>
+    static void permutationToSetupOrder(python_ptr array, ArrayVector<U>& permute)
     {
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                        AxisInfo::AllAxes, true);
 
-        if(permute.size() == 0)
+        if (permute.size() == 0)
         {
             permute.resize(N);
             linearSequence(permute.begin(), permute.end());
@@ -275,13 +279,13 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     // a numpy.ndarray view for a block of memory managed by C++.
     // The term 'unsafe' should remind you that memory management cannot be done
     // automatically, bu must be done explicitly by the programmer.
-    template <class U>
-    static python_ptr unsafeConstructorFromData(TinyVector<U, N> const & shape,
-                                                T *data, TinyVector<U, N> const & stride)
+    template<class U>
+    static python_ptr unsafeConstructorFromData(TinyVector<U, N> const& shape,
+                                                T* data, TinyVector<U, N> const& stride)
     {
         TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
         return constructNumpyArrayFromData(shape, npyStride.begin(),
-                                                    ValuetypeTraits::typeCode, data);
+                                           ValuetypeTraits::typeCode, data);
     }
 };
 
@@ -289,25 +293,25 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
 
 template<unsigned int N, class T>
 struct NumpyArrayTraits<N, T, UnstridedArrayTag>
-: public NumpyArrayTraits<N, T, StridedArrayTag>
+    : public NumpyArrayTraits<N, T, StridedArrayTag>
 {
     typedef NumpyArrayTraits<N, T, StridedArrayTag> BaseType;
     typedef typename BaseType::ValuetypeTraits ValuetypeTraits;
 
-    static bool isShapeCompatible(PyArrayObject * array) /* obj must not be NULL */
+    static bool isShapeCompatible(PyArrayObject* array) /* obj must not be NULL */
     {
-        PyObject * obj = (PyObject *)array;
+        PyObject* obj = (PyObject*)array;
         int ndim = PyArray_NDIM(array);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
-        npy_intp * strides = PyArray_STRIDES(array);
+        npy_intp* strides = PyArray_STRIDES(array);
 
-        if(channelIndex < ndim)
+        if (channelIndex < ndim)
         {
             // When we have a channel axis, it will become the innermost dimension
             return (ndim == N && strides[channelIndex] == sizeof(T));
         }
-        else if(majorIndex < ndim)
+        else if (majorIndex < ndim)
         {
             // When we have axistags, but no channel axis, the major spatial
             // axis will be the innermost dimension
@@ -320,7 +324,7 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
         }
     }
 
-    static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
+    static bool isPropertyCompatible(PyArrayObject* obj) /* obj must not be NULL */
     {
         return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
@@ -330,71 +334,72 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
 
 template<unsigned int N, class T>
 struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
-: public NumpyArrayTraits<N, T, StridedArrayTag>
+    : public NumpyArrayTraits<N, T, StridedArrayTag>
 {
     typedef NumpyArrayTraits<N, T, StridedArrayTag> BaseType;
     typedef typename BaseType::ValuetypeTraits ValuetypeTraits;
 
-    static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
+    static bool isShapeCompatible(PyArrayObject* array) /* array must not be NULL */
     {
-        PyObject * obj = (PyObject *)array;
+        PyObject* obj = (PyObject*)array;
         int ndim = PyArray_NDIM(array);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
 
         // If we have no channel axis (because either we don't have axistags,
         // or the tags do not contain a channel axis), ndim must match.
-        if(channelIndex == ndim)
+        if (channelIndex == ndim)
             return ndim == N;
 
         // Otherwise, the channel axis must be a singleton axis that we can drop.
-        return ndim == N+1 && PyArray_DIM(array, channelIndex) == 1;
+        return ndim == N + 1 && PyArray_DIM(array, channelIndex) == 1;
     }
 
-    static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
+    static bool isPropertyCompatible(PyArrayObject* obj) /* obj must not be NULL */
     {
         return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
 
-    template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape, PyAxisTags axistags)
+    template<class U>
+    static TaggedShape taggedShape(TinyVector<U, N> const& shape, PyAxisTags axistags)
     {
         return TaggedShape(shape, axistags).setChannelCount(1);
     }
 
-    template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape, std::string const & order = "")
+    template<class U>
+    static TaggedShape taggedShape(TinyVector<U, N> const& shape, std::string const& order = "")
     {
         return TaggedShape(shape,
-                  PyAxisTags(detail::defaultAxistags(shape.size()+1, order))).setChannelCount(1);
+                           PyAxisTags(detail::defaultAxistags(shape.size() + 1, order)))
+            .setChannelCount(1);
     }
 
-    static void finalizeTaggedShape(TaggedShape & tagged_shape)
+    static void finalizeTaggedShape(TaggedShape& tagged_shape)
     {
-        if(tagged_shape.axistags.hasChannelAxis())
+        if (tagged_shape.axistags.hasChannelAxis())
         {
             tagged_shape.setChannelCount(1);
-            vigra_precondition(tagged_shape.size() == N+1,
-                     "reshapeIfEmpty(): tagged_shape has wrong size.");
+            vigra_precondition(tagged_shape.size() == N + 1,
+                               "reshapeIfEmpty(): tagged_shape has wrong size.");
         }
         else
         {
             tagged_shape.setChannelCount(0);
             vigra_precondition(tagged_shape.size() == N,
-                     "reshapeIfEmpty(): tagged_shape has wrong size.");
+                               "reshapeIfEmpty(): tagged_shape has wrong size.");
         }
     }
 
-    template <class ARRAY>
-    static void permuteLikewise(python_ptr array, ARRAY const & data, ARRAY & res)
+    template<class ARRAY>
+    static void permuteLikewise(python_ptr array, ARRAY const& data, ARRAY& res)
     {
         vigra_precondition((int)data.size() == N,
-            "NumpyArray::permuteLikewise(): size mismatch.");
+                           "NumpyArray::permuteLikewise(): size mismatch.");
 
         ArrayVector<npy_intp> permute;
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                        AxisInfo::NonChannel, true);
 
-        if(permute.size() == 0)
+        if (permute.size() == 0)
         {
             permute.resize(N);
             linearSequence(permute.begin(), permute.end());
@@ -403,17 +408,17 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
         applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
     }
 
-    template <class U>
-    static void permutationToSetupOrder(python_ptr array, ArrayVector<U> & permute)
+    template<class U>
+    static void permutationToSetupOrder(python_ptr array, ArrayVector<U>& permute)
     {
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                        AxisInfo::AllAxes, true);
-        if(permute.size() == 0)
+        if (permute.size() == 0)
         {
             permute.resize(N);
             linearSequence(permute.begin(), permute.end());
         }
-        else if(permute.size() == N+1)
+        else if (permute.size() == N + 1)
         {
             permute.erase(permute.begin());
         }
@@ -424,36 +429,36 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
 
 template<unsigned int N, class T>
 struct NumpyArrayTraits<N, Singleband<T>, UnstridedArrayTag>
-: public NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
+    : public NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
 {
     typedef NumpyArrayTraits<N, T, UnstridedArrayTag> UnstridedTraits;
     typedef NumpyArrayTraits<N, Singleband<T>, StridedArrayTag> BaseType;
     typedef typename BaseType::ValuetypeTraits ValuetypeTraits;
 
-    static bool isShapeCompatible(PyArrayObject * array) /* obj must not be NULL */
+    static bool isShapeCompatible(PyArrayObject* array) /* obj must not be NULL */
     {
-        PyObject * obj = (PyObject *)array;
+        PyObject* obj = (PyObject*)array;
         int ndim = PyArray_NDIM(array);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
-        npy_intp * strides = PyArray_STRIDES(array);
+        npy_intp* strides = PyArray_STRIDES(array);
 
         // If we have no axistags, ndim must match, and axis 0 must be unstrided.
-        if(majorIndex == ndim)
+        if (majorIndex == ndim)
             return N == ndim && strides[0] == sizeof(T);
 
         // If we have axistags, but no channel axis, ndim must match,
         // and the major non-channel axis must be unstrided.
-        if(channelIndex == ndim)
+        if (channelIndex == ndim)
             return N == ndim && strides[majorIndex] == sizeof(T);
 
         // Otherwise, the channel axis must be a singleton axis that we can drop,
         // and the major non-channel axis must be unstrided.
-        return ndim == N+1 && PyArray_DIM(array, channelIndex) == 1 &&
-                strides[majorIndex] == sizeof(T);
+        return ndim == N + 1 && PyArray_DIM(array, channelIndex) == 1 &&
+               strides[majorIndex] == sizeof(T);
     }
 
-    static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
+    static bool isPropertyCompatible(PyArrayObject* obj) /* obj must not be NULL */
     {
         return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
@@ -463,84 +468,85 @@ struct NumpyArrayTraits<N, Singleband<T>, UnstridedArrayTag>
 
 template<unsigned int N, class T>
 struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
-: public NumpyArrayTraits<N, T, StridedArrayTag>
+    : public NumpyArrayTraits<N, T, StridedArrayTag>
 {
     typedef NumpyArrayTraits<N, T, StridedArrayTag> BaseType;
     typedef typename BaseType::ValuetypeTraits ValuetypeTraits;
 
-    static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
+    static bool isShapeCompatible(PyArrayObject* array) /* array must not be NULL */
     {
-        PyObject * obj = (PyObject*)array;
+        PyObject* obj = (PyObject*)array;
         int ndim = PyArray_NDIM(array);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
 
-        if(channelIndex < ndim)
+        if (channelIndex < ndim)
         {
             // When we have a channel axis, ndim must match.
             return ndim == N;
         }
-        else if(majorIndex < ndim)
+        else if (majorIndex < ndim)
         {
             // When we have axistags, but no channel axis, we must add a singleton axis.
-            return ndim == N-1;
+            return ndim == N - 1;
         }
         else
         {
             // When we have no axistags, we may add a singleton dimension.
-            return ndim == N || ndim == N-1;
+            return ndim == N || ndim == N - 1;
         }
     }
 
-    static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
+    static bool isPropertyCompatible(PyArrayObject* obj) /* obj must not be NULL */
     {
         return isShapeCompatible(obj) && ValuetypeTraits::isValuetypeCompatible(obj);
     }
 
-    template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape, PyAxisTags axistags)
+    template<class U>
+    static TaggedShape taggedShape(TinyVector<U, N> const& shape, PyAxisTags axistags)
     {
         return TaggedShape(shape, axistags).setChannelIndexLast();
     }
 
-    template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape, std::string const & order = "")
+    template<class U>
+    static TaggedShape taggedShape(TinyVector<U, N> const& shape, std::string const& order = "")
     {
         return TaggedShape(shape,
-                    PyAxisTags(detail::defaultAxistags(shape.size(), order))).setChannelIndexLast();
+                           PyAxisTags(detail::defaultAxistags(shape.size(), order)))
+            .setChannelIndexLast();
     }
 
-    static void finalizeTaggedShape(TaggedShape & tagged_shape)
+    static void finalizeTaggedShape(TaggedShape& tagged_shape)
     {
         // When there is only one channel, and the axistags don't enforce an
         // explicit channel axis, we return an array without explicit channel axis.
-        if(tagged_shape.channelCount() == 1 && !tagged_shape.axistags.hasChannelAxis())
+        if (tagged_shape.channelCount() == 1 && !tagged_shape.axistags.hasChannelAxis())
         {
             tagged_shape.setChannelCount(0);
-            vigra_precondition(tagged_shape.size() == N-1,
-                  "reshapeIfEmpty(): tagged_shape has wrong size.");
+            vigra_precondition(tagged_shape.size() == N - 1,
+                               "reshapeIfEmpty(): tagged_shape has wrong size.");
         }
         else
         {
             vigra_precondition(tagged_shape.size() == N,
-                  "reshapeIfEmpty(): tagged_shape has wrong size.");
+                               "reshapeIfEmpty(): tagged_shape has wrong size.");
         }
     }
 
-    template <class ARRAY>
-    static void permuteLikewise(python_ptr array, ARRAY const & data, ARRAY & res)
+    template<class ARRAY>
+    static void permuteLikewise(python_ptr array, ARRAY const& data, ARRAY& res)
     {
         ArrayVector<npy_intp> permute;
 
-        if((int)data.size() == N)
+        if ((int)data.size() == N)
         {
             vigra_precondition(PyArray_NDIM((PyArrayObject*)array.get()) == N,
-                "NumpyArray::permuteLikewise(): input array has no channel axis.");
+                               "NumpyArray::permuteLikewise(): input array has no channel axis.");
 
             detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                            AxisInfo::AllAxes, true);
 
-            if(permute.size() == 0)
+            if (permute.size() == 0)
             {
                 permute.resize(N);
                 linearSequence(permute.begin(), permute.end());
@@ -549,22 +555,22 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
             {
                 // rotate channel axis to last position
                 int channelIndex = permute[0];
-                for(unsigned k=1; k<N; ++k)
-                    permute[k-1] = permute[k];
-                permute[N-1] = channelIndex;
+                for (unsigned k = 1; k < N; ++k)
+                    permute[k - 1] = permute[k];
+                permute[N - 1] = channelIndex;
             }
         }
         else
         {
-            vigra_precondition((int)data.size() == N-1,
-                "NumpyArray::permuteLikewise(): size mismatch.");
+            vigra_precondition((int)data.size() == N - 1,
+                               "NumpyArray::permuteLikewise(): size mismatch.");
 
             detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                            AxisInfo::NonChannel, true);
 
-            if(permute.size() == 0)
+            if (permute.size() == 0)
             {
-                permute.resize(N-1);
+                permute.resize(N - 1);
                 linearSequence(permute.begin(), permute.end());
             }
         }
@@ -572,24 +578,24 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
         applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
     }
 
-    template <class U>
-    static void permutationToSetupOrder(python_ptr array, ArrayVector<U> & permute)
+    template<class U>
+    static void permutationToSetupOrder(python_ptr array, ArrayVector<U>& permute)
     {
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                        AxisInfo::AllAxes, true);
 
-        if(permute.size() == 0)
+        if (permute.size() == 0)
         {
             permute.resize(PyArray_NDIM((PyArrayObject*)array.get()));
             linearSequence(permute.begin(), permute.end());
         }
-        else if(permute.size() == N)
+        else if (permute.size() == N)
         {
             // if we have a channel axis, rotate it to last position
             int channelIndex = permute[0];
-            for(decltype(permute.size()) k=1; k<N; ++k)
-                permute[k-1] = permute[k];
-            permute[N-1] = channelIndex;
+            for (decltype(permute.size()) k = 1; k < N; ++k)
+                permute[k - 1] = permute[k];
+            permute[N - 1] = channelIndex;
         }
     }
 };
@@ -598,40 +604,40 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
 
 template<unsigned int N, class T>
 struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
-: public NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
+    : public NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
 {
     typedef NumpyArrayTraits<N, Multiband<T>, StridedArrayTag> BaseType;
     typedef typename BaseType::ValuetypeTraits ValuetypeTraits;
 
-    static bool isShapeCompatible(PyArrayObject * array) /* obj must not be NULL */
+    static bool isShapeCompatible(PyArrayObject* array) /* obj must not be NULL */
     {
-        PyObject * obj = (PyObject *)array;
+        PyObject* obj = (PyObject*)array;
         int ndim = PyArray_NDIM(array);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
-        npy_intp * strides = PyArray_STRIDES(array);
+        npy_intp* strides = PyArray_STRIDES(array);
 
-        if(channelIndex < ndim)
+        if (channelIndex < ndim)
         {
             // When we have a channel axis, ndim must match, and the major non-channel
             // axis must be unstrided.
             return ndim == N && strides[majorIndex] == sizeof(T);
         }
-        else if(majorIndex < ndim)
+        else if (majorIndex < ndim)
         {
             // When we have axistags, but no channel axis, we will add a
             // singleton channel axis, and the major non-channel axis must be unstrided.
-            return ndim == N-1 && strides[majorIndex] == sizeof(T);
+            return ndim == N - 1 && strides[majorIndex] == sizeof(T);
         }
         else
         {
             // When we have no axistags, axis 0 must be unstrided, but we
             // may add a singleton dimension at the end.
-            return (ndim == N || ndim == N-1) && strides[0] == sizeof(T);
+            return (ndim == N || ndim == N - 1) && strides[0] == sizeof(T);
         }
     }
 
-    static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
+    static bool isPropertyCompatible(PyArrayObject* obj) /* obj must not be NULL */
     {
         return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
@@ -647,38 +653,38 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
     typedef NumpyArrayValuetypeTraits<T> ValuetypeTraits;
     static NPY_TYPES const typeCode = ValuetypeTraits::typeCode;
 
-    static bool isArray(PyObject * obj)
+    static bool isArray(PyObject* obj)
     {
         return obj && PyArray_Check(obj);
     }
 
-    static bool isValuetypeCompatible(PyArrayObject * obj)  /* obj must not be NULL */
+    static bool isValuetypeCompatible(PyArrayObject* obj) /* obj must not be NULL */
     {
         return ValuetypeTraits::isValuetypeCompatible(obj);
     }
 
-    static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
+    static bool isShapeCompatible(PyArrayObject* array) /* array must not be NULL */
     {
-        PyObject * obj = (PyObject *)array;
+        PyObject* obj = (PyObject*)array;
 
-         // We need an extra channel axis.
-         if(PyArray_NDIM(array) != N+1)
+        // We need an extra channel axis.
+        if (PyArray_NDIM(array) != N + 1)
             return false;
 
         // When there are no axistags, we assume that the last axis represents the channels.
         long channelIndex = pythonGetAttr(obj, "channelIndex", N);
-        npy_intp * strides = PyArray_STRIDES(array);
+        npy_intp* strides = PyArray_STRIDES(array);
 
         // find the non-channel axis with smallest stride
-        long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", N+1);
-        if(majorIndex >= N+1)
+        long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", N + 1);
+        if (majorIndex >= N + 1)
         {
             npy_intp smallest = NumericTraits<npy_intp>::max();
-            for(unsigned int k=0; k<N+1; ++k)
+            for (unsigned int k = 0; k < N + 1; ++k)
             {
-                if(k == channelIndex)
+                if (k == channelIndex)
                     continue;
-                if(strides[k] < smallest)
+                if (strides[k] < smallest)
                 {
                     smallest = strides[k];
                     majorIndex = k;
@@ -688,45 +694,46 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
 
         return PyArray_DIM(array, channelIndex) == M &&
                strides[channelIndex] == sizeof(T) &&
-               strides[majorIndex] % (M*sizeof(T)) == 0;
+               strides[majorIndex] % (M * sizeof(T)) == 0;
     }
 
-    static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
+    static bool isPropertyCompatible(PyArrayObject* obj) /* obj must not be NULL */
     {
         return isShapeCompatible(obj) && ValuetypeTraits::isValuetypeCompatible(obj);
     }
 
-    template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape, PyAxisTags axistags)
+    template<class U>
+    static TaggedShape taggedShape(TinyVector<U, N> const& shape, PyAxisTags axistags)
     {
         return TaggedShape(shape, axistags).setChannelCount(M);
     }
 
-    template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape, std::string const & order = "")
+    template<class U>
+    static TaggedShape taggedShape(TinyVector<U, N> const& shape, std::string const& order = "")
     {
         return TaggedShape(shape,
-                     PyAxisTags(detail::defaultAxistags(shape.size()+1, order))).setChannelCount(M);
+                           PyAxisTags(detail::defaultAxistags(shape.size() + 1, order)))
+            .setChannelCount(M);
     }
 
-    static void finalizeTaggedShape(TaggedShape & tagged_shape)
+    static void finalizeTaggedShape(TaggedShape& tagged_shape)
     {
         tagged_shape.setChannelCount(M);
-        vigra_precondition(tagged_shape.size() == N+1,
-              "reshapeIfEmpty(): tagged_shape has wrong size.");
+        vigra_precondition(tagged_shape.size() == N + 1,
+                           "reshapeIfEmpty(): tagged_shape has wrong size.");
     }
 
-    template <class ARRAY>
-    static void permuteLikewise(python_ptr array, ARRAY const & data, ARRAY & res)
+    template<class ARRAY>
+    static void permuteLikewise(python_ptr array, ARRAY const& data, ARRAY& res)
     {
         vigra_precondition((int)data.size() == N,
-            "NumpyArray::permuteLikewise(): size mismatch.");
+                           "NumpyArray::permuteLikewise(): size mismatch.");
 
         ArrayVector<npy_intp> permute;
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                        AxisInfo::NonChannel, true);
 
-        if(permute.size() == 0)
+        if (permute.size() == 0)
         {
             permute.resize(N);
             linearSequence(permute.begin(), permute.end());
@@ -735,38 +742,38 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
         applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
     }
 
-    template <class U>
-    static void permutationToSetupOrder(python_ptr array, ArrayVector<U> & permute)
+    template<class U>
+    static void permutationToSetupOrder(python_ptr array, ArrayVector<U>& permute)
     {
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                        AxisInfo::AllAxes, true);
-        if(permute.size() == 0)
+        if (permute.size() == 0)
         {
             permute.resize(N);
             linearSequence(permute.begin(), permute.end());
         }
-        else if(permute.size() == N+1)
+        else if (permute.size() == N + 1)
         {
             permute.erase(permute.begin());
         }
     }
 
-    template <class U>
-    static python_ptr unsafeConstructorFromData(TinyVector<U, N> const & shape,
-                                                value_type *data, TinyVector<U, N> const & stride)
+    template<class U>
+    static python_ptr unsafeConstructorFromData(TinyVector<U, N> const& shape,
+                                                value_type* data, TinyVector<U, N> const& stride)
     {
-        TinyVector<npy_intp, N+1> npyShape;
+        TinyVector<npy_intp, N + 1> npyShape;
         std::copy(shape.begin(), shape.end(), npyShape.begin());
         npyShape[N] = M;
 
-        TinyVector<npy_intp, N+1> npyStride;
+        TinyVector<npy_intp, N + 1> npyStride;
         std::transform(
             stride.begin(), stride.end(), npyStride.begin(),
             std::bind2nd(std::multiplies<npy_intp>(), sizeof(value_type)));
         npyStride[N] = sizeof(T);
 
         return constructNumpyArrayFromData(npyShape, npyStride.begin(),
-                                                    ValuetypeTraits::typeCode, data);
+                                           ValuetypeTraits::typeCode, data);
     }
 };
 
@@ -774,37 +781,35 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
 
 template<unsigned int N, int M, class T>
 struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
-: public NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
+    : public NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
 {
     typedef NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag> BaseType;
     typedef typename BaseType::value_type value_type;
     typedef typename BaseType::ValuetypeTraits ValuetypeTraits;
 
-    static bool isShapeCompatible(PyArrayObject * array) /* obj must not be NULL */
+    static bool isShapeCompatible(PyArrayObject* array) /* obj must not be NULL */
     {
-        PyObject * obj = (PyObject *)array;
+        PyObject* obj = (PyObject*)array;
         int ndim = PyArray_NDIM(array);
 
-         // We need an extra channel axis.
-        if(ndim != N+1)
+        // We need an extra channel axis.
+        if (ndim != N + 1)
             return false;
 
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
-        npy_intp * strides = PyArray_STRIDES(array);
+        npy_intp* strides = PyArray_STRIDES(array);
 
-        if(majorIndex < ndim)
+        if (majorIndex < ndim)
         {
             // We have axistags, but no channel axis => cannot be a TinyVector image
-            if(channelIndex == ndim)
+            if (channelIndex == ndim)
                 return false;
 
             // We have an explicit channel axis => shapes and strides must match
             return PyArray_DIM(array, channelIndex) == M &&
                    strides[channelIndex] == sizeof(T) &&
                    strides[majorIndex] == sizeof(TinyVector<T, M>);
-
-
         }
         else
         {
@@ -815,7 +820,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
         }
     }
 
-    static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
+    static bool isPropertyCompatible(PyArrayObject* obj) /* obj must not be NULL */
     {
         return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
@@ -825,7 +830,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
 
 template<unsigned int N, class T>
 struct NumpyArrayTraits<N, RGBValue<T>, StridedArrayTag>
-: public NumpyArrayTraits<N, TinyVector<T, 3>, StridedArrayTag>
+    : public NumpyArrayTraits<N, TinyVector<T, 3>, StridedArrayTag>
 {
     typedef T dtype;
     typedef RGBValue<T> value_type;
@@ -836,19 +841,19 @@ struct NumpyArrayTraits<N, RGBValue<T>, StridedArrayTag>
 
 template<unsigned int N, class T>
 struct NumpyArrayTraits<N, RGBValue<T>, UnstridedArrayTag>
-: public NumpyArrayTraits<N, RGBValue<T>, StridedArrayTag>
+    : public NumpyArrayTraits<N, RGBValue<T>, StridedArrayTag>
 {
     typedef NumpyArrayTraits<N, TinyVector<T, 3>, UnstridedArrayTag> UnstridedTraits;
     typedef NumpyArrayTraits<N, RGBValue<T>, StridedArrayTag> BaseType;
     typedef typename BaseType::value_type value_type;
     typedef typename BaseType::ValuetypeTraits ValuetypeTraits;
 
-    static bool isShapeCompatible(PyArrayObject * obj) /* obj must not be NULL */
+    static bool isShapeCompatible(PyArrayObject* obj) /* obj must not be NULL */
     {
         return UnstridedTraits::isShapeCompatible(obj);
     }
 
-    static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
+    static bool isPropertyCompatible(PyArrayObject* obj) /* obj must not be NULL */
     {
         return UnstridedTraits::isPropertyCompatible(obj);
     }

@@ -38,49 +38,53 @@
 
 
 
-#include "export_graph_visitor.hxx"
-#include "export_graph_rag_visitor.hxx"
 #include "export_graph_algorithm_visitor.hxx"
-#include "export_graph_shortest_path_visitor.hxx"
 #include "export_graph_hierarchical_clustering_visitor.hxx"
+#include "export_graph_rag_visitor.hxx"
+#include "export_graph_shortest_path_visitor.hxx"
+#include "export_graph_visitor.hxx"
 
+#include <vigra/adjacency_list_graph.hxx>
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <vigra/adjacency_list_graph.hxx>
 #include <vigra/python_graph.hxx>
 namespace python = boost::python;
 
-namespace vigra{
+namespace vigra
+{
 
 
 
-    NumpyAnyArray pySerializeAdjacencyListGraph(
-        const AdjacencyListGraph & graph,
-        NumpyArray<1, UInt32> serialization 
-    ){
-        serialization.reshapeIfEmpty( NumpyArray<1, UInt32>::difference_type(graph.serializationSize()));
-        graph.serialize(serialization.begin());
-        return serialization;
-    }
+NumpyAnyArray
+pySerializeAdjacencyListGraph(
+    const AdjacencyListGraph& graph,
+    NumpyArray<1, UInt32> serialization)
+{
+    serialization.reshapeIfEmpty(NumpyArray<1, UInt32>::difference_type(graph.serializationSize()));
+    graph.serialize(serialization.begin());
+    return serialization;
+}
 
 
-    void pyDeserializeAdjacencyListGraph(
-        AdjacencyListGraph & graph,
-        const NumpyArray<1, UInt32> & serialization 
-    ){
-        graph.clear();
-        graph.deserialize(serialization.begin(),serialization.end());
-    }
+void
+pyDeserializeAdjacencyListGraph(
+    AdjacencyListGraph& graph,
+    const NumpyArray<1, UInt32>& serialization)
+{
+    graph.clear();
+    graph.deserialize(serialization.begin(), serialization.end());
+}
 
 
-    void defineAdjacencyListGraph(){
-        
-        typedef AdjacencyListGraph  Graph;
-        // define graph itself
-        const std::string clsName = "AdjacencyListGraph";
-        python::class_<Graph>(clsName.c_str(),"undirected adjacency list graph",
-            python::init< const size_t,const size_t >( )
-        )
+void
+defineAdjacencyListGraph()
+{
+
+    typedef AdjacencyListGraph Graph;
+    // define graph itself
+    const std::string clsName = "AdjacencyListGraph";
+    python::class_<Graph>(clsName.c_str(), "undirected adjacency list graph",
+                          python::init<const size_t, const size_t>())
         .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
         .def(LemonUndirectedGraphAddItemsVisitor<Graph>(clsName))
         .def(LemonGraphAlgorithmVisitor<Graph>(clsName))
@@ -89,15 +93,10 @@ namespace vigra{
         .def(LemonGraphHierachicalClusteringVisitor<Graph>(clsName))
 
         // serialization helper
-        .def("serializationSize",&Graph::serializationSize, "number of integers needed to serialize graph")
-        .def("serialize",registerConverters(&pySerializeAdjacencyListGraph),
-            (
-                python::arg("serialization")=python::object()
-            )
-        )
-        .def("deserialize",registerConverters(&pyDeserializeAdjacencyListGraph) )
-        ;
-    }
-} 
-
-
+        .def("serializationSize", &Graph::serializationSize, "number of integers needed to serialize graph")
+        .def("serialize", registerConverters(&pySerializeAdjacencyListGraph),
+             (
+                 python::arg("serialization") = python::object()))
+        .def("deserialize", registerConverters(&pyDeserializeAdjacencyListGraph));
+}
+} // namespace vigra

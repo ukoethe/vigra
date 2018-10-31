@@ -35,9 +35,9 @@
 
 /*++++++++++++++++++++INCLUDES+and+Definitions++++++++++++++++++++++++*/
 
-#include <vigra/matlab.hxx>
 #include <string>
 #include <vigra/cornerdetection.hxx>
+#include <vigra/matlab.hxx>
 
 
 using namespace vigra;
@@ -45,41 +45,41 @@ using namespace matlab;
 
 
 
-
-
-template <class T>
-void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
+template<class T>
+void
+vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
+{
     /***************************************************************************************************
     **              INIT PART                                                                         **
     ****************************************************************************************************/
-    BasicImageView<T>   in      =   inputs.getImage<T>(0, v_required());
-    double              scale   =   inputs.getScalarMinMax<double>(1, v_default(1.0), 0.0, "inf");
+    BasicImageView<T> in = inputs.getImage<T>(0, v_required());
+    double scale = inputs.getScalarMinMax<double>(1, v_default(1.0), 0.0, "inf");
 
     VIGRA_CREATE_ENUM_AND_STD_MAP4(MapName, Corner, Foerstner, Rohr, Beaudet);
-    int             method  =   inputs.getEnum(2,  v_default(Corner), MapName);
+    int method = inputs.getEnum(2, v_default(Corner), MapName);
 
-    BasicImageView<double> out  =   outputs.createImage<double>(0, v_required(), in.width(), in.height());
+    BasicImageView<double> out = outputs.createImage<double>(0, v_required(), in.width(), in.height());
 
     /***************************************************************************************************
     **              CODE PART                                                                         **
     ****************************************************************************************************/
-    switch(method){
+    switch (method)
+    {
         case Corner:
-            cornerResponseFunction (srcImageRange(in), destImage(out), scale);
+            cornerResponseFunction(srcImageRange(in), destImage(out), scale);
             break;
         case Foerstner:
-            foerstnerCornerDetector (srcImageRange(in), destImage(out), scale);
+            foerstnerCornerDetector(srcImageRange(in), destImage(out), scale);
             break;
         case Rohr:
-            rohrCornerDetector (srcImageRange(in), destImage(out), scale);
+            rohrCornerDetector(srcImageRange(in), destImage(out), scale);
             break;
         case Beaudet:
-            beaudetCornerDetector (srcImageRange(in), destImage(out), scale);
+            beaudetCornerDetector(srcImageRange(in), destImage(out), scale);
             break;
         default:
             mexErrMsgTxt("Some Error occured");
     }
-
 }
 
 
@@ -87,10 +87,11 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 /***************************************************************************************************
 **         VIGRA GATEWAY                                                                          **
 ****************************************************************************************************/
-void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
+void
+vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
     //Add classes as you feel
-    switch(inputs.typeOf(0))
+    switch (inputs.typeOf(0))
     {
         ALLOW_FD
         ALLOW_UINT_8_64

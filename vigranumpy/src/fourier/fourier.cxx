@@ -36,25 +36,26 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpyfourier_PyArray_API
 
 #include <Python.h>
-#include <vigra/config.hxx>
 #include <boost/python.hpp>
-#include <vigra/numpy_array.hxx>
-#include <vigra/multi_array.hxx>
-#include <vigra/numpy_array_converters.hxx>
-#include <vigra/fftw3.hxx>
-#include <vigra/multi_fft.hxx>
-#include <vigra/gaborfilter.hxx>
 #include <iostream>
+#include <vigra/config.hxx>
+#include <vigra/fftw3.hxx>
+#include <vigra/gaborfilter.hxx>
+#include <vigra/multi_array.hxx>
+#include <vigra/multi_fft.hxx>
+#include <vigra/numpy_array.hxx>
+#include <vigra/numpy_array_converters.hxx>
 
-namespace vigra {
-
-template <>
-struct NumpyArrayValuetypeTraits<FFTWComplex<float> >
+namespace vigra
 {
-    static bool isValuetypeCompatible(PyArrayObject const * obj) /* obj must not be NULL */
+
+template<>
+struct NumpyArrayValuetypeTraits<FFTWComplex<float>>
+{
+    static bool isValuetypeCompatible(PyArrayObject const* obj) /* obj must not be NULL */
     {
-        return PyArray_EquivTypenums(NPY_CFLOAT, PyArray_DESCR((PyArrayObject *)obj)->type_num) &&
-               PyArray_ITEMSIZE((PyArrayObject *)obj) == sizeof(FFTWComplex<float>);
+        return PyArray_EquivTypenums(NPY_CFLOAT, PyArray_DESCR((PyArrayObject*)obj)->type_num) &&
+               PyArray_ITEMSIZE((PyArrayObject*)obj) == sizeof(FFTWComplex<float>);
     }
 
     static NPY_TYPES const typeCode = NPY_CFLOAT;
@@ -69,23 +70,23 @@ struct NumpyArrayValuetypeTraits<FFTWComplex<float> >
         return "";
     }
 
-    static PyObject * typeObject()
+    static PyObject* typeObject()
     {
         return PyArray_TypeObjectFromType(NPY_CFLOAT);
     }
 };
 
-template <class T>
+template<class T>
 NumpyAnyArray
-pythonCreateGaborFilter(typename MultiArrayView<2,T>::difference_type shape,
-                        double orientation, 
-                        double centerFrequency,
-                        double angularSigma, 
-                        double radialSigma, 
-                        NumpyArray<2,Singleband<T> > res)
+    pythonCreateGaborFilter(typename MultiArrayView<2, T>::difference_type shape,
+                            double orientation,
+                            double centerFrequency,
+                            double angularSigma,
+                            double radialSigma,
+                            NumpyArray<2, Singleband<T>> res)
 {
-    res.reshapeIfEmpty(TaggedShape(shape, NumpyAnyArray::defaultAxistags(3)).toFrequencyDomain(), 
-            "createGaborFilter(): Output array has wrong shape.");
+    res.reshapeIfEmpty(TaggedShape(shape, NumpyAnyArray::defaultAxistags(3)).toFrequencyDomain(),
+                       "createGaborFilter(): Output array has wrong shape.");
 
     {
         PyAllowThreads _pythread;
@@ -97,58 +98,58 @@ pythonCreateGaborFilter(typename MultiArrayView<2,T>::difference_type shape,
 
 // template <unsigned int N, int SIGN>
 // NumpyAnyArray
-// pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float> > > in, 
-                       // NumpyArray<N, Multiband<FFTWComplex<float> > > res)
+// pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float> > > in,
+// NumpyArray<N, Multiband<FFTWComplex<float> > > res)
 // {
-    // res.reshapeIfEmpty(in.shape(), in.strideOrdering(),
-        // "fourierTransform(): Output array must have the same shape and stride ordering as input array.", true);
+// res.reshapeIfEmpty(in.shape(), in.strideOrdering(),
+// "fourierTransform(): Output array must have the same shape and stride ordering as input array.", true);
 
-    // for(MultiArrayIndex k=0; k<in.shape(N-1); ++k)
-    // {
-        // MultiArrayView<N-1, FFTWComplex<float> , StridedArrayTag> bin = in.bindOuter(k).permuteStridesDescending();
-        // MultiArrayView<N-1, FFTWComplex<float> , StridedArrayTag> bres = res.bindOuter(k).permuteStridesDescending();
+// for(MultiArrayIndex k=0; k<in.shape(N-1); ++k)
+// {
+// MultiArrayView<N-1, FFTWComplex<float> , StridedArrayTag> bin = in.bindOuter(k).permuteStridesDescending();
+// MultiArrayView<N-1, FFTWComplex<float> , StridedArrayTag> bres = res.bindOuter(k).permuteStridesDescending();
 
-        // TinyVector<int, N-1> bshape(bin.shape()), itotal(bin.shape()), ototal(bres.shape());
-        // float norm = (float)bshape[0];
-        // for(int j=1; j<(int)N-1; ++j)
-        // {
-            // itotal[j] = bin.stride(j-1) / bin.stride(j);
-            // ototal[j] = bres.stride(j-1) / bres.stride(j);
-            // norm *= (float)bshape[j];
-        // }
-
-        // fftwf_plan plan = fftwf_plan_many_dft(N-1, bshape.begin(), 1,
-                                            // (fftwf_complex*)bin.data(), itotal.begin(),
-                                            // bin.stride(N-2), 0,
-                                            // (fftwf_complex*)bres.data(), ototal.begin(),
-                                            // bres.stride(N-2), 0,
-                                            // SIGN, FFTW_ESTIMATE);
-        // vigra_postcondition(plan != 0, "fourierTransform(): Unable to create plan.");
-        // fftwf_execute(plan);
-        // fftwf_destroy_plan(plan);
-        // if(SIGN == FFTW_BACKWARD)
-        // {
-            // bres *= FFTWComplex<float>(1.0f / norm);
-        // }
-    // }
-    // return res;
+// TinyVector<int, N-1> bshape(bin.shape()), itotal(bin.shape()), ototal(bres.shape());
+// float norm = (float)bshape[0];
+// for(int j=1; j<(int)N-1; ++j)
+// {
+// itotal[j] = bin.stride(j-1) / bin.stride(j);
+// ototal[j] = bres.stride(j-1) / bres.stride(j);
+// norm *= (float)bshape[j];
 // }
 
-template <unsigned int N, int SIGN>
+// fftwf_plan plan = fftwf_plan_many_dft(N-1, bshape.begin(), 1,
+// (fftwf_complex*)bin.data(), itotal.begin(),
+// bin.stride(N-2), 0,
+// (fftwf_complex*)bres.data(), ototal.begin(),
+// bres.stride(N-2), 0,
+// SIGN, FFTW_ESTIMATE);
+// vigra_postcondition(plan != 0, "fourierTransform(): Unable to create plan.");
+// fftwf_execute(plan);
+// fftwf_destroy_plan(plan);
+// if(SIGN == FFTW_BACKWARD)
+// {
+// bres *= FFTWComplex<float>(1.0f / norm);
+// }
+// }
+// return res;
+// }
+
+template<unsigned int N, int SIGN>
 NumpyAnyArray
-pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float> > > in, 
-                       NumpyArray<N, Multiband<FFTWComplex<float> > > res)
+pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float>>> in,
+                       NumpyArray<N, Multiband<FFTWComplex<float>>> res)
 {
     res.reshapeIfEmpty(in.taggedShape().toFrequencyDomain(SIGN == FFTW_FORWARD
-                                                               ? 1
-                                                               : -1),
-            "fourierTransform(): Output has wrong shape.");
+                                                              ? 1
+                                                              : -1),
+                       "fourierTransform(): Output has wrong shape.");
 
     {
         PyAllowThreads _pythread;
-        FFTWPlan<N-1, float> plan(in.bindOuter(0), res.bindOuter(0), SIGN);
-        
-        for(MultiArrayIndex k=0; k<in.shape(N-1); ++k)
+        FFTWPlan<N - 1, float> plan(in.bindOuter(0), res.bindOuter(0), SIGN);
+
+        for (MultiArrayIndex k = 0; k < in.shape(N - 1); ++k)
         {
             plan.execute(in.bindOuter(k), res.bindOuter(k));
         }
@@ -159,44 +160,44 @@ pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float> > > in,
 // NumpyAnyArray
 // pythonFourierTransformR2C(NumpyAnyArray in, NumpyAnyArray res)
 // {
-    // switch(in.spatialDimensions())
-    // {
-      // case 2:
-      // {
-        // NumpyArray<3, Multiband<FFTWComplex<float> > > inc(in, true), out(res, false);
-        // return pythonFourierTransform<3, FFTW_FORWARD>(inc, out);
-      // }
-      // case 3:
-      // {
-        // NumpyArray<4, Multiband<FFTWComplex<float> > > inc(in, true), out(res, false);
-        // return pythonFourierTransform<4, FFTW_FORWARD>(inc, out);
-      // }
-      // default:
-        // vigra_fail("fourierTransform(): "
-                   // "Can only handle 2 or 3 spatial dimensions.");
-    // }
-    // return res; // this will never be reached
+// switch(in.spatialDimensions())
+// {
+// case 2:
+// {
+// NumpyArray<3, Multiband<FFTWComplex<float> > > inc(in, true), out(res, false);
+// return pythonFourierTransform<3, FFTW_FORWARD>(inc, out);
+// }
+// case 3:
+// {
+// NumpyArray<4, Multiband<FFTWComplex<float> > > inc(in, true), out(res, false);
+// return pythonFourierTransform<4, FFTW_FORWARD>(inc, out);
+// }
+// default:
+// vigra_fail("fourierTransform(): "
+// "Can only handle 2 or 3 spatial dimensions.");
+// }
+// return res; // this will never be reached
 // }
 
 // FIXME: implement the correct R2C transform (is already provided in multi_fft.hxx)
 // FIXME: numpy arrays are not allocated with fftw_malloc() - will this cause alignment
 //        problems (sudden crashes)?
-template <unsigned int N>
+template<unsigned int N>
 NumpyAnyArray
-pythonFourierTransformR2C(NumpyArray<N, Multiband<float> > in, 
-                          NumpyArray<N, Multiband<FFTWComplex<float> > > res)
+pythonFourierTransformR2C(NumpyArray<N, Multiband<float>> in,
+                          NumpyArray<N, Multiband<FFTWComplex<float>>> res)
 {
     res.reshapeIfEmpty(in.taggedShape().toFrequencyDomain(),
-            "fourierTransformR2C(): Output has wrong shape.");
-        
+                       "fourierTransformR2C(): Output has wrong shape.");
+
     {
         PyAllowThreads _pythread;
-        // static_cast<typename NumpyArray<N, Multiband<FFTWComplex<float> > >::view_type &>(res) = 
-            // static_cast<typename NumpyArray<N, Multiband<float> >::view_type const &>(in);
+        // static_cast<typename NumpyArray<N, Multiband<FFTWComplex<float> > >::view_type &>(res) =
+        // static_cast<typename NumpyArray<N, Multiband<float> >::view_type const &>(in);
         res = in;
-        FFTWPlan<N-1, float> plan(res.bindOuter(0), res.bindOuter(0), FFTW_FORWARD);
-        
-        for(MultiArrayIndex k=0; k<res.shape(N-1); ++k)
+        FFTWPlan<N - 1, float> plan(res.bindOuter(0), res.bindOuter(0), FFTW_FORWARD);
+
+        for (MultiArrayIndex k = 0; k < res.shape(N - 1); ++k)
         {
             plan.execute(res.bindOuter(k), res.bindOuter(k));
         }
@@ -211,9 +212,9 @@ using namespace vigra;
 BOOST_PYTHON_MODULE_INIT(fourier)
 {
     using boost::python::arg;
+    using boost::python::def;
     using boost::python::docstring_options;
     using boost::python::object;
-    using boost::python::def;
 
     import_vigranumpy();
 
@@ -222,13 +223,11 @@ BOOST_PYTHON_MODULE_INIT(fourier)
     def("fourierTransform", registerConverters(&pythonFourierTransformR2C<2>),
         (arg("image"), arg("out") = object()),
         "Perform 2-dimensional Fourier transformation of a scalar float32 image."
-        "If the input array has multiple channels, each channel is transformed separately.\n"
-        );
+        "If the input array has multiple channels, each channel is transformed separately.\n");
 
     def("fourierTransform", registerConverters(&pythonFourierTransformR2C<3>),
         (arg("volume"), arg("out") = object()),
-        "Likewise for a 3D float32 volume.\n"
-        );
+        "Likewise for a 3D float32 volume.\n");
 
     def("fourierTransform", registerConverters(&pythonFourierTransform<3, FFTW_FORWARD>),
         (arg("image"), arg("out") = object()),
@@ -248,7 +247,7 @@ BOOST_PYTHON_MODULE_INIT(fourier)
         "Likewise for a 3D complex128 volume.\n");
 
     def("createGaborFilter", registerConverters(&pythonCreateGaborFilter<float>),
-        (arg("shape"),arg("orientation"),arg("centerFrequency"),arg("angularSigma"),arg("radialSigma"), arg("out") = object()),
+        (arg("shape"), arg("orientation"), arg("centerFrequency"), arg("angularSigma"), arg("radialSigma"), arg("out") = object()),
         "Create a 2-dimensional gabor filter in frequency space.");
 
     def("radialGaborSigma", &radialGaborSigma,

@@ -38,18 +38,19 @@
 
 #include <queue>
 
-#include "multi_array_chunked.hxx"
 #include "hdf5impex.hxx"
+#include "multi_array_chunked.hxx"
 
 // Bounds checking Macro used if VIGRA_CHECK_BOUNDS is defined.
 #ifdef VIGRA_CHECK_BOUNDS
 #define VIGRA_ASSERT_INSIDE(diff) \
-  vigra_precondition(this->isInside(diff), "Index out of bounds")
+    vigra_precondition(this->isInside(diff), "Index out of bounds")
 #else
 #define VIGRA_ASSERT_INSIDE(diff)
 #endif
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup ChunkedArrayClasses
 */
@@ -68,9 +69,9 @@ namespace vigra {
     HDF5 library. Note: This file must only be included when the HDF5 headers
     and libraries are installed on the system.
 */
-template <unsigned int N, class T, class Alloc = std::allocator<T> >
+template<unsigned int N, class T, class Alloc = std::allocator<T>>
 class ChunkedArrayHDF5
-: public ChunkedArray<N, T>
+    : public ChunkedArray<N, T>
 {
     /* REMARKS
     Alternatives are:
@@ -81,25 +82,21 @@ class ChunkedArrayHDF5
       function H5Dget_offset() to get the offset from the beginning of the file).
     */
 
-  public:
-
+public:
     class Chunk
-    : public ChunkBase<N, T>
+        : public ChunkBase<N, T>
     {
-      public:
-        typedef typename MultiArrayShape<N>::type  shape_type;
+    public:
+        typedef typename MultiArrayShape<N>::type shape_type;
         typedef T value_type;
-        typedef value_type * pointer;
-        typedef value_type & reference;
+        typedef value_type* pointer;
+        typedef value_type& reference;
 
-        Chunk(shape_type const & shape, shape_type const & start,
-              ChunkedArrayHDF5 * array, Alloc const & alloc)
-        : ChunkBase<N, T>(detail::defaultStride(shape))
-        , shape_(shape)
-        , start_(start)
-        , array_(array)
-        , alloc_(alloc)
-        {}
+        Chunk(shape_type const& shape, shape_type const& start,
+              ChunkedArrayHDF5* array, Alloc const& alloc)
+            : ChunkBase<N, T>(detail::defaultStride(shape)), shape_(shape), start_(start), array_(array), alloc_(alloc)
+        {
+        }
 
         ~Chunk()
         {
@@ -113,16 +110,16 @@ class ChunkedArrayHDF5
 
         void write(bool deallocate = true)
         {
-            if(this->pointer_ != 0)
+            if (this->pointer_ != 0)
             {
-                if(!array_->file_.isReadOnly())
+                if (!array_->file_.isReadOnly())
                 {
                     herr_t status = array_->file_.writeBlock(array_->dataset_, start_,
-                                          MultiArrayView<N, T>(shape_, this->strides_, this->pointer_));
+                                                             MultiArrayView<N, T>(shape_, this->strides_, this->pointer_));
                     vigra_postcondition(status >= 0,
-                        "ChunkedArrayHDF5: write to dataset failed.");
+                                        "ChunkedArrayHDF5: write to dataset failed.");
                 }
-                if(deallocate)
+                if (deallocate)
                 {
                     alloc_.deallocate(this->pointer_, this->size());
                     this->pointer_ = 0;
@@ -132,31 +129,31 @@ class ChunkedArrayHDF5
 
         pointer read()
         {
-            if(this->pointer_ == 0)
+            if (this->pointer_ == 0)
             {
                 this->pointer_ = alloc_.allocate(this->size());
                 herr_t status = array_->file_.readBlock(array_->dataset_, start_, shape_,
-                                     MultiArrayView<N, T>(shape_, this->strides_, this->pointer_));
+                                                        MultiArrayView<N, T>(shape_, this->strides_, this->pointer_));
                 vigra_postcondition(status >= 0,
-                    "ChunkedArrayHDF5: read from dataset failed.");
+                                    "ChunkedArrayHDF5: read from dataset failed.");
             }
             return this->pointer_;
         }
 
         shape_type shape_, start_;
-        ChunkedArrayHDF5 * array_;
+        ChunkedArrayHDF5* array_;
         Alloc alloc_;
 
-      private:
-        Chunk & operator=(Chunk const &);
+    private:
+        Chunk& operator=(Chunk const&);
     };
 
     typedef ChunkedArray<N, T> base_type;
-    typedef MultiArray<N, SharedChunkHandle<N, T> > ChunkStorage;
-    typedef typename ChunkStorage::difference_type  shape_type;
+    typedef MultiArray<N, SharedChunkHandle<N, T>> ChunkStorage;
+    typedef typename ChunkStorage::difference_type shape_type;
     typedef T value_type;
-    typedef value_type * pointer;
-    typedef value_type & reference;
+    typedef value_type* pointer;
+    typedef value_type& reference;
 
     /** \brief Construct with given 'shape', 'chunk_shape' and 'options',
         using 'alloc' to manage the in-memory version of the data..
@@ -184,18 +181,18 @@ class ChunkedArrayHDF5
         <li>DEFAULT_COMPRESSION: Same as ZLIB_FAST.
         </ul>
     */
-    ChunkedArrayHDF5(HDF5File const & file, std::string const & dataset,
+    ChunkedArrayHDF5(HDF5File const& file, std::string const& dataset,
                      HDF5File::OpenMode mode,
-                     shape_type const & shape,
-                     shape_type const & chunk_shape=shape_type(),
-                     ChunkedArrayOptions const & options = ChunkedArrayOptions(),
-                     Alloc const & alloc = Alloc())
-    : ChunkedArray<N, T>(shape, chunk_shape, options),
-      file_(file),
-      dataset_name_(dataset),
-      dataset_(),
-      compression_(options.compression_method),
-      alloc_(alloc)
+                     shape_type const& shape,
+                     shape_type const& chunk_shape = shape_type(),
+                     ChunkedArrayOptions const& options = ChunkedArrayOptions(),
+                     Alloc const& alloc = Alloc())
+        : ChunkedArray<N, T>(shape, chunk_shape, options),
+          file_(file),
+          dataset_name_(dataset),
+          dataset_(),
+          compression_(options.compression_method),
+          alloc_(alloc)
     {
         init(mode);
     }
@@ -222,32 +219,32 @@ class ChunkedArrayHDF5
         <li>DEFAULT_COMPRESSION: Same as ZLIB_FAST.
         </ul>
     */
-    ChunkedArrayHDF5(HDF5File const & file, std::string const & dataset,
+    ChunkedArrayHDF5(HDF5File const& file, std::string const& dataset,
                      HDF5File::OpenMode mode = HDF5File::ReadOnly,
-                     ChunkedArrayOptions const & options = ChunkedArrayOptions(),
-                     Alloc const & alloc = Alloc())
-    : ChunkedArray<N, T>(shape_type(),
-            ceilPower2<N>(shape_type(file.getChunkShape(dataset).begin())),
-            options),
-      file_(file),
-      dataset_name_(dataset),
-      dataset_(),
-      compression_(options.compression_method),
-      alloc_(alloc)
+                     ChunkedArrayOptions const& options = ChunkedArrayOptions(),
+                     Alloc const& alloc = Alloc())
+        : ChunkedArray<N, T>(shape_type(),
+                             ceilPower2<N>(shape_type(file.getChunkShape(dataset).begin())),
+                             options),
+          file_(file),
+          dataset_name_(dataset),
+          dataset_(),
+          compression_(options.compression_method),
+          alloc_(alloc)
     {
         init(mode);
     }
 
 
     // copy constructor
-    ChunkedArrayHDF5(const ChunkedArrayHDF5 & src)
-    : ChunkedArray<N, T>(src),
-    file_(src.file_),
-    dataset_name_(src.dataset_name_),
-    compression_(src.compression_),
-    alloc_(src.alloc_)
+    ChunkedArrayHDF5(const ChunkedArrayHDF5& src)
+        : ChunkedArray<N, T>(src),
+          file_(src.file_),
+          dataset_name_(src.dataset_name_),
+          compression_(src.compression_),
+          alloc_(src.alloc_)
     {
-        if( file_.isReadOnly() )
+        if (file_.isReadOnly())
             init(HDF5File::ReadOnly);
         else
             init(HDF5File::ReadWrite);
@@ -257,28 +254,28 @@ class ChunkedArrayHDF5
     {
         bool exists = file_.existsDataset(dataset_name_);
 
-        if(mode == HDF5File::Replace)
+        if (mode == HDF5File::Replace)
         {
             mode = HDF5File::New;
         }
-        else if(mode == HDF5File::Default)
+        else if (mode == HDF5File::Default)
         {
-            if(exists)
+            if (exists)
                 mode = HDF5File::ReadOnly;
             else
                 mode = HDF5File::New;
         }
 
-        if(mode == HDF5File::ReadOnly)
+        if (mode == HDF5File::ReadOnly)
             file_.setReadOnly();
         else
             vigra_precondition(!file_.isReadOnly(),
-                "ChunkedArrayHDF5(): 'mode' is incompatible with read-only file.");
+                               "ChunkedArrayHDF5(): 'mode' is incompatible with read-only file.");
 
         vigra_precondition(exists || !file_.isReadOnly(),
-            "ChunkedArrayHDF5(): dataset does not exist, but file is read-only.");
+                           "ChunkedArrayHDF5(): dataset does not exist, but file is read-only.");
 
-        if(!exists || mode == HDF5File::New)
+        if (!exists || mode == HDF5File::New)
         {
             // FIXME: set rdcc_nbytes to 0 (disable cache, because we don't
             //        need two caches
@@ -297,13 +294,13 @@ class ChunkedArrayHDF5
             // chunk size in the file matches the chunk size in the CachedArray.
             // Otherwise, make sure that the file cache can hold at least as many
             // chunks as are needed for a single array chunk.
-            if(compression_ == DEFAULT_COMPRESSION)
+            if (compression_ == DEFAULT_COMPRESSION)
                 compression_ = ZLIB_FAST;
             vigra_precondition(compression_ != LZ4,
-                "ChunkedArrayHDF5(): HDF5 does not support LZ4 compression.");
+                               "ChunkedArrayHDF5(): HDF5 does not support LZ4 compression.");
 
             vigra_precondition(this->size() > 0,
-                "ChunkedArrayHDF5(): invalid shape.");
+                               "ChunkedArrayHDF5(): invalid shape.");
             typename detail::HDF5TypeTraits<T>::value_type init(this->fill_scalar_);
             dataset_ = file_.createDataset<N, T>(dataset_name_,
                                                  this->shape_,
@@ -318,17 +315,17 @@ class ChunkedArrayHDF5
             // check shape
             ArrayVector<hsize_t> fileShape(file_.getDatasetShape(dataset_name_));
             typedef detail::HDF5TypeTraits<T> TypeTraits;
-            if(TypeTraits::numberOfBands() > 1)
+            if (TypeTraits::numberOfBands() > 1)
             {
-                vigra_precondition(fileShape.size() == N+1,
-                    "ChunkedArrayHDF5(file, dataset): dataset has wrong dimension.");
+                vigra_precondition(fileShape.size() == N + 1,
+                                   "ChunkedArrayHDF5(file, dataset): dataset has wrong dimension.");
                 vigra_precondition(fileShape[0] == static_cast<unsigned>(TypeTraits::numberOfBands()),
-                    "ChunkedArrayHDF5(file, dataset): dataset has wrong number of bands.");
-                shape_type shape(fileShape.begin()+1);
-                if(this->size() > 0)
+                                   "ChunkedArrayHDF5(file, dataset): dataset has wrong number of bands.");
+                shape_type shape(fileShape.begin() + 1);
+                if (this->size() > 0)
                 {
                     vigra_precondition(shape == this->shape_,
-                        "ChunkedArrayHDF5(file, dataset, shape): shape mismatch between dataset and shape argument.");
+                                       "ChunkedArrayHDF5(file, dataset, shape): shape mismatch between dataset and shape argument.");
                 }
                 else
                 {
@@ -338,12 +335,12 @@ class ChunkedArrayHDF5
             else
             {
                 vigra_precondition(fileShape.size() == N,
-                    "ChunkedArrayHDF5(file, dataset): dataset has wrong dimension.");
+                                   "ChunkedArrayHDF5(file, dataset): dataset has wrong dimension.");
                 shape_type shape(fileShape.begin());
-                if(this->size() > 0)
+                if (this->size() > 0)
                 {
                     vigra_precondition(shape == this->shape_,
-                        "ChunkedArrayHDF5(file, dataset, shape): shape mismatch between dataset and shape argument.");
+                                       "ChunkedArrayHDF5(file, dataset, shape): shape mismatch between dataset and shape argument.");
                 }
                 else
                 {
@@ -351,9 +348,9 @@ class ChunkedArrayHDF5
                     ChunkStorage(detail::computeChunkArrayShape(shape, this->bits_, this->mask_)).swap(this->handle_array_);
                 }
             }
-            typename ChunkStorage::iterator i   = this->handle_array_.begin(),
+            typename ChunkStorage::iterator i = this->handle_array_.begin(),
                                             end = this->handle_array_.end();
-            for(; i != end; ++i)
+            for (; i != end; ++i)
             {
                 i->chunk_state_.store(base_type::chunk_asleep);
             }
@@ -383,27 +380,27 @@ class ChunkedArrayHDF5
 
     void flushToDiskImpl(bool destroy, bool force_destroy)
     {
-        if(file_.isReadOnly())
+        if (file_.isReadOnly())
             return;
 
         threading::lock_guard<threading::mutex> guard(*this->chunk_lock_);
-        typename ChunkStorage::iterator i   = this->handle_array_.begin(),
+        typename ChunkStorage::iterator i = this->handle_array_.begin(),
                                         end = this->handle_array_.end();
-        if(destroy && !force_destroy)
+        if (destroy && !force_destroy)
         {
-            for(; i != end; ++i)
+            for (; i != end; ++i)
             {
                 vigra_precondition(i->chunk_state_.load() <= 0,
-                    "ChunkedArrayHDF5::close(): cannot close file because there are active chunks.");
+                                   "ChunkedArrayHDF5::close(): cannot close file because there are active chunks.");
             }
-            i   = this->handle_array_.begin();
+            i = this->handle_array_.begin();
         }
-        for(; i != end; ++i)
+        for (; i != end; ++i)
         {
-            Chunk * chunk = static_cast<Chunk*>(i->pointer_);
-            if(!chunk)
+            Chunk* chunk = static_cast<Chunk*>(i->pointer_);
+            if (!chunk)
                 continue;
-            if(destroy)
+            if (destroy)
             {
                 delete chunk;
                 i->pointer_ = 0;
@@ -421,23 +418,23 @@ class ChunkedArrayHDF5
         return file_.isReadOnly();
     }
 
-    virtual pointer loadChunk(ChunkBase<N, T> ** p, shape_type const & index)
+    virtual pointer loadChunk(ChunkBase<N, T>** p, shape_type const& index)
     {
         vigra_precondition(file_.isOpen(),
-            "ChunkedArrayHDF5::loadChunk(): file was already closed.");
-        if(*p == 0)
+                           "ChunkedArrayHDF5::loadChunk(): file was already closed.");
+        if (*p == 0)
         {
-            *p = new Chunk(this->chunkShape(index), index*this->chunk_shape_, this, alloc_);
+            *p = new Chunk(this->chunkShape(index), index * this->chunk_shape_, this, alloc_);
             this->overhead_bytes_ += sizeof(Chunk);
         }
-        return static_cast<Chunk *>(*p)->read();
+        return static_cast<Chunk*>(*p)->read();
     }
 
-    virtual bool unloadChunk(ChunkBase<N, T> * chunk, bool /* destroy */)
+    virtual bool unloadChunk(ChunkBase<N, T>* chunk, bool /* destroy */)
     {
-        if(!file_.isOpen())
+        if (!file_.isOpen())
             return true;
-        static_cast<Chunk *>(chunk)->write();
+        static_cast<Chunk*>(chunk)->write();
         return false;
     }
 
@@ -446,11 +443,11 @@ class ChunkedArrayHDF5
         return "ChunkedArrayHDF5<'" + file_.filename() + "/" + dataset_name_ + "'>";
     }
 
-    virtual std::size_t dataBytes(ChunkBase<N,T> * c) const
+    virtual std::size_t dataBytes(ChunkBase<N, T>* c) const
     {
         return c->pointer_ == 0
-                 ? 0
-                 : static_cast<Chunk*>(c)->size()*sizeof(T);
+                   ? 0
+                   : static_cast<Chunk*>(c)->size() * sizeof(T);
     }
 
     virtual std::size_t overheadBytesPerChunk() const

@@ -35,11 +35,11 @@
 
 /*++++++++++++++++++++INCLUDES+and+Definitions++++++++++++++++++++++++*/
 
-#include <vigra/matlab.hxx>
+#include <functional>
 #include <string>
 #include <vigra/distancetransform.hxx>
+#include <vigra/matlab.hxx>
 #include <vigra/multi_distance.hxx>
-#include <functional>
 
 //this could be a typedef but if you want outType to be the same type as inType then you can just
 //set outType to T
@@ -50,66 +50,66 @@ using namespace matlab;
 
 
 
-
 //#define RN_DEBUG
 #define cP2_(a, b) cP<(int)a, b>::value
-template <class T>
-void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
+template<class T>
+void
+vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
+{
 
     /***************************************************************************************************
     **              INIT PART                                                                         **
     ****************************************************************************************************/
     //Load input Image
-    MultiArrayView<3,T>         in3D        = inputs.getMultiArray<3,T>(0, v_required());
-    BasicImageView<T>           in          = makeBasicImageView(in3D.bindOuter(0));
-    int                         numOfDim    = inputs.getDimOfInput(0, v_required());
+    MultiArrayView<3, T> in3D = inputs.getMultiArray<3, T>(0, v_required());
+    BasicImageView<T> in = makeBasicImageView(in3D.bindOuter(0));
+    int numOfDim = inputs.getDimOfInput(0, v_required());
 
     //Load Method Option
     VIGRA_CREATE_ENUM_AND_STD_MAP3(MapName, MULT, MULT_SQUARED, IMAG_DIST_TRANS);
-    int         method      = inputs.getEnum("method", v_default(MULT), MapName );
+    int method = inputs.getEnum("method", v_default(MULT), MapName);
 
 
     //Load backgroundValue/Mode/norm
-    int                 norm                = inputs.getScalarMinMax<int>("norm", v_default(2), 0, 2);
-    T                   backgroundValue     = inputs.getScalar<T>("backgroundValue", v_default(0));
-    int                 backgroundMode      = inputs.getScalarMinMax<int>("backgroundMode", v_default(1), 0, 2);
+    int norm = inputs.getScalarMinMax<int>("norm", v_default(2), 0, 2);
+    T backgroundValue = inputs.getScalar<T>("backgroundValue", v_default(0));
+    int backgroundMode = inputs.getScalarMinMax<int>("backgroundMode", v_default(1), 0, 2);
 
     //Load Pitch
-    TinyVector<double, 3>       defaultPitch3D(1,1, 1);
-    TinyVector<double, 2>       defaultPitch(1,1);
-    TinyVectorView<double, 2>   pitch       =  inputs.getTinyVector<double, 2> ( "pitch", v_default(defaultPitch));
-    TinyVectorView<double, 3>   pitch3D     = (numOfDim == 3)?
-                                                inputs.getTinyVector<double, 3> ( "pitch", v_default(defaultPitch3D))
-                                            :   vigra::TinyVectorView<double, 3>(defaultPitch3D);
+    TinyVector<double, 3> defaultPitch3D(1, 1, 1);
+    TinyVector<double, 2> defaultPitch(1, 1);
+    TinyVectorView<double, 2> pitch = inputs.getTinyVector<double, 2>("pitch", v_default(defaultPitch));
+    TinyVectorView<double, 3> pitch3D = (numOfDim == 3) ? inputs.getTinyVector<double, 3>("pitch", v_default(defaultPitch3D))
+                                                        : vigra::TinyVectorView<double, 3>(defaultPitch3D);
 
 
     //This is a cheap way of checking whether pitch option has been set - if not the pointers of pitch and defaultPitch
     //should be the same;
     //Some more errorchecking
-    if(method == IMAG_DIST_TRANS)
+    if (method == IMAG_DIST_TRANS)
     {
-        if  (numOfDim == VOLUME)
-                mexErrMsgTxt("vigraDistance(): method 'IMAG_DIST_TRANS' requires 2D data.");
-        if  (pitch.data() != defaultPitch.data())
-                mexErrMsgTxt("vigraDistance(): 'IMAG_DIST_TRANS' does not support 'pitch' Option");
-        if  (backgroundMode != 1)
-                mexErrMsgTxt("vigraDistance(): method 'IMAG_DIST_TRANS' requires 'backgroundMode' = 1.");
+        if (numOfDim == VOLUME)
+            mexErrMsgTxt("vigraDistance(): method 'IMAG_DIST_TRANS' requires 2D data.");
+        if (pitch.data() != defaultPitch.data())
+            mexErrMsgTxt("vigraDistance(): 'IMAG_DIST_TRANS' does not support 'pitch' Option");
+        if (backgroundMode != 1)
+            mexErrMsgTxt("vigraDistance(): method 'IMAG_DIST_TRANS' requires 'backgroundMode' = 1.");
     }
     else
     {
-        if  (backgroundValue != 0)
-                mexErrMsgTxt("vigraDistance(): methods 'MULT' and 'MULT_SQUARED' require 'backgroundValue' = 0.");
-        if  (norm != 2)
-                mexErrMsgTxt("vigraDistance(): methods 'MULT' and 'MULT_SQUARED' require 'norm' = 2.");
+        if (backgroundValue != 0)
+            mexErrMsgTxt("vigraDistance(): methods 'MULT' and 'MULT_SQUARED' require 'backgroundValue' = 0.");
+        if (norm != 2)
+            mexErrMsgTxt("vigraDistance(): methods 'MULT' and 'MULT_SQUARED' require 'norm' = 2.");
     }
 
     //Allocate Memory for output
     typedef double outType;
-    MultiArrayView<3,outType>   out3D       = outputs.createMultiArray      <3,outType>   (0, v_required(), in3D.shape());
-    BasicImageView<outType>     out(out3D.data(), in3D.shape(0), in3D.shape(1));
+    MultiArrayView<3, outType> out3D = outputs.createMultiArray<3, outType>(0, v_required(), in3D.shape());
+    BasicImageView<outType> out(out3D.data(), in3D.shape(0), in3D.shape(1));
 
-    MultiArray<3, outType>      tmp3D(in3D.shape());
-    bool                        computeSignedDist  = (backgroundMode == 2);
+    MultiArray<3, outType> tmp3D(in3D.shape());
+    bool computeSignedDist = (backgroundMode == 2);
 
     /***************************************************************************************************
     **              CODE PART                                                                         **
@@ -118,20 +118,20 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     // catorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function)
     using namespace vigra::functor;
 
-    switch(cantorPair(computeSignedDist, method))
+    switch (cantorPair(computeSignedDist, method))
     {
         //In this case function pointers may have been more elegant.
         case cP2_(false, MULT):
-                separableMultiDistance(srcMultiArrayRange(in3D), destMultiArray(out3D), backgroundMode == 1, pitch3D);
-                break;
+            separableMultiDistance(srcMultiArrayRange(in3D), destMultiArray(out3D), backgroundMode == 1, pitch3D);
+            break;
         case cP2_(true, MULT):
             separableMultiDistSquared(srcMultiArrayRange(in3D), destMultiArray(out3D), 0, pitch3D);
             separableMultiDistSquared(srcMultiArrayRange(in3D), destMultiArray(tmp3D), 1, pitch3D);
             combineTwoMultiArrays(
-                        srcMultiArrayRange(tmp3D),
-                        srcMultiArray(out3D),
-                        destMultiArray(out3D),
-                        ifThenElse(Arg1() > Param(0.0), sqrt(Arg1())-Param(0.5), Param(0.5)-sqrt(Arg2())));
+                srcMultiArrayRange(tmp3D),
+                srcMultiArray(out3D),
+                destMultiArray(out3D),
+                ifThenElse(Arg1() > Param(0.0), sqrt(Arg1()) - Param(0.5), Param(0.5) - sqrt(Arg2())));
             break;
         case cP2_(0, MULT_SQUARED):
             separableMultiDistSquared(srcMultiArrayRange(in3D), destMultiArray(out3D), backgroundMode == 1);
@@ -140,27 +140,27 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
             separableMultiDistSquared(srcMultiArrayRange(in3D), destMultiArray(out3D), 0);
             separableMultiDistSquared(srcMultiArrayRange(in3D), destMultiArray(tmp3D), 1);
             combineTwoMultiArrays(
-                        srcMultiArrayRange(tmp3D),
-                        srcMultiArray(out3D),
-                        destMultiArray(out3D),
-                        ifThenElse(Arg1() > Param(0.0), sq(sqrt(Arg1())-Param(0.5)), -sq(sqrt(Arg2())-Param(0.5))));
+                srcMultiArrayRange(tmp3D),
+                srcMultiArray(out3D),
+                destMultiArray(out3D),
+                ifThenElse(Arg1() > Param(0.0), sq(sqrt(Arg1()) - Param(0.5)), -sq(sqrt(Arg2()) - Param(0.5))));
             break;
         case cP2_(0, IMAG_DIST_TRANS):
-            distanceTransform(srcImageRange(in), destImage(out),backgroundValue, norm);
+            distanceTransform(srcImageRange(in), destImage(out), backgroundValue, norm);
             break;
         default:
             mexErrMsgTxt("Precondition checking not complete - something went wrong");
     }
-
 }
 
 /***************************************************************************************************
 **           VIGRA GATEWAY                                                                        **
 ****************************************************************************************************/
-void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
+void
+vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
     //Add classes as you feel
-    switch(inputs.typeOf(0))
+    switch (inputs.typeOf(0))
     {
         ALLOW_FD
         ALLOW_UINT_8_64
@@ -221,4 +221,3 @@ Usage:
     out = vigraDistance(in, opt);
 
 */
-

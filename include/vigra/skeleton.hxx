@@ -36,21 +36,22 @@
 #ifndef VIGRA_SKELETON_HXX
 #define VIGRA_SKELETON_HXX
 
-#include <vector>
-#include <set>
-#include <map>
-#include "vector_distance.hxx"
+#include "graph_algorithms.hxx"
 #include "iteratorfacade.hxx"
 #include "pixelneighborhood.hxx"
-#include "graph_algorithms.hxx"
 #include "polygon.hxx"
+#include "vector_distance.hxx"
+#include <map>
+#include <set>
+#include <vector>
 
 namespace vigra
 {
 
-namespace detail {
+namespace detail
+{
 
-template <class Node>
+template<class Node>
 struct SkeletonNode
 {
     Node parent, principal_child;
@@ -59,40 +60,31 @@ struct SkeletonNode
     bool is_loop;
 
     SkeletonNode()
-    : parent(lemon::INVALID)
-    , principal_child(lemon::INVALID)
-    , length(0.0)
-    , salience(1.0)
-    , partial_area(0)
-    , is_loop(false)
-    {}
+        : parent(lemon::INVALID), principal_child(lemon::INVALID), length(0.0), salience(1.0), partial_area(0), is_loop(false)
+    {
+    }
 
-    SkeletonNode(Node const & s)
-    : parent(s)
-    , principal_child(lemon::INVALID)
-    , length(0.0)
-    , salience(1.0)
-    , partial_area(0)
-    , is_loop(false)
-    {}
+    SkeletonNode(Node const& s)
+        : parent(s), principal_child(lemon::INVALID), length(0.0), salience(1.0), partial_area(0), is_loop(false)
+    {
+    }
 };
 
-template <class Node>
+template<class Node>
 struct SkeletonRegion
 {
-    typedef SkeletonNode<Node>                 SNode;
-    typedef std::map<Node, SNode>              Skeleton;
+    typedef SkeletonNode<Node> SNode;
+    typedef std::map<Node, SNode> Skeleton;
 
     Node anchor, lower, upper;
     Skeleton skeleton;
 
     SkeletonRegion()
-    : anchor(lemon::INVALID)
-    , lower(NumericTraits<MultiArrayIndex>::max())
-    , upper(NumericTraits<MultiArrayIndex>::min())
-    {}
+        : anchor(lemon::INVALID), lower(NumericTraits<MultiArrayIndex>::max()), upper(NumericTraits<MultiArrayIndex>::min())
+    {
+    }
 
-    void addNode(Node const & n)
+    void addNode(Node const& n)
     {
         skeleton[n] = SNode(n);
         anchor = n;
@@ -101,71 +93,317 @@ struct SkeletonRegion
     }
 };
 
-template <class Graph, class Node, class NodeMap>
+template<class Graph, class Node, class NodeMap>
 inline unsigned int
-neighborhoodConfiguration(Graph const & g, Node const & n, NodeMap const & labels)
+neighborhoodConfiguration(Graph const& g, Node const& n, NodeMap const& labels)
 {
-    typedef typename Graph::OutArcIt      ArcIt;
-    typedef typename NodeMap::value_type  LabelType;
+    typedef typename Graph::OutArcIt ArcIt;
+    typedef typename NodeMap::value_type LabelType;
 
     LabelType label = labels[n];
     unsigned int v = 0;
-    for(ArcIt arc(g, n); arc != lemon::INVALID; ++arc)
+    for (ArcIt arc(g, n); arc != lemon::INVALID; ++arc)
     {
         v = (v << 1) | (labels[g.target(*arc)] == label ? 1 : 0);
     }
     return v;
 }
 
-template <class Node, class Cost>
+template<class Node, class Cost>
 struct SkeletonSimplePoint
 {
     Node point;
     Cost cost;
 
-    SkeletonSimplePoint(Node const & p, Cost c)
-    : point(p), cost(c)
-    {}
+    SkeletonSimplePoint(Node const& p, Cost c)
+        : point(p), cost(c)
+    {
+    }
 
-    bool operator<(SkeletonSimplePoint const & o) const
+    bool operator<(SkeletonSimplePoint const& o) const
     {
         return cost < o.cost;
     }
 
-    bool operator>(SkeletonSimplePoint const & o) const
+    bool operator>(SkeletonSimplePoint const& o) const
     {
         return cost > o.cost;
     }
 };
 
-template <class CostMap, class LabelMap>
+template<class CostMap, class LabelMap>
 void
-skeletonThinning(CostMap const & cost, LabelMap & labels,
-                 bool preserve_endpoints=true)
+skeletonThinning(CostMap const& cost, LabelMap& labels,
+                 bool preserve_endpoints = true)
 {
     typedef GridGraph<CostMap::actual_dimension> Graph;
-    typedef typename Graph::Node           Node;
-    typedef typename Graph::NodeIt         NodeIt;
-    typedef typename Graph::OutArcIt       ArcIt;
+    typedef typename Graph::Node Node;
+    typedef typename Graph::NodeIt NodeIt;
+    typedef typename Graph::OutArcIt ArcIt;
 
     Graph g(labels.shape(), IndirectNeighborhood);
     typedef SkeletonSimplePoint<Node, double> SP;
     // use std::greater because we need the smallest distances at the top of the queue
     // (std::priority_queue is a max queue by default)
-    std::priority_queue<SP, std::vector<SP>, std::greater<SP> >  pqueue;
+    std::priority_queue<SP, std::vector<SP>, std::greater<SP>> pqueue;
 
     bool isSimpleStrong[256] = {
-        0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1,
-        0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0,
-        1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0,
-        1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1,
-        1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1,
-        1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1,
-        1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
     };
 
     bool isSimplePreserveEndPoints[256] = {
@@ -179,35 +417,34 @@ skeletonThinning(CostMap const & cost, LabelMap & labels,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0,
-        1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    };
+        1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-    bool * isSimplePoint = preserve_endpoints
-                               ? isSimplePreserveEndPoints
-                               : isSimpleStrong;
+    bool* isSimplePoint = preserve_endpoints
+                              ? isSimplePreserveEndPoints
+                              : isSimpleStrong;
 
     int max_degree = g.maxDegree();
-    double epsilon = 0.5/labels.size(), offset = 0;
+    double epsilon = 0.5 / labels.size(), offset = 0;
     for (NodeIt node(g); node != lemon::INVALID; ++node)
     {
         Node p = *node;
-        if(g.out_degree(p) == max_degree &&
-           labels[p] > 0 &&
-           isSimplePoint[neighborhoodConfiguration(g, p, labels)])
+        if (g.out_degree(p) == max_degree &&
+            labels[p] > 0 &&
+            isSimplePoint[neighborhoodConfiguration(g, p, labels)])
         {
             // add an offset to break ties in a FIFI manner
-            pqueue.push(SP(p, cost[p]+offset));
+            pqueue.push(SP(p, cost[p] + offset));
             offset += epsilon;
         }
     }
 
-    while(pqueue.size())
+    while (pqueue.size())
     {
         Node p = pqueue.top().point;
         pqueue.pop();
 
-        if(labels[p] == 0 ||
-           !isSimplePoint[neighborhoodConfiguration(g, p, labels)])
+        if (labels[p] == 0 ||
+            !isSimplePoint[neighborhoodConfiguration(g, p, labels)])
         {
             continue; // point already deleted or no longer simple
         }
@@ -217,30 +454,30 @@ skeletonThinning(CostMap const & cost, LabelMap & labels,
         for (ArcIt arc(g, p); arc != lemon::INVALID; ++arc)
         {
             Node q = g.target(*arc);
-            if(g.out_degree(q) == max_degree &&
-               labels[q] > 0 &&
-               isSimplePoint[neighborhoodConfiguration(g, q, labels)])
+            if (g.out_degree(q) == max_degree &&
+                labels[q] > 0 &&
+                isSimplePoint[neighborhoodConfiguration(g, q, labels)])
             {
-                pqueue.push(SP(q, cost[q]+offset));
+                pqueue.push(SP(q, cost[q] + offset));
                 offset += epsilon;
             }
         }
     }
 }
 
-template <class Label, class Labels>
+template<class Label, class Labels>
 struct CheckForHole
 {
     Label label;
-    Labels const & labels;
+    Labels const& labels;
 
-    CheckForHole(Label l, Labels const & ls)
-    : label(l)
-    , labels(ls)
-    {}
+    CheckForHole(Label l, Labels const& ls)
+        : label(l), labels(ls)
+    {
+    }
 
-    template <class Node>
-    bool operator()(Node const & n) const
+    template<class Node>
+    bool operator()(Node const& n) const
     {
         return labels[n] == label;
     }
@@ -252,137 +489,138 @@ struct CheckForHole
 */
 //@{
 
-    /** \brief Option object for \ref skeletonizeImage()
+/** \brief Option object for \ref skeletonizeImage()
     */
 struct SkeletonOptions
 {
-    enum SkeletonMode {
-         DontPrune = 0,
-         Prune = 1,
-         Relative = 2,
-         PreserveTopology = 4,
-         Length = 8,
-         Salience = 16,
-         PruneCenterLine = 32,
-         PruneLength = Length + Prune,
-         PruneLengthRelative = PruneLength + Relative,
-         PruneSalience = Salience + Prune,
-         PruneSalienceRelative = PruneSalience + Relative,
-         PruneTopology = PreserveTopology + Prune
+    enum SkeletonMode
+    {
+        DontPrune = 0,
+        Prune = 1,
+        Relative = 2,
+        PreserveTopology = 4,
+        Length = 8,
+        Salience = 16,
+        PruneCenterLine = 32,
+        PruneLength = Length + Prune,
+        PruneLengthRelative = PruneLength + Relative,
+        PruneSalience = Salience + Prune,
+        PruneSalienceRelative = PruneSalience + Relative,
+        PruneTopology = PreserveTopology + Prune
     };
 
     SkeletonMode mode;
     double pruning_threshold;
 
-        /** \brief construct with default settings
+    /** \brief construct with default settings
 
             (default: <tt>pruneSalienceRelative(0.2, true)</tt>)
         */
     SkeletonOptions()
-    : mode(SkeletonMode(PruneSalienceRelative | PreserveTopology))
-    , pruning_threshold(0.2)
-    {}
+        : mode(SkeletonMode(PruneSalienceRelative | PreserveTopology)), pruning_threshold(0.2)
+    {
+    }
 
-        /** \brief return the un-pruned skeletong
+    /** \brief return the un-pruned skeletong
         */
-    SkeletonOptions & dontPrune()
+    SkeletonOptions& dontPrune()
     {
         mode = DontPrune;
         return *this;
     }
 
-        /** \brief return only the region's center line (i.e. skeleton graph diameter)
+    /** \brief return only the region's center line (i.e. skeleton graph diameter)
         */
-    SkeletonOptions & pruneCenterLine()
+    SkeletonOptions& pruneCenterLine()
     {
         mode = PruneCenterLine;
         return *this;
     }
 
-        /** \brief Don't prune and return the length of each skeleton segment.
+    /** \brief Don't prune and return the length of each skeleton segment.
         */
-    SkeletonOptions & returnLength()
+    SkeletonOptions& returnLength()
     {
         mode = Length;
         return *this;
     }
 
-        /** \brief prune skeleton segments whose length is below the given threshold
+    /** \brief prune skeleton segments whose length is below the given threshold
 
             If \a preserve_topology is <tt>true</tt> (default), skeleton loops
             (i.e. parts enclosing a hole in the region) are preserved even if their
             length is below the threshold. Otherwise, loops are pruned as well.
         */
-    SkeletonOptions & pruneLength(double threshold, bool preserve_topology=true)
+    SkeletonOptions& pruneLength(double threshold, bool preserve_topology = true)
     {
         mode = PruneLength;
-        if(preserve_topology)
+        if (preserve_topology)
             mode = SkeletonMode(mode | PreserveTopology);
         pruning_threshold = threshold;
         return *this;
     }
 
-        /** \brief prune skeleton segments whose relative length is below the given threshold
+    /** \brief prune skeleton segments whose relative length is below the given threshold
 
             This works like <tt>pruneLength()</tt>, but the threshold is specified as a
             fraction of the maximum segment length in the skeleton.
         */
-    SkeletonOptions & pruneLengthRelative(double threshold, bool preserve_topology=true)
+    SkeletonOptions& pruneLengthRelative(double threshold, bool preserve_topology = true)
     {
         mode = PruneLengthRelative;
-        if(preserve_topology)
+        if (preserve_topology)
             mode = SkeletonMode(mode | PreserveTopology);
         pruning_threshold = threshold;
         return *this;
     }
 
-        /** \brief Don't prune and return the salience of each skeleton segment.
+    /** \brief Don't prune and return the salience of each skeleton segment.
         */
-    SkeletonOptions & returnSalience()
+    SkeletonOptions& returnSalience()
     {
         mode = Salience;
         return *this;
     }
 
-        /** \brief prune skeleton segments whose salience is below the given threshold
+    /** \brief prune skeleton segments whose salience is below the given threshold
 
             If \a preserve_topology is <tt>true</tt> (default), skeleton loops
             (i.e. parts enclosing a hole in the region) are preserved even if their
             salience is below the threshold. Otherwise, loops are pruned as well.
         */
-    SkeletonOptions & pruneSalience(double threshold, bool preserve_topology=true)
+    SkeletonOptions& pruneSalience(double threshold, bool preserve_topology = true)
     {
         mode = PruneSalience;
-        if(preserve_topology)
+        if (preserve_topology)
             mode = SkeletonMode(mode | PreserveTopology);
         pruning_threshold = threshold;
         return *this;
     }
 
-        /** \brief prune skeleton segments whose relative salience is below the given threshold
+    /** \brief prune skeleton segments whose relative salience is below the given threshold
 
             This works like <tt>pruneSalience()</tt>, but the threshold is specified as a
             fraction of the maximum segment salience in the skeleton.
         */
-    SkeletonOptions & pruneSalienceRelative(double threshold, bool preserve_topology=true)
+    SkeletonOptions& pruneSalienceRelative(double threshold, bool preserve_topology = true)
     {
         mode = PruneSalienceRelative;
-        if(preserve_topology)
+        if (preserve_topology)
             mode = SkeletonMode(mode | PreserveTopology);
         pruning_threshold = threshold;
         return *this;
     }
 
-        /** \brief prune such that only the topology is preserved
+    /** \brief prune such that only the topology is preserved
 
             If \a preserve_center is <tt>true</tt> (default), the eccentricity center
             of the skeleton will not be pruned, even if it is not essential for the topology.
             Otherwise, the center is only preserved if it is essential. The center is always
             preserved (and is the only remaining point) when the region has no holes.
         */
-    SkeletonOptions & pruneTopology(bool preserve_center=true)
+    SkeletonOptions& pruneTopology(bool preserve_center = true)
     {
-        if(preserve_center)
+        if (preserve_center)
             mode = PruneTopology;
         else
             mode = Prune;
@@ -390,29 +628,29 @@ struct SkeletonOptions
     }
 };
 
-template <class T1, class S1,
-          class T2, class S2,
-          class ArrayLike>
+template<class T1, class S1,
+         class T2, class S2,
+         class ArrayLike>
 void
-skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
-                MultiArrayView<2, T2, S2> dest,
-                ArrayLike * features,
-                SkeletonOptions const & options)
+    skeletonizeImageImpl(MultiArrayView<2, T1, S1> const& labels,
+                         MultiArrayView<2, T2, S2> dest,
+                         ArrayLike* features,
+                         SkeletonOptions const& options)
 {
     static const unsigned int N = 2;
-    typedef typename MultiArrayShape<N>::type  Shape;
-    typedef GridGraph<N>                       Graph;
-    typedef typename Graph::Node               Node;
-    typedef typename Graph::NodeIt             NodeIt;
-    typedef typename Graph::EdgeIt             EdgeIt;
-    typedef typename Graph::OutArcIt           ArcIt;
-    typedef typename Graph::OutBackArcIt       BackArcIt;
-    typedef double                             WeightType;
-    typedef detail::SkeletonNode<Node>         SNode;
-    typedef std::map<Node, SNode>              Skeleton;
+    typedef typename MultiArrayShape<N>::type Shape;
+    typedef GridGraph<N> Graph;
+    typedef typename Graph::Node Node;
+    typedef typename Graph::NodeIt NodeIt;
+    typedef typename Graph::EdgeIt EdgeIt;
+    typedef typename Graph::OutArcIt ArcIt;
+    typedef typename Graph::OutBackArcIt BackArcIt;
+    typedef double WeightType;
+    typedef detail::SkeletonNode<Node> SNode;
+    typedef std::map<Node, SNode> Skeleton;
 
     vigra_precondition(labels.shape() == dest.shape(),
-        "skeleton(): shape mismatch between input and output.");
+                       "skeleton(): shape mismatch between input and output.");
 
     MultiArray<N, MultiArrayIndex> squared_distance;
     dest = 0;
@@ -434,40 +672,40 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
             T1 l1 = labels[p1],
                l2 = labels[p2];
             maxLabel = max(maxLabel, max(l1, l2));
-            if(l1 == l2)
+            if (l1 == l2)
             {
-                if(l1 <= 0)  // only consider positive labels
+                if (l1 <= 0) // only consider positive labels
                     continue;
 
                 const Node v1 = vectors[p1],
                            v2 = vectors[p2],
                            dp = p2 - p1,
                            dv = v2 - v1 + dp;
-                if(max(abs(dv)) <= 1)  // points whose support points coincide or are adjacent
+                if (max(abs(dv)) <= 1) // points whose support points coincide or are adjacent
                     continue;          // don't belong to the skeleton
 
                 // among p1 and p2, the point which is closer to the bisector
                 // of the support points p1 + v1 and p2 + v2 belongs to the skeleton
                 const MultiArrayIndex d1 = dot(dv, dp),
-                                      d2 = dot(dv, v1+v2);
-                if(d1*d2 <= 0)
+                                      d2 = dot(dv, v1 + v2);
+                if (d1 * d2 <= 0)
                 {
                     dest[p1] = l1;
-                    if(squared_distance[p1] == 4)
+                    if (squared_distance[p1] == 4)
                         ends_to_be_checked.push_back(p1);
                 }
                 else
                 {
                     dest[p2] = l2;
-                    if(squared_distance[p2] == 4)
+                    if (squared_distance[p2] == 4)
                         ends_to_be_checked.push_back(p2);
                 }
             }
             else
             {
-                if(l1 > 0 && max(abs(vectors[p1] + p1 - p2)) > 1)
+                if (l1 > 0 && max(abs(vectors[p1] + p1 - p2)) > 1)
                     dest[p1] = l1;
-                if(l2 > 0 && max(abs(vectors[p2] + p2 - p1)) > 1)
+                if (l2 > 0 && max(abs(vectors[p2] + p2 - p1)) > 1)
                     dest[p2] = l2;
             }
         }
@@ -476,7 +714,7 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
         // add a point when a skeleton line stops short of the shape boundary
         // FIXME: can this be solved during the initial detection above?
         Graph g8(labels.shape(), IndirectNeighborhood);
-        for (unsigned k=0; k<ends_to_be_checked.size(); ++k)
+        for (unsigned k = 0; k < ends_to_be_checked.size(); ++k)
         {
             // The phenomenon only occurs at points whose distance from the background is 2.
             // We've put these points into ends_to_be_checked.
@@ -486,11 +724,11 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
             for (ArcIt arc(g8, p1); arc != lemon::INVALID; ++arc)
             {
                 Node p2 = g8.target(*arc);
-                if(dest[p2] == label && squared_distance[p2] < 4)
+                if (dest[p2] == label && squared_distance[p2] < 4)
                     ++count;
             }
-            if(count == 0) // point p1 has no neighbor at the boundary => activate one
-                dest[p1+vectors[p1]/2] = label;
+            if (count == 0) // point p1 has no neighbor at the boundary => activate one
+                dest[p1 + vectors[p1] / 2] = label;
         }
 
         // from here on, we only need the squared DT, not the vector DT
@@ -505,23 +743,23 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
     // can simply remove these cases by thinning.
     detail::skeletonThinning(squared_distance, dest);
 
-    if(options.mode == SkeletonOptions::PruneCenterLine)
+    if (options.mode == SkeletonOptions::PruneCenterLine)
         dest = 0;
 
     // Reduce the full grid graph to a skeleton graph by inserting infinite
     // edge weights between skeleton pixels and non-skeleton pixels.
-    if(features)
+    if (features)
         features->resize((size_t)maxLabel + 1);
-    ArrayVector<detail::SkeletonRegion<Node> > regions((size_t)maxLabel + 1);
+    ArrayVector<detail::SkeletonRegion<Node>> regions((size_t)maxLabel + 1);
     Graph g(labels.shape(), IndirectNeighborhood);
-    WeightType maxWeight = g.edgeNum()*sqrt(N),
-               infiniteWeight = 0.5*NumericTraits<WeightType>::max();
+    WeightType maxWeight = g.edgeNum() * sqrt(N),
+               infiniteWeight = 0.5 * NumericTraits<WeightType>::max();
     typename Graph::template EdgeMap<WeightType> weights(g);
     for (NodeIt node(g); node != lemon::INVALID; ++node)
     {
         Node p1 = *node;
         T2 label = dest[p1];
-        if(label <= 0)
+        if (label <= 0)
             continue;
 
         // FIXME: consider using an AdjacencyListGraph from here on
@@ -530,8 +768,8 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
         for (ArcIt arc(g, p1); arc != lemon::INVALID; ++arc)
         {
             Node p2 = g.target(*arc);
-            if(dest[p2] == label)
-                weights[*arc] = norm(p1-p2);
+            if (dest[p2] == label)
+                weights[*arc] = norm(p1 - p2);
             else
                 weights[*arc] = infiniteWeight;
         }
@@ -539,16 +777,16 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
 
     ShortestPathDijkstra<Graph, WeightType> pathFinder(g);
     // Handle the skeleton of each region individually.
-    for(std::size_t label=1; label < regions.size(); ++label)
+    for (std::size_t label = 1; label < regions.size(); ++label)
     {
-        Skeleton & skeleton = regions[label].skeleton;
-        if(skeleton.size() == 0) // label doesn't exist
+        Skeleton& skeleton = regions[label].skeleton;
+        if (skeleton.size() == 0) // label doesn't exist
             continue;
 
         // Find a diameter (longest path) in the skeleton.
         Node anchor = regions[label].anchor,
-             lower  = regions[label].lower,
-             upper  = regions[label].upper + Shape(1);
+             lower = regions[label].lower,
+             upper = regions[label].upper + Shape(1);
 
         pathFinder.run(lower, upper, weights, anchor, lemon::INVALID, maxWeight);
         anchor = pathFinder.target();
@@ -557,12 +795,12 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
 
         Polygon<Shape> center_line;
         center_line.push_back_unsafe(anchor);
-        while(pathFinder.predecessors()[center_line.back()] != center_line.back())
+        while (pathFinder.predecessors()[center_line.back()] != center_line.back())
             center_line.push_back_unsafe(pathFinder.predecessors()[center_line.back()]);
 
-        if(options.mode == SkeletonOptions::PruneCenterLine)
+        if (options.mode == SkeletonOptions::PruneCenterLine)
         {
-            for(unsigned int k=0; k<center_line.size(); ++k)
+            for (unsigned int k = 0; k < center_line.size(); ++k)
                 dest[center_line[k]] = (T2)label;
             continue; // to next label
         }
@@ -574,12 +812,12 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
         bool compute_salience = (options.mode & SkeletonOptions::Salience) != 0;
         ArrayVector<Node> raw_skeleton(pathFinder.discoveryOrder());
         // from periphery to center: create skeleton tree and compute salience
-        for(int k=raw_skeleton.size()-1; k >= 0; --k)
+        for (int k = raw_skeleton.size() - 1; k >= 0; --k)
         {
             Node p1 = raw_skeleton[k],
                  p2 = pathFinder.predecessors()[p1];
-            SNode & n1 = skeleton[p1];
-            SNode & n2 = skeleton[p2];
+            SNode& n1 = skeleton[p1];
+            SNode& n2 = skeleton[p2];
             n1.parent = p2;
 
 
@@ -587,63 +825,63 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
             for (BackArcIt arc(g, p1); arc != lemon::INVALID; ++arc)
             {
                 Node p = g.target(*arc);
-                if(weights[*arc] == infiniteWeight)
+                if (weights[*arc] == infiniteWeight)
                     continue; // edge never was in the graph
-                if(p == p2)
+                if (p == p2)
                     continue; // edge belongs to the skeleton
-                if(pathFinder.predecessors()[p] == p1)
+                if (pathFinder.predecessors()[p] == p1)
                     continue; // edge belongs to the skeleton
-                if(n1.principal_child == lemon::INVALID ||
-                   skeleton[p].principal_child == lemon::INVALID)
+                if (n1.principal_child == lemon::INVALID ||
+                    skeleton[p].principal_child == lemon::INVALID)
                     continue; // edge may belong to a loop => test later
                 weights[*arc] = infiniteWeight;
             }
 
             // propagate length to parent if this is the longest subtree
-            WeightType l = n1.length + norm(p1-p2);
-            if(n2.length < l)
+            WeightType l = n1.length + norm(p1 - p2);
+            if (n2.length < l)
             {
                 n2.length = l;
                 n2.principal_child = p1;
             }
 
-            if(compute_salience)
+            if (compute_salience)
             {
                 const double min_length = 4.0; // salience is meaningless for shorter segments due
                                                // to quantization noise (staircasing) of the boundary
-                if(n1.length >= min_length)
+                if (n1.length >= min_length)
                 {
                     n1.salience = max(n1.salience, (n1.length + 0.5) / sqrt(squared_distance[p1]));
 
                     // propagate salience to parent if this is the most salient subtree
-                    if(n2.salience < n1.salience)
+                    if (n2.salience < n1.salience)
                         n2.salience = n1.salience;
                 }
             }
-            else if(options.mode == SkeletonOptions::DontPrune)
+            else if (options.mode == SkeletonOptions::DontPrune)
                 n1.salience = dest[p1];
             else
                 n1.salience = n1.length;
         }
 
         // from center to periphery: propagate salience and compute twice the partial area
-        for(int k=0; k < (int)raw_skeleton.size(); ++k)
+        for (int k = 0; k < (int)raw_skeleton.size(); ++k)
         {
             Node p1 = raw_skeleton[k];
-            SNode & n1 = skeleton[p1];
+            SNode& n1 = skeleton[p1];
             Node p2 = n1.parent;
-            SNode & n2 = skeleton[p2];
+            SNode& n2 = skeleton[p2];
 
-            if(p1 == n2.principal_child)
+            if (p1 == n2.principal_child)
             {
                 n1.length = n2.length;
                 n1.salience = n2.salience;
             }
             else
             {
-                n1.length += norm(p2-p1);
+                n1.length += norm(p2 - p1);
             }
-            n1.partial_area = n2.partial_area + (p1[0]*p2[1] - p1[1]*p2[0]);
+            n1.partial_area = n2.partial_area + (p1[0] * p2[1] - p1[1] * p2[0]);
         }
 
         // always treat eccentricity center as a loop, so that it cannot be pruned
@@ -652,28 +890,28 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
 
         // from periphery to center: * find and propagate loops
         //                           * delete branches not reaching the boundary
-        detail::CheckForHole<std::size_t, MultiArrayView<2, T1, S1> > hasNoHole(label, labels);
+        detail::CheckForHole<std::size_t, MultiArrayView<2, T1, S1>> hasNoHole(label, labels);
         int hole_count = 0;
         double total_length = 0.0;
-        for(int k=raw_skeleton.size()-1; k >= 0; --k)
+        for (int k = raw_skeleton.size() - 1; k >= 0; --k)
         {
             Node p1 = raw_skeleton[k];
-            SNode & n1 = skeleton[p1];
+            SNode& n1 = skeleton[p1];
 
-            if(n1.principal_child == lemon::INVALID)
+            if (n1.principal_child == lemon::INVALID)
             {
                 for (ArcIt arc(g, p1); arc != lemon::INVALID; ++arc)
                 {
                     Node p2 = g.target(*arc);
-                    SNode * n2 = &skeleton[p2];
+                    SNode* n2 = &skeleton[p2];
 
-                    if(n1.parent == p2)
+                    if (n1.parent == p2)
                         continue; // going back to the parent can't result in a loop
-                    if(weights[*arc] == infiniteWeight)
+                    if (weights[*arc] == infiniteWeight)
                         continue; // p2 is not in the tree or the loop has already been handled
                     // compute twice the area exclosed by the potential loop
-                    MultiArrayIndex area2 = abs(n1.partial_area - (p1[0]*p2[1] - p1[1]*p2[0]) - n2->partial_area);
-                    if(area2 <= 3) // area is too small to enclose a hole => loop is a discretization artifact
+                    MultiArrayIndex area2 = abs(n1.partial_area - (p1[0] * p2[1] - p1[1] * p2[0]) - n2->partial_area);
+                    if (area2 <= 3) // area is too small to enclose a hole => loop is a discretization artifact
                         continue;
 
                     // use Dijkstra to find the loop
@@ -688,19 +926,18 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
                         {
                             p = pathFinder.predecessors()[p];
                             poly.push_back_unsafe(p);
-                        }
-                        while(p != pathFinder.predecessors()[p]);
+                        } while (p != pathFinder.predecessors()[p]);
                     }
                     // check if the loop contains a hole or is just a discretization artifact
-                    if(!inspectPolygon(poly, hasNoHole))
+                    if (!inspectPolygon(poly, hasNoHole))
                     {
                         // it's a genuine loop => mark it and propagate salience
                         ++hole_count;
                         total_length += n1.length + n2->length;
                         double max_salience = max(n1.salience, n2->salience);
-                        for(decltype(poly.size()) p=1; p<poly.size(); ++p)
+                        for (decltype(poly.size()) p = 1; p < poly.size(); ++p)
                         {
-                            SNode & n = skeleton[poly[p]];
+                            SNode& n = skeleton[poly[p]];
                             n.is_loop = true;
                             n.salience = max(n.salience, max_salience);
                         }
@@ -708,18 +945,18 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
                 }
                 // delete skeleton branches that are not loops and don't reach the shape border
                 // (these branches are discretization artifacts)
-                if(!n1.is_loop && squared_distance[p1] >= 4)
+                if (!n1.is_loop && squared_distance[p1] >= 4)
                 {
-                    SNode * n = &n1;
-                    while(true)
+                    SNode* n = &n1;
+                    while (true)
                     {
                         n->salience = 0;
                         // remove all of p1's edges
-                        for(ArcIt arc(g, p1); arc != lemon::INVALID; ++arc)
+                        for (ArcIt arc(g, p1); arc != lemon::INVALID; ++arc)
                         {
                             weights[*arc] = infiniteWeight;
                         }
-                        if(skeleton[n->parent].principal_child != p1)
+                        if (skeleton[n->parent].principal_child != p1)
                             break;
                         p1 = n->parent;
                         n = &skeleton[p1];
@@ -727,7 +964,7 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
                 }
             }
 
-            if(n1.is_loop)
+            if (n1.is_loop)
                 skeleton[n1.parent].is_loop = true;
         }
 
@@ -739,38 +976,38 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
                                 options.mode == SkeletonOptions::Prune)
                                    ? infiniteWeight
                                    : relative_pruning
-                                       ? options.pruning_threshold*skeleton[center].salience
-                                       : options.pruning_threshold;
+                                         ? options.pruning_threshold * skeleton[center].salience
+                                         : options.pruning_threshold;
         // from center to periphery: write result
         int branch_count = 0;
         double average_length = 0;
-        for(int k=0; k < (int)raw_skeleton.size(); ++k)
+        for (int k = 0; k < (int)raw_skeleton.size(); ++k)
         {
             Node p1 = raw_skeleton[k];
-            SNode & n1 = skeleton[p1];
+            SNode& n1 = skeleton[p1];
             Node p2 = n1.parent;
-            if(n1.principal_child == lemon::INVALID &&
-               n1.salience >= threshold &&
-               !n1.is_loop)
+            if (n1.principal_child == lemon::INVALID &&
+                n1.salience >= threshold &&
+                !n1.is_loop)
             {
                 ++branch_count;
                 average_length += n1.length;
                 total_length += n1.length;
             }
-            if(dont_prune)
+            if (dont_prune)
                 dest[p1] = n1.salience;
-            else if(preserve_topology)
+            else if (preserve_topology)
             {
-                if(!n1.is_loop && n1.salience < threshold)
+                if (!n1.is_loop && n1.salience < threshold)
                     dest[p1] = 0;
             }
-            else if(p1 != center && n1.salience < threshold)
+            else if (p1 != center && n1.salience < threshold)
                 dest[p1] = 0;
         }
-        if(branch_count > 0)
+        if (branch_count > 0)
             average_length /= branch_count;
 
-        if(features)
+        if (features)
         {
             (*features)[label].diameter = center_line.length();
             (*features)[label].total_length = total_length;
@@ -780,29 +1017,25 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
             (*features)[label].center = center;
             (*features)[label].terminal1 = center_line.front();
             (*features)[label].terminal2 = center_line.back();
-            (*features)[label].euclidean_diameter = norm(center_line.back()-center_line.front());
+            (*features)[label].euclidean_diameter = norm(center_line.back() - center_line.front());
         }
     }
 
-    if(options.mode == SkeletonOptions::Prune)
+    if (options.mode == SkeletonOptions::Prune)
         detail::skeletonThinning(squared_distance, dest, false);
 }
 
 class SkeletonFeatures
 {
-  public:
+public:
     double diameter, total_length, average_length, euclidean_diameter;
     UInt32 branch_count, hole_count;
     Shape2 center, terminal1, terminal2;
 
     SkeletonFeatures()
-    : diameter(0)
-    , total_length(0)
-    , average_length(0)
-    , euclidean_diameter(0)
-    , branch_count(0)
-    , hole_count(0)
-    {}
+        : diameter(0), total_length(0), average_length(0), euclidean_diameter(0), branch_count(0), hole_count(0)
+    {
+    }
 };
 
 /********************************************************/
@@ -811,7 +1044,7 @@ class SkeletonFeatures
 /*                                                      */
 /********************************************************/
 
-    /*
+/*
     To compute the skeleton reliably in higher dimensions, we have to work on
     a topological grid. The tricks to work with rounded skeletons on the
     pixel grid probably don't generalize from 2D to 3D and higher. Specifically:
@@ -831,14 +1064,14 @@ class SkeletonFeatures
     To implement this cleanly, we first need a good implementation of the topological grid graph.
     */
 // template <unsigned int N, class T1, class S1,
-                          // class T2, class S2>
+// class T2, class S2>
 // void
 // skeletonizeImage(MultiArrayView<N, T1, S1> const & labels,
-            // MultiArrayView<N, T2, S2> dest,
-            // SkeletonOptions const & options = SkeletonOptions())
+// MultiArrayView<N, T2, S2> dest,
+// SkeletonOptions const & options = SkeletonOptions())
 // {
 
-    /** \brief Skeletonization of all regions in a labeled 2D image.
+/** \brief Skeletonization of all regions in a labeled 2D image.
 
         <b> Declarations:</b>
 
@@ -944,23 +1177,22 @@ class SkeletonFeatures
 
         \see vigra::boundaryVectorDistance()
     */
-doxygen_overloaded_function(template <...> void skeletonizeImage)
+doxygen_overloaded_function(template<...> void skeletonizeImage)
 
-template <class T1, class S1,
-          class T2, class S2>
-void
-skeletonizeImage(MultiArrayView<2, T1, S1> const & labels,
-            MultiArrayView<2, T2, S2> dest,
-            SkeletonOptions const & options = SkeletonOptions())
+    template<class T1, class S1,
+             class T2, class S2>
+    void skeletonizeImage(MultiArrayView<2, T1, S1> const& labels,
+                          MultiArrayView<2, T2, S2> dest,
+                          SkeletonOptions const& options = SkeletonOptions())
 {
     skeletonizeImageImpl(labels, dest, (ArrayVector<SkeletonFeatures>*)0, options);
 }
 
-template <class T, class S>
+template<class T, class S>
 void
-extractSkeletonFeatures(MultiArrayView<2, T, S> const & labels,
-                        ArrayVector<SkeletonFeatures> & features,
-                        SkeletonOptions const & options = SkeletonOptions())
+    extractSkeletonFeatures(MultiArrayView<2, T, S> const& labels,
+                            ArrayVector<SkeletonFeatures>& features,
+                            SkeletonOptions const& options = SkeletonOptions())
 {
     MultiArray<2, float> skeleton(labels.shape());
     skeletonizeImageImpl(labels, skeleton, &features, options);
@@ -968,6 +1200,6 @@ extractSkeletonFeatures(MultiArrayView<2, T, S> const & labels,
 
 //@}
 
-} //-- namespace vigra
+} // namespace vigra
 
-#endif        //-- VIGRA_SKELETON_HXX
+#endif //-- VIGRA_SKELETON_HXX

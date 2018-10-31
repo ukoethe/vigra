@@ -39,53 +39,62 @@
 
 #include "multi_array.hxx"
 #include "multi_gridgraph.hxx"
-namespace vigra {
+namespace vigra
+{
 
 
-    template<unsigned int DIM, class LABEL_TYPE,class LABEL_TYPE_OUT>
-    void shrinkLabels(
-        MultiArrayView<DIM,LABEL_TYPE>     labels,
-        const size_t shrinkNpixels,
-        MultiArrayView<DIM,LABEL_TYPE_OUT> shrinkedLabels
-    ){
-        shrinkedLabels = labels;
+template<unsigned int DIM, class LABEL_TYPE, class LABEL_TYPE_OUT>
+void
+shrinkLabels(
+    MultiArrayView<DIM, LABEL_TYPE> labels,
+    const size_t shrinkNpixels,
+    MultiArrayView<DIM, LABEL_TYPE_OUT> shrinkedLabels)
+{
+    shrinkedLabels = labels;
 
-        typedef GridGraph<DIM, undirected_tag> Graph;
-        typedef typename Graph::Node Node;
-        //typedef typename Graph::Edge Edge;
-        typedef typename Graph::NodeIt graph_scanner;
-        typedef typename Graph::OutArcIt neighbor_iterator;
+    typedef GridGraph<DIM, undirected_tag> Graph;
+    typedef typename Graph::Node Node;
+    //typedef typename Graph::Edge Edge;
+    typedef typename Graph::NodeIt graph_scanner;
+    typedef typename Graph::OutArcIt neighbor_iterator;
 
-        const Graph g(labels.shape());
+    const Graph g(labels.shape());
 
-        // INITAL LOOP
-        for (graph_scanner n(g); n != lemon::INVALID; ++n){
-            const Node node(*n);
-            for (neighbor_iterator arc(g, node); arc != lemon::INVALID; ++arc){
-                const Node otherNode = g.target(arc);
+    // INITAL LOOP
+    for (graph_scanner n(g); n != lemon::INVALID; ++n)
+    {
+        const Node node(*n);
+        for (neighbor_iterator arc(g, node); arc != lemon::INVALID; ++arc)
+        {
+            const Node otherNode = g.target(arc);
 
-                if(labels[node]!=labels[otherNode]){
-                    shrinkedLabels[node]=0;
-                    shrinkedLabels[otherNode]=0;
-                }
+            if (labels[node] != labels[otherNode])
+            {
+                shrinkedLabels[node] = 0;
+                shrinkedLabels[otherNode] = 0;
             }
         }
+    }
 
-        MultiArray<DIM,bool> visited(labels.shape());
-        for(size_t r=0;r<shrinkNpixels-1;++r){
-            std::fill(visited.begin(),visited.end(),false);
-            for (graph_scanner n(g); n != lemon::INVALID; ++n){
-                const Node node(*n);
-                if(!visited[n] && shrinkedLabels[node]==0){
-                    for (neighbor_iterator arc(g, node); arc != lemon::INVALID; ++arc){
-                        const Node otherNode = g.target(arc);
-                        shrinkedLabels[otherNode]=0;
-                        visited[otherNode]=true;
-                    }
+    MultiArray<DIM, bool> visited(labels.shape());
+    for (size_t r = 0; r < shrinkNpixels - 1; ++r)
+    {
+        std::fill(visited.begin(), visited.end(), false);
+        for (graph_scanner n(g); n != lemon::INVALID; ++n)
+        {
+            const Node node(*n);
+            if (!visited[n] && shrinkedLabels[node] == 0)
+            {
+                for (neighbor_iterator arc(g, node); arc != lemon::INVALID; ++arc)
+                {
+                    const Node otherNode = g.target(arc);
+                    shrinkedLabels[otherNode] = 0;
+                    visited[otherNode] = true;
                 }
             }
         }
     }
+}
 
 
 } // end namespace vigra

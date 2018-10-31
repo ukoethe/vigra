@@ -33,37 +33,37 @@
 /*                                                                      */
 /************************************************************************/
 
-#include <iostream>
-#include <functional>
 #include <cmath>
+#include <functional>
+#include <iostream>
 #include <stdlib.h>
 #include <time.h>
 
 #include "vigra/unittest.hxx"
 
-#include <vigra/slic.hxx>
+#include <vigra/colorconversions.hxx>
 #include <vigra/impex.hxx>
 #include <vigra/multi_convolution.hxx>
 #include <vigra/multi_math.hxx>
-#include <vigra/colorconversions.hxx>
+#include <vigra/slic.hxx>
 
 
 using namespace vigra;
 
-template <unsigned int N>
+template<unsigned int N>
 struct SlicTest
 {
-    typedef MultiArray<N, float>                  FArray;
-    typedef MultiArray<N, RGBValue<float> >       FRGBArray;
-    typedef MultiArray<N, unsigned int>           IArray;
-    typedef typename MultiArrayShape<N>::type     Shape;
+    typedef MultiArray<N, float> FArray;
+    typedef MultiArray<N, RGBValue<float>> FRGBArray;
+    typedef MultiArray<N, unsigned int> IArray;
+    typedef typename MultiArrayShape<N>::type Shape;
 
     ImageImportInfo info;
     FRGBArray lennaImage;
 
     SlicTest()
-    :   info("lenna.xv"),
-        lennaImage(info.shape())
+        : info("lenna.xv"),
+          lennaImage(info.shape())
     {
         importImage(info, destImage(lennaImage));
         transformMultiArray(srcMultiArrayRange(lennaImage), destMultiArray(lennaImage), RGBPrime2LabFunctor<float>());
@@ -72,16 +72,15 @@ struct SlicTest
     void test_seeding()
     {
         Shape seeds_ref[] = {
-               Shape(24, 22),
-               Shape(65, 22),
-               Shape(102, 20),
-               Shape(24, 59),
-               Shape(63, 60),
-               Shape(104, 61),
-               Shape(24, 100),
-               Shape(65, 100),
-               Shape(104, 100)
-        };
+            Shape(24, 22),
+            Shape(65, 22),
+            Shape(102, 20),
+            Shape(24, 59),
+            Shape(63, 60),
+            Shape(104, 61),
+            Shape(24, 100),
+            Shape(65, 100),
+            Shape(104, 100)};
 
         // get grad mag image
         FArray gradMag(lennaImage.shape());
@@ -92,14 +91,14 @@ struct SlicTest
         shouldEqual(maxSeedlabel, 9);
 
         typename IArray::iterator iter = labels.begin(),
-                                  end  = iter.getEndIterator();
+                                  end = iter.getEndIterator();
         int count = 0;
-        for(; iter != end; ++iter)
+        for (; iter != end; ++iter)
         {
-            if(*iter == 0)
+            if (*iter == 0)
                 continue;
             should(*iter <= 9 && *iter > 0);
-            shouldEqual(iter.point(), seeds_ref[*iter-1]);
+            shouldEqual(iter.point(), seeds_ref[*iter - 1]);
             ++count;
         }
         shouldEqual(count, 9);
@@ -124,17 +123,18 @@ struct SlicTest
 
 
 struct Slic2dTestSuite
-: public test_suite
+    : public test_suite
 {
     Slic2dTestSuite()
-    : test_suite("Slic2dTestSuite")
+        : test_suite("Slic2dTestSuite")
     {
-        add( testCase( &SlicTest<2>::test_seeding));
-        add( testCase( &SlicTest<2>::test_slic));
+        add(testCase(&SlicTest<2>::test_seeding));
+        add(testCase(&SlicTest<2>::test_slic));
     }
 };
 
-int main(int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
     Slic2dTestSuite test;
 
@@ -143,4 +143,3 @@ int main(int argc, char ** argv)
     std::cout << test.report() << std::endl;
     return (failed != 0);
 }
-

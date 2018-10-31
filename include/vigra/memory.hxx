@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -40,17 +40,21 @@
 #include "config.hxx"
 
 #ifdef VIGRA_SHARED_PTR_IN_TR1
-#  include <tr1/memory>
+#include <tr1/memory>
 #else
-#  include <memory>
-#endif 
+#include <memory>
+#endif
 
-#include <cstring>
 #include "metaprogramming.hxx"
+#include <cstring>
 
-namespace vigra { 
+namespace vigra
+{
 
-enum SkipInitializationTag { SkipInitialization};
+enum SkipInitializationTag
+{
+    SkipInitialization
+};
 
 template<class T>
 struct CanSkipInitialization
@@ -59,85 +63,88 @@ struct CanSkipInitialization
     static const bool value = type::asBool;
 };
 
-namespace detail {
+namespace detail
+{
 
 // differs from std::uninitialized_copy by explicit type conversion
-template <class Src, class Dest>
-Dest uninitializedCopy(Src s, Src end, Dest d)
+template<class Src, class Dest>
+Dest
+uninitializedCopy(Src s, Src end, Dest d)
 {
     typedef typename std::iterator_traits<Dest>::value_type T;
-    for(; s != end; ++s, ++d)
-        new(d) T(static_cast<T const &>(*s));
+    for (; s != end; ++s, ++d)
+        new (d) T(static_cast<T const&>(*s));
     return d;
 }
 
-template <class T>
+template<class T>
 struct PlacementNewAllocator
 {
-    T * allocate(std::size_t n)
+    T* allocate(std::size_t n)
     {
-        return (T*)::operator new(n*sizeof(T));
+        return (T*)::operator new(n * sizeof(T));
     }
 
-    void deallocate(T * p, std::size_t)
+    void deallocate(T* p, std::size_t)
     {
         return ::operator delete(p);
     }
 
-    void construct(T * p, T const & initial)
+    void construct(T* p, T const& initial)
     {
-        new(p) T(initial);
+        new (p) T(initial);
     }
-    
-    void destroy(T * p)
+
+    void destroy(T* p)
     {
         p->~T();
     }
 };
 
-template <class T>
-inline void 
-destroy_n(T * /* p */, std::size_t /* n */, VigraTrueType /* isPOD */)
-{}
-
-template <class T>
-inline void 
-destroy_n(T * p, std::size_t n, VigraFalseType /* isPOD */)
+template<class T>
+inline void
+destroy_n(T* /* p */, std::size_t /* n */, VigraTrueType /* isPOD */)
 {
-    for(std::size_t i=0; i < n; ++i, ++p)
+}
+
+template<class T>
+inline void
+destroy_n(T* p, std::size_t n, VigraFalseType /* isPOD */)
+{
+    for (std::size_t i = 0; i < n; ++i, ++p)
         p->~T();
 }
 
-template <class T>
+template<class T>
 inline void
-destroy_n(T * p, std::size_t n)
+destroy_n(T* p, std::size_t n)
 {
     destroy_n(p, n, typename TypeTraits<T>::isPOD());
 }
 
-template <class T, class Alloc>
-inline T * 
-alloc_initialize_n(std::size_t n, T const & initial, Alloc & alloc)
+template<class T, class Alloc>
+inline T*
+alloc_initialize_n(std::size_t n, T const& initial, Alloc& alloc)
 {
-    T * p = alloc.allocate(n);
+    T* p = alloc.allocate(n);
     bool useMemset = TypeTraits<T>::isPOD::value &&
                      (initial == T());
-    if(useMemset)
+    if (useMemset)
     {
-        std::memset(p, 0, n*sizeof(T));
+        std::memset(p, 0, n * sizeof(T));
     }
     else
     {
-        std::size_t i=0;
-        try 
+        std::size_t i = 0;
+        try
         {
             for (; i < n; ++i)
-                alloc.construct(p+i, initial);
+                alloc.construct(p + i, initial);
         }
-        catch (...) 
+        catch (...)
         {
-            for (std::size_t j=0; j < i; ++j)
-                alloc.destroy(p+j);
+            for (std::size_t j = 0; j < i; ++j)
+                alloc.destroy(p + j);
             alloc.deallocate(p, n);
             throw;
         }
@@ -145,52 +152,52 @@ alloc_initialize_n(std::size_t n, T const & initial, Alloc & alloc)
     return p;
 }
 
-template <class T>
-inline T * 
-alloc_initialize_n(std::size_t n, T const & initial)
+template<class T>
+inline T*
+alloc_initialize_n(std::size_t n, T const& initial)
 {
     PlacementNewAllocator<T> alloc;
     return alloc_initialize_n<T>(n, initial, alloc);
 }
 
-template <class T>
-inline T * 
+template<class T>
+inline T*
 alloc_initialize_n(std::size_t n)
 {
     PlacementNewAllocator<T> alloc;
     return alloc_initialize_n<T>(n, T(), alloc);
 }
 
-template <class T, class Alloc>
-inline void 
-destroy_dealloc_impl(T * p, std::size_t n, Alloc & alloc, VigraTrueType /* isPOD */)
+template<class T, class Alloc>
+inline void
+destroy_dealloc_impl(T* p, std::size_t n, Alloc& alloc, VigraTrueType /* isPOD */)
 {
     alloc.deallocate(p, n);
 }
 
-template <class T, class Alloc>
-inline void 
-destroy_dealloc_impl(T * p, std::size_t n, Alloc & alloc, VigraFalseType /* isPOD */)
+template<class T, class Alloc>
+inline void
+destroy_dealloc_impl(T* p, std::size_t n, Alloc& alloc, VigraFalseType /* isPOD */)
 {
-    for (std::size_t i=0; i < n; ++i)
+    for (std::size_t i = 0; i < n; ++i)
         alloc.destroy(p + i);
     alloc.deallocate(p, n);
 }
 
-template <class T, class Alloc>
-inline T * 
-destroy_dealloc_n(T * p, std::size_t n, Alloc & alloc)
+template<class T, class Alloc>
+inline T*
+destroy_dealloc_n(T* p, std::size_t n, Alloc& alloc)
 {
-    if(p != 0)
+    if (p != 0)
         destroy_dealloc_impl(p, n, alloc, typename TypeTraits<T>::isPOD());
     return 0;
 }
 
-template <class T>
-inline T * 
-destroy_dealloc_n(T * p, std::size_t n)
+template<class T>
+inline T*
+destroy_dealloc_n(T* p, std::size_t n)
 {
-    if(p != 0)
+    if (p != 0)
     {
         PlacementNewAllocator<T> alloc;
         destroy_dealloc_impl(p, n, alloc, typename TypeTraits<T>::isPOD());
@@ -201,37 +208,44 @@ destroy_dealloc_n(T * p, std::size_t n)
 /********************************************************************/
 
 // g++ 2.95 has std::destroy() in the STL
-#if !defined(__GNUC__) ||  __GNUC__ >= 3
+#if !defined(__GNUC__) || __GNUC__ >= 3
 
-template <class T>
-inline void destroy(T * /* p */, VigraTrueType /* isPOD */)
+template<class T>
+inline void
+destroy(T* /* p */, VigraTrueType /* isPOD */)
 {
 }
 
-template <class T>
-inline void destroy(T * p, VigraFalseType /* isPOD */)
+template<class T>
+inline void
+destroy(T* p, VigraFalseType /* isPOD */)
 {
     p->~T();
 }
 
-template <class T>
-inline void destroy(T * p)
+template<class T>
+inline void
+destroy(T* p)
 {
     destroy(p, typename TypeTraits<T>::isPOD());
 }
 
 #else
-
-} } // namespace vigra::detail
+}
+} // namespace vigra::detail
 
 #include <memory>
 
-namespace vigra { namespace detail {
+namespace vigra
+{
+namespace detail
+{
 
 using std::destroy;
 
 #endif
 
-} } // namespace vigra::detail
+} // namespace detail
+} // namespace vigra
 
 #endif // VIGRA_MEMORY_HXX

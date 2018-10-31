@@ -29,22 +29,24 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
- 
+
+
 #ifndef VIGRA_COMBINEIMAGES_HXX
 #define VIGRA_COMBINEIMAGES_HXX
 
-#include "utilities.hxx"
-#include "numerictraits.hxx"
 #include "functortraits.hxx"
 #include "multi_shape.hxx"
+#include "numerictraits.hxx"
+#include "rgbvalue.hxx"
+#include "utilities.hxx"
 
 #include <cmath>
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup CombineAlgo Algorithms to Combine Images
 
@@ -59,50 +61,50 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-template <class SrcIterator1, class SrcAccessor1,
-          class SrcIterator2, class SrcAccessor2,
-          class DestIterator, class DestAccessor, class Functor>
+template<class SrcIterator1, class SrcAccessor1,
+         class SrcIterator2, class SrcAccessor2,
+         class DestIterator, class DestAccessor, class Functor>
 void
-combineTwoLines(SrcIterator1 s1, 
+combineTwoLines(SrcIterator1 s1,
                 SrcIterator1 s1end, SrcAccessor1 src1,
                 SrcIterator2 s2, SrcAccessor2 src2,
                 DestIterator d, DestAccessor dest,
-                Functor const & f)
+                Functor const& f)
 {
-    for(; s1 != s1end; ++s1, ++s2, ++d)
+    for (; s1 != s1end; ++s1, ++s2, ++d)
         dest.set(f(src1(s1), src2(s2)), d);
 }
 
-template <class SrcIterator1, class SrcAccessor1,
-          class SrcIterator2, class SrcAccessor2,
-          class MaskIterator, class MaskAccessor, 
-          class DestIterator, class DestAccessor, class Functor>
+template<class SrcIterator1, class SrcAccessor1,
+         class SrcIterator2, class SrcAccessor2,
+         class MaskIterator, class MaskAccessor,
+         class DestIterator, class DestAccessor, class Functor>
 void
-combineTwoLinesIf(SrcIterator1 s1, 
+combineTwoLinesIf(SrcIterator1 s1,
                   SrcIterator1 s1end, SrcAccessor1 src1,
                   SrcIterator2 s2, SrcAccessor2 src2,
                   MaskIterator m, MaskAccessor mask,
                   DestIterator d, DestAccessor dest,
-                  Functor const & f)
+                  Functor const& f)
 {
-    for(; s1 != s1end; ++s1, ++s2, ++m, ++d)
-        if(mask(m))
+    for (; s1 != s1end; ++s1, ++s2, ++m, ++d)
+        if (mask(m))
             dest.set(f(src1(s1), src2(s2)), d);
 }
 
-template <class SrcIterator1, class SrcAccessor1,
-          class SrcIterator2, class SrcAccessor2,
-          class SrcIterator3, class SrcAccessor3,
-          class DestIterator, class DestAccessor, class Functor>
+template<class SrcIterator1, class SrcAccessor1,
+         class SrcIterator2, class SrcAccessor2,
+         class SrcIterator3, class SrcAccessor3,
+         class DestIterator, class DestAccessor, class Functor>
 void
-combineThreeLines(SrcIterator1 s1, 
+combineThreeLines(SrcIterator1 s1,
                   SrcIterator1 s1end, SrcAccessor1 src1,
                   SrcIterator2 s2, SrcAccessor2 src2,
                   SrcIterator3 s3, SrcAccessor3 src3,
                   DestIterator d, DestAccessor dest,
-                  Functor const & f)
+                  Functor const& f)
 {
-    for(; s1 != s1end; ++s1, ++s2, ++s3, ++d)
+    for (; s1 != s1end; ++s1, ++s2, ++s3, ++d)
         dest.set(f(src1(s1), src2(s2), src3(s3)), d);
 }
 
@@ -226,61 +228,59 @@ combineThreeLines(SrcIterator1 s1,
     
     \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
-doxygen_overloaded_function(template <...> void combineTwoImages)
+doxygen_overloaded_function(template<...> void combineTwoImages)
 
-template <class SrcImageIterator1, class SrcAccessor1,
-          class SrcImageIterator2, class SrcAccessor2,
-          class DestImageIterator, class DestAccessor,
-          class Functor>
-void
-combineTwoImages(SrcImageIterator1 src1_upperleft, 
-                 SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
-                 SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
-                 DestImageIterator dest_upperleft, DestAccessor da,
-                 Functor const & f)
+    template<class SrcImageIterator1, class SrcAccessor1,
+             class SrcImageIterator2, class SrcAccessor2,
+             class DestImageIterator, class DestAccessor,
+             class Functor>
+    void combineTwoImages(SrcImageIterator1 src1_upperleft,
+                          SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
+                          SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
+                          DestImageIterator dest_upperleft, DestAccessor da,
+                          Functor const& f)
 {
     int w = src1_lowerright.x - src1_upperleft.x;
-    
-    for(; src1_upperleft.y < src1_lowerright.y; 
-            ++src1_upperleft.y, ++src2_upperleft.y, ++dest_upperleft.y)
+
+    for (; src1_upperleft.y < src1_lowerright.y;
+         ++src1_upperleft.y, ++src2_upperleft.y, ++dest_upperleft.y)
     {
-        combineTwoLines(src1_upperleft.rowIterator(), 
-                        src1_upperleft.rowIterator() + w, sa1, 
-                        src2_upperleft.rowIterator(), sa2, 
+        combineTwoLines(src1_upperleft.rowIterator(),
+                        src1_upperleft.rowIterator() + w, sa1,
+                        src2_upperleft.rowIterator(), sa2,
                         dest_upperleft.rowIterator(), da, f);
     }
 }
-    
-template <class SrcImageIterator1, class SrcAccessor1,
-          class SrcImageIterator2, class SrcAccessor2,
-          class DestImageIterator, class DestAccessor,
-          class Functor>
-inline
-void
+
+template<class SrcImageIterator1, class SrcAccessor1,
+         class SrcImageIterator2, class SrcAccessor2,
+         class DestImageIterator, class DestAccessor,
+         class Functor>
+inline void
 combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
                  pair<SrcImageIterator2, SrcAccessor2> src2,
                  pair<DestImageIterator, DestAccessor> dest,
-                 Functor const & f)
+                 Functor const& f)
 {
-    combineTwoImages(src1.first, src1.second, src1.third, 
-                     src2.first, src2.second, 
+    combineTwoImages(src1.first, src1.second, src1.third,
+                     src2.first, src2.second,
                      dest.first, dest.second, f);
 }
 
-template <class T11, class S11,
-          class T12, class S12,
-          class T2, class S2,
-          class Functor>
+template<class T11, class S11,
+         class T12, class S12,
+         class T2, class S2,
+         class Functor>
 inline void
-combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
-                 MultiArrayView<2, T12, S12> const & src2,
-                 MultiArrayView<2, T2, S2> dest,
-                 Functor const & f)
+    combineTwoImages(MultiArrayView<2, T11, S11> const& src1,
+                     MultiArrayView<2, T12, S12> const& src2,
+                     MultiArrayView<2, T2, S2> dest,
+                     Functor const& f)
 {
     vigra_precondition(src1.shape() == src2.shape() && src1.shape() == dest.shape(),
-        "combineTwoImages(): shape mismatch between inputs and/or output.");
-    combineTwoImages(srcImageRange(src1), 
-                     srcImage(src2), 
+                       "combineTwoImages(): shape mismatch between inputs and/or output.");
+    combineTwoImages(srcImageRange(src1),
+                     srcImage(src2),
                      destImage(dest), f);
 }
 
@@ -415,71 +415,69 @@ combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
     
     \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
-doxygen_overloaded_function(template <...> void combineTwoImagesIf)
+doxygen_overloaded_function(template<...> void combineTwoImagesIf)
 
-template <class SrcImageIterator1, class SrcAccessor1,
-          class SrcImageIterator2, class SrcAccessor2,
-          class MaskImageIterator, class MaskAccessor,
-          class DestImageIterator, class DestAccessor,
-          class Functor>
-void
-combineTwoImagesIf(SrcImageIterator1 src1_upperleft, 
-                   SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
-                   SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
-                   MaskImageIterator mask_upperleft, MaskAccessor ma,
-                   DestImageIterator dest_upperleft, DestAccessor da,
-                   Functor const & f)
+    template<class SrcImageIterator1, class SrcAccessor1,
+             class SrcImageIterator2, class SrcAccessor2,
+             class MaskImageIterator, class MaskAccessor,
+             class DestImageIterator, class DestAccessor,
+             class Functor>
+    void combineTwoImagesIf(SrcImageIterator1 src1_upperleft,
+                            SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
+                            SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
+                            MaskImageIterator mask_upperleft, MaskAccessor ma,
+                            DestImageIterator dest_upperleft, DestAccessor da,
+                            Functor const& f)
 {
     int w = src1_lowerright.x - src1_upperleft.x;
-    
-    for(; src1_upperleft.y < src1_lowerright.y;
-          ++src1_upperleft.y, ++src2_upperleft.y, 
-          ++dest_upperleft.y, ++mask_upperleft.y)
+
+    for (; src1_upperleft.y < src1_lowerright.y;
+         ++src1_upperleft.y, ++src2_upperleft.y,
+         ++dest_upperleft.y, ++mask_upperleft.y)
     {
-        combineTwoLinesIf(src1_upperleft.rowIterator(), 
-                          src1_upperleft.rowIterator() + w, sa1, 
-                          src2_upperleft.rowIterator(), sa2, 
-                          mask_upperleft.rowIterator(), ma, 
+        combineTwoLinesIf(src1_upperleft.rowIterator(),
+                          src1_upperleft.rowIterator() + w, sa1,
+                          src2_upperleft.rowIterator(), sa2,
+                          mask_upperleft.rowIterator(), ma,
                           dest_upperleft.rowIterator(), da, f);
     }
 }
-    
-template <class SrcImageIterator1, class SrcAccessor1,
-          class SrcImageIterator2, class SrcAccessor2,
-          class MaskImageIterator, class MaskAccessor,
-          class DestImageIterator, class DestAccessor,
-          class Functor>
-inline
-void
+
+template<class SrcImageIterator1, class SrcAccessor1,
+         class SrcImageIterator2, class SrcAccessor2,
+         class MaskImageIterator, class MaskAccessor,
+         class DestImageIterator, class DestAccessor,
+         class Functor>
+inline void
 combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
                    pair<SrcImageIterator2, SrcAccessor2> src2,
                    pair<MaskImageIterator, MaskAccessor> mask,
                    pair<DestImageIterator, DestAccessor> dest,
-                   Functor const & f)
+                   Functor const& f)
 {
-    combineTwoImagesIf(src1.first, src1.second, src1.third, 
-                       src2.first, src2.second, 
-                       mask.first, mask.second, 
+    combineTwoImagesIf(src1.first, src1.second, src1.third,
+                       src2.first, src2.second,
+                       mask.first, mask.second,
                        dest.first, dest.second, f);
 }
-    
-template <class T11, class S11,
-          class T12, class S12,
-          class TM, class SM,
-          class T2, class S2,
-          class Functor>
+
+template<class T11, class S11,
+         class T12, class S12,
+         class TM, class SM,
+         class T2, class S2,
+         class Functor>
 inline void
-combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
-                   MultiArrayView<2, T12, S12> const & src2,
-                   MultiArrayView<2, TM, SM> const & mask,
-                   MultiArrayView<2, T2, S2> dest,
-                   Functor const & f)
+    combineTwoImagesIf(MultiArrayView<2, T11, S11> const& src1,
+                       MultiArrayView<2, T12, S12> const& src2,
+                       MultiArrayView<2, TM, SM> const& mask,
+                       MultiArrayView<2, T2, S2> dest,
+                       Functor const& f)
 {
     vigra_precondition(src1.shape() == src2.shape() && src1.shape() == mask.shape() && src1.shape() == dest.shape(),
-        "combineTwoImagesIf(): shape mismatch between inputs and/or output.");
-    combineTwoImagesIf(srcImageRange(src1), 
-                       srcImage(src2), 
-                       maskImage(mask), 
+                       "combineTwoImagesIf(): shape mismatch between inputs and/or output.");
+    combineTwoImagesIf(srcImageRange(src1),
+                       srcImage(src2),
+                       maskImage(mask),
                        destImage(dest), f);
 }
 
@@ -615,75 +613,73 @@ combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
     
     \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
-doxygen_overloaded_function(template <...> void combineThreeImages)
+doxygen_overloaded_function(template<...> void combineThreeImages)
 
-template <class SrcImageIterator1, class SrcAccessor1,
-          class SrcImageIterator2, class SrcAccessor2,
-          class SrcImageIterator3, class SrcAccessor3,
-          class DestImageIterator, class DestAccessor,
-          class Functor>
-void
-combineThreeImages(SrcImageIterator1 src1_upperleft, 
-                   SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
-                   SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
-                   SrcImageIterator3 src3_upperleft, SrcAccessor3 sa3,
-                   DestImageIterator dest_upperleft, DestAccessor da,
-                   Functor const & f)
+    template<class SrcImageIterator1, class SrcAccessor1,
+             class SrcImageIterator2, class SrcAccessor2,
+             class SrcImageIterator3, class SrcAccessor3,
+             class DestImageIterator, class DestAccessor,
+             class Functor>
+    void combineThreeImages(SrcImageIterator1 src1_upperleft,
+                            SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
+                            SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
+                            SrcImageIterator3 src3_upperleft, SrcAccessor3 sa3,
+                            DestImageIterator dest_upperleft, DestAccessor da,
+                            Functor const& f)
 {
     int w = src1_lowerright.x - src1_upperleft.x;
-    
-    for(; src1_upperleft.y < src1_lowerright.y;
-        ++src1_upperleft.y, ++src2_upperleft.y, ++src3_upperleft.y, 
-        ++dest_upperleft.y)
+
+    for (; src1_upperleft.y < src1_lowerright.y;
+         ++src1_upperleft.y, ++src2_upperleft.y, ++src3_upperleft.y,
+         ++dest_upperleft.y)
     {
-        combineThreeLines(src1_upperleft.rowIterator(), 
-                          src1_upperleft.rowIterator() + w, sa1, 
-                          src2_upperleft.rowIterator(), sa2, 
-                          src3_upperleft.rowIterator(), sa3, 
+        combineThreeLines(src1_upperleft.rowIterator(),
+                          src1_upperleft.rowIterator() + w, sa1,
+                          src2_upperleft.rowIterator(), sa2,
+                          src3_upperleft.rowIterator(), sa3,
                           dest_upperleft.rowIterator(), da, f);
     }
 }
-    
-template <class SrcImageIterator1, class SrcAccessor1,
-          class SrcImageIterator2, class SrcAccessor2,
-          class SrcImageIterator3, class SrcAccessor3,
-          class DestImageIterator, class DestAccessor,
-          class Functor>
-inline
-void
+
+template<class SrcImageIterator1, class SrcAccessor1,
+         class SrcImageIterator2, class SrcAccessor2,
+         class SrcImageIterator3, class SrcAccessor3,
+         class DestImageIterator, class DestAccessor,
+         class Functor>
+inline void
 combineThreeImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
                    pair<SrcImageIterator2, SrcAccessor2> src2,
                    pair<SrcImageIterator3, SrcAccessor3> src3,
                    pair<DestImageIterator, DestAccessor> dest,
-                   Functor const & f)
+                   Functor const& f)
 {
-    combineThreeImages(src1.first, src1.second, src1.third, 
-                       src2.first, src2.second, 
-                       src3.first, src3.second, 
+    combineThreeImages(src1.first, src1.second, src1.third,
+                       src2.first, src2.second,
+                       src3.first, src3.second,
                        dest.first, dest.second, f);
 }
 
-template <class T11, class S11,
-          class T12, class S12,
-          class T13, class S13,
-          class T2, class S2,
-          class Functor>
+template<class T11, class S11,
+         class T12, class S12,
+         class T13, class S13,
+         class T2, class S2,
+         class Functor>
 inline void
-combineThreeImages(MultiArrayView<2, T11, S11> const & src1,
-                   MultiArrayView<2, T12, S12> const & src2,
-                   MultiArrayView<2, T13, S13> const & src3,
-                   MultiArrayView<2, T2, S2> dest,
-                   Functor const & f)
+    combineThreeImages(MultiArrayView<2, T11, S11> const& src1,
+                       MultiArrayView<2, T12, S12> const& src2,
+                       MultiArrayView<2, T13, S13> const& src3,
+                       MultiArrayView<2, T2, S2> dest,
+                       Functor const& f)
 {
     vigra_precondition(src1.shape() == src2.shape() && src1.shape() == src3.shape() && src1.shape() == dest.shape(),
-        "combineThreeImages(): shape mismatch between inputs and/or output.");
-    combineThreeImages(srcImageRange(src1), 
-                       srcImage(src2), 
-                       srcImage(src3), 
+                       "combineThreeImages(): shape mismatch between inputs and/or output.");
+    combineThreeImages(srcImageRange(src1),
+                       srcImage(src2),
+                       srcImage(src3),
                        destImage(dest), f);
 }
 
-    
+
 //@}
 
 /** \addtogroup CombineFunctor Functors to Combine Images
@@ -708,38 +704,38 @@ combineThreeImages(MultiArrayView<2, T11, S11> const & src1,
     
     <tt>FunctorTraits::isBinaryFunctor</tt> are true (<tt>VigraTrueType</tt>)    
 */
-template <class ValueType>
+template<class ValueType>
 class MagnitudeFunctor
 {
-  public:
-        /** the functor's first argument type
+public:
+    /** the functor's first argument type
         */
     typedef ValueType first_argument_type;
-    
-        /** the functor's second argument type
+
+    /** the functor's second argument type
         */
     typedef ValueType second_argument_type;
-    
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef typename SquareRootTraits<typename NormTraits<ValueType>::SquaredNormType>::SquareRootResult result_type;
-    
-        /** \deprecated use first_argument_type, second_argument_type, result_type
+
+    /** \deprecated use first_argument_type, second_argument_type, result_type
         */
     typedef ValueType value_type;
-    
-        /** calculate transform '<TT>sqrt(squaredNorm(v1) + squaredNorm(v2))</TT>'. 
+
+    /** calculate transform '<TT>sqrt(squaredNorm(v1) + squaredNorm(v2))</TT>'. 
             
         */
-    result_type operator()(first_argument_type const & v1, second_argument_type const & v2) const
+    result_type operator()(first_argument_type const& v1, second_argument_type const& v2) const
     {
         return VIGRA_CSTD::sqrt(squaredNorm(v1) + squaredNorm(v2));
     }
 };
 
-template <class T>
-class FunctorTraits<MagnitudeFunctor<T> >
-: public FunctorTraitsBase<MagnitudeFunctor<T> >
+template<class T>
+class FunctorTraits<MagnitudeFunctor<T>>
+    : public FunctorTraitsBase<MagnitudeFunctor<T>>
 {
 public:
     typedef VigraTrueType isBinaryFunctor;
@@ -759,27 +755,27 @@ public:
     
     <tt>FunctorTraits::isBinaryFunctor</tt> are true (<tt>VigraTrueType</tt>)    
 */
-template <class ValueType>
+template<class ValueType>
 class RGBGradientMagnitudeFunctor
 {
-  public:
-        /** the functor's first argument type
+public:
+    /** the functor's first argument type
         */
     typedef RGBValue<ValueType> first_argument_type;
-    
-        /** the functor's second argument type
+
+    /** the functor's second argument type
         */
     typedef RGBValue<ValueType> second_argument_type;
-    
-        /** the functor's result type
+
+    /** the functor's result type
         */
     typedef typename NumericTraits<ValueType>::RealPromote result_type;
-    
-        /** \deprecated use first_argument_type, second_argument_type, result_type
+
+    /** \deprecated use first_argument_type, second_argument_type, result_type
         */
     typedef ValueType value_type;
-    
-        /** Calculate the gradient magnitude form given RGB components.
+
+    /** Calculate the gradient magnitude form given RGB components.
             The function returns 
             
             \f[ \sqrt{|\nabla red|^2 + |\nabla green|^2 + |\nabla blue|^2}
@@ -790,18 +786,18 @@ class RGBGradientMagnitudeFunctor
             <TT>ValueType</TT> (the RGB's component type) must support addition, multiplication, 
             abd <TT>sqrt()</TT>.
         */
-    result_type 
-    operator()(first_argument_type const & gx, second_argument_type const & gy) const
+    result_type
+    operator()(first_argument_type const& gx, second_argument_type const& gy) const
     {
-        return VIGRA_CSTD::sqrt(gx.red()*gx.red() + gx.green()*gx.green() +
-                    gx.blue()*gx.blue() + gy.red()*gy.red() + 
-                    gy.green()*gy.green() + gy.blue()*gy.blue());
+        return VIGRA_CSTD::sqrt(gx.red() * gx.red() + gx.green() * gx.green() +
+                                gx.blue() * gx.blue() + gy.red() * gy.red() +
+                                gy.green() * gy.green() + gy.blue() * gy.blue());
     }
 };
 
-template <class T>
-class FunctorTraits<RGBGradientMagnitudeFunctor<T> >
-: public FunctorTraitsBase<RGBGradientMagnitudeFunctor<T> >
+template<class T>
+class FunctorTraits<RGBGradientMagnitudeFunctor<T>>
+    : public FunctorTraitsBase<RGBGradientMagnitudeFunctor<T>>
 {
 public:
     typedef VigraTrueType isBinaryFunctor;

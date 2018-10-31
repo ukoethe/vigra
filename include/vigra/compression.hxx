@@ -37,35 +37,38 @@
 #ifndef VIGRA_COMPRESSION_HXX
 #define VIGRA_COMPRESSION_HXX
 
+#include "array_vector.hxx"
 #include "config.hxx"
 #include "error.hxx"
-#include "array_vector.hxx"
 #include <vector>
 
-namespace vigra {
+namespace vigra
+{
 
-enum CompressionMethod {  DEFAULT_COMPRESSION=-2,  // use default method (depending on context)
-                          NO_COMPRESSION=-1,       // don't compress
-                          ZLIB_NONE=0, // no compression using zlib
-                          ZLIB_FAST=1, // fastest compression using zlib
-                          ZLIB=6,      // zlib default compression level
-                          ZLIB_BEST=9, // highest compression using zlib
-                          LZ4          // very fast LZ4 algorithm
-                       };
+enum CompressionMethod
+{
+    DEFAULT_COMPRESSION = -2, // use default method (depending on context)
+    NO_COMPRESSION = -1,      // don't compress
+    ZLIB_NONE = 0,            // no compression using zlib
+    ZLIB_FAST = 1,            // fastest compression using zlib
+    ZLIB = 6,                 // zlib default compression level
+    ZLIB_BEST = 9,            // highest compression using zlib
+    LZ4                       // very fast LZ4 algorithm
+};
 
 /** Compress the source buffer.
 
     The destination array will be resized as required.
 */
-VIGRA_EXPORT void compress(char const * source, std::size_t size, ArrayVector<char> & dest, CompressionMethod method);
-VIGRA_EXPORT void compress(char const * source, std::size_t size, std::vector<char> & dest, CompressionMethod method);
+VIGRA_EXPORT void compress(char const* source, std::size_t size, ArrayVector<char>& dest, CompressionMethod method);
+VIGRA_EXPORT void compress(char const* source, std::size_t size, std::vector<char>& dest, CompressionMethod method);
 
 /** Uncompress the source buffer when the uncompressed size is known.
 
     The destination buffer must be allocated to the correct size.
 */
-VIGRA_EXPORT void uncompress(char const * source, std::size_t srcSize, 
-                             char * dest, std::size_t destSize, CompressionMethod method);
+VIGRA_EXPORT void uncompress(char const* source, std::size_t srcSize,
+                             char* dest, std::size_t destSize, CompressionMethod method);
 
 
 } // namespace vigra

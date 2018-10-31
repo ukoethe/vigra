@@ -1,16 +1,17 @@
-template <int N>
+template<int N>
 struct Sum
 {
-    static const int sum = 1 + Sum<N-1>::sum;
+    static const int sum = 1 + Sum<N - 1>::sum;
 };
 
-template <>
+template<>
 struct Sum<0>
 {
     static const int sum = 0;
 };
 
-int main()
+int
+main()
 {
     static const int sum = Sum<DEPTH>::sum;
 }

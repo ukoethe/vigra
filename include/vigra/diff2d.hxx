@@ -36,34 +36,39 @@
 #ifndef VIGRA_DIFF2D_HXX
 #define VIGRA_DIFF2D_HXX
 
-#include <cmath> // for sqrt()
-#include <iosfwd>
 #include "config.hxx"
+#include "iteratoradapter.hxx"
 #include "iteratortags.hxx"
 #include "iteratortraits.hxx"
-#include "iteratoradapter.hxx"
 #include "tuple.hxx"
+#include <cmath> // for sqrt()
+#include <iosfwd>
 
 
-namespace vigra {
+namespace vigra
+{
 
 
-template <class Diff>
+template<class Diff>
 class Diff2DConstRowIteratorPolicy
 {
-  public:
-    typedef Diff                            BaseType;
-    typedef Diff                            value_type;
-    typedef typename Diff::MoveX            difference_type;
-    typedef Diff const &                    reference;
-    typedef Diff                            index_reference;
-    typedef Diff const *                    pointer;
+public:
+    typedef Diff BaseType;
+    typedef Diff value_type;
+    typedef typename Diff::MoveX difference_type;
+    typedef Diff const& reference;
+    typedef Diff index_reference;
+    typedef Diff const* pointer;
     typedef std::random_access_iterator_tag iterator_category;
 
-    static void initialize(BaseType &) {}
+    static void initialize(BaseType&)
+    {
+    }
 
-    static reference dereference(BaseType const & d)
-        { return d; }
+    static reference dereference(BaseType const& d)
+    {
+        return d;
+    }
 
     static index_reference dereference(BaseType d, difference_type n)
     {
@@ -71,41 +76,57 @@ class Diff2DConstRowIteratorPolicy
         return d;
     }
 
-    static bool equal(BaseType const & d1, BaseType const & d2)
-        { return d1.x == d2.x; }
+    static bool equal(BaseType const& d1, BaseType const& d2)
+    {
+        return d1.x == d2.x;
+    }
 
-    static bool less(BaseType const & d1, BaseType const & d2)
-        { return d1.x < d2.x; }
+    static bool less(BaseType const& d1, BaseType const& d2)
+    {
+        return d1.x < d2.x;
+    }
 
-    static difference_type difference(BaseType const & d1, BaseType const & d2)
-        { return d1.x - d2.x; }
+    static difference_type difference(BaseType const& d1, BaseType const& d2)
+    {
+        return d1.x - d2.x;
+    }
 
-    static void increment(BaseType & d)
-        { ++d.x; }
+    static void increment(BaseType& d)
+    {
+        ++d.x;
+    }
 
-    static void decrement(BaseType & d)
-        { --d.x; }
+    static void decrement(BaseType& d)
+    {
+        --d.x;
+    }
 
-    static void advance(BaseType & d, difference_type n)
-        { d.x += n; }
+    static void advance(BaseType& d, difference_type n)
+    {
+        d.x += n;
+    }
 };
 
-template <class Diff>
+template<class Diff>
 class Diff2DConstColumnIteratorPolicy
 {
-  public:
-    typedef Diff                            BaseType;
-    typedef Diff                            value_type;
-    typedef typename Diff::MoveY            difference_type;
-    typedef Diff const &                    reference;
-    typedef Diff                            index_reference;
-    typedef Diff const *                    pointer;
+public:
+    typedef Diff BaseType;
+    typedef Diff value_type;
+    typedef typename Diff::MoveY difference_type;
+    typedef Diff const& reference;
+    typedef Diff index_reference;
+    typedef Diff const* pointer;
     typedef std::random_access_iterator_tag iterator_category;
 
-    static void initialize(BaseType & /*d*/) {}
+    static void initialize(BaseType& /*d*/)
+    {
+    }
 
-    static reference dereference(BaseType const & d)
-        { return d; }
+    static reference dereference(BaseType const& d)
+    {
+        return d;
+    }
 
     static index_reference dereference(BaseType d, difference_type n)
     {
@@ -113,23 +134,35 @@ class Diff2DConstColumnIteratorPolicy
         return d;
     }
 
-    static bool equal(BaseType const & d1, BaseType const & d2)
-        { return d1.y == d2.y; }
+    static bool equal(BaseType const& d1, BaseType const& d2)
+    {
+        return d1.y == d2.y;
+    }
 
-    static bool less(BaseType const & d1, BaseType const & d2)
-        { return d1.y < d2.y; }
+    static bool less(BaseType const& d1, BaseType const& d2)
+    {
+        return d1.y < d2.y;
+    }
 
-    static difference_type difference(BaseType const & d1, BaseType const & d2)
-        { return d1.y - d2.y; }
+    static difference_type difference(BaseType const& d1, BaseType const& d2)
+    {
+        return d1.y - d2.y;
+    }
 
-    static void increment(BaseType & d)
-        { ++d.y; }
+    static void increment(BaseType& d)
+    {
+        ++d.y;
+    }
 
-    static void decrement(BaseType & d)
-        { --d.y; }
+    static void decrement(BaseType& d)
+    {
+        --d.y;
+    }
 
-    static void advance(BaseType & d, difference_type n)
-        { d.y += n; }
+    static void advance(BaseType& d, difference_type n)
+    {
+        d.y += n;
+    }
 };
 
 /** \addtogroup RangesAndPoints Ranges and Points
@@ -184,74 +217,77 @@ class Diff2DConstColumnIteratorPolicy
 */
 class Diff2D
 {
-  public:
-        /** The iterator's value type: a coordinate.
+public:
+    /** The iterator's value type: a coordinate.
         */
     typedef Diff2D PixelType;
 
-        /** The iterator's value type: a coordinate.
+    /** The iterator's value type: a coordinate.
         */
     typedef Diff2D value_type;
 
-        /** the iterator's reference type (return type of <TT>*iter</TT>)
+    /** the iterator's reference type (return type of <TT>*iter</TT>)
         */
-    typedef Diff2D const &       reference;
+    typedef Diff2D const& reference;
 
-        /** the iterator's index reference type (return type of <TT>iter[diff]</TT>)
+    /** the iterator's index reference type (return type of <TT>iter[diff]</TT>)
         */
-    typedef Diff2D               index_reference;
+    typedef Diff2D index_reference;
 
-        /** the iterator's pointer type (return type of <TT>iter.operator->()</TT>)
+    /** the iterator's pointer type (return type of <TT>iter.operator->()</TT>)
         */
-    typedef Diff2D const *       pointer;
+    typedef Diff2D const* pointer;
 
-        /** the iterator's difference type (argument type of <TT>iter[diff]</TT>)
+    /** the iterator's difference type (argument type of <TT>iter[diff]</TT>)
         */
-    typedef Diff2D               difference_type;
+    typedef Diff2D difference_type;
 
-        /** the iterator tag (image traverser)
+    /** the iterator tag (image traverser)
         */
-    typedef image_traverser_tag  iterator_category;
+    typedef image_traverser_tag iterator_category;
 
-        /** The associated row iterator.
+    /** The associated row iterator.
         */
-    typedef IteratorAdaptor<Diff2DConstRowIteratorPolicy<Diff2D> >    row_iterator;
+    typedef IteratorAdaptor<Diff2DConstRowIteratorPolicy<Diff2D>> row_iterator;
 
-        /** The associated column iterator.
+    /** The associated column iterator.
         */
-   typedef IteratorAdaptor<Diff2DConstColumnIteratorPolicy<Diff2D> > column_iterator;
+    typedef IteratorAdaptor<Diff2DConstColumnIteratorPolicy<Diff2D>> column_iterator;
 
-        /** type of the iterator's x-navigator
+    /** type of the iterator's x-navigator
         */
     typedef int MoveX;
-        /** type of the iterator's y-navigator
+    /** type of the iterator's y-navigator
         */
     typedef int MoveY;
 
 
-        /** Default Constructor. Init iterator at position (0,0)
+    /** Default Constructor. Init iterator at position (0,0)
         */
     Diff2D()
-    : x(0), y(0)
-    {}
+        : x(0), y(0)
+    {
+    }
 
-        /** Construct at given position.
+    /** Construct at given position.
         */
     Diff2D(int ax, int ay)
-    : x(ax), y(ay)
-    {}
-
-        /** Copy Constructor.
-        */
-    Diff2D(Diff2D const & v)
-    : x(v.x), y(v.y)
-    {}
-
-        /** Copy Assigment.
-        */
-    Diff2D & operator=(Diff2D const & v)
+        : x(ax), y(ay)
     {
-        if(this != &v)
+    }
+
+    /** Copy Constructor.
+        */
+    Diff2D(Diff2D const& v)
+        : x(v.x), y(v.y)
+    {
+    }
+
+    /** Copy Assigment.
+        */
+    Diff2D& operator=(Diff2D const& v)
+    {
+        if (this != &v)
         {
             x = v.x;
             y = v.y;
@@ -259,131 +295,131 @@ class Diff2D
         return *this;
     }
 
-        /** Unary negation.
+    /** Unary negation.
         */
     Diff2D operator-() const
     {
         return Diff2D(-x, -y);
     }
 
-        /** Increase coordinate by specified offset.
+    /** Increase coordinate by specified offset.
         */
-    Diff2D & operator+=(Diff2D const & offset)
+    Diff2D& operator+=(Diff2D const& offset)
     {
         x += offset.x;
         y += offset.y;
         return *this;
     }
 
-        /** Decrease coordinate by specified vector.
+    /** Decrease coordinate by specified vector.
         */
-    Diff2D & operator-=(Diff2D const & offset)
+    Diff2D& operator-=(Diff2D const& offset)
     {
         x -= offset.x;
         y -= offset.y;
         return *this;
     }
 
-       /** Create vector by scaling by factor.
+    /** Create vector by scaling by factor.
         */
-    Diff2D & operator*=(int factor)
+    Diff2D& operator*=(int factor)
     {
         x *= factor;
         y *= factor;
         return *this;
     }
 
-       /** Create vector by scaling by factor.
+    /** Create vector by scaling by factor.
         */
-    Diff2D & operator*=(double factor)
+    Diff2D& operator*=(double factor)
     {
         x = (int)(x * factor);
         y = (int)(y * factor);
         return *this;
     }
 
-       /** Create vector by scaling by 1/factor.
+    /** Create vector by scaling by 1/factor.
         */
-    Diff2D & operator/=(int factor)
+    Diff2D& operator/=(int factor)
     {
         x /= factor;
         y /= factor;
         return *this;
     }
 
-       /** Create vector by scaling by 1/factor.
+    /** Create vector by scaling by 1/factor.
         */
-    Diff2D & operator/=(double factor)
+    Diff2D& operator/=(double factor)
     {
         x = (int)(x / factor);
         y = (int)(y / factor);
         return *this;
     }
 
-       /** Create vector by scaling by factor.
+    /** Create vector by scaling by factor.
         */
     Diff2D operator*(int factor) const
     {
         return Diff2D(x * factor, y * factor);
     }
 
-       /** Create vector by scaling by factor.
+    /** Create vector by scaling by factor.
         */
     Diff2D operator*(double factor) const
     {
         return Diff2D((int)(x * factor), (int)(y * factor));
     }
 
-       /** Create vector by scaling by 1/factor.
+    /** Create vector by scaling by 1/factor.
         */
     Diff2D operator/(int factor) const
     {
         return Diff2D(x / factor, y / factor);
     }
 
-       /** Create vector by scaling by 1/factor.
+    /** Create vector by scaling by 1/factor.
         */
     Diff2D operator/(double factor) const
     {
         return Diff2D((int)(x / factor), (int)(y / factor));
     }
 
-        /** Calculate length of difference vector.
+    /** Calculate length of difference vector.
         */
     int squaredMagnitude() const
     {
-        return x*x + y*y;
+        return x * x + y * y;
     }
 
-        /** Calculate length of difference vector.
+    /** Calculate length of difference vector.
         */
     double magnitude() const
     {
         return VIGRA_CSTD::sqrt((double)squaredMagnitude());
     }
 
-        /** Equality.
+    /** Equality.
         */
-    bool operator==(Diff2D const & r) const
+    bool operator==(Diff2D const& r) const
     {
         return (x == r.x) && (y == r.y);
     }
 
-        /** Inequality.
+    /** Inequality.
         */
-    bool operator!=(Diff2D const & r) const
+    bool operator!=(Diff2D const& r) const
     {
         return (x != r.x) || (y != r.y);
     }
 
-        /** Used for both access to the current x-coordinate \em and
+    /** Used for both access to the current x-coordinate \em and
             to specify that an iterator navigation command is to be
             applied in x-direction. <br>
             usage:  <TT> x = diff2d.x </TT> (use \p Diff2D::x  as component of difference vector) <br>
             or <TT>&nbsp; ++diff.x &nbsp; </TT> (use Diff2D as iterator, move right)
          */
     int x;
-        /** Used for both access to the current y-coordinate \em and
+    /** Used for both access to the current y-coordinate \em and
             to specify that an iterator navigation command is to be
             applied in y-direction. <br>
             usage:  <TT> y = diff2d.y </TT> (use \p Diff2D::y as component of difference vector) <br>
@@ -391,72 +427,75 @@ class Diff2D
         */
     int y;
 
-        /** Access current coordinate.
+    /** Access current coordinate.
         */
     reference operator*() const
     {
         return *this;
     }
 
-        /** Read coordinate at an offset.
+    /** Read coordinate at an offset.
         */
-    index_reference operator()(int const & dx, int const & dy) const
+    index_reference operator()(int const& dx, int const& dy) const
     {
         return Diff2D(x + dx, y + dy);
     }
 
-        /** Read coordinate at an offset.
+    /** Read coordinate at an offset.
         */
-    index_reference operator[](Diff2D const & offset) const
+    index_reference operator[](Diff2D const& offset) const
     {
         return Diff2D(x + offset.x, y + offset.y);
     }
 
-        /** Read vector components.
+    /** Read vector components.
         */
     int operator[](int index) const
     {
         return (&x)[index];
     }
 
-        /** Access current coordinate.
+    /** Access current coordinate.
         */
     pointer operator->() const
     {
         return this;
     }
 
-        /** Get a row iterator at the current position.
+    /** Get a row iterator at the current position.
         */
     row_iterator rowIterator() const
-        { return row_iterator(*this); }
+    {
+        return row_iterator(*this);
+    }
 
-        /** Get a column iterator at the current position.
+    /** Get a column iterator at the current position.
         */
     column_iterator columnIterator() const
-        { return column_iterator(*this); }
+    {
+        return column_iterator(*this);
+    }
 };
 
 
-template <>
-struct IteratorTraits<Diff2D >
+template<>
+struct IteratorTraits<Diff2D>
 {
-    typedef Diff2D                               Iterator;
-    typedef Iterator                             iterator;
-    typedef Iterator                             const_iterator;
+    typedef Diff2D Iterator;
+    typedef Iterator iterator;
+    typedef Iterator const_iterator;
     // typedef                                   multable_iterator; undefined
-    typedef iterator::iterator_category          iterator_category;
-    typedef iterator::value_type                 value_type;
-    typedef iterator::reference                  reference;
-    typedef iterator::index_reference            index_reference;
-    typedef iterator::pointer                    pointer;
-    typedef iterator::difference_type            difference_type;
-    typedef iterator::row_iterator               row_iterator;
-    typedef iterator::column_iterator            column_iterator;
-    typedef StandardConstValueAccessor<Diff2D>   DefaultAccessor;
-    typedef StandardConstValueAccessor<Diff2D>   default_accessor;
-    typedef VigraTrueType                        hasConstantStrides;
-
+    typedef iterator::iterator_category iterator_category;
+    typedef iterator::value_type value_type;
+    typedef iterator::reference reference;
+    typedef iterator::index_reference index_reference;
+    typedef iterator::pointer pointer;
+    typedef iterator::difference_type difference_type;
+    typedef iterator::row_iterator row_iterator;
+    typedef iterator::column_iterator column_iterator;
+    typedef StandardConstValueAccessor<Diff2D> DefaultAccessor;
+    typedef StandardConstValueAccessor<Diff2D> default_accessor;
+    typedef VigraTrueType hasConstantStrides;
 };
 
 /********************************************************/
@@ -482,90 +521,94 @@ struct IteratorTraits<Diff2D >
 class Size2D : public Diff2D
 {
 public:
-        /** Default Constructor. Init point at position (0,0)
+    /** Default Constructor. Init point at position (0,0)
         */
     Size2D()
-    {}
+    {
+    }
 
-        /** Construct point at given position.
+    /** Construct point at given position.
         */
     Size2D(int width, int height)
-    : Diff2D(width, height)
-    {}
+        : Diff2D(width, height)
+    {
+    }
 
-        /** Copy Constructor.
+    /** Copy Constructor.
         */
-    Size2D(Size2D const & v)
-    : Diff2D(v)
-    {}
+    Size2D(Size2D const& v)
+        : Diff2D(v)
+    {
+    }
 
-        /** Explicit conversion Constructor.
+    /** Explicit conversion Constructor.
         */
-    explicit Size2D(Diff2D const & v)
-    : Diff2D(v)
-    {}
+    explicit Size2D(Diff2D const& v)
+        : Diff2D(v)
+    {
+    }
 
-        /** Query the width.
+    /** Query the width.
          */
     int width() const
     {
         return x;
     }
 
-        /** Query the height.
+    /** Query the height.
          */
     int height() const
     {
         return y;
     }
 
-        /** Change the width.
+    /** Change the width.
          */
     void setWidth(int w)
     {
         x = w;
     }
 
-        /** Change the height.
+    /** Change the height.
          */
     void setHeight(int h)
     {
         y = h;
     }
 
-        /** Returns width()*height(), the area of a rectangle of this size.
+    /** Returns width()*height(), the area of a rectangle of this size.
          */
     int area() const
     {
-        return width()*height();
+        return width() * height();
     }
 
-        /** Copy Assigment.
+    /** Copy Assigment.
         */
-    Size2D & operator=(Diff2D const & v)
+    Size2D& operator=(Diff2D const& v)
     {
-        return static_cast<Size2D &>(Diff2D::operator=(v));
+        return static_cast<Size2D&>(Diff2D::operator=(v));
     }
 
-        /** Unary negation.
+    /** Unary negation.
         */
     Size2D operator-() const
     {
         return Size2D(-x, -y);
     }
 
-        /** Increase size by specified offset.
+    /** Increase size by specified offset.
         */
-    Size2D & operator+=(Diff2D const & offset)
+    Size2D& operator+=(Diff2D const& offset)
     {
-        return static_cast<Size2D &>(Diff2D::operator+=(offset));
+        return static_cast<Size2D&>(Diff2D::operator+=(offset));
     }
 
-        /** Decrease size by specified offset.
+    /** Decrease size by specified offset.
         */
-    Size2D & operator-=(Diff2D const & offset)
+    Size2D& operator-=(Diff2D const& offset)
     {
-        return static_cast<Size2D &>(Diff2D::operator-=(offset));
+        return static_cast<Size2D&>(Diff2D::operator-=(offset));
     }
 };
 
@@ -592,113 +635,117 @@ public:
 class Point2D : public Diff2D
 {
 public:
-        /** The iterator's value type: a coordinate.
+    /** The iterator's value type: a coordinate.
         */
     typedef Point2D PixelType;
 
-        /** The iterator's value type: a coordinate.
+    /** The iterator's value type: a coordinate.
         */
     typedef Point2D value_type;
 
-        /** the iterator's reference type (return type of <TT>*iter</TT>)
+    /** the iterator's reference type (return type of <TT>*iter</TT>)
         */
-    typedef Point2D const & reference;
+    typedef Point2D const& reference;
 
-        /** the iterator's index reference type (return type of <TT>iter[diff]</TT>)
+    /** the iterator's index reference type (return type of <TT>iter[diff]</TT>)
         */
-    typedef Point2D         index_reference;
+    typedef Point2D index_reference;
 
-        /** the iterator's pointer type (return type of <TT>iter.operator->()</TT>)
+    /** the iterator's pointer type (return type of <TT>iter.operator->()</TT>)
         */
-    typedef Point2D const * pointer;
+    typedef Point2D const* pointer;
 
-        /** Default Constructor. Init point at position (0,0)
+    /** Default Constructor. Init point at position (0,0)
         */
     Point2D()
-    {}
+    {
+    }
 
-        /** Construct point at given position.
+    /** Construct point at given position.
         */
     Point2D(int x, int y)
-    : Diff2D(x, y)
-    {}
+        : Diff2D(x, y)
+    {
+    }
 
-        /** Copy Constructor.
+    /** Copy Constructor.
         */
-    Point2D(Point2D const & v)
-    : Diff2D(v)
-    {}
+    Point2D(Point2D const& v)
+        : Diff2D(v)
+    {
+    }
 
-        /** Explicit conversion Constructor.
+    /** Explicit conversion Constructor.
         */
-    explicit Point2D(Diff2D const & v)
-    : Diff2D(v)
-    {}
+    explicit Point2D(Diff2D const& v)
+        : Diff2D(v)
+    {
+    }
 
-        /** Query the points' x coordinate
+    /** Query the points' x coordinate
          */
     int px() const
     {
         return x;
     }
 
-        /** Query the points' y coordinate
+    /** Query the points' y coordinate
          */
     int py() const
     {
         return y;
     }
 
-        /** Copy Assigment.
+    /** Copy Assigment.
         */
-    Point2D & operator=(Diff2D const & v)
+    Point2D& operator=(Diff2D const& v)
     {
-        return static_cast<Point2D &>(Diff2D::operator=(v));
+        return static_cast<Point2D&>(Diff2D::operator=(v));
     }
 
-        /** Unary negation.
+    /** Unary negation.
         */
     Point2D operator-() const
     {
         return Point2D(-x, -y);
     }
 
-        /** Increase point coordinates by specified offset.
+    /** Increase point coordinates by specified offset.
         */
-    Point2D & operator+=(Diff2D const & offset)
+    Point2D& operator+=(Diff2D const& offset)
     {
-        return static_cast<Point2D &>(Diff2D::operator+=(offset));
+        return static_cast<Point2D&>(Diff2D::operator+=(offset));
     }
 
-        /** Decrease point coordinates by specified offset.
+    /** Decrease point coordinates by specified offset.
         */
-    Point2D & operator-=(Diff2D const & offset)
+    Point2D& operator-=(Diff2D const& offset)
     {
-        return static_cast<Point2D &>(Diff2D::operator-=(offset));
+        return static_cast<Point2D&>(Diff2D::operator-=(offset));
     }
 
-        /** Access current point coordinate.
+    /** Access current point coordinate.
         */
     reference operator*() const
     {
         return *this;
     }
 
-        /** Read point coordinate at an offset.
+    /** Read point coordinate at an offset.
         */
-    index_reference operator()(int const & dx, int const & dy) const
+    index_reference operator()(int const& dx, int const& dy) const
     {
         return Point2D(x + dx, y + dy);
     }
 
-        /** Read point coordinate at an offset.
+    /** Read point coordinate at an offset.
         */
-    index_reference operator[](Diff2D const & offset) const
+    index_reference operator[](Diff2D const& offset) const
     {
         return Point2D(x + offset.x, y + offset.y);
     }
 
-        /** Access current point coordinate.
+    /** Access current point coordinate.
         */
     pointer operator->() const
     {
@@ -708,56 +755,64 @@ public:
 
 /** Create vector by subtracting specified offset.
  */
-inline Diff2D operator-(Diff2D const &a, Diff2D const &b)
+inline Diff2D
+operator-(Diff2D const& a, Diff2D const& b)
 {
     return Diff2D(a.x - b.x, a.y - b.y);
 }
 
 /** Create size by subtracting specified offset.
  */
-inline Size2D operator-(Size2D const & s, Diff2D const &offset)
+inline Size2D
+operator-(Size2D const& s, Diff2D const& offset)
 {
     return Size2D(s.x - offset.x, s.y - offset.y);
 }
 
 /** Calculate size of rect between two points.
  */
-inline Point2D operator-(Point2D const & s, Diff2D const & offset)
+inline Point2D
+operator-(Point2D const& s, Diff2D const& offset)
 {
     return Point2D(s.x - offset.x, s.y - offset.y);
 }
 
 /** The difference of two points is a size
  */
-inline Size2D operator-(Point2D const & s, Point2D const & p)
+inline Size2D
+operator-(Point2D const& s, Point2D const& p)
 {
     return Size2D(s.x - p.x, s.y - p.y);
 }
 
 /** Create vector by adding specified offset.
  */
-inline Diff2D operator+(Diff2D const &a, Diff2D const &b)
+inline Diff2D
+operator+(Diff2D const& a, Diff2D const& b)
 {
     return Diff2D(a.x + b.x, a.y + b.y);
 }
 
 /** Create size by adding specified offset.
  */
-inline Size2D operator+(Size2D const &a, Diff2D const &b)
+inline Size2D
+operator+(Size2D const& a, Diff2D const& b)
 {
     return Size2D(a.x + b.x, a.y + b.y);
 }
 
 /** Create point by adding specified offset.
  */
-inline Point2D operator+(Point2D const &a, Diff2D const &b)
+inline Point2D
+operator+(Point2D const& a, Diff2D const& b)
 {
     return Point2D(a.x + b.x, a.y + b.y);
 }
 
 /** Add size and point
  */
-inline Point2D operator+(Size2D const & s, Point2D const & p)
+inline Point2D
+operator+(Size2D const& s, Point2D const& p)
 {
     return Point2D(s.x + p.x, s.y + p.y);
 }
@@ -786,13 +841,15 @@ inline Size2D operator*(double l, Size2D r)
     return r;
 }
 
-inline Point2D operator/(Point2D l, double r)
+inline Point2D
+operator/(Point2D l, double r)
 {
     l /= r;
     return l;
 }
 
-inline Size2D operator/(Size2D l, double r)
+inline Size2D
+operator/(Size2D l, double r)
 {
     l /= r;
     return l;
@@ -822,13 +879,15 @@ inline Size2D operator*(int l, Size2D r)
     return r;
 }
 
-inline Point2D operator/(Point2D l, int r)
+inline Point2D
+operator/(Point2D l, int r)
 {
     l /= r;
     return l;
 }
 
-inline Size2D operator/(Size2D l, int r)
+inline Size2D
+operator/(Size2D l, int r)
 {
     l /= r;
     return l;
@@ -874,79 +933,84 @@ class Rect2D
     Point2D upperLeft_, lowerRight_;
 
 public:
-        /** Construct a null rectangle (isEmpty() will return true)
+    /** Construct a null rectangle (isEmpty() will return true)
          */
     Rect2D()
-    {}
+    {
+    }
 
-        /** Construct a rectangle representing the given range
+    /** Construct a rectangle representing the given range
          * (lowerRight is considered to be outside the rectangle as
          * usual in the VIGRA)
          */
-    Rect2D(Point2D const &upperLeft, Point2D const &lowerRight)
-    : upperLeft_(upperLeft), lowerRight_(lowerRight)
-    {}
+    Rect2D(Point2D const& upperLeft, Point2D const& lowerRight)
+        : upperLeft_(upperLeft), lowerRight_(lowerRight)
+    {
+    }
 
-        /** Construct a rectangle representing the given range
+    /** Construct a rectangle representing the given range
          */
     Rect2D(int left, int top, int right, int bottom)
-    : upperLeft_(left, top), lowerRight_(right, bottom)
-    {}
+        : upperLeft_(left, top), lowerRight_(right, bottom)
+    {
+    }
 
-        /** Construct a rectangle of given position and size
+    /** Construct a rectangle of given position and size
          */
-    Rect2D(Point2D const &upperLeft, Size2D const &size)
-    : upperLeft_(upperLeft), lowerRight_(upperLeft + size)
-    {}
+    Rect2D(Point2D const& upperLeft, Size2D const& size)
+        : upperLeft_(upperLeft), lowerRight_(upperLeft + size)
+    {
+    }
 
-        /** Construct a rectangle of given size at position (0,0)
+    /** Construct a rectangle of given size at position (0,0)
          */
-    explicit Rect2D(Size2D const &size)
-    : lowerRight_(Point2D(size))
-    {}
+    explicit Rect2D(Size2D const& size)
+        : lowerRight_(Point2D(size))
+    {
+    }
 
-        /** Return the first point (scan-order wise) which is
+    /** Return the first point (scan-order wise) which is
          * considered to be "in" the rectangle.
          */
-    Point2D const & upperLeft() const
+    Point2D const& upperLeft() const
     {
         return upperLeft_;
     }
 
-        /** Return the first point to the right and below the
+    /** Return the first point to the right and below the
          * rectangle.
          */
-    Point2D const & lowerRight() const
+    Point2D const& lowerRight() const
     {
         return lowerRight_;
     }
 
-        /** Change upperLeft() without changing lowerRight(), which
+    /** Change upperLeft() without changing lowerRight(), which
          * will change the size most probably.
          */
-    void setUpperLeft(Point2D const &ul)
+    void setUpperLeft(Point2D const& ul)
     {
         upperLeft_ = ul;
     }
 
-        /** Change lowerRight() without changing upperLeft(), which
+    /** Change lowerRight() without changing upperLeft(), which
          * will change the size most probably.
          */
-    void setLowerRight(Point2D const &lr)
+    void setLowerRight(Point2D const& lr)
     {
         lowerRight_ = lr;
     }
 
-        /** Move the whole rectangle so that the given point will be
+    /** Move the whole rectangle so that the given point will be
          * upperLeft() afterwards.
          */
-    void moveTo(Point2D const &newUpperLeft)
+    void moveTo(Point2D const& newUpperLeft)
     {
         lowerRight_ += newUpperLeft - upperLeft_;
         upperLeft_ = newUpperLeft;
     }
 
-        /** Move the whole rectangle so that upperLeft() will become
+    /** Move the whole rectangle so that upperLeft() will become
          * Point2D(left, top) afterwards.
          */
     void moveTo(int left, int top)
@@ -954,36 +1018,36 @@ public:
         moveTo(Point2D(left, top));
     }
 
-        /** Move the whole rectangle by the given 2D offset.
+    /** Move the whole rectangle by the given 2D offset.
          */
-    void moveBy(Diff2D const &offset)
+    void moveBy(Diff2D const& offset)
     {
         upperLeft_ += offset;
         lowerRight_ += offset;
     }
 
-        /** Move the whole rectangle by the given x- and y-offsets.
+    /** Move the whole rectangle by the given x- and y-offsets.
          */
     void moveBy(int xOffset, int yOffset)
     {
         moveBy(Diff2D(xOffset, yOffset));
     }
 
-        /** Return the left coordinate of this rectangle.
+    /** Return the left coordinate of this rectangle.
          */
     int left() const
     {
         return upperLeft_.x;
     }
 
-        /** Return the top coordinate of this rectangle.
+    /** Return the top coordinate of this rectangle.
          */
     int top() const
     {
         return upperLeft_.y;
     }
 
-        /** Return the right coordinate of this rectangle. That is the
+    /** Return the right coordinate of this rectangle. That is the
          * first column to the right of the rectangle.
          */
     int right() const
@@ -991,7 +1055,7 @@ public:
         return lowerRight_.x;
     }
 
-        /** Return the bottom coordinate of this rectangle. That is the
+    /** Return the bottom coordinate of this rectangle. That is the
          * first row below the rectangle.
          */
     int bottom() const
@@ -999,7 +1063,7 @@ public:
         return lowerRight_.y;
     }
 
-        /** Determine and return the width of this rectangle. It might be
+    /** Determine and return the width of this rectangle. It might be
          * zero or even negative, and if so, isEmpty() will return true.
          */
     int width() const
@@ -1007,7 +1071,7 @@ public:
         return lowerRight_.x - upperLeft_.x;
     }
 
-        /** Determine and return the height of this rectangle. It might be
+    /** Determine and return the height of this rectangle. It might be
          * zero or even negative, and if so, isEmpty() will return true.
          */
     int height() const
@@ -1015,16 +1079,16 @@ public:
         return lowerRight_.y - upperLeft_.y;
     }
 
-        /** Determine and return the area of this rectangle. That is, if
+    /** Determine and return the area of this rectangle. That is, if
          * this rect isEmpty(), returns zero, otherwise returns
          * width()*height().
          */
     int area() const
     {
-        return isEmpty() ? 0 : width()*height();
+        return isEmpty() ? 0 : width() * height();
     }
 
-        /** Determine and return the size of this rectangle. The width
+    /** Determine and return the size of this rectangle. The width
          * and/or height might be zero or even negative, and if so,
          * isEmpty() will return true.
          */
@@ -1033,15 +1097,15 @@ public:
         return lowerRight_ - upperLeft_;
     }
 
-        /** Resize this rectangle to the given extents. This will move
+    /** Resize this rectangle to the given extents. This will move
          * the lower right corner only.
          */
-    void setSize(Size2D const &size)
+    void setSize(Size2D const& size)
     {
         lowerRight_ = upperLeft_ + size;
     }
 
-        /** Resize this rectangle to the given extents. This will move
+    /** Resize this rectangle to the given extents. This will move
          * the lower right corner only.
          */
     void setSize(int width, int height)
@@ -1049,17 +1113,17 @@ public:
         lowerRight_ = upperLeft_ + Size2D(width, height);
     }
 
-        /** Increase the size of the rectangle by the given offset. This
+    /** Increase the size of the rectangle by the given offset. This
          * will move the lower right corner only. (If any of offset's
          * components is negative, the rectangle will get smaller
          * accordingly.)
          */
-    void addSize(Size2D const &offset)
+    void addSize(Size2D const& offset)
     {
         lowerRight_ += offset;
     }
 
-        /** Adds a border of the given width around the rectangle. That
+    /** Adds a border of the given width around the rectangle. That
          * means, upperLeft()'s components are moved by -borderWidth
          * and lowerRight()'s by borderWidth. (If borderWidth is
          * negative, the rectangle will get smaller accordingly.)
@@ -1070,7 +1134,7 @@ public:
         lowerRight_ += Diff2D(borderWidth, borderWidth);
     }
 
-        /** Adds a border with possibly different widths in x- and
+    /** Adds a border with possibly different widths in x- and
          * y-directions around the rectangle. That means, each x
          * component is moved borderWidth pixels and each y component
          * is moved borderHeight pixels to the outside. (If
@@ -1083,19 +1147,19 @@ public:
         lowerRight_ += Diff2D(borderWidth, borderHeight);
     }
 
-        /// equality check
-    bool operator==(Rect2D const &r) const
+    /// equality check
+    bool operator==(Rect2D const& r) const
     {
         return (upperLeft_ == r.upperLeft_) && (lowerRight_ == r.lowerRight_);
     }
 
-        /// inequality check
-    bool operator!=(Rect2D const &r) const
+    /// inequality check
+    bool operator!=(Rect2D const& r) const
     {
         return (upperLeft_ != r.upperLeft_) || (lowerRight_ != r.lowerRight_);
     }
 
-        /** Return whether this rectangle is considered empty. It is
+    /** Return whether this rectangle is considered empty. It is
          * non-empty if both coordinates of the lower right corner are
          * greater than the corresponding coordinate of the upper left
          * corner. Uniting an empty rectangle with something will return
@@ -1108,12 +1172,12 @@ public:
                 (lowerRight_.y <= upperLeft_.y));
     }
 
-        /** Return whether this rectangle contains the given point. That
+    /** Return whether this rectangle contains the given point. That
          * is, if the point lies within the valid range of an
          * ImageIterator walking from upperLeft() to lowerRight()
          * (excluding the latter).
          */
-    bool contains(Point2D const &p) const
+    bool contains(Point2D const& p) const
     {
         return ((upperLeft_.x <= p.x) &&
                 (upperLeft_.y <= p.y) &&
@@ -1121,113 +1185,113 @@ public:
                 (p.y < lowerRight_.y));
     }
 
-        /** Return whether this rectangle contains the given
+    /** Return whether this rectangle contains the given
          * one. <tt>r1.contains(r2)</tt> returns the same as
          * <tt>r1 == (r1|r2)</tt> (but is of course more
          * efficient). That also means, a rectangle (even an empty one!)
          * contains() any empty rectangle.
          */
-    bool contains(Rect2D const &r) const
+    bool contains(Rect2D const& r) const
     {
         return r.isEmpty() ||
-            (contains(r.upperLeft()) && contains(r.lowerRight()-Diff2D(1,1)));
+               (contains(r.upperLeft()) && contains(r.lowerRight() - Diff2D(1, 1)));
     }
 
-        /** Return whether this rectangle overlaps with the given
+    /** Return whether this rectangle overlaps with the given
          * one. <tt>r1.intersects(r2)</tt> returns the same as
          * <tt>!(r1&r2).isEmpty()</tt> (but is of course much more
          * efficient).
          */
-    bool intersects(Rect2D const &r) const
+    bool intersects(Rect2D const& r) const
     {
         return ((r.upperLeft_.x < lowerRight_.x) &&
                 (upperLeft_.x < r.lowerRight_.x) &&
                 (r.upperLeft_.y < lowerRight_.y) &&
-                (upperLeft_.y < r.lowerRight_.y))
-            && !r.isEmpty();
+                (upperLeft_.y < r.lowerRight_.y)) &&
+               !r.isEmpty();
     }
 
-        /** Modifies this rectangle by including the given point. The
+    /** Modifies this rectangle by including the given point. The
          * result is the bounding rectangle of the rectangle and the
          * point. If isEmpty returns true, the union will be a
          * rectangle containing only the given point.
          */
-    Rect2D &operator|=(Point2D const &p)
+    Rect2D& operator|=(Point2D const& p)
     {
-        if(isEmpty())
+        if (isEmpty())
         {
             upperLeft_ = p;
             lowerRight_ = p + Diff2D(1, 1);
         }
         else
         {
-            if(p.x < upperLeft_.x)
+            if (p.x < upperLeft_.x)
                 upperLeft_.x = p.x;
-            if(p.y < upperLeft_.y)
+            if (p.y < upperLeft_.y)
                 upperLeft_.y = p.y;
-            if(lowerRight_.x <= p.x)
+            if (lowerRight_.x <= p.x)
                 lowerRight_.x = p.x + 1;
-            if(lowerRight_.y <= p.y)
+            if (lowerRight_.y <= p.y)
                 lowerRight_.y = p.y + 1;
         }
         return *this;
     }
 
-        /** Returns the union of this rectangle and the given
+    /** Returns the union of this rectangle and the given
          * point. The result is the bounding rectangle of the
          * rectangle and the point. If isEmpty returns true, the union
          * will be a rectangle containing only the given point.
          */
-    Rect2D operator|(Point2D const &p) const
+    Rect2D operator|(Point2D const& p) const
     {
         Rect2D result(*this);
         result |= p;
         return result;
     }
 
-        /** Modifies this rectangle by uniting it with the given
+    /** Modifies this rectangle by uniting it with the given
          * one. The result is the bounding rectangle of both
          * rectangles. If one of the rectangles isEmpty(), the union
          * will be the other one.
          */
-    Rect2D &operator|=(Rect2D const &r)
+    Rect2D& operator|=(Rect2D const& r)
     {
-        if(r.isEmpty())
+        if (r.isEmpty())
             return *this;
-        if(isEmpty())
+        if (isEmpty())
             return operator=(r);
 
-        if(r.upperLeft_.x < upperLeft_.x)
+        if (r.upperLeft_.x < upperLeft_.x)
             upperLeft_.x = r.upperLeft_.x;
-        if(r.upperLeft_.y < upperLeft_.y)
+        if (r.upperLeft_.y < upperLeft_.y)
             upperLeft_.y = r.upperLeft_.y;
-        if(lowerRight_.x < r.lowerRight_.x)
+        if (lowerRight_.x < r.lowerRight_.x)
             lowerRight_.x = r.lowerRight_.x;
-        if(lowerRight_.y < r.lowerRight_.y)
+        if (lowerRight_.y < r.lowerRight_.y)
             lowerRight_.y = r.lowerRight_.y;
         return *this;
     }
 
-        /** Returns the union of this rectangle and the given one. The
+    /** Returns the union of this rectangle and the given one. The
          * result is the bounding rectangle of both rectangles. If one
          * of the rectangles isEmpty(), the union will be the other
          * one.
          */
-    Rect2D operator|(Rect2D const &r) const
+    Rect2D operator|(Rect2D const& r) const
     {
         Rect2D result(*this);
         result |= r;
         return result;
     }
 
-        /** Modifies this rectangle by intersecting it with the given
+    /** Modifies this rectangle by intersecting it with the given
          * point. The result is the bounding rect of the point (with
          * width and height equal to 1) if it was contained in the
          * original rect, or an empty rect otherwise.
          */
-    Rect2D &operator&=(Point2D const &p)
+    Rect2D& operator&=(Point2D const& p)
     {
-        if(contains(p))
+        if (contains(p))
         {
             upperLeft_ = p;
             lowerRight_ = p + Diff2D(1, 1);
@@ -1237,87 +1301,87 @@ public:
         return *this;
     }
 
-        /** Intersects this rectangle with the given point. The result
+    /** Intersects this rectangle with the given point. The result
          * is the bounding rect of the point (with width and height
          * equal to 1) if it was contained in the original rect, or an
          * empty rect otherwise.
          */
-    Rect2D operator&(Point2D const &p) const
+    Rect2D operator&(Point2D const& p) const
     {
         Rect2D result(*this);
         result &= p;
         return result;
     }
 
-        /** Modifies this rectangle by intersecting it with the given
+    /** Modifies this rectangle by intersecting it with the given
          * one. The result is the maximal rectangle contained in both
          * original ones. Intersecting with an empty rectangle will
          * yield again an empty rectangle.
          */
-    Rect2D &operator&=(Rect2D const &r)
+    Rect2D& operator&=(Rect2D const& r)
     {
-        if(isEmpty())
+        if (isEmpty())
             return *this;
-        if(r.isEmpty())
+        if (r.isEmpty())
             return operator=(r);
 
-        if(upperLeft_.x < r.upperLeft_.x)
+        if (upperLeft_.x < r.upperLeft_.x)
             upperLeft_.x = r.upperLeft_.x;
-        if(upperLeft_.y < r.upperLeft_.y)
+        if (upperLeft_.y < r.upperLeft_.y)
             upperLeft_.y = r.upperLeft_.y;
-        if(r.lowerRight_.x < lowerRight_.x)
+        if (r.lowerRight_.x < lowerRight_.x)
             lowerRight_.x = r.lowerRight_.x;
-        if(r.lowerRight_.y < lowerRight_.y)
+        if (r.lowerRight_.y < lowerRight_.y)
             lowerRight_.y = r.lowerRight_.y;
         return *this;
     }
 
-       /** Scale this rectangle by the given factor.
+    /** Scale this rectangle by the given factor.
         * To be specific, both upperLeft() and lowerRight() are
         * multiplied by `factor`.
         */
-    Rect2D & operator*=(int factor)
+    Rect2D& operator*=(int factor)
     {
         upperLeft_ *= factor;
         lowerRight_ *= factor;
         return *this;
     }
 
-       /** Scale this rectangle by the given factor.
+    /** Scale this rectangle by the given factor.
         * To be specific, both upperLeft() and lowerRight() are
         * multiplied by `factor`.
         */
-    Rect2D & operator*=(double factor)
+    Rect2D& operator*=(double factor)
     {
         upperLeft_ *= factor;
         lowerRight_ *= factor;
         return *this;
     }
 
-       /** Return rectangle scaled by the given factor.
+    /** Return rectangle scaled by the given factor.
         * To be specific, both upperLeft() and lowerRight() are
         * multiplied by `factor`.
         */
     Rect2D operator*(int factor) const
     {
-        return Rect2D(*this)*=factor;
+        return Rect2D(*this) *= factor;
     }
 
-       /** Return rectangle scaled by the given factor.
+    /** Return rectangle scaled by the given factor.
         * To be specific, both upperLeft() and lowerRight() are
         * multiplied by `factor`.
         */
     Rect2D operator*(double factor) const
     {
-        return Rect2D(*this)*=factor;
+        return Rect2D(*this) *= factor;
     }
 
-        /** Intersects this rectangle with the given one. The result
+    /** Intersects this rectangle with the given one. The result
          * is the maximal rectangle contained in both original ones.
          * Intersecting with an empty rectangle will yield again an
          * empty rectangle.
          */
-    Rect2D operator&(Rect2D const &r) const
+    Rect2D operator&(Rect2D const& r) const
     {
         Rect2D result(*this);
         result &= r;
@@ -1336,20 +1400,22 @@ public:
 */
 class Dist2D
 {
-  public:
+public:
     Dist2D(int the_width, int the_height)
-    : width(the_width),
-      height(the_height)
-    {}
-
-    Dist2D(Dist2D const & s)
-    : width(s.width),
-      height(s.height)
-    {}
-
-    Dist2D & operator=(Dist2D const & s)
+        : width(the_width),
+          height(the_height)
     {
-        if(this != &s)
+    }
+
+    Dist2D(Dist2D const& s)
+        : width(s.width),
+          height(s.height)
+    {
+    }
+
+    Dist2D& operator=(Dist2D const& s)
+    {
+        if (this != &s)
         {
             width = s.width;
             height = s.height;
@@ -1357,7 +1423,7 @@ class Dist2D
         return *this;
     }
 
-    Dist2D & operator+=(Dist2D const & s)
+    Dist2D& operator+=(Dist2D const& s)
     {
         width += s.width;
         height += s.height;
@@ -1365,7 +1431,7 @@ class Dist2D
         return *this;
     }
 
-    Dist2D  operator+(Dist2D const & s) const
+    Dist2D operator+(Dist2D const& s) const
     {
         Dist2D ret(*this);
         ret += s;
@@ -1374,24 +1440,27 @@ class Dist2D
     }
 
     operator Diff2D()
-        { return Diff2D(width, height); }
+    {
+        return Diff2D(width, height);
+    }
 
     int width;
     int height;
- };
+};
 
 //@}
 
 } // namespace vigra
 
-namespace std {
+namespace std
+{
 
 /**
  * Output a \ref vigra::Diff2D as a tuple.
  * Example Diff2D(-12, 13) -> "(-12, 13)"
  */
-inline
-ostream & operator<<(ostream & o, vigra::Diff2D const & d)
+inline ostream&
+operator<<(ostream& o, vigra::Diff2D const& d)
 {
     o << '(' << d.x << ", " << d.y << ')';
     return o;
@@ -1401,8 +1470,8 @@ ostream & operator<<(ostream & o, vigra::Diff2D const & d)
  * Output a \ref vigra::Size2D.
  * Example Size2D(100, 200) -> "(100x200)"
  */
-inline
-ostream &operator <<(ostream &s, vigra::Size2D const &d)
+inline ostream&
+operator<<(ostream& s, vigra::Size2D const& d)
 {
     s << '(' << d.x << 'x' << d.y << ')';
     return s;
@@ -1412,8 +1481,8 @@ ostream &operator <<(ostream &s, vigra::Size2D const &d)
  * Output a description of a \ref vigra::Rect2D.
  * Example Rect2D(10, 10, 30, 20) -> "[(10, 10) to (30, 20) = (20x10)]"
  */
-inline
-ostream &operator <<(ostream &s, vigra::Rect2D const &r)
+inline ostream&
+operator<<(ostream& s, vigra::Rect2D const& r)
 {
     s << "[" << r.upperLeft() << " to " << r.lowerRight()
       << " = " << r.size() << "]";

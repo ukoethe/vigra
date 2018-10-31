@@ -45,117 +45,117 @@ namespace python = boost::python;
 namespace vigra
 {
 
-template <class T >
+template<class T>
 NumpyAnyArray
-pythonLeastSquares(NumpyArray<2, T> A, NumpyArray<2, T> b)
+    pythonLeastSquares(NumpyArray<2, T> A, NumpyArray<2, T> b)
 {
     NumpyArray<2, T, UnstridedArrayTag> res(Shape2(A.shape(1), 1));
-    
+
     {
         PyAllowThreads _pythread;
-        
+
         leastSquares(A, b, res);
     }
     return res;
 }
 
-template <class T >
+template<class T>
 NumpyAnyArray
-pythonNonnegativeLeastSquares(NumpyArray<2, T> A, NumpyArray<2, T> b)
+    pythonNonnegativeLeastSquares(NumpyArray<2, T> A, NumpyArray<2, T> b)
 {
     NumpyArray<2, T, UnstridedArrayTag> res(Shape2(A.shape(1), 1));
-    
+
     {
         PyAllowThreads _pythread;
-        
+
         nonnegativeLeastSquares(A, b, res);
     }
     return res;
 }
 
-template <class T >
+template<class T>
 NumpyAnyArray
-pythonRidgeRegression(NumpyArray<2, T> A, NumpyArray<2, T> b, double lambda)
+    pythonRidgeRegression(NumpyArray<2, T> A, NumpyArray<2, T> b, double lambda)
 {
     NumpyArray<2, T, UnstridedArrayTag> res(Shape2(A.shape(1), 1));
-    
+
     {
         PyAllowThreads _pythread;
-        
+
         ridgeRegression(A, b, res, lambda);
     }
     return res;
 }
 
-template <class T >
+template<class T>
 python::tuple
-pythonlassoRegression(NumpyArray<2, T> A, NumpyArray<2, T> b,
-                      bool nonNegative,
-                      bool lsqSolutions,
-                      bool lassoSolutions,
-                      unsigned int maxSolutionCount)
+    pythonlassoRegression(NumpyArray<2, T> A, NumpyArray<2, T> b,
+                          bool nonNegative,
+                          bool lsqSolutions,
+                          bool lassoSolutions,
+                          unsigned int maxSolutionCount)
 {
     vigra_precondition(lsqSolutions || lassoSolutions,
-        "lassoRegression(): At least one of 'lsqSolutions' and 'lassoSolutions' must be 'True'.");
-    
-    ArrayVector<Matrix<double> > lasso_solutions, lsq_solutions;
-    ArrayVector<ArrayVector<MultiArrayIndex> > activeSets;
+                       "lassoRegression(): At least one of 'lsqSolutions' and 'lassoSolutions' must be 'True'.");
+
+    ArrayVector<Matrix<double>> lasso_solutions, lsq_solutions;
+    ArrayVector<ArrayVector<MultiArrayIndex>> activeSets;
     unsigned int numSolutions = 0;
-    
+
     {
         PyAllowThreads _pythread;
-        
-        ArrayVector<Matrix<double> > * plasso = lassoSolutions
-                                                     ? &lasso_solutions
-                                                     : 0,
-                                     * plsq = lsqSolutions
-                                                     ? &lsq_solutions
-                                                     : 0;
-                                                            
+
+        ArrayVector<Matrix<double>>*plasso = lassoSolutions
+                                                 ? &lasso_solutions
+                                                 : 0,
+        *plsq = lsqSolutions
+                    ? &lsq_solutions
+                    : 0;
+
         LeastAngleRegressionOptions options;
-        if(nonNegative)
+        if (nonNegative)
             options.nnlasso();
         else
             options.lasso();
         options.maxSolutionCount(maxSolutionCount);
-    
-        numSolutions = 
+
+        numSolutions =
             linalg::detail::leastAngleRegressionImpl(A, b, activeSets, plasso, plsq, options);
     }
-    
+
     python::list pyActiveSets;
-    for(unsigned int k=0; k<numSolutions; ++k)
+    for (unsigned int k = 0; k < numSolutions; ++k)
         pyActiveSets.append(python::object(activeSets[k]));
     python::list pyLassoSolutions;
-    if(lassoSolutions)
+    if (lassoSolutions)
     {
-        for(unsigned int k=0; k<numSolutions; ++k)
+        for (unsigned int k = 0; k < numSolutions; ++k)
         {
             NumpyArray<2, double, UnstridedArrayTag> sol(Shape2(A.shape(1), 1));
-            for(unsigned int m=0; m<activeSets[k].size(); ++m)
+            for (unsigned int m = 0; m < activeSets[k].size(); ++m)
             {
-                sol(activeSets[k][m], 0) = lasso_solutions[k](m,0);
+                sol(activeSets[k][m], 0) = lasso_solutions[k](m, 0);
             }
             pyLassoSolutions.append(python::object(sol));
         }
     }
     python::list pyLsqSolutions;
-    if(lsqSolutions)
+    if (lsqSolutions)
     {
-        for(unsigned int k=0; k<numSolutions; ++k)
+        for (unsigned int k = 0; k < numSolutions; ++k)
         {
             NumpyArray<2, double, UnstridedArrayTag> sol(Shape2(A.shape(1), 1));
-            for(unsigned int m=0; m<activeSets[k].size(); ++m)
+            for (unsigned int m = 0; m < activeSets[k].size(); ++m)
             {
-                sol(activeSets[k][m], 0) = lsq_solutions[k](m,0);
+                sol(activeSets[k][m], 0) = lsq_solutions[k](m, 0);
             }
             pyLsqSolutions.append(python::object(sol));
         }
     }
-        
-    if(lsqSolutions)
+
+    if (lsqSolutions)
     {
-        if(lassoSolutions)
+        if (lassoSolutions)
             return python::make_tuple(numSolutions, pyActiveSets, pyLsqSolutions, pyLassoSolutions);
         else
             return python::make_tuple(numSolutions, pyActiveSets, pyLsqSolutions, python::object());
@@ -167,13 +167,14 @@ pythonlassoRegression(NumpyArray<2, T> A, NumpyArray<2, T> b,
 }
 
 
-void defineOptimization()
+void
+defineOptimization()
 {
     using namespace python;
 
     docstring_options doc_options(true, true, false);
-    
-    NumpyArrayConverter<NumpyArray<2, double, UnstridedArrayTag> >();
+
+    NumpyArrayConverter<NumpyArray<2, double, UnstridedArrayTag>>();
 
     def("leastSquares", registerConverters(&pythonLeastSquares<double>),
         (arg("A"), arg("b")),
@@ -197,8 +198,8 @@ void defineOptimization()
         "For details see ridgeRegression_ in the vigra C++ documentation.\n\n");
 
     def("lassoRegression", registerConverters(&pythonlassoRegression<double>),
-        (arg("A"), arg("b"), 
-         arg("nonNegative")=false, arg("lsq")=true, arg("lasso")=false, arg("maxSolutionCount")=0),
+        (arg("A"), arg("b"),
+         arg("nonNegative") = false, arg("lsq") = true, arg("lasso") = false, arg("maxSolutionCount") = 0),
         "Perform linear regression with L1 regularization.\n"
         "\n"
         "If 'nonNegative' is 'True', the solution will be constrained to non-negative\n"

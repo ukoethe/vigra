@@ -35,8 +35,8 @@
 #ifndef VIGRA_FILTER_ITERATOR_HXX
 #define VIGRA_FILTER_ITERATOR_HXX
 
-#include <type_traits>
 #include <iterator>
+#include <type_traits>
 
 #include "iteratorfacade.hxx"
 
@@ -45,25 +45,25 @@ namespace vigra
 
 namespace detail
 {
-    template <typename T>
-    struct is_const_pointer
-    {
-        static bool const value = false;
-    };
+template<typename T>
+struct is_const_pointer
+{
+    static bool const value = false;
+};
 
-    template <typename T>
-    struct is_const_pointer<T const *>
-    {
-        static bool const value = true;
-    };
+template<typename T>
+struct is_const_pointer<T const*>
+{
+    static bool const value = true;
+};
 
-    template <typename ITER>
-    struct is_const_iterator
-    {
-        typedef typename std::iterator_traits<ITER>::pointer pointer;
-        static bool const value = is_const_pointer<pointer>::value;
-    };
-}
+template<typename ITER>
+struct is_const_iterator
+{
+    typedef typename std::iterator_traits<ITER>::pointer pointer;
+    static bool const value = is_const_pointer<pointer>::value;
+};
+} // namespace detail
 
 
 /********************************************************/
@@ -80,21 +80,21 @@ namespace detail
  *
  * @note The equality comparison only checks, whether the iterators point to the same place. The predicate is not checked.
  */
-template <typename PREDICATE, typename ITER>
+template<typename PREDICATE, typename ITER>
 class FilterIterator
-: public ForwardIteratorFacade<FilterIterator<PREDICATE, ITER>,
-                               typename std::iterator_traits<ITER>::value_type,
-                               detail::is_const_iterator<ITER>::value>
+    : public ForwardIteratorFacade<FilterIterator<PREDICATE, ITER>,
+                                   typename std::iterator_traits<ITER>::value_type,
+                                   detail::is_const_iterator<ITER>::value>
 {
 public:
-
     typedef PREDICATE Predicate;
     typedef ITER Iter;
     typedef typename std::iterator_traits<Iter>::value_type IterValueType;
     typedef FilterIterator<Predicate, Iter> SelfType;
     typedef ForwardIteratorFacade<SelfType,
                                   IterValueType,
-                                  detail::is_const_iterator<ITER>::value> Parent;
+                                  detail::is_const_iterator<ITER>::value>
+        Parent;
     typedef typename Parent::value_type value_type;
     typedef typename Parent::reference reference;
     typedef reference const const_reference;
@@ -102,16 +102,14 @@ public:
     /// Construct a filter iterator with the given predicate for
     /// a base iterator range \a iter to \a end.
     FilterIterator(Predicate pred, Iter iter, Iter end = Iter())
-        :
-        pred_(pred),
-        iter_(iter),
-        end_(end)
+        : pred_(pred),
+          iter_(iter),
+          end_(end)
     {
         satisfy_predicate();
     }
 
 private:
-
     void satisfy_predicate()
     {
         while (iter_ != end_ && !pred_(*iter_))
@@ -129,7 +127,7 @@ private:
         return *iter_;
     }
 
-    bool equal(FilterIterator const & other) const
+    bool equal(FilterIterator const& other) const
     {
         return iter_ == other.iter_;
     }
@@ -139,10 +137,9 @@ private:
     Iter end_;
 
     friend class vigra::IteratorFacadeCoreAccess;
-
 };
 
-template <typename PREDICATE, typename ITER>
+template<typename PREDICATE, typename ITER>
 FilterIterator<PREDICATE, ITER>
 make_filter_iterator(PREDICATE pred, ITER iter, ITER end = ITER())
 {

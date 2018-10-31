@@ -37,15 +37,16 @@
 #ifndef VIGRA_LABELIMAGE_HXX
 #define VIGRA_LABELIMAGE_HXX
 
-#include <vector>
-#include <functional>
-#include "utilities.hxx"
+#include "multi_shape.hxx"
+#include "sized_int.hxx"
 #include "stdimage.hxx"
 #include "union_find.hxx"
-#include "sized_int.hxx"
-#include "multi_shape.hxx"
+#include "utilities.hxx"
+#include <functional>
+#include <vector>
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup Labeling Connected Components Labeling
      The 2-dimensional connected components algorithms may use either 4 or 8 connectivity.
@@ -182,27 +183,27 @@ namespace vigra {
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> unsigned int labelImage)
+doxygen_overloaded_function(template<...> unsigned int labelImage)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class EqualityFunctor>
-unsigned int labelImage(SrcIterator upperlefts,
-                        SrcIterator lowerrights, SrcAccessor sa,
-                        DestIterator upperleftd, DestAccessor da,
-                        bool eight_neighbors, EqualityFunctor equal)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor,
+             class EqualityFunctor>
+    unsigned int labelImage(SrcIterator upperlefts,
+                            SrcIterator lowerrights, SrcAccessor sa,
+                            DestIterator upperleftd, DestAccessor da,
+                            bool eight_neighbors, EqualityFunctor equal)
 {
     typedef typename DestAccessor::value_type LabelType;
 
     int w = lowerrights.x - upperlefts.x;
     int h = lowerrights.y - upperlefts.y;
-    int x,y,i;
+    int x, y, i;
 
     const Diff2D neighbor[] = {
-        Diff2D(-1,0),  // left
-        Diff2D(-1,-1), // topleft
-        Diff2D(0,-1),  // top
-        Diff2D(1,-1)   // topright
+        Diff2D(-1, 0),  // left
+        Diff2D(-1, -1), // topleft
+        Diff2D(0, -1),  // top
+        Diff2D(1, -1)   // topright
     };
 
     const int left = 0, /* unused:  topleft = 1, */ top = 2, topright = 3;
@@ -211,7 +212,7 @@ unsigned int labelImage(SrcIterator upperlefts,
     SrcIterator ys = upperlefts;
     DestIterator yd = upperleftd;
 
-    UnionFindArray<LabelType>  label;
+    UnionFindArray<LabelType> label;
 
     // pass 1: scan image from upper left to lower right
     // to find connected components
@@ -228,27 +229,28 @@ unsigned int labelImage(SrcIterator upperlefts,
     // new region is found or two regions are merged
 
 
-    for(y = 0; y != h; ++y, ++ys.y, ++yd.y)
+    for (y = 0; y != h; ++y, ++ys.y, ++yd.y)
     {
         SrcIterator xs = ys;
         DestIterator xd = yd;
 
         int endNeighbor = (y == 0) ? left : (eight_neighbors ? topright : top);
 
-        for(x = 0; x != w; ++x, ++xs.x, ++xd.x)
+        for (x = 0; x != w; ++x, ++xs.x, ++xd.x)
         {
             int beginNeighbor = (x == 0) ? top : left;
-            if(x == w-1 && endNeighbor == topright) endNeighbor = top;
+            if (x == w - 1 && endNeighbor == topright)
+                endNeighbor = top;
 
-            for(i=beginNeighbor; i<=endNeighbor; i+=step)
+            for (i = beginNeighbor; i <= endNeighbor; i += step)
             {
-                if(equal(sa(xs), sa(xs, neighbor[i])))
+                if (equal(sa(xs), sa(xs, neighbor[i])))
                 {
-                    LabelType neighborIndex = label.findIndex(da(xd,neighbor[i]));
+                    LabelType neighborIndex = label.findIndex(da(xd, neighbor[i]));
 
-                    for(int j=i+2; j<=endNeighbor; j+=step)
+                    for (int j = i + 2; j <= endNeighbor; j += step)
                     {
-                        if(equal(sa(xs), sa(xs, neighbor[j])))
+                        if (equal(sa(xs), sa(xs, neighbor[j])))
                         {
                             neighborIndex = label.makeUnion(da(xd, neighbor[j]), neighborIndex);
                             break;
@@ -257,9 +259,8 @@ unsigned int labelImage(SrcIterator upperlefts,
                     da.set(neighborIndex, xd);
                     break;
                 }
-
             }
-            if(i > endNeighbor)
+            if (i > endNeighbor)
             {
                 da.set(label.makeNewIndex(), xd);
             }
@@ -271,10 +272,10 @@ unsigned int labelImage(SrcIterator upperlefts,
     unsigned int count = label.makeContiguous();
 
     yd = upperleftd;
-    for(y=0; y != h; ++y, ++yd.y)
+    for (y = 0; y != h; ++y, ++yd.y)
     {
         typename DestIterator::row_iterator xd = yd.rowIterator();
-        for(x = 0; x != w; ++x, ++xd)
+        for (x = 0; x != w; ++x, ++xd)
         {
             da.set(label.findLabel(da(xd)), xd);
         }
@@ -282,22 +283,22 @@ unsigned int labelImage(SrcIterator upperlefts,
     return count;
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline
-unsigned int labelImage(SrcIterator upperlefts,
-                        SrcIterator lowerrights, SrcAccessor sa,
-                        DestIterator upperleftd, DestAccessor da,
-                        bool eight_neighbors)
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
+inline unsigned int
+labelImage(SrcIterator upperlefts,
+           SrcIterator lowerrights, SrcAccessor sa,
+           DestIterator upperleftd, DestAccessor da,
+           bool eight_neighbors)
 {
     return labelImage(upperlefts, lowerrights, sa,
-                 upperleftd, da, eight_neighbors,
-                 std::equal_to<typename SrcAccessor::value_type>());
+                      upperleftd, da, eight_neighbors,
+                      std::equal_to<typename SrcAccessor::value_type>());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class EqualityFunctor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class EqualityFunctor>
 inline unsigned int
 labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
            pair<DestIterator, DestAccessor> dest,
@@ -307,8 +308,8 @@ labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                       dest.first, dest.second, eight_neighbors, equal);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline unsigned int
 labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
            pair<DestIterator, DestAccessor> dest,
@@ -319,26 +320,26 @@ labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                       std::equal_to<typename SrcAccessor::value_type>());
 }
 
-template <class T1, class S1,
-          class T2, class S2,
-          class EqualityFunctor>
+template<class T1, class S1,
+         class T2, class S2,
+         class EqualityFunctor>
 inline unsigned int
-labelImage(MultiArrayView<2, T1, S1> const & src,
-           MultiArrayView<2, T2, S2> dest,
-           bool eight_neighbors, EqualityFunctor equal)
+    labelImage(MultiArrayView<2, T1, S1> const& src,
+               MultiArrayView<2, T2, S2> dest,
+               bool eight_neighbors, EqualityFunctor equal)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "labelImage(): shape mismatch between input and output.");
+                       "labelImage(): shape mismatch between input and output.");
     return labelImage(srcImageRange(src),
                       destImage(dest), eight_neighbors, equal);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline unsigned int
-labelImage(MultiArrayView<2, T1, S1> const & src,
-           MultiArrayView<2, T2, S2> dest,
-           bool eight_neighbors)
+    labelImage(MultiArrayView<2, T1, S1> const& src,
+               MultiArrayView<2, T2, S2> dest,
+               bool eight_neighbors)
 {
     return labelImage(srcImageRange(src),
                       destImage(dest), eight_neighbors,
@@ -483,27 +484,27 @@ labelImage(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> unsigned int labelImageWithBackground)
+doxygen_overloaded_function(template<...> unsigned int labelImageWithBackground)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class ValueType, class EqualityFunctor>
-unsigned int labelImageWithBackground(
-    SrcIterator upperlefts,
-    SrcIterator lowerrights, SrcAccessor sa,
-    DestIterator upperleftd, DestAccessor da,
-    bool eight_neighbors,
-    ValueType background_value, EqualityFunctor equal)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor,
+             class ValueType, class EqualityFunctor>
+    unsigned int labelImageWithBackground(
+        SrcIterator upperlefts,
+        SrcIterator lowerrights, SrcAccessor sa,
+        DestIterator upperleftd, DestAccessor da,
+        bool eight_neighbors,
+        ValueType background_value, EqualityFunctor equal)
 {
     int w = lowerrights.x - upperlefts.x;
     int h = lowerrights.y - upperlefts.y;
-    int x,y,i;
+    int x, y, i;
 
     const Diff2D neighbor[] = {
-        Diff2D(-1,0),  // left
-        Diff2D(-1,-1), // topleft
-        Diff2D(0,-1),  // top
-        Diff2D(1,-1)   // topright
+        Diff2D(-1, 0),  // left
+        Diff2D(-1, -1), // topleft
+        Diff2D(0, -1),  // top
+        Diff2D(1, -1)   // topright
     };
 
     const int left = 0, /* unused:  topleft = 1,*/ top = 2, topright = 3;
@@ -517,60 +518,61 @@ unsigned int labelImageWithBackground(
     TmpImage labelimage(w, h);
     TmpImage::ScanOrderIterator label = labelimage.begin();
     TmpImage::Iterator yt = labelimage.upperLeft();
-    TmpImage::Iterator  xt(yt);
+    TmpImage::Iterator xt(yt);
 
     // pass 1: scan image from upper left to lower right
     // find connected components
 
-    for(y = 0; y != h; ++y, ++ys.y, ++yt.y)
+    for (y = 0; y != h; ++y, ++ys.y, ++yt.y)
     {
         xs = ys;
         xt = yt;
 
         int endNeighbor = (y == 0) ? left : (eight_neighbors ? topright : top);
 
-        for(x = 0; x != w; ++x, ++xs.x, ++xt.x)
+        for (x = 0; x != w; ++x, ++xs.x, ++xt.x)
         {
-            if(equal(sa(xs), background_value))
+            if (equal(sa(xs), background_value))
             {
                 *xt = -1;
             }
             else
             {
                 int beginNeighbor = (x == 0) ? top : left;
-                if(x == w-1 && endNeighbor == topright) endNeighbor = top;
+                if (x == w - 1 && endNeighbor == topright)
+                    endNeighbor = top;
 
-                for(i=beginNeighbor; i<=endNeighbor; i+=step)
+                for (i = beginNeighbor; i <= endNeighbor; i += step)
                 {
-                    if(equal(sa(xs), sa(xs, neighbor[i])))
+                    if (equal(sa(xs), sa(xs, neighbor[i])))
                     {
                         IntBiggest neighborIndex = xt[neighbor[i]];
 
-                        for(int j=i+2; j<=endNeighbor; j+=step)
+                        for (int j = i + 2; j <= endNeighbor; j += step)
                         {
-                            if(equal(sa(xs), sa(xs, neighbor[j])))
+                            if (equal(sa(xs), sa(xs, neighbor[j])))
                             {
                                 IntBiggest neighborLabel1 = xt[neighbor[j]];
 
-                                if(neighborIndex != neighborLabel1)
+                                if (neighborIndex != neighborLabel1)
                                 {
                                     // find roots of the region trees
-                                    while(neighborIndex != label[neighborIndex])
+                                    while (neighborIndex != label[neighborIndex])
                                     {
                                         neighborIndex = label[neighborIndex];
                                     }
-                                    while(neighborLabel1 != label[neighborLabel1])
+                                    while (neighborLabel1 != label[neighborLabel1])
                                     {
                                         neighborLabel1 = label[neighborLabel1];
                                     }
 
                                     // merge the trees
-                                    if(neighborLabel1 < neighborIndex)
+                                    if (neighborLabel1 < neighborIndex)
                                     {
                                         label[neighborIndex] = neighborLabel1;
                                         neighborIndex = neighborLabel1;
                                     }
-                                    else if(neighborIndex < neighborLabel1)
+                                    else if (neighborIndex < neighborLabel1)
                                     {
                                         label[neighborLabel1] = neighborIndex;
                                     }
@@ -581,15 +583,14 @@ unsigned int labelImageWithBackground(
                         *xt = neighborIndex;
                         break;
                     }
-
                 }
-                if(i > endNeighbor)
+                if (i > endNeighbor)
                 {
                     // new region
                     // The initial label of a new region equals the
                     // scan order address of it's first pixel.
                     // This is essential for correct operation of the algorithm.
-                    *xt = x + y*w;
+                    *xt = x + y * w;
                 }
             }
         }
@@ -600,14 +601,15 @@ unsigned int labelImageWithBackground(
 
     int count = 0;
     i = 0;
-    for(y=0; y != h; ++y, ++yd.y)
+    for (y = 0; y != h; ++y, ++yd.y)
     {
         DestIterator xd(yd);
-        for(x = 0; x != w; ++x, ++xd.x, ++i)
+        for (x = 0; x != w; ++x, ++xd.x, ++i)
         {
-            if(label[i] == -1) continue;
+            if (label[i] == -1)
+                continue;
 
-            if(label[i] == i)
+            if (label[i] == i)
             {
                 label[i] = count++;
             }
@@ -615,18 +617,18 @@ unsigned int labelImageWithBackground(
             {
                 label[i] = label[label[i]];
             }
-            da.set(label[i]+1, xd);
+            da.set(label[i] + 1, xd);
         }
     }
 
     return count;
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class ValueType>
-inline
-unsigned int labelImageWithBackground(
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class ValueType>
+inline unsigned int
+labelImageWithBackground(
     SrcIterator upperlefts,
     SrcIterator lowerrights, SrcAccessor sa,
     DestIterator upperleftd, DestAccessor da,
@@ -634,14 +636,14 @@ unsigned int labelImageWithBackground(
     ValueType background_value)
 {
     return labelImageWithBackground(upperlefts, lowerrights, sa,
-                            upperleftd, da,
-                            eight_neighbors, background_value,
-                            std::equal_to<typename SrcAccessor::value_type>());
+                                    upperleftd, da,
+                                    eight_neighbors, background_value,
+                                    std::equal_to<typename SrcAccessor::value_type>());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class ValueType, class EqualityFunctor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class ValueType, class EqualityFunctor>
 inline unsigned int
 labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                          pair<DestIterator, DestAccessor> dest,
@@ -653,9 +655,9 @@ labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                     eight_neighbors, background_value, equal);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class ValueType>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class ValueType>
 inline unsigned int
 labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                          pair<DestIterator, DestAccessor> dest,
@@ -668,33 +670,33 @@ labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                     std::equal_to<typename SrcAccessor::value_type>());
 }
 
-template <class T1, class S1,
-          class T2, class S2,
-          class ValueType, class EqualityFunctor>
+template<class T1, class S1,
+         class T2, class S2,
+         class ValueType, class EqualityFunctor>
 inline unsigned int
-labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
-                         MultiArrayView<2, T2, S2> dest,
-                         bool eight_neighbors,
-                         ValueType background_value, EqualityFunctor equal)
+    labelImageWithBackground(MultiArrayView<2, T1, S1> const& src,
+                             MultiArrayView<2, T2, S2> dest,
+                             bool eight_neighbors,
+                             ValueType background_value, EqualityFunctor equal)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "labelImageWithBackground(): shape mismatch between input and output.");
+                       "labelImageWithBackground(): shape mismatch between input and output.");
     return labelImageWithBackground(srcImageRange(src),
                                     destImage(dest),
                                     eight_neighbors, background_value, equal);
 }
 
-template <class T1, class S1,
-          class T2, class S2,
-          class ValueType>
+template<class T1, class S1,
+         class T2, class S2,
+         class ValueType>
 inline unsigned int
-labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
-                         MultiArrayView<2, T2, S2> dest,
-                         bool eight_neighbors,
-                         ValueType background_value)
+    labelImageWithBackground(MultiArrayView<2, T1, S1> const& src,
+                             MultiArrayView<2, T2, S2> dest,
+                             bool eight_neighbors,
+                             ValueType background_value)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "labelImageWithBackground(): shape mismatch between input and output.");
+                       "labelImageWithBackground(): shape mismatch between input and output.");
     return labelImageWithBackground(srcImageRange(src),
                                     destImage(dest),
                                     eight_neighbors, background_value,
@@ -708,7 +710,11 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
 /********************************************************/
 
 
-enum EdgeImageLabelPolicy { CopyRegionLabels, EdgeOverlayOnly };
+enum EdgeImageLabelPolicy
+{
+    CopyRegionLabels,
+    EdgeOverlayOnly
+};
 
 
 /** \brief Transform a labeled image into a crack edge (interpixel edge) image.
@@ -860,70 +866,69 @@ enum EdgeImageLabelPolicy { CopyRegionLabels, EdgeOverlayOnly };
     h_dest = 2 * h_src - 1
     \endcode
 */
-doxygen_overloaded_function(template <...> void regionImageToCrackEdgeImage)
+doxygen_overloaded_function(template<...> void regionImageToCrackEdgeImage)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, class DestValue>
-void regionImageToCrackEdgeImage(
-               SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-               DestIterator dul, DestAccessor da,
-               DestValue edge_marker,
-               EdgeImageLabelPolicy labelPolicy = CopyRegionLabels)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor, class DestValue>
+    void regionImageToCrackEdgeImage(
+        SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+        DestIterator dul, DestAccessor da,
+        DestValue edge_marker,
+        EdgeImageLabelPolicy labelPolicy = CopyRegionLabels)
 {
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
-    int x,y;
+    int x, y;
 
-    const Diff2D right(1,0);
-    const Diff2D left(-1,0);
-    const Diff2D bottomright(1,1);
-    const Diff2D bottom(0,1);
-    const Diff2D top(0,-1);
+    const Diff2D right(1, 0);
+    const Diff2D left(-1, 0);
+    const Diff2D bottomright(1, 1);
+    const Diff2D bottom(0, 1);
+    const Diff2D top(0, -1);
 
     SrcIterator iy = sul;
     DestIterator dy = dul;
 
-    for(y=0; y<h-1; ++y, ++iy.y, dy.y+=2)
+    for (y = 0; y < h - 1; ++y, ++iy.y, dy.y += 2)
     {
         SrcIterator ix = iy;
         DestIterator dx = dy;
 
-        for(x=0; x<w-1; ++x, ++ix.x, dx.x+=2)
+        for (x = 0; x < w - 1; ++x, ++ix.x, dx.x += 2)
         {
-            if(labelPolicy == CopyRegionLabels)
+            if (labelPolicy == CopyRegionLabels)
             {
                 da.set(sa(ix), dx);
                 da.set(sa(ix), dx, bottomright);
             }
 
-            if(sa(ix, right) != sa(ix))
+            if (sa(ix, right) != sa(ix))
             {
                 da.set(edge_marker, dx, right);
             }
-            else if(labelPolicy == CopyRegionLabels)
+            else if (labelPolicy == CopyRegionLabels)
             {
                 da.set(sa(ix), dx, right);
             }
-            if(sa(ix, bottom) != sa(ix))
+            if (sa(ix, bottom) != sa(ix))
             {
                 da.set(edge_marker, dx, bottom);
             }
-            else if(labelPolicy == CopyRegionLabels)
+            else if (labelPolicy == CopyRegionLabels)
             {
                 da.set(sa(ix), dx, bottom);
             }
-
         }
 
-        if(labelPolicy == CopyRegionLabels)
+        if (labelPolicy == CopyRegionLabels)
         {
             da.set(sa(ix), dx);
         }
-        if(sa(ix, bottom) != sa(ix))
+        if (sa(ix, bottom) != sa(ix))
         {
             da.set(edge_marker, dx, bottom);
         }
-        else if(labelPolicy == CopyRegionLabels)
+        else if (labelPolicy == CopyRegionLabels)
         {
             da.set(sa(ix), dx, bottom);
         }
@@ -932,48 +937,50 @@ void regionImageToCrackEdgeImage(
     SrcIterator ix = iy;
     DestIterator dx = dy;
 
-    for(x=0; x<w-1; ++x, ++ix.x, dx.x+=2)
+    for (x = 0; x < w - 1; ++x, ++ix.x, dx.x += 2)
     {
-        if(labelPolicy == CopyRegionLabels)
+        if (labelPolicy == CopyRegionLabels)
         {
             da.set(sa(ix), dx);
         }
-        if(sa(ix, right) != sa(ix))
+        if (sa(ix, right) != sa(ix))
         {
             da.set(edge_marker, dx, right);
         }
-        else if(labelPolicy == CopyRegionLabels)
+        else if (labelPolicy == CopyRegionLabels)
         {
             da.set(sa(ix), dx, right);
         }
     }
-    if(labelPolicy == CopyRegionLabels)
+    if (labelPolicy == CopyRegionLabels)
     {
         da.set(sa(ix), dx);
     }
-    dy = dul + Diff2D(1,1);
+    dy = dul + Diff2D(1, 1);
 
-    const Diff2D dist[] = {right, top, left, bottom };
+    const Diff2D dist[] = {right, top, left, bottom};
     // find missing 0-cells
-    for(y=0; y<h-1; ++y, dy.y+=2)
+    for (y = 0; y < h - 1; ++y, dy.y += 2)
     {
         DestIterator dx = dy;
 
-        for(x=0; x<w-1; ++x, dx.x+=2)
+        for (x = 0; x < w - 1; ++x, dx.x += 2)
         {
             int i;
-            for(i=0; i<4; ++i)
+            for (i = 0; i < 4; ++i)
             {
-                if(da(dx, dist[i]) == edge_marker) break;
+                if (da(dx, dist[i]) == edge_marker)
+                    break;
             }
 
-            if(i < 4) da.set(edge_marker, dx);
+            if (i < 4)
+                da.set(edge_marker, dx);
         }
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, class DestValue>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor, class DestValue>
 inline void
 regionImageToCrackEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<DestIterator, DestAccessor> dest,
@@ -985,16 +992,16 @@ regionImageToCrackEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 edge_marker, labelPolicy);
 }
 
-template <class T1, class S1,
-          class T2, class S2, class DestValue>
+template<class T1, class S1,
+         class T2, class S2, class DestValue>
 inline void
-regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
-                            MultiArrayView<2, T2, S2> dest,
-                            DestValue edge_marker,
-                            EdgeImageLabelPolicy labelPolicy = CopyRegionLabels)
+    regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const& src,
+                                MultiArrayView<2, T2, S2> dest,
+                                DestValue edge_marker,
+                                EdgeImageLabelPolicy labelPolicy = CopyRegionLabels)
 {
-    vigra_precondition(2*src.shape()-Shape2(1) == dest.shape(),
-        "regionImageToCrackEdgeImage(): shape mismatch between input and output.");
+    vigra_precondition(2 * src.shape() - Shape2(1) == dest.shape(),
+                       "regionImageToCrackEdgeImage(): shape mismatch between input and output.");
     regionImageToCrackEdgeImage(srcImageRange(src),
                                 destImage(dest),
                                 edge_marker,
@@ -1122,46 +1129,46 @@ regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void regionImageToEdgeImage)
+doxygen_overloaded_function(template<...> void regionImageToEdgeImage)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, class DestValue>
-void regionImageToEdgeImage(
-               SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-               DestIterator dul, DestAccessor da,
-               DestValue edge_marker)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor, class DestValue>
+    void regionImageToEdgeImage(
+        SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+        DestIterator dul, DestAccessor da,
+        DestValue edge_marker)
 {
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
-    int x,y;
+    int x, y;
 
-    const Diff2D right(1,0);
-    const Diff2D left(-1,0);
-    const Diff2D bottomright(1,1);
-    const Diff2D bottom(0,1);
-    const Diff2D top(0,-1);
+    const Diff2D right(1, 0);
+    const Diff2D left(-1, 0);
+    const Diff2D bottomright(1, 1);
+    const Diff2D bottom(0, 1);
+    const Diff2D top(0, -1);
 
     SrcIterator iy = sul;
     DestIterator dy = dul;
 
-    for(y=0; y<h-1; ++y, ++iy.y, ++dy.y)
+    for (y = 0; y < h - 1; ++y, ++iy.y, ++dy.y)
     {
         SrcIterator ix = iy;
         DestIterator dx = dy;
 
-        for(x=0; x<w-1; ++x, ++ix.x, ++dx.x)
+        for (x = 0; x < w - 1; ++x, ++ix.x, ++dx.x)
         {
-            if(sa(ix, right) != sa(ix))
+            if (sa(ix, right) != sa(ix))
             {
                 da.set(edge_marker, dx);
             }
-            if(sa(ix, bottom) != sa(ix))
+            if (sa(ix, bottom) != sa(ix))
             {
                 da.set(edge_marker, dx);
             }
         }
 
-        if(sa(ix, bottom) != sa(ix))
+        if (sa(ix, bottom) != sa(ix))
         {
             da.set(edge_marker, dx);
         }
@@ -1170,17 +1177,17 @@ void regionImageToEdgeImage(
     SrcIterator ix = iy;
     DestIterator dx = dy;
 
-    for(x=0; x<w-1; ++x, ++ix.x, ++dx.x)
+    for (x = 0; x < w - 1; ++x, ++ix.x, ++dx.x)
     {
-        if(sa(ix, right) != sa(ix))
+        if (sa(ix, right) != sa(ix))
         {
             da.set(edge_marker, dx);
         }
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, class DestValue>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor, class DestValue>
 inline void
 regionImageToEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        pair<DestIterator, DestAccessor> dest,
@@ -1191,15 +1198,15 @@ regionImageToEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                            edge_marker);
 }
 
-template <class T1, class S1,
-          class T2, class S2, class DestValue>
+template<class T1, class S1,
+         class T2, class S2, class DestValue>
 inline void
-regionImageToEdgeImage(MultiArrayView<2, T1, S1> const & src,
-                       MultiArrayView<2, T2, S2> dest,
-                       DestValue edge_marker)
+    regionImageToEdgeImage(MultiArrayView<2, T1, S1> const& src,
+                           MultiArrayView<2, T2, S2> dest,
+                           DestValue edge_marker)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "regionImageToEdgeImage(): shape mismatch between input and output.");
+                       "regionImageToEdgeImage(): shape mismatch between input and output.");
     regionImageToEdgeImage(srcImageRange(src),
                            destImage(dest),
                            edge_marker);

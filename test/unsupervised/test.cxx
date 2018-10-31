@@ -35,18 +35,18 @@
 #define UNSUPERVISED_TEST 1
 
 #ifdef _MSC_VER
-# pragma warning (disable : 4244)
+#pragma warning(disable : 4244)
 #endif
 
-#include <iostream>
+#include "test_data.hxx"
+#include <cmath>
 #include <fstream>
 #include <functional>
-#include <cmath>
-#include <vigra/unsupervised_decomposition.hxx>
-#include <vigra/unittest.hxx>
-#include <vector>
+#include <iostream>
 #include <limits>
-#include "test_data.hxx"
+#include <vector>
+#include <vigra/unittest.hxx>
+#include <vigra/unsupervised_decomposition.hxx>
 
 
 #include <stdlib.h>
@@ -58,9 +58,9 @@ class UnsupervisedDecompositionTest
 {
 
 public:
-
     UnsupervisedDecompositionTest()
-    {}
+    {
+    }
 
     void testPCADecomposition()
     {
@@ -76,8 +76,8 @@ public:
 
         principalComponents(features, fz, zv);
 
-        Matrix<double> model = fz*zv;
-        shouldEqualTolerance(squaredNorm(model-features), 1530214.34284834, 1e-10);
+        Matrix<double> model = fz * zv;
+        shouldEqualTolerance(squaredNorm(model - features), 1530214.34284834, 1e-10);
 
 #if 0
         char hdf5File_2[] = "example_data_results.h5";
@@ -119,37 +119,37 @@ public:
 
         // test if result matrices (approximately) satisfy normalization properties
         Matrix<double> colSumFZ = fz.sum(0);
-        for(int i=0; i<columnCount(fz); ++i)
+        for (int i = 0; i < columnCount(fz); ++i)
         {
-            shouldEqualTolerance( colSumFZ(0,i), 1, eps );
+            shouldEqualTolerance(colSumFZ(0, i), 1, eps);
         }
         Matrix<double> colSumZV = zv.sum(0);
         Matrix<double> colSumFeat = features.sum(0);
-        for(int i=0; i<columnCount(zv); ++i)
+        for (int i = 0; i < columnCount(zv); ++i)
         {
-            shouldEqualTolerance( colSumZV(0,i) / colSumFeat(0, i), 1, eps );
+            shouldEqualTolerance(colSumZV(0, i) / colSumFeat(0, i), 1, eps);
         }
         // all entries in FZ, ZV are >= 0
-        for(int j=0; j<columnCount(zv); ++j)
+        for (int j = 0; j < columnCount(zv); ++j)
         {
-            for(int i=0; i<rowCount(zv); ++i)
+            for (int i = 0; i < rowCount(zv); ++i)
             {
-                should ( zv(i, j) >= 0 );
+                should(zv(i, j) >= 0);
             }
         }
-        for(int j=0; j<columnCount(fz); ++j)
+        for (int j = 0; j < columnCount(fz); ++j)
         {
-            for(int i=0; i<rowCount(fz); ++i)
+            for (int i = 0; i < rowCount(fz); ++i)
             {
-                should ( fz(i, j) >= 0 );
+                should(fz(i, j) >= 0);
             }
         }
 
         // test if reconstruction is close to original
         // tricky - how to properly test that? it will never be identical!
-        Matrix<double> model = fz*zv;
+        Matrix<double> model = fz * zv;
         double meanError = (features - model).squaredNorm() / columnCount(features);
-        should ( meanError < 5000 );
+        should(meanError < 5000);
 
 #if 0
         char hdf5File_2[] = "example_data_results.h5";
@@ -174,7 +174,8 @@ struct UnsupervisedDecompositionTestSuite : public vigra::test_suite
 };
 
 
-int main (int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
     UnsupervisedDecompositionTestSuite test;
     const int failed = test.run(vigra::testsToBeExecuted(argc, argv));

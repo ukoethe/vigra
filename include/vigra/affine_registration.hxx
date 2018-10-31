@@ -36,18 +36,19 @@
 #ifndef VIGRA_AFFINE_REGISTRATION_HXX
 #define VIGRA_AFFINE_REGISTRATION_HXX
 
+#include "affinegeometry.hxx"
+#include "imagecontainer.hxx"
+#include "linear_solve.hxx"
 #include "mathutil.hxx"
 #include "matrix.hxx"
-#include "linear_solve.hxx"
-#include "tinyvector.hxx"
-#include "splineimageview.hxx"
-#include "imagecontainer.hxx"
 #include "multi_shape.hxx"
-#include "affinegeometry.hxx"
+#include "splineimageview.hxx"
+#include "tinyvector.hxx"
 
 #include <cmath>
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup Registration Image Registration
 
@@ -68,7 +69,7 @@ namespace vigra {
     (translation, rotation, and uniform scaling). When only one point pair is given,
     the result will be a pure translation.
 */
-template <class SrcIterator, class DestIterator>
+template<class SrcIterator, class DestIterator>
 linalg::TemporaryMatrix<double>
 affineMatrix2DFromCorrespondingPoints(SrcIterator s, SrcIterator send, DestIterator d)
 {
@@ -76,98 +77,100 @@ affineMatrix2DFromCorrespondingPoints(SrcIterator s, SrcIterator send, DestItera
 
     linalg::TemporaryMatrix<double> ret(identityMatrix<double>(3));
 
-    if(size == 1)
+    if (size == 1)
     {
-        ret(0,2) = (*d)[0] - (*s)[0];
-        ret(1,2) = (*d)[1] - (*s)[1];
+        ret(0, 2) = (*d)[0] - (*s)[0];
+        ret(1, 2) = (*d)[1] - (*s)[1];
     }
-    else if(size == 2)
+    else if (size == 2)
     {
-        Matrix<double> m(4,4), r(4,1), so(4,1);
+        Matrix<double> m(4, 4), r(4, 1), so(4, 1);
 
-        for(int k=0; k<size; ++k, ++s, ++d)
+        for (int k = 0; k < size; ++k, ++s, ++d)
         {
-            m(2*k,0) = (*s)[0];
-            m(2*k,1) = -(*s)[1];
-            m(2*k,2) = 1.0;
-            m(2*k,3) = 0.0;
-            r(2*k,0) = (*d)[0];
+            m(2 * k, 0) = (*s)[0];
+            m(2 * k, 1) = -(*s)[1];
+            m(2 * k, 2) = 1.0;
+            m(2 * k, 3) = 0.0;
+            r(2 * k, 0) = (*d)[0];
 
-            m(2*k+1,0) = (*s)[1];
-            m(2*k+1,1) = (*s)[0];
-            m(2*k+1,2) = 0.0;
-            m(2*k+1,3) = 1.0;
-            r(2*k+1,0) = (*d)[1];
+            m(2 * k + 1, 0) = (*s)[1];
+            m(2 * k + 1, 1) = (*s)[0];
+            m(2 * k + 1, 2) = 0.0;
+            m(2 * k + 1, 3) = 1.0;
+            r(2 * k + 1, 0) = (*d)[1];
         }
 
-        if(!linearSolve(m, r, so))
+        if (!linearSolve(m, r, so))
             vigra_fail("affineMatrix2DFromCorrespondingPoints(): singular solution matrix.");
 
-        ret(0,0) = so(0,0);
-        ret(1,1) = so(0,0);
-        ret(0,1) = -so(1,0);
-        ret(1,0) = so(1,0);
-        ret(0,2) = so(2,0);
-        ret(1,2) = so(3,0);
+        ret(0, 0) = so(0, 0);
+        ret(1, 1) = so(0, 0);
+        ret(0, 1) = -so(1, 0);
+        ret(1, 0) = so(1, 0);
+        ret(0, 2) = so(2, 0);
+        ret(1, 2) = so(3, 0);
     }
-    else if(size >= 3)
+    else if (size >= 3)
     {
-        Matrix<double> m(3,3),    rx(3,1), sx(3,1), ry(3,1), sy(3,1), c(3,1);
-        c(2,0) = 1.0;
-        for(int k=0; k<size; ++k, ++s, ++d)
+        Matrix<double> m(3, 3), rx(3, 1), sx(3, 1), ry(3, 1), sy(3, 1), c(3, 1);
+        c(2, 0) = 1.0;
+        for (int k = 0; k < size; ++k, ++s, ++d)
         {
-            c(0,0) = (*s)[0];
-            c(1,0) = (*s)[1];
+            c(0, 0) = (*s)[0];
+            c(1, 0) = (*s)[1];
 
-            m  += outer(c);
-            rx += (*d)[0]*c;
-            ry += (*d)[1]*c;
+            m += outer(c);
+            rx += (*d)[0] * c;
+            ry += (*d)[1] * c;
         }
 
-        if(!linearSolve(m, rx, sx) || !linearSolve(m, ry, sy))
+        if (!linearSolve(m, rx, sx) || !linearSolve(m, ry, sy))
             vigra_fail("affineMatrix2DFromCorrespondingPoints(): singular solution matrix.");
 
-        ret(0,0) = sx(0,0);
-        ret(0,1) = sx(1,0);
-        ret(0,2) = sx(2,0);
-        ret(1,0) = sy(0,0);
-        ret(1,1) = sy(1,0);
-        ret(1,2) = sy(2,0);
+        ret(0, 0) = sx(0, 0);
+        ret(0, 1) = sx(1, 0);
+        ret(0, 2) = sx(2, 0);
+        ret(1, 0) = sy(0, 0);
+        ret(1, 1) = sy(1, 0);
+        ret(1, 2) = sy(2, 0);
     }
 
     return ret;
 }
 
-    /** \brief Option object for affine registration functions.
+/** \brief Option object for affine registration functions.
 
         The template parameter <tt>SPLINEORDER</tt> (default: 2) specifies
         the order of interpolation for the intensities at non-integer image
         coordinates.
     */
-template <int SPLINEORDER = 2>
+template<int SPLINEORDER = 2>
 class AffineMotionEstimationOptions
 {
-  public:
+public:
     double burt_filter_strength;
     int highest_level, iterations_per_level;
     bool use_laplacian_pyramid;
 
     AffineMotionEstimationOptions()
-    : burt_filter_strength(0.4),
-      highest_level(4),
-      iterations_per_level(4),
-      use_laplacian_pyramid(false)
-    {}
+        : burt_filter_strength(0.4),
+          highest_level(4),
+          iterations_per_level(4),
+          use_laplacian_pyramid(false)
+    {
+    }
 
-    template <int ORDER>
-    AffineMotionEstimationOptions(AffineMotionEstimationOptions<ORDER>    const & other)
-    : burt_filter_strength(other.burt_filter_strength),
-      highest_level(other.highest_level),
-      iterations_per_level(other.iterations_per_level),
-      use_laplacian_pyramid(other.use_laplacian_pyramid)
-    {}
+    template<int ORDER>
+    AffineMotionEstimationOptions(AffineMotionEstimationOptions<ORDER> const& other)
+        : burt_filter_strength(other.burt_filter_strength),
+          highest_level(other.highest_level),
+          iterations_per_level(other.iterations_per_level),
+          use_laplacian_pyramid(other.use_laplacian_pyramid)
+    {
+    }
 
-        /** \brief Change the spline order for intensity interpolation.
+    /** \brief Change the spline order for intensity interpolation.
 
             Usage:
             \code
@@ -177,13 +180,13 @@ class AffineMotionEstimationOptions
 
             Default: order = 2 (quadratic interpolation)
         */
-    template <int NEWORDER>
+    template<int NEWORDER>
     AffineMotionEstimationOptions<NEWORDER> splineOrder() const
     {
         return AffineMotionEstimationOptions<NEWORDER>(*this);
     }
 
-        /** \brief Define amount of smoothing before subsampling to the next pyramid level.
+    /** \brief Define amount of smoothing before subsampling to the next pyramid level.
 
             Pyramids are created with the Burt filter:
             \code
@@ -194,206 +197,207 @@ class AffineMotionEstimationOptions
 
             Default: 0.4 (moderate smoothing)
         */
-    AffineMotionEstimationOptions & burtFilterCenterStrength(double center)
+    AffineMotionEstimationOptions& burtFilterCenterStrength(double center)
     {
         vigra_precondition(0.25 <= center && center <= 0.5,
-          "AffineMotionEstimationOptions::burtFilterCenterStrength(): center must be between 0.25 and 0.5 (inclusive).");
+                           "AffineMotionEstimationOptions::burtFilterCenterStrength(): center must be between 0.25 and 0.5 (inclusive).");
         burt_filter_strength = center;
         return *this;
     }
 
-        /** \brief Define the highest level of the image pyramid.
+    /** \brief Define the highest level of the image pyramid.
 
             The original image is at level 0, and each level downsamples
             the image by 1/2.
 
             Default: 4 (16-fold downsampling)
         */
-    AffineMotionEstimationOptions & highestPyramidLevel(unsigned int level)
+    AffineMotionEstimationOptions& highestPyramidLevel(unsigned int level)
     {
         highest_level = (int)level;
         return *this;
     }
 
-        /** \brief Number of Gauss-Newton iterations per level.
+    /** \brief Number of Gauss-Newton iterations per level.
 
             Default: 4
         */
-    AffineMotionEstimationOptions & iterationsPerLevel(unsigned int iter)
+    AffineMotionEstimationOptions& iterationsPerLevel(unsigned int iter)
     {
         vigra_precondition(0 < iter,
-          "AffineMotionEstimationOptions::iterationsPerLevel(): must do at least one iteration per level.");
+                           "AffineMotionEstimationOptions::iterationsPerLevel(): must do at least one iteration per level.");
         iterations_per_level = (int)iter;
         return *this;
     }
 
-        /** \brief Base registration on a Gaussian pyramid.
+    /** \brief Base registration on a Gaussian pyramid.
 
             Images are registered such that the similarity in intensity is
             maximized.
 
             Default: true
         */
-    AffineMotionEstimationOptions & useGaussianPyramid(bool f = true)
+    AffineMotionEstimationOptions& useGaussianPyramid(bool f = true)
     {
         use_laplacian_pyramid = !f;
         return *this;
     }
 
-        /** \brief Base registration on a Laplacian pyramid.
+    /** \brief Base registration on a Laplacian pyramid.
 
             Images are registered such that the similarity in second
             derivatives (=Laplacian operator results) is maximized.
 
             Default: false
         */
-    AffineMotionEstimationOptions & useLaplacianPyramid(bool f = true)
+    AffineMotionEstimationOptions& useLaplacianPyramid(bool f = true)
     {
         use_laplacian_pyramid = f;
         return *this;
     }
 };
 
-namespace detail {
+namespace detail
+{
 
 struct TranslationEstimationFunctor
 {
-    template <class SplineImage, class Image>
-    void operator()(SplineImage const & src, Image const & dest, Matrix<double> & matrix) const
+    template<class SplineImage, class Image>
+    void operator()(SplineImage const& src, Image const& dest, Matrix<double>& matrix) const
     {
         int w = dest.width();
         int h = dest.height();
 
-        Matrix<double> grad(2,1), m(2,2), r(2,1), s(2,1);
-        double dx = matrix(0,0), dy = matrix(1,0);
+        Matrix<double> grad(2, 1), m(2, 2), r(2, 1), s(2, 1);
+        double dx = matrix(0, 0), dy = matrix(1, 0);
 
-        for(int y = 0; y < h; ++y)
+        for (int y = 0; y < h; ++y)
         {
-            double sx = matrix(0,1)*y + matrix(0,2);
-            double sy = matrix(1,1)*y + matrix(1,2);
-            for(int x = 0; x < w; ++x, sx += dx, sy += dy)
+            double sx = matrix(0, 1) * y + matrix(0, 2);
+            double sy = matrix(1, 1) * y + matrix(1, 2);
+            for (int x = 0; x < w; ++x, sx += dx, sy += dy)
             {
-                if(!src.isInside(sx, sy))
+                if (!src.isInside(sx, sy))
                     continue;
 
-                grad(0,0) = src.dx(sx, sy);
-                grad(1,0) = src.dy(sx, sy);
+                grad(0, 0) = src.dx(sx, sy);
+                grad(1, 0) = src.dy(sx, sy);
                 double diff = dest(x, y) - src(sx, sy);
 
                 m += outer(grad);
-                r -= diff*grad;
+                r -= diff * grad;
             }
         }
 
         linearSolve(m, r, s);
 
-        matrix(0,2) -= s(0,0);
-        matrix(1,2) -= s(1,0);
+        matrix(0, 2) -= s(0, 0);
+        matrix(1, 2) -= s(1, 0);
     }
 };
 
 struct SimilarityTransformEstimationFunctor
 {
-    template <class SplineImage, class Image>
-    void operator()(SplineImage const & src, Image const & dest, Matrix<double> & matrix) const
+    template<class SplineImage, class Image>
+    void operator()(SplineImage const& src, Image const& dest, Matrix<double>& matrix) const
     {
         int w = dest.width();
         int h = dest.height();
 
-        Matrix<double> grad(2,1), coord(4, 2), c(4, 1), m(4, 4), r(4,1), s(4,1);
-        coord(0,0) = 1.0;
-        coord(1,1) = 1.0;
-        double dx = matrix(0,0), dy = matrix(1,0);
+        Matrix<double> grad(2, 1), coord(4, 2), c(4, 1), m(4, 4), r(4, 1), s(4, 1);
+        coord(0, 0) = 1.0;
+        coord(1, 1) = 1.0;
+        double dx = matrix(0, 0), dy = matrix(1, 0);
 
-        for(int y = 0; y < h; ++y)
+        for (int y = 0; y < h; ++y)
         {
-            double sx = matrix(0,1)*y + matrix(0,2);
-            double sy = matrix(1,1)*y + matrix(1,2);
-            for(int x = 0; x < w; ++x, sx += dx, sy += dy)
+            double sx = matrix(0, 1) * y + matrix(0, 2);
+            double sy = matrix(1, 1) * y + matrix(1, 2);
+            for (int x = 0; x < w; ++x, sx += dx, sy += dy)
             {
-                if(!src.isInside(sx, sy))
+                if (!src.isInside(sx, sy))
                     continue;
 
-                grad(0,0) = src.dx(sx, sy);
-                grad(1,0) = src.dy(sx, sy);
-                coord(2,0) = (double)x;
-                coord(3,1) = (double)x;
-                coord(3,0) = -(double)y;
-                coord(2,1) = (double)y;
+                grad(0, 0) = src.dx(sx, sy);
+                grad(1, 0) = src.dy(sx, sy);
+                coord(2, 0) = (double)x;
+                coord(3, 1) = (double)x;
+                coord(3, 0) = -(double)y;
+                coord(2, 1) = (double)y;
                 double diff = dest(x, y) - src(sx, sy);
 
                 c = coord * grad;
                 m += outer(c);
-                r -= diff*c;
+                r -= diff * c;
             }
         }
 
         linearSolve(m, r, s);
 
-        matrix(0,2) -= s(0,0);
-        matrix(1,2) -= s(1,0);
-        matrix(0,0) -= s(2,0);
-        matrix(1,1) -= s(2,0);
-        matrix(0,1) += s(3,0);
-        matrix(1,0) -= s(3,0);
+        matrix(0, 2) -= s(0, 0);
+        matrix(1, 2) -= s(1, 0);
+        matrix(0, 0) -= s(2, 0);
+        matrix(1, 1) -= s(2, 0);
+        matrix(0, 1) += s(3, 0);
+        matrix(1, 0) -= s(3, 0);
     }
 };
 
 struct AffineTransformEstimationFunctor
 {
-    template <class SplineImage, class Image>
-    void operator()(SplineImage const & src, Image const & dest, Matrix<double> & matrix) const
+    template<class SplineImage, class Image>
+    void operator()(SplineImage const& src, Image const& dest, Matrix<double>& matrix) const
     {
         int w = dest.width();
         int h = dest.height();
 
-        Matrix<double> grad(2,1), coord(6, 2), c(6, 1), m(6,6), r(6,1), s(6,1);
-        coord(0,0) = 1.0;
-        coord(1,1) = 1.0;
-        double dx = matrix(0,0), dy = matrix(1,0);
+        Matrix<double> grad(2, 1), coord(6, 2), c(6, 1), m(6, 6), r(6, 1), s(6, 1);
+        coord(0, 0) = 1.0;
+        coord(1, 1) = 1.0;
+        double dx = matrix(0, 0), dy = matrix(1, 0);
 
-        for(int y = 0; y < h; ++y)
+        for (int y = 0; y < h; ++y)
         {
-            double sx = matrix(0,1)*y + matrix(0,2);
-            double sy = matrix(1,1)*y + matrix(1,2);
-            for(int x = 0; x < w; ++x, sx += dx, sy += dy)
+            double sx = matrix(0, 1) * y + matrix(0, 2);
+            double sy = matrix(1, 1) * y + matrix(1, 2);
+            for (int x = 0; x < w; ++x, sx += dx, sy += dy)
             {
-                if(!src.isInside(sx, sy))
+                if (!src.isInside(sx, sy))
                     continue;
 
-                grad(0,0) = src.dx(sx, sy);
-                grad(1,0) = src.dy(sx, sy);
-                coord(2,0) = (double)x;
-                coord(4,1) = (double)x;
-                coord(3,0) = (double)y;
-                coord(5,1) = (double)y;
+                grad(0, 0) = src.dx(sx, sy);
+                grad(1, 0) = src.dy(sx, sy);
+                coord(2, 0) = (double)x;
+                coord(4, 1) = (double)x;
+                coord(3, 0) = (double)y;
+                coord(5, 1) = (double)y;
                 double diff = dest(x, y) - src(sx, sy);
 
                 c = coord * grad;
                 m += outer(c);
-                r -= diff*c;
+                r -= diff * c;
             }
         }
 
         linearSolve(m, r, s);
 
-        matrix(0,2) -= s(0,0);
-        matrix(1,2) -= s(1,0);
-        matrix(0,0) -= s(2,0);
-        matrix(0,1) -= s(3,0);
-        matrix(1,0) -= s(4,0);
-        matrix(1,1) -= s(5,0);
+        matrix(0, 2) -= s(0, 0);
+        matrix(1, 2) -= s(1, 0);
+        matrix(0, 0) -= s(2, 0);
+        matrix(0, 1) -= s(3, 0);
+        matrix(1, 0) -= s(4, 0);
+        matrix(1, 1) -= s(5, 0);
     }
 };
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          int SPLINEORDER, class Functor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         int SPLINEORDER, class Functor>
 void
 estimateAffineMotionImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                          DestIterator dul, DestIterator dlr, DestAccessor dest,
-                         Matrix<double> & affineMatrix,
-                         AffineMotionEstimationOptions<SPLINEORDER> const & options,
+                         Matrix<double>& affineMatrix,
+                         AffineMotionEstimationOptions<SPLINEORDER> const& options,
                          Functor motionModel)
 {
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote STmpType;
@@ -405,7 +409,7 @@ estimateAffineMotionImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     ImagePyramid<STmpImage> srcPyramid(0, toplevel, sul, slr, src);
     ImagePyramid<DTmpImage> destPyramid(0, toplevel, dul, dlr, dest);
 
-    if(options.use_laplacian_pyramid)
+    if (options.use_laplacian_pyramid)
     {
         pyramidReduceBurtLaplacian(srcPyramid, 0, toplevel, options.burt_filter_strength);
         pyramidReduceBurtLaplacian(destPyramid, 0, toplevel, options.burt_filter_strength);
@@ -416,25 +420,25 @@ estimateAffineMotionImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
         pyramidReduceBurtFilter(destPyramid, 0, toplevel, options.burt_filter_strength);
     }
 
-    Matrix<double> currentMatrix(affineMatrix(2,2) == 0.0
-                                    ? identityMatrix<double>(3)
-                                    : affineMatrix);
-    currentMatrix(0,2) /= std::pow(2.0, toplevel);
-    currentMatrix(1,2) /= std::pow(2.0, toplevel);
+    Matrix<double> currentMatrix(affineMatrix(2, 2) == 0.0
+                                     ? identityMatrix<double>(3)
+                                     : affineMatrix);
+    currentMatrix(0, 2) /= std::pow(2.0, toplevel);
+    currentMatrix(1, 2) /= std::pow(2.0, toplevel);
 
-    for(int level = toplevel; level >= 0; --level)
+    for (int level = toplevel; level >= 0; --level)
     {
         SplineImageView<SPLINEORDER, STmpType> sp(srcImageRange(srcPyramid[level]));
 
-        for(int iter = 0; iter < options.iterations_per_level; ++iter)
+        for (int iter = 0; iter < options.iterations_per_level; ++iter)
         {
             motionModel(sp, destPyramid[level], currentMatrix);
         }
 
-        if(level > 0)
+        if (level > 0)
         {
-            currentMatrix(0,2) *= 2.0;
-            currentMatrix(1,2) *= 2.0;
+            currentMatrix(0, 2) *= 2.0;
+            currentMatrix(1, 2) *= 2.0;
         }
     }
 
@@ -505,75 +509,74 @@ estimateAffineMotionImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void estimateTranslation)
+doxygen_overloaded_function(template<...> void estimateTranslation)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          int SPLINEORDER>
-inline void
-estimateTranslation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                    DestIterator dul, DestIterator dlr, DestAccessor dest,
-                    Matrix<double> & affineMatrix,
-                    AffineMotionEstimationOptions<SPLINEORDER> const & options)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor,
+             int SPLINEORDER>
+    inline void estimateTranslation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                    DestIterator dul, DestIterator dlr, DestAccessor dest,
+                                    Matrix<double>& affineMatrix,
+                                    AffineMotionEstimationOptions<SPLINEORDER> const& options)
 {
     detail::estimateAffineMotionImpl(sul, slr, src, dul, dlr, dest, affineMatrix,
                                      options, detail::TranslationEstimationFunctor());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 estimateTranslation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                     DestIterator dul, DestIterator dlr, DestAccessor dest,
-                    Matrix<double> & affineMatrix)
+                    Matrix<double>& affineMatrix)
 {
     estimateTranslation(sul, slr, src, dul, dlr, dest,
                         affineMatrix, AffineMotionEstimationOptions<>());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          int SPLINEORDER>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         int SPLINEORDER>
 inline void
 estimateTranslation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     triple<DestIterator, DestIterator, DestAccessor> dest,
-                    Matrix<double> & affineMatrix,
-                    AffineMotionEstimationOptions<SPLINEORDER> const & options)
+                    Matrix<double>& affineMatrix,
+                    AffineMotionEstimationOptions<SPLINEORDER> const& options)
 {
     estimateTranslation(src.first, src.second, src.third, dest.first, dest.second, dest.third,
                         affineMatrix, options);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 estimateTranslation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     triple<DestIterator, DestIterator, DestAccessor> dest,
-                    Matrix<double> & affineMatrix)
+                    Matrix<double>& affineMatrix)
 {
     estimateTranslation(src.first, src.second, src.third, dest.first, dest.second, dest.third,
                         affineMatrix, AffineMotionEstimationOptions<>());
 }
 
-template <class T1, class S1,
-          class T2, class S2,
-          int SPLINEORDER>
+template<class T1, class S1,
+         class T2, class S2,
+         int SPLINEORDER>
 inline void
-estimateTranslation(MultiArrayView<2, T1, S1> const & src,
-                    MultiArrayView<2, T2, S2> dest,
-                    Matrix<double> & affineMatrix,
-                    AffineMotionEstimationOptions<SPLINEORDER> const & options)
+    estimateTranslation(MultiArrayView<2, T1, S1> const& src,
+                        MultiArrayView<2, T2, S2> dest,
+                        Matrix<double>& affineMatrix,
+                        AffineMotionEstimationOptions<SPLINEORDER> const& options)
 {
     estimateTranslation(srcImageRange(src), destImageRange(dest),
                         affineMatrix, options);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-estimateTranslation(MultiArrayView<2, T1, S1> const & src,
-                    MultiArrayView<2, T2, S2> dest,
-                    Matrix<double> & affineMatrix)
+    estimateTranslation(MultiArrayView<2, T1, S1> const& src,
+                        MultiArrayView<2, T2, S2> dest,
+                        Matrix<double>& affineMatrix)
 {
     estimateTranslation(srcImageRange(src), destImageRange(dest),
                         affineMatrix, AffineMotionEstimationOptions<>());
@@ -643,75 +646,74 @@ estimateTranslation(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void estimateSimilarityTransform)
+doxygen_overloaded_function(template<...> void estimateSimilarityTransform)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          int SPLINEORDER>
-inline void
-estimateSimilarityTransform(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                            DestIterator dul, DestIterator dlr, DestAccessor dest,
-                            Matrix<double> & affineMatrix,
-                            AffineMotionEstimationOptions<SPLINEORDER> const & options)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor,
+             int SPLINEORDER>
+    inline void estimateSimilarityTransform(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                            DestIterator dul, DestIterator dlr, DestAccessor dest,
+                                            Matrix<double>& affineMatrix,
+                                            AffineMotionEstimationOptions<SPLINEORDER> const& options)
 {
     detail::estimateAffineMotionImpl(sul, slr, src, dul, dlr, dest, affineMatrix,
                                      options, detail::SimilarityTransformEstimationFunctor());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 estimateSimilarityTransform(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                             DestIterator dul, DestIterator dlr, DestAccessor dest,
-                            Matrix<double> & affineMatrix)
+                            Matrix<double>& affineMatrix)
 {
     estimateSimilarityTransform(sul, slr, src, dul, dlr, dest,
                                 affineMatrix, AffineMotionEstimationOptions<>());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          int SPLINEORDER>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         int SPLINEORDER>
 inline void
 estimateSimilarityTransform(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             triple<DestIterator, DestIterator, DestAccessor> dest,
-                            Matrix<double> & affineMatrix,
-                            AffineMotionEstimationOptions<SPLINEORDER> const & options)
+                            Matrix<double>& affineMatrix,
+                            AffineMotionEstimationOptions<SPLINEORDER> const& options)
 {
     estimateSimilarityTransform(src.first, src.second, src.third, dest.first, dest.second, dest.third,
                                 affineMatrix, options);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 estimateSimilarityTransform(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             triple<DestIterator, DestIterator, DestAccessor> dest,
-                            Matrix<double> & affineMatrix)
+                            Matrix<double>& affineMatrix)
 {
     estimateSimilarityTransform(src.first, src.second, src.third, dest.first, dest.second, dest.third,
                                 affineMatrix, AffineMotionEstimationOptions<>());
 }
 
-template <class T1, class S1,
-          class T2, class S2,
-          int SPLINEORDER>
+template<class T1, class S1,
+         class T2, class S2,
+         int SPLINEORDER>
 inline void
-estimateSimilarityTransform(MultiArrayView<2, T1, S1> const & src,
-                            MultiArrayView<2, T2, S2> dest,
-                            Matrix<double> & affineMatrix,
-                            AffineMotionEstimationOptions<SPLINEORDER> const & options)
+    estimateSimilarityTransform(MultiArrayView<2, T1, S1> const& src,
+                                MultiArrayView<2, T2, S2> dest,
+                                Matrix<double>& affineMatrix,
+                                AffineMotionEstimationOptions<SPLINEORDER> const& options)
 {
     estimateSimilarityTransform(srcImageRange(src), destImageRange(dest),
                                 affineMatrix, options);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-estimateSimilarityTransform(MultiArrayView<2, T1, S1> const & src,
-                            MultiArrayView<2, T2, S2> dest,
-                            Matrix<double> & affineMatrix)
+    estimateSimilarityTransform(MultiArrayView<2, T1, S1> const& src,
+                                MultiArrayView<2, T2, S2> dest,
+                                Matrix<double>& affineMatrix)
 {
     estimateSimilarityTransform(srcImageRange(src), destImageRange(dest),
                                 affineMatrix, AffineMotionEstimationOptions<>());
@@ -810,80 +812,79 @@ estimateSimilarityTransform(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void estimateAffineTransform)
+doxygen_overloaded_function(template<...> void estimateAffineTransform)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          int SPLINEORDER>
-inline void
-estimateAffineTransform(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                        DestIterator dul, DestIterator dlr, DestAccessor dest,
-                        Matrix<double> & affineMatrix,
-                        AffineMotionEstimationOptions<SPLINEORDER> const & options)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor,
+             int SPLINEORDER>
+    inline void estimateAffineTransform(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                        DestIterator dul, DestIterator dlr, DestAccessor dest,
+                                        Matrix<double>& affineMatrix,
+                                        AffineMotionEstimationOptions<SPLINEORDER> const& options)
 {
     detail::estimateAffineMotionImpl(sul, slr, src, dul, dlr, dest, affineMatrix,
                                      options, detail::AffineTransformEstimationFunctor());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 estimateAffineTransform(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                         DestIterator dul, DestIterator dlr, DestAccessor dest,
-                        Matrix<double> & affineMatrix)
+                        Matrix<double>& affineMatrix)
 {
     estimateAffineTransform(sul, slr, src, dul, dlr, dest,
                             affineMatrix, AffineMotionEstimationOptions<>());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          int SPLINEORDER>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         int SPLINEORDER>
 inline void
 estimateAffineTransform(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         triple<DestIterator, DestIterator, DestAccessor> dest,
-                        Matrix<double> & affineMatrix,
-                        AffineMotionEstimationOptions<SPLINEORDER> const & options)
+                        Matrix<double>& affineMatrix,
+                        AffineMotionEstimationOptions<SPLINEORDER> const& options)
 {
     estimateAffineTransform(src.first, src.second, src.third, dest.first, dest.second, dest.third,
                             affineMatrix, options);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 estimateAffineTransform(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         triple<DestIterator, DestIterator, DestAccessor> dest,
-                        Matrix<double> & affineMatrix)
+                        Matrix<double>& affineMatrix)
 {
     estimateAffineTransform(src.first, src.second, src.third, dest.first, dest.second, dest.third,
                             affineMatrix, AffineMotionEstimationOptions<>());
 }
 
-template <class T1, class S1,
-          class T2, class S2,
-          int SPLINEORDER>
+template<class T1, class S1,
+         class T2, class S2,
+         int SPLINEORDER>
 inline void
-estimateAffineTransform(MultiArrayView<2, T1, S1> const & src,
-                        MultiArrayView<2, T2, S2> dest,
-                        Matrix<double> & affineMatrix,
-                        AffineMotionEstimationOptions<SPLINEORDER> const & options)
+    estimateAffineTransform(MultiArrayView<2, T1, S1> const& src,
+                            MultiArrayView<2, T2, S2> dest,
+                            Matrix<double>& affineMatrix,
+                            AffineMotionEstimationOptions<SPLINEORDER> const& options)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "estimateAffineTransform(): shape mismatch between input and output.");
+                       "estimateAffineTransform(): shape mismatch between input and output.");
     estimateAffineTransform(srcImageRange(src), destImageRange(dest),
                             affineMatrix, options);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-estimateAffineTransform(MultiArrayView<2, T1, S1> const & src,
-                        MultiArrayView<2, T2, S2> dest,
-                        Matrix<double> & affineMatrix)
+    estimateAffineTransform(MultiArrayView<2, T1, S1> const& src,
+                            MultiArrayView<2, T2, S2> dest,
+                            Matrix<double>& affineMatrix)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "estimateAffineTransform(): shape mismatch between input and output.");
+                       "estimateAffineTransform(): shape mismatch between input and output.");
     estimateAffineTransform(srcImageRange(src), destImageRange(dest),
                             affineMatrix, AffineMotionEstimationOptions<>());
 }

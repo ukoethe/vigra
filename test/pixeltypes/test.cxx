@@ -33,24 +33,24 @@
 /*                                                                      */
 /************************************************************************/
 
-#include <iostream>
-#include <sstream>
-#include <iterator>
 #include "vigra/unittest.hxx"
+#include <iostream>
+#include <iterator>
+#include <sstream>
 
 #include "vigra/accessor.hxx"
-#include "vigra/tinyvector.hxx"
-#include "vigra/rgbvalue.hxx"
-#include "vigra/diff2d.hxx"
-#include "vigra/box.hxx"
 #include "vigra/algorithm.hxx"
+#include "vigra/box.hxx"
+#include "vigra/diff2d.hxx"
+#include "vigra/rgbvalue.hxx"
+#include "vigra/tinyvector.hxx"
 
 using namespace vigra;
 
-static float di[] = {1, 2, 4, 5, 8, 10 };
-static float df[] = {1.2f, 2.4f, 3.6f, 4.8f, 8.1f, 9.7f };
+static float di[] = {1, 2, 4, 5, 8, 10};
+static float df[] = {1.2f, 2.4f, 3.6f, 4.8f, 8.1f, 9.7f};
 
-template <class BVector, class IVector, class FVector, int SIZE>
+template<class BVector, class IVector, class FVector, int SIZE>
 struct TinyVectorTest
 {
     typedef BVector BV;
@@ -61,52 +61,52 @@ struct TinyVectorTest
     IV iv0, iv1, iv3;
     FV fv0, fv1, fv3;
 
-    template <class VECTOR>
-    void printVector(VECTOR const & v)
+    template<class VECTOR>
+    void printVector(VECTOR const& v)
     {
         std::cerr << "(";
-        for(unsigned int i=0; i<v.size(); ++i)
+        for (unsigned int i = 0; i < v.size(); ++i)
             std::cerr << (float)v[i] << ", ";
         std::cerr << ")\n";
     }
 
-    template <class VECTOR, class VALUE>
-    bool equalValue(VECTOR const & v, VALUE const & vv)
+    template<class VECTOR, class VALUE>
+    bool equalValue(VECTOR const& v, VALUE const& vv)
     {
-        for(unsigned int i=0; i<v.size(); ++i)
-            if(v[i] != vv)
+        for (unsigned int i = 0; i < v.size(); ++i)
+            if (v[i] != vv)
                 return false;
         return true;
     }
 
-    template <class VECTOR1, class VECTOR2>
-    bool equalVector(VECTOR1 const & v1, VECTOR2 const & v2)
+    template<class VECTOR1, class VECTOR2>
+    bool equalVector(VECTOR1 const& v1, VECTOR2 const& v2)
     {
-        for(unsigned int i=0; i<v1.size(); ++i)
-            if(v1[i] != v2[i])
+        for (unsigned int i = 0; i < v1.size(); ++i)
+            if (v1[i] != v2[i])
                 return false;
         return true;
     }
 
-    template <class ITER1, class ITER2>
+    template<class ITER1, class ITER2>
     bool equalIter(ITER1 i1, ITER1 i1end, ITER2 i2)
     {
-        if(i1end - i1 != SIZE)
+        if (i1end - i1 != SIZE)
             return false;
-        for(; i1<i1end; ++i1, ++i2)
-            if(*i1 != *i2)
+        for (; i1 < i1end; ++i1, ++i2)
+            if (*i1 != *i2)
                 return false;
         return true;
     }
 
     TinyVectorTest()
-    : bv0((unsigned char)0), bv1((unsigned char)1), bv3(),
-      iv0(0), iv1(1), iv3(),
-      fv0(0.0), fv1(1.0), fv3()
+        : bv0((unsigned char)0), bv1((unsigned char)1), bv3(),
+          iv0(0), iv1(1), iv3(),
+          fv0(0.0), fv1(1.0), fv3()
     {
-        bv3.init(df, df+SIZE); // check that float inputs are correctly rounded
-        iv3.init(di, di+SIZE);
-        fv3.init(df, df+SIZE);
+        bv3.init(df, df + SIZE); // check that float inputs are correctly rounded
+        iv3.init(di, di + SIZE);
+        fv3.init(df, df + SIZE);
     }
 
     void testConstruction()
@@ -161,18 +161,18 @@ struct TinyVectorTest
         shouldEqual(fv5[2], fv3[2]);
         shouldEqual(fv5[3], SIZE <= 3 ? 0.0 : fv3[3]);
         shouldEqual(fv5[4], SIZE <= 4 ? 0.0 : fv3[4]);
-        
-        shouldEqual(iv3, (iv3.template subarray<0,SIZE>()));
-        shouldEqual(2, (iv3.template subarray<0,2>().size()));
-        shouldEqual(iv3[0], (iv3.template subarray<0,2>()[0]));
-        shouldEqual(iv3[1], (iv3.template subarray<0,2>()[1]));
-        shouldEqual(2, (iv3.template subarray<1,3>().size()));
-        shouldEqual(iv3[1], (iv3.template subarray<1,3>()[0]));
-        shouldEqual(iv3[2], (iv3.template subarray<1,3>()[1]));
-        shouldEqual(1, (iv3.template subarray<1,2>().size()));
-        shouldEqual(iv3[1], (iv3.template subarray<1,2>()[0]));
-        
-        for(int k=0; k<SIZE; ++k)
+
+        shouldEqual(iv3, (iv3.template subarray<0, SIZE>()));
+        shouldEqual(2, (iv3.template subarray<0, 2>().size()));
+        shouldEqual(iv3[0], (iv3.template subarray<0, 2>()[0]));
+        shouldEqual(iv3[1], (iv3.template subarray<0, 2>()[1]));
+        shouldEqual(2, (iv3.template subarray<1, 3>().size()));
+        shouldEqual(iv3[1], (iv3.template subarray<1, 3>()[0]));
+        shouldEqual(iv3[2], (iv3.template subarray<1, 3>()[1]));
+        shouldEqual(1, (iv3.template subarray<1, 2>().size()));
+        shouldEqual(iv3[1], (iv3.template subarray<1, 2>()[0]));
+
+        for (int k = 0; k < SIZE; ++k)
         {
             IV iv = IV::unitVector(k);
             shouldEqual(iv[k], 1);
@@ -193,15 +193,15 @@ struct TinyVectorTest
         shouldEqual(seq, seq_ref);
 
         IV r = reverse(iv3);
-        for(int k=0; k<SIZE; ++k)
-            shouldEqual(iv3[k], r[SIZE-1-k]);
+        for (int k = 0; k < SIZE; ++k)
+            shouldEqual(iv3[k], r[SIZE - 1 - k]);
 
-        shouldEqual(transpose(r, IV::linearSequence(SIZE-1, -1)), iv3);
+        shouldEqual(transpose(r, IV::linearSequence(SIZE - 1, -1)), iv3);
 
-        typedef TinyVector<typename FV::value_type, SIZE-1> FV1;
+        typedef TinyVector<typename FV::value_type, SIZE - 1> FV1;
         FV1 fv10(fv3.begin());
-        shouldEqual(fv10, fv3.dropIndex(SIZE-1));
-        FV1 fv11(fv3.begin()+1);
+        shouldEqual(fv10, fv3.dropIndex(SIZE - 1));
+        FV1 fv11(fv3.begin() + 1);
         shouldEqual(fv11, fv3.dropIndex(0));
     }
 
@@ -235,22 +235,28 @@ struct TinyVectorTest
         should(!allGreaterEqual(bv1, bv3));
 
         should(closeAtTolerance(fv3, fv3));
-        
+
         should(!bv0.any() && !bv0.all() && bv1.any() && bv1.all());
         should(!iv0.any() && !iv0.all() && iv1.any() && iv1.all());
         should(!fv0.any() && !fv0.all() && fv1.any() && fv1.all());
         IV iv;
-        iv = IV(); iv[0] = 1;
+        iv = IV();
+        iv[0] = 1;
         should(iv.any() && !iv.all());
-        iv = IV(); iv[1] = 1;
+        iv = IV();
+        iv[1] = 1;
         should(iv.any() && !iv.all());
-        iv = IV(); iv[SIZE-1] = 1;
+        iv = IV();
+        iv[SIZE - 1] = 1;
         should(iv.any() && !iv.all());
-        iv = IV(1); iv[0] = 0;
+        iv = IV(1);
+        iv[0] = 0;
         should(iv.any() && !iv.all());
-        iv = IV(1); iv[1] = 0;
+        iv = IV(1);
+        iv[1] = 0;
         should(iv.any() && !iv.all());
-        iv = IV(1); iv[SIZE-1] = 0;
+        iv = IV(1);
+        iv[SIZE - 1] = 0;
         should(iv.any() && !iv.all());
     }
 
@@ -259,8 +265,8 @@ struct TinyVectorTest
         IV ivm3 = -iv3;
         FV fvm3 = -fv3;
 
-        int mi[] = { -1, -2, -4, -5, -8, -10};
-        float mf[] = { -1.2f, -2.4f, -3.6f, -4.8f, -8.1f, -9.7f };
+        int mi[] = {-1, -2, -4, -5, -8, -10};
+        float mf[] = {-1.2f, -2.4f, -3.6f, -4.8f, -8.1f, -9.7f};
 
         should(equalIter(ivm3.begin(), ivm3.end(), mi));
         should(equalIter(fvm3.begin(), fvm3.end(), mf));
@@ -270,9 +276,9 @@ struct TinyVectorTest
         should(equalVector(iv3, iva3));
         should(equalVector(fv3, fva3));
 
-        int fmi[] = { -2, -3, -4, -5, -9, -10 };
-        int fpi[] = { 1, 2, 3, 4, 8, 9 };
-        int ri[] = { 1, 2, 4, 5, 8, 10};
+        int fmi[] = {-2, -3, -4, -5, -9, -10};
+        int fpi[] = {1, 2, 3, 4, 8, 9};
+        int ri[] = {1, 2, 4, 5, 8, 10};
         IV ivi3 = floor(fvm3);
         should(equalIter(ivi3.begin(), ivi3.end(), fmi));
         ivi3 = -ceil(fv3);
@@ -301,9 +307,9 @@ struct TinyVectorTest
         should(iv1.squaredMagnitude() == SIZE);
         should(fv1.squaredMagnitude() == (float)SIZE);
 
-        float expectedSM = 1.2f*1.2f + 2.4f*2.4f + 3.6f*3.6f;
-        if(SIZE == 6)
-            expectedSM += 4.8f*4.8f + 8.1f*8.1f + 9.7f*9.7f;
+        float expectedSM = 1.2f * 1.2f + 2.4f * 2.4f + 3.6f * 3.6f;
+        if (SIZE == 6)
+            expectedSM += 4.8f * 4.8f + 8.1f * 8.1f + 9.7f * 9.7f;
         shouldEqualTolerance(fv3.squaredMagnitude(), expectedSM, 1e-7f);
 
         shouldEqual(dot(bv3, bv3), bv3.squaredMagnitude());
@@ -319,23 +325,26 @@ struct TinyVectorTest
         shouldEqual(norm(fv3), fv3.magnitude());
 
         TinyVector<IV, 3> ivv(iv3, iv3, iv3);
-        shouldEqual(squaredNorm(ivv), 3*squaredNorm(iv3));
-        shouldEqual(norm(ivv), std::sqrt(3.0*squaredNorm(iv3)));
+        shouldEqual(squaredNorm(ivv), 3 * squaredNorm(iv3));
+        shouldEqual(norm(ivv), std::sqrt(3.0 * squaredNorm(iv3)));
 
         shouldEqualTolerance(VIGRA_CSTD::sqrt(
-                (typename NumericTraits<typename BV::value_type>::RealPromote)
-                dot(bv3, bv3)), bv3.magnitude(), 0.0);
+                                 (typename NumericTraits<typename BV::value_type>::RealPromote)
+                                     dot(bv3, bv3)),
+                             bv3.magnitude(), 0.0);
         shouldEqualTolerance(VIGRA_CSTD::sqrt(
-                (typename NumericTraits<typename IV::value_type>::RealPromote)
-                dot(iv3, bv3)), iv3.magnitude(), 0.0);
+                                 (typename NumericTraits<typename IV::value_type>::RealPromote)
+                                     dot(iv3, bv3)),
+                             iv3.magnitude(), 0.0);
         shouldEqualTolerance(VIGRA_CSTD::sqrt(
-                (typename NumericTraits<typename FV::value_type>::RealPromote)
-                dot(fv3, fv3)), fv3.magnitude(), 0.0f);
+                                 (typename NumericTraits<typename FV::value_type>::RealPromote)
+                                     dot(fv3, fv3)),
+                             fv3.magnitude(), 0.0f);
 
         BV bv = bv3;
         bv[2] = 200;
         int expectedSM2 = 40005;
-        if(SIZE == 6)
+        if (SIZE == 6)
             expectedSM2 += 189;
         should(dot(bv, bv) == expectedSM2);
         should(bv.squaredMagnitude() == expectedSM2);
@@ -346,12 +355,12 @@ struct TinyVectorTest
         should(equalVector(1.0 - bv1, fv0));
         should(equalVector(bv3 - iv3, bv0));
         should(equalVector(fv3 - fv3, fv0));
-        BV bvp = (bv3 + bv3)*0.5;
-        FV fvp = (fv3 + fv3)*0.5;
+        BV bvp = (bv3 + bv3) * 0.5;
+        FV fvp = (fv3 + fv3) * 0.5;
         should(equalVector(bvp, bv3));
         should(equalVector(fvp, fv3));
-        bvp = 2.0*bv3 - bv3;
-        fvp = 2.0*fv3 - fv3;
+        bvp = 2.0 * bv3 - bv3;
+        fvp = 2.0 * fv3 - fv3;
         should(equalVector(bvp, bv3));
         should(equalVector(fvp, fv3));
 
@@ -369,47 +378,47 @@ struct TinyVectorTest
         fvp = fv3 / 2.0;
         float fp1[] = {0.6f, 1.2f, 1.8f, 2.4f, 4.05f, 4.85f};
         should(equalIter(fvp.begin(), fvp.end(), fp1));
-        shouldEqual(2.0 / fv1, 2.0 * fv1);        
+        shouldEqual(2.0 / fv1, 2.0 * fv1);
         float fp2[] = {1.0f, 0.5f, 0.25f, 0.2f, 0.125f, 0.1f};
         fvp = 1.0 / bv3;
         should(equalIter(fvp.begin(), fvp.end(), fp2));
 
-        int ivsq[] = { 1, 4, 16, 25, 64, 100 };
-        ivp = iv3*iv3;
+        int ivsq[] = {1, 4, 16, 25, 64, 100};
+        ivp = iv3 * iv3;
         should(equalIter(ivp.begin(), ivp.end(), ivsq));
         shouldEqual(iv3 * iv1, iv3);
         shouldEqual(iv0 * iv3, iv0);
         shouldEqual(iv3 / iv3, iv1);
         shouldEqual(iv3 % iv3, iv0);
-        shouldEqual(iv3 % (iv3+iv1), iv3);
+        shouldEqual(iv3 % (iv3 + iv1), iv3);
 
-        float minRef[] = { 1.0f, 2.0f, 3.6f, 4.8f, 8.0f, 9.7f };
-        shouldEqualSequence(minRef, minRef+SIZE, min(iv3, fv3).begin());
+        float minRef[] = {1.0f, 2.0f, 3.6f, 4.8f, 8.0f, 9.7f};
+        shouldEqualSequence(minRef, minRef + SIZE, min(iv3, fv3).begin());
         IV ivmin = floor(fv3);
         ivmin[1] = 3;
-        int minRef2[] = { 1, 2, 3, 4, 8, 9 };
-        shouldEqualSequence(minRef2, minRef2+SIZE, min(iv3, ivmin).begin());
+        int minRef2[] = {1, 2, 3, 4, 8, 9};
+        shouldEqualSequence(minRef2, minRef2 + SIZE, min(iv3, ivmin).begin());
         shouldEqual(min(iv3), di[0]);
         shouldEqual(min(fv3), df[0]);
-        shouldEqual(max(iv3), di[SIZE-1]);
-        shouldEqual(max(fv3), df[SIZE-1]);
+        shouldEqual(max(iv3), di[SIZE - 1]);
+        shouldEqual(max(fv3), df[SIZE - 1]);
 
-        float maxRef[] = { 1.2f, 2.4f, 4.0f, 5.0f, 8.1f, 10.0f };
-        shouldEqualSequence(maxRef, maxRef+SIZE, max(iv3, fv3).begin());
+        float maxRef[] = {1.2f, 2.4f, 4.0f, 5.0f, 8.1f, 10.0f};
+        shouldEqualSequence(maxRef, maxRef + SIZE, max(iv3, fv3).begin());
         IV ivmax = floor(fv3);
         ivmax[1] = 3;
-        int maxRef2[] = { 1, 3, 4, 5, 8, 10 };
-        shouldEqualSequence(maxRef2, maxRef2+SIZE, max(iv3, ivmax).begin());
-        
+        int maxRef2[] = {1, 3, 4, 5, 8, 10};
+        shouldEqualSequence(maxRef2, maxRef2 + SIZE, max(iv3, ivmax).begin());
+
         shouldEqual(sum(iv3), SIZE == 3 ? 7 : 30);
         shouldEqual(sum(fv3), SIZE == 3 ? 7.2f : 29.8f);
         shouldEqual(prod(iv3), SIZE == 3 ? 8 : 3200);
         shouldEqual(prod(fv3), SIZE == 3 ? 10.368f : 3910.15f);
 
-        float cumsumRef[] = {1.2f, 3.6f, 7.2f, 12.0f, 20.1f, 29.8f };
-        shouldEqualSequenceTolerance(cumsumRef, cumsumRef+3, cumsum(fv3).begin(), 1e-6);
-        float cumprodRef[] = {1.2f, 2.88f, 10.368f, 49.7664f, 403.108f, 3910.15f };
-        shouldEqualSequenceTolerance(cumprodRef, cumprodRef+3, cumprod(fv3).begin(), 1e-6);
+        float cumsumRef[] = {1.2f, 3.6f, 7.2f, 12.0f, 20.1f, 29.8f};
+        shouldEqualSequenceTolerance(cumsumRef, cumsumRef + 3, cumsum(fv3).begin(), 1e-6);
+        float cumprodRef[] = {1.2f, 2.88f, 10.368f, 49.7664f, 403.108f, 3910.15f};
+        shouldEqualSequenceTolerance(cumprodRef, cumprodRef + 3, cumprod(fv3).begin(), 1e-6);
     }
 
     void testCross()
@@ -437,8 +446,8 @@ struct TinyVectorTest
     void testAccessor()
     {
         vigra::VectorAccessor<FV> v;
-        FV  pfa[] = {fv3, fv1};
-        FV * pf = pfa;
+        FV pfa[] = {fv3, fv1};
+        FV* pf = pfa;
 
         should(v.size(pf) == 3);
         should(v.size(pf, 1) == 3);
@@ -456,17 +465,19 @@ struct TinyVectorTest
 };
 
 struct RGBValueTest
-: public TinyVectorTest<vigra::RGBValue<unsigned char>,
-                        vigra::RGBValue<int>,
-                        vigra::RGBValue<float>, 3>
+    : public TinyVectorTest<vigra::RGBValue<unsigned char>,
+                            vigra::RGBValue<int>,
+                            vigra::RGBValue<float>, 3>
 {
     typedef TinyVectorTest<vigra::RGBValue<unsigned char>,
                            vigra::RGBValue<int>,
-                           vigra::RGBValue<float>, 3> Base;
+                           vigra::RGBValue<float>, 3>
+        Base;
 
     RGBValueTest()
-    : Base()
-    {}
+        : Base()
+    {
+    }
 
 
     void testRGBAccessors()
@@ -478,9 +489,9 @@ struct RGBValueTest
         vigra::RGBToGrayAccessor<FV> gray;
         vigra::GrayToRGBAccessor<FV::value_type> gray2rgb;
 
-        FV pfa[] = { FV(0.0), FV(1.0), FV(2.0)};
-        FV::value_type fa[] = { 0.0, 1.0, 2.0 };
-        FV * pf = pfa;
+        FV pfa[] = {FV(0.0), FV(1.0), FV(2.0)};
+        FV::value_type fa[] = {0.0, 1.0, 2.0};
+        FV* pf = pfa;
 
         shouldEqual(gray2rgb(fa + 1), rgb(pfa + 1));
         shouldEqual(gray2rgb(fa, 2), rgb(pfa, 2));
@@ -525,44 +536,45 @@ struct RGBValueTest
         should(rgb.red(pf, 1) == 10.0);
         should(rgb.green(pf, 1) == 11.0);
         should(rgb.blue(pf, 1) == 12.0);
-        should(vigra::abs(gray(pf, 1) - 10.81) <0.00001);
+        should(vigra::abs(gray(pf, 1) - 10.81) < 0.00001);
     }
-
 };
 
 struct PixelTypesTestSuite
-: public vigra::test_suite
+    : public vigra::test_suite
 {
     typedef TinyVectorTest<vigra::TinyVector<unsigned char, 3>,
                            vigra::TinyVector<int, 3>,
-                           vigra::TinyVector<float, 3>, 3> TinyVectorTests;
+                           vigra::TinyVector<float, 3>, 3>
+        TinyVectorTests;
 
     static const int N = detail::LoopType<1>::MaxUnrollSize + 1;
     typedef TinyVectorTest<vigra::TinyVector<unsigned char, N>,
                            vigra::TinyVector<int, N>,
-                           vigra::TinyVector<float, N>, N> TinyVectorTestsNoUnroll;
+                           vigra::TinyVector<float, N>, N>
+        TinyVectorTestsNoUnroll;
 
     PixelTypesTestSuite()
-    : vigra::test_suite("PixelTypesTest")
+        : vigra::test_suite("PixelTypesTest")
     {
-        add( testCase(&TinyVectorTests::testConstruction));
-        add( testCase(&TinyVectorTests::testComparison));
-        add( testCase(&TinyVectorTests::testArithmetic));
-        add( testCase(&TinyVectorTests::testCross));
-        add( testCase(&TinyVectorTests::testAccessor));
-        add( testCase(&TinyVectorTests::testOStreamShifting));
+        add(testCase(&TinyVectorTests::testConstruction));
+        add(testCase(&TinyVectorTests::testComparison));
+        add(testCase(&TinyVectorTests::testArithmetic));
+        add(testCase(&TinyVectorTests::testCross));
+        add(testCase(&TinyVectorTests::testAccessor));
+        add(testCase(&TinyVectorTests::testOStreamShifting));
 
-        add( testCase(&TinyVectorTestsNoUnroll::testConstruction));
-        add( testCase(&TinyVectorTestsNoUnroll::testComparison));
-        add( testCase(&TinyVectorTestsNoUnroll::testArithmetic));
+        add(testCase(&TinyVectorTestsNoUnroll::testConstruction));
+        add(testCase(&TinyVectorTestsNoUnroll::testComparison));
+        add(testCase(&TinyVectorTestsNoUnroll::testArithmetic));
 
-        add( testCase(&RGBValueTest::testConstruction));
-        add( testCase(&RGBValueTest::testComparison));
-        add( testCase(&RGBValueTest::testArithmetic));
-        add( testCase(&RGBValueTest::testCross));
-        add( testCase(&RGBValueTest::testAccessor));
-        add( testCase(&RGBValueTest::testRGBAccessors));
-        add( testCase(&RGBValueTest::testOStreamShifting));
+        add(testCase(&RGBValueTest::testConstruction));
+        add(testCase(&RGBValueTest::testComparison));
+        add(testCase(&RGBValueTest::testArithmetic));
+        add(testCase(&RGBValueTest::testCross));
+        add(testCase(&RGBValueTest::testAccessor));
+        add(testCase(&RGBValueTest::testRGBAccessors));
+        add(testCase(&RGBValueTest::testOStreamShifting));
     }
 };
 
@@ -574,9 +586,10 @@ struct Point2DTest
     Point2D p55;
 
     Point2DTest()
-    : p11(1, 1),
-      p55(5, 5)
-    {}
+        : p11(1, 1),
+          p55(5, 5)
+    {
+    }
 
     void testOStreamShifting()
     {
@@ -589,17 +602,17 @@ struct Point2DTest
     void testOperations()
     {
         should(-p11 == Point2D(-1, -1));
-        should(p55-p11 == Size2D(4, 4));
-        should(p55-(p55-p11) == p11);
-        should(p55-Diff2D(4, 4) == p11);
+        should(p55 - p11 == Size2D(4, 4));
+        should(p55 - (p55 - p11) == p11);
+        should(p55 - Diff2D(4, 4) == p11);
     }
 };
 
 struct Point2DTestSuite
-: public test_suite
+    : public test_suite
 {
     Point2DTestSuite()
-    : test_suite("Point2DTestSuite")
+        : test_suite("Point2DTestSuite")
     {
         add(testCase(&Point2DTest::testOStreamShifting));
         add(testCase(&Point2DTest::testOperations));
@@ -661,7 +674,7 @@ struct Rect2DTest
         should(!emptyRect.contains(Point2D(2, 1)));
         should(!emptyRect.contains(Point2D(2, 2)));
 
-        should( emptyRect.contains(emptyRect));
+        should(emptyRect.contains(emptyRect));
         should(!emptyRect.contains(rect1_1));
         should(!emptyRect.contains(bigRect));
 
@@ -669,14 +682,14 @@ struct Rect2DTest
         should(!rect1_1.contains(Point2D(0, 1)));
         should(!rect1_1.contains(Point2D(0, 2)));
         should(!rect1_1.contains(Point2D(1, 0)));
-        should( rect1_1.contains(Point2D(1, 1)));
+        should(rect1_1.contains(Point2D(1, 1)));
         should(!rect1_1.contains(Point2D(1, 2)));
         should(!rect1_1.contains(Point2D(2, 0)));
         should(!rect1_1.contains(Point2D(2, 1)));
         should(!rect1_1.contains(Point2D(2, 2)));
 
-        should( rect1_1.contains(emptyRect));
-        should( rect1_1.contains(rect1_1));
+        should(rect1_1.contains(emptyRect));
+        should(rect1_1.contains(rect1_1));
         should(!rect1_1.contains(bigRect));
 
         should(bigRect.contains(Point2D(0, 0)));
@@ -689,9 +702,9 @@ struct Rect2DTest
         should(bigRect.contains(Point2D(2, 1)));
         should(bigRect.contains(Point2D(2, 2)));
 
-        should( bigRect.contains(emptyRect));
-        should( bigRect.contains(rect1_1));
-        should( bigRect.contains(bigRect));
+        should(bigRect.contains(emptyRect));
+        should(bigRect.contains(rect1_1));
+        should(bigRect.contains(bigRect));
     }
 
     void testIntersection()
@@ -700,15 +713,15 @@ struct Rect2DTest
         should(!emptyRect.intersects(rect1_1));
         should(!emptyRect.intersects(bigRect));
         should(!rect1_1.intersects(emptyRect));
-        should( rect1_1.intersects(rect1_1));
-        should( rect1_1.intersects(bigRect));
+        should(rect1_1.intersects(rect1_1));
+        should(rect1_1.intersects(bigRect));
         should(!bigRect.intersects(emptyRect));
-        should( bigRect.intersects(rect1_1));
-        should( bigRect.intersects(bigRect));
+        should(bigRect.intersects(rect1_1));
+        should(bigRect.intersects(bigRect));
 
         should(!bigRect.intersects(Rect2D(Point2D(3, -3), Point2D(3, 3))));
-        should( bigRect.intersects(Rect2D(Point2D(3, -3), Point2D(4, 3))));
-        should( bigRect.intersects(Rect2D(Point2D(3, -3), Point2D(14, 3))));
+        should(bigRect.intersects(Rect2D(Point2D(3, -3), Point2D(4, 3))));
+        should(bigRect.intersects(Rect2D(Point2D(3, -3), Point2D(14, 3))));
 
         should((rect1_1 & emptyRect).isEmpty());
         should(!(rect1_1 & bigRect).isEmpty());
@@ -748,10 +761,10 @@ struct Rect2DTest
 };
 
 struct Rect2DTestSuite
-: public test_suite
+    : public test_suite
 {
     Rect2DTestSuite()
-    : test_suite("Rect2DTestSuite")
+        : test_suite("Rect2DTestSuite")
     {
         add(testCase(&Rect2DTest::testProperties));
         add(testCase(&Rect2DTest::testOStreamShifting));
@@ -816,7 +829,7 @@ struct IBoxTest
         should(!emptyRect.contains(IPoint(2, 1)));
         should(!emptyRect.contains(IPoint(2, 2)));
 
-        should( emptyRect.contains(emptyRect));
+        should(emptyRect.contains(emptyRect));
         should(!emptyRect.contains(rect1_1));
         should(!emptyRect.contains(bigRect));
 
@@ -824,14 +837,14 @@ struct IBoxTest
         should(!rect1_1.contains(IPoint(0, 1)));
         should(!rect1_1.contains(IPoint(0, 2)));
         should(!rect1_1.contains(IPoint(1, 0)));
-        should( rect1_1.contains(IPoint(1, 1)));
+        should(rect1_1.contains(IPoint(1, 1)));
         should(!rect1_1.contains(IPoint(1, 2)));
         should(!rect1_1.contains(IPoint(2, 0)));
         should(!rect1_1.contains(IPoint(2, 1)));
         should(!rect1_1.contains(IPoint(2, 2)));
 
-        should( rect1_1.contains(emptyRect));
-        should( rect1_1.contains(rect1_1));
+        should(rect1_1.contains(emptyRect));
+        should(rect1_1.contains(rect1_1));
         should(!rect1_1.contains(bigRect));
 
         should(bigRect.contains(IPoint(0, 0)));
@@ -844,9 +857,9 @@ struct IBoxTest
         should(bigRect.contains(IPoint(2, 1)));
         should(bigRect.contains(IPoint(2, 2)));
 
-        should( bigRect.contains(emptyRect));
-        should( bigRect.contains(rect1_1));
-        should( bigRect.contains(bigRect));
+        should(bigRect.contains(emptyRect));
+        should(bigRect.contains(rect1_1));
+        should(bigRect.contains(bigRect));
     }
 
     void testIntersection()
@@ -855,15 +868,15 @@ struct IBoxTest
         should(!emptyRect.intersects(rect1_1));
         should(!emptyRect.intersects(bigRect));
         should(!rect1_1.intersects(emptyRect));
-        should( rect1_1.intersects(rect1_1));
-        should( rect1_1.intersects(bigRect));
+        should(rect1_1.intersects(rect1_1));
+        should(rect1_1.intersects(bigRect));
         should(!bigRect.intersects(emptyRect));
-        should( bigRect.intersects(rect1_1));
-        should( bigRect.intersects(bigRect));
+        should(bigRect.intersects(rect1_1));
+        should(bigRect.intersects(bigRect));
 
         should(!bigRect.intersects(IBox(IPoint(3, -3), IPoint(3, 3))));
-        should( bigRect.intersects(IBox(IPoint(3, -3), IPoint(4, 3))));
-        should( bigRect.intersects(IBox(IPoint(3, -3), IPoint(14, 3))));
+        should(bigRect.intersects(IBox(IPoint(3, -3), IPoint(4, 3))));
+        should(bigRect.intersects(IBox(IPoint(3, -3), IPoint(14, 3))));
 
         should((rect1_1 & emptyRect).isEmpty());
         should(!(rect1_1 & bigRect).isEmpty());
@@ -955,7 +968,7 @@ struct FBoxTest
         should(!emptyRect.contains(FPoint(2, 1)));
         should(!emptyRect.contains(FPoint(2, 2)));
 
-        should( emptyRect.contains(emptyRect));
+        should(emptyRect.contains(emptyRect));
         should(!emptyRect.contains(rect1_1));
         should(!emptyRect.contains(bigRect));
 
@@ -963,16 +976,16 @@ struct FBoxTest
         should(!rect1_1.contains(FPoint(0, 1)));
         should(!rect1_1.contains(FPoint(0, 2)));
         should(!rect1_1.contains(FPoint(1, 0)));
-        should( rect1_1.contains(FPoint(1, 1)));
-        should( rect1_1.contains(FPoint(1, 2)));
+        should(rect1_1.contains(FPoint(1, 1)));
+        should(rect1_1.contains(FPoint(1, 2)));
         should(!rect1_1.contains(FPoint(1, 2.1f)));
         should(!rect1_1.contains(FPoint(2, 0)));
-        should( rect1_1.contains(FPoint(2, 1)));
+        should(rect1_1.contains(FPoint(2, 1)));
         should(!rect1_1.contains(FPoint(2.1f, 1)));
-        should( rect1_1.contains(FPoint(2, 2)));
+        should(rect1_1.contains(FPoint(2, 2)));
 
-        should( rect1_1.contains(emptyRect));
-        should( rect1_1.contains(rect1_1));
+        should(rect1_1.contains(emptyRect));
+        should(rect1_1.contains(rect1_1));
         should(!rect1_1.contains(bigRect));
 
         should(bigRect.contains(FPoint(0, 0)));
@@ -985,9 +998,9 @@ struct FBoxTest
         should(bigRect.contains(FPoint(2, 1)));
         should(bigRect.contains(FPoint(2, 2)));
 
-        should( bigRect.contains(emptyRect));
-        should( bigRect.contains(rect1_1));
-        should( bigRect.contains(bigRect));
+        should(bigRect.contains(emptyRect));
+        should(bigRect.contains(rect1_1));
+        should(bigRect.contains(bigRect));
     }
 
     void testIntersection()
@@ -996,14 +1009,14 @@ struct FBoxTest
         should(!emptyRect.intersects(rect1_1));
         should(!emptyRect.intersects(bigRect));
         should(!rect1_1.intersects(emptyRect));
-        should( rect1_1.intersects(rect1_1));
-        should( rect1_1.intersects(bigRect));
+        should(rect1_1.intersects(rect1_1));
+        should(rect1_1.intersects(bigRect));
         should(!bigRect.intersects(emptyRect));
-        should( bigRect.intersects(rect1_1));
-        should( bigRect.intersects(bigRect));
+        should(bigRect.intersects(rect1_1));
+        should(bigRect.intersects(bigRect));
 
-        should( bigRect.intersects(FBox(FPoint(3, -3), FPoint(4, 3))));
-        should( bigRect.intersects(FBox(FPoint(3, -3), FPoint(14, 3))));
+        should(bigRect.intersects(FBox(FPoint(3, -3), FPoint(4, 3))));
+        should(bigRect.intersects(FBox(FPoint(3, -3), FPoint(14, 3))));
 
         should((rect1_1 & emptyRect).isEmpty());
         should(!(rect1_1 & bigRect).isEmpty());
@@ -1046,10 +1059,10 @@ struct FBoxTest
 };
 
 struct BoxTestSuite
-: public test_suite
+    : public test_suite
 {
     BoxTestSuite()
-    : test_suite("BoxTestSuite")
+        : test_suite("BoxTestSuite")
     {
         add(testCase(&IBoxTest::testProperties));
         add(testCase(&IBoxTest::testContains));
@@ -1069,7 +1082,8 @@ struct BoxTestSuite
 
 /********************************************************************/
 
-int main(int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
     PixelTypesTestSuite test;
     int failed = test.run(vigra::testsToBeExecuted(argc, argv));

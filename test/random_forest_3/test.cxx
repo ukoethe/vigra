@@ -32,11 +32,11 @@
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
-#include <vigra/unittest.hxx>
-#include <vigra/random_forest_3.hxx>
 #include <vigra/random.hxx>
+#include <vigra/random_forest_3.hxx>
+#include <vigra/unittest.hxx>
 #ifdef HasHDF5
-    #include <vigra/random_forest_3_hdf5_impex.hxx>
+#include <vigra/random_forest_3_hdf5_impex.hxx>
 #endif
 
 using namespace vigra;
@@ -91,12 +91,10 @@ struct RandomForestTests
         // Check if the given points are predicted correctly.
         double test_x_values[] = {
             0.2, 0.4, 0.2, 0.4, 0.7, 0.8, 0.7, 0.8,
-            0.2, 0.2, 0.7, 0.7, 0.2, 0.2, 0.8, 0.8
-        };
+            0.2, 0.2, 0.7, 0.7, 0.2, 0.2, 0.8, 0.8};
         MultiArray<2, double> test_x(Shape2(8, 2), test_x_values);
         int test_y_values[] = {
-            0, 0, 1, 1, -7, -7, 3, 3
-        };
+            0, 0, 1, 1, -7, -7, 3, 3};
         MultiArray<1, int> test_y(Shape1(8), test_y_values);
         MultiArray<1, int> pred_y(Shape1(8));
         rf.predict(test_x, pred_y, 1);
@@ -110,12 +108,10 @@ struct RandomForestTests
 
         double train_x_values[] = {
             0.2, 0.4, 0.2, 0.4, 0.7, 0.8, 0.7, 0.8,
-            0.2, 0.2, 0.7, 0.7, 0.2, 0.2, 0.8, 0.8
-        };
+            0.2, 0.2, 0.7, 0.7, 0.2, 0.2, 0.8, 0.8};
         Features train_x(Shape2(8, 2), train_x_values);
         int train_y_values[] = {
-            0, 0, 1, 1, -7, -7, 3, 3
-        };
+            0, 0, 1, 1, -7, -7, 3, 3};
         Labels train_y(Shape1(8), train_y_values);
         Features test_x(train_x);
         Labels test_y(train_y);
@@ -127,10 +123,10 @@ struct RandomForestTests
         for (auto split : splits)
         {
             RandomForestOptions const options = RandomForestOptions()
-                                                       .tree_count(1)
-                                                       .bootstrap_sampling(false)
-                                                       .split(split)
-                                                       .n_threads(1);
+                                                    .tree_count(1)
+                                                    .bootstrap_sampling(false)
+                                                    .split(split)
+                                                    .n_threads(1);
             auto rf = random_forest(train_x, train_y, options);
             Labels pred_y(test_y.shape());
             rf.predict(test_x, pred_y, 1);
@@ -145,30 +141,30 @@ struct RandomForestTests
         size_t const ny = 100;
 
         RandomNumberGenerator<MersenneTwister> rand;
-        MultiArray<2, double> train_x(Shape2(nx*ny, 2));
-        MultiArray<1, int> train_y(Shape1(nx*ny));
+        MultiArray<2, double> train_x(Shape2(nx * ny, 2));
+        MultiArray<1, int> train_y(Shape1(nx * ny));
         for (size_t y = 0; y < ny; ++y)
         {
             for (size_t x = 0; x < nx; ++x)
             {
-                train_x(y*nx+x, 0) = x + 2*rand.uniform()-1;
-                train_x(y*nx+x, 1) = y + 2*rand.uniform()-1;
-                if ((x/25+y/25) % 2 == 0)
-                    train_y(y*nx+x) = 0;
+                train_x(y * nx + x, 0) = x + 2 * rand.uniform() - 1;
+                train_x(y * nx + x, 1) = y + 2 * rand.uniform() - 1;
+                if ((x / 25 + y / 25) % 2 == 0)
+                    train_y(y * nx + x) = 0;
                 else
-                    train_y(y*nx+x) = 1;
+                    train_y(y * nx + x) = 1;
             }
         }
 
         RandomForestOptions const options = RandomForestOptions()
-                                                   .tree_count(10)
-                                                   .bootstrap_sampling(true)
-                                                   .n_threads(1);
+                                                .tree_count(10)
+                                                .bootstrap_sampling(true)
+                                                .n_threads(1);
         OOBError oob;
         auto rf = random_forest(train_x, train_y, options, create_visitor(oob));
         should(oob.oob_err_ > 0.02 && oob.oob_err_ < 0.04); // FIXME: Use a statistical approach here.
     }
-    
+
     void test_var_importance_visitor()
     {
         // Create a (noisy) grid with datapoints and split the classes according to an oblique line.
@@ -176,29 +172,29 @@ struct RandomForestTests
         size_t const ny = 20;
 
         RandomNumberGenerator<MersenneTwister> rand;
-        MultiArray<2, double> train_x(Shape2(nx*ny, 2));
-        MultiArray<1, int> train_y(Shape1(nx*ny));
+        MultiArray<2, double> train_x(Shape2(nx * ny, 2));
+        MultiArray<1, int> train_y(Shape1(nx * ny));
         for (size_t y = 0; y < ny; ++y)
         {
             for (size_t x = 0; x < nx; ++x)
             {
-                train_x(y*nx+x, 0) = x + 2*rand.uniform()-1;
-                train_x(y*nx+x, 1) = y + 2*rand.uniform()-1;
-                if (x - nx/2.0 + 4*y - 4*ny/2.0  <  0)
-                    train_y(y*nx+x) = 0;
+                train_x(y * nx + x, 0) = x + 2 * rand.uniform() - 1;
+                train_x(y * nx + x, 1) = y + 2 * rand.uniform() - 1;
+                if (x - nx / 2.0 + 4 * y - 4 * ny / 2.0 < 0)
+                    train_y(y * nx + x) = 0;
                 else
-                    train_y(y*nx+x) = 1;
+                    train_y(y * nx + x) = 1;
             }
         }
 
         RandomForestOptions const options = RandomForestOptions()
-                                                   .tree_count(10)
-                                                   .bootstrap_sampling(true)
-                                                   .n_threads(1);
+                                                .tree_count(10)
+                                                .bootstrap_sampling(true)
+                                                .n_threads(1);
         VariableImportance var_imp;
         auto rf = random_forest(train_x, train_y, options, create_visitor(var_imp));
 
-        // The permutation importances of feature 1 should be about 
+        // The permutation importances of feature 1 should be about
         // 10 times as big as the importances of feature 0.
         for (size_t i = 0; i < 4; ++i)
         {
@@ -221,16 +217,14 @@ struct RandomForestTests
         // points with x>=0.5 and y<0.5 have class 3.
         HDF5File hfile("data/rf.h5", HDF5File::ReadOnly);
         auto rf = random_forest_import_HDF5<Features, Labels>(hfile);
-        
+
         // Create some test data.
         FeatureType test_x_data[] = {
-            0.2f, 0.4f, 0.6f, 0.8f,  0.2f, 0.4f, 0.6f, 0.8f,  0.2f, 0.4f, 0.6f, 0.8f,  0.2f, 0.4f, 0.6f, 0.8f,
-            0.2f, 0.2f, 0.2f, 0.2f,  0.4f, 0.4f, 0.4f, 0.4f,  0.6f, 0.6f, 0.6f, 0.6f,  0.8f, 0.8f, 0.8f, 0.8f
-        };
+            0.2f, 0.4f, 0.6f, 0.8f, 0.2f, 0.4f, 0.6f, 0.8f, 0.2f, 0.4f, 0.6f, 0.8f, 0.2f, 0.4f, 0.6f, 0.8f,
+            0.2f, 0.2f, 0.2f, 0.2f, 0.4f, 0.4f, 0.4f, 0.4f, 0.6f, 0.6f, 0.6f, 0.6f, 0.8f, 0.8f, 0.8f, 0.8f};
         Features test_x(Shape2(16, 2), test_x_data);
         LabelType test_y_data[] = {
-            0, 0, 3, 3,  0, 0, 3, 3,  1, 1, 2, 2,  1, 1, 2, 2
-        };
+            0, 0, 3, 3, 0, 0, 3, 3, 1, 1, 2, 2, 1, 1, 2, 2};
         Labels test_y(Shape1(16), test_y_data);
         Labels pred_y(Shape1(16));
 
@@ -261,8 +255,7 @@ struct RandomForestTests
 struct RandomForestTestSuite : public test_suite
 {
     RandomForestTestSuite()
-        :
-        test_suite("RandomForest test")
+        : test_suite("RandomForest test")
     {
         add(testCase(&RandomForestTests::test_base_class));
         add(testCase(&RandomForestTests::test_default_rf));
@@ -275,7 +268,8 @@ struct RandomForestTestSuite : public test_suite
     }
 };
 
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
     RandomForestTestSuite forest_test;
     int failed = forest_test.run(testsToBeExecuted(argc, argv));

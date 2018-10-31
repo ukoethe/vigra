@@ -33,10 +33,10 @@
 /*                                                                      */
 /************************************************************************/
 
+#include "random_forest_impex.hxx"
 #include <iostream>
 #include <set>
 #include <vigra/matlab.hxx>
-#include "random_forest_impex.hxx"
 
 using namespace vigra;
 using namespace matlab;
@@ -44,44 +44,46 @@ using namespace rf;
 using namespace visitors;
 
 
-void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
+void
+vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
+{
     /* INPUT */
     if (inputs.size() != 2)
         mexErrMsgTxt("Two inputs required.");
 
     // get RF object
-    RandomForest<> rf; 
+    RandomForest<> rf;
     matlab::importRandomForest(rf, matlab::getCellArray(inputs[0]));
 
     // get feature matrix
-    MultiArrayView<2, double> features = inputs.getMultiArray<2, double> ( 1, v_required());
-    if(rf.ext_param_.column_count_ != columnCount(features))
+    MultiArrayView<2, double> features = inputs.getMultiArray<2, double>(1, v_required());
+    if (rf.ext_param_.column_count_ != columnCount(features))
         mexErrMsgTxt("Feature array has wrong number of columns.");
 
     /* OUTPUT */
     MultiArrayView<3, double> probs = outputs.createMultiArray<3, double>(0, v_required(),
-                                                                MultiArrayShape<3>::type(rowCount(features), 
-                                                                                         rf.ext_param_.class_count_, rf.tree_count()));
+                                                                          MultiArrayShape<3>::type(rowCount(features),
+                                                                                                   rf.ext_param_.class_count_, rf.tree_count()));
     ArrayVector<double>::const_iterator weights;
 
     double totalWeight = 0.0;
-    for(int k=0; k< rf.tree_count(); ++k)
-    for(int ii = 0; ii < features.shape(0); ++ii)
-    {
-    //get weights predicted by single tree
-        weights = rf.trees_[k].predict(rowVector(features, ii));
-        for(int jj = 0; jj < rf.ext_param_.class_count_; ++jj)
-          probs(ii, jj, k) = weights[jj] * (*(weights-1)); 
-    }
+    for (int k = 0; k < rf.tree_count(); ++k)
+        for (int ii = 0; ii < features.shape(0); ++ii)
+        {
+            //get weights predicted by single tree
+            weights = rf.trees_[k].predict(rowVector(features, ii));
+            for (int jj = 0; jj < rf.ext_param_.class_count_; ++jj)
+                probs(ii, jj, k) = weights[jj] * (*(weights - 1));
+        }
 }
-
 
 
 
 /***************************************************************************************************
 **         VIGRA GATEWAY                                                                          **
 ****************************************************************************************************/
-inline void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
+inline void
+vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
     vigraMain(outputs, inputs);
 }

@@ -29,14 +29,15 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 #ifndef VIGRA_ITERATORADAPTER_HXX
 #define VIGRA_ITERATORADAPTER_HXX
 
 
-namespace vigra {
+namespace vigra
+{
 
 /********************************************************/
 /*                                                      */
@@ -143,41 +144,42 @@ namespace vigra {
     Namespace: vigra
 
 */
-template <class Policy>
+template<class Policy>
 class IteratorAdaptor
 {
-  public:
-
+public:
     typedef typename Policy::BaseType BaseType;
-    typedef typename Policy::value_type        value_type;
-    typedef typename Policy::difference_type   difference_type;
-    typedef typename Policy::reference         reference;
-    typedef typename Policy::index_reference   index_reference;
-    typedef typename Policy::pointer           pointer;
+    typedef typename Policy::value_type value_type;
+    typedef typename Policy::difference_type difference_type;
+    typedef typename Policy::reference reference;
+    typedef typename Policy::index_reference index_reference;
+    typedef typename Policy::pointer pointer;
     typedef typename Policy::iterator_category iterator_category;
 
     IteratorAdaptor()
-    : adaptee_()
-    {}
+        : adaptee_()
+    {
+    }
 
-        /** Construct from an instance of the policy class' BaseType
+    /** Construct from an instance of the policy class' BaseType
             Note that the functions of the adaptor implement the
             interface of an random access iterator as defined in the
             C++ standard, so there is no need for explicit documentation.
         */
-    explicit IteratorAdaptor(BaseType const & o)
-    : adaptee_(o)
+    explicit IteratorAdaptor(BaseType const& o)
+        : adaptee_(o)
     {
         Policy::initialize(adaptee_);
     }
 
-    IteratorAdaptor(IteratorAdaptor const & o)
-    : adaptee_(o.adaptee_)
-    {}
-
-    IteratorAdaptor & operator=(BaseType const & o)
+    IteratorAdaptor(IteratorAdaptor const& o)
+        : adaptee_(o.adaptee_)
     {
-        if(this != &o)
+    }
+
+    IteratorAdaptor& operator=(BaseType const& o)
+    {
+        if (this != &o)
         {
             adaptee_ = o;
             Policy::initialize(adaptee_);
@@ -185,14 +187,14 @@ class IteratorAdaptor
         return *this;
     }
 
-    IteratorAdaptor & operator=(IteratorAdaptor const & o)
+    IteratorAdaptor& operator=(IteratorAdaptor const& o)
     {
-        if(this != &o)
+        if (this != &o)
             adaptee_ = o.adaptee_;
         return *this;
     }
 
-    IteratorAdaptor & operator+=(difference_type d)
+    IteratorAdaptor& operator+=(difference_type d)
     {
         Policy::advance(adaptee_, d);
         return *this;
@@ -203,7 +205,7 @@ class IteratorAdaptor
         return IteratorAdaptor(*this) += d;
     }
 
-    IteratorAdaptor & operator-=(difference_type d)
+    IteratorAdaptor& operator-=(difference_type d)
     {
         Policy::advance(adaptee_, -d);
         return *this;
@@ -214,7 +216,7 @@ class IteratorAdaptor
         return IteratorAdaptor(*this) -= d;
     }
 
-    IteratorAdaptor & operator++()
+    IteratorAdaptor& operator++()
     {
         Policy::increment(adaptee_);
         return *this;
@@ -227,7 +229,7 @@ class IteratorAdaptor
         return res;
     }
 
-    IteratorAdaptor & operator--()
+    IteratorAdaptor& operator--()
     {
         Policy::decrement(adaptee_);
         return *this;
@@ -240,37 +242,37 @@ class IteratorAdaptor
         return res;
     }
 
-    bool operator==(IteratorAdaptor const & o) const
+    bool operator==(IteratorAdaptor const& o) const
     {
         return Policy::equal(adaptee_, o.adaptee_);
     }
 
-    bool operator!=(IteratorAdaptor const & o) const
+    bool operator!=(IteratorAdaptor const& o) const
     {
         return !Policy::equal(adaptee_, o.adaptee_);
     }
 
-    bool operator<(IteratorAdaptor const & o) const
+    bool operator<(IteratorAdaptor const& o) const
     {
         return Policy::less(adaptee_, o.adaptee_);
     }
 
-    bool operator<=(IteratorAdaptor const & o) const
+    bool operator<=(IteratorAdaptor const& o) const
     {
         return !Policy::less(o.adaptee_, adaptee_);
     }
 
-    bool operator>(IteratorAdaptor const & o) const
+    bool operator>(IteratorAdaptor const& o) const
     {
         return Policy::less(o.adaptee_, adaptee_);
     }
 
-    bool operator>=(IteratorAdaptor const & o) const
+    bool operator>=(IteratorAdaptor const& o) const
     {
         return !Policy::less(adaptee_, o.adaptee_);
     }
 
-    difference_type operator-(IteratorAdaptor const & o) const
+    difference_type operator-(IteratorAdaptor const& o) const
     {
         return Policy::difference(adaptee_, o.adaptee_);
     }
@@ -290,29 +292,15 @@ class IteratorAdaptor
         return &Policy::dereference(adaptee_);
     }
 
-  protected:
-
+protected:
     BaseType adaptee_;
 };
 
 
 
-
-
-
-
-
-namespace detail_iterator_facade{
-
-
-
-
+namespace detail_iterator_facade
+{
 }
-
-
-
-
-
 
 
 

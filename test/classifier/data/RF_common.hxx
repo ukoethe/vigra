@@ -110,62 +110,67 @@ double _statistics[] = {0.347468, 0.00964554,
                         0.176406, 0.00497856,
                         0.0964343, 0.00397317};
 int dataNumFeats[] =
-{
-                            44,
-                             7,
-                             9,
-                            34,
-                             4,
-                            /*16,*/
-                           /*501,*/
-                            /*10,*/
-                            /*10,*/
-                             8,
-                            19,
-                             /*9,*/
-                           /*57,*/
-                            13,
-                            //32
-                             /*8*/
+    {
+        44,
+        7,
+        9,
+        34,
+        4,
+        /*16,*/
+        /*501,*/
+        /*10,*/
+        /*10,*/
+        8,
+        19,
+        /*9,*/
+        /*57,*/
+        13,
+        //32
+        /*8*/
 };
 
 int dataNumSamps[] =
-{
-                              80,
-                             336,
-                             214,
-                             351,
-                             150,
-                           /*20000,*/
-                            /*2000,*/
-                           /*19020,*/
-                            /*5473,*/
-                             768,
-                             210,
-                           /*43500,*/
-                            /*4601,*/
-                             178,
-                             //194
-                            /*1484*/
+    {
+        80,
+        336,
+        214,
+        351,
+        150,
+        /*20000,*/
+        /*2000,*/
+        /*19020,*/
+        /*5473,*/
+        768,
+        210,
+        /*43500,*/
+        /*4601,*/
+        178,
+        //194
+        /*1484*/
 };
 
-struct _twotuple{
+struct _twotuple
+{
     typedef int* type;
     int* classes;
     int sze;
-    int* begin(){
+    int* begin()
+    {
         return classes;
     }
-    int* end(){
-        return classes+sze;
+    int* end()
+    {
+        return classes + sze;
     }
 
-    int size(){
+    int size()
+    {
         return sze;
     }
-    _twotuple(int* a, int s):
-        classes(a),sze(s)
-    {}
+    _twotuple(int* a, int s)
+        : classes(a), sze(s)
+    {
+    }
 };
 
 #endif

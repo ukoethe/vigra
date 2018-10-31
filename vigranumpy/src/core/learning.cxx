@@ -36,13 +36,13 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpylearning_PyArray_API
 // #define NO_IMPORT_ARRAY
 
+#include <boost/python.hpp>
+#include <cmath>
+#include <memory>
+#include <set>
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/unsupervised_decomposition.hxx>
-#include <set>
-#include <cmath>
-#include <memory>
-#include <boost/python.hpp>
 
 namespace python = boost::python;
 namespace vigra
@@ -50,7 +50,7 @@ namespace vigra
 
 template<class U>
 python::tuple
-pythonPCA(NumpyArray<2,U> features, int nComponents)
+    pythonPCA(NumpyArray<2, U> features, int nComponents)
 {
     vigra_precondition(!features.axistags(),
                        "principalComponents(): feature matrix must not have axistags\n"
@@ -68,11 +68,11 @@ pythonPCA(NumpyArray<2,U> features, int nComponents)
 
 template<class U>
 python::tuple
-pythonPLSA(NumpyArray<2,U> features,
-           int nComponents,
-           int nIterations,
-           double minGain,
-           bool normalize)
+    pythonPLSA(NumpyArray<2, U> features,
+               int nComponents,
+               int nIterations,
+               double minGain,
+               bool normalize)
 {
     vigra_precondition(!features.axistags(),
                        "pLSA(): feature matrix must not have axistags\n"
@@ -85,15 +85,14 @@ pythonPLSA(NumpyArray<2,U> features,
         PyAllowThreads _pythread;
         pLSA(features, fz, zv,
              RandomNumberGenerator<>(),
-             PLSAOptions().maximumNumberOfIterations(nIterations)
-                          .minimumRelativeGain(minGain)
-                          .normalizedComponentWeights(normalize));
+             PLSAOptions().maximumNumberOfIterations(nIterations).minimumRelativeGain(minGain).normalizedComponentWeights(normalize));
     }
     return python::make_tuple(fz, zv);
 }
 
 
-void defineUnsupervised()
+void
+defineUnsupervised()
 {
     using namespace python;
 
@@ -133,7 +132,8 @@ void defineUnsupervised()
 void defineRandomForest();
 void defineRandomForestOld();
 
-namespace rf3 {
+namespace rf3
+{
 void exportRandomForest3();
 }
 
@@ -151,5 +151,3 @@ BOOST_PYTHON_MODULE_INIT(learning)
     defineRandomForestOld();
     rf3::exportRandomForest3();
 }
-
-

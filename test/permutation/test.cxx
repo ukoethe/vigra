@@ -37,10 +37,10 @@
 
 #define VIGRA_CHECK_BOUNDS
 
-#include <limits>
 #include <algorithm>
-#include <vigra/unittest.hxx>
+#include <limits>
 #include <vigra/permutation.hxx>
+#include <vigra/unittest.hxx>
 
 
 namespace vigra
@@ -101,7 +101,8 @@ struct PermutationTest
 
 struct PermutationTestSuite : public vigra::test_suite
 {
-    PermutationTestSuite() : vigra::test_suite("PermutationTestSuite")
+    PermutationTestSuite()
+        : vigra::test_suite("PermutationTestSuite")
     {
         add(testCase(&PermutationTest::testN1));
         add(testCase(&PermutationTest::testN2));
@@ -111,7 +112,8 @@ struct PermutationTestSuite : public vigra::test_suite
 
 } // namespace vigra
 
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
     vigra::PermutationTestSuite test;
     const int failed = test.run(vigra::testsToBeExecuted(argc, argv));
@@ -119,4 +121,3 @@ int main(int argc, char** argv)
 
     return failed != 0;
 }
-

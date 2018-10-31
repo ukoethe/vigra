@@ -36,13 +36,14 @@
 #ifndef VIGRA_MULTI_SHAPE_HXX
 #define VIGRA_MULTI_SHAPE_HXX
 
-#include "multi_fwd.hxx"
-#include <sys/types.h>
-#include "tinyvector.hxx"
 #include "array_vector.hxx"
+#include "multi_fwd.hxx"
 #include "numerictraits.hxx"
+#include "tinyvector.hxx"
+#include <sys/types.h>
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup RangesAndPoints
 */
@@ -54,44 +55,47 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-template <class T>
-struct Singleband  // the resulting MultiArray has no explicit channel axis
-                   // (i.e. the number of channels is implicitly one)
+template<class T>
+struct Singleband // the resulting MultiArray has no explicit channel axis
+                  // (i.e. the number of channels is implicitly one)
 {
     typedef T value_type;
 };
 
-template <class T>
-struct Multiband  // the last axis is explicitly designated as channel axis
+template<class T>
+struct Multiband // the last axis is explicitly designated as channel axis
 {
     typedef T value_type;
 };
 
 // check if a type is a multiband type
 template<class T>
-struct IsMultiband : VigraFalseType{
+struct IsMultiband : VigraFalseType
+{
 };
 
 template<class T>
-struct IsMultiband<Multiband<T> > : VigraTrueType{
+struct IsMultiband<Multiband<T>> : VigraTrueType
+{
 };
 
-template <class T>
-struct ChunkedMemory  // the array is organised in chunks
+template<class T>
+struct ChunkedMemory // the array is organised in chunks
 {
     typedef T value_type;
 };
 
 template<class T>
-struct NumericTraits<Singleband<T> >
-: public NumericTraits<T>
-{};
+struct NumericTraits<Singleband<T>>
+    : public NumericTraits<T>
+{
+};
 
 template<class T>
-struct NumericTraits<Multiband<T> >
+struct NumericTraits<Multiband<T>>
 {
     typedef Multiband<T> Type;
-/*
+    /*
     typedef int Promote;
     typedef unsigned int UnsignedPromote;
     typedef double RealPromote;
@@ -104,7 +108,7 @@ struct NumericTraits<Multiband<T> >
     typedef typename NumericTraits<T>::isSigned isSigned;
     typedef typename NumericTraits<T>::isSigned isOrdered;
     typedef typename NumericTraits<T>::isSigned isComplex;
-/*
+    /*
     static signed char zero() { return 0; }
     static signed char one() { return 1; }
     static signed char nonZero() { return 1; }
@@ -135,7 +139,8 @@ struct NumericTraits<Multiband<T> >
 */
 };
 
-namespace detail {
+namespace detail
+{
 
 /********************************************************/
 /*                                                      */
@@ -143,31 +148,31 @@ namespace detail {
 /*                                                      */
 /********************************************************/
 
-    /* generates the stride for a gapless shape.
+/* generates the stride for a gapless shape.
     */
-template <int N>
-inline TinyVector <MultiArrayIndex, N>
-defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
+template<int N>
+inline TinyVector<MultiArrayIndex, N>
+defaultStride(const TinyVector<MultiArrayIndex, N>& shape)
 {
-    TinyVector <MultiArrayIndex, N> ret;
-    ret [0] = 1;
+    TinyVector<MultiArrayIndex, N> ret;
+    ret[0] = 1;
     for (int i = 1; i < (int)N; ++i)
-        ret [i] = ret [i-1] * shape [i-1];
+        ret[i] = ret[i - 1] * shape[i - 1];
     return ret;
 }
 
-    /* generates the stride for a gapless shape.
+/* generates the stride for a gapless shape.
     */
-template <int N>
-inline TinyVector <MultiArrayIndex, N>
-defaultMultibandStride(const TinyVector <MultiArrayIndex, N> &shape)
+template<int N>
+inline TinyVector<MultiArrayIndex, N>
+defaultMultibandStride(const TinyVector<MultiArrayIndex, N>& shape)
 {
-    TinyVector <MultiArrayIndex, N> ret;
-    ret [N-1] = 1;
-    for (int i = 0; i < (int)N-1; ++i)
+    TinyVector<MultiArrayIndex, N> ret;
+    ret[N - 1] = 1;
+    for (int i = 0; i < (int)N - 1; ++i)
     {
         int j = (i + int(N - 1)) % N;
-        ret [i] = ret [j] * shape [j];
+        ret[i] = ret[j] * shape[j];
     }
     return ret;
 }
@@ -178,66 +183,66 @@ defaultMultibandStride(const TinyVector <MultiArrayIndex, N> &shape)
 /*                                                      */
 /********************************************************/
 
-template <class T>
+template<class T>
 struct ResolveMultiband
 {
     typedef T type;
     typedef StridedArrayTag Stride;
     static const bool value = false;
 
-    template <int N>
-    static TinyVector <MultiArrayIndex, N>
-    defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
+    template<int N>
+    static TinyVector<MultiArrayIndex, N>
+    defaultStride(const TinyVector<MultiArrayIndex, N>& shape)
     {
         return vigra::detail::defaultStride(shape);
     }
 };
 
-template <class T>
-struct ResolveMultiband<Singleband<T> >
+template<class T>
+struct ResolveMultiband<Singleband<T>>
 {
     typedef T type;
     typedef StridedArrayTag Stride;
     static const bool value = false;
 
-    template <int N>
-    static TinyVector <MultiArrayIndex, N>
-    defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
+    template<int N>
+    static TinyVector<MultiArrayIndex, N>
+    defaultStride(const TinyVector<MultiArrayIndex, N>& shape)
     {
         return vigra::detail::defaultStride(shape);
     }
 };
 
-template <class T>
-struct ResolveMultiband<Multiband<T> >
+template<class T>
+struct ResolveMultiband<Multiband<T>>
 {
     typedef T type;
     typedef StridedArrayTag Stride;
     static const bool value = true;
 
-    template <int N>
-    static TinyVector <MultiArrayIndex, N>
-    defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
+    template<int N>
+    static TinyVector<MultiArrayIndex, N>
+    defaultStride(const TinyVector<MultiArrayIndex, N>& shape)
     {
         return vigra::detail::defaultMultibandStride(shape);
     }
 };
 
-template <class T>
+template<class T>
 struct ResolveChunkedMemory
 {
     typedef T type;
 };
 
-template <class T>
-struct ResolveChunkedMemory<ChunkedMemory<T> >
+template<class T>
+struct ResolveChunkedMemory<ChunkedMemory<T>>
 {
     typedef T type;
 };
 
 } // namespace detail
 
-    /** Metafucntion to obtain the difference type of all MultiIterator, MultiArrayView, and
+/** Metafucntion to obtain the difference type of all MultiIterator, MultiArrayView, and
         MultiArray variants.
 
         <b>Usage:</b>
@@ -262,11 +267,11 @@ struct ResolveChunkedMemory<ChunkedMemory<T> >
         typedef MultiArrayShape<5>::type Shape5;
         \endcode
     */
-template <unsigned int N>
+template<unsigned int N>
 class MultiArrayShape
 {
-  public:
-        /** The difference type of all MultiIterator, MultiArrayView, and
+public:
+    /** The difference type of all MultiIterator, MultiArrayView, and
             MultiArray variants.
         */
     typedef TinyVector<MultiArrayIndex, N> type;
@@ -287,19 +292,19 @@ namespace detail
 /*                                                      */
 /********************************************************/
 
-template <unsigned int N, class T = int>
+template<unsigned int N, class T = int>
 struct ChunkShape
 {
     typedef typename MultiArrayShape<N>::type Shape;
     static Shape defaultShape()
     {
         Shape res(1);
-        res.template subarray<0,5>() = ChunkShape<5,T>::defaultShape();
+        res.template subarray<0, 5>() = ChunkShape<5, T>::defaultShape();
         return res;
     }
 };
 
-template <class T>
+template<class T>
 struct ChunkShape<0, T>
 {
     static Shape1 defaultShape()
@@ -308,7 +313,7 @@ struct ChunkShape<0, T>
     }
 };
 
-template <class T>
+template<class T>
 struct ChunkShape<1, T>
 {
     static Shape1 defaultShape()
@@ -317,7 +322,7 @@ struct ChunkShape<1, T>
     }
 };
 
-template <class T>
+template<class T>
 struct ChunkShape<2, T>
 {
     static Shape2 defaultShape()
@@ -326,7 +331,7 @@ struct ChunkShape<2, T>
     }
 };
 
-template <class T>
+template<class T>
 struct ChunkShape<3, T>
 {
     static Shape3 defaultShape()
@@ -335,7 +340,7 @@ struct ChunkShape<3, T>
     }
 };
 
-template <class T>
+template<class T>
 struct ChunkShape<4, T>
 {
     static Shape4 defaultShape()
@@ -344,7 +349,7 @@ struct ChunkShape<4, T>
     }
 };
 
-template <class T>
+template<class T>
 struct ChunkShape<5, T>
 {
     static Shape5 defaultShape()
@@ -357,7 +362,8 @@ struct ChunkShape<5, T>
 
 // Helper functions
 
-namespace detail {
+namespace detail
+{
 
 /********************************************************/
 /*                                                      */
@@ -365,29 +371,29 @@ namespace detail {
 /*                                                      */
 /********************************************************/
 
-    /* Convert multi-dimensional index (i.e. a grid coordinate) to scan-order index.
+/* Convert multi-dimensional index (i.e. a grid coordinate) to scan-order index.
     */
-template <int K>
+template<int K>
 struct CoordinateToScanOrder
 {
-    template <int N, class D1, class D2, class D3, class D4>
+    template<int N, class D1, class D2, class D3, class D4>
     static MultiArrayIndex
-    exec(const TinyVectorBase <MultiArrayIndex, N, D1, D2> &shape,
-         const TinyVectorBase <MultiArrayIndex, N, D3, D4> & coordinate)
+    exec(const TinyVectorBase<MultiArrayIndex, N, D1, D2>& shape,
+         const TinyVectorBase<MultiArrayIndex, N, D3, D4>& coordinate)
     {
-        return coordinate[N-K] + shape[N-K] * CoordinateToScanOrder<K-1>::exec(shape, coordinate);
+        return coordinate[N - K] + shape[N - K] * CoordinateToScanOrder<K - 1>::exec(shape, coordinate);
     }
 };
 
-template <>
+template<>
 struct CoordinateToScanOrder<1>
 {
-    template <int N, class D1, class D2, class D3, class D4>
+    template<int N, class D1, class D2, class D3, class D4>
     static MultiArrayIndex
-    exec(const TinyVectorBase <MultiArrayIndex, N, D1, D2> & /*shape*/,
-         const TinyVectorBase <MultiArrayIndex, N, D3, D4> & coordinate)
+    exec(const TinyVectorBase<MultiArrayIndex, N, D1, D2>& /*shape*/,
+         const TinyVectorBase<MultiArrayIndex, N, D3, D4>& coordinate)
     {
-        return coordinate[N-1];
+        return coordinate[N - 1];
     }
 };
 
@@ -397,30 +403,30 @@ struct CoordinateToScanOrder<1>
 /*                                                      */
 /********************************************************/
 
-    /* Convert scan-order index to multi-dimensional index (i.e. a grid coordinate).
+/* Convert scan-order index to multi-dimensional index (i.e. a grid coordinate).
     */
-template <int K>
+template<int K>
 struct ScanOrderToCoordinate
 {
-    template <int N>
+    template<int N>
     static void
-    exec(MultiArrayIndex d, const TinyVector <MultiArrayIndex, N> &shape,
-         TinyVector <MultiArrayIndex, N> & result)
+    exec(MultiArrayIndex d, const TinyVector<MultiArrayIndex, N>& shape,
+         TinyVector<MultiArrayIndex, N>& result)
     {
-        result[N-K] = (d % shape[N-K]);
-        ScanOrderToCoordinate<K-1>::exec(d / shape[N-K], shape, result);
+        result[N - K] = (d % shape[N - K]);
+        ScanOrderToCoordinate<K - 1>::exec(d / shape[N - K], shape, result);
     }
 };
 
-template <>
+template<>
 struct ScanOrderToCoordinate<1>
 {
-    template <int N>
+    template<int N>
     static void
-    exec(MultiArrayIndex d, const TinyVector <MultiArrayIndex, N> & /*shape*/,
-         TinyVector <MultiArrayIndex, N> & result)
+    exec(MultiArrayIndex d, const TinyVector<MultiArrayIndex, N>& /*shape*/,
+         TinyVector<MultiArrayIndex, N>& result)
     {
-        result[N-1] = d;
+        result[N - 1] = d;
     }
 };
 
@@ -430,31 +436,31 @@ struct ScanOrderToCoordinate<1>
 /*                                                      */
 /********************************************************/
 
-    /* transforms an index in scan order sense to a pointer offset in a possibly
+/* transforms an index in scan order sense to a pointer offset in a possibly
        strided, multi-dimensional array.
     */
-template <int K>
+template<int K>
 struct ScanOrderToOffset
 {
-    template <int N>
+    template<int N>
     static MultiArrayIndex
-    exec(MultiArrayIndex d, const TinyVector <MultiArrayIndex, N> &shape,
-         const TinyVector <MultiArrayIndex, N> & stride)
+    exec(MultiArrayIndex d, const TinyVector<MultiArrayIndex, N>& shape,
+         const TinyVector<MultiArrayIndex, N>& stride)
     {
-        return stride[N-K] * (d % shape[N-K]) +
-               ScanOrderToOffset<K-1>::exec(d / shape[N-K], shape, stride);
+        return stride[N - K] * (d % shape[N - K]) +
+               ScanOrderToOffset<K - 1>::exec(d / shape[N - K], shape, stride);
     }
 };
 
-template <>
+template<>
 struct ScanOrderToOffset<1>
 {
-    template <int N>
+    template<int N>
     static MultiArrayIndex
-    exec(MultiArrayIndex d, const TinyVector <MultiArrayIndex, N> & /*shape*/,
-         const TinyVector <MultiArrayIndex, N> & stride)
+    exec(MultiArrayIndex d, const TinyVector<MultiArrayIndex, N>& /*shape*/,
+         const TinyVector<MultiArrayIndex, N>& stride)
     {
-        return stride[N-1] * d;
+        return stride[N - 1] * d;
     }
 };
 
@@ -464,38 +470,38 @@ struct ScanOrderToOffset<1>
 /*                                                      */
 /********************************************************/
 
-    /* transforms a multi-dimensional index (grid coordinate) to a pointer offset in a possibly
+/* transforms a multi-dimensional index (grid coordinate) to a pointer offset in a possibly
        strided, multi-dimensional array.
     */
-template <class C>
+template<class C>
 struct CoordinatesToOffest
 {
-    template <int N>
+    template<int N>
     static MultiArrayIndex
-    exec(const TinyVector <MultiArrayIndex, N> & stride, MultiArrayIndex x)
+    exec(const TinyVector<MultiArrayIndex, N>& stride, MultiArrayIndex x)
     {
         return stride[0] * x;
     }
-    template <int N>
+    template<int N>
     static MultiArrayIndex
-    exec(const TinyVector <MultiArrayIndex, N> & stride, MultiArrayIndex x, MultiArrayIndex y)
+    exec(const TinyVector<MultiArrayIndex, N>& stride, MultiArrayIndex x, MultiArrayIndex y)
     {
         return stride[0] * x + stride[1] * y;
     }
 };
 
-template <>
+template<>
 struct CoordinatesToOffest<UnstridedArrayTag>
 {
-    template <int N>
+    template<int N>
     static MultiArrayIndex
-    exec(const TinyVector <MultiArrayIndex, N> & /*stride*/, MultiArrayIndex x)
+    exec(const TinyVector<MultiArrayIndex, N>& /*stride*/, MultiArrayIndex x)
     {
         return x;
     }
-    template <int N>
+    template<int N>
     static MultiArrayIndex
-    exec(const TinyVector <MultiArrayIndex, N> & stride, MultiArrayIndex x, MultiArrayIndex y)
+    exec(const TinyVector<MultiArrayIndex, N>& stride, MultiArrayIndex x, MultiArrayIndex y)
     {
         return x + stride[1] * y;
     }
@@ -507,30 +513,30 @@ struct CoordinatesToOffest<UnstridedArrayTag>
 /*                                                      */
 /********************************************************/
 
-    /* transforms a coordinate object with negative indices into the corresponding
+/* transforms a coordinate object with negative indices into the corresponding
        'shape - abs(index)'.
     */
-template <int M>
+template<int M>
 struct RelativeToAbsoluteCoordinate
 {
-    template <int N>
+    template<int N>
     static void
-    exec(const TinyVector<MultiArrayIndex, N> & shape, TinyVector<MultiArrayIndex, N> & coord)
+    exec(const TinyVector<MultiArrayIndex, N>& shape, TinyVector<MultiArrayIndex, N>& coord)
     {
-        RelativeToAbsoluteCoordinate<M-1>::exec(shape, coord);
-        if(coord[M] < 0)
+        RelativeToAbsoluteCoordinate<M - 1>::exec(shape, coord);
+        if (coord[M] < 0)
             coord[M] += shape[M];
     }
 };
 
-template <>
+template<>
 struct RelativeToAbsoluteCoordinate<0>
 {
-    template <int N>
+    template<int N>
     static void
-    exec(const TinyVector<MultiArrayIndex, N> & shape, TinyVector<MultiArrayIndex, N> & coord)
+    exec(const TinyVector<MultiArrayIndex, N>& shape, TinyVector<MultiArrayIndex, N>& coord)
     {
-        if(coord[0] < 0)
+        if (coord[0] < 0)
             coord[0] += shape[0];
     }
 };
@@ -548,35 +554,35 @@ struct RelativeToAbsoluteCoordinate<0>
 // If a bit is set, the point in question is at the corresponding border.
 // A code of all zeros therefore means that the point is in the interior
 // of the ROI
-template <unsigned int N, unsigned int DIMENSION=N-1>
+template<unsigned int N, unsigned int DIMENSION = N - 1>
 struct BorderTypeImpl
 {
     typedef TinyVectorView<MultiArrayIndex, N> shape_type;
 
-    static unsigned int exec(shape_type const & point, shape_type const & shape)
+    static unsigned int exec(shape_type const& point, shape_type const& shape)
     {
-        unsigned int res = BorderTypeImpl<N, DIMENSION-1>::exec(point, shape);
-        if(point[DIMENSION] == 0)
-            res |= (1 << 2*DIMENSION);
-        if(point[DIMENSION] == shape[DIMENSION]-1)
-            res |= (2 << 2*DIMENSION);
+        unsigned int res = BorderTypeImpl<N, DIMENSION - 1>::exec(point, shape);
+        if (point[DIMENSION] == 0)
+            res |= (1 << 2 * DIMENSION);
+        if (point[DIMENSION] == shape[DIMENSION] - 1)
+            res |= (2 << 2 * DIMENSION);
         return res;
     }
 };
 
-template <unsigned int N>
+template<unsigned int N>
 struct BorderTypeImpl<N, 0>
 {
     typedef TinyVectorView<MultiArrayIndex, N> shape_type;
     static const unsigned int DIMENSION = 0;
 
-    static unsigned int exec(shape_type const & point, shape_type const & shape)
+    static unsigned int exec(shape_type const& point, shape_type const& shape)
     {
         unsigned int res = 0;
-        if(point[DIMENSION] == 0)
-            res |= (1 << 2*DIMENSION);
-        if(point[DIMENSION] == shape[DIMENSION]-1)
-            res |= (2 << 2*DIMENSION);
+        if (point[DIMENSION] == 0)
+            res |= (1 << 2 * DIMENSION);
+        if (point[DIMENSION] == shape[DIMENSION] - 1)
+            res |= (2 << 2 * DIMENSION);
         return res;
     }
 };
@@ -597,36 +603,36 @@ struct BorderTypeImpl<N, 0>
 //    'N-1-k', where N is the total number of neighbors.
 // The function 'exists' returns an array of flags that contains 'true' when the corresponding
 // neighbor is inside the ROI for the given borderType, 'false' otherwise.
-template <unsigned int Level>
+template<unsigned int Level>
 struct MakeDirectArrayNeighborhood
 {
-    template <class Array>
-    static void offsets(Array & a)
+    template<class Array>
+    static void offsets(Array& a)
     {
         typedef typename Array::value_type Shape;
 
         Shape point;
         point[Level] = -1;
         a.push_back(point);
-        MakeDirectArrayNeighborhood<Level-1>::offsets(a);
+        MakeDirectArrayNeighborhood<Level - 1>::offsets(a);
         point[Level] = 1;
         a.push_back(point);
     }
 
-    template <class Array>
-    static void exists(Array & a, unsigned int borderType)
+    template<class Array>
+    static void exists(Array& a, unsigned int borderType)
     {
-        a.push_back((borderType & (1 << 2*Level)) == 0);
-        MakeDirectArrayNeighborhood<Level-1>::exists(a, borderType);
-        a.push_back((borderType & (2 << 2*Level)) == 0);
+        a.push_back((borderType & (1 << 2 * Level)) == 0);
+        MakeDirectArrayNeighborhood<Level - 1>::exists(a, borderType);
+        a.push_back((borderType & (2 << 2 * Level)) == 0);
     }
 };
 
-template <>
+template<>
 struct MakeDirectArrayNeighborhood<0>
 {
-    template <class Array>
-    static void offsets(Array & a)
+    template<class Array>
+    static void offsets(Array& a)
     {
         typedef typename Array::value_type Shape;
 
@@ -637,8 +643,8 @@ struct MakeDirectArrayNeighborhood<0>
         a.push_back(point);
     }
 
-    template <class Array>
-    static void exists(Array & a, unsigned int borderType)
+    template<class Array>
+    static void exists(Array& a, unsigned int borderType)
     {
         a.push_back((borderType & 1) == 0);
         a.push_back((borderType & 2) == 0);
@@ -646,56 +652,55 @@ struct MakeDirectArrayNeighborhood<0>
 };
 
 // Likewise, create the offsets to all indirect neighbors according to the same rules.
-template <unsigned int Level>
+template<unsigned int Level>
 struct MakeIndirectArrayNeighborhood
 {
-    template <class Array, class Shape>
-    static void offsets(Array & a, Shape point, bool isCenter = true)
+    template<class Array, class Shape>
+    static void offsets(Array& a, Shape point, bool isCenter = true)
     {
         point[Level] = -1;
-        MakeIndirectArrayNeighborhood<Level-1>::offsets(a, point, false);
+        MakeIndirectArrayNeighborhood<Level - 1>::offsets(a, point, false);
         point[Level] = 0;
-        MakeIndirectArrayNeighborhood<Level-1>::offsets(a, point, isCenter);
+        MakeIndirectArrayNeighborhood<Level - 1>::offsets(a, point, isCenter);
         point[Level] = 1;
-        MakeIndirectArrayNeighborhood<Level-1>::offsets(a, point, false);
+        MakeIndirectArrayNeighborhood<Level - 1>::offsets(a, point, false);
     }
 
-    template <class Array>
-    static void exists(Array & a, unsigned int borderType, bool isCenter = true)
+    template<class Array>
+    static void exists(Array& a, unsigned int borderType, bool isCenter = true)
     {
-        if((borderType & (1 << 2*Level)) == 0)
-            MakeIndirectArrayNeighborhood<Level-1>::exists(a, borderType, false);
+        if ((borderType & (1 << 2 * Level)) == 0)
+            MakeIndirectArrayNeighborhood<Level - 1>::exists(a, borderType, false);
         else
-            MakeIndirectArrayNeighborhood<Level-1>::markOutside(a);
+            MakeIndirectArrayNeighborhood<Level - 1>::markOutside(a);
 
-        MakeIndirectArrayNeighborhood<Level-1>::exists(a, borderType, isCenter);
+        MakeIndirectArrayNeighborhood<Level - 1>::exists(a, borderType, isCenter);
 
-        if((borderType & (2 << 2*Level)) == 0)
-            MakeIndirectArrayNeighborhood<Level-1>::exists(a, borderType, false);
+        if ((borderType & (2 << 2 * Level)) == 0)
+            MakeIndirectArrayNeighborhood<Level - 1>::exists(a, borderType, false);
         else
-            MakeIndirectArrayNeighborhood<Level-1>::markOutside(a);
+            MakeIndirectArrayNeighborhood<Level - 1>::markOutside(a);
     }
 
-    template <class Array>
-    static void markOutside(Array & a)
+    template<class Array>
+    static void markOutside(Array& a)
     {
         // Call markOutside() three times, for each possible offset at (Level-1)
-        MakeIndirectArrayNeighborhood<Level-1>::markOutside(a);
-        MakeIndirectArrayNeighborhood<Level-1>::markOutside(a);
-        MakeIndirectArrayNeighborhood<Level-1>::markOutside(a);
+        MakeIndirectArrayNeighborhood<Level - 1>::markOutside(a);
+        MakeIndirectArrayNeighborhood<Level - 1>::markOutside(a);
+        MakeIndirectArrayNeighborhood<Level - 1>::markOutside(a);
     }
-
 };
 
-template <>
+template<>
 struct MakeIndirectArrayNeighborhood<0>
 {
-    template <class Array, class Shape>
-    static void offsets(Array & a, Shape point, bool isCenter = true)
+    template<class Array, class Shape>
+    static void offsets(Array& a, Shape point, bool isCenter = true)
     {
         point[0] = -1;
         a.push_back(point);
-        if(!isCenter) // the center point is not a neighbor, it's just convenient to do the enumeration this way...
+        if (!isCenter) // the center point is not a neighbor, it's just convenient to do the enumeration this way...
         {
             point[0] = 0;
             a.push_back(point);
@@ -704,19 +709,19 @@ struct MakeIndirectArrayNeighborhood<0>
         a.push_back(point);
     }
 
-    template <class Array>
-    static void exists(Array & a, unsigned int borderType, bool isCenter = true)
+    template<class Array>
+    static void exists(Array& a, unsigned int borderType, bool isCenter = true)
     {
         a.push_back((borderType & 1) == 0);
-        if(!isCenter)
+        if (!isCenter)
         {
             a.push_back(true);
         }
         a.push_back((borderType & 2) == 0);
     }
 
-    template <class Array>
-    static void markOutside(Array & a)
+    template<class Array>
+    static void markOutside(Array& a)
     {
         // Push 'false' three times, for each possible offset at level 0, whenever the point was
         // outside the ROI in one of the higher levels.
@@ -731,38 +736,41 @@ struct MakeIndirectArrayNeighborhood<0>
 // an return it in 'neighborOffsets'. Moreover, create a list of flags
 // for each BorderType that is 'true' when the corresponding neighbor exists
 // in this border situation and return the result in 'neighborExists'.
-template <class Shape>
+template<class Shape>
 void
-makeArrayNeighborhood(ArrayVector<Shape> & neighborOffsets,
-                      ArrayVector<ArrayVector<bool> > & neighborExists,
+makeArrayNeighborhood(ArrayVector<Shape>& neighborOffsets,
+                      ArrayVector<ArrayVector<bool>>& neighborExists,
                       NeighborhoodType neighborhoodType = DirectNeighborhood)
 {
-    enum { N = Shape::static_size };
+    enum
+    {
+        N = Shape::static_size
+    };
 
     neighborOffsets.clear();
-    if(neighborhoodType == DirectNeighborhood)
+    if (neighborhoodType == DirectNeighborhood)
     {
-        MakeDirectArrayNeighborhood<N-1>::offsets(neighborOffsets);
+        MakeDirectArrayNeighborhood<N - 1>::offsets(neighborOffsets);
     }
     else
     {
         Shape point; // represents the center
-        MakeIndirectArrayNeighborhood<N-1>::offsets(neighborOffsets, point);
+        MakeIndirectArrayNeighborhood<N - 1>::offsets(neighborOffsets, point);
     }
 
-    unsigned int borderTypeCount = 1 << 2*N;
+    unsigned int borderTypeCount = 1 << 2 * N;
     neighborExists.resize(borderTypeCount);
 
-    for(unsigned int k=0; k<borderTypeCount; ++k)
+    for (unsigned int k = 0; k < borderTypeCount; ++k)
     {
         neighborExists[k].clear();
-        if(neighborhoodType == DirectNeighborhood)
+        if (neighborhoodType == DirectNeighborhood)
         {
-            MakeDirectArrayNeighborhood<N-1>::exists(neighborExists[k], k);
+            MakeDirectArrayNeighborhood<N - 1>::exists(neighborExists[k], k);
         }
         else
         {
-            MakeIndirectArrayNeighborhood<N-1>::exists(neighborExists[k], k);
+            MakeIndirectArrayNeighborhood<N - 1>::exists(neighborExists[k], k);
         }
     }
 }

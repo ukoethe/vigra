@@ -36,11 +36,12 @@
 #ifndef VIGRA_MULTI_FWD_HXX
 #define VIGRA_MULTI_FWD_HXX
 
-#include <memory>
 #include "metaprogramming.hxx"
 #include "tinyvector.hxx"
+#include <memory>
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup MultiIteratorGroup  Multi-dimensional Shapes and Array Iterators
 
@@ -54,12 +55,12 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-    /** Index type for a single dimension of a MultiArrayView or
+/** Index type for a single dimension of a MultiArrayView or
         MultiArray.
     */
 typedef std::ptrdiff_t MultiArrayIndex;
 
-template <unsigned int N>
+template<unsigned int N>
 class MultiArrayShape;
 
 /********************************************************/
@@ -70,24 +71,25 @@ class MultiArrayShape;
 
 // the resulting MultiArray has no explicit channel axis
 // (i.e. the number of channels is implicitly one)
-template <class T>
+template<class T>
 struct Singleband;
 
 // the last axis is explicitly designated as channel axis
-template <class T>
+template<class T>
 struct Multiband;
 
 // the array is organised in chunks
-template <class T>
+template<class T>
 struct ChunkedMemory;
 
 // helper classes to map memory layout to actual type
-namespace detail {
+namespace detail
+{
 
-template <class T>
+template<class T>
 struct ResolveMultiband;
 
-template <class T>
+template<class T>
 struct ResolveChunkedMemory;
 
 } // namespace detail
@@ -98,10 +100,11 @@ struct ResolveChunkedMemory;
 /*                                                      */
 /********************************************************/
 
-    /** \brief Initialize a MultiArray in a standard way.  
+/** \brief Initialize a MultiArray in a standard way.  
     
     */
-enum MultiArrayInitializationTag {
+enum MultiArrayInitializationTag
+{
     LinearSequence ///< Initialize array by a linear sequence in scan order
 };
 
@@ -111,10 +114,10 @@ enum MultiArrayInitializationTag {
 /*                                                      */
 /********************************************************/
 
-template <class T, class NEXT>
+template<class T, class NEXT>
 class CoupledHandle;
 
-template <unsigned int N, class T>
+template<unsigned int N, class T>
 class SharedChunkHandle;
 
 /********************************************************/
@@ -123,17 +126,17 @@ class SharedChunkHandle;
 /*                                                      */
 /********************************************************/
 
-template <unsigned int N, class T, class C = StridedArrayTag>
+template<unsigned int N, class T, class C = StridedArrayTag>
 class MultiArrayView;
 
-template <unsigned int N, class T, 
-          class A = std::allocator<typename detail::ResolveMultiband<T>::type> >
+template<unsigned int N, class T,
+         class A = std::allocator<typename detail::ResolveMultiband<T>::type>>
 class MultiArray;
 
-template <unsigned int N, class T>
+template<unsigned int N, class T>
 class ChunkedArrayBase;
 
-template <unsigned int N, class T>
+template<unsigned int N, class T>
 class ChunkedArray;
 
 /********************************************************/
@@ -144,12 +147,12 @@ class ChunkedArray;
 
 // DEPRECATED!
 // hierarchical iterator whose innermost dimension is unstrided
-template <unsigned int N, class T, class REFERENCE = T &, class POINTER = T *>
+template<unsigned int N, class T, class REFERENCE = T&, class POINTER = T*>
 class MultiIterator;
 
 // DEPRECATED!
 // hierarchical iterator whose innermost dimension may be strided
-template <unsigned int N, class T, class REFERENCE = T &, class POINTER = T *>
+template<unsigned int N, class T, class REFERENCE = T&, class POINTER = T*>
 class StridedMultiIterator;
 
 // multi-dimensional scan-order iteration returning the coordinate of the current element
@@ -157,13 +160,13 @@ template<unsigned int N>
 class MultiCoordinateIterator;
 
 // scan-order iteration returning the current element of a multi-dimensional array
-template <unsigned int N, class V, class REFERENCE, class POINTER>
+template<unsigned int N, class V, class REFERENCE, class POINTER>
 class StridedScanOrderIterator;
 
 // simultaneous scan-order iteration over several multi-dimensional arrays
-template <unsigned int N,
-          class HANDLES=CoupledHandle<TinyVector<MultiArrayIndex, N>, void>,
-          int DIMENSION = N-1>
+template<unsigned int N,
+         class HANDLES = CoupledHandle<TinyVector<MultiArrayIndex, N>, void>,
+         int DIMENSION = N - 1>
 class CoupledScanOrderIterator;
 
 // scan-order iteration over the chunks of a chunked array
@@ -177,15 +180,16 @@ class ChunkIterator;
 /*                                                      */
 /********************************************************/
 
-    /** \brief Choose the neighborhood system in a dimension-independent way.  
+/** \brief Choose the neighborhood system in a dimension-independent way.  
     
         DirectNeighborhood corresponds to 4-neighborhood in 2D and 6-neighborhood in 3D, whereas
         IndirectNeighborhood means 8-neighborhood in 2D and 26-neighborhood in 3D. The general
         formula for N dimensions are 2*N for direct neighborhood and 3^N-1 for indirect neighborhood. 
     */
-enum NeighborhoodType { 
-        DirectNeighborhood=0,   ///< use only direct neighbors
-        IndirectNeighborhood=1  ///< use direct and indirect neighbors
+enum NeighborhoodType
+{
+    DirectNeighborhood = 0,  ///< use only direct neighbors
+    IndirectNeighborhood = 1 ///< use direct and indirect neighbors
 };
 
 
@@ -195,22 +199,22 @@ enum NeighborhoodType {
 /*                                                      */
 /********************************************************/
 
-template<unsigned int N, bool BackEdgesOnly=false>
+template<unsigned int N, bool BackEdgesOnly = false>
 class GridGraphNeighborIterator;
 
-template<unsigned int N, bool BackEdgesOnly=false>
+template<unsigned int N, bool BackEdgesOnly = false>
 class GridGraphEdgeIterator;
 
-template<unsigned int N, bool BackEdgesOnly=false>
+template<unsigned int N, bool BackEdgesOnly = false>
 class GridGraphOutEdgeIterator;
 
-template<unsigned int N, bool BackEdgesOnly=false>
+template<unsigned int N, bool BackEdgesOnly = false>
 class GridGraphArcIterator;
 
-template<unsigned int N, bool BackEdgesOnly=false>
+template<unsigned int N, bool BackEdgesOnly = false>
 class GridGraphOutArcIterator;
 
-template<unsigned int N, bool BackEdgesOnly=false>
+template<unsigned int N, bool BackEdgesOnly = false>
 class GridGraphInArcIterator;
 
 template<unsigned int N, class DirectedTag>

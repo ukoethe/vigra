@@ -32,17 +32,17 @@
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
+#include <iterator>
+#include <numeric>
+#include <vector>
 #include <vigra/filter_iterator.hxx>
 #include <vigra/unittest.hxx>
-#include <vector>
-#include <numeric>
-#include <iterator>
 
 using namespace vigra;
 
 struct FilterIteratorTests
 {
-    template <typename ITER0, typename ITER1>
+    template<typename ITER0, typename ITER1>
     void test_filter_read_mod2(ITER0 in_begin, ITER0 in_end, ITER1 expected_begin)
     {
         typedef typename std::iterator_traits<ITER0>::value_type value_type;
@@ -57,7 +57,7 @@ struct FilterIteratorTests
         shouldEqualSequence(out.begin(), out.end(), expected_begin);
     }
 
-    template <typename ITER0, typename ITER1>
+    template<typename ITER0, typename ITER1>
     void test_filter_write_mod2(ITER0 in_begin, ITER0 in_end, ITER1 expected_begin)
     {
         typedef typename std::iterator_traits<ITER0>::value_type value_type;
@@ -77,24 +77,24 @@ struct FilterIteratorTests
         {
             int in[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
             int out_expected[] = {0, 2, 4, 6, 8};
-            test_filter_read_mod2(in, in+10, out_expected);
+            test_filter_read_mod2(in, in + 10, out_expected);
         }
         {
             int in[] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
             int out_expected[] = {0, 2, 4, 6, 8};
-            std::vector<int> v_in(in, in+9);
+            std::vector<int> v_in(in, in + 9);
             test_filter_read_mod2(v_in.begin(), v_in.end(), out_expected);
         }
         {
             int in[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
             int out_expected[] = {2, 4, 6, 8};
-            std::vector<int> v_in(in, in+9);
+            std::vector<int> v_in(in, in + 9);
             test_filter_read_mod2(v_in.cbegin(), v_in.cend(), out_expected);
         }
         {
             int in[] = {1, 2, 3, 4, 5, 6, 7, 8};
             int out_expected[] = {2, 4, 6, 8};
-            test_filter_read_mod2(in, in+8, out_expected);
+            test_filter_read_mod2(in, in + 8, out_expected);
         }
     }
 
@@ -103,22 +103,22 @@ struct FilterIteratorTests
         {
             int in[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
             int out_expected[] = {100, 1, 102, 3, 104, 5, 106, 7, 108, 9};
-            test_filter_write_mod2(in, in+10, out_expected);
+            test_filter_write_mod2(in, in + 10, out_expected);
         }
         {
             int in[] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
             int out_expected[] = {100, 1, 102, 3, 104, 5, 106, 7, 108};
-            test_filter_write_mod2(in, in+9, out_expected);
+            test_filter_write_mod2(in, in + 9, out_expected);
         }
         {
             int in[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
             int out_expected[] = {1, 102, 3, 104, 5, 106, 7, 108, 9};
-            test_filter_write_mod2(in, in+9, out_expected);
+            test_filter_write_mod2(in, in + 9, out_expected);
         }
         {
             int in[] = {1, 2, 3, 4, 5, 6, 7, 8};
             int out_expected[] = {1, 102, 3, 104, 5, 106, 7, 108};
-            test_filter_write_mod2(in, in+8, out_expected);
+            test_filter_write_mod2(in, in + 8, out_expected);
         }
     }
 };
@@ -126,15 +126,15 @@ struct FilterIteratorTests
 struct FilterIteratorTestSuite : public test_suite
 {
     FilterIteratorTestSuite()
-        :
-        test_suite("FilterIterator test")
+        : test_suite("FilterIterator test")
     {
         add(testCase(&FilterIteratorTests::test_filter_iterator_read));
         add(testCase(&FilterIteratorTests::test_filter_iterator_write));
     }
 };
 
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
     FilterIteratorTestSuite filter_iterator_test;
     int failed = filter_iterator_test.run(testsToBeExecuted(argc, argv));

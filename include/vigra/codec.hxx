@@ -71,233 +71,262 @@
 
 namespace vigra
 {
-    template <class T>
-    struct TypeAsString
+template<class T>
+struct TypeAsString
+{
+    static std::string result()
     {
-        static std::string result() { return "undefined"; }
-    };
+        return "undefined";
+    }
+};
 
-    template <>
-    struct TypeAsString<Int8>
+template<>
+struct TypeAsString<Int8>
+{
+    static std::string result()
     {
-        static std::string result() { return "INT8"; }
-    };
+        return "INT8";
+    }
+};
 
-    template <>
-    struct TypeAsString<UInt8>
+template<>
+struct TypeAsString<UInt8>
+{
+    static std::string result()
     {
-        static std::string result() { return "UINT8"; }
-    };
+        return "UINT8";
+    }
+};
 
-    template <>
-    struct TypeAsString<Int16>
+template<>
+struct TypeAsString<Int16>
+{
+    static std::string result()
     {
-        static std::string result() { return "INT16"; }
-    };
+        return "INT16";
+    }
+};
 
-    template <>
-    struct TypeAsString<UInt16>
+template<>
+struct TypeAsString<UInt16>
+{
+    static std::string result()
     {
-        static std::string result() { return "UINT16"; }
-    };
+        return "UINT16";
+    }
+};
 
-    template <>
-    struct TypeAsString<Int32>
+template<>
+struct TypeAsString<Int32>
+{
+    static std::string result()
     {
-        static std::string result() { return "INT32"; }
-    };
+        return "INT32";
+    }
+};
 
-    template <>
-    struct TypeAsString<UInt32>
+template<>
+struct TypeAsString<UInt32>
+{
+    static std::string result()
     {
-        static std::string result() { return "UINT32"; }
-    };
+        return "UINT32";
+    }
+};
 
-    template <>
-    struct TypeAsString<float>
+template<>
+struct TypeAsString<float>
+{
+    static std::string result()
     {
-        static std::string result() { return "FLOAT"; }
-    };
+        return "FLOAT";
+    }
+};
 
-    template <>
-    struct TypeAsString<double>
+template<>
+struct TypeAsString<double>
+{
+    static std::string result()
     {
-        static std::string result() { return "DOUBLE"; }
-    };
+        return "DOUBLE";
+    }
+};
 
 
-    // codec description
-    struct CodecDesc
+// codec description
+struct CodecDesc
+{
+    std::string fileType;
+    std::vector<std::string> pixelTypes;
+    std::vector<std::string> compressionTypes;
+    std::vector<std::vector<char>> magicStrings;
+    std::vector<std::string> fileExtensions;
+    std::vector<int> bandNumbers;
+};
+
+// Decoder and Encoder are virtual types that define a common
+// interface for all image file formats impex supports.
+
+struct Decoder
+{
+    virtual ~Decoder(){};
+    virtual void init(const std::string&) = 0;
+
+    // initialize with an image index. For codecs that do not support this feature, the standard init is called.
+    virtual void init(const std::string& fileName, unsigned int)
     {
-        std::string fileType;
-        std::vector<std::string> pixelTypes;
-        std::vector<std::string> compressionTypes;
-        std::vector<std::vector<char> > magicStrings;
-        std::vector<std::string> fileExtensions;
-        std::vector<int> bandNumbers;
-    };
+        init(fileName);
+    }
 
-    // Decoder and Encoder are virtual types that define a common
-    // interface for all image file formats impex supports.
+    virtual void close() = 0;
+    virtual void abort() = 0;
 
-    struct Decoder
+    virtual std::string getFileType() const = 0;
+    virtual std::string getPixelType() const = 0;
+
+    virtual unsigned int getNumImages() const
     {
-        virtual ~Decoder() {};
-        virtual void init( const std::string & ) = 0;
+        return 1;
+    }
 
-        // initialize with an image index. For codecs that do not support this feature, the standard init is called.
-        virtual void init( const std::string & fileName, unsigned int)
-        {
-          init(fileName);
-        }
-
-        virtual void close() = 0;
-        virtual void abort() = 0;
-
-        virtual std::string getFileType() const = 0;
-        virtual std::string getPixelType() const = 0;
-
-        virtual unsigned int getNumImages() const
-        {
-          return 1;
-        }
-
-        virtual void setImageIndex(unsigned int)
-        {
-        }
-
-        virtual unsigned int getImageIndex() const
-        {
-          return 0;
-        }
-
-        virtual unsigned int getWidth() const = 0;
-        virtual unsigned int getHeight() const = 0;
-        virtual unsigned int getNumBands() const = 0;
-        virtual unsigned int getNumExtraBands() const
-        {
-            return 0;
-        }
-
-        virtual vigra::Diff2D getPosition() const
-        {
-            return vigra::Diff2D();
-        }
-
-        virtual float getXResolution() const
-        {
-            return 0.0f;
-        }
-        virtual float getYResolution() const
-        {
-            return 0.0f;
-        }
-
-        virtual vigra::Size2D getCanvasSize() const
-        {
-            return vigra::Size2D(this->getWidth(), this->getHeight());
-        }
-
-        virtual unsigned int getOffset() const = 0;
-
-        virtual const void * currentScanlineOfBand( unsigned int ) const = 0;
-        virtual void nextScanline() = 0;
-
-        typedef ArrayVector<unsigned char> ICCProfile;
-
-        const ICCProfile & getICCProfile() const
-        {
-            return iccProfile_;
-        }
-
-        ICCProfile iccProfile_;
-    };
-
-    struct Encoder
+    virtual void setImageIndex(unsigned int)
     {
-        virtual ~Encoder() {};
-        virtual void init( const std::string & ) = 0;
+    }
 
-        // initialize with file access mode. For codecs that do not support this feature, the standard init is called.
-        virtual void init( const std::string & fileName, const std::string & )
-        {
-          init(fileName);
-        }
-
-        virtual void close() = 0;
-        virtual void abort() = 0;
-
-        virtual std::string getFileType() const = 0;
-        virtual unsigned int getOffset() const = 0;
-
-        virtual void setWidth( unsigned int ) = 0;
-        virtual void setHeight( unsigned int ) = 0;
-        virtual void setNumBands( unsigned int ) = 0;
-        virtual void setCompressionType( const std::string &, int = -1 ) = 0;
-        virtual void setPixelType( const std::string & ) = 0;
-        virtual void finalizeSettings() = 0;
-
-        virtual void setPosition( const vigra::Diff2D & /*pos*/ )
-        {
-        }
-        virtual void setCanvasSize( const vigra::Size2D & /*size*/)
-        {
-        }
-        virtual void setXResolution( float /*xres*/ )
-        {
-        }
-        virtual void setYResolution( float /*yres*/ )
-        {
-        }
-
-        typedef ArrayVector<unsigned char> ICCProfile;
-
-        virtual void setICCProfile(const ICCProfile & /* data */)
-        {
-        }
-
-        virtual void * currentScanlineOfBand( unsigned int ) = 0;
-        virtual void nextScanline() = 0;
-
-        struct TIFFCompressionException {};
-    };
-
-    // codec factory for registration at the codec manager
-
-    struct CodecFactory
+    virtual unsigned int getImageIndex() const
     {
-        virtual CodecDesc getCodecDesc() const = 0;
-        virtual VIGRA_UNIQUE_PTR<Decoder> getDecoder() const = 0;
-        virtual VIGRA_UNIQUE_PTR<Encoder> getEncoder() const = 0;
-        virtual ~CodecFactory() {};
+        return 0;
+    }
+
+    virtual unsigned int getWidth() const = 0;
+    virtual unsigned int getHeight() const = 0;
+    virtual unsigned int getNumBands() const = 0;
+    virtual unsigned int getNumExtraBands() const
+    {
+        return 0;
+    }
+
+    virtual vigra::Diff2D getPosition() const
+    {
+        return vigra::Diff2D();
+    }
+
+    virtual float getXResolution() const
+    {
+        return 0.0f;
+    }
+    virtual float getYResolution() const
+    {
+        return 0.0f;
+    }
+
+    virtual vigra::Size2D getCanvasSize() const
+    {
+        return vigra::Size2D(this->getWidth(), this->getHeight());
+    }
+
+    virtual unsigned int getOffset() const = 0;
+
+    virtual const void* currentScanlineOfBand(unsigned int) const = 0;
+    virtual void nextScanline() = 0;
+
+    typedef ArrayVector<unsigned char> ICCProfile;
+
+    const ICCProfile& getICCProfile() const
+    {
+        return iccProfile_;
+    }
+
+    ICCProfile iccProfile_;
+};
+
+struct Encoder
+{
+    virtual ~Encoder(){};
+    virtual void init(const std::string&) = 0;
+
+    // initialize with file access mode. For codecs that do not support this feature, the standard init is called.
+    virtual void init(const std::string& fileName, const std::string&)
+    {
+        init(fileName);
+    }
+
+    virtual void close() = 0;
+    virtual void abort() = 0;
+
+    virtual std::string getFileType() const = 0;
+    virtual unsigned int getOffset() const = 0;
+
+    virtual void setWidth(unsigned int) = 0;
+    virtual void setHeight(unsigned int) = 0;
+    virtual void setNumBands(unsigned int) = 0;
+    virtual void setCompressionType(const std::string&, int = -1) = 0;
+    virtual void setPixelType(const std::string&) = 0;
+    virtual void finalizeSettings() = 0;
+
+    virtual void setPosition(const vigra::Diff2D& /*pos*/)
+    {
+    }
+    virtual void setCanvasSize(const vigra::Size2D& /*size*/)
+    {
+    }
+    virtual void setXResolution(float /*xres*/)
+    {
+    }
+    virtual void setYResolution(float /*yres*/)
+    {
+    }
+
+    typedef ArrayVector<unsigned char> ICCProfile;
+
+    virtual void setICCProfile(const ICCProfile& /* data */)
+    {
+    }
+
+    virtual void* currentScanlineOfBand(unsigned int) = 0;
+    virtual void nextScanline() = 0;
+
+    struct TIFFCompressionException
+    {
     };
+};
 
-    // factory functions to encapsulate the codec managers
-    //
-    // codecs are selected according to the following order:
-    // - (if provided) the FileType
-    // - (in case of decoders) the file's magic string
-    // - the filename extension
+// codec factory for registration at the codec manager
 
-    VIGRA_EXPORT VIGRA_UNIQUE_PTR<Decoder>
-    getDecoder( const std::string &, const std::string & = "undefined", unsigned int = 0 );
+struct CodecFactory
+{
+    virtual CodecDesc getCodecDesc() const = 0;
+    virtual VIGRA_UNIQUE_PTR<Decoder> getDecoder() const = 0;
+    virtual VIGRA_UNIQUE_PTR<Encoder> getEncoder() const = 0;
+    virtual ~CodecFactory(){};
+};
 
-    VIGRA_EXPORT VIGRA_UNIQUE_PTR<Encoder>
-    getEncoder( const std::string &, const std::string & = "undefined", const std::string & = "w" );
+// factory functions to encapsulate the codec managers
+//
+// codecs are selected according to the following order:
+// - (if provided) the FileType
+// - (in case of decoders) the file's magic string
+// - the filename extension
 
-    VIGRA_EXPORT std::string
-    getEncoderType( const std::string &, const std::string & = "undefined" );
+VIGRA_EXPORT VIGRA_UNIQUE_PTR<Decoder>
+getDecoder(const std::string&, const std::string& = "undefined", unsigned int = 0);
 
-    // functions to query the capabilities of certain codecs
+VIGRA_EXPORT VIGRA_UNIQUE_PTR<Encoder>
+getEncoder(const std::string&, const std::string& = "undefined", const std::string& = "w");
 
-    VIGRA_EXPORT std::vector<std::string> queryCodecPixelTypes( const std::string & );
+VIGRA_EXPORT std::string
+getEncoderType(const std::string&, const std::string& = "undefined");
 
-    VIGRA_EXPORT bool negotiatePixelType( std::string const & codecname,
-                 std::string const & srcPixeltype, std::string & destPixeltype);
+// functions to query the capabilities of certain codecs
 
-    VIGRA_EXPORT bool isPixelTypeSupported( const std::string &, const std::string & );
+VIGRA_EXPORT std::vector<std::string> queryCodecPixelTypes(const std::string&);
 
-    VIGRA_EXPORT bool isBandNumberSupported( const std::string &, int bands );
-}
+VIGRA_EXPORT bool negotiatePixelType(std::string const& codecname,
+                                     std::string const& srcPixeltype, std::string& destPixeltype);
+
+VIGRA_EXPORT bool isPixelTypeSupported(const std::string&, const std::string&);
+
+VIGRA_EXPORT bool isBandNumberSupported(const std::string&, int bands);
+} // namespace vigra
 
 #endif // VIGRA_CODEC_HXX

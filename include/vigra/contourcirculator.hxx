@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -89,11 +89,11 @@ namespace vigra
     <b>\#include</b> \<vigra/contourcirculator.hxx\><br>
     Namespace: vigra
 */
-template <class IMAGEITERATOR>
+template<class IMAGEITERATOR>
 class CrackContourCirculator
 {
     typedef NeighborhoodCirculator<IMAGEITERATOR, EightNeighborCode>
-            NEIGHBORHOODCIRCULATOR;
+        NEIGHBORHOODCIRCULATOR;
     typedef typename IMAGEITERATOR::value_type label_type;
 
 protected:
@@ -101,30 +101,31 @@ protected:
     label_type label_;
     Point2D pos_;
 
-    CrackContourCirculator(NEIGHBORHOODCIRCULATOR const & circ)
+    CrackContourCirculator(NEIGHBORHOODCIRCULATOR const& circ)
         : neighborCirc_(circ),
           label_(*(circ.center())),
           pos_(0, 0)
-    {}
+    {
+    }
 
 public:
-        /** the circulator's value type
+    /** the circulator's value type
         */
     typedef Point2D value_type;
 
-        /** the circulator's reference type (return type of <TT>*circ</TT>)
+    /** the circulator's reference type (return type of <TT>*circ</TT>)
         */
-    typedef Point2D const & reference;
+    typedef Point2D const& reference;
 
-        /** the circulator's pointer type (return type of <TT>operator-></TT>)
+    /** the circulator's pointer type (return type of <TT>operator-></TT>)
         */
-    typedef Point2D const * pointer;
+    typedef Point2D const* pointer;
 
-        /** the circulator tag
+    /** the circulator tag
         */
     typedef forward_circulator_tag iterator_category;
 
-        /** Initialize the circulator for a given region.
+    /** Initialize the circulator for a given region.
 
             The image iterator <tt>in_the_region</tt> must refer
             to a boundary pixel of the region to be analysed. The
@@ -135,7 +136,7 @@ public:
             right of this direction (i.e. the north west corner of
             the region pixel, if the direction was West).
         */
-    CrackContourCirculator(IMAGEITERATOR const & in_the_region,
+    CrackContourCirculator(IMAGEITERATOR const& in_the_region,
                            vigra::FourNeighborCode::Direction dir = vigra::FourNeighborCode::West)
         : neighborCirc_(in_the_region, EightNeighborCode::code(dir)),
           label_(*in_the_region),
@@ -144,15 +145,15 @@ public:
         neighborCirc_.turnLeft();
     }
 
-        /** Move to the next crack corner of the contour (pre-increment).
+    /** Move to the next crack corner of the contour (pre-increment).
         */
-    CrackContourCirculator & operator++()
+    CrackContourCirculator& operator++()
     {
         pos_ += neighborCirc_.diff();
 
         neighborCirc_--;
 
-        if(*neighborCirc_ == label_)
+        if (*neighborCirc_ == label_)
         {
             neighborCirc_.moveCenterToNeighbor(); // TODO: simplify moveCenterToNeighbor()s
             --neighborCirc_;
@@ -161,7 +162,7 @@ public:
         {
             neighborCirc_.moveCenterToNeighbor(); // jump out
             neighborCirc_ += 3;
-            if(*neighborCirc_ == label_)
+            if (*neighborCirc_ == label_)
             {
                 neighborCirc_.moveCenterToNeighbor();
                 neighborCirc_.turnRight();
@@ -178,7 +179,7 @@ public:
         return *this;
     }
 
-        /** Move to the next crack corner of the contour (post-increment).
+    /** Move to the next crack corner of the contour (post-increment).
         */
     CrackContourCirculator operator++(int)
     {
@@ -187,49 +188,59 @@ public:
         return ret;
     }
 
-        /** equality
+    /** equality
         */
-    bool operator==(CrackContourCirculator const & o) const
+    bool operator==(CrackContourCirculator const& o) const
     {
         return neighborCirc_ == o.neighborCirc_;
     }
 
-        /** inequality
+    /** inequality
         */
-    bool operator!=(CrackContourCirculator const & o) const
+    bool operator!=(CrackContourCirculator const& o) const
     {
         return neighborCirc_ != o.neighborCirc_;
     }
 
-        /** Get the coordinate of the current corner
+    /** Get the coordinate of the current corner
             (relative to the first corner).
         */
     reference pos() const
-        { return pos_; }
+    {
+        return pos_;
+    }
 
-        /** Equivalent to pos()
+    /** Equivalent to pos()
         */
     reference operator*() const
-        { return pos_; }
+    {
+        return pos_;
+    }
 
-        /** Access member of the current coordinate.
+    /** Access member of the current coordinate.
         */
     pointer operator->() const
-        { return &pos_; }
+    {
+        return &pos_;
+    }
 
-        /** Access pixel to the right of the crack edge (outside of
+    /** Access pixel to the right of the crack edge (outside of
          * the region bounded by the crack contour we walk on). Note
          * that after operator++, the iterator can still point to the
          * same pixel (looking from another direction now).
          */
     IMAGEITERATOR outerPixel() const
-        { return NEIGHBORHOODCIRCULATOR(neighborCirc_).turnRight().base(); }
+    {
+        return NEIGHBORHOODCIRCULATOR(neighborCirc_).turnRight().base();
+    }
 
-        /** Get the offset from the current corner of the contour
+    /** Get the offset from the current corner of the contour
             to the next one.
         */
-    Diff2D const & diff() const
-        { return neighborCirc_.diff(); }
+    Diff2D const& diff() const
+    {
+        return neighborCirc_.diff();
+    }
 };
 
 //@}

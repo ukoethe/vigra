@@ -37,45 +37,45 @@
 #ifndef VIGRA_RF3_IMPEX_HDF5_HXX
 #define VIGRA_RF3_IMPEX_HDF5_HXX
 
-#include <string>
-#include <sstream>
 #include <iomanip>
+#include <sstream>
 #include <stack>
+#include <string>
 
 #include "config.hxx"
+#include "hdf5impex.hxx"
 #include "random_forest_3/random_forest.hxx"
 #include "random_forest_3/random_forest_common.hxx"
 #include "random_forest_3/random_forest_visitors.hxx"
-#include "hdf5impex.hxx"
 
-namespace vigra 
+namespace vigra
 {
 namespace rf3
 {
 
 // needs to be in sync with random_forest_hdf5_impex for backwards compatibility
-static const char *const rf_hdf5_ext_param     = "_ext_param";
-static const char *const rf_hdf5_options       = "_options";
-static const char *const rf_hdf5_topology      = "topology";
-static const char *const rf_hdf5_parameters    = "parameters";
-static const char *const rf_hdf5_tree          = "Tree_";
-static const char *const rf_hdf5_version_group = ".";
-static const char *const rf_hdf5_version_tag   = "vigra_random_forest_version";
-static const double      rf_hdf5_version       =  0.1;
+static const char* const rf_hdf5_ext_param = "_ext_param";
+static const char* const rf_hdf5_options = "_options";
+static const char* const rf_hdf5_topology = "topology";
+static const char* const rf_hdf5_parameters = "parameters";
+static const char* const rf_hdf5_tree = "Tree_";
+static const char* const rf_hdf5_version_group = ".";
+static const char* const rf_hdf5_version_tag = "vigra_random_forest_version";
+static const double rf_hdf5_version = 0.1;
 
 // keep in sync with include/vigra/random_forest/rf_nodeproxy.hxx
 enum NodeTags
 {
-    rf_UnFilledNode        = 42,
-    rf_AllColumns          = 0x00000000,
-    rf_ToBePrunedTag       = 0x80000000,
-    rf_LeafNodeTag         = 0x40000000,
+    rf_UnFilledNode = 42,
+    rf_AllColumns = 0x00000000,
+    rf_ToBePrunedTag = 0x80000000,
+    rf_LeafNodeTag = 0x40000000,
 
-    rf_i_ThresholdNode     = 0,
-    rf_i_HyperplaneNode    = 1,
-    rf_i_HypersphereNode   = 2,
-    rf_e_ConstProbNode     = 0 | rf_LeafNodeTag,
-    rf_e_LogRegProbNode    = 1 | rf_LeafNodeTag
+    rf_i_ThresholdNode = 0,
+    rf_i_HyperplaneNode = 1,
+    rf_i_HypersphereNode = 2,
+    rf_e_ConstProbNode = 0 | rf_LeafNodeTag,
+    rf_e_LogRegProbNode = 1 | rf_LeafNodeTag
 };
 
 static const unsigned int rf_tag_mask = 0xf0000000;
@@ -84,15 +84,16 @@ static const unsigned int rf_zero_mask = 0xffffffff & ~rf_tag_mask & ~rf_type_ma
 
 namespace detail
 {
-    inline std::string get_cwd(HDF5File & h5context)
-    {
-        return h5context.get_absolute_path(h5context.pwd());
-    }
+inline std::string
+get_cwd(HDF5File& h5context)
+{
+    return h5context.get_absolute_path(h5context.pwd());
 }
+} // namespace detail
 
-template <typename FEATURES, typename LABELS>
+template<typename FEATURES, typename LABELS>
 typename DefaultRF<FEATURES, LABELS>::type
-random_forest_import_HDF5(HDF5File & h5ctx, std::string const & pathname = "")
+random_forest_import_HDF5(HDF5File& h5ctx, std::string const& pathname = "")
 {
     typedef typename DefaultRF<FEATURES, LABELS>::type RF;
     typedef typename RF::Graph Graph;
@@ -104,12 +105,14 @@ random_forest_import_HDF5(HDF5File & h5ctx, std::string const & pathname = "")
 
     std::string cwd;
 
-    if (pathname.size()) {
+    if (pathname.size())
+    {
         cwd = detail::get_cwd(h5ctx);
         h5ctx.cd(pathname);
     }
 
-    if (h5ctx.existsAttribute(rf_hdf5_version_group, rf_hdf5_version_tag)) {
+    if (h5ctx.existsAttribute(rf_hdf5_version_group, rf_hdf5_version_tag))
+    {
         double version;
         h5ctx.readAttribute(rf_hdf5_version_group, rf_hdf5_version_tag, version);
         vigra_precondition(version <= rf_hdf5_version, "random_forest_import_HDF5(): unexpected file format version.");
@@ -159,17 +162,17 @@ random_forest_import_HDF5(HDF5File & h5ctx, std::string const & pathname = "")
     std::vector<double> const class_weights(class_weights_marray.begin(), class_weights_marray.end());
 
     auto const pspec = ProblemSpec<LabelType>()
-                               .num_features(num_features)
-                               .num_instances(num_instances)
-                               .num_classes(num_classes)
-                               .distinct_classes(distinct_labels)
-                               .actual_mtry(actual_mtry)
-                               .actual_msample(msample);
+                           .num_features(num_features)
+                           .num_instances(num_instances)
+                           .num_classes(num_classes)
+                           .distinct_classes(distinct_labels)
+                           .actual_mtry(actual_mtry)
+                           .actual_msample(msample);
 
     auto options = RandomForestOptions()
-                            .min_num_instances(min_num_instances)
-                            .bootstrap_sampling(bootstrap_sampling)
-                            .tree_count(tree_count);
+                       .min_num_instances(min_num_instances)
+                       .bootstrap_sampling(bootstrap_sampling)
+                       .tree_count(tree_count);
     options.features_per_node_switch_ = mtry_switch;
     options.features_per_node_ = mtry;
     if (is_weighted)
@@ -180,8 +183,10 @@ random_forest_import_HDF5(HDF5File & h5ctx, std::string const & pathname = "")
     typename RF::template NodeMap<AccInputType>::type leaf_responses;
 
     auto const groups = h5ctx.ls();
-    for (auto const & groupname : groups) {
-        if (groupname.substr(0, std::char_traits<char>::length(rf_hdf5_tree)).compare(rf_hdf5_tree) != 0) {
+    for (auto const& groupname : groups)
+    {
+        if (groupname.substr(0, std::char_traits<char>::length(rf_hdf5_tree)).compare(rf_hdf5_tree) != 0)
+        {
             continue;
         }
 
@@ -197,9 +202,10 @@ random_forest_import_HDF5(HDF5File & h5ctx, std::string const & pathname = "")
 
         Node const n = gr.addNode();
 
-        std::queue<std::pair<unsigned int, Node> > q;
+        std::queue<std::pair<unsigned int, Node>> q;
         q.emplace(2, n);
-        while (!q.empty()) {
+        while (!q.empty())
+        {
             auto const el = q.front();
 
             unsigned int const index = el.first;
@@ -207,20 +213,23 @@ random_forest_import_HDF5(HDF5File & h5ctx, std::string const & pathname = "")
 
             vigra_precondition((topology[index] & rf_zero_mask) == 0, "random_forest_import_HDF5(): unexpected node type: type & zero_mask > 0");
 
-            if (topology[index] & rf_LeafNodeTag) {
-                unsigned int const probs_start = topology[index+1] + 1;
+            if (topology[index] & rf_LeafNodeTag)
+            {
+                unsigned int const probs_start = topology[index + 1] + 1;
 
                 vigra_precondition((topology[index] & rf_tag_mask) == rf_LeafNodeTag, "random_forest_import_HDF5(): unexpected node type: additional tags in leaf node");
 
                 std::vector<AccValueType> node_response;
 
-                for (unsigned int i = 0; i < num_classes; ++i) {
+                for (unsigned int i = 0; i < num_classes; ++i)
+                {
                     node_response.push_back(parameters[probs_start + i]);
                 }
 
                 leaf_responses.insert(parent, node_response);
-
-            } else {
+            }
+            else
+            {
                 vigra_precondition(topology[index] == rf_i_ThresholdNode, "random_forest_import_HDF5(): unexpected node type.");
 
                 Node const left = gr.addNode();
@@ -229,17 +238,18 @@ random_forest_import_HDF5(HDF5File & h5ctx, std::string const & pathname = "")
                 gr.addArc(parent, left);
                 gr.addArc(parent, right);
 
-                split_tests.insert(parent, SplitTest(topology[index+4], parameters[topology[index+1]+1]));
+                split_tests.insert(parent, SplitTest(topology[index + 4], parameters[topology[index + 1] + 1]));
 
-                q.push(std::make_pair(topology[index+2], left));
-                q.push(std::make_pair(topology[index+3], right));
+                q.push(std::make_pair(topology[index + 2], left));
+                q.push(std::make_pair(topology[index + 3], right));
             }
 
             q.pop();
         }
     }
 
-    if (cwd.size()) {
+    if (cwd.size())
+    {
         h5ctx.cd(cwd);
     }
 
@@ -250,41 +260,41 @@ random_forest_import_HDF5(HDF5File & h5ctx, std::string const & pathname = "")
 
 namespace detail
 {
-    class PaddedNumberString
+class PaddedNumberString
+{
+public:
+    PaddedNumberString(int n)
     {
-    public:
+        ss_ << (n - 1);
+        width_ = ss_.str().size();
+    }
 
-        PaddedNumberString(int n)
-        {
-            ss_ << (n-1);
-            width_ = ss_.str().size();
-        }
+    std::string operator()(int k) const
+    {
+        ss_.str("");
+        ss_ << std::setw(width_) << std::setfill('0') << k;
+        return ss_.str();
+    }
 
-        std::string operator()(int k) const
-        {
-            ss_.str("");
-            ss_ << std::setw(width_) << std::setfill('0') << k;
-            return ss_.str();
-        }
+private:
+    mutable std::ostringstream ss_;
+    unsigned int width_;
+};
+} // namespace detail
 
-    private:
-
-        mutable std::ostringstream ss_;
-        unsigned int width_;
-    };
-}
-
-template <typename RF>
-void random_forest_export_HDF5(
-        RF const & rf,
-        HDF5File & h5context,
-        std::string const & pathname = ""
-){
+template<typename RF>
+void
+random_forest_export_HDF5(
+    RF const& rf,
+    HDF5File& h5context,
+    std::string const& pathname = "")
+{
     typedef typename RF::LabelType LabelType;
     typedef typename RF::Node Node;
 
     std::string cwd;
-    if (pathname.size()) {
+    if (pathname.size())
+    {
         cwd = detail::get_cwd(h5context);
         h5context.cd_mk(pathname);
     }
@@ -294,8 +304,8 @@ void random_forest_export_HDF5(
                              rf_hdf5_version);
 
 
-    auto const & p = rf.problem_spec_;
-    auto const & opts = rf.options_;
+    auto const& p = rf.problem_spec_;
+    auto const& opts = rf.options_;
     MultiArray<1, LabelType> distinct_classes(Shape1(p.distinct_classes_.size()), p.distinct_classes_.data());
     MultiArray<1, double> class_weights(Shape1(p.num_classes_), 1.0);
     int is_weighted = 0;
@@ -349,20 +359,20 @@ void random_forest_export_HDF5(
         topology.push_back(p.num_features_);
         topology.push_back(p.num_classes_);
 
-        auto const & probs = rf.node_responses_;
-        auto const & splits = rf.split_tests_;
-        auto const & gr = rf.graph_;
+        auto const& probs = rf.node_responses_;
+        auto const& splits = rf.split_tests_;
+        auto const& gr = rf.graph_;
         auto const root = gr.getRoot(i);
 
         // Write the tree nodes using a depth-first search.
         // When a node is created, the indices of the child nodes are unknown.
         // Therefore, they have to be updated once the child nodes are created.
         // The stack holds the node and the topology-index that must be updated.
-        std::stack<std::pair<Node, std::ptrdiff_t> > stack;
+        std::stack<std::pair<Node, std::ptrdiff_t>> stack;
         stack.emplace(root, -1);
         while (!stack.empty())
         {
-            auto const n = stack.top().first; // the node descriptor
+            auto const n = stack.top().first;  // the node descriptor
             auto const i = stack.top().second; // index from the parent node that must be updated
             stack.pop();
 
@@ -377,7 +387,7 @@ void random_forest_export_HDF5(
                 // Parameters: node weight, class probabilities.
                 topology.push_back(rf_LeafNodeTag);
                 topology.push_back(parameters.size());
-                auto const & prob = probs.at(n);
+                auto const& prob = probs.at(n);
                 auto const weight = std::accumulate(prob.begin(), prob.end(), 0.0);
                 parameters.push_back(weight);
                 parameters.insert(parameters.end(), prob.begin(), prob.end());
@@ -394,10 +404,10 @@ void random_forest_export_HDF5(
                 topology.push_back(splits.at(n).dim_);
                 parameters.push_back(1.0); // inner nodes have the weight 1.
                 parameters.push_back(splits.at(n).val_);
-                
+
                 // Place the children on the stack.
-                stack.emplace(gr.getChild(n, 0), topology.size()-3);
-                stack.emplace(gr.getChild(n, 1), topology.size()-2);
+                stack.emplace(gr.getChild(n, 0), topology.size() - 3);
+                stack.emplace(gr.getChild(n, 1), topology.size() - 2);
             }
         }
 

@@ -39,78 +39,75 @@
 #define WITH_BOOST_GRAPH
 
 /*vigra*/
-#include "export_graph_visitor.hxx"
-#include "export_graph_rag_visitor.hxx"
 #include "export_graph_algorithm_visitor.hxx"
-#include "export_graph_shortest_path_visitor.hxx"
 #include "export_graph_hierarchical_clustering_visitor.hxx"
+#include "export_graph_rag_visitor.hxx"
+#include "export_graph_shortest_path_visitor.hxx"
+#include "export_graph_visitor.hxx"
 
-#include <vigra/numpy_array.hxx>
-#include <vigra/numpy_array_converters.hxx>
-#include <vigra/multi_gridgraph.hxx>
 #include <vigra/adjacency_list_graph.hxx>
 #include <vigra/graph_algorithms.hxx>
+#include <vigra/multi_gridgraph.hxx>
+#include <vigra/numpy_array.hxx>
+#include <vigra/numpy_array_converters.hxx>
 #include <vigra/python_graph.hxx>
 
 
 namespace python = boost::python;
 
-namespace vigra{
+namespace vigra
+{
 
 
 
+template<unsigned int DIM, class DTAG>
+NodeHolder<GridGraph<DIM, boost::undirected_tag>>
+pyCoordinateToNode3d(
+    const GridGraph<DIM, boost::undirected_tag>& g,
+    const typename MultiArray<DIM, int>::difference_type& coordinate)
+{
+    typename GridGraph<DIM, boost::undirected_tag>::Node node(coordinate);
+    return NodeHolder<GridGraph<DIM, boost::undirected_tag>>(g, node);
+}
+
+template<unsigned int DIM, class DTAG>
+GridGraph<DIM, DTAG>*
+pyGridGraphFactory3d(
+    typename MultiArray<DIM, int>::difference_type shape,
+    const bool directNeighborhood)
+{
+    return new GridGraph<DIM, DTAG>(shape, directNeighborhood ? DirectNeighborhood : IndirectNeighborhood);
+}
 
 
 
-    template<unsigned int DIM,class DTAG>
-    NodeHolder< GridGraph<DIM,boost::undirected_tag> > pyCoordinateToNode3d(
-        const GridGraph<DIM,boost::undirected_tag> & g,
-        const typename MultiArray<DIM,int>::difference_type & coordinate
-    ){
-        typename GridGraph<DIM,boost::undirected_tag>::Node node(coordinate);
-        return NodeHolder<  GridGraph<DIM,boost::undirected_tag> >(g,node);
-    }
+template<unsigned int DIM>
+void
+defineGridGraphT3d(const std::string& clsName)
+{
 
-    template<unsigned int DIM,class DTAG>
-    GridGraph<DIM,DTAG>  * pyGridGraphFactory3d(
-        typename MultiArray<DIM,int>::difference_type shape,
-        const bool directNeighborhood
-    ){
-        return new GridGraph<DIM,DTAG>(shape,directNeighborhood?DirectNeighborhood:IndirectNeighborhood);
-    }
+    typedef GridGraph<DIM, boost::undirected_tag> Graph;
+    typedef typename MultiArray<DIM, int>::difference_type ShapeType;
 
 
-
-
-
-    template<unsigned int DIM>
-    void defineGridGraphT3d(const std::string & clsName){
-
-        typedef GridGraph<DIM,boost::undirected_tag> Graph;
-        typedef typename MultiArray<DIM,int>::difference_type ShapeType;
-
-        
-        python::class_<Graph>(clsName.c_str(),python::init< ShapeType >())
-        .def("__init__",python::make_constructor(&pyGridGraphFactory3d<DIM,boost::undirected_tag>))
+    python::class_<Graph>(clsName.c_str(), python::init<ShapeType>())
+        .def("__init__", python::make_constructor(&pyGridGraphFactory3d<DIM, boost::undirected_tag>))
         .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
         .def(LemonGraphAlgorithmVisitor<Graph>(clsName))
         .def(LemonGridGraphAlgorithmAddonVisitor<Graph>(clsName))
         .def(LemonGraphShortestPathVisitor<Graph>(clsName))
         .def(LemonGraphRagVisitor<Graph>(clsName))
         .def(LemonGraphHierachicalClusteringVisitor<Graph>(clsName))
-        .def("coordinateToNode",pyCoordinateToNode3d<DIM,boost::undirected_tag>)
-        ;
+        .def("coordinateToNode", pyCoordinateToNode3d<DIM, boost::undirected_tag>);
+}
 
-       
-    }
-
-    void defineGridGraph3d(){
-        //defineGridGraphT<2>("GridGraphUndirected2d");
-        defineGridGraphT3d<3>("GridGraphUndirected3d");
-    }
-
+void
+defineGridGraph3d()
+{
+    //defineGridGraphT<2>("GridGraphUndirected2d");
+    defineGridGraphT3d<3>("GridGraphUndirected3d");
+}
 
 
-} 
 
-
+} // namespace vigra

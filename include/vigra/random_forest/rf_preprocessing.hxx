@@ -36,9 +36,9 @@
 #ifndef VIGRA_RF_PREPROCESSING_HXX
 #define VIGRA_RF_PREPROCESSING_HXX
 
+#include "rf_common.hxx"
 #include <limits>
 #include <vigra/mathutil.hxx>
-#include "rf_common.hxx"
 
 namespace vigra
 {
@@ -65,90 +65,89 @@ class Processor;
 namespace detail
 {
 
-    /* Common helper function used in all Processors. 
+/* Common helper function used in all Processors. 
      * This function analyses the options struct and calculates the real 
      * values needed for the current problem (data)
      */
-    template<class T>
-    void fill_external_parameters(RandomForestOptions const  & options,
-                                  ProblemSpec<T> & ext_param)
+template<class T>
+void
+fill_external_parameters(RandomForestOptions const& options,
+                         ProblemSpec<T>& ext_param)
+{
+    // set correct value for mtry
+    switch (options.mtry_switch_)
     {
-        // set correct value for mtry
-        switch(options.mtry_switch_)
-        {
-            case RF_SQRT:
-                ext_param.actual_mtry_ =
-                    int(std::floor(
-                            std::sqrt(double(ext_param.column_count_))
-                            + 0.5));
-                break;
-            case RF_LOG:
-                // this is in Breimans original paper
-                ext_param.actual_mtry_ =
-                    int(1+(std::log(double(ext_param.column_count_))
-                           /std::log(2.0)));
-                break;
-            case RF_FUNCTION:
-                ext_param.actual_mtry_ =
-                    options.mtry_func_(ext_param.column_count_);
-                break;
-            case RF_ALL:
-                ext_param.actual_mtry_ = ext_param.column_count_;
-                break;
-            default:
-                ext_param.actual_mtry_ =
-                    options.mtry_;
-        }
-        // set correct value for msample
-        switch(options.training_set_calc_switch_)
-        {
-            case RF_CONST:
-                ext_param.actual_msample_ =
-                    options.training_set_size_;
-                break;
-            case RF_PROPORTIONAL:
-                ext_param.actual_msample_ =
-                    static_cast<int>(std::ceil(options.training_set_proportion_ *
-                                               ext_param.row_count_));
-                    break;
-            case RF_FUNCTION:
-                ext_param.actual_msample_ =
-                    options.training_set_func_(ext_param.row_count_);
-                break;
-            default:
-                vigra_precondition(1!= 1, "unexpected error");
+        case RF_SQRT:
+            ext_param.actual_mtry_ =
+                int(std::floor(
+                    std::sqrt(double(ext_param.column_count_)) + 0.5));
+            break;
+        case RF_LOG:
+            // this is in Breimans original paper
+            ext_param.actual_mtry_ =
+                int(1 + (std::log(double(ext_param.column_count_)) / std::log(2.0)));
+            break;
+        case RF_FUNCTION:
+            ext_param.actual_mtry_ =
+                options.mtry_func_(ext_param.column_count_);
+            break;
+        case RF_ALL:
+            ext_param.actual_mtry_ = ext_param.column_count_;
+            break;
+        default:
+            ext_param.actual_mtry_ =
+                options.mtry_;
+    }
+    // set correct value for msample
+    switch (options.training_set_calc_switch_)
+    {
+        case RF_CONST:
+            ext_param.actual_msample_ =
+                options.training_set_size_;
+            break;
+        case RF_PROPORTIONAL:
+            ext_param.actual_msample_ =
+                static_cast<int>(std::ceil(options.training_set_proportion_ *
+                                           ext_param.row_count_));
+            break;
+        case RF_FUNCTION:
+            ext_param.actual_msample_ =
+                options.training_set_func_(ext_param.row_count_);
+            break;
+        default:
+            vigra_precondition(1 != 1, "unexpected error");
+    }
+}
 
-        }
+/* Returns true if MultiArray contains NaNs
+     */
+template<unsigned int N, class T, class C>
+bool
+contains_nan(MultiArrayView<N, T, C> const& in)
+{
+    typedef typename MultiArrayView<N, T, C>::const_iterator Iter;
+    Iter i = in.begin(), end = in.end();
+    for (; i != end; ++i)
+        if (isnan(NumericTraits<T>::toRealPromote(*i)))
+            return true;
+    return false;
+}
 
-    }
-    
-    /* Returns true if MultiArray contains NaNs
+/* Returns true if MultiArray contains Infs
      */
-    template<unsigned int N, class T, class C>
-    bool contains_nan(MultiArrayView<N, T, C> const & in)
-    {
-        typedef typename MultiArrayView<N, T, C>::const_iterator Iter;
-        Iter i = in.begin(), end = in.end();
-        for(; i != end; ++i)
-            if(isnan(NumericTraits<T>::toRealPromote(*i)))
-                return true;
-        return false; 
-    }
-    
-    /* Returns true if MultiArray contains Infs
-     */
-    template<unsigned int N, class T, class C>
-    bool contains_inf(MultiArrayView<N, T, C> const & in)
-    {
-         if(!std::numeric_limits<T>::has_infinity)
-             return false;
-        typedef typename MultiArrayView<N, T, C>::const_iterator Iter;
-        Iter i = in.begin(), end = in.end();
-        for(; i != end; ++i)
-            if(abs(*i) == std::numeric_limits<T>::infinity())
-                return true;
-         return false;
-    }
+template<unsigned int N, class T, class C>
+bool
+contains_inf(MultiArrayView<N, T, C> const& in)
+{
+    if (!std::numeric_limits<T>::has_infinity)
+        return false;
+    typedef typename MultiArrayView<N, T, C>::const_iterator Iter;
+    Iter i = in.begin(), end = in.end();
+    for (; i != end; ++i)
+        if (abs(*i) == std::numeric_limits<T>::infinity())
+            return true;
+    return false;
+}
 } // namespace detail
 
 
@@ -161,63 +160,61 @@ namespace detail
 template<class LabelType, class T1, class C1, class T2, class C2>
 class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
 {
-    public:
+public:
     typedef Int32 LabelInt;
     typedef MultiArrayView<2, T1, C1> Feature_t;
     typedef MultiArray<2, T1> FeatureWithMemory_t;
-    typedef MultiArrayView<2,LabelInt> Label_t;
-    MultiArrayView<2, T1, C1>const &    features_;
-    MultiArray<2, LabelInt>             intLabels_;
-    MultiArrayView<2, LabelInt>         strata_;
+    typedef MultiArrayView<2, LabelInt> Label_t;
+    MultiArrayView<2, T1, C1> const& features_;
+    MultiArray<2, LabelInt> intLabels_;
+    MultiArrayView<2, LabelInt> strata_;
 
     template<class T>
-    Processor(MultiArrayView<2, T1, C1>const & features,   
-              MultiArrayView<2, T2, C2>const & response,
-              RandomForestOptions &options,         
-              ProblemSpec<T> &ext_param)
-    :
-        features_( features) // do not touch the features. 
+    Processor(MultiArrayView<2, T1, C1> const& features,
+              MultiArrayView<2, T2, C2> const& response,
+              RandomForestOptions& options,
+              ProblemSpec<T>& ext_param)
+        : features_(features) // do not touch the features.
     {
         vigra_precondition(!detail::contains_nan(features), "RandomForest(): Feature matrix "
-                                                           "contains NaNs");
+                                                            "contains NaNs");
         vigra_precondition(!detail::contains_nan(response), "RandomForest(): Response "
-                                                           "contains NaNs");
+                                                            "contains NaNs");
         vigra_precondition(!detail::contains_inf(features), "RandomForest(): Feature matrix "
-                                                           "contains inf");
+                                                            "contains inf");
         vigra_precondition(!detail::contains_inf(response), "RandomForest(): Response "
-                                                           "contains inf");
-        // set some of the problem specific parameters 
-        ext_param.column_count_  = features.shape(1);
-        ext_param.row_count_     = features.shape(0);
-        ext_param.problem_type_  = CLASSIFICATION;
-        ext_param.used_          = true;
+                                                            "contains inf");
+        // set some of the problem specific parameters
+        ext_param.column_count_ = features.shape(1);
+        ext_param.row_count_ = features.shape(0);
+        ext_param.problem_type_ = CLASSIFICATION;
+        ext_param.used_ = true;
         intLabels_.reshape(response.shape());
 
         //get the class labels
-        if(ext_param.class_count_ == 0)
+        if (ext_param.class_count_ == 0)
         {
-            // fill up a map with the current labels and then create the 
+            // fill up a map with the current labels and then create the
             // integral labels.
-            std::set<T2>                    labelToInt;
-            for(MultiArrayIndex k = 0; k < features.shape(0); ++k)
-                labelToInt.insert(response(k,0));
+            std::set<T2> labelToInt;
+            for (MultiArrayIndex k = 0; k < features.shape(0); ++k)
+                labelToInt.insert(response(k, 0));
             std::vector<T2> tmp_(labelToInt.begin(), labelToInt.end());
             ext_param.classes_(tmp_.begin(), tmp_.end());
         }
-        for(MultiArrayIndex k = 0; k < features.shape(0); ++k)
+        for (MultiArrayIndex k = 0; k < features.shape(0); ++k)
         {
-            if(std::find(ext_param.classes.begin(), ext_param.classes.end(), response(k,0)) == ext_param.classes.end())
+            if (std::find(ext_param.classes.begin(), ext_param.classes.end(), response(k, 0)) == ext_param.classes.end())
             {
                 throw std::runtime_error("RandomForest(): invalid label in training data.");
             }
             else
-                intLabels_(k, 0) = std::find(ext_param.classes.begin(), ext_param.classes.end(), response(k,0))
-                                    - ext_param.classes.begin();
+                intLabels_(k, 0) = std::find(ext_param.classes.begin(), ext_param.classes.end(), response(k, 0)) - ext_param.classes.begin();
         }
         // set class weights
-        if(ext_param.class_weights_.size() == 0)
+        if (ext_param.class_weights_.size() == 0)
         {
-            ArrayVector<T2> 
+            ArrayVector<T2>
                 tmp(static_cast<std::size_t>(ext_param.class_count_),
                     NumericTraits<T2>::one());
             ext_param.class_weights(tmp.begin(), tmp.end());
@@ -228,12 +225,11 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
 
         // set strata
         strata_ = intLabels_;
-
     }
 
     /** Access the processed features
      */
-    MultiArrayView<2, T1, C1>const & features()
+    MultiArrayView<2, T1, C1> const& features()
     {
         return features_;
     }
@@ -247,16 +243,16 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
 
     /** Access processed strata
      */
-    ArrayVectorView < LabelInt>  strata()
+    ArrayVectorView<LabelInt> strata()
     {
         return ArrayVectorView<LabelInt>(intLabels_.size(), intLabels_.data());
     }
 
     /** Access strata fraction sized - not used currently
      */
-    ArrayVectorView< double> strata_prob()
+    ArrayVectorView<double> strata_prob()
     {
-        return ArrayVectorView< double>();
+        return ArrayVectorView<double>();
     }
 };
 
@@ -266,75 +262,71 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
  * data.
  */
 template<class LabelType, class T1, class C1, class T2, class C2>
-class Processor<RegressionTag,LabelType, T1, C1, T2, C2>
+class Processor<RegressionTag, LabelType, T1, C1, T2, C2>
 {
 public:
     // only views are created - no data copied.
-    MultiArrayView<2, T1, C1>   features_;
-    MultiArrayView<2, T2, C2>   response_;
-    RandomForestOptions const & options_;
-    ProblemSpec<LabelType> const &
-                                ext_param_;
+    MultiArrayView<2, T1, C1> features_;
+    MultiArrayView<2, T2, C2> response_;
+    RandomForestOptions const& options_;
+    ProblemSpec<LabelType> const&
+        ext_param_;
     // will only be filled if needed
-    MultiArray<2, int>      strata_;
+    MultiArray<2, int> strata_;
     bool strata_filled;
 
     // copy the views.
     template<class T>
-    Processor(  MultiArrayView<2, T1, C1>   features,
-                MultiArrayView<2, T2, C2>   response,
-                RandomForestOptions const & options,
-                ProblemSpec<T>& ext_param)
-    :
-        features_(features),
-        response_(response),
-        options_(options),
-        ext_param_(ext_param)
+    Processor(MultiArrayView<2, T1, C1> features,
+              MultiArrayView<2, T2, C2> response,
+              RandomForestOptions const& options,
+              ProblemSpec<T>& ext_param)
+        : features_(features),
+          response_(response),
+          options_(options),
+          ext_param_(ext_param)
     {
-        // set some of the problem specific parameters 
-        ext_param.column_count_  = features.shape(1);
-        ext_param.row_count_     = features.shape(0);
-        ext_param.problem_type_  = REGRESSION;
-        ext_param.used_          = true;
+        // set some of the problem specific parameters
+        ext_param.column_count_ = features.shape(1);
+        ext_param.row_count_ = features.shape(0);
+        ext_param.problem_type_ = REGRESSION;
+        ext_param.used_ = true;
         detail::fill_external_parameters(options, ext_param);
         vigra_precondition(!detail::contains_nan(features), "Processor(): Feature Matrix "
-                                                           "Contains NaNs");
+                                                            "Contains NaNs");
         vigra_precondition(!detail::contains_nan(response), "Processor(): Response "
-                                                           "Contains NaNs");
+                                                            "Contains NaNs");
         vigra_precondition(!detail::contains_inf(features), "Processor(): Feature Matrix "
-                                                           "Contains inf");
+                                                            "Contains inf");
         vigra_precondition(!detail::contains_inf(response), "Processor(): Response "
-                                                           "Contains inf");
-        strata_ = MultiArray<2, int> (MultiArrayShape<2>::type(response_.shape(0), 1));
+                                                            "Contains inf");
+        strata_ = MultiArray<2, int>(MultiArrayShape<2>::type(response_.shape(0), 1));
         ext_param.response_size_ = response.shape(1);
         ext_param.class_count_ = response_.shape(1);
         std::vector<T2> tmp_(ext_param.class_count_, 0);
-            ext_param.classes_(tmp_.begin(), tmp_.end());
+        ext_param.classes_(tmp_.begin(), tmp_.end());
     }
 
     /** access preprocessed features
      */
-    MultiArrayView<2, T1, C1> & features()
+    MultiArrayView<2, T1, C1>& features()
     {
         return features_;
     }
 
     /** access preprocessed response
      */
-    MultiArrayView<2, T2, C2> & response()
+    MultiArrayView<2, T2, C2>& response()
     {
         return response_;
     }
 
     /** access strata - this is not used currently
      */
-    MultiArray<2, int> & strata()
+    MultiArray<2, int>& strata()
     {
         return strata_;
     }
 };
-}
+} // namespace vigra
 #endif //VIGRA_RF_PREPROCESSING_HXX
-
-
-

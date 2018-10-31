@@ -29,105 +29,114 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
-#include <iostream>
-#include "vigra/unittest.hxx"
 #include "vigra/delegate/delegate.hxx"
+#include "vigra/unittest.hxx"
+#include <iostream>
 
 using namespace vigra;
 
 
 
-int ff1(int a){
+int
+ff1(int a)
+{
     return a;
 }
 
 
-int ff2(int a,int b){
-    return a+b;
+int
+ff2(int a, int b)
+{
+    return a + b;
 }
 
 
 
+struct DelegateTest
+{
+    typedef vigra::delegate1<int, int> D1;
+    typedef vigra::delegate2<int, int, int> D2;
 
-struct DelegateTest{   
-    typedef  vigra::delegate1<int,int> D1;
-    typedef  vigra::delegate2<int,int,int> D2;
 
-
-    int mf1(int a){
+    int mf1(int a)
+    {
         return a;
     }
 
 
-    int mf2(int a,int b){
-        return a+b;
+    int mf2(int a, int b)
+    {
+        return a + b;
     }
 
-    int mf1(int a)const{
-        return a+1;
+    int mf1(int a) const
+    {
+        return a + 1;
     }
 
 
-    int mf2(int a,int b)const{
-        return a+b+1;
+    int mf2(int a, int b) const
+    {
+        return a + b + 1;
     }
 
-    void test1(){
+    void test1()
+    {
         {
-        D1 d1(D1::from_method< DelegateTest,&DelegateTest::mf1 >(this));
-        shouldEqual(d1(2),2);
-        shouldEqual(d1(3),3);
+            D1 d1(D1::from_method<DelegateTest, &DelegateTest::mf1>(this));
+            shouldEqual(d1(2), 2);
+            shouldEqual(d1(3), 3);
         }
         {
-        D1 d1(D1::from_const_method< DelegateTest,&DelegateTest::mf1 >(this));
-        shouldEqual(d1(2),2+1);
-        shouldEqual(d1(3),3+1);
+            D1 d1(D1::from_const_method<DelegateTest, &DelegateTest::mf1>(this));
+            shouldEqual(d1(2), 2 + 1);
+            shouldEqual(d1(3), 3 + 1);
         }
         {
-        D1 d1(D1::from_function< &ff1 >());
-        shouldEqual(d1(2),2);
-        shouldEqual(d1(3),3);
+            D1 d1(D1::from_function<&ff1>());
+            shouldEqual(d1(2), 2);
+            shouldEqual(d1(3), 3);
         }
     }
-    void test2(){
+    void test2()
+    {
         {
-        D2 d2(D2::from_method< DelegateTest,&DelegateTest::mf2 >(this));
-        shouldEqual(d2(2,2),4);
-        shouldEqual(d2(3,2),5);
+            D2 d2(D2::from_method<DelegateTest, &DelegateTest::mf2>(this));
+            shouldEqual(d2(2, 2), 4);
+            shouldEqual(d2(3, 2), 5);
         }
         {
-        D2 d2(D2::from_const_method< DelegateTest,&DelegateTest::mf2 >(this));
-        shouldEqual(d2(2,2),4+1);
-        shouldEqual(d2(3,2),5+1);
+            D2 d2(D2::from_const_method<DelegateTest, &DelegateTest::mf2>(this));
+            shouldEqual(d2(2, 2), 4 + 1);
+            shouldEqual(d2(3, 2), 5 + 1);
         }
         {
-        D2 d2(D2::from_function< &ff2 >());
-        shouldEqual(d2(2,2),4);
-        shouldEqual(d2(3,2),5);
+            D2 d2(D2::from_function<&ff2>());
+            shouldEqual(d2(2, 2), 4);
+            shouldEqual(d2(3, 2), 5);
         }
     }
 };
 
 
 
-
- 
 struct DelegatesTestSuite
-: public vigra::test_suite
+    : public vigra::test_suite
 {
     DelegatesTestSuite()
-    : vigra::test_suite("DelegatesTestSuite")
-    {   
-        add( testCase( &DelegateTest::test1));
-        add( testCase( &DelegateTest::test2));
+        : vigra::test_suite("DelegatesTestSuite")
+    {
+        add(testCase(&DelegateTest::test1));
+        add(testCase(&DelegateTest::test2));
     }
 };
 
-int main(int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
     DelegatesTestSuite test;
 
@@ -137,4 +146,3 @@ int main(int argc, char ** argv)
 
     return (failed != 0);
 }
-

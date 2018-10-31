@@ -42,152 +42,161 @@
 
 /*std*/
 #include <algorithm>
-#include <vector>
 #include <functional>
 #include <set>
+#include <vector>
 
 
 /*vigra*/
-#include "graphs.hxx"
+#include "adjacency_list_graph.hxx"
 #include "graph_generalization.hxx"
+#include "graph_maps.hxx"
+#include "graphs.hxx"
 #include "multi_gridgraph.hxx"
 #include "priority_queue.hxx"
 #include "union_find.hxx"
-#include "adjacency_list_graph.hxx"
-#include "graph_maps.hxx"
 
 
 
-namespace vigra{
+namespace vigra
+{
 
-    /// \cond
-    namespace detail_rag_project_back{
+/// \cond
+namespace detail_rag_project_back
+{
 
-    template<
-        class BASE_GRAPH,
-        class BASE_GRAPH_LABELS,
-        class RAG_FEATURES,
-        class BASE_GRAPH_FEATURES
-    >
-    struct RagProjectBack{
+template<
+    class BASE_GRAPH,
+    class BASE_GRAPH_LABELS,
+    class RAG_FEATURES,
+    class BASE_GRAPH_FEATURES>
+struct RagProjectBack
+{
 
 
-        static void projectBack(
-            const AdjacencyListGraph & rag,
-            const BASE_GRAPH & bg,
-            const Int64 ignoreLabel,
-            const BASE_GRAPH_LABELS bgLabels,
-            const RAG_FEATURES & ragFeatures,
-            BASE_GRAPH_FEATURES & bgFeatures
-        ){
-            typedef BASE_GRAPH Bg;
-            typedef typename Bg::NodeIt BgNodeIt;
-            typedef typename Bg::Node BgNode;
+    static void projectBack(
+        const AdjacencyListGraph& rag,
+        const BASE_GRAPH& bg,
+        const Int64 ignoreLabel,
+        const BASE_GRAPH_LABELS bgLabels,
+        const RAG_FEATURES& ragFeatures,
+        BASE_GRAPH_FEATURES& bgFeatures)
+    {
+        typedef BASE_GRAPH Bg;
+        typedef typename Bg::NodeIt BgNodeIt;
+        typedef typename Bg::Node BgNode;
 
-            if(ignoreLabel==-1){
-                for(BgNodeIt iter(bg); iter!=lemon::INVALID; ++iter){
-                    const BgNode bgNode(*iter);
+        if (ignoreLabel == -1)
+        {
+            for (BgNodeIt iter(bg); iter != lemon::INVALID; ++iter)
+            {
+                const BgNode bgNode(*iter);
+                bgFeatures[bgNode] = ragFeatures[rag.nodeFromId(bgLabels[bgNode])];
+            }
+        }
+        else
+        {
+            for (BgNodeIt iter(bg); iter != lemon::INVALID; ++iter)
+            {
+                const BgNode bgNode(*iter);
+                if (static_cast<Int64>(bgLabels[bgNode]) != ignoreLabel)
                     bgFeatures[bgNode] = ragFeatures[rag.nodeFromId(bgLabels[bgNode])];
-                }
-            }
-            else{
-                for(BgNodeIt iter(bg); iter!=lemon::INVALID; ++iter){
-                    const BgNode bgNode(*iter);
-                    if(static_cast<Int64>(bgLabels[bgNode])!=ignoreLabel)
-                        bgFeatures[bgNode] = ragFeatures[rag.nodeFromId(bgLabels[bgNode])];
-                }
             }
         }
-    };
+    }
+};
 
 
-    template<
-        class BASE_GRAPH_LABELS,
-        class RAG_FEATURES,
-        class BASE_GRAPH_FEATURES
-    >
-    struct RagProjectBack<
-        vigra::GridGraph<3, undirected_tag>,
-        BASE_GRAPH_LABELS,
-        RAG_FEATURES,
-        BASE_GRAPH_FEATURES
-    >{
-        typedef vigra::GridGraph<3, undirected_tag> BASE_GRAPH;
+template<
+    class BASE_GRAPH_LABELS,
+    class RAG_FEATURES,
+    class BASE_GRAPH_FEATURES>
+struct RagProjectBack<
+    vigra::GridGraph<3, undirected_tag>,
+    BASE_GRAPH_LABELS,
+    RAG_FEATURES,
+    BASE_GRAPH_FEATURES>
+{
+    typedef vigra::GridGraph<3, undirected_tag> BASE_GRAPH;
 
-        static void projectBack(
-            const AdjacencyListGraph & rag,
-            const BASE_GRAPH & bg,
-            const Int64 ignoreLabel,
-            const BASE_GRAPH_LABELS bgLabels,
-            const RAG_FEATURES & ragFeatures,
-            BASE_GRAPH_FEATURES & bgFeatures
-        ){
-            typedef BASE_GRAPH Bg;
-            typedef typename Bg::Node BgNode;
-
-
-            vigra::TinyVector<Int64, 3> shape = bg.shape();
+    static void projectBack(
+        const AdjacencyListGraph& rag,
+        const BASE_GRAPH& bg,
+        const Int64 ignoreLabel,
+        const BASE_GRAPH_LABELS bgLabels,
+        const RAG_FEATURES& ragFeatures,
+        BASE_GRAPH_FEATURES& bgFeatures)
+    {
+        typedef BASE_GRAPH Bg;
+        typedef typename Bg::Node BgNode;
 
 
-            if(ignoreLabel==-1){
-                
-// FIXME: replace with threadpool                #pragma omp parallel for
-                for(Int64 z=0; z<shape[2]; ++z){    
-                    BgNode node;
-                    node[2]=z;
-                    for(node[1]=0; node[1]<shape[1]; ++node[1])  
-                    for(node[0]=0; node[0]<shape[0]; ++node[0]){
+        vigra::TinyVector<Int64, 3> shape = bg.shape();
+
+
+        if (ignoreLabel == -1)
+        {
+
+            // FIXME: replace with threadpool                #pragma omp parallel for
+            for (Int64 z = 0; z < shape[2]; ++z)
+            {
+                BgNode node;
+                node[2] = z;
+                for (node[1] = 0; node[1] < shape[1]; ++node[1])
+                    for (node[0] = 0; node[0] < shape[0]; ++node[0])
+                    {
                         bgFeatures[node] = ragFeatures[rag.nodeFromId(bgLabels[node])];
-                    }  
-                }
-
-            }
-            else{
-// FIXME: replace with threadpool                #pragma omp parallel for
-                for(Int64 z=0; z<shape[2]; ++z){    
-                    BgNode node;
-                    node[2]=z;
-                    for(node[1]=0; node[1]<shape[1]; ++node[1])  
-                    for(node[0]=0; node[0]<shape[0]; ++node[0]){
-                        if(static_cast<Int64>(bgLabels[node])!=ignoreLabel)
-                            bgFeatures[node] = ragFeatures[rag.nodeFromId(bgLabels[node])];
-                    }  
-                }
+                    }
             }
         }
-    };
-
-
-
+        else
+        {
+            // FIXME: replace with threadpool                #pragma omp parallel for
+            for (Int64 z = 0; z < shape[2]; ++z)
+            {
+                BgNode node;
+                node[2] = z;
+                for (node[1] = 0; node[1] < shape[1]; ++node[1])
+                    for (node[0] = 0; node[0] < shape[0]; ++node[0])
+                    {
+                        if (static_cast<Int64>(bgLabels[node]) != ignoreLabel)
+                            bgFeatures[node] = ragFeatures[rag.nodeFromId(bgLabels[node])];
+                    }
+            }
+        }
     }
-    /// \endcond
-
-    /// project node features of a region adjacency
-    /// graph back to the base graph.
-    ///
-    /// This function can be used to show a segmentation
-    /// or node features of RAG on pixel / voxel level
-    template< class BASE_GRAPH,
-                class BASE_GRAPH_LABELS,
-                class RAG_FEATURES,
-                class BASE_GRAPH_FEATURES 
-    >
-    inline void projectBack(
-            const AdjacencyListGraph & rag,
-            const BASE_GRAPH & bg,
-            const Int64 ignoreLabel,
-            const BASE_GRAPH_LABELS bgLabels,
-            const RAG_FEATURES & ragFeatures,
-            BASE_GRAPH_FEATURES & bgFeatures
-    ){
-        using namespace detail_rag_project_back;
-        detail_rag_project_back::RagProjectBack< BASE_GRAPH,BASE_GRAPH_LABELS,RAG_FEATURES,BASE_GRAPH_FEATURES>::projectBack(rag,
-            bg,ignoreLabel,bgLabels,ragFeatures,bgFeatures);
-    }
+};
 
 
 
+} // namespace detail_rag_project_back
+/// \endcond
+
+/// project node features of a region adjacency
+/// graph back to the base graph.
+///
+/// This function can be used to show a segmentation
+/// or node features of RAG on pixel / voxel level
+template<class BASE_GRAPH,
+         class BASE_GRAPH_LABELS,
+         class RAG_FEATURES,
+         class BASE_GRAPH_FEATURES>
+inline void
+projectBack(
+    const AdjacencyListGraph& rag,
+    const BASE_GRAPH& bg,
+    const Int64 ignoreLabel,
+    const BASE_GRAPH_LABELS bgLabels,
+    const RAG_FEATURES& ragFeatures,
+    BASE_GRAPH_FEATURES& bgFeatures)
+{
+    using namespace detail_rag_project_back;
+    detail_rag_project_back::RagProjectBack<BASE_GRAPH, BASE_GRAPH_LABELS, RAG_FEATURES, BASE_GRAPH_FEATURES>::projectBack(rag,
+                                                                                                                           bg, ignoreLabel, bgLabels, ragFeatures, bgFeatures);
 }
 
-#endif /* VIGRA_GRAPH_RAG_PROJECT_BACK_HXX */
 
+
+} // namespace vigra
+
+#endif /* VIGRA_GRAPH_RAG_PROJECT_BACK_HXX */

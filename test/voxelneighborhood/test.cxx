@@ -29,44 +29,50 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
-#include <iostream>
-#include <functional>
-#include <cmath>
-#include <set>
 #include "vigra/unittest.hxx"
+#include <cmath>
+#include <functional>
+#include <iostream>
+#include <set>
 
-#include "vigra/voxelneighborhood.hxx"
 #include "vigra/multi_array.hxx"
+#include "vigra/voxelneighborhood.hxx"
 
 using namespace vigra;
 struct NeighborhoodCirculator3dTest
 {
 
-    typedef vigra::NeighborhoodCirculator<vigra::StridedMultiIterator<3,int>, vigra::NeighborCode3DSix> SixTraverser;
-    typedef vigra::NeighborhoodCirculator<vigra::StridedMultiIterator<3,int>, vigra::NeighborCode3DTwentySix> TwentySixTraverser;
+    typedef vigra::NeighborhoodCirculator<vigra::StridedMultiIterator<3, int>, vigra::NeighborCode3DSix> SixTraverser;
+    typedef vigra::NeighborhoodCirculator<vigra::StridedMultiIterator<3, int>, vigra::NeighborCode3DTwentySix> TwentySixTraverser;
 
-    typedef vigra::MultiArray<3,int> IntVolume;
+    typedef vigra::MultiArray<3, int> IntVolume;
 
     IntVolume vol;
-        
+
     SixTraverser sixTrav;
     TwentySixTraverser twentySixTrav;
 
-    enum { w=5,h=5,d=5 };
-        
+    enum
+    {
+        w = 5,
+        h = 5,
+        d = 5
+    };
+
 
     NeighborhoodCirculator3dTest()
-    : vol(IntVolume::difference_type(w,h,d)),
-      sixTrav(vol.traverser_begin() + vigra::Diff3D(1,1,1)),         // set sixTrav to voxel 31=(1,1,1)
-      twentySixTrav(vol.traverser_begin() + vigra::Diff3D(1,1,1))    // set twentySixTrav to voxel 31=(1,1,1)
+        : vol(IntVolume::difference_type(w, h, d)),
+          sixTrav(vol.traverser_begin() + vigra::Diff3D(1, 1, 1)),      // set sixTrav to voxel 31=(1,1,1)
+          twentySixTrav(vol.traverser_begin() + vigra::Diff3D(1, 1, 1)) // set twentySixTrav to voxel 31=(1,1,1)
     {
-        int i=0;
-        for(vigra::MultiArray<3,int>::iterator iter = vol.begin(); iter!= vol.end(); ++iter, ++i){
-                *iter=i;
+        int i = 0;
+        for (vigra::MultiArray<3, int>::iterator iter = vol.begin(); iter != vol.end(); ++iter, ++i)
+        {
+            *iter = i;
         }
     }
 
@@ -220,16 +226,20 @@ struct NeighborhoodCirculator3dTest
     {
         should(*twentySixTrav == 0);
         should(*sixTrav == 6);
-        for(int i=0; i<27; i++, sixTrav++, twentySixTrav++)
+        for (int i = 0; i < 27; i++, sixTrav++, twentySixTrav++)
         {
-            switch(i){
-                case  4 : 
-                case 10 :
-                case 12 :
-                case 13 :
-                case 15 :
-                case 21 : should(!twentySixTrav.isDiagonal()); break;
-                default : should(twentySixTrav.isDiagonal());
+            switch (i)
+            {
+                case 4:
+                case 10:
+                case 12:
+                case 13:
+                case 15:
+                case 21:
+                    should(!twentySixTrav.isDiagonal());
+                    break;
+                default:
+                    should(twentySixTrav.isDiagonal());
             }
             should(!sixTrav.isDiagonal());
         }
@@ -248,7 +258,7 @@ struct NeighborhoodCirculator3dTest
         twentySixTrav2--;
         should(twentySixTrav == twentySixTrav2);
 
-        SixTraverser sixTrav2(vol.traverser_begin() + vigra::Diff3D(1,1,1));
+        SixTraverser sixTrav2(vol.traverser_begin() + vigra::Diff3D(1, 1, 1));
         should(sixTrav == sixTrav2);
         sixTrav--;
         should(sixTrav != sixTrav2);
@@ -287,14 +297,14 @@ struct NeighborhoodCirculator3dTest
         sixTrav++; // turn to North
         sixTrav2.turnTo(Neighborhood3DSix::North);
         should(sixTrav == sixTrav2);
-        sixTrav-=2; // turn to East
+        sixTrav -= 2; // turn to East
         sixTrav2.turnTo(Neighborhood3DSix::East);
         should(sixTrav == sixTrav2);
 
         twentySixTrav++; // turn to InFrontNorth
         twentySixTrav2.turnTo(Neighborhood3DTwentySix::InFrontNorth);
         should(twentySixTrav == twentySixTrav2);
-        twentySixTrav+=12; // turn to East
+        twentySixTrav += 12; // turn to East
         twentySixTrav2.turnTo(Neighborhood3DTwentySix::East);
         should(twentySixTrav == twentySixTrav2);
     }
@@ -303,13 +313,13 @@ struct NeighborhoodCirculator3dTest
     {
         sixTrav.turnTo(Neighborhood3DSix::Behind);
         sixTrav.swapCenterNeighbor();
-        should(*(sixTrav.center()) == 56 );
+        should(*(sixTrav.center()) == 56);
         shouldEqual(*sixTrav, 31); // looking Behind from 6 now
         should(sixTrav.direction() == Neighborhood3DSix::InFront);
 
         twentySixTrav.turnTo(Neighborhood3DTwentySix::BehindSouthEast);
         twentySixTrav.swapCenterNeighbor();
-        should(*(twentySixTrav.center()) == 62 );
+        should(*(twentySixTrav.center()) == 62);
         shouldEqual(*twentySixTrav, 31); // looking Behind from 6 now
         should(twentySixTrav.direction() == Neighborhood3DTwentySix::InFrontNorthWest);
     }
@@ -319,9 +329,10 @@ struct NeighborhoodCirculator3dTest
         SixTraverser sixTrav2 = sixTrav;
         TwentySixTraverser twentySixTrav2 = twentySixTrav;
         // test operator[]
-        for(int i=0; i<6; i++, sixTrav++, twentySixTrav++){
-                should(sixTrav2[i] == *sixTrav);
-                should(twentySixTrav2[i] == *twentySixTrav);
+        for (int i = 0; i < 6; i++, sixTrav++, twentySixTrav++)
+        {
+            should(sixTrav2[i] == *sixTrav);
+            should(twentySixTrav2[i] == *twentySixTrav);
         }
 
         twentySixTrav.turnTo(Neighborhood3DTwentySix::InFrontNorthWest);
@@ -340,26 +351,32 @@ struct NeighborhoodCirculator3dTest
 struct RestrictedNeighborhoodCirculator3dTest
 {
 
-    typedef vigra::RestrictedNeighborhoodCirculator<vigra::StridedMultiIterator<3,int>, vigra::NeighborCode3DSix> SixTraverser;
-    typedef vigra::RestrictedNeighborhoodCirculator<vigra::StridedMultiIterator<3,int>, vigra::NeighborCode3DTwentySix> TwentySixTraverser;
-    typedef vigra::MultiArray<3,int> IntVolume;
+    typedef vigra::RestrictedNeighborhoodCirculator<vigra::StridedMultiIterator<3, int>, vigra::NeighborCode3DSix> SixTraverser;
+    typedef vigra::RestrictedNeighborhoodCirculator<vigra::StridedMultiIterator<3, int>, vigra::NeighborCode3DTwentySix> TwentySixTraverser;
+    typedef vigra::MultiArray<3, int> IntVolume;
 
     IntVolume vol;
-        
+
     SixTraverser sixTrav;
     TwentySixTraverser twentySixTrav;
 
-    enum { w=3,h=3,d=3 };
-        
+    enum
+    {
+        w = 3,
+        h = 3,
+        d = 3
+    };
+
 
     RestrictedNeighborhoodCirculator3dTest()
-    : vol(IntVolume::difference_type(w,h,d)),
-      sixTrav(vol.traverser_begin(), TopLeftFrontBorder),
-      twentySixTrav(vol.traverser_begin(), TopLeftFrontBorder)
+        : vol(IntVolume::difference_type(w, h, d)),
+          sixTrav(vol.traverser_begin(), TopLeftFrontBorder),
+          twentySixTrav(vol.traverser_begin(), TopLeftFrontBorder)
     {
-        int i=0;
-        for(vigra::MultiArray<3,int>::iterator iter = vol.begin(); iter!= vol.end(); ++iter, ++i){
-            *iter=i;
+        int i = 0;
+        for (vigra::MultiArray<3, int>::iterator iter = vol.begin(); iter != vol.end(); ++iter, ++i)
+        {
+            *iter = i;
         }
     }
 
@@ -377,15 +394,15 @@ struct RestrictedNeighborhoodCirculator3dTest
     {
         std::set<int> directions;
         std::set<int>::iterator dir_Iter;
-        int x,y,z,start;
+        int x, y, z, start;
         AtVolumeBorder atBorder;
 
-////////test first plane in volume
+        ////////test first plane in volume
 
         //-------------TopLeftFrontBorder--------------//
-        x=0,y=0,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 0, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 9);
         should(atBorder == TopLeftFrontBorder);
 
@@ -399,17 +416,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(Neighborhood3DSix::East);   // insert "5"
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------TopFrontBorder--------------//
-        x=1,y=0,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 0, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 0);
         should(atBorder == TopFrontBorder);
 
@@ -421,17 +439,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(5);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------TopRightFrontBorder--------------//
-        x=2,y=0,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 0, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 1);
         should(atBorder == TopRightFrontBorder);
 
@@ -442,17 +461,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(4);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------FrontLeftBorder--------------//
-        x=0,y=1,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 1, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 0);
         should(atBorder == FrontLeftBorder);
 
@@ -464,17 +484,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(5);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------FrontBorder--------------//
-        x=1,y=1,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 1, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 1);
         should(atBorder == FrontBorder);
 
@@ -487,17 +508,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(5);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------FrontRightBorder--------------//
-        x=2,y=1,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 1, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 2);
         should(atBorder == FrontRightBorder);
 
@@ -509,17 +531,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(4);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------BottomLeftFrontBorder--------------//
-        x=0,y=2,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 2, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 3);
         should(atBorder == BottomLeftFrontBorder);
 
@@ -530,17 +553,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(5);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------BottomFrontBorder--------------//
-        x=1,y=2,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 2, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 4);
         should(atBorder == BottomFrontBorder);
 
@@ -552,17 +576,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(5);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------BottomRightFrontBorder--------------//
-        x=2,y=2,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 2, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 5);
         should(atBorder == BottomRightFrontBorder);
 
@@ -573,42 +598,44 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(3);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
 
-////////test second plane in volume
+        ////////test second plane in volume
 
         //-------------TopLeftBorder--------------//
-        x=0,y=0,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 0, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 0);
         should(atBorder == TopLeftBorder);
 
         //clear direction list and fill to compare
         directions.clear();
         directions.insert(Neighborhood3DSix::InFront); // insert "1"
-        directions.insert(Neighborhood3DSix::Behind); // insert "3"
-        directions.insert(Neighborhood3DSix::South);  // insert "4"
-        directions.insert(Neighborhood3DSix::East);   // insert "5"
+        directions.insert(Neighborhood3DSix::Behind);  // insert "3"
+        directions.insert(Neighborhood3DSix::South);   // insert "4"
+        directions.insert(Neighborhood3DSix::East);    // insert "5"
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------TopBorder--------------//
-        x=1,y=0,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 0, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 1);
         should(atBorder == TopBorder);
 
@@ -621,17 +648,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(5);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------TopRightBorder--------------//
-        x=2,y=0,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 0, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 2);
         should(atBorder == TopRightBorder);
 
@@ -643,17 +671,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(4);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------LeftBorder--------------//
-        x=0,y=1,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 1, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 3);
         should(atBorder == LeftBorder);
 
@@ -666,17 +695,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(5);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------NotAtBorder--------------//
-        x=1,y=1,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 1, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 4);
         should(atBorder == NotAtBorder);
 
@@ -690,17 +720,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(5);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------RightBorder--------------//
-        x=2,y=1,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 1, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 5);
         should(atBorder == RightBorder);
 
@@ -713,17 +744,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(4);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------BottomLeftBorder--------------//
-        x=0,y=2,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 2, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 6);
         should(atBorder == BottomLeftBorder);
 
@@ -735,17 +767,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(5);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------BottomBorder--------------//
-        x=1,y=2,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 2, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 7);
         should(atBorder == BottomBorder);
 
@@ -758,17 +791,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(5);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------BottomRightBorder--------------//
-        x=2,y=2,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 2, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 8);
         should(atBorder == BottomRightBorder);
 
@@ -780,41 +814,43 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(3);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
 
-////////test third plane in volume
+        ////////test third plane in volume
 
         //-------------TopLeftRearBorder--------------//
-        x=0,y=0,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 0, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 9);
         should(atBorder == TopLeftRearBorder);
 
         //clear direction list and fill to compare
         directions.clear();
-        directions.insert(Neighborhood3DSix::InFront);// insert "0"
-        directions.insert(Neighborhood3DSix::South);  // insert "4"
-        directions.insert(Neighborhood3DSix::East);   // insert "5"
+        directions.insert(Neighborhood3DSix::InFront); // insert "0"
+        directions.insert(Neighborhood3DSix::South);   // insert "4"
+        directions.insert(Neighborhood3DSix::East);    // insert "5"
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------TopRearBorder--------------//
-        x=1,y=0,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 0, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 10);
         should(atBorder == TopRearBorder);
 
@@ -826,17 +862,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(5);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------TopRightRearBorder--------------//
-        x=2,y=0,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 0, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 11);
         should(atBorder == TopRightRearBorder);
 
@@ -847,17 +884,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(4);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------RearLeftBorder--------------//
-        x=0,y=1,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 1, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 12);
         should(atBorder == RearLeftBorder);
 
@@ -869,17 +907,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(5);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------RearBorder--------------//
-        x=1,y=1,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 1, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 13);
         should(atBorder == RearBorder);
 
@@ -892,17 +931,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(5);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------RearRightBorder--------------//
-        x=2,y=1,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 1, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 14);
         should(atBorder == RearRightBorder);
 
@@ -914,17 +954,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(4);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------BottomLeftRearBorder--------------//
-        x=0,y=2,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 2, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 15);
         should(atBorder == BottomLeftRearBorder);
 
@@ -935,17 +976,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(5);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------BottomRearBorder--------------//
-        x=1,y=2,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 2, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 16);
         should(atBorder == BottomRearBorder);
 
@@ -957,17 +999,18 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(5);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
 
         //-------------BottomRightRearBorder--------------//
-        x=2,y=2,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 2, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        sixTrav = SixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*sixTrav == 17);
         should(atBorder == BottomRightRearBorder);
 
@@ -978,12 +1021,13 @@ struct RestrictedNeighborhoodCirculator3dTest
         directions.insert(0);
 
         start = *sixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        }while(*sixTrav!=start);
+        } while (*sixTrav != start);
     }
 
 
@@ -991,15 +1035,15 @@ struct RestrictedNeighborhoodCirculator3dTest
     {
         std::set<int> directions;
         std::set<int>::iterator dir_Iter;
-        int x,y,z,start;
+        int x, y, z, start;
         AtVolumeBorder atBorder;
 
-////////test first plane in volume
+        ////////test first plane in volume
 
         //-------------TopLeftFrontBorder--------------//
-        x=0,y=0,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 0, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 1);
         should(atBorder == TopLeftFrontBorder);
 
@@ -1036,18 +1080,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------TopFrontBorder--------------//
-        x=1,y=0,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 0, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 0);
         should(atBorder == TopFrontBorder);
 
@@ -1084,18 +1129,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------TopRightFrontBorder--------------//
-        x=2,y=0,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 0, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 1);
         should(atBorder == TopRightFrontBorder);
 
@@ -1132,18 +1178,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------FrontLeftBorder--------------//
-        x=0,y=1,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 1, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 0);
         should(atBorder == FrontLeftBorder);
 
@@ -1180,18 +1227,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------FrontBorder--------------//
-        x=1,y=1,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 1, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 0);
         should(atBorder == FrontBorder);
 
@@ -1228,18 +1276,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------FrontRightBorder--------------//
-        x=2,y=1,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 1, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 1);
         should(atBorder == FrontRightBorder);
 
@@ -1276,18 +1325,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------BottomLeftFrontBorder--------------//
-        x=0,y=2,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 2, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 3);
         should(atBorder == BottomLeftFrontBorder);
 
@@ -1324,18 +1374,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------BottomFrontBorder--------------//
-        x=1,y=2,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 2, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 3);
         should(atBorder == BottomFrontBorder);
 
@@ -1372,18 +1423,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------BottomRightFrontBorder--------------//
-        x=2,y=2,z=0;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 2, z = 0;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 4);
         should(atBorder == BottomRightFrontBorder);
 
@@ -1420,21 +1472,22 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
 
-////////test middle plane in volume
+        ////////test middle plane in volume
 
         //-------------TopLeftBorder--------------//
-        x=0,y=0,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 0, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 0);
         should(atBorder == TopLeftBorder);
 
@@ -1471,18 +1524,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------TopBorder--------------//
-        x=1,y=0,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 0, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 0);
         should(atBorder == TopBorder);
 
@@ -1519,18 +1573,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------TopRightBorder--------------//
-        x=2,y=0,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 0, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 1);
         should(atBorder == TopRightBorder);
 
@@ -1567,18 +1622,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------LeftBorder--------------//
-        x=0,y=1,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 1, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 0);
         should(atBorder == LeftBorder);
 
@@ -1615,18 +1671,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------NotAtBorder--------------//
-        x=1,y=1,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 1, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 0);
         should(atBorder == NotAtBorder);
 
@@ -1663,18 +1720,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------RightBorder--------------//
-        x=2,y=1,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 1, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 1);
         should(atBorder == RightBorder);
 
@@ -1711,18 +1769,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------BottomLeftBorder--------------//
-        x=0,y=2,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 2, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 3);
         should(atBorder == BottomLeftBorder);
 
@@ -1759,18 +1818,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------BottomBorder--------------//
-        x=1,y=2,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 2, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 3);
         should(atBorder == BottomBorder);
 
@@ -1807,18 +1867,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------BottomRightBorder--------------//
-        x=2,y=2,z=1;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 2, z = 1;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 4);
         should(atBorder == BottomRightBorder);
 
@@ -1855,20 +1916,21 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
-////////test back plane in volume
+        ////////test back plane in volume
 
         //-------------TopLeftRearBorder--------------//
-        x=0,y=0,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 0, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 9);
         should(atBorder == TopLeftRearBorder);
 
@@ -1905,18 +1967,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------TopRearBorder--------------//
-        x=1,y=0,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 0, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 9);
         should(atBorder == TopRearBorder);
 
@@ -1953,18 +2016,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------TopRightRearBorder--------------//
-        x=2,y=0,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 0, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 10);
         should(atBorder == TopRightRearBorder);
 
@@ -2001,18 +2065,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------RearLeftBorder--------------//
-        x=0,y=1,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 1, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 9);
         should(atBorder == RearLeftBorder);
 
@@ -2049,18 +2114,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------RearBorder--------------//
-        x=1,y=1,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 1, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 9);
         should(atBorder == RearBorder);
 
@@ -2097,18 +2163,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------RearRightBorder--------------//
-        x=2,y=1,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 1, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 10);
         should(atBorder == RearRightBorder);
 
@@ -2145,18 +2212,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------BottomLeftRearBorder--------------//
-        x=0,y=2,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 0, y = 2, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 12);
         should(atBorder == BottomLeftRearBorder);
 
@@ -2193,18 +2261,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------BottomRearBorder--------------//
-        x=1,y=2,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 1, y = 2, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 12);
         should(atBorder == BottomRearBorder);
 
@@ -2241,18 +2310,19 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
+        } while (*twentySixTrav != start);
 
         //-------------BottomRightRearBorder--------------//
-        x=2,y=2,z=2;
-        atBorder = isAtVolumeBorder(x,y,z,w,h,d);
-        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x,y,z), atBorder);
+        x = 2, y = 2, z = 2;
+        atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+        twentySixTrav = TwentySixTraverser(vol.traverser_begin() + vigra::Diff3D(x, y, z), atBorder);
         should(*twentySixTrav == 13);
         should(atBorder == BottomRightRearBorder);
 
@@ -2289,41 +2359,42 @@ struct RestrictedNeighborhoodCirculator3dTest
 
 
         start = *twentySixTrav;
-        dir_Iter=directions.begin();
-        do{
+        dir_Iter = directions.begin();
+        do
+        {
             //std::cerr << *dir_Iter << " =?= " << twentySixTrav.direction() << std::endl;
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        }while(*twentySixTrav!=start);
-
+        } while (*twentySixTrav != start);
     }
 };
 
 struct NeighborhoodCirculator3dTestSuite
-: public vigra::test_suite
+    : public vigra::test_suite
 {
     NeighborhoodCirculator3dTestSuite()
-    : vigra::test_suite("NeighborhoodCirculator3dTestSuite")
+        : vigra::test_suite("NeighborhoodCirculator3dTestSuite")
     {
-        add( testCase( &NeighborhoodCirculator3dTest::testInit));
-        add( testCase( &NeighborhoodCirculator3dTest::testSixTraverserForward));
-        add( testCase( &NeighborhoodCirculator3dTest::testSixTraverserBackward));
-        add( testCase( &NeighborhoodCirculator3dTest::testTwentySixTraverserForward));
-        add( testCase( &NeighborhoodCirculator3dTest::testTwentySixTraverserBackward));
-        add( testCase( &NeighborhoodCirculator3dTest::testIsDiagonal));
-        add( testCase( &NeighborhoodCirculator3dTest::testEquality));
-        add( testCase( &NeighborhoodCirculator3dTest::testTurning));
-        add( testCase( &NeighborhoodCirculator3dTest::testMoving));
-        add( testCase( &NeighborhoodCirculator3dTest::testMiscellaneous));
+        add(testCase(&NeighborhoodCirculator3dTest::testInit));
+        add(testCase(&NeighborhoodCirculator3dTest::testSixTraverserForward));
+        add(testCase(&NeighborhoodCirculator3dTest::testSixTraverserBackward));
+        add(testCase(&NeighborhoodCirculator3dTest::testTwentySixTraverserForward));
+        add(testCase(&NeighborhoodCirculator3dTest::testTwentySixTraverserBackward));
+        add(testCase(&NeighborhoodCirculator3dTest::testIsDiagonal));
+        add(testCase(&NeighborhoodCirculator3dTest::testEquality));
+        add(testCase(&NeighborhoodCirculator3dTest::testTurning));
+        add(testCase(&NeighborhoodCirculator3dTest::testMoving));
+        add(testCase(&NeighborhoodCirculator3dTest::testMiscellaneous));
 
-        add( testCase( &RestrictedNeighborhoodCirculator3dTest::testInit));
-        add( testCase( &RestrictedNeighborhoodCirculator3dTest::testBordersSix));
-        add( testCase( &RestrictedNeighborhoodCirculator3dTest::testBordersTwentySix));
+        add(testCase(&RestrictedNeighborhoodCirculator3dTest::testInit));
+        add(testCase(&RestrictedNeighborhoodCirculator3dTest::testBordersSix));
+        add(testCase(&RestrictedNeighborhoodCirculator3dTest::testBordersTwentySix));
     }
 };
 
-int main(int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
     NeighborhoodCirculator3dTestSuite test;
 
@@ -2332,4 +2403,3 @@ int main(int argc, char ** argv)
     std::cout << test.report() << std::endl;
     return (failed != 0);
 }
-

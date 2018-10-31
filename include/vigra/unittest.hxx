@@ -38,19 +38,19 @@
 #ifndef VIGRA_UNIT_TEST_HPP
 #define VIGRA_UNIT_TEST_HPP
 
-#include <vector>
-#include <string>
-#include <new>                // for bad_alloc
-#include <typeinfo>           // for bad_cast, bad_typeid
-#include <exception>          // for exception, bad_exception
-#include <stdexcept>
-#include <iostream>
-#include <iomanip>
-#include <limits>
-#include <cfloat>
-#include <cmath>
 #include "vigra/config.hxx"
 #include "vigra/error.hxx"
+#include <cfloat>
+#include <cmath>
+#include <exception> // for exception, bad_exception
+#include <iomanip>
+#include <iostream>
+#include <limits>
+#include <new> // for bad_alloc
+#include <stdexcept>
+#include <string>
+#include <typeinfo> // for bad_cast, bad_typeid
+#include <vector>
 
 #ifdef VIGRA_NO_WORKING_STRINGSTREAM
 #include <strstream>
@@ -65,9 +65,9 @@
 
 #ifdef _MSC_VER
 
-#include <wtypes.h>
-#include <winbase.h>
 #include <excpt.h>
+#include <winbase.h>
+#include <wtypes.h>
 
 #ifdef min
 #undef min
@@ -88,10 +88,10 @@
 
 #elif defined(__unix) || defined(unix)
 
-#include <unistd.h>
+#include <setjmp.h>
 #include <signal.h>
 #include <sys/signal.h>
-#include <setjmp.h>
+#include <unistd.h>
 
 #else
 
@@ -99,11 +99,11 @@
 
 #endif
 
-#define VIGRA_TEST_CASE(function)  vigra::create_test_case(function, #function "()")
+#define VIGRA_TEST_CASE(function) vigra::create_test_case(function, #function "()")
 
 #define testCase VIGRA_TEST_CASE
 
-#define VIGRA_TEST_SUITE(testsuite)  ( new testsuite )
+#define VIGRA_TEST_SUITE(testsuite) (new testsuite)
 
 #define VIGRA_CHECKPOINT(message) \
     vigra::detail::checkpoint_impl(message, __FILE__, __LINE__)
@@ -153,57 +153,76 @@
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #endif
 
-namespace vigra {
+namespace vigra
+{
 
 class test_suite;
 
-namespace detail {
+namespace detail
+{
 
 typedef std::pair<std::string, int> CheckpointType;
 
 struct errstream
 {
     VIGRA_SSTREAM buf;
-    std::string str() { return VIGRA_SSTREAM_STR(buf); }
-    template <class T>
-    errstream & operator<<(T t) { buf << t;  return *this; }
+    std::string str()
+    {
+        return VIGRA_SSTREAM_STR(buf);
+    }
+    template<class T>
+    errstream& operator<<(T t)
+    {
+        buf << t;
+        return *this;
+    }
 };
 
-inline CheckpointType & exception_checkpoint()
+inline CheckpointType&
+exception_checkpoint()
 {
     static CheckpointType test_checkpoint_;
     return test_checkpoint_;
 }
 
 //  A separate reporting function was requested during formal review.
-inline void report_exception( detail::errstream & os,
-                       const char * name, const char * info )
+inline void
+report_exception(detail::errstream& os,
+                 const char* name, const char* info)
 {
     os << "Unexpected " << name << " " << info << "\n";
-    if(exception_checkpoint().first.size() > 0)
+    if (exception_checkpoint().first.size() > 0)
     {
         os << "   (occured after line " << exception_checkpoint().second << " in file '" << exception_checkpoint().first << "')\n";
     }
 }
 
-enum {
+enum
+{
     unexpected_exception = -1,
     os_exception = -2,
     memory_access_violation = -3,
     destructor_failure = -4
 };
 
-inline bool critical_error(int i)
-{ return i <= memory_access_violation; }
+inline bool
+critical_error(int i)
+{
+    return i <= memory_access_violation;
+}
 
-inline bool unexpected_error(int i)
-{ return i < 0; }
+inline bool
+unexpected_error(int i)
+{
+    return i < 0;
+}
 
 #ifndef VIGRA_CANT_CATCH_SIGNALS
 
 #ifdef _MSC_VER
 
-inline long handle_signal_here(long code)
+inline long
+handle_signal_here(long code)
 {
     switch (code)
     {
@@ -215,8 +234,9 @@ inline long handle_signal_here(long code)
     }
 }
 
-template< class Generator >  // Generator is function object returning int
-int catch_signals( Generator function_object, detail::errstream & err, int timeout )
+template<class Generator> // Generator is function object returning int
+int
+catch_signals(Generator function_object, detail::errstream& err, int timeout)
 {
     int result = 0;
     int code;
@@ -242,25 +262,27 @@ int catch_signals( Generator function_object, detail::errstream & err, int timeo
         }
     }
     return result;
-
 }
 
 
 #elif defined(__unix)
 
-inline jmp_buf & unit_test_jump_buffer()
+inline jmp_buf&
+unit_test_jump_buffer()
 {
     static jmp_buf unit_test_jump_buffer_;
     return unit_test_jump_buffer_;
 }
 
-static void unit_test_signal_handler(int sig)
+static void
+unit_test_signal_handler(int sig)
 {
     longjmp(unit_test_jump_buffer(), sig);
 }
 
-template< class Generator >  // Generator is function object returning int
-int catch_signals( Generator function_object, detail::errstream & err, int timeout)
+template<class Generator> // Generator is function object returning int
+int
+catch_signals(Generator function_object, detail::errstream& err, int timeout)
 {
     volatile int sigtype;
     int result;
@@ -277,7 +299,7 @@ int catch_signals( Generator function_object, detail::errstream & err, int timeo
     sigset(SIGBUS, &unit_test_signal_handler);
 #endif
 
-    if(timeout)
+    if (timeout)
     {
 #if defined(linux) || defined(__linux)
         signal(SIGALRM, &unit_test_signal_handler);
@@ -288,13 +310,13 @@ int catch_signals( Generator function_object, detail::errstream & err, int timeo
     }
 
     sigtype = setjmp(unit_test_jump_buffer());
-    if(sigtype == 0)
+    if (sigtype == 0)
     {
-       result = function_object();
+        result = function_object();
     }
     else
     {
-        switch(sigtype)
+        switch (sigtype)
         {
             case SIGALRM:
                 report_exception(err, "signal:", "SIGALRM (timeout while executing function)");
@@ -319,7 +341,7 @@ int catch_signals( Generator function_object, detail::errstream & err, int timeo
         }
     }
 
-    if(timeout)
+    if (timeout)
     {
         alarm(0);
 #if defined(linux) || defined(__linux)
@@ -339,22 +361,24 @@ int catch_signals( Generator function_object, detail::errstream & err, int timeo
     return result;
 }
 
-#endif  /* _MSC_VER || __unix */
+#endif /* _MSC_VER || __unix */
 
-#else  /* VIGRA_CANT_CATCH_SIGNALS */
+#else /* VIGRA_CANT_CATCH_SIGNALS */
 
-template< class Generator >  // Generator is function object returning int
-int catch_signals( Generator function_object, detail::errstream & , int)
+template<class Generator> // Generator is function object returning int
+int
+catch_signals(Generator function_object, detail::errstream&, int)
 {
-     return function_object();
+    return function_object();
 }
 
 #endif /* VIGRA_CANT_CATCH_SIGNALS */
 
 } // namespace detail
 
-template< class Generator >  // Generator is function object returning int
-int catch_exceptions( Generator function_object, detail::errstream & err, int timeout )
+template<class Generator> // Generator is function object returning int
+int
+catch_exceptions(Generator function_object, detail::errstream& err, int timeout)
 {
     int result = detail::unexpected_exception;
 
@@ -371,82 +395,122 @@ int catch_exceptions( Generator function_object, detail::errstream & err, int ti
     //  arguments (ISO 15.3 paragraphs 18 & 19). Apparently const isn't
     //  required, but it doesn't hurt and some programmers ask for it.
 
-    catch ( vigra::ContractViolation & ex )
-      { detail::report_exception( err, "Contract exception: ", ex.what() ); }
-    catch ( const char * ex )
-      { detail::report_exception( err, "string exception: ", ex ); }
-    catch ( const std::string & ex )
-      { detail::report_exception( err, "string exception: ", ex.c_str() ); }
+    catch (vigra::ContractViolation& ex)
+    {
+        detail::report_exception(err, "Contract exception: ", ex.what());
+    }
+    catch (const char* ex)
+    {
+        detail::report_exception(err, "string exception: ", ex);
+    }
+    catch (const std::string& ex)
+    {
+        detail::report_exception(err, "string exception: ", ex.c_str());
+    }
 
     //  std:: exceptions
-    catch ( const std::bad_alloc & ex )
-      { detail::report_exception( err, "exception: std::bad_alloc:", ex.what() ); }
+    catch (const std::bad_alloc& ex)
+    {
+        detail::report_exception(err, "exception: std::bad_alloc:", ex.what());
+    }
 
-# if !defined(__BORLANDC__) || __BORLANDC__ > 0x0551
-    catch ( const std::bad_cast & ex )
-      { detail::report_exception( err, "exception: std::bad_cast:", ex.what() ); }
-    catch ( const std::bad_typeid & ex )
-      { detail::report_exception( err, "exception: std::bad_typeid:", ex.what() ); }
-# else
-    catch ( const std::bad_cast & ex )
-      { detail::report_exception( err, "exception: std::bad_cast", "" ); }
-    catch ( const std::bad_typeid & ex )
-      { detail::report_exception( err, "exception: std::bad_typeid", "" ); }
-# endif
+#if !defined(__BORLANDC__) || __BORLANDC__ > 0x0551
+    catch (const std::bad_cast& ex)
+    {
+        detail::report_exception(err, "exception: std::bad_cast:", ex.what());
+    }
+    catch (const std::bad_typeid& ex)
+    {
+        detail::report_exception(err, "exception: std::bad_typeid:", ex.what());
+    }
+#else
+    catch (const std::bad_cast& ex)
+    {
+        detail::report_exception(err, "exception: std::bad_cast", "");
+    }
+    catch (const std::bad_typeid& ex)
+    {
+        detail::report_exception(err, "exception: std::bad_typeid", "");
+    }
+#endif
 
-    catch ( const std::bad_exception & ex )
-      { detail::report_exception( err, "exception: std::bad_exception:", ex.what() ); }
-    catch ( const std::domain_error & ex )
-      { detail::report_exception( err, "exception: std::domain_error:", ex.what() ); }
-    catch ( const std::invalid_argument & ex )
-      { detail::report_exception( err, "exception: std::invalid_argument:", ex.what() ); }
-    catch ( const std::length_error & ex )
-      { detail::report_exception( err, "exception: std::length_error:", ex.what() ); }
-    catch ( const std::out_of_range & ex )
-      { detail::report_exception( err, "exception: std::out_of_range:", ex.what() ); }
-    catch ( const std::range_error & ex )
-      { detail::report_exception( err, "exception: std::range_error:", ex.what() ); }
-    catch ( const std::overflow_error & ex )
-      { detail::report_exception( err, "exception: std::overflow_error:", ex.what() ); }
-    catch ( const std::underflow_error & ex )
-      { detail::report_exception( err, "exception: std::underflow_error:", ex.what() ); }
-    catch ( const std::logic_error & ex )
-      { detail::report_exception( err, "exception: std::logic_error:", ex.what() ); }
-    catch ( const std::runtime_error & ex )
-      { detail::report_exception( err, "exception: std::runtime_error:", ex.what() ); }
-   catch ( const std::exception & ex )
-      { detail::report_exception( err, "exception: std::exception:", ex.what() ); }
+    catch (const std::bad_exception& ex)
+    {
+        detail::report_exception(err, "exception: std::bad_exception:", ex.what());
+    }
+    catch (const std::domain_error& ex)
+    {
+        detail::report_exception(err, "exception: std::domain_error:", ex.what());
+    }
+    catch (const std::invalid_argument& ex)
+    {
+        detail::report_exception(err, "exception: std::invalid_argument:", ex.what());
+    }
+    catch (const std::length_error& ex)
+    {
+        detail::report_exception(err, "exception: std::length_error:", ex.what());
+    }
+    catch (const std::out_of_range& ex)
+    {
+        detail::report_exception(err, "exception: std::out_of_range:", ex.what());
+    }
+    catch (const std::range_error& ex)
+    {
+        detail::report_exception(err, "exception: std::range_error:", ex.what());
+    }
+    catch (const std::overflow_error& ex)
+    {
+        detail::report_exception(err, "exception: std::overflow_error:", ex.what());
+    }
+    catch (const std::underflow_error& ex)
+    {
+        detail::report_exception(err, "exception: std::underflow_error:", ex.what());
+    }
+    catch (const std::logic_error& ex)
+    {
+        detail::report_exception(err, "exception: std::logic_error:", ex.what());
+    }
+    catch (const std::runtime_error& ex)
+    {
+        detail::report_exception(err, "exception: std::runtime_error:", ex.what());
+    }
+    catch (const std::exception& ex)
+    {
+        detail::report_exception(err, "exception: std::exception:", ex.what());
+    }
 
-    catch ( ... )
-      {
-        detail::report_exception( err, "unknown exception", "" );
+    catch (...)
+    {
+        detail::report_exception(err, "unknown exception", "");
         throw;
-      }
+    }
 
     return result;
 } // catch_exceptions
 
-template< class Generator >  // Generator is function object returning int
-inline
-int catch_exceptions( Generator function_object, detail::errstream & err)
+template<class Generator> // Generator is function object returning int
+inline int
+catch_exceptions(Generator function_object, detail::errstream& err)
 {
     return catch_exceptions(function_object, err, 0);
 }
 
-namespace detail {
+namespace detail
+{
 
 struct unit_test_failed
-: public std::exception
+    : public std::exception
 {
-    unit_test_failed(std::string const & message)
-    : what_(message)
-    {}
+    unit_test_failed(std::string const& message)
+        : what_(message)
+    {
+    }
 
     virtual ~unit_test_failed() throw()
     {
     }
 
-    virtual const char * what() const throw()
+    virtual const char* what() const throw()
     {
         return what_.c_str();
     }
@@ -455,42 +519,41 @@ struct unit_test_failed
 };
 
 inline void
-checkpoint_impl(const char * file, int line)
+checkpoint_impl(const char* file, int line)
 {
     exception_checkpoint().first = file;
     exception_checkpoint().second = line;
 }
 
 inline void
-should_impl(bool predicate, const char * message, const char * file, int line)
+should_impl(bool predicate, const char* message, const char* file, int line)
 {
     checkpoint_impl(file, line);
-    if(!predicate)
+    if (!predicate)
     {
         detail::errstream buf;
-        buf << message << " (" << file <<":" << line << ")";
+        buf << message << " (" << file << ":" << line << ")";
         throw unit_test_failed(buf.str());
     }
 }
 
 inline void
-should_impl(bool predicate, std::string const & message, const char * file, int line)
+should_impl(bool predicate, std::string const& message, const char* file, int line)
 {
     should_impl(predicate, message.c_str(), file, line);
 }
 
-template <class Iter1, class Iter2>
+template<class Iter1, class Iter2>
 void
-sequence_equal_impl(Iter1 i1, Iter1 end1, Iter2 i2, const char * file, int line)
+sequence_equal_impl(Iter1 i1, Iter1 end1, Iter2 i2, const char* file, int line)
 {
     checkpoint_impl(file, line);
-    for(int counter = 0; i1 != end1; ++i1, ++i2, ++counter)
+    for (int counter = 0; i1 != end1; ++i1, ++i2, ++counter)
     {
-        if(*i1 != *i2)
+        if (*i1 != *i2)
         {
             detail::errstream buf;
-            buf << "Sequences differ at index " << counter <<
-                   " ["<< *i1 << " != " << *i2 << "]";
+            buf << "Sequences differ at index " << counter << " [" << *i1 << " != " << *i2 << "]";
             should_impl(false, buf.str().c_str(), file, line);
         }
     }
@@ -500,8 +563,12 @@ sequence_equal_impl(Iter1 i1, Iter1 end1, Iter2 i2, const char * file, int line)
 /**
 * See Knuth "The art of computer programming" (Vol II, Ch.4.2)
 */
-struct ScalarType {};
-struct VectorType {};
+struct ScalarType
+{
+};
+struct VectorType
+{
+};
 
 template<class T>
 struct FloatTraits
@@ -513,35 +580,71 @@ template<>
 struct FloatTraits<float>
 {
     typedef ScalarType ScalarOrVector;
-    static float epsilon() { return FLT_EPSILON; }
-    static float smallestPositive() { return FLT_MIN; }
-    static float min() { return -FLT_MAX; }
-    static float max() { return FLT_MAX; }
+    static float epsilon()
+    {
+        return FLT_EPSILON;
+    }
+    static float smallestPositive()
+    {
+        return FLT_MIN;
+    }
+    static float min()
+    {
+        return -FLT_MAX;
+    }
+    static float max()
+    {
+        return FLT_MAX;
+    }
 };
 
 template<>
 struct FloatTraits<double>
 {
     typedef ScalarType ScalarOrVector;
-    static double epsilon() { return DBL_EPSILON; }
-    static double smallestPositive() { return DBL_MIN; }
-    static double min() { return -DBL_MAX; }
-    static double max() { return DBL_MAX; }
+    static double epsilon()
+    {
+        return DBL_EPSILON;
+    }
+    static double smallestPositive()
+    {
+        return DBL_MIN;
+    }
+    static double min()
+    {
+        return -DBL_MAX;
+    }
+    static double max()
+    {
+        return DBL_MAX;
+    }
 };
 
 template<>
 struct FloatTraits<long double>
 {
     typedef ScalarType ScalarOrVector;
-    static long double epsilon() { return LDBL_EPSILON; }
-    static long double smallestPositive() { return LDBL_MIN; }
-    static long double min() { return -LDBL_MAX; }
-    static long double max() { return LDBL_MAX; }
+    static long double epsilon()
+    {
+        return LDBL_EPSILON;
+    }
+    static long double smallestPositive()
+    {
+        return LDBL_MIN;
+    }
+    static long double min()
+    {
+        return -LDBL_MAX;
+    }
+    static long double max()
+    {
+        return LDBL_MAX;
+    }
 };
 
 template<class FPT>
-inline
-FPT fpt_abs( FPT arg )
+inline FPT
+fpt_abs(FPT arg)
 {
     return arg < 0 ? -arg : arg;
 }
@@ -551,10 +654,10 @@ FPT fpt_abs( FPT arg )
 
 // both f1 and f2 are unsigned here
 template<class FPT>
-inline
-FPT safe_fpt_division( FPT f1, FPT f2 )
+inline FPT
+safe_fpt_division(FPT f1, FPT f2)
 {
-        /*  ist f1 das absolute minimum (in diesem Fall einfach nur sehr kleine Zahl)
+    /*  ist f1 das absolute minimum (in diesem Fall einfach nur sehr kleine Zahl)
         *   aber nicht null (1.65242e-28) und f2 = 0,
         *   dann tritt die erste Bedingung in Kraft 0<1 && 1.65242e-28 > 0*1.79769e+308 (max)
         *   deshalb schlaegt es fehl sogar wenn min closed at tolarance zu 0 ist ???
@@ -564,11 +667,8 @@ FPT safe_fpt_division( FPT f1, FPT f2 )
         *   0 mit 0 zu Vergleichen bereitet keine Probleme.
         *   Ausweg: evl. eine extra Behandlung der F = 0 ???
         */
-    return  ((f2 < 1) && (f1 > (f2 *    FloatTraits<FPT>::max()))) ?
-            FloatTraits<FPT>::max() :
-            ((((f2 > 1) && (f1 < (f2 * FloatTraits<FPT>::smallestPositive())))
-              || (f1 == 0)) ? 0 : f1/f2 );
-        /*  Die Multiplikation mit max in 1.ten Bedingung und mit min in der 2.ten ist eine Absicherung gegen
+    return ((f2 < 1) && (f1 > (f2 * FloatTraits<FPT>::max()))) ? FloatTraits<FPT>::max() : ((((f2 > 1) && (f1 < (f2 * FloatTraits<FPT>::smallestPositive()))) || (f1 == 0)) ? 0 : f1 / f2);
+    /*  Die Multiplikation mit max in 1.ten Bedingung und mit min in der 2.ten ist eine Absicherung gegen
         *   die Owerflow bzw Underflow ???
         */
 }
@@ -576,71 +676,76 @@ FPT safe_fpt_division( FPT f1, FPT f2 )
 /***********************************************************************/
 
 template<class FPT>
-class close_at_tolerance {
+class close_at_tolerance
+{
 public:
-    explicit    close_at_tolerance( FPT tolerance, bool strong_test = true )
-        : m_strong_test( strong_test ),
-          m_tolerance( tolerance ) {}
+    explicit close_at_tolerance(FPT tolerance, bool strong_test = true)
+        : m_strong_test(strong_test),
+          m_tolerance(tolerance)
+    {
+    }
 
-    explicit    close_at_tolerance( int number_of_rounding_errors, bool strong_test = true )
-        : m_strong_test( strong_test ),
-          m_tolerance( FloatTraits<FPT>::epsilon() * number_of_rounding_errors / 2.0 ) {}
+    explicit close_at_tolerance(int number_of_rounding_errors, bool strong_test = true)
+        : m_strong_test(strong_test),
+          m_tolerance(FloatTraits<FPT>::epsilon() * number_of_rounding_errors / 2.0)
+    {
+    }
 
-    bool        operator()( FPT left, FPT right ) const
+    bool operator()(FPT left, FPT right) const
     {
         if (left == 0 && right != 0)
         {
-                return (fpt_abs(right) <= m_tolerance);
+            return (fpt_abs(right) <= m_tolerance);
         }
         if (right == 0 && left != 0)
         {
-                return (fpt_abs(left) <= m_tolerance);
+            return (fpt_abs(left) <= m_tolerance);
         }
-        FPT diff = fpt_abs( left - right );
-        FPT d1   = safe_fpt_division( diff, fpt_abs( right ) );
-        FPT d2   = safe_fpt_division( diff, fpt_abs( left ) );
+        FPT diff = fpt_abs(left - right);
+        FPT d1 = safe_fpt_division(diff, fpt_abs(right));
+        FPT d2 = safe_fpt_division(diff, fpt_abs(left));
 
         return m_strong_test ? (d1 <= m_tolerance && d2 <= m_tolerance)
-                                : (d1 <= m_tolerance || d2 <= m_tolerance);
+                             : (d1 <= m_tolerance || d2 <= m_tolerance);
     }
 
 private:
-    bool        m_strong_test;
-    FPT         m_tolerance;
+    bool m_strong_test;
+    FPT m_tolerance;
 };
 
 /*****************end of float comparison***********************************/
 
-template <class T1, class T2, class T3>
+template<class T1, class T2, class T3>
 void
 tolerance_equal_impl(T1 left, T2 right, T3 epsilon,
-                     const char * message, const char * file, int line, ScalarType, std::ptrdiff_t index = -1)
+                     const char* message, const char* file, int line, ScalarType, std::ptrdiff_t index = -1)
 {
     checkpoint_impl(file, line);
-    close_at_tolerance<T3> fcomparator( epsilon );
+    close_at_tolerance<T3> fcomparator(epsilon);
     if (!fcomparator((T3)left, (T3)right))
     {
         detail::errstream buf;
-        if(index >= 0)
+        if (index >= 0)
             buf << "Sequences differ at index " << index;
         buf << message << " [" << std::setprecision(17) << left << " != " << right << " at tolerance " << epsilon << "]";
         should_impl(false, buf.str().c_str(), file, line);
     }
 }
 
-template <class T1, class T2, class T3>
+template<class T1, class T2, class T3>
 void
 tolerance_equal_impl(T1 left, T2 right, T3 epsilon,
-                     const char * message, const char * file, int line, VectorType, std::ptrdiff_t index = -1)
+                     const char* message, const char* file, int line, VectorType, std::ptrdiff_t index = -1)
 {
     checkpoint_impl(file, line);
-    for(unsigned int i=0; i<epsilon.size(); ++i)
+    for (unsigned int i = 0; i < epsilon.size(); ++i)
     {
-        close_at_tolerance<typename T3::value_type> fcomparator( epsilon[i] );
+        close_at_tolerance<typename T3::value_type> fcomparator(epsilon[i]);
         if (!fcomparator(left[i], right[i]))
         {
             detail::errstream buf;
-            if(index >= 0)
+            if (index >= 0)
             {
                 buf << "Sequences differ at index " << index << ", element " << i;
             }
@@ -654,27 +759,27 @@ tolerance_equal_impl(T1 left, T2 right, T3 epsilon,
     }
 }
 
-template <class T1, class T2, class T3>
+template<class T1, class T2, class T3>
 void
-tolerance_equal_impl(T1 left, T2 right, T3 epsilon, const char * message, const char * file, int line)
+tolerance_equal_impl(T1 left, T2 right, T3 epsilon, const char* message, const char* file, int line)
 {
     tolerance_equal_impl(left, right, epsilon,
                          message, file, line, typename FloatTraits<T3>::ScalarOrVector());
 }
 
-template <class Iter1, class Iter2, class T>
+template<class Iter1, class Iter2, class T>
 void
-sequence_equal_tolerance_impl(Iter1 i1, Iter1 end1, Iter2 i2, T epsilon, const char * file, int line)
+sequence_equal_tolerance_impl(Iter1 i1, Iter1 end1, Iter2 i2, T epsilon, const char* file, int line)
 {
-    for(int counter = 0; i1 != end1; ++i1, ++i2, ++counter)
+    for (int counter = 0; i1 != end1; ++i1, ++i2, ++counter)
     {
         tolerance_equal_impl(*i1, *i2, epsilon, "", file, line, typename FloatTraits<T>::ScalarOrVector(), counter);
     }
 }
 
-template <class Left, class Right>
+template<class Left, class Right>
 void
-equal_impl(Left left, Right right, const char * message, const char * file, int line)
+equal_impl(Left left, Right right, const char* message, const char* file, int line)
 {
     checkpoint_impl(file, line);
     if (left != right)
@@ -685,9 +790,9 @@ equal_impl(Left left, Right right, const char * message, const char * file, int 
     }
 }
 
-template <class Left, class Right>
+template<class Left, class Right>
 void
-equal_impl(Left * left, Right * right, const char * message, const char * file, int line)
+equal_impl(Left* left, Right* right, const char* message, const char* file, int line)
 {
     checkpoint_impl(file, line);
     if (left != right)
@@ -699,54 +804,71 @@ equal_impl(Left * left, Right * right, const char * message, const char * file, 
 }
 
 inline void
-equal_impl(double left, double right, const char * message, const char * file, int line)
+equal_impl(double left, double right, const char* message, const char* file, int line)
 {
     tolerance_equal_impl(left, right, 1.0e-16, message, file, line);
 }
 
 inline void
-equal_impl(float left, float right, const char * message, const char * file, int line)
+equal_impl(float left, float right, const char* message, const char* file, int line)
 {
     tolerance_equal_impl(left, right, 1.0e-6f, message, file, line);
 }
 
 inline void
-equal_impl(float left, double right, const char * message, const char * file, int line)
+equal_impl(float left, double right, const char* message, const char* file, int line)
 {
     tolerance_equal_impl(left, right, 1.0e-6f, message, file, line);
 }
 
 inline void
-equal_impl(double left, float right, const char * message, const char * file, int line)
+equal_impl(double left, float right, const char* message, const char* file, int line)
 {
     tolerance_equal_impl(left, right, 1.0e-6f, message, file, line);
 }
 
 class test_case
 {
-  public:
-
-    test_case(char const * name = "Unnamed")
-    : name_(name), timeout(0)
-    {}
-
-    virtual ~test_case() {}
-
-    virtual int run() { return run(std::vector<std::string>()); }
-    virtual int run(std::vector<std::string> const & testsToBeRun) = 0;
-    virtual void do_init() {}
-    virtual void do_run() {}
-    virtual void do_destroy() {}
-
-    virtual char const * name() { return name_.c_str(); }
-    virtual int size() const { return 1; }
-
-    virtual int numberOfTestsToRun(std::vector<std::string> const & testsToBeRun) const
+public:
+    test_case(char const* name = "Unnamed")
+        : name_(name), timeout(0)
     {
-        if(testsToBeRun.empty()) // empty list => run all tests
+    }
+
+    virtual ~test_case()
+    {
+    }
+
+    virtual int run()
+    {
+        return run(std::vector<std::string>());
+    }
+    virtual int run(std::vector<std::string> const& testsToBeRun) = 0;
+    virtual void do_init()
+    {
+    }
+    virtual void do_run()
+    {
+    }
+    virtual void do_destroy()
+    {
+    }
+
+    virtual char const* name()
+    {
+        return name_.c_str();
+    }
+    virtual int size() const
+    {
+        return 1;
+    }
+
+    virtual int numberOfTestsToRun(std::vector<std::string> const& testsToBeRun) const
+    {
+        if (testsToBeRun.empty()) // empty list => run all tests
             return 1;
-        for(unsigned int k=0; k<testsToBeRun.size(); ++k)
-            if(this->name_.find(testsToBeRun[k]) != std::string::npos)
+        for (unsigned int k = 0; k < testsToBeRun.size(); ++k)
+            if (this->name_.find(testsToBeRun[k]) != std::string::npos)
                 return 1;
         return 0;
     }
@@ -759,78 +881,79 @@ class test_case
 
 } // namespace detail
 
-std::vector<std::string> testsToBeExecuted(int argc, char ** argv)
+std::vector<std::string>
+testsToBeExecuted(int argc, char** argv)
 {
     std::vector<std::string> res;
-    for(int i=1; i < argc; ++i)
+    for (int i = 1; i < argc; ++i)
         res.push_back(std::string(argv[i]));
     return res;
 }
 
 class test_suite
-: public detail::test_case
+    : public detail::test_case
 {
-  public:
+public:
     using detail::test_case::run;
 
-    test_suite(char const * name = "TopLevel")
-    : detail::test_case(name),
-      size_(0)
-    {}
+    test_suite(char const* name = "TopLevel")
+        : detail::test_case(name),
+          size_(0)
+    {
+    }
 
     virtual ~test_suite()
     {
-        for(unsigned int i=0; i != testcases_.size(); ++i)
+        for (unsigned int i = 0; i != testcases_.size(); ++i)
             delete testcases_[i];
     }
 
-    virtual void add(detail::test_case * t, int timeout = 0)
+    virtual void add(detail::test_case* t, int timeout = 0)
     {
         t->timeout = timeout;
         testcases_.push_back(t);
         size_ += t->size();
     }
 
-    virtual int run(std::vector<std::string> const & testsToBeRun)
+    virtual int run(std::vector<std::string> const& testsToBeRun)
     {
         int size = numberOfTestsToRun(testsToBeRun);
 
         std::vector<std::string> testsToBeRunRecursive =
-                   size < this->size()
-                       ? testsToBeRun                 // run selectively
-                       : std::vector<std::string>();  // run all
+            size < this->size()
+                ? testsToBeRun                // run selectively
+                : std::vector<std::string>(); // run all
 
         int failed = 0;
         report_ = std::string("Entering test suite ") + name() + "\n";
 
-        for(unsigned int i=0; i != testcases_.size(); ++i)
+        for (unsigned int i = 0; i != testcases_.size(); ++i)
         {
             int result = testcases_[i]->run(testsToBeRunRecursive);
             report_ += testcases_[i]->report_;
 
-            if(detail::critical_error(result))
+            if (detail::critical_error(result))
             {
                 report_ += std::string("\nFatal error - aborting test suite ") + name() + ".\n";
                 return result;
             }
-            else if(detail::unexpected_error(result))
+            else if (detail::unexpected_error(result))
                 failed++;
             else
                 failed += result;
         }
 
-        if(failed)
+        if (failed)
         {
             detail::errstream buf;
-            buf << "\n" << failed << " of " << size <<
-                " tests failed in test suite " << name() << "\n";
+            buf << "\n"
+                << failed << " of " << size << " tests failed in test suite " << name() << "\n";
             report_ += buf.str();
         }
         else
         {
             detail::errstream buf;
-            buf << "All (" << size <<
-               ") tests passed in test suite " << name() << "\n";
+            buf << "All (" << size << ") tests passed in test suite " << name() << "\n";
             report_ += buf.str();
         }
 
@@ -839,33 +962,41 @@ class test_suite
         return failed;
     }
 
-    virtual int numberOfTestsToRun(std::vector<std::string> const & testsToBeRun) const
+    virtual int numberOfTestsToRun(std::vector<std::string> const& testsToBeRun) const
     {
-        if(detail::test_case::numberOfTestsToRun(testsToBeRun) > 0)
+        if (detail::test_case::numberOfTestsToRun(testsToBeRun) > 0)
             return this->size();
         int size = 0;
-        for(unsigned int i=0; i != testcases_.size(); ++i)
+        for (unsigned int i = 0; i != testcases_.size(); ++i)
             size += testcases_[i]->numberOfTestsToRun(testsToBeRun);
         return size;
     }
 
-    virtual int size() const { return size_; }
-    virtual std::string report() { return report_; }
+    virtual int size() const
+    {
+        return size_;
+    }
+    virtual std::string report()
+    {
+        return report_;
+    }
 
-    std::vector<detail::test_case *> testcases_;
+    std::vector<detail::test_case*> testcases_;
     int size_;
 };
 
-namespace detail {
+namespace detail
+{
 
 struct test_case_init_functor
 {
-    detail::errstream & buf_;
-    test_case * test_case_;
+    detail::errstream& buf_;
+    test_case* test_case_;
 
-    test_case_init_functor(detail::errstream & b, test_case * tc)
-    : buf_(b), test_case_(tc)
-    {}
+    test_case_init_functor(detail::errstream& b, test_case* tc)
+        : buf_(b), test_case_(tc)
+    {
+    }
 
     int operator()()
     {
@@ -874,7 +1005,7 @@ struct test_case_init_functor
             test_case_->do_init();
             return 0;
         }
-        catch(unit_test_failed & e)
+        catch (unit_test_failed& e)
         {
             buf_ << "Assertion failed: " << e.what() << "\n";
             return 1;
@@ -884,12 +1015,13 @@ struct test_case_init_functor
 
 struct test_case_run_functor
 {
-    detail::errstream & buf_;
-    test_case * test_case_;
+    detail::errstream& buf_;
+    test_case* test_case_;
 
-    test_case_run_functor(detail::errstream & b, test_case * tc)
-    : buf_(b), test_case_(tc)
-    {}
+    test_case_run_functor(detail::errstream& b, test_case* tc)
+        : buf_(b), test_case_(tc)
+    {
+    }
 
     int operator()()
     {
@@ -898,7 +1030,7 @@ struct test_case_run_functor
             test_case_->do_run();
             return 0;
         }
-        catch(unit_test_failed & e)
+        catch (unit_test_failed& e)
         {
             buf_ << "Assertion failed: " << e.what() << "\n";
             return 1;
@@ -908,12 +1040,13 @@ struct test_case_run_functor
 
 struct test_case_destroy_functor
 {
-    detail::errstream & buf_;
-    test_case *  test_case_;
+    detail::errstream& buf_;
+    test_case* test_case_;
 
-    test_case_destroy_functor(detail::errstream & b, test_case * tc)
-    : buf_(b), test_case_(tc)
-    {}
+    test_case_destroy_functor(detail::errstream& b, test_case* tc)
+        : buf_(b), test_case_(tc)
+    {
+    }
 
     int operator()()
     {
@@ -922,7 +1055,7 @@ struct test_case_destroy_functor
             test_case_->do_destroy();
             return 0;
         }
-        catch(unit_test_failed & e)
+        catch (unit_test_failed& e)
         {
             buf_ << "Assertion failed: " << e.what() << "\n";
             return 1;
@@ -930,18 +1063,19 @@ struct test_case_destroy_functor
     }
 };
 
-template <class TESTCASE>
+template<class TESTCASE>
 class class_test_case
-: public test_case
+    : public test_case
 {
-  public:
+public:
     using test_case::run;
 
-    class_test_case(void (TESTCASE::*fct)(), char const * name)
-    : test_case(name),
-      fct_(fct),
-      testcase_(0)
-    {}
+    class_test_case(void (TESTCASE::*fct)(), char const* name)
+        : test_case(name),
+          fct_(fct),
+          testcase_(0)
+    {
+    }
 
     virtual ~class_test_case()
     {
@@ -961,7 +1095,7 @@ class class_test_case
 
         detail::errstream buf;
         buf << "\nFailure in initialization of " << name() << "\n";
-        if(testcase_ != 0)
+        if (testcase_ != 0)
         {
             buf << "Test case failed to clean up after previous run.\n";
             failed = 1;
@@ -972,7 +1106,7 @@ class class_test_case
                 detail::test_case_init_functor(buf, this), buf, timeout);
         }
 
-        if(failed)
+        if (failed)
         {
             report_ += buf.str();
         }
@@ -982,18 +1116,18 @@ class class_test_case
 
     virtual void do_run()
     {
-        if(testcase_ != 0)
+        if (testcase_ != 0)
             (testcase_->*fct_)();
     }
 
-    virtual int run(std::vector<std::string> const & testsToBeRun)
+    virtual int run(std::vector<std::string> const& testsToBeRun)
     {
-        if(numberOfTestsToRun(testsToBeRun) == 0)
+        if (numberOfTestsToRun(testsToBeRun) == 0)
             return 0;
 
         int failed = init();
 
-        if(failed)
+        if (failed)
             return failed;
 
         detail::errstream buf;
@@ -1001,17 +1135,15 @@ class class_test_case
 
         failed = catch_exceptions(
             detail::test_case_run_functor(buf, this), buf, timeout);
-        if(failed)
+        if (failed)
             report_ += buf.str();
 
-        if(critical_error(failed))
+        if (critical_error(failed))
             return failed;
 
         int destruction_failed = destroy();
 
-        return destruction_failed ?
-                destruction_failed :
-                failed;
+        return destruction_failed ? destruction_failed : failed;
     }
 
     virtual void do_destroy()
@@ -1023,11 +1155,12 @@ class class_test_case
     int destroy()
     {
         detail::errstream buf;
-        buf << "\nFailure in destruction of " << "\n";
+        buf << "\nFailure in destruction of "
+            << "\n";
 
         int failed = catch_exceptions(
             detail::test_case_destroy_functor(buf, this), buf, timeout);
-        if(failed)
+        if (failed)
         {
             report_ += buf.str();
             return destructor_failure;
@@ -1039,28 +1172,29 @@ class class_test_case
     }
 
     void (TESTCASE::*fct_)();
-    TESTCASE * testcase_;
+    TESTCASE* testcase_;
 };
 
 class function_test_case
-: public test_case
+    : public test_case
 {
-  public:
+public:
     using test_case::run;
 
-    function_test_case(void (*fct)(), char const * name)
-    : test_case(name),
-      fct_(fct)
-    {}
+    function_test_case(void (*fct)(), char const* name)
+        : test_case(name),
+          fct_(fct)
+    {
+    }
 
     virtual void do_run()
     {
         (*fct_)();
     }
 
-    virtual int run(std::vector<std::string> const & testsToBeRun)
+    virtual int run(std::vector<std::string> const& testsToBeRun)
     {
-        if(numberOfTestsToRun(testsToBeRun) == 0)
+        if (numberOfTestsToRun(testsToBeRun) == 0)
             return 0;
 
         report_ = "";
@@ -1071,7 +1205,7 @@ class function_test_case
 
         int failed = catch_exceptions(
             detail::test_case_run_functor(buf, this), buf, timeout);
-        if(failed)
+        if (failed)
         {
             report_ += buf.str();
         }
@@ -1082,36 +1216,41 @@ class function_test_case
     void (*fct_)();
 };
 
-template <class FCT>
+template<class FCT>
 struct test_functor
 {
-    virtual ~test_functor() {}
+    virtual ~test_functor()
+    {
+    }
     virtual void operator()() = 0;
 
     FCT clone() const
-        { return FCT(static_cast<FCT const &>(*this)); }
+    {
+        return FCT(static_cast<FCT const&>(*this));
+    }
 };
 
-template <class FCT>
+template<class FCT>
 class functor_test_case
-: public test_case
+    : public test_case
 {
-  public:
+public:
     using test_case::run;
 
-    functor_test_case(FCT const & fct, char const * name)
-    : test_case(name),
-      fct_(fct)
-    {}
+    functor_test_case(FCT const& fct, char const* name)
+        : test_case(name),
+          fct_(fct)
+    {
+    }
 
     virtual void do_run()
     {
         fct_();
     }
 
-    virtual int run(std::vector<std::string> const & testsToBeRun)
+    virtual int run(std::vector<std::string> const& testsToBeRun)
     {
-        if(numberOfTestsToRun(testsToBeRun) == 0)
+        if (numberOfTestsToRun(testsToBeRun) == 0)
             return 0;
 
         report_ = "";
@@ -1122,7 +1261,7 @@ class functor_test_case
 
         int failed = catch_exceptions(
             detail::test_case_run_functor(buf, this), buf, timeout);
-        if(failed)
+        if (failed)
         {
             report_ += buf.str();
         }
@@ -1135,29 +1274,29 @@ class functor_test_case
 
 } // namespace detail
 
-template <class TESTCASE>
-inline
-detail::test_case *
-create_test_case(void (TESTCASE::*fct)(), char const * name)
+template<class TESTCASE>
+inline detail::test_case*
+create_test_case(void (TESTCASE::*fct)(), char const* name)
 {
-    if(*name == '&') ++name;
+    if (*name == '&')
+        ++name;
     return new detail::class_test_case<TESTCASE>(fct, name);
 }
 
-inline
-detail::test_case *
-create_test_case(void (*fct)(), char const * name)
+inline detail::test_case*
+create_test_case(void (*fct)(), char const* name)
 {
-    if(*name == '&') ++name;
+    if (*name == '&')
+        ++name;
     return new detail::function_test_case(fct, name);
 }
 
-template <class FCT>
-inline
-detail::test_case *
-create_test_case(detail::test_functor<FCT> const & fct, char const * name)
+template<class FCT>
+inline detail::test_case*
+create_test_case(detail::test_functor<FCT> const& fct, char const* name)
 {
-    if(*name == '&') ++name;
+    if (*name == '&')
+        ++name;
     return new detail::functor_test_case<FCT>(fct.clone(), name);
 }
 
@@ -1168,33 +1307,37 @@ create_test_case(detail::test_functor<FCT> const & fct, char const * name)
 
 // provide more convenient output functions, used like:
 // std::cerr << 1, 2, 3, 4, "\n";
-template <class E, class T, class V>
-inline
-std::basic_ostream<E,T> & operator,(std::basic_ostream<E,T> & o, V const & t)
+template<class E, class T, class V>
+inline std::basic_ostream<E, T>&
+operator,
+    (std::basic_ostream<E, T>& o, V const& t)
 {
     return (o << ' ' << t);
 }
 
-template <class E, class T>
-inline
-std::basic_ostream<E,T> & operator,(std::basic_ostream<E,T> & o,
-              std::basic_ostream<E,T> & (*t)(std::basic_ostream<E,T> &))
+template<class E, class T>
+inline std::basic_ostream<E, T>&
+operator,
+    (std::basic_ostream<E, T>& o,
+     std::basic_ostream<E, T>& (*t)(std::basic_ostream<E, T>&))
 {
     return (o << t);
 }
 
 #else
 
-template <class V>
-inline
-std::ostream & operator,(std::ostream & o, V const & t)
+template<class V>
+inline std::ostream&
+operator,
+    (std::ostream& o, V const& t)
 {
     return (o << ' ' << t);
 }
 
-inline
-std::ostream & operator,(std::ostream & o,
-              std::ostream & (*t)(std::ostream &))
+inline std::ostream&
+operator,
+    (std::ostream& o,
+     std::ostream& (*t)(std::ostream&))
 {
     return (o << t);
 }

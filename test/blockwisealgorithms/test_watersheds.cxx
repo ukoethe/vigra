@@ -39,8 +39,8 @@
 
 #include <vigra/multi_array.hxx>
 #include <vigra/multi_gridgraph.hxx>
-#include <vigra/unittest.hxx>
 #include <vigra/multi_watersheds.hxx>
+#include <vigra/unittest.hxx>
 
 #include <iostream>
 #include <sstream>
@@ -62,32 +62,31 @@ struct BlockwiseWatershedTest
         data_sets.push_back(Array(Shape(5)));
         data_sets.push_back(Array(Shape(997)));
         data_sets.push_back(Array(Shape(10000)));
-        for(decltype(data_sets.size()) i = 0; i != data_sets.size(); ++i)
+        for (decltype(data_sets.size()) i = 0; i != data_sets.size(); ++i)
         {
             fillRandom(data_sets[i].begin(), data_sets[i].end(), 3);
         }
-        
-        for(decltype(data_sets.size()) i = 0; i != data_sets.size(); ++i)
+
+        for (decltype(data_sets.size()) i = 0; i != data_sets.size(); ++i)
         {
             const Array& data = data_sets[i];
-            
+
             NeighborhoodType neighborhood = DirectNeighborhood;
             Shape block_shape(1);
 
 
             typedef MultiArray<1, size_t> LabelArray;
-            
+
             LabelArray tested_labels(data.shape());
-            size_t tested_label_number = unionFindWatershedsBlockwise(data, tested_labels, 
-                                                                      BlockwiseLabelOptions().neighborhood(neighborhood)
-                                                                                             .blockShape(block_shape));
-            
+            size_t tested_label_number = unionFindWatershedsBlockwise(data, tested_labels,
+                                                                      BlockwiseLabelOptions().neighborhood(neighborhood).blockShape(block_shape));
+
             LabelArray correct_labels(data.shape());
             size_t correct_label_number = watershedsMultiArray(data, correct_labels, neighborhood,
                                                                WatershedOptions().unionFind());
-            if(tested_label_number != correct_label_number ||
-               !equivalentLabels(tested_labels.begin(), tested_labels.end(),
-                                 correct_labels.begin(), correct_labels.end()))
+            if (tested_label_number != correct_label_number ||
+                !equivalentLabels(tested_labels.begin(), tested_labels.end(),
+                                  correct_labels.begin(), correct_labels.end()))
             {
                 ostringstream oss;
                 oss << "labeling not equivalent" << endl;
@@ -101,7 +100,7 @@ struct BlockwiseWatershedTest
         typedef MultiArray<4, unsigned int> Array;
         typedef MultiArray<4, size_t> LabelArray;
         typedef Array::difference_type Shape;
-        
+
         vector<Array> data_sets;
         data_sets.push_back(Array(Shape(1)));
         data_sets.push_back(Array(Shape(2)));
@@ -110,7 +109,7 @@ struct BlockwiseWatershedTest
         data_sets.push_back(Array(Shape(6)));
         data_sets.push_back(Array(Shape(1, 10, 100, 1)));
 
-        for(decltype(data_sets.size()) i = 0; i != data_sets.size(); ++i)
+        for (decltype(data_sets.size()) i = 0; i != data_sets.size(); ++i)
         {
             fillRandom(data_sets[i].begin(), data_sets[i].end(), 3);
         }
@@ -118,35 +117,34 @@ struct BlockwiseWatershedTest
         vector<Shape> block_shapes;
         block_shapes.push_back(Shape(1));
         block_shapes.push_back(Shape(2));
-        block_shapes.push_back(Shape(1,10,10,2));
+        block_shapes.push_back(Shape(1, 10, 10, 2));
         block_shapes.push_back(Shape(1000000));
-        block_shapes.push_back(Shape(4,3,10,1000));
-        
+        block_shapes.push_back(Shape(4, 3, 10, 1000));
+
         vector<NeighborhoodType> neighborhoods;
         neighborhoods.push_back(DirectNeighborhood);
         neighborhoods.push_back(IndirectNeighborhood);
 
-        for(decltype(data_sets.size()) i = 0; i != data_sets.size(); ++i)
+        for (decltype(data_sets.size()) i = 0; i != data_sets.size(); ++i)
         {
             const Array& data = data_sets[i];
-            for(decltype(block_shapes.size()) j = 0; j != block_shapes.size(); ++j)
+            for (decltype(block_shapes.size()) j = 0; j != block_shapes.size(); ++j)
             {
                 const Shape& block_shape = block_shapes[j];
-                for(decltype(neighborhoods.size()) k = 0; k != neighborhoods.size(); ++k)
+                for (decltype(neighborhoods.size()) k = 0; k != neighborhoods.size(); ++k)
                 {
                     NeighborhoodType neighborhood = neighborhoods[k];
-                    
+
                     LabelArray tested_labels(data.shape());
-                    size_t tested_label_number = unionFindWatershedsBlockwise(data, tested_labels, 
-                                                                              BlockwiseLabelOptions().neighborhood(neighborhood)
-                                                                                                     .blockShape(block_shape));
+                    size_t tested_label_number = unionFindWatershedsBlockwise(data, tested_labels,
+                                                                              BlockwiseLabelOptions().neighborhood(neighborhood).blockShape(block_shape));
 
                     LabelArray correct_labels(data.shape());
                     size_t correct_label_number = watershedsMultiArray(data, correct_labels, neighborhood,
                                                                        WatershedOptions().unionFind());
-                    if(tested_label_number != correct_label_number ||
-                       !equivalentLabels(tested_labels.begin(), tested_labels.end(),
-                                         correct_labels.begin(), correct_labels.end()))
+                    if (tested_label_number != correct_label_number ||
+                        !equivalentLabels(tested_labels.begin(), tested_labels.end(),
+                                          correct_labels.begin(), correct_labels.end()))
                     {
                         ostringstream oss;
                         oss << "labeling not equivalent" << endl;
@@ -154,15 +152,15 @@ struct BlockwiseWatershedTest
                         oss << "block shape: " << block_shape << endl;
                         oss << "neighborhood: " << neighborhood << endl;
                         oss << "data:" << endl;
-                        for(int i = 0; i != data.size(); ++i)
+                        for (int i = 0; i != data.size(); ++i)
                             oss << data[i] << " ";
                         oss << endl;
                         oss << "expected labels:" << endl;
-                        for(int i = 0; i != correct_labels.size(); ++i)
+                        for (int i = 0; i != correct_labels.size(); ++i)
                             oss << correct_labels[i] << " ";
                         oss << endl;
                         oss << "got" << endl;
-                        for(int i = 0; i != tested_labels.size(); ++i)
+                        for (int i = 0; i != tested_labels.size(); ++i)
                             oss << tested_labels[i] << " ";
                         oss << endl;
                         failTest(oss.str().c_str());
@@ -178,9 +176,9 @@ struct BlockwiseWatershedTest
 
         typedef ChunkedArrayLazy<3, int> Array;
         typedef ChunkedArrayLazy<3, size_t> LabelArray;
-        
+
         typedef OldschoolArray::difference_type Shape;
-        
+
         Shape shape(20, 30, 10);
         Shape chunk_shape(20, 30, 10);
         NeighborhoodType neighborhood = IndirectNeighborhood;
@@ -191,11 +189,11 @@ struct BlockwiseWatershedTest
         OldschoolLabelArray correct_labels(shape);
         size_t correct_label_number = watershedsMultiArray(oldschool_data, correct_labels, neighborhood,
                                                            WatershedOptions().unionFind());
-        
+
         Array data(shape);
         data.commitSubarray(Shape(0), oldschool_data);
         LabelArray tested_labels(shape);
-        size_t tested_label_number = unionFindWatershedsBlockwise(data, tested_labels, 
+        size_t tested_label_number = unionFindWatershedsBlockwise(data, tested_labels,
                                                                   BlockwiseLabelOptions().neighborhood(neighborhood));
         shouldEqual(correct_label_number, tested_label_number);
         shouldEqual(equivalentLabels(tested_labels.begin(), tested_labels.end(),
@@ -205,10 +203,10 @@ struct BlockwiseWatershedTest
 };
 
 struct BlockwiseWatershedTestSuite
-  : public test_suite
+    : public test_suite
 {
     BlockwiseWatershedTestSuite()
-      : test_suite("blockwise watershed test")
+        : test_suite("blockwise watershed test")
     {
         add(testCase(&BlockwiseWatershedTest::fourDimensionalRandomTest));
         add(testCase(&BlockwiseWatershedTest::oneDimensionalTest));
@@ -216,7 +214,8 @@ struct BlockwiseWatershedTestSuite
     }
 };
 
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
     BlockwiseWatershedTestSuite test;
     int failed = test.run(testsToBeExecuted(argc, argv));

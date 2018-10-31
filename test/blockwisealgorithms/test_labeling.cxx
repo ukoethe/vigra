@@ -42,58 +42,59 @@
 #include <vigra/multi_labeling.hxx>
 #include <vigra/unittest.hxx>
 
-#include <vector>
-#include <utility>
 #include <functional>
+#include <utility>
+#include <vector>
 
 #include "utils.hxx"
 
 using namespace vigra;
 using namespace std;
 
-template <class DatasIterator, class ShapesIterator>
-void testOnData(DatasIterator datas_begin, DatasIterator datas_end,
-                  ShapesIterator shapes_begin, ShapesIterator shapes_end)
+template<class DatasIterator, class ShapesIterator>
+void
+testOnData(DatasIterator datas_begin, DatasIterator datas_end,
+           ShapesIterator shapes_begin, ShapesIterator shapes_end)
 {
-    for(DatasIterator datas_it = datas_begin ; datas_it != datas_end; ++datas_it)
+    for (DatasIterator datas_it = datas_begin; datas_it != datas_end; ++datas_it)
     {
         typedef typename DatasIterator::reference DataRef;
         DataRef data = *datas_it;
-        for(ShapesIterator shapes_it = shapes_begin; shapes_it != shapes_end; ++shapes_it)
+        for (ShapesIterator shapes_it = shapes_begin; shapes_it != shapes_end; ++shapes_it)
         {
             typedef typename ShapesIterator::reference ShapeRef;
             ShapeRef shape = *shapes_it;
-            
+
             vector<NeighborhoodType> neighborhoods;
             neighborhoods.push_back(DirectNeighborhood);
             neighborhoods.push_back(IndirectNeighborhood);
             typedef vector<NeighborhoodType>::iterator NeighborhoodIterator;
-            
-            for(NeighborhoodIterator neighborhood_it = neighborhoods.begin();
-                neighborhood_it != neighborhoods.end();
-                ++neighborhood_it)
-            {   
+
+            for (NeighborhoodIterator neighborhood_it = neighborhoods.begin();
+                 neighborhood_it != neighborhoods.end();
+                 ++neighborhood_it)
+            {
                 NeighborhoodType neighborhood = *neighborhood_it;
                 typedef typename DatasIterator::value_type Data;
 
                 std::vector<bool> with_backgrounds;
                 with_backgrounds.push_back(true);
                 with_backgrounds.push_back(false);
-                for(std::vector<bool>::iterator backgrounds_it = with_backgrounds.begin();
-                        backgrounds_it != with_backgrounds.end();
-                        ++backgrounds_it)
+                for (std::vector<bool>::iterator backgrounds_it = with_backgrounds.begin();
+                     backgrounds_it != with_backgrounds.end();
+                     ++backgrounds_it)
                 {
                     bool with_background = *backgrounds_it;
                     Data correct_labels(data.shape());
                     Data tested_labels(data.shape());
-                    
+
                     BlockwiseLabelOptions options;
                     options.neighborhood(neighborhood);
                     options.blockShape(shape);
 
                     int correct_label_number;
                     int tested_label_number;
-                    if(with_background)
+                    if (with_background)
                     {
                         correct_label_number = labelMultiArrayWithBackground(data, correct_labels, neighborhood, 1u);
                         options.ignoreBackgroundValue(1u);
@@ -102,12 +103,12 @@ void testOnData(DatasIterator datas_begin, DatasIterator datas_end,
                     {
                         correct_label_number = labelMultiArray(data, correct_labels, neighborhood);
                     }
-                    
+
                     tested_label_number = labelMultiArrayBlockwise(data, tested_labels, options);
 
-                    if(!equivalentLabels(correct_labels.begin(), correct_labels.end(),
-                                         tested_labels.begin(), tested_labels.end()) ||
-                       correct_label_number != tested_label_number)
+                    if (!equivalentLabels(correct_labels.begin(), correct_labels.end(),
+                                          tested_labels.begin(), tested_labels.end()) ||
+                        correct_label_number != tested_label_number)
                     {
                         std::ostringstream oss;
                         oss << "labeling not equivalent" << endl;
@@ -116,15 +117,15 @@ void testOnData(DatasIterator datas_begin, DatasIterator datas_end,
                         oss << "block shape: " << shape << endl;
                         oss << "neighborhood: " << neighborhood << endl;
                         oss << "data: " << endl;
-                        for(int i = 0; i != data.size(); ++i)
+                        for (int i = 0; i != data.size(); ++i)
                             oss << data[i] << " ";
                         oss << endl;
                         oss << "expected_labels: " << endl;
-                        for(int i = 0; i != correct_labels.size(); ++i)
+                        for (int i = 0; i != correct_labels.size(); ++i)
                             oss << correct_labels[i] << " ";
                         oss << endl;
                         oss << "got" << endl;
-                        for(int i = 0; i != tested_labels.size(); ++i)
+                        for (int i = 0; i != tested_labels.size(); ++i)
                             oss << tested_labels[i] << " ";
                         oss << endl;
                         failTest(oss.str().c_str());
@@ -136,7 +137,7 @@ void testOnData(DatasIterator datas_begin, DatasIterator datas_end,
 }
 
 struct BlockwiseLabelingTest
-{   
+{
     typedef MultiArray<5, unsigned int> Array5;
     typedef MultiArray<2, unsigned int> Array2;
     typedef MultiArray<1, unsigned int> Array1;
@@ -156,42 +157,42 @@ struct BlockwiseLabelingTest
     BlockwiseLabelingTest()
     {
         array_fives.push_back(Array5(Shape5(1)));
-        array_fives.push_back(Array5(Shape5(2,2,3,4,3)));
-        array_fives.push_back(Array5(Shape5(5,6,2,2,3)));
-        for(decltype(array_fives.size()) i = 0; i != array_fives.size(); ++i)
+        array_fives.push_back(Array5(Shape5(2, 2, 3, 4, 3)));
+        array_fives.push_back(Array5(Shape5(5, 6, 2, 2, 3)));
+        for (decltype(array_fives.size()) i = 0; i != array_fives.size(); ++i)
         {
             fillRandom(array_fives[i].begin(), array_fives[i].end(), 3);
         }
 
         array_twos.push_back(Array2(Shape2(1)));
-        array_twos.push_back(Array2(Shape2(1,2)));
-        array_twos.push_back(Array2(Shape2(2,2)));
-        array_twos.push_back(Array2(Shape2(4,4)));
-        array_twos.push_back(Array2(Shape2(6,10)));
-        array_twos.push_back(Array2(Shape2(19,25)));
-        for(decltype(array_twos.size()) i = 0; i != array_twos.size(); ++i)
+        array_twos.push_back(Array2(Shape2(1, 2)));
+        array_twos.push_back(Array2(Shape2(2, 2)));
+        array_twos.push_back(Array2(Shape2(4, 4)));
+        array_twos.push_back(Array2(Shape2(6, 10)));
+        array_twos.push_back(Array2(Shape2(19, 25)));
+        for (decltype(array_twos.size()) i = 0; i != array_twos.size(); ++i)
         {
             fillRandom(array_twos[i].begin(), array_twos[i].end(), 3);
         }
-        
+
         array_ones.push_back(Array1(Shape1(1)));
         array_ones.push_back(Array1(Shape1(2)));
         array_ones.push_back(Array1(Shape1(47)));
         array_ones.push_back(Array1(Shape1(81)));
         array_ones.push_back(Array1(Shape1(997)));
-        for(decltype(array_ones.size()) i = 0; i != array_ones.size(); ++i)
+        for (decltype(array_ones.size()) i = 0; i != array_ones.size(); ++i)
         {
             fillRandom(array_ones[i].begin(), array_ones[i].end(), 3);
         }
 
         shape_fives.push_back(Shape5(1));
         shape_fives.push_back(Shape5(2));
-        shape_fives.push_back(Shape5(5,4,3,2,1));
+        shape_fives.push_back(Shape5(5, 4, 3, 2, 1));
         shape_fives.push_back(Shape5(100000));
 
         shape_twos.push_back(Shape2(1));
         shape_twos.push_back(Shape2(2));
-        shape_twos.push_back(Shape2(5,4));
+        shape_twos.push_back(Shape2(5, 4));
         shape_twos.push_back(Shape2(1000000));
 
         shape_ones.push_back(Shape1(1));
@@ -200,7 +201,7 @@ struct BlockwiseLabelingTest
         shape_ones.push_back(Shape1(5));
         shape_ones.push_back(Shape1(213));
     }
-    
+
     void debugTest()
     {
         typedef MultiArray<2, int> Array;
@@ -209,25 +210,23 @@ struct BlockwiseLabelingTest
         Shape shape = Shape(2);
         Array data(shape);
 
-        data(0,0) = 1;
-        data(1,0) = 1;
-        data(0,1) = 1;
-        data(1,1) = 1;
-        
+        data(0, 0) = 1;
+        data(1, 0) = 1;
+        data(0, 1) = 1;
+        data(1, 1) = 1;
+
         MultiArray<2, size_t> blockwise_labels(shape);
         MultiArray<2, size_t> labels(shape);
-    
+
         Shape block_shape(1, 1);
         //TinyVector<MultiArrayIndex, 3> block_shape(1, 1, 1);
 
         NeighborhoodType neighborhood = IndirectNeighborhood;
         using namespace vigra::blockwise;
-    
+
         size_t count = labelMultiArrayWithBackground(data, labels, neighborhood, 1);
-        size_t blockwise_count = labelMultiArrayBlockwise(data, blockwise_labels, 
-                                                          BlockwiseLabelOptions().neighborhood(neighborhood)
-                                                                                 .ignoreBackgroundValue(1)
-                                                                                 .blockShape(block_shape));
+        size_t blockwise_count = labelMultiArrayBlockwise(data, blockwise_labels,
+                                                          BlockwiseLabelOptions().neighborhood(neighborhood).ignoreBackgroundValue(1).blockShape(block_shape));
         shouldEqual(count, blockwise_count);
         shouldEqual(equivalentLabels(labels.begin(), labels.end(),
                                      blockwise_labels.begin(), blockwise_labels.end()),
@@ -238,7 +237,7 @@ struct BlockwiseLabelingTest
         typedef ChunkedArrayLazy<3, int> DataArray;
         typedef ChunkedArrayLazy<3, size_t> LabelArray;
         typedef DataArray::shape_type Shape;
-        
+
         Shape shape = Shape(100, 200, 300);
         Shape chunk_shape = Shape(32);
 
@@ -247,48 +246,49 @@ struct BlockwiseLabelingTest
         LabelArray labels(shape, chunk_shape);
 
         using namespace vigra::blockwise;
-        
+
         BlockwiseLabelOptions options;
         options.neighborhood(IndirectNeighborhood).ignoreBackgroundValue(1);
 
         size_t tested_label_number = labelMultiArrayBlockwise(data, labels, options);
         MultiArray<3, size_t> checked_out_labels(shape);
         labels.checkoutSubarray(Shape(0), checked_out_labels);
-        
+
         MultiArray<3, int> oldschool_data_array(shape);
         MultiArray<3, size_t> oldschool_label_array(shape);
-        
+
         data.checkoutSubarray(Shape(0), oldschool_data_array);
         size_t actual_label_number = labelMultiArrayWithBackground(oldschool_data_array, oldschool_label_array,
                                                                    IndirectNeighborhood, 1);
-        
+
         shouldEqual(tested_label_number, actual_label_number);
         shouldEqual(equivalentLabels(checked_out_labels.begin(), checked_out_labels.end(),
-                                     oldschool_label_array.begin(), oldschool_label_array.end()), true);
+                                     oldschool_label_array.begin(), oldschool_label_array.end()),
+                    true);
     }
 
     void fiveDimensionalRandomTest()
     {
         testOnData(array_fives.begin(), array_fives.end(),
-                     shape_fives.begin(), shape_fives.end());
+                   shape_fives.begin(), shape_fives.end());
     }
     void twoDimensionalRandomTest()
     {
         testOnData(array_twos.begin(), array_twos.end(),
-                     shape_twos.begin(), shape_twos.end());
+                   shape_twos.begin(), shape_twos.end());
     }
     void oneDimensionalRandomTest()
     {
         testOnData(array_ones.begin(), array_ones.end(),
-                     shape_ones.begin(), shape_ones.end());
+                   shape_ones.begin(), shape_ones.end());
     }
 };
 
 struct BlockwiseLabelingTestSuite
-  : public test_suite
+    : public test_suite
 {
     BlockwiseLabelingTestSuite()
-      : test_suite("blockwise labeling test")
+        : test_suite("blockwise labeling test")
     {
         add(testCase(&BlockwiseLabelingTest::oneDimensionalRandomTest));
         add(testCase(&BlockwiseLabelingTest::twoDimensionalRandomTest));
@@ -298,7 +298,8 @@ struct BlockwiseLabelingTestSuite
     }
 };
 
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
     BlockwiseLabelingTestSuite test;
     int failed = test.run(testsToBeExecuted(argc, argv));
@@ -307,4 +308,3 @@ int main(int argc, char** argv)
 
     return failed != 0;
 }
-

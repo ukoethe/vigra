@@ -33,13 +33,13 @@
 /*                                                                      */
 /************************************************************************/
 
-#include "vigra/unittest.hxx"
-#include "vigra/sifImport.hxx"
 #include "vigra/multi_array.hxx"
 #include "vigra/multi_impex.hxx"
+#include "vigra/sifImport.hxx"
+#include "vigra/unittest.hxx"
 
 #ifdef HasHDF5
-# include "vigra/hdf5impex.hxx"
+#include "vigra/hdf5impex.hxx"
 #endif
 
 #include "testSif_ref_4_16_30001.hxx"
@@ -51,134 +51,142 @@ class SifImportTest
 {
 
 public:
-
     SifImportTest()
-    {}
+    {
+    }
 
     // Test Sif from Andor software version 4.16.30001
-    void testSifImport_4_16() {
-        MultiArray<3,float> reference_data(MultiArrayShape<3>::type(128, 128, 1), ref_4_16);
-        
+    void testSifImport_4_16()
+    {
+        MultiArray<3, float> reference_data(MultiArrayShape<3>::type(128, 128, 1), ref_4_16);
+
         // read SIF data to MultiArrayView
         char sifFile[] = "testSif_4_16_30001.sif";
         {
             SIFImportInfo infoSIF(sifFile);
-            MultiArray<3,float> in_data(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
+            MultiArray<3, float> in_data(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
             readSIF(infoSIF, in_data);
 
             // compare content
-            should (infoSIF.shape()[0] == 128);
-            should (infoSIF.shape()[1] == 128);
-            should (infoSIF.shape()[2] == 1);
-            should (in_data == reference_data);
+            should(infoSIF.shape()[0] == 128);
+            should(infoSIF.shape()[1] == 128);
+            should(infoSIF.shape()[2] == 1);
+            should(in_data == reference_data);
         }
         {
             // read via importVolume()
             VolumeImportInfo info(sifFile);
 
             // compare content
-            should (info.getFileType() == std::string("SIF"));
-            should (info.shape() == Shape3(128, 128, 1));
-            should (info.getPixelType() == std::string("FLOAT"));
-            should (info.numBands() == 1);
+            should(info.getFileType() == std::string("SIF"));
+            should(info.shape() == Shape3(128, 128, 1));
+            should(info.getPixelType() == std::string("FLOAT"));
+            should(info.numBands() == 1);
 
-            MultiArray<3,float> in_data(info.shape());
+            MultiArray<3, float> in_data(info.shape());
             importVolume(info, in_data);
-            should (in_data == reference_data);
+            should(in_data == reference_data);
         }
     }
 
     // SIF from Andor software version 4.13.30000
-    void testSifImport_4_13() {
+    void testSifImport_4_13()
+    {
         char sifFile[] = "testSif_4_13_30000.sif";
 
-        const float reference_array[] = 
-            {0.f, 27.f, 61.f, 96.f, 132.f, 166.f, 200.f, 235.f, 
+        const float reference_array[] =
+            {0.f, 27.f, 61.f, 96.f, 132.f, 166.f, 200.f, 235.f,
              0.f, 27.f, 62.f, 97.f, 131.f, 166.f, 200.f, 235.f};
         MultiArray<3, float> reference_data(MultiArrayShape<3>::type(8, 2, 1), reference_array);
-        
+
 
         // read SIF
         SIFImportInfo infoSIF(sifFile);
         // import to MultiArrayView
-        MultiArray<3,float> in_data(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
+        MultiArray<3, float> in_data(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
         readSIF(infoSIF, in_data);
-        
-        
+
+
         // compare
-        should (infoSIF.shape()[0] == 8);
-        should (infoSIF.shape()[1] == 2);
-        should (infoSIF.shape()[2] == 1);
-        should (in_data == reference_data);
+        should(infoSIF.shape()[0] == 8);
+        should(infoSIF.shape()[1] == 2);
+        should(infoSIF.shape()[2] == 1);
+        should(in_data == reference_data);
     }
-    
+
     // SIF from Andor software version 4.6.3
-    void testSifImport_4_6() {
+    void testSifImport_4_6()
+    {
         char sifFile[] = "testSif_4_6_30000.sif";
 
-        const float reference_array[] = 
+        const float reference_array[] =
             {124.f, 176.114f, 228.f,
              68.f, 120.f, 172.f,
              12.299f, 64.f, 116.f,
              0.f, 8.299f, 60.f};
         MultiArray<3, float> reference_data(MultiArrayShape<3>::type(3, 4, 1), reference_array);
-        
+
 
         // read SIF
         SIFImportInfo infoSIF(sifFile);
         // import to MultiArrayView
-        MultiArray<3,float> in_data(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
+        MultiArray<3, float> in_data(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
         readSIF(infoSIF, in_data);
-        
+
         // compare
-        should (infoSIF.shape()[0] == 3);
-        should (infoSIF.shape()[1] == 4);
-        should (infoSIF.shape()[2] == 1);
-        should (in_data == reference_data);
+        should(infoSIF.shape()[0] == 3);
+        should(infoSIF.shape()[1] == 4);
+        should(infoSIF.shape()[2] == 1);
+        should(in_data == reference_data);
     }
 
     // check for consistency of shape() vs shapeOfDimension(i)
-    void testShapeOfDimension() {
+    void testShapeOfDimension()
+    {
         char sifFile[] = "testSif_4_6_30000.sif";
 
         SIFImportInfo infoSIF(sifFile);
 
         // compare
-        should (infoSIF.shape()[0] == (unsigned)infoSIF.width());
-        should (infoSIF.shape()[1] == (unsigned)infoSIF.height());
-        should (infoSIF.shape()[2] == (unsigned)infoSIF.stacksize());
-        for (int i = 0; i < 3; ++i) {
-            should (infoSIF.shape()[i] == (unsigned)infoSIF.shapeOfDimension(i));
+        should(infoSIF.shape()[0] == (unsigned)infoSIF.width());
+        should(infoSIF.shape()[1] == (unsigned)infoSIF.height());
+        should(infoSIF.shape()[2] == (unsigned)infoSIF.stacksize());
+        for (int i = 0; i < 3; ++i)
+        {
+            should(infoSIF.shape()[i] == (unsigned)infoSIF.shapeOfDimension(i));
         }
     }
 
-    void testReadBlock() {
+    void testReadBlock()
+    {
         char sifFile[] = "testSif_forBlocks_4_16_30001.sif";
 
         SIFImportInfo infoSIF(sifFile);
-        should (infoSIF.stacksize() == 3);
-        should (infoSIF.width() == 4);
-        should (infoSIF.height() == 5);
-        MultiArray<3,float> in_data_block(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), 1));
+        should(infoSIF.stacksize() == 3);
+        should(infoSIF.width() == 4);
+        should(infoSIF.height() == 5);
+        MultiArray<3, float> in_data_block(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), 1));
 
         // import whole volume to MultiArray
-        MultiArray<3,float> in_data_volume(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
+        MultiArray<3, float> in_data_volume(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
         readSIF(infoSIF, in_data_volume);
 
         // compare with readBlock() function
-        for (int i=0; i<infoSIF.stacksize(); ++i) {
-            readSIFBlock(infoSIF, Shape3(0,0,i), Shape3(4,5,1), in_data_block); // read one frame at a time
-            should (in_data_block == in_data_volume.subarray(Shape3(0,0,i), Shape3(4,5,i+1)));
+        for (int i = 0; i < infoSIF.stacksize(); ++i)
+        {
+            readSIFBlock(infoSIF, Shape3(0, 0, i), Shape3(4, 5, 1), in_data_block); // read one frame at a time
+            should(in_data_block == in_data_volume.subarray(Shape3(0, 0, i), Shape3(4, 5, i + 1)));
 
             // additional check: compare values explicitly
-            for (int xx=0; xx<infoSIF.width(); ++xx) {
-                for(int yy=0; yy<infoSIF.height(); ++yy) {
-                    should ( in_data_block(xx,infoSIF.height()-1-yy) == (float)(xx | (yy<<4) | ((i+1)<<8)) );
+            for (int xx = 0; xx < infoSIF.width(); ++xx)
+            {
+                for (int yy = 0; yy < infoSIF.height(); ++yy)
+                {
+                    should(in_data_block(xx, infoSIF.height() - 1 - yy) == (float)(xx | (yy << 4) | ((i + 1) << 8)));
                 }
             }
         }
     }
-
 };
 
 
@@ -194,12 +202,12 @@ struct SifImportTestSuite : public vigra::test_suite
         add(testCase(&SifImportTest::testSifImport_4_6));
         add(testCase(&SifImportTest::testShapeOfDimension));
         add(testCase(&SifImportTest::testReadBlock));
- 
     }
 };
 
 
-int main (int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
     SifImportTestSuite test;
     const int failed = test.run(vigra::testsToBeExecuted(argc, argv));

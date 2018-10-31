@@ -36,18 +36,18 @@
 #ifndef VIGRA_VECTOR_DISTANCE_HXX
 #define VIGRA_VECTOR_DISTANCE_HXX
 
-#include <vector>
-#include <set>
-#include <functional>
-#include "array_vector.hxx"
-#include "multi_array.hxx"
 #include "accessor.hxx"
-#include "numerictraits.hxx"
-#include "navigator.hxx"
-#include "metaprogramming.hxx"
-#include "multi_pointoperators.hxx"
+#include "array_vector.hxx"
 #include "functorexpression.hxx"
+#include "metaprogramming.hxx"
+#include "multi_array.hxx"
 #include "multi_distance.hxx"
+#include "multi_pointoperators.hxx"
+#include "navigator.hxx"
+#include "numerictraits.hxx"
+#include <functional>
+#include <set>
+#include <vector>
 
 #undef VECTORIAL_DIST_DEBUG
 
@@ -57,7 +57,7 @@ namespace vigra
 namespace detail
 {
 
-template <class Vector, class Value>
+template<class Vector, class Value>
 struct VectorialDistParabolaStackEntry
 {
     double left, center, right;
@@ -65,13 +65,16 @@ struct VectorialDistParabolaStackEntry
     Vector point;
 
     VectorialDistParabolaStackEntry(const Vector& vec, Value prev, double l, double c, double r)
-    : left(l), center(c), right(r), apex_height(prev), point(vec)
-    {}
+        : left(l), center(c), right(r), apex_height(prev), point(vec)
+    {
+    }
 };
 
 #ifdef VECTORIAL_DIST_DEBUG
-template <class Vector, class Value>
-std::ostream& operator<<(std::ostream&o, const VectorialDistParabolaStackEntry<Vector, Value>& e) {
+template<class Vector, class Value>
+std::ostream&
+operator<<(std::ostream& o, const VectorialDistParabolaStackEntry<Vector, Value>& e)
+{
     o << "l=" << e.left << ", c=" << e.center << ", r=" << e.right << ", pV=" << e.apex_height << ", pVec=" << e.point;
     return o;
 }
@@ -83,26 +86,26 @@ std::ostream& operator<<(std::ostream&o, const VectorialDistParabolaStackEntry<V
 /*                                                      */
 /********************************************************/
 
-template <class VEC, class ARRAY>
+template<class VEC, class ARRAY>
 inline double
-partialSquaredMagnitude(const VEC& vec, MultiArrayIndex dim, ARRAY const & pixel_pitch)
+partialSquaredMagnitude(const VEC& vec, MultiArrayIndex dim, ARRAY const& pixel_pitch)
 {
     //computes the squared magnitude of vec
     //considering only the first dim dimensions
     double sqMag = 0.0;
-    for(MultiArrayIndex i=0; i<=dim; ++i)
+    for (MultiArrayIndex i = 0; i <= dim; ++i)
     {
-        sqMag += sq(pixel_pitch[i]*vec[i]);
+        sqMag += sq(pixel_pitch[i] * vec[i]);
     }
     return sqMag;
 }
 
-template <class SrcIterator,
-          class Array>
+template<class SrcIterator,
+         class Array>
 void
 vectorialDistParabola(MultiArrayIndex dimension,
                       SrcIterator is, SrcIterator iend,
-                      Array const & pixel_pitch )
+                      Array const& pixel_pitch)
 {
     typedef typename SrcIterator::value_type SrcType;
     typedef VectorialDistParabolaStackEntry<SrcType, double> Influence;
@@ -118,22 +121,22 @@ vectorialDistParabola(MultiArrayIndex dimension,
     _stack.push_back(Influence(*is, apex_height, 0.0, 0.0, w));
     ++is;
     double current = 1.0;
-    while(current < w)
+    while (current < w)
     {
         apex_height = partialSquaredMagnitude(*is, dimension, pixel_pitch);
-        Influence & s = _stack.back();
+        Influence& s = _stack.back();
         double diff = current - s.center;
-        double intersection = current + (apex_height - s.apex_height - sq(sigma*diff)) / (2.0*sigma2 * diff);
+        double intersection = current + (apex_height - s.apex_height - sq(sigma * diff)) / (2.0 * sigma2 * diff);
 
-        if( intersection < s.left) // previous point has no influence
+        if (intersection < s.left) // previous point has no influence
         {
             _stack.pop_back();
-            if(_stack.empty())
+            if (_stack.empty())
                 _stack.push_back(Influence(*is, apex_height, 0.0, current, w));
             else
                 continue; // try new top of stack without advancing current
         }
-        else if(intersection < s.right)
+        else if (intersection < s.right)
         {
             s.right = intersection;
             _stack.push_back(Influence(*is, apex_height, intersection, current, w));
@@ -146,9 +149,9 @@ vectorialDistParabola(MultiArrayIndex dimension,
     // closest to) which row. We can go through the stack and calculate the
     // distance squared for each element of the column.
     typename std::vector<Influence>::iterator it = _stack.begin();
-    for(current = 0.0; current < w; ++current, ++id)
+    for (current = 0.0; current < w; ++current, ++id)
     {
-        while( current >= it->right)
+        while (current >= it->right)
             ++it;
 
         *id = it->point;
@@ -156,19 +159,19 @@ vectorialDistParabola(MultiArrayIndex dimension,
     }
 }
 
-template <class DestIterator,
-          class LabelIterator,
-          class Array1, class Array2>
+template<class DestIterator,
+         class LabelIterator,
+         class Array1, class Array2>
 void
 boundaryVectorDistParabola(MultiArrayIndex dimension,
                            DestIterator is, DestIterator iend,
                            LabelIterator ilabels,
-                           Array1 const & pixel_pitch,
-                           Array2 const & dmax,
-                           bool array_border_is_active=false)
+                           Array1 const& pixel_pitch,
+                           Array2 const& dmax,
+                           bool array_border_is_active = false)
 {
     double w = iend - is;
-    if(w <= 0)
+    if (w <= 0)
         return;
 
     typedef typename LabelIterator::value_type LabelType;
@@ -183,93 +186,93 @@ boundaryVectorDistParabola(MultiArrayIndex dimension,
     double apex_height = partialSquaredMagnitude(border_point, dimension, pixel_pitch);
     Stack _stack(1, Influence(border_point, apex_height, 0.0, -1.0, w));
     LabelType current_label = *ilabels;
-    for(double begin = 0.0, current = 0.0; current <= w; ++ilabels, ++is, ++current)
+    for (double begin = 0.0, current = 0.0; current <= w; ++ilabels, ++is, ++current)
     {
         DestType point = (current < w)
                              ? (current_label == *ilabels)
-                                 ? *is
-                                 : DestType(0)
+                                   ? *is
+                                   : DestType(0)
                              : border_point;
         apex_height = partialSquaredMagnitude(point, dimension, pixel_pitch);
-        while(true)
+        while (true)
         {
-            Influence & s = _stack.back();
-            double diff = (current - s.center)*pixel_pitch[dimension];
+            Influence& s = _stack.back();
+            double diff = (current - s.center) * pixel_pitch[dimension];
             double intersection = current + (apex_height - s.apex_height - sq(diff)) / (2.0 * diff);
 
-            if(intersection < s.left) // previous parabola has no influence
+            if (intersection < s.left) // previous parabola has no influence
             {
                 _stack.pop_back();
-                if(_stack.empty())
+                if (_stack.empty())
                     intersection = begin; // new parabola is valid for entire present segment
                 else
-                    continue;  // try new top of stack without advancing to next pixel
+                    continue; // try new top of stack without advancing to next pixel
             }
-            else if(intersection < s.right)
+            else if (intersection < s.right)
             {
                 s.right = intersection;
             }
-            if(intersection < w)
+            if (intersection < w)
                 _stack.push_back(Influence(point, apex_height, intersection, current, w));
-            if(current < w && current_label == *ilabels)
+            if (current < w && current_label == *ilabels)
                 break; // finished present pixel, advance to next one
 
             // label changed => finalize the current segment
             typename Stack::iterator it = _stack.begin();
-            for(double c = begin; c < current; ++c, ++id)
+            for (double c = begin; c < current; ++c, ++id)
             {
-                while(c >= it->right)
+                while (c >= it->right)
                     ++it;
                 *id = it->point;
                 (*id)[dimension] = it->center - c;
             }
-            if(current == w)
-                break;  // stop when this was the last segment
+            if (current == w)
+                break; // stop when this was the last segment
 
             // initialize the new segment
             begin = current;
             current_label = *ilabels;
             point = *is;
             apex_height = partialSquaredMagnitude(point, dimension, pixel_pitch);
-            Stack(1, Influence(DestType(0), 0.0, begin-1.0, begin-1.0, w)).swap(_stack);
+            Stack(1, Influence(DestType(0), 0.0, begin - 1.0, begin - 1.0, w)).swap(_stack);
             // don't advance to next pixel here, because the present pixel must also
             // be analysed in the context of the new segment
         }
     }
 }
 
-template <unsigned int N, class T1, class S1,
-                          class T2, class S2,
-          class Array>
+template<unsigned int N, class T1, class S1,
+         class T2, class S2,
+         class Array>
 void
-interpixelBoundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
+interpixelBoundaryVectorDistance(MultiArrayView<N, T1, S1> const& labels,
                                  MultiArrayView<N, T2, S2> dest,
-                                 Array const & pixelPitch)
+                                 Array const& pixelPitch)
 {
-    typedef typename MultiArrayShape<N>::type  Shape;
-    typedef GridGraph<N>                       Graph;
-    typedef typename Graph::Node               Node;
-    typedef typename Graph::NodeIt             graph_scanner;
-    typedef typename Graph::OutArcIt           neighbor_iterator;
+    typedef typename MultiArrayShape<N>::type Shape;
+    typedef GridGraph<N> Graph;
+    typedef typename Graph::Node Node;
+    typedef typename Graph::NodeIt graph_scanner;
+    typedef typename Graph::OutArcIt neighbor_iterator;
 
     Graph g(labels.shape());
     for (graph_scanner node(g); node != lemon_graph::INVALID; ++node)
     {
         T1 label = labels[*node];
         double min_dist = NumericTraits<double>::max();
-        Node point    = *node,
+        Node point = *node,
              boundary = point + Node(dest[point]),
-             min_pos  = lemon::INVALID;
+             min_pos = lemon::INVALID;
         T2 min_diff;
 
         //go to adjacent neighbour with same label as origin pixel with smallest distance
-        if(labels.isInside(boundary))
+        if (labels.isInside(boundary))
         {
             for (neighbor_iterator arc(g, boundary); arc != lemon_graph::INVALID; ++arc)
             {
-                if(label == labels[g.target(*arc)])
+                if (label == labels[g.target(*arc)])
                 {
-                    double dist = squaredNorm(pixelPitch*(g.target(*arc) - point));
+                    double dist = squaredNorm(pixelPitch * (g.target(*arc) - point));
                     if (dist < min_dist)
                     {
                         min_dist = dist;
@@ -277,24 +280,24 @@ interpixelBoundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
                     }
                 }
             }
-            if(min_pos == lemon::INVALID)
+            if (min_pos == lemon::INVALID)
                 continue;
             min_dist = NumericTraits<double>::max();
         }
         else
         {
-            min_pos = clip(boundary, Shape(0), labels.shape()-Shape(1));
-            min_diff = 0.5*(boundary + min_pos) - point;
-            min_dist = squaredNorm(pixelPitch*min_diff);
+            min_pos = clip(boundary, Shape(0), labels.shape() - Shape(1));
+            min_diff = 0.5 * (boundary + min_pos) - point;
+            min_dist = squaredNorm(pixelPitch * min_diff);
         }
 
         //from this pixel look for the vector which points to the nearest interpixel between two label
         for (neighbor_iterator arc(g, min_pos); arc != lemon_graph::INVALID; ++arc)
         {
-            if(label != labels[g.target(*arc)])
+            if (label != labels[g.target(*arc)])
             {
-                T2 diff = 0.5*(g.target(*arc) + min_pos) - point;
-                double dist = squaredNorm(pixelPitch*diff);
+                T2 diff = 0.5 * (g.target(*arc) + min_pos) - point;
+                double dist = squaredNorm(pixelPitch * diff);
                 if (dist < min_dist)
                 {
                     min_dist = dist;
@@ -314,7 +317,9 @@ interpixelBoundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
 
 template<bool PRED>
 struct Error_output_pixel_type_must_be_TinyVector_of_appropriate_length
-: vigra::staticAssert::AssertBool<PRED> {};
+    : vigra::staticAssert::AssertBool<PRED>
+{
+};
 
 /********************************************************/
 /*                                                      */
@@ -322,7 +327,7 @@ struct Error_output_pixel_type_must_be_TinyVector_of_appropriate_length
 /*                                                      */
 /********************************************************/
 
-    /** \brief Compute the vector distance transform of a N-dimensional binary array.
+/** \brief Compute the vector distance transform of a N-dimensional binary array.
 
         <b> Declarations:</b>
 
@@ -359,15 +364,14 @@ struct Error_output_pixel_type_must_be_TinyVector_of_appropriate_length
 
         \see vigra::separableMultiDistance(), vigra::boundaryVectorDistance()
     */
-doxygen_overloaded_function(template <...> void separableVectorDistance)
+doxygen_overloaded_function(template<...> void separableVectorDistance)
 
-template <unsigned int N, class T1, class S1,
-          class T2, class S2, class Array>
-void
-separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
-                        MultiArrayView<N, T2, S2> dest,
-                        bool background,
-                        Array const & pixelPitch)
+    template<unsigned int N, class T1, class S1,
+             class T2, class S2, class Array>
+    void separableVectorDistance(MultiArrayView<N, T1, S1> const& source,
+                                 MultiArrayView<N, T2, S2> dest,
+                                 bool background,
+                                 Array const& pixelPitch)
 {
     using namespace vigra::functor;
     typedef typename MultiArrayView<N, T2, S2>::traverser Traverser;
@@ -375,41 +379,41 @@ separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
 
     VIGRA_STATIC_ASSERT((Error_output_pixel_type_must_be_TinyVector_of_appropriate_length<N == T2::static_size>));
     vigra_precondition(source.shape() == dest.shape(),
-        "separableVectorDistance(): shape mismatch between input and output.");
+                       "separableVectorDistance(): shape mismatch between input and output.");
     vigra_precondition(pixelPitch.size() == N,
-        "separableVectorDistance(): pixelPitch has wrong length.");
+                       "separableVectorDistance(): pixelPitch has wrong length.");
 
-    T2 maxDist(2*sum(source.shape()*pixelPitch)), rzero;
-    if(background == true)
-        transformMultiArray( source, dest,
-                                ifThenElse( Arg1() == Param(0), Param(maxDist), Param(rzero) ));
+    T2 maxDist(2 * sum(source.shape() * pixelPitch)), rzero;
+    if (background == true)
+        transformMultiArray(source, dest,
+                            ifThenElse(Arg1() == Param(0), Param(maxDist), Param(rzero)));
     else
-        transformMultiArray( source, dest,
-                                ifThenElse( Arg1() != Param(0), Param(maxDist), Param(rzero) ));
+        transformMultiArray(source, dest,
+                            ifThenElse(Arg1() != Param(0), Param(maxDist), Param(rzero)));
 
-    for(unsigned d = 0; d < N; ++d )
+    for (unsigned d = 0; d < N; ++d)
     {
-        Navigator nav( dest.traverser_begin(), dest.shape(), d);
-        for( ; nav.hasMore(); nav++ )
+        Navigator nav(dest.traverser_begin(), dest.shape(), d);
+        for (; nav.hasMore(); nav++)
         {
-             detail::vectorialDistParabola(d, nav.begin(), nav.end(), pixelPitch);
+            detail::vectorialDistParabola(d, nav.begin(), nav.end(), pixelPitch);
         }
     }
 }
 
-template <unsigned int N, class T1, class S1,
-          class T2, class S2>
+template<unsigned int N, class T1, class S1,
+         class T2, class S2>
 inline void
-separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
+separableVectorDistance(MultiArrayView<N, T1, S1> const& source,
                         MultiArrayView<N, T2, S2> dest,
-                        bool background=true)
+                        bool background = true)
 {
     TinyVector<double, N> pixelPitch(1.0);
     separableVectorDistance(source, dest, background, pixelPitch);
 }
 
 
-    /** \brief Compute the vector distance transform to the implicit boundaries of a
+/** \brief Compute the vector distance transform to the implicit boundaries of a
                multi-dimensional label array.
 
         <b> Declarations:</b>
@@ -452,41 +456,40 @@ separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
 
         \see vigra::boundaryMultiDistance(), vigra::separableVectorDistance()
     */
-doxygen_overloaded_function(template <...> void boundaryVectorDistance)
+doxygen_overloaded_function(template<...> void boundaryVectorDistance)
 
-template <unsigned int N, class T1, class S1,
-                          class T2, class S2,
-          class Array>
-void
-boundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
-                       MultiArrayView<N, T2, S2> dest,
-                       bool array_border_is_active,
-                       BoundaryDistanceTag boundary,
-                       Array const & pixelPitch)
+    template<unsigned int N, class T1, class S1,
+             class T2, class S2,
+             class Array>
+    void boundaryVectorDistance(MultiArrayView<N, T1, S1> const& labels,
+                                MultiArrayView<N, T2, S2> dest,
+                                bool array_border_is_active,
+                                BoundaryDistanceTag boundary,
+                                Array const& pixelPitch)
 {
     VIGRA_STATIC_ASSERT((Error_output_pixel_type_must_be_TinyVector_of_appropriate_length<N == T2::static_size>));
     vigra_precondition(labels.shape() == dest.shape(),
-        "boundaryVectorDistance(): shape mismatch between input and output.");
+                       "boundaryVectorDistance(): shape mismatch between input and output.");
     vigra_precondition(pixelPitch.size() == N,
-        "boundaryVectorDistance(): pixelPitch has wrong length.");
+                       "boundaryVectorDistance(): pixelPitch has wrong length.");
 
     using namespace vigra::functor;
 
-    if(boundary == InnerBoundary)
+    if (boundary == InnerBoundary)
     {
         MultiArray<N, unsigned char> boundaries(labels.shape());
 
         markRegionBoundaries(labels, boundaries, IndirectNeighborhood);
-        if(array_border_is_active)
+        if (array_border_is_active)
             initMultiArrayBorder(boundaries, 1, 1);
         separableVectorDistance(boundaries, dest, true, pixelPitch);
     }
     else
     {
-        if(boundary == InterpixelBoundary)
+        if (boundary == InterpixelBoundary)
         {
             vigra_precondition(!NumericTraits<T2>::isIntegral::value,
-                "boundaryVectorDistance(..., InterpixelBoundary): output pixel type must be float or double.");
+                               "boundaryVectorDistance(..., InterpixelBoundary): output pixel type must be float or double.");
         }
 
         typedef typename MultiArrayView<N, T1, S1>::const_traverser LabelIterator;
@@ -494,34 +497,34 @@ boundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
         typedef MultiArrayNavigator<LabelIterator, N> LabelNavigator;
         typedef MultiArrayNavigator<DestIterator, N> DNavigator;
 
-        T2 maxDist(2*sum(labels.shape()*pixelPitch));
+        T2 maxDist(2 * sum(labels.shape() * pixelPitch));
         dest = maxDist;
-        for( unsigned d = 0; d < N; ++d )
+        for (unsigned d = 0; d < N; ++d)
         {
-            LabelNavigator lnav( labels.traverser_begin(), labels.shape(), d );
-            DNavigator dnav( dest.traverser_begin(), dest.shape(), d );
+            LabelNavigator lnav(labels.traverser_begin(), labels.shape(), d);
+            DNavigator dnav(dest.traverser_begin(), dest.shape(), d);
 
-            for( ; dnav.hasMore(); dnav++, lnav++ )
+            for (; dnav.hasMore(); dnav++, lnav++)
             {
                 detail::boundaryVectorDistParabola(d, dnav.begin(), dnav.end(), lnav.begin(),
                                                    pixelPitch, maxDist, array_border_is_active);
             }
         }
 
-        if(boundary == InterpixelBoundary)
+        if (boundary == InterpixelBoundary)
         {
-           detail::interpixelBoundaryVectorDistance(labels, dest, pixelPitch);
+            detail::interpixelBoundaryVectorDistance(labels, dest, pixelPitch);
         }
     }
 }
 
-template <unsigned int N, class T1, class S1,
-                          class T2, class S2>
+template<unsigned int N, class T1, class S1,
+         class T2, class S2>
 void
-boundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
+boundaryVectorDistance(MultiArrayView<N, T1, S1> const& labels,
                        MultiArrayView<N, T2, S2> dest,
-                       bool array_border_is_active=false,
-                       BoundaryDistanceTag boundary=OuterBoundary)
+                       bool array_border_is_active = false,
+                       BoundaryDistanceTag boundary = OuterBoundary)
 {
     TinyVector<double, N> pixelPitch(1.0);
     boundaryVectorDistance(labels, dest, array_border_is_active, boundary, pixelPitch);
@@ -529,6 +532,6 @@ boundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
 
 //@}
 
-} //-- namespace vigra
+} // namespace vigra
 
-#endif        //-- VIGRA_VECTOR_DISTANCE_HXX
+#endif //-- VIGRA_VECTOR_DISTANCE_HXX

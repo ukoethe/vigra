@@ -1,0 +1,62 @@
+# The language is C++:
+Language: Cpp
+# The language standard is C++11:
+Standard: Cpp11
+# Use an indent of 4 spaces:
+IndentWidth: 4
+# Use spaces instead of tab:
+UseTab: Never
+# Do not indent namespace:
+NamespaceIndentation: None
+# The extra indent or outdent of access modifiers, e.g. public:
+AccessModifierOffset: -4
+# Indent case labels one level from the switch statement:
+IndentCaseLabels: true
+# Do not indent function name if wrapped after the type. Example:
+#     inline int
+#     ComputeSum();
+IndentWrappedFunctionNames: false
+# Always put opening braces '{' on a new line:
+BreakBeforeBraces: Allman
+# Add spaces around C++11 braced initializer lists:
+Cpp11BracedListStyle: true
+# Contract short statements to a single line:
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+# Align multi-line parameters on the open bracket for round brackets,
+# angle brackets and square brackets. Example:
+#     someLongFunction(argument1,
+#                      argument2);
+AlignAfterOpenBracket: Align
+# Align multi-line operands of binary and ternary expressions. Example:
+#     int aaa = bbbbbbbbbbbbbbb +
+#               ccccccccccccccc;
+AlignOperands: true
+# Add a newline after the template declaration only when the following
+# declaration spans multiple lines. This allows template declarations
+# on a sigle line. Supported only with clang-format >= 7.0
+#AlwaysBreakTemplateDeclarations: MultiLine
+# Put the return type on a new line for top-level definitions:
+AlwaysBreakAfterReturnType: TopLevelDefinitions
+# Remove spaces after the "template" keyword:
+SpaceAfterTemplateKeyword: false
+# Break constructor initializers before colon and after commas. Example:
+#     Constructor()
+#         : initializer1(),
+#           initializer2()
+BreakConstructorInitializers: BeforeColon
+# Do not limit the maximum line length:
+ColumnLimit: 0
+# Put the name of the namespace in a comment at the closing bracket:
+FixNamespaceComments: true
+# Alphabetically short include statements:
+SortIncludes: true
+# Do not allow more than 3 empty consegutive lines:
+MaxEmptyLinesToKeep: 3
+# Do not derive the alignment of pointer '*' and reference '&' from the file:
+DerivePointerAlignment: false
+# Fix the pointer alignment to left:
+PointerAlignment: Left

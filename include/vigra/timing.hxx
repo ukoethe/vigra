@@ -143,230 +143,265 @@ Alternatively, you can perform nested timing like so:
 
 #ifdef _WIN32
 
-    #include "windows.h"
+#include "windows.h"
 
-    namespace {
+namespace
+{
 
-    inline double queryTimerUnit()
-    {
-        LARGE_INTEGER frequency;
-        QueryPerformanceFrequency(&frequency);
-        return 1000.0 / frequency.QuadPart;
-    }
-    
-    static const double timerUnit = queryTimerUnit();
+inline double
+queryTimerUnit()
+{
+    LARGE_INTEGER frequency;
+    QueryPerformanceFrequency(&frequency);
+    return 1000.0 / frequency.QuadPart;
+}
 
-    inline double tic_toc_diff_num(LARGE_INTEGER const & tic)
-    {
-        LARGE_INTEGER toc;
-        QueryPerformanceCounter(&toc);
-        return ((toc.QuadPart - tic.QuadPart) * timerUnit);
-    }
+static const double timerUnit = queryTimerUnit();
 
-    inline std::string tic_toc_diff_string(LARGE_INTEGER const & tic)
-    {
-        double diff = tic_toc_diff_num(tic); 
-        std::stringstream s;
-        s << diff << " msec";
-        return s.str();
-    }
+inline double
+tic_toc_diff_num(LARGE_INTEGER const& tic)
+{
+    LARGE_INTEGER toc;
+    QueryPerformanceCounter(&toc);
+    return ((toc.QuadPart - tic.QuadPart) * timerUnit);
+}
 
-    inline void tic_toc_diff(LARGE_INTEGER const & tic)
-    {
-        double diff = tic_toc_diff_num(tic);
-        std::cerr << diff << " msec" << std::endl;
-    }
+inline std::string
+tic_toc_diff_string(LARGE_INTEGER const& tic)
+{
+    double diff = tic_toc_diff_num(tic);
+    std::stringstream s;
+    s << diff << " msec";
+    return s.str();
+}
 
-    inline double tic_toc_diff_num(std::vector<LARGE_INTEGER> & tic)
-    {
-        double res = tic_toc_diff_num(tic.back());
-        tic.pop_back();
-        return res;
-    }
+inline void
+tic_toc_diff(LARGE_INTEGER const& tic)
+{
+    double diff = tic_toc_diff_num(tic);
+    std::cerr << diff << " msec" << std::endl;
+}
 
-    inline std::string tic_toc_diff_string(std::vector<LARGE_INTEGER> & tic)
-    {
-        std::string res = tic_toc_diff_string(tic.back());
-        tic.pop_back();
-        return res;
-    }
+inline double
+tic_toc_diff_num(std::vector<LARGE_INTEGER>& tic)
+{
+    double res = tic_toc_diff_num(tic.back());
+    tic.pop_back();
+    return res;
+}
 
-    inline void tic_toc_diff(std::vector<LARGE_INTEGER> & tic)
-    {
-        tic_toc_diff(tic.back());
-        tic.pop_back();
-    }
+inline std::string
+tic_toc_diff_string(std::vector<LARGE_INTEGER>& tic)
+{
+    std::string res = tic_toc_diff_string(tic.back());
+    tic.pop_back();
+    return res;
+}
 
-    } // unnamed namespace
-    
-    #define USETICTOC LARGE_INTEGER tic_timer;
-    #define USE_NESTED_TICTOC std::vector<LARGE_INTEGER> tic_timer;
-    #define TIC QueryPerformanceCounter(&tic_timer);
-    #define TICPUSH tic_timer.push_back(LARGE_INTEGER());\
-                    QueryPerformanceCounter(&(tic_timer.back()));
-    #define TOC  tic_toc_diff       (tic_timer);
-    #define TOCN tic_toc_diff_num   (tic_timer)
-    #define TOCS tic_toc_diff_string(tic_timer)
+inline void
+tic_toc_diff(std::vector<LARGE_INTEGER>& tic)
+{
+    tic_toc_diff(tic.back());
+    tic.pop_back();
+}
+
+} // unnamed namespace
+
+#define USETICTOC LARGE_INTEGER tic_timer;
+#define USE_NESTED_TICTOC std::vector<LARGE_INTEGER> tic_timer;
+#define TIC QueryPerformanceCounter(&tic_timer);
+#define TICPUSH                           \
+    tic_timer.push_back(LARGE_INTEGER()); \
+    QueryPerformanceCounter(&(tic_timer.back()));
+#define TOC tic_toc_diff(tic_timer);
+#define TOCN tic_toc_diff_num(tic_timer)
+#define TOCS tic_toc_diff_string(tic_timer)
 
 #else
 
-    #if defined(VIGRA_HIRES_TIMING) && !defined(__CYGWIN__)
-        // requires linking against librt
-    
-        #include <time.h>
+#if defined(VIGRA_HIRES_TIMING) && !defined(__CYGWIN__)
+// requires linking against librt
 
-        namespace {
+#include <time.h>
 
-        inline double tic_toc_diff_num(timespec const & tic)
-        {
-            timespec toc;
-            clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &toc);
-            return ((toc.tv_sec*1000.0 + toc.tv_nsec/1000000.0) -
-                  (tic.tv_sec*1000.0 + tic.tv_nsec/1000000.0));
-        }
+namespace
+{
 
-        inline std::string tic_toc_diff_string(timespec const & tic)
-        {
-            double diff = tic_toc_diff_num(tic); 
-            std::stringstream s;
-            s << diff << " msec";
-            return s.str();
-        }
+inline double
+tic_toc_diff_num(timespec const& tic)
+{
+    timespec toc;
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &toc);
+    return ((toc.tv_sec * 1000.0 + toc.tv_nsec / 1000000.0) -
+            (tic.tv_sec * 1000.0 + tic.tv_nsec / 1000000.0));
+}
 
-        inline void tic_toc_diff(timespec const & tic)
-        {
-            std::cerr << tic_toc_diff_string(tic) << std::endl;
-        }
-        
-        inline double tic_toc_diff_num(std::vector<timespec> & tic)
-        {
-            double res = tic_toc_diff_num(tic.back());
-            tic.pop_back();
-            return res;
-        }
+inline std::string
+tic_toc_diff_string(timespec const& tic)
+{
+    double diff = tic_toc_diff_num(tic);
+    std::stringstream s;
+    s << diff << " msec";
+    return s.str();
+}
 
-        inline std::string tic_toc_diff_string(std::vector<timespec> & tic)
-        {
-            std::string res = tic_toc_diff_string(tic.back());
-            tic.pop_back();
-            return res;
-        }
+inline void
+tic_toc_diff(timespec const& tic)
+{
+    std::cerr << tic_toc_diff_string(tic) << std::endl;
+}
 
-        inline void tic_toc_diff(std::vector<timespec> & tic)
-        {
-            tic_toc_diff(tic.back());
-            tic.pop_back();
-        }
+inline double
+tic_toc_diff_num(std::vector<timespec>& tic)
+{
+    double res = tic_toc_diff_num(tic.back());
+    tic.pop_back();
+    return res;
+}
 
-        } // unnamed namespace
+inline std::string
+tic_toc_diff_string(std::vector<timespec>& tic)
+{
+    std::string res = tic_toc_diff_string(tic.back());
+    tic.pop_back();
+    return res;
+}
 
-        #define USETICTOC timespec tic_timer;
-        #define TIC clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tic_timer);
-        #define TOC  tic_toc_diff       (tic_timer);
-        #define TOCN tic_toc_diff_num   (tic_timer)
-        #define TOCS tic_toc_diff_string(tic_timer)
-        #define USE_NESTED_TICTOC std::vector<timespec> tic_timer;
-        #define TICPUSH tic_timer.push_back(timespec());\
-                        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &(tic_timer.back()));
+inline void
+tic_toc_diff(std::vector<timespec>& tic)
+{
+    tic_toc_diff(tic.back());
+    tic.pop_back();
+}
 
-    #else
-    
-        #include <sys/time.h>
+} // unnamed namespace
 
-        namespace {
+#define USETICTOC timespec tic_timer;
+#define TIC clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tic_timer);
+#define TOC tic_toc_diff(tic_timer);
+#define TOCN tic_toc_diff_num(tic_timer)
+#define TOCS tic_toc_diff_string(tic_timer)
+#define USE_NESTED_TICTOC std::vector<timespec> tic_timer;
+#define TICPUSH                      \
+    tic_timer.push_back(timespec()); \
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &(tic_timer.back()));
 
-        inline double tic_toc_diff_num(timeval const & tic)
-        {
-            timeval toc;
-            gettimeofday(&toc, NULL);
-            return  ((toc.tv_sec*1000.0 + toc.tv_usec/1000.0) -
-                        (tic.tv_sec*1000.0 + tic.tv_usec/1000.0));
-        }
-        
-        inline std::string tic_toc_diff_string(timeval const & tic)
-        {
-            double diff = tic_toc_diff_num(tic); 
-            std::stringstream s;
-            s << diff << " msec";
-            return s.str();
-        }
-        
-        inline void tic_toc_diff(timeval const & tic)
-        {
-            std::cerr << tic_toc_diff_string(tic)<< std::endl;
-        }
+#else
 
-        inline double tic_toc_diff_num(std::vector<timeval> & tic)
-        {
-            double res = tic_toc_diff_num(tic.back());
-            tic.pop_back();
-            return res;
-        }
+#include <sys/time.h>
 
-        inline std::string tic_toc_diff_string(std::vector<timeval> & tic)
-        {
-            std::string res = tic_toc_diff_string(tic.back());
-            tic.pop_back();
-            return res;
-        }
+namespace
+{
 
-        inline void tic_toc_diff(std::vector<timeval> & tic)
-        {
-            tic_toc_diff(tic.back());
-            tic.pop_back();
-        }
+inline double
+tic_toc_diff_num(timeval const& tic)
+{
+    timeval toc;
+    gettimeofday(&toc, NULL);
+    return ((toc.tv_sec * 1000.0 + toc.tv_usec / 1000.0) -
+            (tic.tv_sec * 1000.0 + tic.tv_usec / 1000.0));
+}
 
-        } // unnamed namespace
+inline std::string
+tic_toc_diff_string(timeval const& tic)
+{
+    double diff = tic_toc_diff_num(tic);
+    std::stringstream s;
+    s << diff << " msec";
+    return s.str();
+}
 
-        #define USETICTOC timeval tic_timer;
-        #define TIC  gettimeofday       (&tic_timer, NULL);
-        #define TOC  tic_toc_diff       (tic_timer);
-        #define TOCN tic_toc_diff_num   (tic_timer)
-        #define TOCS tic_toc_diff_string(tic_timer)
-        #define USE_NESTED_TICTOC std::vector<timeval> tic_timer;
-        #define TICPUSH tic_timer.push_back(timeval());\
-                        gettimeofday(&(tic_timer.back()), NULL);
+inline void
+tic_toc_diff(timeval const& tic)
+{
+    std::cerr << tic_toc_diff_string(tic) << std::endl;
+}
 
-    #endif // VIGRA_HIRES_TIMING
+inline double
+tic_toc_diff_num(std::vector<timeval>& tic)
+{
+    double res = tic_toc_diff_num(tic.back());
+    tic.pop_back();
+    return res;
+}
+
+inline std::string
+tic_toc_diff_string(std::vector<timeval>& tic)
+{
+    std::string res = tic_toc_diff_string(tic.back());
+    tic.pop_back();
+    return res;
+}
+
+inline void
+tic_toc_diff(std::vector<timeval>& tic)
+{
+    tic_toc_diff(tic.back());
+    tic.pop_back();
+}
+
+} // unnamed namespace
+
+#define USETICTOC timeval tic_timer;
+#define TIC gettimeofday(&tic_timer, NULL);
+#define TOC tic_toc_diff(tic_timer);
+#define TOCN tic_toc_diff_num(tic_timer)
+#define TOCS tic_toc_diff_string(tic_timer)
+#define USE_NESTED_TICTOC std::vector<timeval> tic_timer;
+#define TICPUSH                     \
+    tic_timer.push_back(timeval()); \
+    gettimeofday(&(tic_timer.back()), NULL);
+
+#endif // VIGRA_HIRES_TIMING
 
 #endif // _WIN32
 
 // TICTOCLOOP runs the body inner_repetitions times, and minimizes the result over a number of outer_repetitions runs,
 //  outputting the final minimal average to std::cerr
-// We enclose the loop in a dummy do { ... } while(false) in order to make this a true single statement 
+// We enclose the loop in a dummy do { ... } while(false) in order to make this a true single statement
 //  (instead of just a scope).
-#define TICTOCLOOP_BEGIN(inner_repetitions,outer_repetitions) \
-    do { \
-    USETICTOC \
-        double tictoc_best_, tictoc_inner_repetitions_=inner_repetitions; size_t tictoc_outer_repetitions_=outer_repetitions; \
-        for (size_t tictoccounter_=0; tictoccounter_<tictoc_outer_repetitions_; ++tictoccounter_) { \
-        TIC \
-        for (size_t tictocinnercounter_=0; tictocinnercounter_<inner_repetitions; ++tictocinnercounter_) { \
+#define TICTOCLOOP_BEGIN(inner_repetitions, outer_repetitions)                                                       \
+    do                                                                                                               \
+    {                                                                                                                \
+        USETICTOC                                                                                                    \
+        double tictoc_best_, tictoc_inner_repetitions_ = inner_repetitions;                                          \
+        size_t tictoc_outer_repetitions_ = outer_repetitions;                                                        \
+        for (size_t tictoccounter_ = 0; tictoccounter_ < tictoc_outer_repetitions_; ++tictoccounter_)                \
+        {                                                                                                            \
+            TIC for (size_t tictocinnercounter_ = 0; tictocinnercounter_ < inner_repetitions; ++tictocinnercounter_) \
+            {
 
-        
-#define TICTOCLOOP_END \
-                } \
-        const double tictoc_cur_ = TOCN; \
-                if ((tictoccounter_==0) || (tictoc_cur_ < tictoc_best_)) \
-            tictoc_best_ = tictoc_cur_; \
-        } \
-        std::cerr << tictoc_best_/tictoc_inner_repetitions_ \
-             << " msec (best-of-" << tictoc_outer_repetitions_ << ")" << std::endl; \
-    } while(false);
+
+#define TICTOCLOOP_END                                                               \
+    }                                                                                \
+    const double tictoc_cur_ = TOCN;                                                 \
+    if ((tictoccounter_ == 0) || (tictoc_cur_ < tictoc_best_))                       \
+        tictoc_best_ = tictoc_cur_;                                                  \
+    }                                                                                \
+    std::cerr << tictoc_best_ / tictoc_inner_repetitions_                            \
+              << " msec (best-of-" << tictoc_outer_repetitions_ << ")" << std::endl; \
+    }                                                                                \
+    while (false)                                                                    \
+        ;
 
 
 
 #else // NDEBUG
 
-#define USETICTOC 
+#define USETICTOC
 #define TIC
 #define TOC
 #define TOCN 0.0
 #define TICS ""
 #define USE_NESTED_TICTOC
 #define TICPUSH
-#define TICTOCLOOP_BEGIN(inner_repetitions,outer_repetitions)  do {
-#define TICTOCLOOP_END } while(false);
+#define TICTOCLOOP_BEGIN(inner_repetitions, outer_repetitions) \
+    do                                                         \
+    {
+#define TICTOCLOOP_END \
+    }                  \
+    while (false)      \
+        ;
 #endif // NDEBUG
 
 

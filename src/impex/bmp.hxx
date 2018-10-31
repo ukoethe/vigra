@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -40,68 +40,74 @@
 
 // Windows Bitmap 3.0
 
-namespace vigra {
+namespace vigra
+{
 
-    struct BmpDecoderImpl;
-    struct BmpEncoderImpl;
+struct BmpDecoderImpl;
+struct BmpEncoderImpl;
 
-    struct BmpCodecFactory : public CodecFactory
+struct BmpCodecFactory : public CodecFactory
+{
+    CodecDesc getCodecDesc() const;
+    VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
+    VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
+};
+
+class BmpDecoder : public Decoder
+{
+    BmpDecoderImpl* pimpl;
+
+public:
+    BmpDecoder()
+        : pimpl(0)
     {
-        CodecDesc getCodecDesc() const;
-        VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
-        VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
-    };
+    }
 
-    class BmpDecoder : public Decoder
+    ~BmpDecoder();
+    void init(const std::string&);
+    void close();
+    void abort();
+
+    std::string getFileType() const;
+    std::string getPixelType() const;
+
+    unsigned int getWidth() const;
+    unsigned int getHeight() const;
+    unsigned int getNumBands() const;
+    unsigned int getOffset() const;
+
+    const void* currentScanlineOfBand(unsigned int) const;
+    void nextScanline();
+};
+
+class BmpEncoder : public Encoder
+{
+    BmpEncoderImpl* pimpl;
+
+public:
+    BmpEncoder()
+        : pimpl(0)
     {
-        BmpDecoderImpl * pimpl;
+    }
 
-    public:
+    ~BmpEncoder();
+    void init(const std::string&);
+    void close();
+    void abort();
 
-        BmpDecoder() : pimpl(0) {}
+    std::string getFileType() const;
+    unsigned int getOffset() const;
 
-        ~BmpDecoder();
-        void init( const std::string & );
-        void close();
-        void abort();
+    void setWidth(unsigned int);
+    void setHeight(unsigned int);
+    void setNumBands(unsigned int);
+    void setCompressionType(const std::string&, int = -1);
+    void setPixelType(const std::string&);
+    void finalizeSettings();
 
-        std::string getFileType() const;
-        std::string getPixelType() const;
-
-        unsigned int getWidth() const;
-        unsigned int getHeight() const;
-        unsigned int getNumBands() const;
-        unsigned int getOffset() const;
-
-        const void * currentScanlineOfBand( unsigned int ) const;
-        void nextScanline();
-    };
-
-    class BmpEncoder : public Encoder
-    {
-        BmpEncoderImpl * pimpl;
-
-    public:
-        BmpEncoder() : pimpl(0) {}
-
-        ~BmpEncoder();
-        void init( const std::string & );
-        void close();
-        void abort();
-
-        std::string getFileType() const;
-        unsigned int getOffset() const;
-
-        void setWidth( unsigned int );
-        void setHeight( unsigned int );
-        void setNumBands( unsigned int );
-        void setCompressionType( const std::string &, int = -1 );
-        void setPixelType( const std::string & );
-        void finalizeSettings();
-
-        void * currentScanlineOfBand( unsigned int );
-        void nextScanline();
-    };
-}
+    void* currentScanlineOfBand(unsigned int);
+    void nextScanline();
+};
+} // namespace vigra
 
 #endif // VIGRA_IMPEX_BMP_HXX

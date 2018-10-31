@@ -29,61 +29,62 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
+
 
 #include <iostream>
-#include <vigra/multi_array.hxx>
-#include <vigra/tensorutilities.hxx>
 #include <vigra/boundarytensor.hxx>
 #include <vigra/impex.hxx>
+#include <vigra/multi_array.hxx>
+#include <vigra/tensorutilities.hxx>
 
-using namespace vigra; 
+using namespace vigra;
 
-int main(int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
-    if(argc != 2)
+    if (argc != 2)
     {
         std::cout << "Usage: " << argv[0] << " infile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
         std::cout << "creates: boundarystrength.tif, cornerstrength.tif" << std::endl;
-        
+
         return 1;
     }
-    
+
     try
     {
         ImageImportInfo info(argv[1]);
         int w = info.width(), h = info.height();
-        
+
         // create image of appropriate size for boundary tensor
-        MultiArray<2, TinyVector<float, 3> > boundarytensor(w, h);
-        
+        MultiArray<2, TinyVector<float, 3>> boundarytensor(w, h);
+
         // input scale of the bandpass to be used
         double scale;
         std::cout << "Operator scale ? ";
         std::cin >> scale;
-        
-        if(info.isGrayscale())
+
+        if (info.isGrayscale())
         {
             MultiArray<2, float> in(w, h);
             importImage(info, in);
 
             boundaryTensor(in, boundarytensor, scale);
         }
-        else if(info.isColor())
+        else if (info.isColor())
         {
-            MultiArray<2, RGBValue<float> > in(w, h);
+            MultiArray<2, RGBValue<float>> in(w, h);
             importImage(info, in);
-            
+
             // calculate the boundary tensor for every channel and add the results
-            MultiArray<2, TinyVector<float, 3> > bandtensor(w, h);
-            for(int b=0; b<3; ++b)
+            MultiArray<2, TinyVector<float, 3>> bandtensor(w, h);
+            for (int b = 0; b < 3; ++b)
             {
                 boundaryTensor(in.bindElementChannel(b), bandtensor, scale);
-                
+
                 boundarytensor += bandtensor;
             }
         }
@@ -92,24 +93,24 @@ int main(int argc, char ** argv)
             std::cerr << "Sorry, can only operate on gray and color images.\n";
             return 1;
         }
-        
+
         MultiArray<2, float> boundarystrength(w, h), cornerness(w, h);
-        MultiArray<2, TinyVector<float, 2> > edgeness(w,h);
-        
+        MultiArray<2, TinyVector<float, 2>> edgeness(w, h);
+
         // compute the total boundary strength in each pixel
         tensorTrace(boundarytensor, boundarystrength);
-        
+
         // decompose the boundary strength into corner and edge parts (where edge part also contains an orientation)
         tensorToEdgeCorner(boundarytensor, edgeness, cornerness);
 
         exportImage(boundarystrength, ImageExportInfo("boundarystrength.tif").setPixelType("UINT8"));
         exportImage(cornerness, ImageExportInfo("cornerstrength.tif").setPixelType("UINT8"));
     }
-    catch (std::exception & e)
+    catch (std::exception& e)
     {
         std::cout << e.what() << std::endl;
         return 1;
     }
-    
+
     return 0;
 }

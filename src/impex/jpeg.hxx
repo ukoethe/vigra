@@ -36,78 +36,82 @@
 #ifndef VIGRA_IMPEX_JPEG_HXX
 #define VIGRA_IMPEX_JPEG_HXX
 
-#include <vector>
 #include "vigra/codec.hxx"
+#include <vector>
 
-namespace vigra {
+namespace vigra
+{
 
-    struct JPEGCodecFactory : public CodecFactory
+struct JPEGCodecFactory : public CodecFactory
+{
+    CodecDesc getCodecDesc() const;
+    VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
+    VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
+};
+
+struct JPEGDecoderImpl;
+struct JPEGEncoderImpl;
+
+class JPEGDecoder : public Decoder
+{
+    JPEGDecoderImpl* pimpl;
+
+public:
+    JPEGDecoder()
+        : pimpl(0)
     {
-        CodecDesc getCodecDesc() const;
-        VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
-        VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
-    };
+    }
 
-    struct JPEGDecoderImpl;
-    struct JPEGEncoderImpl;
+    ~JPEGDecoder();
 
-    class JPEGDecoder : public Decoder
+    std::string getFileType() const;
+    unsigned int getWidth() const;
+    unsigned int getHeight() const;
+    unsigned int getNumBands() const;
+
+    const void* currentScanlineOfBand(unsigned int) const;
+    void nextScanline();
+
+    std::string getPixelType() const;
+    unsigned int getOffset() const;
+
+    void init(const std::string&);
+    void close();
+    void abort();
+};
+
+class JPEGEncoder : public Encoder
+{
+    JPEGEncoderImpl* pimpl;
+
+public:
+    JPEGEncoder()
+        : pimpl(0)
     {
-        JPEGDecoderImpl * pimpl;
+    }
 
-    public:
+    ~JPEGEncoder();
 
-        JPEGDecoder() : pimpl(0) {}
+    std::string getFileType() const;
+    void setWidth(unsigned int);
+    void setHeight(unsigned int);
+    void setNumBands(unsigned int);
 
-        ~JPEGDecoder();
+    void setICCProfile(const ICCProfile& data);
 
-        std::string getFileType() const;
-        unsigned int getWidth() const;
-        unsigned int getHeight() const;
-        unsigned int getNumBands() const;
+    void setCompressionType(const std::string&, int = -1);
+    void setPixelType(const std::string&);
+    unsigned int getOffset() const;
 
-        const void * currentScanlineOfBand( unsigned int ) const;
-        void nextScanline();
+    void finalizeSettings();
 
-        std::string getPixelType() const;
-        unsigned int getOffset() const;
+    void* currentScanlineOfBand(unsigned int);
+    void nextScanline();
 
-        void init( const std::string & );
-        void close();
-        void abort();
-
-    };
-
-    class JPEGEncoder : public Encoder
-    {
-        JPEGEncoderImpl * pimpl;
-
-    public:
-
-        JPEGEncoder() : pimpl(0) {}
-
-        ~JPEGEncoder();
-
-        std::string getFileType() const;
-        void setWidth( unsigned int );
-        void setHeight( unsigned int );
-        void setNumBands( unsigned int );
-
-        void setICCProfile(const ICCProfile & data);
-
-        void setCompressionType( const std::string &, int = -1 );
-        void setPixelType( const std::string & );
-        unsigned int getOffset() const;
-
-        void finalizeSettings();
-
-        void * currentScanlineOfBand( unsigned int );
-        void nextScanline();
-
-        void init( const std::string & );
-        void close();
-        void abort();
-    };
-}
+    void init(const std::string&);
+    void close();
+    void abort();
+};
+} // namespace vigra
 
 #endif // VIGRA_IMPEX_JPEG_HXX

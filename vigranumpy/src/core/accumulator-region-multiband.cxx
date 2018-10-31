@@ -47,11 +47,15 @@ namespace vigra
 // function get_pointer() at line 20 of boost/get_pointer.hpp)
 namespace acc
 {
-	inline PythonRegionFeatureAccumulator const volatile *
-    get_pointer(PythonRegionFeatureAccumulator const volatile * p) { return p; }
+inline PythonRegionFeatureAccumulator const volatile*
+get_pointer(PythonRegionFeatureAccumulator const volatile* p)
+{
+    return p;
 }
+} // namespace acc
 
-void defineMultibandRegionAccumulators()
+void
+defineMultibandRegionAccumulators()
 {
     using namespace python;
     using namespace vigra::acc;
@@ -63,9 +67,9 @@ void defineMultibandRegionAccumulators()
                    Principal<CoordinateSystem>,
                    Minimum, Maximum, Principal<Minimum>, Principal<Maximum>,
                    Select<RegionCenter, RegionRadii, RegionAxes,
-                          Coord<Minimum>, Coord<Maximum>, Principal<Coord<Skewness> >, Principal<Coord<Kurtosis> > >,
-                   DataArg<1>, LabelArg<2>
-                   > VectorRegionAccumulators;
+                          Coord<Minimum>, Coord<Maximum>, Principal<Coord<Skewness>>, Principal<Coord<Kurtosis>>>,
+                   DataArg<1>, LabelArg<2>>
+        VectorRegionAccumulators;
 
     definePythonAccumulatorArrayMultiband<3, float, VectorRegionAccumulators>();
     definePythonAccumulatorArrayMultiband<4, float, VectorRegionAccumulators>();

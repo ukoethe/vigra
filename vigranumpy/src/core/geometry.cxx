@@ -37,10 +37,10 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpygeometry_PyArray_API
 //#define NO_IMPORT_ARRAY
 
+#include <vigra/array_vector.hxx>
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/polygon.hxx>
-#include <vigra/array_vector.hxx>
 #include <vigra/tinyvector.hxx>
 
 namespace python = boost::python;
@@ -48,19 +48,19 @@ namespace python = boost::python;
 namespace vigra
 {
 
-template < class Coordinate>
+template<class Coordinate>
 NumpyAnyArray
-pyconvexHull(NumpyArray<1, TinyVector<Coordinate, 2>, UnstridedArrayTag > points)
+    pyconvexHull(NumpyArray<1, TinyVector<Coordinate, 2>, UnstridedArrayTag> points)
 {
-    ArrayVector<TinyVector<Coordinate, 2> > hull;
+    ArrayVector<TinyVector<Coordinate, 2>> hull;
     {
         PyAllowThreads _pythread;
 
-        convexHull(ArrayVectorView<TinyVector<Coordinate, 2> >(points.shape(0), points.data()), hull);
+        convexHull(ArrayVectorView<TinyVector<Coordinate, 2>>(points.shape(0), points.data()), hull);
     }
 
-    NumpyArray<1, TinyVector<Coordinate, 2> > result(MultiArrayShape<1>::type(hull.size()));
-    for(MultiArrayIndex i = 0; i < result.shape(0); ++i)
+    NumpyArray<1, TinyVector<Coordinate, 2>> result(MultiArrayShape<1>::type(hull.size()));
+    for (MultiArrayIndex i = 0; i < result.shape(0); ++i)
         result(i) = hull[i];
 
     return result;
@@ -68,18 +68,19 @@ pyconvexHull(NumpyArray<1, TinyVector<Coordinate, 2>, UnstridedArrayTag > points
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pythonConvexHull, pyconvexHull)
 
-void defineGeometry()
+void
+defineGeometry()
 {
     using namespace python;
 
     docstring_options doc_options(true, true, false);
 
     multidef("convexHull",
-        pythonConvexHull<double, float, Int32>().installFallback(),
-        args("points"),
-        "Compute the convex hull of a point set.\n"
-        "\n"
-        "For details see convexHull_ in the vigra C++ documentation.\n\n");
+             pythonConvexHull<double, float, Int32>().installFallback(),
+             args("points"),
+             "Compute the convex hull of a point set.\n"
+             "\n"
+             "For details see convexHull_ in the vigra C++ documentation.\n\n");
 }
 
 } // namespace vigra

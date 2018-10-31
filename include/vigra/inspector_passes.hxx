@@ -3,31 +3,35 @@
 
 #include "metaprogramming.hxx"
 
-namespace vigra {
+namespace vigra
+{
 
 // test and accomodate for functors that require extra passes over arrays / etc.
 
-namespace detail {
+namespace detail
+{
 
-template <bool>
+template<bool>
 struct extra_passes_selector
 {
-    template <class Inspector, class Functor>
+    template<class Inspector, class Functor>
     static void
-    call(Inspector, Functor &) {}
+    call(Inspector, Functor&)
+    {
+    }
 };
-template <>
+template<>
 struct extra_passes_selector<true>
 {
-    template <class Inspector, class Functor_n>
+    template<class Inspector, class Functor_n>
     static void
     call_n(Inspector g, Functor_n f_n)
     {
         g(f_n);
     }
-    template <class Inspector, class Functor>
+    template<class Inspector, class Functor>
     static void
-    call(Inspector g, Functor & f)
+    call(Inspector g, Functor& f)
     {
         for (unsigned n = 2; n <= Functor::max_passes; ++n)
         {
@@ -37,36 +41,38 @@ struct extra_passes_selector<true>
     }
 };
 
-template <class T>
+template<class T>
 struct has_extra_passes : public sfinae_test<T, has_extra_passes>
 {
-    template <class U> has_extra_passes(U*, typename U::extra_passes* = 0);
+    template<class U>
+    has_extra_passes(U*, typename U::extra_passes* = 0);
 };
 
-template <class Functor, bool extra = has_extra_passes<Functor>::value>
+template<class Functor, bool extra = has_extra_passes<Functor>::value>
 struct get_extra_passes
     : public VigraFalseType
 {
-    void sync(Functor &) {}
+    void sync(Functor&)
+    {
+    }
 };
 
-template <class Functor>
+template<class Functor>
 struct get_extra_passes<Functor, true>
 {
     typedef get_extra_passes extra_passes;
     static const unsigned max_passes = Functor::max_passes;
     static const bool value = Functor::max_passes >= 2;
 
-    void sync(Functor & f)
+    void sync(Functor& f)
     {
         f.calc_sync();
     }
 };
 
-template <class Inspector, class Functor>
-inline
-void
-extra_passes_select(Inspector g, Functor & f)
+template<class Inspector, class Functor>
+inline void
+extra_passes_select(Inspector g, Functor& f)
 {
     g(f);
     extra_passes_selector<get_extra_passes<Functor>::value>::call(g, f);

@@ -37,15 +37,16 @@
 #ifndef VIGRA_TRANSFORMIMAGE_HXX
 #define VIGRA_TRANSFORMIMAGE_HXX
 
-#include "utilities.hxx"
-#include "numerictraits.hxx"
-#include "iteratortraits.hxx"
-#include "rgbvalue.hxx"
 #include "functortraits.hxx"
 #include "inspectimage.hxx"
+#include "iteratortraits.hxx"
 #include "multi_shape.hxx"
+#include "numerictraits.hxx"
+#include "rgbvalue.hxx"
+#include "utilities.hxx"
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup TransformAlgo Algorithms to Transform Images
     Apply functor to calculate a pixelwise transformation of one image
@@ -59,31 +60,31 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, class Functor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor, class Functor>
 void
 transformLine(SrcIterator s,
               SrcIterator send, SrcAccessor src,
               DestIterator d, DestAccessor dest,
-              Functor const & f)
+              Functor const& f)
 {
-    for(; s != send; ++s, ++d)
+    for (; s != send; ++s, ++d)
         dest.set(f(src(s)), d);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class MaskIterator, class MaskAccessor,
-          class DestIterator, class DestAccessor,
-          class Functor>
+template<class SrcIterator, class SrcAccessor,
+         class MaskIterator, class MaskAccessor,
+         class DestIterator, class DestAccessor,
+         class Functor>
 void
 transformLineIf(SrcIterator s,
                 SrcIterator send, SrcAccessor src,
                 MaskIterator m, MaskAccessor mask,
                 DestIterator d, DestAccessor dest,
-                Functor const & f)
+                Functor const& f)
 {
-    for(; s != send; ++s, ++d, ++m)
-        if(mask(m))
+    for (; s != send; ++s, ++d, ++m)
+        if (mask(m))
             dest.set(f(src(s)), d);
 }
 
@@ -189,19 +190,18 @@ transformLineIf(SrcIterator s,
 
     \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
-doxygen_overloaded_function(template <...> void transformImage)
+doxygen_overloaded_function(template<...> void transformImage)
 
-template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor, class Functor>
-void
-transformImage(SrcImageIterator src_upperleft,
-               SrcImageIterator src_lowerright, SrcAccessor sa,
-               DestImageIterator dest_upperleft, DestAccessor da,
-               Functor const & f)
+    template<class SrcImageIterator, class SrcAccessor,
+             class DestImageIterator, class DestAccessor, class Functor>
+    void transformImage(SrcImageIterator src_upperleft,
+                        SrcImageIterator src_lowerright, SrcAccessor sa,
+                        DestImageIterator dest_upperleft, DestAccessor da,
+                        Functor const& f)
 {
     int w = src_lowerright.x - src_upperleft.x;
 
-    for(; src_upperleft.y < src_lowerright.y; ++src_upperleft.y, ++dest_upperleft.y)
+    for (; src_upperleft.y < src_lowerright.y; ++src_upperleft.y, ++dest_upperleft.y)
     {
         transformLine(src_upperleft.rowIterator(),
                       src_upperleft.rowIterator() + w, sa,
@@ -209,26 +209,26 @@ transformImage(SrcImageIterator src_upperleft,
     }
 }
 
-template <class SrcImageIterator, class SrcAccessor,
-      class DestImageIterator, class DestAccessor, class Functor>
+template<class SrcImageIterator, class SrcAccessor,
+         class DestImageIterator, class DestAccessor, class Functor>
 inline void
 transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                pair<DestImageIterator, DestAccessor> dest,
-               Functor const & f)
+               Functor const& f)
 {
     transformImage(src.first, src.second, src.third,
                    dest.first, dest.second, f);
 }
 
-template <class T1, class S1,
-      class T2, class S2, class Functor>
+template<class T1, class S1,
+         class T2, class S2, class Functor>
 inline void
-transformImage(MultiArrayView<2, T1, S1> const & src,
-               MultiArrayView<2, T2, S2> dest,
-               Functor const & f)
+    transformImage(MultiArrayView<2, T1, S1> const& src,
+                   MultiArrayView<2, T2, S2> dest,
+                   Functor const& f)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "transformImage(): shape mismatch between input and output.");
+                       "transformImage(): shape mismatch between input and output.");
     transformImage(srcImageRange(src),
                    destImage(dest), f);
 }
@@ -352,23 +352,22 @@ transformImage(MultiArrayView<2, T1, S1> const & src,
 
     \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
-doxygen_overloaded_function(template <...> void transformImageIf)
+doxygen_overloaded_function(template<...> void transformImageIf)
 
-template <class SrcImageIterator, class SrcAccessor,
-          class MaskImageIterator, class MaskAccessor,
-          class DestImageIterator, class DestAccessor,
-          class Functor>
-void
-transformImageIf(SrcImageIterator src_upperleft,
-                 SrcImageIterator src_lowerright, SrcAccessor sa,
-                 MaskImageIterator mask_upperleft, MaskAccessor ma,
-                 DestImageIterator dest_upperleft, DestAccessor da,
-                 Functor const & f)
+    template<class SrcImageIterator, class SrcAccessor,
+             class MaskImageIterator, class MaskAccessor,
+             class DestImageIterator, class DestAccessor,
+             class Functor>
+    void transformImageIf(SrcImageIterator src_upperleft,
+                          SrcImageIterator src_lowerright, SrcAccessor sa,
+                          MaskImageIterator mask_upperleft, MaskAccessor ma,
+                          DestImageIterator dest_upperleft, DestAccessor da,
+                          Functor const& f)
 {
     int w = src_lowerright.x - src_upperleft.x;
 
-    for(; src_upperleft.y < src_lowerright.y;
-             ++src_upperleft.y, ++mask_upperleft.y, ++dest_upperleft.y)
+    for (; src_upperleft.y < src_lowerright.y;
+         ++src_upperleft.y, ++mask_upperleft.y, ++dest_upperleft.y)
     {
         transformLineIf(src_upperleft.rowIterator(),
                         src_upperleft.rowIterator() + w, sa,
@@ -377,33 +376,33 @@ transformImageIf(SrcImageIterator src_upperleft,
     }
 }
 
-template <class SrcImageIterator, class SrcAccessor,
-          class MaskImageIterator, class MaskAccessor,
-          class DestImageIterator, class DestAccessor,
-          class Functor>
+template<class SrcImageIterator, class SrcAccessor,
+         class MaskImageIterator, class MaskAccessor,
+         class DestImageIterator, class DestAccessor,
+         class Functor>
 inline void
 transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                  pair<MaskImageIterator, MaskAccessor> mask,
                  pair<DestImageIterator, DestAccessor> dest,
-                 Functor const & f)
+                 Functor const& f)
 {
     transformImageIf(src.first, src.second, src.third,
                      mask.first, mask.second,
                      dest.first, dest.second, f);
 }
 
-template <class T1, class S1,
-          class TM, class SM,
-          class T2, class S2,
-          class Functor>
+template<class T1, class S1,
+         class TM, class SM,
+         class T2, class S2,
+         class Functor>
 inline void
-transformImageIf(MultiArrayView<2, T1, S1> const & src,
-                 MultiArrayView<2, TM, SM> const & mask,
-                 MultiArrayView<2, T2, S2> dest,
-                 Functor const & f)
+    transformImageIf(MultiArrayView<2, T1, S1> const& src,
+                     MultiArrayView<2, TM, SM> const& mask,
+                     MultiArrayView<2, T2, S2> dest,
+                     Functor const& f)
 {
     vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
-        "transformImageIf(): shape mismatch between input and output.");
+                       "transformImageIf(): shape mismatch between input and output.");
     transformImageIf(srcImageRange(src),
                      maskImage(mask),
                      destImage(dest), f);
@@ -507,25 +506,24 @@ transformImageIf(MultiArrayView<2, T1, S1> const & src,
 
     \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
-doxygen_overloaded_function(template <...> void gradientBasedTransform)
+doxygen_overloaded_function(template<...> void gradientBasedTransform)
 
-template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor, class Functor>
-void
-gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccessor sa,
-                       DestImageIterator destul, DestAccessor da, Functor const & grad)
+    template<class SrcImageIterator, class SrcAccessor,
+             class DestImageIterator, class DestAccessor, class Functor>
+    void gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccessor sa,
+                                DestImageIterator destul, DestAccessor da, Functor const& grad)
 {
     int w = srclr.x - srcul.x;
     int h = srclr.y - srcul.y;
-    int x,y;
+    int x, y;
 
     SrcImageIterator sy = srcul;
     DestImageIterator dy = destul;
 
-    const Diff2D left(-1,0);
-    const Diff2D right(1,0);
-    const Diff2D top(0,-1);
-    const Diff2D bottom(0,1);
+    const Diff2D left(-1, 0);
+    const Diff2D right(1, 0);
+    const Diff2D top(0, -1);
+    const Diff2D bottom(0, 1);
 
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
     TmpType diffx, diffy;
@@ -537,7 +535,7 @@ gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccess
     diffy = sa(sx) - sa(sx, bottom);
     da.set(grad(diffx, diffy), dx);
 
-    for(x=2, ++sx.x, ++dx.x; x<w; ++x, ++sx.x, ++dx.x)
+    for (x = 2, ++sx.x, ++dx.x; x < w; ++x, ++sx.x, ++dx.x)
     {
         diffx = (sa(sx, left) - sa(sx, right)) / TmpType(2.0);
         diffy = sa(sx) - sa(sx, bottom);
@@ -551,7 +549,7 @@ gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccess
     ++sy.y;
     ++dy.y;
 
-    for(y=2; y<h; ++y, ++sy.y, ++dy.y)
+    for (y = 2; y < h; ++y, ++sy.y, ++dy.y)
     {
         sx = sy;
         dx = dy;
@@ -560,7 +558,7 @@ gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccess
         diffy = (sa(sx, top) - sa(sx, bottom)) / TmpType(2.0);
         da.set(grad(diffx, diffy), dx);
 
-        for(x=2, ++sx.x, ++dx.x; x<w; ++x, ++sx.x, ++dx.x)
+        for (x = 2, ++sx.x, ++dx.x; x < w; ++x, ++sx.x, ++dx.x)
         {
             diffx = (sa(sx, left) - sa(sx, right)) / TmpType(2.0);
             diffy = (sa(sx, top) - sa(sx, bottom)) / TmpType(2.0);
@@ -579,7 +577,7 @@ gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccess
     diffy = sa(sx, top) - sa(sx);
     da.set(grad(diffx, diffy), dx);
 
-    for(x=2, ++sx.x, ++dx.x; x<w; ++x, ++sx.x, ++dx.x)
+    for (x = 2, ++sx.x, ++dx.x; x < w; ++x, ++sx.x, ++dx.x)
     {
         diffx = (sa(sx, left) - sa(sx, right)) / TmpType(2.0);
         diffy = sa(sx, top) - sa(sx);
@@ -591,24 +589,24 @@ gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccess
     da.set(grad(diffx, diffy), dx);
 }
 
-template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor, class Functor>
+template<class SrcImageIterator, class SrcAccessor,
+         class DestImageIterator, class DestAccessor, class Functor>
 inline void
 gradientBasedTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-                       pair<DestImageIterator, DestAccessor> dest, Functor const & grad)
+                       pair<DestImageIterator, DestAccessor> dest, Functor const& grad)
 {
     gradientBasedTransform(src.first, src.second, src.third,
                            dest.first, dest.second, grad);
 }
 
-template <class T1, class S1,
-          class T2, class S2, class Functor>
+template<class T1, class S1,
+         class T2, class S2, class Functor>
 inline void
-gradientBasedTransform(MultiArrayView<2, T1, S1> const & src,
-                       MultiArrayView<2, T2, S2> dest, Functor const & grad)
+    gradientBasedTransform(MultiArrayView<2, T1, S1> const& src,
+                           MultiArrayView<2, T2, S2> dest, Functor const& grad)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "gradientBasedTransform(): shape mismatch between input and output.");
+                       "gradientBasedTransform(): shape mismatch between input and output.");
     gradientBasedTransform(srcImageRange(src),
                            destImage(dest), grad);
 }
@@ -621,105 +619,105 @@ gradientBasedTransform(MultiArrayView<2, T1, S1> const & src,
 */
 //@{
 
-template <class DestValueType, class Multiplier = double>
+template<class DestValueType, class Multiplier = double>
 class LinearIntensityTransform
 {
-  public:
-        /* the functors argument type (actually, since
+public:
+    /* the functors argument type (actually, since
            <tt>operator()</tt> is a template, much more types are possible)
         */
     typedef DestValueType argument_type;
 
-        /* the functors result type
+    /* the functors result type
         */
     typedef DestValueType result_type;
 
-        /* \deprecated use argument_type and result_type
+    /* \deprecated use argument_type and result_type
         */
     typedef DestValueType value_type;
 
-        /* type of the offset (used in internal calculations to prevent
+    /* type of the offset (used in internal calculations to prevent
             overflows and minimize round-off errors).
         */
-    typedef typename
-            NumericTraits<DestValueType>::RealPromote argument_promote;
+    typedef typename NumericTraits<DestValueType>::RealPromote argument_promote;
 
-        /* type of the scale factor
+    /* type of the scale factor
         */
     typedef Multiplier scalar_multiplier_type;
 
-        /* init scale and offset
+    /* init scale and offset
         */
     LinearIntensityTransform(scalar_multiplier_type scale, argument_promote offset)
-    : scale_(scale), offset_(offset)
-    {}
+        : scale_(scale), offset_(offset)
+    {
+    }
 
-        /* calculate transform
+    /* calculate transform
         */
-    template <class SrcValueType>
-    result_type operator()(SrcValueType const & s) const
+    template<class SrcValueType>
+    result_type operator()(SrcValueType const& s) const
     {
         return NumericTraits<result_type>::fromRealPromote(scale_ * (s + offset_));
     }
 
-  private:
-
+private:
     scalar_multiplier_type scale_;
     argument_promote offset_;
 };
 
-template <class DestValueType, class Multiplier>
-class FunctorTraits<LinearIntensityTransform<DestValueType, Multiplier> >
-: public FunctorTraitsBase<LinearIntensityTransform<DestValueType, Multiplier> >
+template<class DestValueType, class Multiplier>
+class FunctorTraits<LinearIntensityTransform<DestValueType, Multiplier>>
+    : public FunctorTraitsBase<LinearIntensityTransform<DestValueType, Multiplier>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
-template <class DestValueType, class Multiplier = double>
+template<class DestValueType, class Multiplier = double>
 class ScalarIntensityTransform
 {
-  public:
-        /* the functors argument type (actually, since
+public:
+    /* the functors argument type (actually, since
            <tt>operator()</tt> is a template, much more types are possible)
         */
     typedef DestValueType argument_type;
 
-        /* the functors result type
+    /* the functors result type
         */
     typedef DestValueType result_type;
 
-        /* \deprecated use argument_type and result_type
+    /* \deprecated use argument_type and result_type
         */
     typedef DestValueType value_type;
 
-        /* type of the scale factor
+    /* type of the scale factor
         */
     typedef Multiplier scalar_multiplier_type;
 
-        /* init scale
+    /* init scale
         */
     ScalarIntensityTransform(scalar_multiplier_type scale)
-    : scale_(scale)
-    {}
+        : scale_(scale)
+    {
+    }
 
-        /* calculate transform
+    /* calculate transform
         */
-    template <class SrcValueType>
-    result_type operator()(SrcValueType const & s) const
+    template<class SrcValueType>
+    result_type operator()(SrcValueType const& s) const
     {
         return NumericTraits<result_type>::fromRealPromote(scale_ * s);
     }
 
-  private:
+private:
     scalar_multiplier_type scale_;
 };
 
-template <class DestValueType, class Multiplier>
-class FunctorTraits<ScalarIntensityTransform<DestValueType, Multiplier> >
-: public FunctorTraitsBase<ScalarIntensityTransform<DestValueType, Multiplier> >
+template<class DestValueType, class Multiplier>
+class FunctorTraits<ScalarIntensityTransform<DestValueType, Multiplier>>
+    : public FunctorTraitsBase<ScalarIntensityTransform<DestValueType, Multiplier>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -795,14 +793,14 @@ class FunctorTraits<ScalarIntensityTransform<DestValueType, Multiplier> >
     The source and destination value types must be models of \ref LinearSpace in both cases.
 
 */
-template <class Multiplier, class DestValueType>
+template<class Multiplier, class DestValueType>
 LinearIntensityTransform<DestValueType, Multiplier>
 linearIntensityTransform(Multiplier scale, DestValueType offset)
 {
     return LinearIntensityTransform<DestValueType, Multiplier>(scale, offset);
 }
 
-template <class DestValueType, class Multiplier>
+template<class DestValueType, class Multiplier>
 ScalarIntensityTransform<DestValueType, Multiplier>
 linearIntensityTransform(Multiplier scale)
 {
@@ -877,56 +875,56 @@ linearIntensityTransform(Multiplier scale)
     The source and destination value types must be models of \ref LinearSpace in both cases.
 
 */
-template <class SrcValueType, class DestValueType>
+template<class SrcValueType, class DestValueType>
 LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
 linearRangeMapping(SrcValueType src_min, SrcValueType src_max,
-                   DestValueType dest_min, DestValueType dest_max )
+                   DestValueType dest_min, DestValueType dest_max)
 {
     return linearRangeMapping(src_min, src_max, dest_min, dest_max,
-            typename NumericTraits<DestValueType>::isScalar());
+                              typename NumericTraits<DestValueType>::isScalar());
 }
 
-template <class SrcValueType, class DestValueType>
+template<class SrcValueType, class DestValueType>
 LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
-linearRangeMapping(FindMinMax<SrcValueType> const & src,
-                   DestValueType dest_min, DestValueType dest_max )
+linearRangeMapping(FindMinMax<SrcValueType> const& src,
+                   DestValueType dest_min, DestValueType dest_max)
 {
     return linearRangeMapping(src.min, src.max, dest_min, dest_max,
-            typename NumericTraits<DestValueType>::isScalar());
+                              typename NumericTraits<DestValueType>::isScalar());
 }
 
-template <class SrcValueType, class DestValueType>
+template<class SrcValueType, class DestValueType>
 LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
 linearRangeMapping(
     SrcValueType src_min, SrcValueType src_max,
     DestValueType dest_min, DestValueType dest_max,
-    VigraTrueType /* isScalar */ )
+    VigraTrueType /* isScalar */)
 {
     typedef typename NumericTraits<DestValueType>::RealPromote Multiplier;
     Multiplier diff = src_max - src_min;
     Multiplier scale = diff == NumericTraits<Multiplier>::zero()
-                     ? NumericTraits<Multiplier>::one()
-                     : (dest_max - dest_min) / diff;
+                           ? NumericTraits<Multiplier>::one()
+                           : (dest_max - dest_min) / diff;
     return LinearIntensityTransform<DestValueType, Multiplier>(
-                                   scale, dest_min / scale - src_min );
+        scale, dest_min / scale - src_min);
 }
 
-template <class SrcValueType, class DestValueType>
+template<class SrcValueType, class DestValueType>
 LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
 linearRangeMapping(
     SrcValueType src_min, SrcValueType src_max,
     DestValueType dest_min, DestValueType dest_max,
-    VigraFalseType /* isScalar */ )
+    VigraFalseType /* isScalar */)
 {
     typedef typename NumericTraits<DestValueType>::RealPromote Multiplier;
     typedef typename Multiplier::value_type MComponent;
     Multiplier scale(dest_max), offset(dest_max);
-    for(unsigned int i=0; i<src_min.size(); ++i)
+    for (unsigned int i = 0; i < src_min.size(); ++i)
     {
         MComponent diff = src_max[i] - src_min[i];
         scale[i] = diff == NumericTraits<MComponent>::zero()
-                     ? NumericTraits<MComponent>::one()
-                     : (dest_max[i] - dest_min[i]) / diff;
+                       ? NumericTraits<MComponent>::one()
+                       : (dest_max[i] - dest_min[i]) / diff;
         offset[i] = dest_min[i] / scale[i] - src_min[i];
     }
     return LinearIntensityTransform<DestValueType, Multiplier>(scale, offset);
@@ -979,45 +977,44 @@ linearRangeMapping(
     \endcode
 
 */
-template <class SrcValueType, class DestValueType>
+template<class SrcValueType, class DestValueType>
 class Threshold
 {
-   public:
-
-        /** the functor's argument type
+public:
+    /** the functor's argument type
         */
     typedef SrcValueType argument_type;
 
-        /** the functor's result type
+    /** the functor's result type
         */
     typedef DestValueType result_type;
 
-        /** init thresholds and return values
+    /** init thresholds and return values
         */
     Threshold(argument_type lower, argument_type higher,
               result_type noresult, result_type yesresult)
-    : lower_(lower), higher_(higher),
-      yesresult_(yesresult), noresult_(noresult)
-    {}
+        : lower_(lower), higher_(higher),
+          yesresult_(yesresult), noresult_(noresult)
+    {
+    }
 
-        /** calculate transform
+    /** calculate transform
         */
     result_type operator()(argument_type s) const
     {
         return ((s < lower_) || (higher_ < s)) ? noresult_ : yesresult_;
     }
 
-  private:
-
+private:
     argument_type lower_, higher_;
     result_type yesresult_, noresult_;
 };
 
-template <class SrcValueType, class DestValueType>
-class FunctorTraits<Threshold<SrcValueType, DestValueType> >
-: public FunctorTraitsBase<Threshold<SrcValueType, DestValueType> >
+template<class SrcValueType, class DestValueType>
+class FunctorTraits<Threshold<SrcValueType, DestValueType>>
+    : public FunctorTraitsBase<Threshold<SrcValueType, DestValueType>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -1100,82 +1097,78 @@ class FunctorTraits<Threshold<SrcValueType, DestValueType> >
 
     RGB values: the component type must meet the above requirements.
 */
-template <class PixelType>
+template<class PixelType>
 class BrightnessContrastFunctor
 {
-    typedef typename
-        NumericTraits<PixelType>::RealPromote promote_type;
+    typedef typename NumericTraits<PixelType>::RealPromote promote_type;
 
- public:
-
-        /** the functor's argument type
+public:
+    /** the functor's argument type
         */
     typedef PixelType argument_type;
 
-        /** the functor's result type
+    /** the functor's result type
         */
     typedef PixelType result_type;
 
-        /** \deprecated use argument_type and result_type
+    /** \deprecated use argument_type and result_type
         */
     typedef PixelType value_type;
 
-        /** Init functor for argument range <TT>[min, max]</TT>.
+    /** Init functor for argument range <TT>[min, max]</TT>.
             <TT>brightness</TT> and <TT>contrast</TT> values > 1 will
             increase brightness and contrast, < 1 will decrease them, and == 1 means
             no change.
         */
     BrightnessContrastFunctor(promote_type brightness, promote_type contrast,
-                              argument_type const & min, argument_type const & max)
-    : b_(1.0/brightness),
-      c_(1.0/contrast),
-      min_(min),
-      diff_(max - min),
-      zero_(NumericTraits<promote_type>::zero()),
-      one_(NumericTraits<promote_type>::one())
-    {}
+                              argument_type const& min, argument_type const& max)
+        : b_(1.0 / brightness),
+          c_(1.0 / contrast),
+          min_(min),
+          diff_(max - min),
+          zero_(NumericTraits<promote_type>::zero()),
+          one_(NumericTraits<promote_type>::one())
+    {
+    }
 
-        /** Calculate modified gray or color value
+    /** Calculate modified gray or color value
         */
-    result_type operator()(argument_type const & v) const
+    result_type operator()(argument_type const& v) const
     {
         promote_type v1 = (v - min_) / diff_;
         promote_type brighter = VIGRA_CSTD::pow(v1, b_);
         promote_type v2 = 2.0 * brighter - one_;
-        promote_type contrasted = (v2 < zero_) ?
-                                     -VIGRA_CSTD::pow(-v2, c_) :
-                                      VIGRA_CSTD::pow(v2, c_);
+        promote_type contrasted = (v2 < zero_) ? -VIGRA_CSTD::pow(-v2, c_) : VIGRA_CSTD::pow(v2, c_);
         return result_type(0.5 * diff_ * (contrasted + one_) + min_);
     }
 
-  private:
+private:
     promote_type b_, c_;
     argument_type min_;
     promote_type diff_, zero_, one_;
 };
 
-template <>
+template<>
 class BrightnessContrastFunctor<unsigned char>
 {
     typedef NumericTraits<unsigned char>::RealPromote promote_type;
-     unsigned char lut[256];
+    unsigned char lut[256];
 
- public:
-
+public:
     typedef unsigned char value_type;
 
     BrightnessContrastFunctor(promote_type brightness, promote_type contrast,
-                              value_type const & min = 0, value_type const & max = 255)
+                              value_type const& min = 0, value_type const& max = 255)
     {
         BrightnessContrastFunctor<promote_type> f(brightness, contrast, min, max);
 
-        for(int i = min; i <= max; ++i)
+        for (int i = min; i <= max; ++i)
         {
-            lut[i] = static_cast<unsigned char>(f(i)+0.5);
+            lut[i] = static_cast<unsigned char>(f(i) + 0.5);
         }
     }
 
-    value_type operator()(value_type const & v) const
+    value_type operator()(value_type const& v) const
     {
 
         return lut[v];
@@ -1184,25 +1177,24 @@ class BrightnessContrastFunctor<unsigned char>
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template <class ComponentType>
-class BrightnessContrastFunctor<RGBValue<ComponentType> >
+template<class ComponentType>
+class BrightnessContrastFunctor<RGBValue<ComponentType>>
 {
-    typedef typename
-        NumericTraits<ComponentType>::RealPromote promote_type;
+    typedef typename NumericTraits<ComponentType>::RealPromote promote_type;
     BrightnessContrastFunctor<ComponentType> red, green, blue;
 
- public:
-
+public:
     typedef RGBValue<ComponentType> value_type;
 
     BrightnessContrastFunctor(promote_type brightness, promote_type contrast,
-                              value_type const & min, value_type const & max)
-    : red(brightness, contrast, min.red(), max.red()),
-      green(brightness, contrast, min.green(), max.green()),
-      blue(brightness, contrast, min.blue(), max.blue())
-    {}
+                              value_type const& min, value_type const& max)
+        : red(brightness, contrast, min.red(), max.red()),
+          green(brightness, contrast, min.green(), max.green()),
+          blue(brightness, contrast, min.blue(), max.blue())
+    {
+    }
 
-    value_type operator()(value_type const & v) const
+    value_type operator()(value_type const& v) const
     {
 
         return value_type(red(v.red()), green(v.green()), blue(v.blue()));
@@ -1211,83 +1203,83 @@ class BrightnessContrastFunctor<RGBValue<ComponentType> >
 
 #else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template <>
-class BrightnessContrastFunctor<RGBValue<int> >
+template<>
+class BrightnessContrastFunctor<RGBValue<int>>
 {
     typedef NumericTraits<int>::RealPromote promote_type;
     BrightnessContrastFunctor<int> red, green, blue;
 
- public:
-
+public:
     typedef RGBValue<int> value_type;
 
     BrightnessContrastFunctor(promote_type brightness, promote_type contrast,
-                              value_type const & min, value_type const & max)
-    : red(brightness, contrast, min.red(), max.red()),
-      green(brightness, contrast, min.green(), max.green()),
-      blue(brightness, contrast, min.blue(), max.blue())
-    {}
+                              value_type const& min, value_type const& max)
+        : red(brightness, contrast, min.red(), max.red()),
+          green(brightness, contrast, min.green(), max.green()),
+          blue(brightness, contrast, min.blue(), max.blue())
+    {
+    }
 
-    value_type operator()(value_type const & v) const
+    value_type operator()(value_type const& v) const
     {
 
         return value_type(red(v.red()), green(v.green()), blue(v.blue()));
     }
 };
 
-template <>
-class BrightnessContrastFunctor<RGBValue<float> >
+template<>
+class BrightnessContrastFunctor<RGBValue<float>>
 {
     typedef NumericTraits<float>::RealPromote promote_type;
     BrightnessContrastFunctor<float> red, green, blue;
 
- public:
-
+public:
     typedef RGBValue<float> value_type;
 
     BrightnessContrastFunctor(promote_type brightness, promote_type contrast,
-                              value_type const & min, value_type const & max)
-    : red(brightness, contrast, min.red(), max.red()),
-      green(brightness, contrast, min.green(), max.green()),
-      blue(brightness, contrast, min.blue(), max.blue())
-    {}
+                              value_type const& min, value_type const& max)
+        : red(brightness, contrast, min.red(), max.red()),
+          green(brightness, contrast, min.green(), max.green()),
+          blue(brightness, contrast, min.blue(), max.blue())
+    {
+    }
 
-    value_type operator()(value_type const & v) const
+    value_type operator()(value_type const& v) const
     {
 
         return value_type(red(v.red()), green(v.green()), blue(v.blue()));
     }
 };
 
-template <class PixelType>
-class FunctorTraits<BrightnessContrastFunctor<PixelType> >
-: public FunctorTraitsBase<BrightnessContrastFunctor<PixelType> >
+template<class PixelType>
+class FunctorTraits<BrightnessContrastFunctor<PixelType>>
+    : public FunctorTraitsBase<BrightnessContrastFunctor<PixelType>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template <>
-class BrightnessContrastFunctor<RGBValue<unsigned char> >
+template<>
+class BrightnessContrastFunctor<RGBValue<unsigned char>>
 {
     typedef NumericTraits<unsigned char>::RealPromote promote_type;
     BrightnessContrastFunctor<unsigned char> red, green, blue;
 
- public:
-
+public:
     typedef RGBValue<unsigned char> value_type;
 
     BrightnessContrastFunctor(promote_type brightness, promote_type contrast,
-       value_type const & min = value_type(0,0,0),
-       value_type const & max = value_type(255, 255, 255))
-    : red(brightness, contrast, min.red(), max.red()),
-      green(brightness, contrast, min.green(), max.green()),
-      blue(brightness, contrast, min.blue(), max.blue())
-    {}
+                              value_type const& min = value_type(0, 0, 0),
+                              value_type const& max = value_type(255, 255, 255))
+        : red(brightness, contrast, min.red(), max.red()),
+          green(brightness, contrast, min.green(), max.green()),
+          blue(brightness, contrast, min.blue(), max.blue())
+    {
+    }
 
-    value_type operator()(value_type const & v) const
+    value_type operator()(value_type const& v) const
     {
 
         return value_type(red(v.red()), green(v.green()), blue(v.blue()));
@@ -1366,76 +1358,74 @@ class BrightnessContrastFunctor<RGBValue<unsigned char> >
 
     RGB values: the component type must meet the above requirements.
 */
-template <class PixelType>
+template<class PixelType>
 class GammaFunctor
 {
-    typedef typename
-        NumericTraits<PixelType>::RealPromote promote_type;
+    typedef typename NumericTraits<PixelType>::RealPromote promote_type;
 
- public:
-
-        /** the functor's argument type
+public:
+    /** the functor's argument type
         */
     typedef PixelType argument_type;
 
-        /** the functor's result type
+    /** the functor's result type
         */
     typedef PixelType result_type;
 
-        /** \deprecated use argument_type and result_type
+    /** \deprecated use argument_type and result_type
         */
     typedef PixelType value_type;
 
-        /** Init functor for argument range <TT>[min, max]</TT>.
+    /** Init functor for argument range <TT>[min, max]</TT>.
             <TT>gamma</TT> values < 1 will increase brightness, > 1
             will decrease it (gamma == 1 means no change).
         */
     GammaFunctor(double gamma,
-                 argument_type const & min, argument_type const & max)
-    : gamma_((promote_type)gamma),
-      min_(min),
-      diff_(max - min),
-      zero_(NumericTraits<promote_type>::zero()),
-      one_(NumericTraits<promote_type>::one())
-    {}
+                 argument_type const& min, argument_type const& max)
+        : gamma_((promote_type)gamma),
+          min_(min),
+          diff_(max - min),
+          zero_(NumericTraits<promote_type>::zero()),
+          one_(NumericTraits<promote_type>::one())
+    {
+    }
 
-        /** Calculate modified gray or color value
+    /** Calculate modified gray or color value
         */
-    result_type operator()(argument_type const & v) const
+    result_type operator()(argument_type const& v) const
     {
         promote_type v1 = (v - min_) / diff_;
         promote_type brighter = VIGRA_CSTD::pow(v1, gamma_);
         return result_type(diff_ * brighter + min_);
     }
 
-  private:
+private:
     promote_type gamma_;
     argument_type min_;
     promote_type diff_, zero_, one_;
 };
 
-template <>
+template<>
 class GammaFunctor<unsigned char>
 {
     typedef NumericTraits<unsigned char>::RealPromote promote_type;
-     unsigned char lut[256];
+    unsigned char lut[256];
 
- public:
-
+public:
     typedef unsigned char value_type;
 
     GammaFunctor(promote_type gamma,
-                 value_type const & min = 0, value_type const & max = 255)
+                 value_type const& min = 0, value_type const& max = 255)
     {
         GammaFunctor<promote_type> f(gamma, min, max);
 
-        for(int i = min; i <= max; ++i)
+        for (int i = min; i <= max; ++i)
         {
-            lut[i] = static_cast<unsigned char>(f(i)+0.5);
+            lut[i] = static_cast<unsigned char>(f(i) + 0.5);
         }
     }
 
-    value_type operator()(value_type const & v) const
+    value_type operator()(value_type const& v) const
     {
 
         return lut[v];
@@ -1444,25 +1434,24 @@ class GammaFunctor<unsigned char>
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template <class ComponentType>
-class GammaFunctor<RGBValue<ComponentType> >
+template<class ComponentType>
+class GammaFunctor<RGBValue<ComponentType>>
 {
-    typedef typename
-        NumericTraits<ComponentType>::RealPromote promote_type;
+    typedef typename NumericTraits<ComponentType>::RealPromote promote_type;
     GammaFunctor<ComponentType> red, green, blue;
 
- public:
-
+public:
     typedef RGBValue<ComponentType> value_type;
 
     GammaFunctor(promote_type gamma,
-                 value_type const & min, value_type const & max)
-    : red(gamma, min.red(), max.red()),
-      green(gamma, min.green(), max.green()),
-      blue(gamma, min.blue(), max.blue())
-    {}
+                 value_type const& min, value_type const& max)
+        : red(gamma, min.red(), max.red()),
+          green(gamma, min.green(), max.green()),
+          blue(gamma, min.blue(), max.blue())
+    {
+    }
 
-    value_type operator()(value_type const & v) const
+    value_type operator()(value_type const& v) const
     {
         return value_type(red(v.red()), green(v.green()), blue(v.blue()));
     }
@@ -1470,80 +1459,81 @@ class GammaFunctor<RGBValue<ComponentType> >
 
 #else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template <>
-class GammaFunctor<RGBValue<int> >
+template<>
+class GammaFunctor<RGBValue<int>>
 {
     typedef NumericTraits<int>::RealPromote promote_type;
     GammaFunctor<int> red, green, blue;
 
- public:
-
+public:
     typedef RGBValue<int> value_type;
 
     GammaFunctor(promote_type gamma,
-                 value_type const & min, value_type const & max)
-    : red(gamma, min.red(), max.red()),
-      green(gamma, min.green(), max.green()),
-      blue(gamma, min.blue(), max.blue())
-    {}
+                 value_type const& min, value_type const& max)
+        : red(gamma, min.red(), max.red()),
+          green(gamma, min.green(), max.green()),
+          blue(gamma, min.blue(), max.blue())
+    {
+    }
 
-    value_type operator()(value_type const & v) const
+    value_type operator()(value_type const& v) const
     {
         return value_type(red(v.red()), green(v.green()), blue(v.blue()));
     }
 };
 
-template <>
-class GammaFunctor<RGBValue<float> >
+template<>
+class GammaFunctor<RGBValue<float>>
 {
     typedef NumericTraits<float>::RealPromote promote_type;
     GammaFunctor<float> red, green, blue;
 
- public:
-
+public:
     typedef RGBValue<float> value_type;
 
     GammaFunctor(promote_type gamma,
-                 value_type const & min, value_type const & max)
-    : red(gamma, min.red(), max.red()),
-      green(gamma, min.green(), max.green()),
-      blue(gamma, min.blue(), max.blue())
-    {}
+                 value_type const& min, value_type const& max)
+        : red(gamma, min.red(), max.red()),
+          green(gamma, min.green(), max.green()),
+          blue(gamma, min.blue(), max.blue())
+    {
+    }
 
-    value_type operator()(value_type const & v) const
+    value_type operator()(value_type const& v) const
     {
         return value_type(red(v.red()), green(v.green()), blue(v.blue()));
     }
 };
 
-template <class PixelType>
-class FunctorTraits<GammaFunctor<PixelType> >
-: public FunctorTraitsBase<GammaFunctor<PixelType> >
+template<class PixelType>
+class FunctorTraits<GammaFunctor<PixelType>>
+    : public FunctorTraitsBase<GammaFunctor<PixelType>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template <>
-class GammaFunctor<RGBValue<unsigned char> >
+template<>
+class GammaFunctor<RGBValue<unsigned char>>
 {
     typedef NumericTraits<unsigned char>::RealPromote promote_type;
     GammaFunctor<unsigned char> red, green, blue;
 
- public:
+public:
     typedef RGBValue<unsigned char> value_type;
 
     GammaFunctor(promote_type gamma,
-                 value_type const & min = value_type(0,0,0),
-                 value_type const & max = value_type(255, 255, 255))
-    : red(gamma, min.red(), max.red()),
-      green(gamma, min.green(), max.green()),
-      blue(gamma, min.blue(), max.blue())
-    {}
+                 value_type const& min = value_type(0, 0, 0),
+                 value_type const& max = value_type(255, 255, 255))
+        : red(gamma, min.red(), max.red()),
+          green(gamma, min.green(), max.green()),
+          blue(gamma, min.blue(), max.blue())
+    {
+    }
 
-    value_type operator()(value_type const & v) const
+    value_type operator()(value_type const& v) const
     {
         return value_type(red(v.red()), green(v.green()), blue(v.blue()));
     }
@@ -1587,31 +1577,31 @@ class GammaFunctor<RGBValue<unsigned char> >
 
     \see vigra::TinyVector, dot(), vigra::MagnitudeFunctor
 */
-template <class ValueType>
+template<class ValueType>
 class VectorNormFunctor
 {
 public:
-  /** the functor's argument type
+    /** the functor's argument type
    */
-  typedef ValueType argument_type;
+    typedef ValueType argument_type;
 
-  /** the functor's result type
+    /** the functor's result type
    */
-  typedef typename NumericTraits<typename ValueType::value_type>::RealPromote result_type;
+    typedef typename NumericTraits<typename ValueType::value_type>::RealPromote result_type;
 
-  /** calculate transform '<TT>sqrt(v1*v1 + v2*v2 + ...)</TT>'.
+    /** calculate transform '<TT>sqrt(v1*v1 + v2*v2 + ...)</TT>'.
    */
-  result_type operator()( const argument_type &a ) const
-  {
-    return VIGRA_CSTD::sqrt( dot(a,a) );
-  }
-};    //-- class VectorNormFunctor
+    result_type operator()(const argument_type& a) const
+    {
+        return VIGRA_CSTD::sqrt(dot(a, a));
+    }
+}; //-- class VectorNormFunctor
 
-template <class ValueType>
-class FunctorTraits<VectorNormFunctor<ValueType> >
-: public FunctorTraitsBase<VectorNormFunctor<ValueType> >
+template<class ValueType>
+class FunctorTraits<VectorNormFunctor<ValueType>>
+    : public FunctorTraitsBase<VectorNormFunctor<ValueType>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
@@ -1632,31 +1622,31 @@ class FunctorTraits<VectorNormFunctor<ValueType> >
 
     \see TinyVector, dot()
 */
-template <class ValueType>
+template<class ValueType>
 class VectorNormSqFunctor
 {
 public:
-  /** the functor's argument type
+    /** the functor's argument type
    */
-  typedef ValueType argument_type;
+    typedef ValueType argument_type;
 
-  /** the functor's result type
+    /** the functor's result type
    */
-  typedef typename NumericTraits<typename ValueType::value_type>::RealPromote result_type;
+    typedef typename NumericTraits<typename ValueType::value_type>::RealPromote result_type;
 
-  /** calculate transform '<TT>v1*v1 + v2*v2 + ...</TT>'.
+    /** calculate transform '<TT>v1*v1 + v2*v2 + ...</TT>'.
    */
-  result_type operator()( const argument_type &a ) const
-  {
-    return dot(a,a);
-  }
-};    //-- class VectorNormSqFunctor
+    result_type operator()(const argument_type& a) const
+    {
+        return dot(a, a);
+    }
+}; //-- class VectorNormSqFunctor
 
-template <class ValueType>
-class FunctorTraits<VectorNormSqFunctor<ValueType> >
-: public FunctorTraitsBase<VectorNormSqFunctor<ValueType> >
+template<class ValueType>
+class FunctorTraits<VectorNormSqFunctor<ValueType>>
+    : public FunctorTraitsBase<VectorNormSqFunctor<ValueType>>
 {
-  public:
+public:
     typedef VigraTrueType isUnaryFunctor;
 };
 

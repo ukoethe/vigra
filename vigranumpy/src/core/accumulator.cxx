@@ -48,13 +48,20 @@ namespace vigra
 namespace acc
 {
 
-	inline PythonFeatureAccumulator const volatile *
-    get_pointer(PythonFeatureAccumulator const volatile * p) { return p; }
+inline PythonFeatureAccumulator const volatile*
+get_pointer(PythonFeatureAccumulator const volatile* p)
+{
+    return p;
+}
 
-	inline PythonRegionFeatureAccumulator const volatile *
-    get_pointer(PythonRegionFeatureAccumulator const volatile * p) { return p; }
+inline PythonRegionFeatureAccumulator const volatile*
+get_pointer(PythonRegionFeatureAccumulator const volatile* p)
+{
+    return p;
+}
 
-AliasMap defineAliasMap()
+AliasMap
+defineAliasMap()
 {
     AliasMap res;
     res["Coord<DivideByCount<PowerSum<1> > >"] = "RegionCenter";
@@ -78,39 +85,42 @@ AliasMap defineAliasMap()
     return res;
 }
 
-AliasMap * createTagToAlias(ArrayVector<std::string> const & names)
+AliasMap*
+createTagToAlias(ArrayVector<std::string> const& names)
 {
     const AliasMap aliases = defineAliasMap();
     VIGRA_UNIQUE_PTR<AliasMap> res(new AliasMap());
-    for(unsigned int k=0; k<names.size(); ++k)
+    for (unsigned int k = 0; k < names.size(); ++k)
     {
-            // lookup alias names
+        // lookup alias names
         AliasMap::const_iterator a = aliases.find(names[k]);
         std::string alias = (a == aliases.end())
-                               ? names[k]
-                               : a->second;
+                                ? names[k]
+                                : a->second;
 
-            // treat FlatScatterMatrix and ScatterMatrixEigensystem as internal,
-            // i.e. use names only when they don't contain these strings
-        if(alias.find("ScatterMatrixEigensystem") == std::string::npos &&
-           alias.find("FlatScatterMatrix") == std::string::npos)
-             (*res)[names[k]] = alias;
+        // treat FlatScatterMatrix and ScatterMatrixEigensystem as internal,
+        // i.e. use names only when they don't contain these strings
+        if (alias.find("ScatterMatrixEigensystem") == std::string::npos &&
+            alias.find("FlatScatterMatrix") == std::string::npos)
+            (*res)[names[k]] = alias;
     }
     return res.release();
 }
 
-AliasMap * createAliasToTag(AliasMap const & tagToAlias)
+AliasMap*
+createAliasToTag(AliasMap const& tagToAlias)
 {
     VIGRA_UNIQUE_PTR<AliasMap> res(new AliasMap());
-    for(AliasMap::const_iterator k = tagToAlias.begin(); k != tagToAlias.end(); ++k)
+    for (AliasMap::const_iterator k = tagToAlias.begin(); k != tagToAlias.end(); ++k)
         (*res)[normalizeString(k->second)] = normalizeString(k->first);
     return res.release();
 }
 
-ArrayVector<std::string> * createSortedNames(AliasMap const & tagToAlias)
+ArrayVector<std::string>*
+createSortedNames(AliasMap const& tagToAlias)
 {
-    VIGRA_UNIQUE_PTR<ArrayVector<std::string> > res(new ArrayVector<std::string>());
-    for(AliasMap::const_iterator k = tagToAlias.begin(); k != tagToAlias.end(); ++k)
+    VIGRA_UNIQUE_PTR<ArrayVector<std::string>> res(new ArrayVector<std::string>());
+    for (AliasMap::const_iterator k = tagToAlias.begin(); k != tagToAlias.end(); ++k)
         res->push_back(k->second);
     std::sort(res->begin(), res->end());
     return res.release();
@@ -118,7 +128,8 @@ ArrayVector<std::string> * createSortedNames(AliasMap const & tagToAlias)
 
 } // namespace acc
 
-void defineGlobalAccumulators()
+void
+defineGlobalAccumulators()
 {
     using namespace python;
     using namespace vigra::acc;
@@ -131,8 +142,8 @@ void defineGlobalAccumulators()
     typedef Select<Count, Mean, Variance, Skewness, Kurtosis, Covariance,
                    Principal<Variance>, Principal<Skewness>, Principal<Kurtosis>,
                    Principal<CoordinateSystem>,
-                   Minimum, Maximum, Principal<Minimum>, Principal<Maximum>
-                   > VectorAccumulators;
+                   Minimum, Maximum, Principal<Minimum>, Principal<Maximum>>
+        VectorAccumulators;
 
     definePythonAccumulatorMultiband<3, float, VectorAccumulators>();
     definePythonAccumulatorMultiband<4, float, VectorAccumulators>();
@@ -141,24 +152,25 @@ void defineGlobalAccumulators()
 
     typedef Select<Count, Mean, Variance, Skewness, Kurtosis,
                    UnbiasedVariance, UnbiasedSkewness, UnbiasedKurtosis,
-                   Minimum, Maximum, StandardQuantiles<AutoRangeHistogram<0> >
-                   > ScalarAccumulators;
+                   Minimum, Maximum, StandardQuantiles<AutoRangeHistogram<0>>>
+        ScalarAccumulators;
     definePythonAccumulatorSingleband<float, ScalarAccumulators>();
 }
 
 void defineSinglebandRegionAccumulators();
 void defineMultibandRegionAccumulators();
 
-void defineAccumulators()
+void
+defineAccumulators()
 {
-    NumpyArrayConverter<NumpyArray<1, npy_uint32> >();
-    NumpyArrayConverter<NumpyArray<1, float> >();
-    NumpyArrayConverter<NumpyArray<1, double> >();
-    NumpyArrayConverter<NumpyArray<2, MultiArrayIndex> >();
-    NumpyArrayConverter<NumpyArray<2, float> >();
-    NumpyArrayConverter<NumpyArray<2, double> >();
-    NumpyArrayConverter<NumpyArray<3, float> >();
-    NumpyArrayConverter<NumpyArray<3, double> >();
+    NumpyArrayConverter<NumpyArray<1, npy_uint32>>();
+    NumpyArrayConverter<NumpyArray<1, float>>();
+    NumpyArrayConverter<NumpyArray<1, double>>();
+    NumpyArrayConverter<NumpyArray<2, MultiArrayIndex>>();
+    NumpyArrayConverter<NumpyArray<2, float>>();
+    NumpyArrayConverter<NumpyArray<2, double>>();
+    NumpyArrayConverter<NumpyArray<3, float>>();
+    NumpyArrayConverter<NumpyArray<3, double>>();
 
     defineGlobalAccumulators();
     // changed order (?)

@@ -35,13 +35,13 @@
 #ifndef VIGRA_RF3_COMMON_HXX
 #define VIGRA_RF3_COMMON_HXX
 
-#include <iterator>
-#include <type_traits>
 #include <cmath>
+#include <iterator>
 #include <numeric>
+#include <type_traits>
 
-#include "../multi_array.hxx"
 #include "../mathutil.hxx"
+#include "../multi_array.hxx"
 
 namespace vigra
 {
@@ -53,22 +53,22 @@ namespace rf3
 **/
 //@{
 
-template <typename T>
+template<typename T>
 struct LessEqualSplitTest
 {
 public:
-    LessEqualSplitTest(size_t dim = 0, T const & val = 0)
-        :
-        dim_(dim),
-        val_(val)
-    {}
-    
+    LessEqualSplitTest(size_t dim = 0, T const& val = 0)
+        : dim_(dim),
+          val_(val)
+    {
+    }
+
     template<typename FEATURES>
-    size_t operator()(FEATURES const & features) const
+    size_t operator()(FEATURES const& features) const
     {
         return features(dim_) <= val_ ? 0 : 1;
     }
-    
+
     size_t dim_;
     T val_;
 };
@@ -80,7 +80,7 @@ struct ArgMaxAcc
 public:
     typedef size_t input_type;
 
-    template <typename ITER, typename OUTITER>
+    template<typename ITER, typename OUTITER>
     void operator()(ITER begin, ITER end, OUTITER out)
     {
         std::fill(buffer_.begin(), buffer_.end(), 0);
@@ -91,7 +91,7 @@ public:
             size_t const v = *it;
             if (v >= buffer_.size())
             {
-                buffer_.resize(v+1, 0);
+                buffer_.resize(v + 1, 0);
             }
             ++buffer_[v];
             ++n;
@@ -103,26 +103,27 @@ public:
             ++out;
         }
     }
+
 private:
     std::vector<size_t> buffer_;
 };
 
 
 
-template <typename VALUETYPE>
+template<typename VALUETYPE>
 struct ArgMaxVectorAcc
 {
 public:
     typedef VALUETYPE value_type;
     typedef std::vector<value_type> input_type;
-    template <typename ITER, typename OUTITER>
+    template<typename ITER, typename OUTITER>
     void operator()(ITER begin, ITER end, OUTITER out)
     {
         std::fill(buffer_.begin(), buffer_.end(), 0);
         size_t max_v = 0;
         for (ITER it = begin; it != end; ++it)
         {
-            input_type const & vec = *it;
+            input_type const& vec = *it;
             if (vec.size() >= buffer_.size())
             {
                 buffer_.resize(vec.size(), 0);
@@ -132,7 +133,7 @@ public:
             {
                 buffer_[i] += vec[i] / static_cast<double>(n);
             }
-            max_v = std::max(vec.size()-1, max_v);
+            max_v = std::max(vec.size() - 1, max_v);
         }
         for (size_t i = 0; i <= max_v; ++i)
         {
@@ -140,8 +141,9 @@ public:
             ++out;
         }
     }
-    private:
-        std::vector<double> buffer_;
+
+private:
+    std::vector<double> buffer_;
 };
 
 
@@ -211,81 +213,79 @@ public:
 namespace detail
 {
 
-    /// Abstract scorer that iterates over all split candidates, uses FUNCTOR to compute a score,
-    /// and saves the split with the minimum score.
-    template <typename FUNCTOR>
-    class GeneralScorer
+/// Abstract scorer that iterates over all split candidates, uses FUNCTOR to compute a score,
+/// and saves the split with the minimum score.
+template<typename FUNCTOR>
+class GeneralScorer
+{
+public:
+    typedef FUNCTOR Functor;
+
+    GeneralScorer(std::vector<double> const& priors)
+        : split_found_(false),
+          best_split_(0),
+          best_dim_(0),
+          best_score_(std::numeric_limits<double>::max()),
+          priors_(priors),
+          n_total_(std::accumulate(priors.begin(), priors.end(), 0.0))
     {
-    public:
+    }
 
-        typedef FUNCTOR Functor;
+    template<typename FEATURES, typename LABELS, typename WEIGHTS, typename ITER>
+    void operator()(
+        FEATURES const& features,
+        LABELS const& labels,
+        WEIGHTS const& weights,
+        ITER begin,
+        ITER end,
+        size_t dim)
+    {
+        if (begin == end)
+            return;
 
-        GeneralScorer(std::vector<double> const & priors)
-            :
-            split_found_(false),
-            best_split_(0),
-            best_dim_(0),
-            best_score_(std::numeric_limits<double>::max()),
-            priors_(priors),
-            n_total_(std::accumulate(priors.begin(), priors.end(), 0.0))
-        {}
+        Functor score;
 
-        template <typename FEATURES, typename LABELS, typename WEIGHTS, typename ITER>
-        void operator()(
-            FEATURES const & features,
-            LABELS const & labels,
-            WEIGHTS const & weights,
-            ITER begin,
-            ITER end,
-            size_t dim
-        ){
-            if (begin == end)
-                return;
+        std::vector<double> counts(priors_.size(), 0.0);
+        double n_left = 0;
+        ITER next = begin;
+        ++next;
+        for (; next != end; ++begin, ++next)
+        {
+            // Move the label from the right side to the left side.
+            size_t const left_index = *begin;
+            size_t const right_index = *next;
+            size_t const label = static_cast<size_t>(labels(left_index));
+            counts[label] += weights[left_index];
+            n_left += weights[left_index];
 
-            Functor score;
+            // Skip if there is no new split.
+            auto const left = features(left_index, dim);
+            auto const right = features(right_index, dim);
+            if (left == right)
+                continue;
 
-            std::vector<double> counts(priors_.size(), 0.0);
-            double n_left = 0;
-            ITER next = begin;
-            ++next;
-            for (; next != end; ++begin, ++next)
+            // Update the score.
+            split_found_ = true;
+            double const s = score(priors_, counts, n_total_, n_left);
+            bool const better_score = s < best_score_;
+            if (better_score)
             {
-                // Move the label from the right side to the left side.
-                size_t const left_index = *begin;
-                size_t const right_index = *next;
-                size_t const label = static_cast<size_t>(labels(left_index));
-                counts[label] += weights[left_index];
-                n_left += weights[left_index];
-
-                // Skip if there is no new split.
-                auto const left = features(left_index, dim);
-                auto const right = features(right_index, dim);
-                if (left == right)
-                    continue;
-
-                // Update the score.
-                split_found_ = true;
-                double const s = score(priors_, counts, n_total_, n_left);
-                bool const better_score = s < best_score_;
-                if (better_score)
-                {
-                    best_score_ = s;
-                    best_split_ = 0.5*(left+right);
-                    best_dim_ = dim;
-                }
+                best_score_ = s;
+                best_split_ = 0.5 * (left + right);
+                best_dim_ = dim;
             }
         }
+    }
 
-        bool split_found_; // whether a split was found at all
-        double best_split_; // the threshold of the best split
-        size_t best_dim_; // the dimension of the best split
-        double best_score_; // the score of the best split
+    bool split_found_;  // whether a split was found at all
+    double best_split_; // the threshold of the best split
+    size_t best_dim_;   // the dimension of the best split
+    double best_score_; // the score of the best split
 
-    private:
-
-        std::vector<double> const priors_; // the weighted number of datapoints per class
-        double const n_total_; // the weighted number of datapoints
-    };
+private:
+    std::vector<double> const priors_; // the weighted number of datapoints per class
+    double const n_total_;             // the weighted number of datapoints
+};
 
 } // namespace detail
 
@@ -296,8 +296,8 @@ namespace detail
 class GiniScore
 {
 public:
-    double operator()(std::vector<double> const & priors,
-                      std::vector<double> const & counts, double n_total, double n_left) const
+    double operator()(std::vector<double> const& priors,
+                      std::vector<double> const& counts, double n_total, double n_left) const
     {
         double const n_right = n_total - n_left;
         double gini_left = 1.0;
@@ -306,15 +306,15 @@ public:
         {
             double const p_left = counts[i] / n_left;
             double const p_right = (priors[i] - counts[i]) / n_right;
-            gini_left -= (p_left*p_left);
-            gini_right -= (p_right*p_right);
+            gini_left -= (p_left * p_left);
+            gini_right -= (p_right * p_right);
         }
-        return n_left*gini_left + n_right*gini_right;
+        return n_left * gini_left + n_right * gini_right;
     }
 
-        // needed for Gini-based variable importance calculation
-    template <typename LABELS, typename WEIGHTS, typename ITER>
-    static double region_score(LABELS const & labels, WEIGHTS const & weights, ITER begin, ITER end)
+    // needed for Gini-based variable importance calculation
+    template<typename LABELS, typename WEIGHTS, typename ITER>
+    static double region_score(LABELS const& labels, WEIGHTS const& weights, ITER begin, ITER end)
     {
         // Count the occurences.
         std::vector<double> counts;
@@ -325,7 +325,7 @@ public:
             auto const lbl = labels[d];
             if (counts.size() <= lbl)
             {
-                counts.resize(lbl+1, 0.0);
+                counts.resize(lbl + 1, 0.0);
             }
             counts[lbl] += weights[d];
             total += weights[d];
@@ -335,7 +335,7 @@ public:
         double gini = total;
         for (auto x : counts)
         {
-            gini -= x*x/total;
+            gini -= x * x / total;
         }
         return gini;
     }
@@ -348,7 +348,7 @@ public:
 class EntropyScore
 {
 public:
-    double operator()(std::vector<double> const & priors, std::vector<double> const & counts, double n_total, double n_left) const
+    double operator()(std::vector<double> const& priors, std::vector<double> const& counts, double n_total, double n_left) const
     {
         double const n_right = n_total - n_left;
         double ig = 0;
@@ -365,8 +365,8 @@ public:
         return ig;
     }
 
-    template <typename LABELS, typename WEIGHTS, typename ITER>
-    double region_score(LABELS const & /*labels*/, WEIGHTS const & /*weights*/, ITER /*begin*/, ITER /*end*/) const
+    template<typename LABELS, typename WEIGHTS, typename ITER>
+    double region_score(LABELS const& /*labels*/, WEIGHTS const& /*weights*/, ITER /*begin*/, ITER /*end*/) const
     {
         vigra_fail("EntropyScore::region_score(): Not implemented yet.");
         return 0.0; // FIXME
@@ -382,7 +382,7 @@ public:
 class KolmogorovSmirnovScore
 {
 public:
-    double operator()(std::vector<double> const & priors, std::vector<double> const & counts, double /*n_total*/, double /*n_left*/) const // Fix unused parameter warning, but leave in to not break compatibility with overall API
+    double operator()(std::vector<double> const& priors, std::vector<double> const& counts, double /*n_total*/, double /*n_left*/) const // Fix unused parameter warning, but leave in to not break compatibility with overall API
     {
         double const eps = 1e-10;
         double nnz = 0;
@@ -408,15 +408,15 @@ public:
         {
             if (priors[i] != 0)
             {
-                double const v = (mean-norm_counts[i]);
-                ksd += v*v;
+                double const v = (mean - norm_counts[i]);
+                ksd += v * v;
             }
         }
         return -ksd;
     }
 
-    template <typename LABELS, typename WEIGHTS, typename ITER>
-    double region_score(LABELS const & /*labels*/, WEIGHTS const & /*weights*/, ITER /*begin*/, ITER /*end*/) const
+    template<typename LABELS, typename WEIGHTS, typename ITER>
+    double region_score(LABELS const& /*labels*/, WEIGHTS const& /*weights*/, ITER /*begin*/, ITER /*end*/) const
     {
         vigra_fail("KolmogorovSmirnovScore::region_score(): Region score not available for the Kolmogorov-Smirnov split.");
         return 0.0;
@@ -424,24 +424,25 @@ public:
 };
 
 // This struct holds the depth and the weighted number of datapoints per class of a single node.
-template <typename ARR>
+template<typename ARR>
 struct RFNodeDescription
 {
 public:
-    RFNodeDescription(size_t depth, ARR const & priors)
-        :
-        depth_(depth),
-        priors_(priors)
-    {}
+    RFNodeDescription(size_t depth, ARR const& priors)
+        : depth_(depth),
+          priors_(priors)
+    {
+    }
     size_t depth_;
-    ARR const & priors_;
+    ARR const& priors_;
 };
 
 
 
 // Return true if the given node is pure.
-template <typename LABELS, typename ITER>
-bool is_pure(LABELS const & /*labels*/, RFNodeDescription<ITER> const & desc)
+template<typename LABELS, typename ITER>
+bool
+is_pure(LABELS const& /*labels*/, RFNodeDescription<ITER> const& desc)
 {
     bool found = false;
     for (auto n : desc.priors_)
@@ -463,8 +464,8 @@ bool is_pure(LABELS const & /*labels*/, RFNodeDescription<ITER> const & desc)
 class PurityStop
 {
 public:
-    template <typename LABELS, typename ITER>
-    bool operator()(LABELS const & labels, RFNodeDescription<ITER> const & desc) const
+    template<typename LABELS, typename ITER>
+    bool operator()(LABELS const& labels, RFNodeDescription<ITER> const& desc) const
     {
         return is_pure(labels, desc);
     }
@@ -478,12 +479,12 @@ class DepthStop
 public:
     /// @brief Constructor: terminate tree construction at \a max_depth.
     DepthStop(size_t max_depth)
-        :
-        max_depth_(max_depth)
-    {}
+        : max_depth_(max_depth)
+    {
+    }
 
-    template <typename LABELS, typename ITER>
-    bool operator()(LABELS const & labels, RFNodeDescription<ITER> const & desc) const
+    template<typename LABELS, typename ITER>
+    bool operator()(LABELS const& labels, RFNodeDescription<ITER> const& desc) const
     {
         if (desc.depth_ >= max_depth_)
             return true;
@@ -501,12 +502,12 @@ class NumInstancesStop
 public:
     /// @brief Constructor: terminate tree construction when node contains less than \a min_n instances.
     NumInstancesStop(size_t min_n)
-        :
-        min_n_(min_n)
-    {}
+        : min_n_(min_n)
+    {
+    }
 
-    template <typename LABELS, typename ARR>
-    bool operator()(LABELS const & labels, RFNodeDescription<ARR> const & desc) const
+    template<typename LABELS, typename ARR>
+    bool operator()(LABELS const& labels, RFNodeDescription<ARR> const& desc) const
     {
         typedef typename ARR::value_type value_type;
         if (std::accumulate(desc.priors_.begin(), desc.priors_.end(), static_cast<value_type>(0)) <= min_n_)
@@ -526,14 +527,13 @@ class NodeComplexityStop
 public:
     /// @brief Constructor: stop when fewer than <tt>1/tau</tt> label arrangements are possible.
     NodeComplexityStop(double tau = 0.001)
-        :
-        logtau_(std::log(tau))
+        : logtau_(std::log(tau))
     {
         vigra_precondition(tau > 0 && tau < 1, "NodeComplexityStop(): Tau must be in the open interval (0, 1).");
     }
 
-    template <typename LABELS, typename ARR>
-    bool operator()(LABELS const & /*labels*/, RFNodeDescription<ARR> const & desc) // Fix unused parameter, but leave in for API compatability
+    template<typename LABELS, typename ARR>
+    bool operator()(LABELS const& /*labels*/, RFNodeDescription<ARR> const& desc) // Fix unused parameter, but leave in for API compatability
     {
         typedef typename ARR::value_type value_type;
 
@@ -548,11 +548,11 @@ public:
             if (v > 0)
             {
                 ++nnz;
-                lg += loggamma(static_cast<double>(v+1));
+                lg += loggamma(static_cast<double>(v + 1));
             }
         }
-        lg += loggamma(static_cast<double>(nnz+1));
-        lg -= loggamma(static_cast<double>(total+1));
+        lg += loggamma(static_cast<double>(nnz + 1));
+        lg -= loggamma(static_cast<double>(total + 1));
         if (nnz <= 1)
             return true;
 
@@ -582,29 +582,28 @@ enum RandomForestOptionTags
 class RandomForestOptions
 {
 public:
-
     RandomForestOptions()
-        :
-        tree_count_(255),
-        features_per_node_(0),
-        features_per_node_switch_(RF_SQRT),
-        bootstrap_sampling_(true),
-        resample_count_(0),
-        split_(RF_GINI),
-        max_depth_(0),
-        node_complexity_tau_(-1),
-        min_num_instances_(1),
-        use_stratification_(false),
-        n_threads_(-1),
-        class_weights_()
-    {}
+        : tree_count_(255),
+          features_per_node_(0),
+          features_per_node_switch_(RF_SQRT),
+          bootstrap_sampling_(true),
+          resample_count_(0),
+          split_(RF_GINI),
+          max_depth_(0),
+          node_complexity_tau_(-1),
+          min_num_instances_(1),
+          use_stratification_(false),
+          n_threads_(-1),
+          class_weights_()
+    {
+    }
 
     /**
      * @brief The number of trees.
      *
      * Default: 255
      */
-    RandomForestOptions & tree_count(int p_tree_count)
+    RandomForestOptions& tree_count(int p_tree_count)
     {
         tree_count_ = p_tree_count;
         return *this;
@@ -617,7 +616,7 @@ public:
      *
      * Default: use sqrt of the total number of features.
      */
-    RandomForestOptions & features_per_node(int p_features_per_node)
+    RandomForestOptions& features_per_node(int p_features_per_node)
     {
         features_per_node_switch_ = RF_CONST;
         features_per_node_ = p_features_per_node;
@@ -634,11 +633,11 @@ public:
      *
      * Default: <tt>vigra::rf3::RF_SQRT</tt>
      */
-    RandomForestOptions & features_per_node(RandomForestOptionTags p_features_per_node_switch)
+    RandomForestOptions& features_per_node(RandomForestOptionTags p_features_per_node_switch)
     {
         vigra_precondition(p_features_per_node_switch == RF_SQRT ||
-                           p_features_per_node_switch == RF_LOG ||
-                           p_features_per_node_switch == RF_ALL,
+                               p_features_per_node_switch == RF_LOG ||
+                               p_features_per_node_switch == RF_ALL,
                            "RandomForestOptions::features_per_node(): Input must be RF_SQRT, RF_LOG or RF_ALL.");
         features_per_node_switch_ = p_features_per_node_switch;
         return *this;
@@ -649,7 +648,7 @@ public:
      *
      * Default: true
      */
-    RandomForestOptions & bootstrap_sampling(bool b)
+    RandomForestOptions& bootstrap_sampling(bool b)
     {
         bootstrap_sampling_ = b;
         return *this;
@@ -660,7 +659,7 @@ public:
      *
      * Default: \a n = 0 (don't resample in every node)
      */
-    RandomForestOptions & resample_count(size_t n)
+    RandomForestOptions& resample_count(size_t n)
     {
         resample_count_ = n;
         bootstrap_sampling_ = false;
@@ -677,11 +676,11 @@ public:
      *
      * Default: <tt>vigra::rf3::RF_GINI</tt>
      */
-    RandomForestOptions & split(RandomForestOptionTags p_split)
+    RandomForestOptions& split(RandomForestOptionTags p_split)
     {
         vigra_precondition(p_split == RF_GINI ||
-                           p_split == RF_ENTROPY ||
-                           p_split == RF_KSD,
+                               p_split == RF_ENTROPY ||
+                               p_split == RF_KSD,
                            "RandomForestOptions::split(): Input must be RF_GINI, RF_ENTROPY or RF_KSD.");
         split_ = p_split;
         return *this;
@@ -692,7 +691,7 @@ public:
      *
      * Default: \a d = 0 (don't use depth as a termination criterion)
      */
-    RandomForestOptions & max_depth(size_t d)
+    RandomForestOptions& max_depth(size_t d)
     {
         max_depth_ = d;
         return *this;
@@ -703,7 +702,7 @@ public:
      *
      * Default: \a tau = -1 (don't use complexity as a termination criterion)
      */
-    RandomForestOptions & node_complexity_tau(double tau)
+    RandomForestOptions& node_complexity_tau(double tau)
     {
         node_complexity_tau_ = tau;
         return *this;
@@ -714,7 +713,7 @@ public:
      *
      * Default: \a n = 1 (don't use instance count as a termination criterion)
      */
-    RandomForestOptions & min_num_instances(size_t n)
+    RandomForestOptions& min_num_instances(size_t n)
     {
         min_num_instances_ = n;
         return *this;
@@ -728,7 +727,7 @@ public:
      *
      * Default: false
      */
-    RandomForestOptions & use_stratification(bool b)
+    RandomForestOptions& use_stratification(bool b)
     {
         use_stratification_ = b;
         return *this;
@@ -741,7 +740,7 @@ public:
      *
      * Default: \a n = -1 (use as many threads as there are cores in the machine).
      */
-    RandomForestOptions & n_threads(int n)
+    RandomForestOptions& n_threads(int n)
     {
         n_threads_ = n;
         return *this;
@@ -756,7 +755,7 @@ public:
      * The ordering of the classes is 3, 5, 8, so class 3 will get weight 0.2, class 5 will get weight 0.3
      * and class 8 will get weight 0.4.
      */
-    RandomForestOptions & class_weights(std::vector<double> const & v)
+    RandomForestOptions& class_weights(std::vector<double> const& v)
     {
         class_weights_ = v;
         return *this;
@@ -795,73 +794,73 @@ public:
     bool use_stratification_;
     int n_threads_;
     std::vector<double> class_weights_;
-
 };
 
 
 
-template <typename LabelType>
+template<typename LabelType>
 class ProblemSpec
 {
 public:
-
     ProblemSpec()
-        :
-        num_features_(0),
-        num_instances_(0),
-        num_classes_(0),
-        distinct_classes_(),
-        actual_mtry_(0),
-        actual_msample_(0)
-    {}
+        : num_features_(0),
+          num_instances_(0),
+          num_classes_(0),
+          distinct_classes_(),
+          actual_mtry_(0),
+          actual_msample_(0)
+    {
+    }
 
-    ProblemSpec & num_features(size_t n)
+    ProblemSpec& num_features(size_t n)
     {
         num_features_ = n;
         return *this;
     }
 
-    ProblemSpec & num_instances(size_t n)
+    ProblemSpec& num_instances(size_t n)
     {
         num_instances_ = n;
         return *this;
     }
 
-    ProblemSpec & num_classes(size_t n)
+    ProblemSpec& num_classes(size_t n)
     {
         num_classes_ = n;
         return *this;
     }
 
-    ProblemSpec & distinct_classes(std::vector<LabelType> v)
+    ProblemSpec& distinct_classes(std::vector<LabelType> v)
     {
         distinct_classes_ = v;
         num_classes_ = v.size();
         return *this;
     }
 
-    ProblemSpec & actual_mtry(size_t m)
+    ProblemSpec& actual_mtry(size_t m)
     {
         actual_mtry_ = m;
         return *this;
     }
 
-    ProblemSpec & actual_msample(size_t m)
+    ProblemSpec& actual_msample(size_t m)
     {
         actual_msample_ = m;
         return *this;
     }
 
-    bool operator==(ProblemSpec const & other) const
+    bool operator==(ProblemSpec const& other) const
     {
-        #define COMPARE(field) if (field != other.field) return false;
+#define COMPARE(field)        \
+    if (field != other.field) \
+        return false;
         COMPARE(num_features_);
         COMPARE(num_instances_);
         COMPARE(num_classes_);
         COMPARE(distinct_classes_);
         COMPARE(actual_mtry_);
         COMPARE(actual_msample_);
-        #undef COMPARE
+#undef COMPARE
         return true;
     }
 
@@ -871,7 +870,6 @@ public:
     std::vector<LabelType> distinct_classes_;
     size_t actual_mtry_;
     size_t actual_msample_;
-
 };
 
 //@}
@@ -881,4 +879,3 @@ public:
 } // namespace vigra
 
 #endif
-

@@ -48,26 +48,28 @@ using namespace visitors;
 
 
 
-void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
+void
+vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
+{
     /* INPUT */
     if (inputs.size() != 1)
         mexErrMsgTxt("One inputs required.");
 
     // get RF object
-   RandomForest<> rf;
-   std::string filename = inputs.getString(0, v_required());
-   std::string groupname = inputs.getString(1, v_default(std::string("")));
-   vigra::rf_import_HDF5(rf, filename, groupname );
-   matlab::exportRandomForest(rf, matlab::createCellArray(2*rf.options_.tree_count_+2, outputs[0]));
+    RandomForest<> rf;
+    std::string filename = inputs.getString(0, v_required());
+    std::string groupname = inputs.getString(1, v_default(std::string("")));
+    vigra::rf_import_HDF5(rf, filename, groupname);
+    matlab::exportRandomForest(rf, matlab::createCellArray(2 * rf.options_.tree_count_ + 2, outputs[0]));
 }
-
 
 
 
 /***************************************************************************************************
 **         VIGRA GATEWAY                                                                          **
 ****************************************************************************************************/
-inline void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
+inline void
+vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
     vigraMain(outputs, inputs);
 };

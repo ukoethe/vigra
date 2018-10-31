@@ -43,27 +43,28 @@ using namespace matlab;
 
 
 
-void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
+void
+vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
+{
     /***************************************************************************************************
     **              INIT PART                                                                         **
     ****************************************************************************************************/
 
     VIGRA_CREATE_ENUM_AND_STD_MAP3(MapName, first, second, third);
-    double        method      = double(inputs.getEnum(0, v_required() , MapName ));
+    double method = double(inputs.getEnum(0, v_required(), MapName));
 
     /***************************************************************************************************
     **              CODE PART                                                                         **
     ****************************************************************************************************/
 
     outputs.createScalar<double>(0, v_required(), method);
-
-
 }
 
 /***************************************************************************************************
 **         VIGRA GATEWAY                                                                          **
 ****************************************************************************************************/
-void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
+void
+vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
     vigraMain(outputs, inputs);
 }
@@ -71,4 +72,3 @@ void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputAr
 NODOC
 
 */
-

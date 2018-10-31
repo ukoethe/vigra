@@ -1,36 +1,40 @@
 #ifndef VIGRA_PERMUTATION_HXX
 #define VIGRA_PERMUTATION_HXX
 
+#include "array_vector.hxx"
 #include "config.hxx"
 #include "error.hxx"
-#include "array_vector.hxx"
 #include "tinyvector.hxx"
 
-namespace vigra {
+namespace vigra
+{
 
-template <unsigned int N>
+template<unsigned int N>
 class Permutation : public TinyVector<unsigned int, N>
 {
-  public:
-    typedef TinyVector<unsigned int, N>         base_type;
-    typedef typename base_type::size_type       size_type;
-    typedef typename base_type::value_type      value_type;
-    typedef typename base_type::iterator        iterator;
-    typedef typename base_type::const_iterator  const_iterator;
-    typedef typename base_type::reference       reference;
+public:
+    typedef TinyVector<unsigned int, N> base_type;
+    typedef typename base_type::size_type size_type;
+    typedef typename base_type::value_type value_type;
+    typedef typename base_type::iterator iterator;
+    typedef typename base_type::const_iterator const_iterator;
+    typedef typename base_type::reference reference;
     typedef typename base_type::const_reference const_reference;
-    typedef typename base_type::pointer         pointer;
-    typedef typename base_type::const_pointer   const_pointer;
-    typedef int                                 integral_type;
+    typedef typename base_type::pointer pointer;
+    typedef typename base_type::const_pointer const_pointer;
+    typedef int integral_type;
 
-    Permutation() : base_type() {}
+    Permutation()
+        : base_type()
+    {
+    }
 
-    Permutation(const Permutation<N-1> & other, const size_type index)
-    : base_type()
+    Permutation(const Permutation<N - 1>& other, const size_type index)
+        : base_type()
     {
         vigra_precondition(
-                index < N,
-                "Permutation::Permutation(): Invalid index");
+            index < N,
+            "Permutation::Permutation(): Invalid index");
         for (size_type n = 0; n < N; n++)
         {
             if (n < index)
@@ -43,7 +47,7 @@ class Permutation : public TinyVector<unsigned int, N>
             }
             else
             {
-                (*this)[n] = other[n-1];
+                (*this)[n] = other[n - 1];
             }
         }
         if ((N - 1 - index) % 2 == 0)
@@ -68,27 +72,27 @@ class Permutation : public TinyVector<unsigned int, N>
         }
     }
 
-  private:
+private:
     bool sign_;
-
 };
 
-template <>
+template<>
 class Permutation<1> : public TinyVector<unsigned int, 1>
 {
-  public:
+public:
     typedef TinyVector<unsigned int, 1> base_type;
-    typedef base_type::size_type        size_type;
-    typedef base_type::value_type       value_type;
-    typedef base_type::iterator         iterator;
-    typedef base_type::const_iterator   const_iterator;
-    typedef base_type::reference        reference;
-    typedef base_type::const_reference  const_reference;
-    typedef base_type::pointer          pointer;
-    typedef base_type::const_pointer    const_pointer;
-    typedef int                         integral_type;
+    typedef base_type::size_type size_type;
+    typedef base_type::value_type value_type;
+    typedef base_type::iterator iterator;
+    typedef base_type::const_iterator const_iterator;
+    typedef base_type::reference reference;
+    typedef base_type::const_reference const_reference;
+    typedef base_type::pointer pointer;
+    typedef base_type::const_pointer const_pointer;
+    typedef int integral_type;
 
-    Permutation() : base_type()
+    Permutation()
+        : base_type()
     {
         (*this)[0] = 0;
         (*this).sign_ = true;
@@ -106,27 +110,28 @@ class Permutation<1> : public TinyVector<unsigned int, 1>
         }
     }
 
-  private:
+private:
     bool sign_;
 };
 
-template <unsigned int N>
-class PlainChangesPermutations : public ArrayVector<Permutation<N> >
+template<unsigned int N>
+class PlainChangesPermutations : public ArrayVector<Permutation<N>>
 {
-  public:
-    typedef ArrayVector<Permutation<N> >        base_type;
-    typedef typename base_type::size_type       size_type;
-    typedef typename base_type::value_type      value_type;
-    typedef typename base_type::iterator        iterator;
-    typedef typename base_type::const_iterator  const_iterator;
-    typedef typename base_type::reference       reference;
+public:
+    typedef ArrayVector<Permutation<N>> base_type;
+    typedef typename base_type::size_type size_type;
+    typedef typename base_type::value_type value_type;
+    typedef typename base_type::iterator iterator;
+    typedef typename base_type::const_iterator const_iterator;
+    typedef typename base_type::reference reference;
     typedef typename base_type::const_reference const_reference;
-    typedef typename base_type::pointer         pointer;
-    typedef typename base_type::const_pointer   const_pointer;
+    typedef typename base_type::pointer pointer;
+    typedef typename base_type::const_pointer const_pointer;
 
-    PlainChangesPermutations() : base_type()
+    PlainChangesPermutations()
+        : base_type()
     {
-        PlainChangesPermutations<N-1> permutations;
+        PlainChangesPermutations<N - 1> permutations;
         for (auto permutation : permutations)
         {
             if (permutation.sign() == -1)
@@ -147,21 +152,22 @@ class PlainChangesPermutations : public ArrayVector<Permutation<N> >
     }
 };
 
-template <>
-class PlainChangesPermutations<1> : public ArrayVector<Permutation<1> >
+template<>
+class PlainChangesPermutations<1> : public ArrayVector<Permutation<1>>
 {
-  public:
-    typedef ArrayVector<Permutation<1> >  base_type;
-    typedef base_type::size_type          size_type;
-    typedef base_type::value_type         value_type;
-    typedef base_type::iterator           iterator;
-    typedef base_type::const_iterator     const_iterator;
-    typedef base_type::reference          reference;
-    typedef base_type::const_reference    const_reference;
-    typedef base_type::pointer            pointer;
-    typedef base_type::const_pointer      const_pointer;
+public:
+    typedef ArrayVector<Permutation<1>> base_type;
+    typedef base_type::size_type size_type;
+    typedef base_type::value_type value_type;
+    typedef base_type::iterator iterator;
+    typedef base_type::const_iterator const_iterator;
+    typedef base_type::reference reference;
+    typedef base_type::const_reference const_reference;
+    typedef base_type::pointer pointer;
+    typedef base_type::const_pointer const_pointer;
 
-    PlainChangesPermutations() : base_type()
+    PlainChangesPermutations()
+        : base_type()
     {
         this->push_back(Permutation<1>());
     }

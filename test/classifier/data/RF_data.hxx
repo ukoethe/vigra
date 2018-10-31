@@ -1,31 +1,31 @@
 #ifndef RF_DATA
 #define RF_DATA
 
-#include <vector>
-#include <vigra/multi_array.hxx>
+#include "RF_common.hxx"
 #include <iostream>
 #include <string>
-#include "RF_common.hxx"
+#include <vector>
+#include <vigra/multi_array.hxx>
 
-#define LOAD_DATA(name)\
-    {\
-            int a = 0;\
-            vigra::MultiArrayShape<2>::type LabelSize(1, dataNumSamps[name]);\
-            vigra::MultiArrayShape<2>::type FeatureSize(dataNumFeats[name], dataNumSamps[name]);\
-            vigra::MultiArrayShape<2>::type PredictSize(dataNumSamps[name], name##_size);\
-            _labels.push_back(LabelType(LabelSize, name##_labels).transpose());\
-            _features.push_back(FeatureType(FeatureSize, name##_features).transpose());\
-            _ClassIter.push_back(_twotuple(name##_Classes, name##_size));\
-            _names.push_back(#name);\
-            _RFres.push_back(ManagedLabelType(PredictSize, a));\
+#define LOAD_DATA(name)                                                                      \
+    {                                                                                        \
+        int a = 0;                                                                           \
+        vigra::MultiArrayShape<2>::type LabelSize(1, dataNumSamps[name]);                    \
+        vigra::MultiArrayShape<2>::type FeatureSize(dataNumFeats[name], dataNumSamps[name]); \
+        vigra::MultiArrayShape<2>::type PredictSize(dataNumSamps[name], name##_size);        \
+        _labels.push_back(LabelType(LabelSize, name##_labels).transpose());                  \
+        _features.push_back(FeatureType(FeatureSize, name##_features).transpose());          \
+        _ClassIter.push_back(_twotuple(name##_Classes, name##_size));                        \
+        _names.push_back(#name);                                                             \
+        _RFres.push_back(ManagedLabelType(PredictSize, a));                                  \
     }
 
 
 struct RF_Test_Training_Data
 {
-    typedef vigra::MultiArrayView<2,int, vigra::StridedArrayTag> LabelType;
-    typedef vigra::MultiArrayView<2,double, vigra::StridedArrayTag> FeatureType;
-    typedef vigra::MultiArray<2,double> ManagedLabelType;
+    typedef vigra::MultiArrayView<2, int, vigra::StridedArrayTag> LabelType;
+    typedef vigra::MultiArrayView<2, double, vigra::StridedArrayTag> FeatureType;
+    typedef vigra::MultiArray<2, double> ManagedLabelType;
     typedef int* ClassIterType;
 
     vigra::MultiArrayView<2, double, vigra::StridedArrayTag> _oobRange;
@@ -37,8 +37,9 @@ struct RF_Test_Training_Data
 
     RF_Test_Training_Data()
     {
-        _oobRange = vigra::MultiArrayView<2, double>( vigra::MultiArrayShape<2>::type(2, this->size()),
-                                                    _statistics                                     ).transpose();
+        _oobRange = vigra::MultiArrayView<2, double>(vigra::MultiArrayShape<2>::type(2, this->size()),
+                                                     _statistics)
+                        .transpose();
         _labels.reserve(this->size());
         _features.reserve(this->size());
         _ClassIter.reserve(this->size());
@@ -60,7 +61,7 @@ struct RF_Test_Training_Data
         LOAD_DATA(wine)
         //LOAD_DATA(wpbc)
         //LOAD_DATA(yeast)
-/*
+        /*
         std::cout << (int)_features[0].shape(0) << " " << _features[0].shape(1);
         std::cout << "Press Enter to continue...." << std::endl;
         std::cin.ignore(INT_MAX, '\n');
@@ -87,55 +88,55 @@ struct RF_Test_Training_Data
     LabelType& labels(int index)
     {
         vigra_precondition(index > 0 || index < this->size(),
-            "index out of bounds");
+                           "index out of bounds");
         return _labels[index];
     }
 
     double oobError(int index)
     {
         vigra_precondition(index > 0 || index < this->size(),
-            "index out of bounds");
+                           "index out of bounds");
         return _oobRange(index, 0);
     }
 
     double oobSTD(int index)
     {
         vigra_precondition(index > 0 || index < this->size(),
-            "index out of bounds");
+                           "index out of bounds");
         return _oobRange(index, 1);
     }
 
     FeatureType& features(int index)
     {
         vigra_precondition(index > 0 || index < this->size(),
-            "index out of bounds");
+                           "index out of bounds");
         return _features[index];
     }
 
     _twotuple ClassIter(int index)
     {
         vigra_precondition(index > 0 || index < this->size(),
-            "index out of bounds");
+                           "index out of bounds");
         return _ClassIter[index];
     }
 
     const std::string names(int index)
     {
         vigra_precondition(index > 0 || index < this->size(),
-            "index out of bounds");
+                           "index out of bounds");
         return _names[index];
     }
 
     ManagedLabelType& RFres(int index)
     {
         vigra_precondition(index > 0 || index < this->size(),
-            "index out of bounds");
+                           "index out of bounds");
         return _RFres[index];
     }
 
     int size()
     {
-        return 16-8;
+        return 16 - 8;
     }
 };
 

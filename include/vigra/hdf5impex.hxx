@@ -36,8 +36,8 @@
 #ifndef VIGRA_HDF5IMPEX_HXX
 #define VIGRA_HDF5IMPEX_HXX
 
-#include <string>
 #include <algorithm>
+#include <string>
 #include <utility>
 
 #define H5Gcreate_vers 2
@@ -51,43 +51,47 @@
 #include <hdf5.h>
 
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
-# ifndef H5Gopen
-#   define H5Gopen(a, b, c) H5Gopen(a, b)
-# endif
-# ifndef H5Gcreate
-#  define H5Gcreate(a, b, c, d, e) H5Gcreate(a, b, 1)
-# endif
-# ifndef H5Dopen
-#  define H5Dopen(a, b, c) H5Dopen(a, b)
-# endif
-# ifndef H5Dcreate
-#  define H5Dcreate(a, b, c, d, e, f, g) H5Dcreate(a, b, c, d, f)
-# endif
-# ifndef H5Acreate
-#  define H5Acreate(a, b, c, d, e, f) H5Acreate(a, b, c, d, e)
-# endif
-# ifndef H5Pset_obj_track_times
-#  define H5Pset_obj_track_times(a, b) do {} while (0)
-# endif
-# include <H5LT.h>
+#ifndef H5Gopen
+#define H5Gopen(a, b, c) H5Gopen(a, b)
+#endif
+#ifndef H5Gcreate
+#define H5Gcreate(a, b, c, d, e) H5Gcreate(a, b, 1)
+#endif
+#ifndef H5Dopen
+#define H5Dopen(a, b, c) H5Dopen(a, b)
+#endif
+#ifndef H5Dcreate
+#define H5Dcreate(a, b, c, d, e, f, g) H5Dcreate(a, b, c, d, f)
+#endif
+#ifndef H5Acreate
+#define H5Acreate(a, b, c, d, e, f) H5Acreate(a, b, c, d, e)
+#endif
+#ifndef H5Pset_obj_track_times
+#define H5Pset_obj_track_times(a, b) \
+    do                               \
+    {                                \
+    } while (0)
+#endif
+#include <H5LT.h>
 #else
-# include <hdf5_hl.h>
+#include <hdf5_hl.h>
 #endif
 
+#include "error.hxx"
 #include "impex.hxx"
 #include "multi_array.hxx"
-#include "multi_iterator_coupled.hxx"
 #include "multi_impex.hxx"
+#include "multi_iterator_coupled.hxx"
 #include "utilities.hxx"
-#include "error.hxx"
 
 #if defined(_MSC_VER)
-#  include <io.h>
+#include <io.h>
 #else
-#  include <unistd.h>
+#include <unistd.h>
 #endif
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup VigraHDF5Impex Import/Export of Images and Arrays in HDF5 Format
 
@@ -97,9 +101,10 @@ namespace vigra {
 */
 //@{
 
-    /** \brief Check if given filename refers to a HDF5 file.
+/** \brief Check if given filename refers to a HDF5 file.
     */
-inline bool isHDF5(char const * filename)
+inline bool
+isHDF5(char const* filename)
 {
 #ifdef _MSC_VER
     return _access(filename, 0) != -1 && H5Fis_hdf5(filename);
@@ -108,7 +113,7 @@ inline bool isHDF5(char const * filename)
 #endif
 }
 
-    /** \brief Temporarily disable HDF5's native error output.
+/** \brief Temporarily disable HDF5's native error output.
 
         This should be used when you want to call an HDF5 function
         that is known to fail (e.g. during testing), or when you want
@@ -131,26 +136,23 @@ class HDF5DisableErrorOutput
 {
     H5E_auto1_t old_func1_;
     H5E_auto2_t old_func2_;
-    void *old_client_data_;
+    void* old_client_data_;
     int error_handler_version_;
 
-    HDF5DisableErrorOutput(HDF5DisableErrorOutput const &);
-    HDF5DisableErrorOutput & operator=(HDF5DisableErrorOutput const &);
+    HDF5DisableErrorOutput(HDF5DisableErrorOutput const&);
+    HDF5DisableErrorOutput& operator=(HDF5DisableErrorOutput const&);
 
-  public:
+public:
     HDF5DisableErrorOutput()
-    : old_func1_(0)
-    , old_func2_(0)
-    , old_client_data_(0)
-    , error_handler_version_(-1)
+        : old_func1_(0), old_func2_(0), old_client_data_(0), error_handler_version_(-1)
     {
-        if(H5Eget_auto2(H5E_DEFAULT, &old_func2_, &old_client_data_) >= 0)
+        if (H5Eget_auto2(H5E_DEFAULT, &old_func2_, &old_client_data_) >= 0)
         {
             // prefer new-style error handling
             H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
             error_handler_version_ = 2;
         }
-        else if(H5Eget_auto1(&old_func1_, &old_client_data_) >= 0)
+        else if (H5Eget_auto1(&old_func1_, &old_client_data_) >= 0)
         {
             // fall back to old-style if another module (e.g. h5py)
             // prevents us from using new-style (i.e. H5Eget_auto2()
@@ -162,14 +164,14 @@ class HDF5DisableErrorOutput
 
     ~HDF5DisableErrorOutput()
     {
-        if(error_handler_version_ == 1)
+        if (error_handler_version_ == 1)
             H5Eset_auto1(old_func1_, old_client_data_);
-        else if(error_handler_version_ == 2)
+        else if (error_handler_version_ == 2)
             H5Eset_auto2(H5E_DEFAULT, old_func2_, old_client_data_);
     }
 };
 
-    /** \brief Wrapper for unique hid_t objects.
+/** \brief Wrapper for unique hid_t objects.
 
     This class offers the functionality of <tt>std::unique_ptr</tt> for HDF5 handles
     (type <tt>hid_t</tt>). Unfortunately, <tt>std::unique_ptr</tt> cannot be used directly
@@ -217,16 +219,16 @@ private:
     Destructor destructor_;
 
 public:
-
-        /** \brief Default constructor.
+    /** \brief Default constructor.
             Creates a NULL handle.
         **/
     HDF5Handle()
-    : handle_( 0 ),
-      destructor_(0)
-    {}
+        : handle_(0),
+          destructor_(0)
+    {
+    }
 
-        /** \brief Create a wrapper for a hid_t object.
+    /** \brief Create a wrapper for a hid_t object.
 
         The hid_t object \a h is assumed to be the return value of an open or create function.
         It will be closed with the given close function \a destructor as soon as this
@@ -245,42 +247,42 @@ public:
         ... // use file_id in the same way
         \endcode
         */
-    HDF5Handle(hid_t h, Destructor destructor, const char * error_message)
-    : handle_( h ),
-      destructor_(destructor)
+    HDF5Handle(hid_t h, Destructor destructor, const char* error_message)
+        : handle_(h),
+          destructor_(destructor)
     {
-        if(handle_ < 0)
+        if (handle_ < 0)
             vigra_fail(error_message);
     }
 
-        /** \brief Copy constructor.
+    /** \brief Copy constructor.
 
             Hands over ownership of the RHS handle (analogous to <tt>std::unique_pt</tt>).
         */
-    HDF5Handle(HDF5Handle const & h)
-    : handle_( h.handle_ ),
-      destructor_(h.destructor_)
+    HDF5Handle(HDF5Handle const& h)
+        : handle_(h.handle_),
+          destructor_(h.destructor_)
     {
-        const_cast<HDF5Handle &>(h).handle_ = 0;
+        const_cast<HDF5Handle&>(h).handle_ = 0;
     }
 
-        /** \brief Assignment.
+    /** \brief Assignment.
             Calls close() for the LHS handle and hands over ownership of the
             RHS handle (analogous to <tt>std::unique_pt</tt>).
         */
-    HDF5Handle & operator=(HDF5Handle const & h)
+    HDF5Handle& operator=(HDF5Handle const& h)
     {
-        if(h.handle_ != handle_)
+        if (h.handle_ != handle_)
         {
             close();
             handle_ = h.handle_;
             destructor_ = h.destructor_;
-            const_cast<HDF5Handle &>(h).handle_ = 0;
+            const_cast<HDF5Handle&>(h).handle_ = 0;
         }
         return *this;
     }
 
-        /** \brief Destructor.
+    /** \brief Destructor.
             Calls close() for the contained handle.
         */
     ~HDF5Handle()
@@ -288,7 +290,7 @@ public:
         close();
     }
 
-        /** \brief Explicitly call the stored destructor (if one has been registered in the
+    /** \brief Explicitly call the stored destructor (if one has been registered in the
              constructor) for the contained handle and set the wrapper to NULL. Returns
              a negative value when the destructor call for the handle fails, and
              a non-negative value otherwise.
@@ -296,14 +298,14 @@ public:
     herr_t close()
     {
         herr_t res = 1;
-        if(handle_ && destructor_)
+        if (handle_ && destructor_)
             res = (*destructor_)(handle_);
         handle_ = 0;
         destructor_ = 0;
         return res;
     }
 
-        /** \brief Return the contained handle and set the wrapper to NULL
+    /** \brief Return the contained handle and set the wrapper to NULL
             without calling <tt>close()</tt>.
         */
     hid_t release()
@@ -314,15 +316,15 @@ public:
         return res;
     }
 
-        /** \brief Reset the wrapper to a new handle.
+    /** \brief Reset the wrapper to a new handle.
 
              Equivalent to <tt>handle = HDF5Handle(h, destructor, error_message)</tt>.
         */
-    void reset(hid_t h, Destructor destructor, const char * error_message)
+    void reset(hid_t h, Destructor destructor, const char* error_message)
     {
-        if(h < 0)
+        if (h < 0)
             vigra_fail(error_message);
-        if(h != handle_)
+        if (h != handle_)
         {
             close();
             handle_ = h;
@@ -330,17 +332,17 @@ public:
         }
     }
 
-        /** \brief Swap the contents of two handle wrappers.
+    /** \brief Swap the contents of two handle wrappers.
 
             Also available as <tt>std::swap(handle1, handle2)</tt>.
         */
-    void swap(HDF5Handle & h)
+    void swap(HDF5Handle& h)
     {
         std::swap(handle_, h.handle_);
         std::swap(destructor_, h.destructor_);
     }
 
-        /** \brief Get a temporary hid_t object for the contained handle.
+    /** \brief Get a temporary hid_t object for the contained handle.
             Do not call a close function on the return value - a crash will be likely
             otherwise.
         */
@@ -349,7 +351,7 @@ public:
         return handle_;
     }
 
-        /** \brief Convert to a plain hid_t object.
+    /** \brief Convert to a plain hid_t object.
 
         This function ensures that hid_t objects can be transparently replaced with
         HDF5Handle objects in user code. Do not call a close function on the return
@@ -360,28 +362,28 @@ public:
         return handle_;
     }
 
-        /** \brief Equality comparison of the contained handle.
+    /** \brief Equality comparison of the contained handle.
         */
-    bool operator==(HDF5Handle const & h) const
+    bool operator==(HDF5Handle const& h) const
     {
         return handle_ == h.handle_;
     }
 
-        /** \brief Equality comparison of the contained handle.
+    /** \brief Equality comparison of the contained handle.
         */
     bool operator==(hid_t h) const
     {
         return handle_ == h;
     }
 
-        /** \brief Inequality comparison of the contained handle.
+    /** \brief Inequality comparison of the contained handle.
         */
-    bool operator!=(HDF5Handle const & h) const
+    bool operator!=(HDF5Handle const& h) const
     {
         return handle_ != h.handle_;
     }
 
-        /** \brief Inequality comparison of the contained handle.
+    /** \brief Inequality comparison of the contained handle.
         */
     bool operator!=(hid_t h) const
     {
@@ -390,7 +392,7 @@ public:
 };
 
 
-    /** \brief Wrapper for shared hid_t objects.
+/** \brief Wrapper for shared hid_t objects.
 
     This class offers the functionality of <tt>std::shared_ptr</tt> for HDF5 handles
     (type <tt>hid_t</tt>). Unfortunately, <tt>std::shared_ptr</tt> cannot be used directly
@@ -436,20 +438,20 @@ public:
 private:
     hid_t handle_;
     Destructor destructor_;
-    size_t * refcount_;
+    size_t* refcount_;
 
 public:
-
-        /** \brief Default constructor.
+    /** \brief Default constructor.
             Creates a NULL handle.
         **/
     HDF5HandleShared()
-    : handle_( 0 ),
-      destructor_(0),
-      refcount_(0)
-    {}
+        : handle_(0),
+          destructor_(0),
+          refcount_(0)
+    {
+    }
 
-        /** \brief Create a shared wrapper for a plain hid_t object.
+    /** \brief Create a shared wrapper for a plain hid_t object.
 
         The hid_t object \a h is assumed to be the return value of an open or create function.
         It will be closed with the given close function \a destructor as soon as this
@@ -468,55 +470,55 @@ public:
         ... // use file_id in the same way
         \endcode
         */
-    HDF5HandleShared(hid_t h, Destructor destructor, const char * error_message)
-    : handle_( h ),
-      destructor_(destructor),
-      refcount_(0)
+    HDF5HandleShared(hid_t h, Destructor destructor, const char* error_message)
+        : handle_(h),
+          destructor_(destructor),
+          refcount_(0)
     {
-        if(handle_ < 0)
+        if (handle_ < 0)
             vigra_fail(error_message);
-        if(handle_ > 0)
+        if (handle_ > 0)
             refcount_ = new size_t(1);
     }
 
-        /** \brief Copy constructor.
+    /** \brief Copy constructor.
             Shares ownership with the RHS handle (analogous to <tt>std::shared_ptr</tt>).
         */
-    HDF5HandleShared(HDF5HandleShared const & h)
-    : handle_( h.handle_ ),
-      destructor_(h.destructor_),
-      refcount_(h.refcount_)
+    HDF5HandleShared(HDF5HandleShared const& h)
+        : handle_(h.handle_),
+          destructor_(h.destructor_),
+          refcount_(h.refcount_)
     {
-        if(refcount_)
+        if (refcount_)
             ++(*refcount_);
     }
 
-        /** \brief Assignment.
+    /** \brief Assignment.
             Call close() for the present LHS handle and share ownership with the
             RHS handle (analogous to <tt>std::shared_ptr</tt>).
         */
-    HDF5HandleShared & operator=(HDF5HandleShared const & h)
+    HDF5HandleShared& operator=(HDF5HandleShared const& h)
     {
-        if(h.handle_ != handle_)
+        if (h.handle_ != handle_)
         {
             close();
             handle_ = h.handle_;
             destructor_ = h.destructor_;
             refcount_ = h.refcount_;
-            if(refcount_)
+            if (refcount_)
                 ++(*refcount_);
         }
         return *this;
     }
 
-        /** \brief Destructor (calls close())
+    /** \brief Destructor (calls close())
         */
     ~HDF5HandleShared()
     {
         close();
     }
 
-        /** \brief Close the handle if this is the unique (i.e. last) owner.
+    /** \brief Close the handle if this is the unique (i.e. last) owner.
 
              Decrements the reference counter and calls the destructor function of
              the handle (if one has been registered in the constructor) when the counter
@@ -527,12 +529,12 @@ public:
     herr_t close()
     {
         herr_t res = 1;
-        if(refcount_)
+        if (refcount_)
         {
             --(*refcount_);
-            if(*refcount_ == 0)
+            if (*refcount_ == 0)
             {
-                if(destructor_)
+                if (destructor_)
                     res = (*destructor_)(handle_);
                 delete refcount_;
             }
@@ -543,34 +545,34 @@ public:
         return res;
     }
 
-        /** \brief Reset the handle to a new value.
+    /** \brief Reset the handle to a new value.
 
              Equivalent to <tt>handle = HDF5HandleShared(h, destructor, error_message)</tt>.
         */
-    void reset(hid_t h, Destructor destructor, const char * error_message)
+    void reset(hid_t h, Destructor destructor, const char* error_message)
     {
-        if(h < 0)
+        if (h < 0)
             vigra_fail(error_message);
-        if(h != handle_)
+        if (h != handle_)
         {
             close();
             handle_ = h;
             destructor_ = destructor;
-            if(handle_ > 0)
+            if (handle_ > 0)
                 refcount_ = new size_t(1);
         }
     }
 
-        /** \brief Get the number of owners of the contained handle.
+    /** \brief Get the number of owners of the contained handle.
         */
     size_t use_count() const
     {
         return refcount_
-                 ? *refcount_
-                 : 0;
+                   ? *refcount_
+                   : 0;
     }
 
-        /** \brief Check if this is the unique owner of the conatined handle.
+    /** \brief Check if this is the unique owner of the conatined handle.
 
             Equivalent to <tt>handle.use_count() == 1</tt>.
         */
@@ -579,18 +581,18 @@ public:
         return use_count() == 1;
     }
 
-        /** \brief Swap the contents of two handle wrappers.
+    /** \brief Swap the contents of two handle wrappers.
 
             Also available as <tt>std::swap(handle1, handle2)</tt>.
         */
-    void swap(HDF5HandleShared & h)
+    void swap(HDF5HandleShared& h)
     {
         std::swap(handle_, h.handle_);
         std::swap(destructor_, h.destructor_);
         std::swap(refcount_, h.refcount_);
     }
 
-        /** \brief Get a temporary hid_t object for the contained handle.
+    /** \brief Get a temporary hid_t object for the contained handle.
             Do not call a close function on the return value - a crash will be likely
             otherwise.
         */
@@ -599,7 +601,7 @@ public:
         return handle_;
     }
 
-        /** \brief Convert to a plain hid_t object.
+    /** \brief Convert to a plain hid_t object.
 
         This function ensures that hid_t objects can be transparently replaced with
         HDF5HandleShared objects in user code. Do not call a close function on the return
@@ -610,28 +612,28 @@ public:
         return handle_;
     }
 
-        /** \brief Equality comparison of the contained handle.
+    /** \brief Equality comparison of the contained handle.
         */
-    bool operator==(HDF5HandleShared const & h) const
+    bool operator==(HDF5HandleShared const& h) const
     {
         return handle_ == h.handle_;
     }
 
-        /** \brief Equality comparison of the contained handle.
+    /** \brief Equality comparison of the contained handle.
         */
     bool operator==(hid_t h) const
     {
         return handle_ == h;
     }
 
-        /** \brief Inequality comparison of the contained handle.
+    /** \brief Inequality comparison of the contained handle.
         */
-    bool operator!=(HDF5HandleShared const & h) const
+    bool operator!=(HDF5HandleShared const& h) const
     {
         return handle_ != h.handle_;
     }
 
-        /** \brief Inequality comparison of the contained handle.
+    /** \brief Inequality comparison of the contained handle.
         */
     bool operator!=(hid_t h) const
     {
@@ -643,21 +645,25 @@ public:
 
 } // namespace vigra
 
-namespace std {
+namespace std
+{
 
-inline void swap(vigra::HDF5Handle & l, vigra::HDF5Handle & r)
+inline void
+swap(vigra::HDF5Handle& l, vigra::HDF5Handle& r)
 {
     l.swap(r);
 }
 
-inline void swap(vigra::HDF5HandleShared & l, vigra::HDF5HandleShared & r)
+inline void
+swap(vigra::HDF5HandleShared& l, vigra::HDF5HandleShared& r)
 {
     l.swap(r);
 }
 
 } // namespace std
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup VigraHDF5Impex
 */
@@ -681,12 +687,22 @@ Namespace: vigra
 */
 class HDF5ImportInfo
 {
-  public:
-    enum PixelType { UINT8, UINT16, UINT32, UINT64,
-                     INT8, INT16, INT32, INT64,
-                     FLOAT, DOUBLE };
+public:
+    enum PixelType
+    {
+        UINT8,
+        UINT16,
+        UINT32,
+        UINT64,
+        INT8,
+        INT16,
+        INT32,
+        INT64,
+        FLOAT,
+        DOUBLE
+    };
 
-        /** Construct HDF5ImportInfo object.
+    /** Construct HDF5ImportInfo object.
 
             The dataset \a pathInFile in the HDF5 file \a filename is accessed to
             read its properties. \a pathInFile may contain '/'-separated group
@@ -696,31 +712,31 @@ class HDF5ImportInfo
             HDF5ImportInfo info(filename, "/group1/group2/my_dataset");
             \endcode
          */
-    VIGRA_EXPORT HDF5ImportInfo( const char* filePath, const char* pathInFile );
+    VIGRA_EXPORT HDF5ImportInfo(const char* filePath, const char* pathInFile);
 
     VIGRA_EXPORT ~HDF5ImportInfo();
 
-        /** Get the filename of this HDF5 object.
+    /** Get the filename of this HDF5 object.
          */
     VIGRA_EXPORT const std::string& getFilePath() const;
 
-        /** Get the dataset's full name in the HDF5 file.
+    /** Get the dataset's full name in the HDF5 file.
          */
     VIGRA_EXPORT const std::string& getPathInFile() const;
 
-        /** Get a handle to the file represented by this info object.
+    /** Get a handle to the file represented by this info object.
          */
     VIGRA_EXPORT hid_t getH5FileHandle() const;
 
-        /** Get a handle to the dataset represented by this info object.
+    /** Get a handle to the dataset represented by this info object.
          */
     VIGRA_EXPORT hid_t getDatasetHandle() const;
 
-        /** Get the number of dimensions of the dataset represented by this info object.
+    /** Get the number of dimensions of the dataset represented by this info object.
          */
     VIGRA_EXPORT MultiArrayIndex numDimensions() const;
 
-        /** Get the shape of the dataset represented by this info object.
+    /** Get the shape of the dataset represented by this info object.
 
             Note that the memory order between VIGRA and HDF5 files differs: VIGRA uses
             Fortran-order, while HDF5 uses C-order. This function therefore reverses the axis
@@ -728,9 +744,9 @@ class HDF5ImportInfo
             ordered as 'z', 'y', 'x', this function will return the shape in the order
             'x', 'y', 'z'.
          */
-    VIGRA_EXPORT ArrayVector<hsize_t> const & shape() const;
+    VIGRA_EXPORT ArrayVector<hsize_t> const& shape() const;
 
-        /** Get the shape (length) of the dataset along dimension \a dim.
+    /** Get the shape (length) of the dataset along dimension \a dim.
 
             Note that the memory order between VIGRA and HDF5 files differs: VIGRA uses
             Fortran-order, while HDF5 uses C-order. This function therefore reverses the axis
@@ -740,7 +756,7 @@ class HDF5ImportInfo
          */
     VIGRA_EXPORT MultiArrayIndex shapeOfDimension(const int dim) const;
 
-        /** Query the pixel type of the dataset.
+    /** Query the pixel type of the dataset.
 
             Possible values are:
             <DL>
@@ -756,9 +772,9 @@ class HDF5ImportInfo
             <DT>"DOUBLE"<DD> 64-bit floating point (double)
             </DL>
          */
-    VIGRA_EXPORT const char * getPixelType() const;
+    VIGRA_EXPORT const char* getPixelType() const;
 
-        /** Query the pixel type of the dataset.
+    /** Query the pixel type of the dataset.
 
             Same as getPixelType(), but the result is returned as a
             ImageImportInfo::PixelType enum. This is useful to implement
@@ -777,7 +793,7 @@ class HDF5ImportInfo
          */
     VIGRA_EXPORT PixelType pixelType() const;
 
-  private:
+private:
     HDF5HandleShared m_file_handle, m_dataset_handle;
     std::string m_filename, m_path, m_pixeltype;
     hssize_t m_dimensions;
@@ -785,9 +801,10 @@ class HDF5ImportInfo
 };
 
 
-namespace detail {
+namespace detail
+{
 
-template <class T>
+template<class T>
 struct HDF5TypeTraits
 {
     static hid_t getH5DataType()
@@ -804,51 +821,52 @@ struct HDF5TypeTraits
 };
 
 template<class T>
-inline hid_t getH5DataType()
+inline hid_t
+getH5DataType()
 {
     return HDF5TypeTraits<T>::getH5DataType();
 }
 
-#define VIGRA_H5_DATATYPE(type, h5type) \
-template <> \
-struct HDF5TypeTraits<type> \
-{ \
-    static hid_t getH5DataType() \
-    { \
-        return h5type; \
-    } \
-    static int numberOfBands() \
-    { \
-        return 1; \
-    } \
-    typedef type value_type; \
-}; \
-template <int M> \
-struct HDF5TypeTraits<TinyVector<type, M> > \
-{ \
-    static hid_t getH5DataType() \
-    { \
-        return h5type; \
-    } \
-    static int numberOfBands() \
-    { \
-        return M; \
-    } \
-    typedef type value_type; \
-}; \
-template <> \
-struct HDF5TypeTraits<RGBValue<type> > \
-{ \
-    static hid_t getH5DataType() \
-    { \
-        return h5type; \
-    } \
-    static int numberOfBands() \
-    { \
-        return 3; \
-    } \
-    typedef type value_type; \
-}; \
+#define VIGRA_H5_DATATYPE(type, h5type)        \
+    template<>                                 \
+    struct HDF5TypeTraits<type>                \
+    {                                          \
+        static hid_t getH5DataType()           \
+        {                                      \
+            return h5type;                     \
+        }                                      \
+        static int numberOfBands()             \
+        {                                      \
+            return 1;                          \
+        }                                      \
+        typedef type value_type;               \
+    };                                         \
+    template<int M>                            \
+    struct HDF5TypeTraits<TinyVector<type, M>> \
+    {                                          \
+        static hid_t getH5DataType()           \
+        {                                      \
+            return h5type;                     \
+        }                                      \
+        static int numberOfBands()             \
+        {                                      \
+            return M;                          \
+        }                                      \
+        typedef type value_type;               \
+    };                                         \
+    template<>                                 \
+    struct HDF5TypeTraits<RGBValue<type>>      \
+    {                                          \
+        static hid_t getH5DataType()           \
+        {                                      \
+            return h5type;                     \
+        }                                      \
+        static int numberOfBands()             \
+        {                                      \
+            return 3;                          \
+        }                                      \
+        typedef type value_type;               \
+    };
 
 VIGRA_H5_DATATYPE(char, H5T_NATIVE_CHAR)
 VIGRA_H5_DATATYPE(signed char, H5T_NATIVE_SCHAR)
@@ -866,12 +884,12 @@ VIGRA_H5_DATATYPE(double, H5T_NATIVE_DOUBLE)
 VIGRA_H5_DATATYPE(long double, H5T_NATIVE_LDOUBLE)
 
 // char arrays with flexible length require 'handcrafted' H5 datatype
-template <>
+template<>
 struct HDF5TypeTraits<char*>
 {
     static hid_t getH5DataType()
     {
-        hid_t stringtype = H5Tcopy (H5T_C_S1);
+        hid_t stringtype = H5Tcopy(H5T_C_S1);
         H5Tset_size(stringtype, H5T_VARIABLE);
         return stringtype;
     }
@@ -882,12 +900,12 @@ struct HDF5TypeTraits<char*>
     }
 };
 
-template <>
+template<>
 struct HDF5TypeTraits<const char*>
 {
     static hid_t getH5DataType()
     {
-        hid_t stringtype = H5Tcopy (H5T_C_S1);
+        hid_t stringtype = H5Tcopy(H5T_C_S1);
         H5Tset_size(stringtype, H5T_VARIABLE);
         return stringtype;
     }
@@ -924,7 +942,7 @@ inline hid_t getH5DataType<FFTWComplex<double> >()
 } // namespace detail
 
 // helper friend function for callback HDF5_ls_inserter_callback()
-void HDF5_ls_insert(void*, const std::string &);
+void HDF5_ls_insert(void*, const std::string&);
 // callback function for ls(), called via HDF5File::H5Literate()
 // see http://www.parashift.com/c++-faq-lite/pointers-to-members.html#faq-33.2
 // for as to why.
@@ -973,13 +991,13 @@ Namespace: vigra
 */
 class HDF5File
 {
-  protected:
+protected:
     HDF5HandleShared fileHandle_;
 
     // current group handle
     HDF5Handle cGroupHandle_;
 
-  private:
+private:
     // time tagging of datasets, turned off (= 0) by default.
     int track_time;
 
@@ -988,16 +1006,21 @@ class HDF5File
     // helper classes for ls() and listAttributes()
     struct ls_closure
     {
-        virtual void insert(const std::string &) = 0;
-        virtual ~ls_closure() {}
+        virtual void insert(const std::string&) = 0;
+        virtual ~ls_closure()
+        {
+        }
     };
 
     // datastructure to hold a std::vector<std::string>
     struct lsOpData : public ls_closure
     {
-        std::vector<std::string> & objects;
-        lsOpData(std::vector<std::string> & o) : objects(o) {}
-        void insert(const std::string & x)
+        std::vector<std::string>& objects;
+        lsOpData(std::vector<std::string>& o)
+            : objects(o)
+        {
+        }
+        void insert(const std::string& x)
         {
             objects.push_back(x);
         }
@@ -1007,20 +1030,22 @@ class HDF5File
     template<class Container>
     struct ls_container_data : public ls_closure
     {
-        Container & objects;
-        ls_container_data(Container & o) : objects(o) {}
-        void insert(const std::string & x)
+        Container& objects;
+        ls_container_data(Container& o)
+            : objects(o)
+        {
+        }
+        void insert(const std::string& x)
         {
             objects.insert(std::string(x));
         }
     };
 
-  public:
+public:
+    // helper for callback HDF5_ls_inserter_callback(), used by ls()
+    friend void HDF5_ls_insert(void*, const std::string&);
 
-        // helper for callback HDF5_ls_inserter_callback(), used by ls()
-    friend void HDF5_ls_insert(void*, const std::string &);
-
-        /** \brief Set how a file is opened.
+    /** \brief Set how a file is opened.
 
             OpenMode::New creates a new file. If the file already exists, it is overwritten.
 
@@ -1028,36 +1053,39 @@ class HDF5File
 
             OpenMode::ReadOnly opens a file for reading. The file as well as any dataset to be accessed must already exist.
         */
-    enum OpenMode {
-        New,              // Create new empty file (existing file will be deleted).
-        Open,             // Open file. Create if not existing.
-        ReadWrite = Open, // Alias for Open.
-        OpenReadOnly,     // Open file in read-only mode.
+    enum OpenMode
+    {
+        New,                     // Create new empty file (existing file will be deleted).
+        Open,                    // Open file. Create if not existing.
+        ReadWrite = Open,        // Alias for Open.
+        OpenReadOnly,            // Open file in read-only mode.
         ReadOnly = OpenReadOnly, // Alias for OpenReadOnly
-        Replace,          // for ChunkedArrayHDF5: replace dataset if it exists, create otherwise
-        Default           // for ChunkedArrayHDF5: use New if file doesn't exist,
-                          //                           ReadOnly if file and dataset exist
-                          //                           Open otherwise
+        Replace,                 // for ChunkedArrayHDF5: replace dataset if it exists, create otherwise
+        Default                  // for ChunkedArrayHDF5: use New if file doesn't exist,
+                                 //                           ReadOnly if file and dataset exist
+                                 //                           Open otherwise
     };
 
-        /** \brief Default constructor.
+    /** \brief Default constructor.
 
         A file can later be opened via the open() function. Time tagging of datasets is disabled.
         */
     HDF5File()
-    : track_time(0)
-    {}
+        : track_time(0)
+    {
+    }
 
-        /** \brief Construct with time tagging of datasets enabled.
+    /** \brief Construct with time tagging of datasets enabled.
 
         If \a track_creation_times is 'true', time tagging of datasets will be enabled.
         */
     explicit HDF5File(bool track_creation_times)
-    : track_time(track_creation_times ? 1 : 0),
-      read_only_(true)
-    {}
+        : track_time(track_creation_times ? 1 : 0),
+          read_only_(true)
+    {
+    }
 
-        /** \brief Open or create an HDF5File object.
+    /** \brief Open or create an HDF5File object.
 
         Creates or opens HDF5 file with given filename.
         The current group is set to "/". By default, the files is opened in read-only mode.
@@ -1068,18 +1096,18 @@ class HDF5File
         open(filePath, mode);
     }
 
-        /** \brief Open or create an HDF5File object.
+    /** \brief Open or create an HDF5File object.
 
         Creates or opens HDF5 file with given filename.
         The current group is set to "/". By default, the files is opened in read-only mode.
         */
-    explicit HDF5File(char const * filePath, OpenMode mode = ReadOnly, bool track_creation_times = false)
+    explicit HDF5File(char const* filePath, OpenMode mode = ReadOnly, bool track_creation_times = false)
         : track_time(track_creation_times ? 1 : 0)
     {
         open(std::string(filePath), mode);
     }
 
-        /** \brief Initialize an HDF5File object from HDF5 file handle
+    /** \brief Initialize an HDF5File object from HDF5 file handle
 
         Initializes an HDF5File object corresponding to the HDF5 file
         opened elsewhere. If \a fileHandle is constructed with a
@@ -1095,11 +1123,11 @@ class HDF5File
         \warning When VIRA is linked against a different HDF5 library than the one
         used to open the file with the given id, this method will lead to crashes.
         */
-    explicit HDF5File(HDF5HandleShared const & fileHandle,
-                      const std::string & pathname = "",
+    explicit HDF5File(HDF5HandleShared const& fileHandle,
+                      const std::string& pathname = "",
                       bool read_only = false)
-    : fileHandle_(fileHandle),
-      read_only_(read_only)
+        : fileHandle_(fileHandle),
+          read_only_(read_only)
 
     {
         // get group handle for given pathname
@@ -1107,32 +1135,32 @@ class HDF5File
         // not work. Starting from root() is a safe bet.
         root();
         cGroupHandle_ = HDF5Handle(openCreateGroup_(pathname), &H5Gclose,
-                "HDF5File(fileHandle, pathname): Failed to open group");
+                                   "HDF5File(fileHandle, pathname): Failed to open group");
 
         // extract track_time attribute
         hbool_t track_times_tmp;
         HDF5Handle plist_id(H5Fget_create_plist(fileHandle_), &H5Pclose,
-                "HDF5File(fileHandle, pathname): Failed to open file creation property list");
-        herr_t status = H5Pget_obj_track_times(plist_id, &track_times_tmp );
+                            "HDF5File(fileHandle, pathname): Failed to open file creation property list");
+        herr_t status = H5Pget_obj_track_times(plist_id, &track_times_tmp);
         vigra_postcondition(status >= 0,
-            "HDF5File(fileHandle, pathname): cannot access track time attribute");
+                            "HDF5File(fileHandle, pathname): cannot access track time attribute");
         track_time = track_times_tmp;
     }
 
-        /** \brief Copy a HDF5File object.
+    /** \brief Copy a HDF5File object.
 
             The new object will refer to the same file and group as \a other.
         */
-    HDF5File(HDF5File const & other)
-    : fileHandle_(other.fileHandle_),
-      track_time(other.track_time),
-      read_only_(other.read_only_)
+    HDF5File(HDF5File const& other)
+        : fileHandle_(other.fileHandle_),
+          track_time(other.track_time),
+          read_only_(other.read_only_)
     {
         cGroupHandle_ = HDF5Handle(openCreateGroup_(other.currentGroupName_()), &H5Gclose,
                                    "HDF5File(HDF5File const &): Failed to open group.");
     }
 
-        /** \brief The destructor flushes and closes the file.
+    /** \brief The destructor flushes and closes the file.
          */
     ~HDF5File()
     {
@@ -1143,13 +1171,13 @@ class HDF5File
         // http://www.hdfgroup.org/HDF5/doc/RM/RM_H5F.html#File-Close .
     }
 
-        /** \brief Assign a HDF5File object.
+    /** \brief Assign a HDF5File object.
 
             Calls close() on the present file and refers to the same file and group as \a other afterwards.
         */
-    HDF5File & operator=(HDF5File const & other)
+    HDF5File& operator=(HDF5File const& other)
     {
-        if(this != &other)
+        if (this != &other)
         {
             close();
             fileHandle_ = other.fileHandle_;
@@ -1176,12 +1204,12 @@ class HDF5File
         return read_only_;
     }
 
-    void setReadOnly(bool stat=true)
+    void setReadOnly(bool stat = true)
     {
         read_only_ = stat;
     }
 
-        /** \brief Open or create the given file in the given mode and set the group to "/".
+    /** \brief Open or create the given file in the given mode and set the group to "/".
             If another file is currently open, it is first closed.
          */
     void open(std::string filePath, OpenMode mode)
@@ -1194,7 +1222,7 @@ class HDF5File
         setReadOnly(mode == OpenReadOnly);
     }
 
-        /** \brief Close the current file.
+    /** \brief Close the current file.
         */
     void close()
     {
@@ -1202,15 +1230,15 @@ class HDF5File
         vigra_postcondition(success, "HDF5File.close() failed.");
     }
 
-        /** \brief Change current group to "/".
+    /** \brief Change current group to "/".
          */
     inline void root()
     {
         std::string message = "HDF5File::root(): Could not open group '/'.";
-        cGroupHandle_ = HDF5Handle(H5Gopen(fileHandle_, "/", H5P_DEFAULT),&H5Gclose,message.c_str());
+        cGroupHandle_ = HDF5Handle(H5Gopen(fileHandle_, "/", H5P_DEFAULT), &H5Gclose, message.c_str());
     }
 
-        /** \brief Change the current group.
+    /** \brief Change the current group.
             Both absolute and relative group names are allowed.
          */
     inline void cd(std::string groupName)
@@ -1218,7 +1246,7 @@ class HDF5File
         cGroupHandle_ = getGroupHandle(groupName, "HDF5File::cd()");
     }
 
-        /** \brief Change the current group to its parent group.
+    /** \brief Change the current group to its parent group.
             Returns true if successful, false otherwise. If unsuccessful,
             the group will not change.
          */
@@ -1227,20 +1255,21 @@ class HDF5File
         std::string groupName = currentGroupName_();
 
         //do not try to move up if we already in "/"
-        if(groupName == "/"){
+        if (groupName == "/")
+        {
             return false;
         }
 
         size_t lastSlash = groupName.find_last_of('/');
 
-        std::string parentGroup (groupName.begin(), groupName.begin()+lastSlash+1);
+        std::string parentGroup(groupName.begin(), groupName.begin() + lastSlash + 1);
 
         cd(parentGroup);
 
         return true;
     }
 
-        /** \brief Change the current group to its parent group.
+    /** \brief Change the current group to its parent group.
             Returns true if successful, false otherwise. If unsuccessful,
             the group will not change.
          */
@@ -1248,12 +1277,12 @@ class HDF5File
     {
         std::string groupName = currentGroupName_();
 
-        for(int i = 0; i<levels; i++)
+        for (int i = 0; i < levels; i++)
         {
-            if(!cd_up())
+            if (!cd_up())
             {
                 // restore old group if neccessary
-                if(groupName != currentGroupName_())
+                if (groupName != currentGroupName_())
                     cd(groupName);
                 return false;
             }
@@ -1261,48 +1290,48 @@ class HDF5File
         return true;
     }
 
-        /** \brief Create a new group.
+    /** \brief Create a new group.
              If the first character is a "/", the path will be interpreted as absolute path,
              otherwise it will be interpreted as path relative to the current group.
         */
     inline void mkdir(std::string groupName)
     {
         vigra_precondition(!isReadOnly(),
-            "HDF5File::mkdir(): file is read-only.");
+                           "HDF5File::mkdir(): file is read-only.");
 
         std::string message = "HDF5File::mkdir(): Could not create group '" + groupName + "'.\n";
 
         // make groupName clean
         groupName = get_absolute_path(groupName);
 
-        HDF5Handle(openCreateGroup_(groupName.c_str()),&H5Gclose,message.c_str());
+        HDF5Handle(openCreateGroup_(groupName.c_str()), &H5Gclose, message.c_str());
     }
 
-        /** \brief Change the current group; create it if necessary.
+    /** \brief Change the current group; create it if necessary.
              If the first character is a "/", the path will be interpreted as absolute path,
              otherwise it will be interpreted as path relative to the current group.
         */
     inline void cd_mk(std::string groupName)
     {
         vigra_precondition(!isReadOnly(),
-            "HDF5File::cd_mk(): file is read-only.");
+                           "HDF5File::cd_mk(): file is read-only.");
 
-        std::string  message = "HDF5File::cd_mk(): Could not create group '" + groupName + "'.";
+        std::string message = "HDF5File::cd_mk(): Could not create group '" + groupName + "'.";
 
         // make groupName clean
         groupName = get_absolute_path(groupName);
 
-        cGroupHandle_ = HDF5Handle(openCreateGroup_(groupName.c_str()),&H5Gclose,message.c_str());
+        cGroupHandle_ = HDF5Handle(openCreateGroup_(groupName.c_str()), &H5Gclose, message.c_str());
     }
 
-        // helper function for the various ls() variants.
-    void ls_H5Literate(ls_closure & data) const
+    // helper function for the various ls() variants.
+    void ls_H5Literate(ls_closure& data) const
     {
         H5Literate(cGroupHandle_, H5_INDEX_NAME, H5_ITER_NATIVE, NULL,
                    HDF5_ls_inserter_callback, static_cast<void*>(&data));
     }
 
-        /** \brief List the contents of the current group.
+    /** \brief List the contents of the current group.
             The function returns a vector of strings holding the entries of the
             current group. Only datasets and groups are listed, other objects
             (e.g. datatypes) are ignored. Group names always have a trailing "/".
@@ -1315,7 +1344,7 @@ class HDF5File
         return list;
     }
 
-        /** \brief List the contents of the current group into a container-like
+    /** \brief List the contents of the current group into a container-like
                    object via insert().
 
             Only datasets and groups are inserted, other objects (e.g., datatypes) are ignored.
@@ -1329,27 +1358,27 @@ class HDF5File
                              is convertible to <tt>std::string</tt>.
         */
     template<class Container>
-    void ls(Container & cont) const
+    void ls(Container& cont) const
     {
         ls_container_data<Container> data(cont);
         ls_H5Literate(data);
     }
 
-        /** \brief Get the path of the current group.
+    /** \brief Get the path of the current group.
         */
     inline std::string pwd() const
     {
         return currentGroupName_();
     }
 
-        /** \brief Get the name of the associated file.
+    /** \brief Get the name of the associated file.
         */
     inline std::string filename() const
     {
         return fileName_();
     }
 
-        /** \brief Check if given datasetName exists.
+    /** \brief Check if given datasetName exists.
         */
     inline bool existsDataset(std::string datasetName) const
     {
@@ -1358,7 +1387,7 @@ class HDF5File
         return (H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) > 0);
     }
 
-        /** \brief Get the number of dimensions of a certain dataset
+    /** \brief Get the number of dimensions of a certain dataset
              If the first character is a "/", the path will be interpreted as absolute path,
              otherwise it will be interpreted as path relative to the current group.
         */
@@ -1378,7 +1407,7 @@ class HDF5File
         return H5Sget_simple_extent_ndims(dataspaceHandle);
     }
 
-        /** \brief Get the shape of each dimension of a certain dataset.
+    /** \brief Get the shape of each dimension of a certain dataset.
 
            Normally, this function is called after determining the dimension of the
             dataset using \ref getDatasetDimensions().
@@ -1414,7 +1443,7 @@ class HDF5File
         return shape;
     }
 
-        /** \brief Get the shape of chunks along each dimension of a certain dataset.
+    /** \brief Get the shape of chunks along each dimension of a certain dataset.
 
            Normally, this function is called after determining the dimension of the
             dataset using \ref getDatasetDimensions().
@@ -1439,7 +1468,7 @@ class HDF5File
         errorMessage = "HDF5File::getChunkShape(): Unable to access dataspace.";
         HDF5Handle dataspaceHandle(H5Dget_space(datasetHandle), &H5Sclose, errorMessage.c_str());
         HDF5Handle properties(H5Dget_create_plist(datasetHandle),
-                             &H5Pclose, "HDF5File::read(): failed to get property list");
+                              &H5Pclose, "HDF5File::read(): failed to get property list");
 
 
         //get dimension information
@@ -1453,7 +1482,7 @@ class HDF5File
         return shape;
     }
 
-        /** Query the pixel type of the dataset.
+    /** Query the pixel type of the dataset.
 
             Possible values are:
             <DL>
@@ -1470,67 +1499,67 @@ class HDF5File
             <DT>"UNKNOWN"<DD> any other type
             </DL>
          */
-    std::string getDatasetType(std::string const & datasetName) const
+    std::string getDatasetType(std::string const& datasetName) const
     {
         HDF5Handle datasetHandle = getDatasetHandle(datasetName);
 
         hid_t datatype = H5Dget_type(datasetHandle);
         H5T_class_t dataclass = H5Tget_class(datatype);
-        size_t datasize  = H5Tget_size(datatype);
-        H5T_sign_t datasign  = H5Tget_sign(datatype);
+        size_t datasize = H5Tget_size(datatype);
+        H5T_sign_t datasign = H5Tget_sign(datatype);
 
-        if(dataclass == H5T_FLOAT)
+        if (dataclass == H5T_FLOAT)
         {
-            if(datasize == 4)
+            if (datasize == 4)
                 return "FLOAT";
-            else if(datasize == 8)
+            else if (datasize == 8)
                 return "DOUBLE";
         }
-        else if(dataclass == H5T_INTEGER)
+        else if (dataclass == H5T_INTEGER)
         {
-            if(datasign == H5T_SGN_NONE)
+            if (datasign == H5T_SGN_NONE)
             {
-                if(datasize ==  1)
+                if (datasize == 1)
                     return "UINT8";
-                else if(datasize == 2)
+                else if (datasize == 2)
                     return "UINT16";
-                else if(datasize == 4)
+                else if (datasize == 4)
                     return "UINT32";
-                else if(datasize == 8)
+                else if (datasize == 8)
                     return "UINT64";
             }
             else
             {
-                if(datasize ==  1)
+                if (datasize == 1)
                     return "INT8";
-                else if(datasize == 2)
+                else if (datasize == 2)
                     return "INT16";
-                else if(datasize == 4)
+                else if (datasize == 4)
                     return "INT32";
-                else if(datasize == 8)
+                else if (datasize == 8)
                     return "INT64";
             }
         }
         return "UNKNOWN";
     }
 
-        /** \brief Obtain the HDF5 handle of a dataset.
+    /** \brief Obtain the HDF5 handle of a dataset.
         */
-    HDF5Handle getDatasetHandle(std::string const & datasetName) const
+    HDF5Handle getDatasetHandle(std::string const& datasetName) const
     {
         std::string errorMessage = "HDF5File::getDatasetHandle(): Unable to open dataset '" + datasetName + "'.";
         return HDF5Handle(getDatasetHandle_(get_absolute_path(datasetName)), &H5Dclose, errorMessage.c_str());
     }
 
-        /** \brief Obtain a shared HDF5 handle of a dataset.
+    /** \brief Obtain a shared HDF5 handle of a dataset.
         */
-    HDF5HandleShared getDatasetHandleShared(std::string const & datasetName) const
+    HDF5HandleShared getDatasetHandleShared(std::string const& datasetName) const
     {
         std::string errorMessage = "HDF5File::getDatasetHandle(): Unable to open dataset '" + datasetName + "'.";
         return HDF5HandleShared(getDatasetHandle_(get_absolute_path(datasetName)), &H5Dclose, errorMessage.c_str());
     }
 
-        /** \brief Obtain the HDF5 handle of a group (create the group if it doesn't exist).
+    /** \brief Obtain the HDF5 handle of a group (create the group if it doesn't exist).
          */
     HDF5Handle getGroupHandle(std::string group_name,
                               std::string function_name = "HDF5File::getGroupHandle()")
@@ -1548,12 +1577,12 @@ class HDF5File
         return HDF5Handle(openCreateGroup_(group_name), &H5Gclose, "Internal error");
     }
 
-        // helper function for the various listAttributes() variants.
-    void ls_H5Aiterate(std::string const & group_or_dataset, ls_closure & data) const
+    // helper function for the various listAttributes() variants.
+    void ls_H5Aiterate(std::string const& group_or_dataset, ls_closure& data) const
     {
         H5O_type_t h5_type = get_object_type_(group_or_dataset);
         vigra_precondition(h5_type == H5O_TYPE_GROUP || h5_type == H5O_TYPE_DATASET,
-            "HDF5File::listAttributes(): object \"" + group_or_dataset + "\" is neither a group nor a dataset.");
+                           "HDF5File::listAttributes(): object \"" + group_or_dataset + "\" is neither a group nor a dataset.");
         // get object handle
         HDF5Handle object_handle(h5_type == H5O_TYPE_GROUP
                                      ? const_cast<HDF5File*>(this)->openCreateGroup_(group_or_dataset)
@@ -1567,12 +1596,12 @@ class HDF5File
                     HDF5_listAttributes_inserter_callback, static_cast<void*>(&data));
     }
 
-        /** \brief List the attribute names of the given group or dataset.
+    /** \brief List the attribute names of the given group or dataset.
 
             If \a group_or_dataset is empty or <tt>"."</tt> (a dot), the command
             refers to the current group of this file object.
         */
-    inline std::vector<std::string> listAttributes(std::string const & group_or_dataset) const
+    inline std::vector<std::string> listAttributes(std::string const& group_or_dataset) const
     {
         std::vector<std::string> list;
         lsOpData data(list);
@@ -1580,20 +1609,20 @@ class HDF5File
         return list;
     }
 
-        /** \brief Insert the attribute names of the given group or dataset into the given
+    /** \brief Insert the attribute names of the given group or dataset into the given
                    \a container by calling <tt>container.insert(std::string)</tt>.
 
             If \a group_or_dataset is empty or <tt>"."</tt> (a dot), the command
             refers to the current group of this file object.
         */
     template<class Container>
-    void listAttributes(std::string const & group_or_dataset, Container & container) const
+    void listAttributes(std::string const& group_or_dataset, Container& container) const
     {
         ls_container_data<Container> data(container);
         ls_H5Aiterate(group_or_dataset, data);
     }
 
-        /** \brief Obtain the HDF5 handle of a attribute.
+    /** \brief Obtain the HDF5 handle of a attribute.
          */
     HDF5Handle getAttributeHandle(std::string dataset_name, std::string attribute_name) const
     {
@@ -1604,13 +1633,13 @@ class HDF5File
 
     /* Writing Attributes */
 
-        /** \brief Write MultiArray Attributes.
+    /** \brief Write MultiArray Attributes.
           * In contrast to datasets, subarray access, chunks and compression are not available.
           */
     template<unsigned int N, class T, class Stride>
     inline void writeAttribute(std::string object_name,
                                std::string attribute_name,
-                               const MultiArrayView<N, T, Stride> & array)
+                               const MultiArrayView<N, T, Stride>& array)
     {
         // make object_name clean
         object_name = get_absolute_path(object_name);
@@ -1621,7 +1650,7 @@ class HDF5File
     template<unsigned int N, class T, int SIZE, class Stride>
     inline void writeAttribute(std::string datasetName,
                                std::string attributeName,
-                               const MultiArrayView<N, TinyVector<T, SIZE>, Stride> & array)
+                               const MultiArrayView<N, TinyVector<T, SIZE>, Stride>& array)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1632,7 +1661,7 @@ class HDF5File
     template<unsigned int N, class T, class Stride>
     inline void writeAttribute(std::string datasetName,
                                std::string attributeName,
-                               const MultiArrayView<N, RGBValue<T>, Stride> & array)
+                               const MultiArrayView<N, RGBValue<T>, Stride>& array)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1640,43 +1669,75 @@ class HDF5File
         write_attribute_(datasetName, attributeName, array, detail::getH5DataType<T>(), 3);
     }
 
-        /** \brief Write a single value.
+    /** \brief Write a single value.
           Specialization of the write function for simple datatypes
          */
     inline void writeAttribute(std::string object_name, std::string attribute_name, char data)
-        { writeAtomicAttribute(object_name,attribute_name,data); }
+    {
+        writeAtomicAttribute(object_name, attribute_name, data);
+    }
     inline void writeAttribute(std::string datasetName, std::string attributeName, signed char data)
-        { writeAtomicAttribute(datasetName,attributeName,data); }
+    {
+        writeAtomicAttribute(datasetName, attributeName, data);
+    }
     inline void writeAttribute(std::string datasetName, std::string attributeName, signed short data)
-        { writeAtomicAttribute(datasetName,attributeName,data); }
+    {
+        writeAtomicAttribute(datasetName, attributeName, data);
+    }
     inline void writeAttribute(std::string datasetName, std::string attributeName, signed int data)
-        { writeAtomicAttribute(datasetName,attributeName,data); }
+    {
+        writeAtomicAttribute(datasetName, attributeName, data);
+    }
     inline void writeAttribute(std::string datasetName, std::string attributeName, signed long data)
-        { writeAtomicAttribute(datasetName,attributeName,data); }
+    {
+        writeAtomicAttribute(datasetName, attributeName, data);
+    }
     inline void writeAttribute(std::string datasetName, std::string attributeName, signed long long data)
-        { writeAtomicAttribute(datasetName,attributeName,data); }
+    {
+        writeAtomicAttribute(datasetName, attributeName, data);
+    }
     inline void writeAttribute(std::string datasetName, std::string attributeName, unsigned char data)
-        { writeAtomicAttribute(datasetName,attributeName,data); }
+    {
+        writeAtomicAttribute(datasetName, attributeName, data);
+    }
     inline void writeAttribute(std::string datasetName, std::string attributeName, unsigned short data)
-        { writeAtomicAttribute(datasetName,attributeName,data); }
+    {
+        writeAtomicAttribute(datasetName, attributeName, data);
+    }
     inline void writeAttribute(std::string datasetName, std::string attributeName, unsigned int data)
-        { writeAtomicAttribute(datasetName,attributeName,data); }
+    {
+        writeAtomicAttribute(datasetName, attributeName, data);
+    }
     inline void writeAttribute(std::string datasetName, std::string attributeName, unsigned long data)
-        { writeAtomicAttribute(datasetName,attributeName,data); }
+    {
+        writeAtomicAttribute(datasetName, attributeName, data);
+    }
     inline void writeAttribute(std::string datasetName, std::string attributeName, unsigned long long data)
-        { writeAtomicAttribute(datasetName,attributeName,data); }
+    {
+        writeAtomicAttribute(datasetName, attributeName, data);
+    }
     inline void writeAttribute(std::string datasetName, std::string attributeName, float data)
-        { writeAtomicAttribute(datasetName,attributeName,data); }
+    {
+        writeAtomicAttribute(datasetName, attributeName, data);
+    }
     inline void writeAttribute(std::string datasetName, std::string attributeName, double data)
-        { writeAtomicAttribute(datasetName,attributeName,data); }
+    {
+        writeAtomicAttribute(datasetName, attributeName, data);
+    }
     inline void writeAttribute(std::string datasetName, std::string attributeName, long double data)
-        { writeAtomicAttribute(datasetName,attributeName,data); }
+    {
+        writeAtomicAttribute(datasetName, attributeName, data);
+    }
     inline void writeAttribute(std::string datasetName, std::string attributeName, const char* data)
-        { writeAtomicAttribute(datasetName,attributeName,data); }
-    inline void writeAttribute(std::string datasetName, std::string attributeName, std::string const & data)
-        { writeAtomicAttribute(datasetName,attributeName,data.c_str()); }
+    {
+        writeAtomicAttribute(datasetName, attributeName, data);
+    }
+    inline void writeAttribute(std::string datasetName, std::string attributeName, std::string const& data)
+    {
+        writeAtomicAttribute(datasetName, attributeName, data.c_str());
+    }
 
-        /** \brief Test if attribute exists.
+    /** \brief Test if attribute exists.
         */
     bool existsAttribute(std::string object_name, std::string attribute_name)
     {
@@ -1684,14 +1745,15 @@ class HDF5File
         htri_t exists = H5Aexists_by_name(fileHandle_, obj_path.c_str(),
                                           attribute_name.c_str(), H5P_DEFAULT);
         vigra_precondition(exists >= 0, "HDF5File::existsAttribute(): "
-                                        "object '" + object_name + "' "
-                                        "not found.");
+                                        "object '" +
+                                            object_name + "' "
+                                                          "not found.");
         return exists != 0;
     }
 
     // Reading Attributes
 
-        /** \brief Read MultiArray Attributes.
+    /** \brief Read MultiArray Attributes.
           * In contrast to datasets, subarray access is not available.
           */
     template<unsigned int N, class T, class Stride>
@@ -1727,43 +1789,73 @@ class HDF5File
         read_attribute_(datasetName, attributeName, array, detail::getH5DataType<T>(), 3);
     }
 
-        /** \brief Read a single value.
+    /** \brief Read a single value.
           Specialization of the read function for simple datatypes
          */
-    inline void readAttribute(std::string object_name, std::string attribute_name, char &data)
-        { readAtomicAttribute(object_name,attribute_name,data); }
-    inline void readAttribute(std::string datasetName, std::string attributeName, signed char &data)
-        { readAtomicAttribute(datasetName,attributeName,data); }
-    inline void readAttribute(std::string datasetName, std::string attributeName, signed short &data)
-        { readAtomicAttribute(datasetName,attributeName,data); }
-    inline void readAttribute(std::string datasetName, std::string attributeName, signed int &data)
-        { readAtomicAttribute(datasetName,attributeName,data); }
-    inline void readAttribute(std::string datasetName, std::string attributeName, signed long &data)
-        { readAtomicAttribute(datasetName,attributeName,data); }
-    inline void readAttribute(std::string datasetName, std::string attributeName, signed long long &data)
-        { readAtomicAttribute(datasetName,attributeName,data); }
-    inline void readAttribute(std::string datasetName, std::string attributeName, unsigned char &data)
-        { readAtomicAttribute(datasetName,attributeName,data); }
-    inline void readAttribute(std::string datasetName, std::string attributeName, unsigned short &data)
-        { readAtomicAttribute(datasetName,attributeName,data); }
-    inline void readAttribute(std::string datasetName, std::string attributeName, unsigned int &data)
-        { readAtomicAttribute(datasetName,attributeName,data); }
-    inline void readAttribute(std::string datasetName, std::string attributeName, unsigned long &data)
-        { readAtomicAttribute(datasetName,attributeName,data); }
-    inline void readAttribute(std::string datasetName, std::string attributeName, unsigned long long &data)
-        { readAtomicAttribute(datasetName,attributeName,data); }
-    inline void readAttribute(std::string datasetName, std::string attributeName, float &data)
-        { readAtomicAttribute(datasetName,attributeName,data); }
-    inline void readAttribute(std::string datasetName, std::string attributeName, double &data)
-        { readAtomicAttribute(datasetName,attributeName,data); }
-    inline void readAttribute(std::string datasetName, std::string attributeName, long double &data)
-        { readAtomicAttribute(datasetName,attributeName,data); }
-    inline void readAttribute(std::string datasetName, std::string attributeName, std::string &data)
-        { readAtomicAttribute(datasetName,attributeName,data); }
+    inline void readAttribute(std::string object_name, std::string attribute_name, char& data)
+    {
+        readAtomicAttribute(object_name, attribute_name, data);
+    }
+    inline void readAttribute(std::string datasetName, std::string attributeName, signed char& data)
+    {
+        readAtomicAttribute(datasetName, attributeName, data);
+    }
+    inline void readAttribute(std::string datasetName, std::string attributeName, signed short& data)
+    {
+        readAtomicAttribute(datasetName, attributeName, data);
+    }
+    inline void readAttribute(std::string datasetName, std::string attributeName, signed int& data)
+    {
+        readAtomicAttribute(datasetName, attributeName, data);
+    }
+    inline void readAttribute(std::string datasetName, std::string attributeName, signed long& data)
+    {
+        readAtomicAttribute(datasetName, attributeName, data);
+    }
+    inline void readAttribute(std::string datasetName, std::string attributeName, signed long long& data)
+    {
+        readAtomicAttribute(datasetName, attributeName, data);
+    }
+    inline void readAttribute(std::string datasetName, std::string attributeName, unsigned char& data)
+    {
+        readAtomicAttribute(datasetName, attributeName, data);
+    }
+    inline void readAttribute(std::string datasetName, std::string attributeName, unsigned short& data)
+    {
+        readAtomicAttribute(datasetName, attributeName, data);
+    }
+    inline void readAttribute(std::string datasetName, std::string attributeName, unsigned int& data)
+    {
+        readAtomicAttribute(datasetName, attributeName, data);
+    }
+    inline void readAttribute(std::string datasetName, std::string attributeName, unsigned long& data)
+    {
+        readAtomicAttribute(datasetName, attributeName, data);
+    }
+    inline void readAttribute(std::string datasetName, std::string attributeName, unsigned long long& data)
+    {
+        readAtomicAttribute(datasetName, attributeName, data);
+    }
+    inline void readAttribute(std::string datasetName, std::string attributeName, float& data)
+    {
+        readAtomicAttribute(datasetName, attributeName, data);
+    }
+    inline void readAttribute(std::string datasetName, std::string attributeName, double& data)
+    {
+        readAtomicAttribute(datasetName, attributeName, data);
+    }
+    inline void readAttribute(std::string datasetName, std::string attributeName, long double& data)
+    {
+        readAtomicAttribute(datasetName, attributeName, data);
+    }
+    inline void readAttribute(std::string datasetName, std::string attributeName, std::string& data)
+    {
+        readAtomicAttribute(datasetName, attributeName, data);
+    }
 
     // Writing data
 
-        /** \brief Write multi arrays.
+    /** \brief Write multi arrays.
 
             Chunks can be activated by setting
             \code iChunkSize = size; //size \> 0
@@ -1789,20 +1881,21 @@ class HDF5File
         */
     template<unsigned int N, class T, class Stride>
     inline void write(std::string datasetName,
-                      const MultiArrayView<N, T, Stride> & array,
+                      const MultiArrayView<N, T, Stride>& array,
                       int iChunkSize = 0, int compression = 0)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
 
         typename MultiArrayShape<N>::type chunkSize;
-        for(unsigned int i = 0; i < N; i++){
+        for (unsigned int i = 0; i < N; i++)
+        {
             chunkSize[i] = iChunkSize;
         }
         write_(datasetName, array, detail::getH5DataType<T>(), 1, chunkSize, compression);
     }
 
-        /** \brief Write multi arrays.
+    /** \brief Write multi arrays.
             Chunks can be activated by providing a MultiArrayShape as chunkSize.
             chunkSize must have equal dimension as array.
 
@@ -1821,7 +1914,7 @@ class HDF5File
         */
     template<unsigned int N, class T, class Stride>
     inline void write(std::string datasetName,
-                      const MultiArrayView<N, T, Stride> & array,
+                      const MultiArrayView<N, T, Stride>& array,
                       typename MultiArrayShape<N>::type chunkSize, int compression = 0)
     {
         // make datasetName clean
@@ -1830,7 +1923,7 @@ class HDF5File
         write_(datasetName, array, detail::getH5DataType<T>(), 1, chunkSize, compression);
     }
 
-        /** \brief Write a multi array into a larger volume.
+    /** \brief Write a multi array into a larger volume.
             blockOffset determines the position, where array is written.
 
             If the first character of datasetName is a "/", the path will be interpreted as absolute path,
@@ -1844,7 +1937,7 @@ class HDF5File
     template<unsigned int N, class T, class Stride>
     inline void writeBlock(std::string datasetName,
                            typename MultiArrayShape<N>::type blockOffset,
-                           const MultiArrayView<N, T, Stride> & array)
+                           const MultiArrayView<N, T, Stride>& array)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1856,7 +1949,7 @@ class HDF5File
     template<unsigned int N, class T, class Stride>
     inline herr_t writeBlock(HDF5HandleShared dataset,
                              typename MultiArrayShape<N>::type blockOffset,
-                             const MultiArrayView<N, T, Stride> & array)
+                             const MultiArrayView<N, T, Stride>& array)
     {
         typedef detail::HDF5TypeTraits<T> TypeTraits;
         return writeBlock_(dataset, blockOffset, array,
@@ -1866,14 +1959,15 @@ class HDF5File
     // non-scalar (TinyVector) and unstrided multi arrays
     template<unsigned int N, class T, int SIZE, class Stride>
     inline void write(std::string datasetName,
-                      const MultiArrayView<N, TinyVector<T, SIZE>, Stride> & array,
+                      const MultiArrayView<N, TinyVector<T, SIZE>, Stride>& array,
                       int iChunkSize = 0, int compression = 0)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
 
         typename MultiArrayShape<N>::type chunkSize;
-        for(unsigned i = 0; i < N; i++){
+        for (unsigned i = 0; i < N; i++)
+        {
             chunkSize[i] = iChunkSize;
         }
         write_(datasetName, array, detail::getH5DataType<T>(), SIZE, chunkSize, compression);
@@ -1881,7 +1975,7 @@ class HDF5File
 
     template<unsigned int N, class T, int SIZE, class Stride>
     inline void write(std::string datasetName,
-                      const MultiArrayView<N, TinyVector<T, SIZE>, Stride> & array,
+                      const MultiArrayView<N, TinyVector<T, SIZE>, Stride>& array,
                       typename MultiArrayShape<N>::type chunkSize, int compression = 0)
     {
         // make datasetName clean
@@ -1890,7 +1984,7 @@ class HDF5File
         write_(datasetName, array, detail::getH5DataType<T>(), SIZE, chunkSize, compression);
     }
 
-        /** \brief Write array vectors.
+    /** \brief Write array vectors.
 
             Compression can be activated by setting
             \code compression = parameter; // 0 \< parameter \<= 9
@@ -1901,9 +1995,9 @@ class HDF5File
             otherwise it will be interpreted as path relative to the current group.
         */
     template<class T>
-    void write(const std::string & datasetName,
-                      const ArrayVectorView<T> & array,
-                      int compression = 0)
+    void write(const std::string& datasetName,
+               const ArrayVectorView<T>& array,
+               int compression = 0)
     {
         // convert to a (trivial) MultiArrayView and forward.
         MultiArrayShape<1>::type shape(static_cast<MultiArrayIndex>(array.size()));
@@ -1914,14 +2008,15 @@ class HDF5File
     // non-scalar (RGBValue) and unstrided multi arrays
     template<unsigned int N, class T, class Stride>
     inline void write(std::string datasetName,
-                      const MultiArrayView<N, RGBValue<T>, Stride> & array,
+                      const MultiArrayView<N, RGBValue<T>, Stride>& array,
                       int iChunkSize = 0, int compression = 0)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
 
         typename MultiArrayShape<N>::type chunkSize;
-        for(unsigned i = 0; i < N; i++){
+        for (unsigned i = 0; i < N; i++)
+        {
             chunkSize[i] = iChunkSize;
         }
         write_(datasetName, array, detail::getH5DataType<T>(), 3, chunkSize, compression);
@@ -1929,7 +2024,7 @@ class HDF5File
 
     template<unsigned int N, class T, class Stride>
     inline void write(std::string datasetName,
-                      const MultiArrayView<N, RGBValue<T>, Stride> & array,
+                      const MultiArrayView<N, RGBValue<T>, Stride>& array,
                       typename MultiArrayShape<N>::type chunkSize, int compression = 0)
     {
         // make datasetName clean
@@ -1938,29 +2033,77 @@ class HDF5File
         write_(datasetName, array, detail::getH5DataType<T>(), 3, chunkSize, compression);
     }
 
-         /** \brief Write a single value.
+    /** \brief Write a single value.
             Specialization of the write function for simple datatypes
          */
-    inline void write(std::string datasetName, char data) { writeAtomic(datasetName,data); }
-    inline void write(std::string datasetName, signed char data) { writeAtomic(datasetName,data); }
-    inline void write(std::string datasetName, signed short data) { writeAtomic(datasetName,data); }
-    inline void write(std::string datasetName, signed int data) { writeAtomic(datasetName,data); }
-    inline void write(std::string datasetName, signed long data) { writeAtomic(datasetName,data); }
-    inline void write(std::string datasetName, signed long long data) { writeAtomic(datasetName,data); }
-    inline void write(std::string datasetName, unsigned char data) { writeAtomic(datasetName,data); }
-    inline void write(std::string datasetName, unsigned short data) { writeAtomic(datasetName,data); }
-    inline void write(std::string datasetName, unsigned int data) { writeAtomic(datasetName,data); }
-    inline void write(std::string datasetName, unsigned long data) { writeAtomic(datasetName,data); }
-    inline void write(std::string datasetName, unsigned long long data) { writeAtomic(datasetName,data); }
-    inline void write(std::string datasetName, float data) { writeAtomic(datasetName,data); }
-    inline void write(std::string datasetName, double data) { writeAtomic(datasetName,data); }
-    inline void write(std::string datasetName, long double data) { writeAtomic(datasetName,data); }
-    inline void write(std::string datasetName, const char* data) { writeAtomic(datasetName,data); }
-    inline void write(std::string datasetName, std::string const & data) { writeAtomic(datasetName,data.c_str()); }
+    inline void write(std::string datasetName, char data)
+    {
+        writeAtomic(datasetName, data);
+    }
+    inline void write(std::string datasetName, signed char data)
+    {
+        writeAtomic(datasetName, data);
+    }
+    inline void write(std::string datasetName, signed short data)
+    {
+        writeAtomic(datasetName, data);
+    }
+    inline void write(std::string datasetName, signed int data)
+    {
+        writeAtomic(datasetName, data);
+    }
+    inline void write(std::string datasetName, signed long data)
+    {
+        writeAtomic(datasetName, data);
+    }
+    inline void write(std::string datasetName, signed long long data)
+    {
+        writeAtomic(datasetName, data);
+    }
+    inline void write(std::string datasetName, unsigned char data)
+    {
+        writeAtomic(datasetName, data);
+    }
+    inline void write(std::string datasetName, unsigned short data)
+    {
+        writeAtomic(datasetName, data);
+    }
+    inline void write(std::string datasetName, unsigned int data)
+    {
+        writeAtomic(datasetName, data);
+    }
+    inline void write(std::string datasetName, unsigned long data)
+    {
+        writeAtomic(datasetName, data);
+    }
+    inline void write(std::string datasetName, unsigned long long data)
+    {
+        writeAtomic(datasetName, data);
+    }
+    inline void write(std::string datasetName, float data)
+    {
+        writeAtomic(datasetName, data);
+    }
+    inline void write(std::string datasetName, double data)
+    {
+        writeAtomic(datasetName, data);
+    }
+    inline void write(std::string datasetName, long double data)
+    {
+        writeAtomic(datasetName, data);
+    }
+    inline void write(std::string datasetName, const char* data)
+    {
+        writeAtomic(datasetName, data);
+    }
+    inline void write(std::string datasetName, std::string const& data)
+    {
+        writeAtomic(datasetName, data.c_str());
+    }
 
     // Reading data
 
-        /** \brief Read data into a multi array.
+    /** \brief Read data into a multi array.
             If the first character of datasetName is a "/", the path will be interpreted as absolute path,
             otherwise it will be interpreted as path relative to the current group.
 
@@ -1978,7 +2121,7 @@ class HDF5File
         read_(datasetName, array, detail::getH5DataType<T>(), 1);
     }
 
-        /** \brief Read data into a MultiArray. Resize MultiArray to the correct size.
+    /** \brief Read data into a MultiArray. Resize MultiArray to the correct size.
             If the first character of datasetName is a "/", the path will be interpreted as absolute path,
             otherwise it will be interpreted as path relative to the current group.
 
@@ -1988,7 +2131,7 @@ class HDF5File
             upon reading into a MultiArray, i.e. in the array axis order will be 'x', 'y', 'z'.
         */
     template<unsigned int N, class T, class Alloc>
-    inline void readAndResize(std::string datasetName, MultiArray<N, T, Alloc> & array)
+    inline void readAndResize(std::string datasetName, MultiArray<N, T, Alloc>& array)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1998,23 +2141,23 @@ class HDF5File
 
         // check if dimensions are correct
         vigra_precondition(N == MultiArrayIndex(dimshape.size()), // the object in the HDF5 file may have one additional dimension which we then interpret as the pixel type bands
-            "HDF5File::readAndResize(): Array dimension disagrees with dataset dimension.");
+                           "HDF5File::readAndResize(): Array dimension disagrees with dataset dimension.");
 
         // reshape target MultiArray
         typename MultiArrayShape<N>::type shape;
-        for(int k=0; k < static_cast<int>(dimshape.size()); ++k)
+        for (int k = 0; k < static_cast<int>(dimshape.size()); ++k)
             shape[k] = static_cast<MultiArrayIndex>(dimshape[k]);
         array.reshape(shape);
 
         read_(datasetName, array, detail::getH5DataType<T>(), 1);
     }
 
-        /** \brief Read data into an array vector.
+    /** \brief Read data into an array vector.
           If the first character of datasetName is a "/", the path will be interpreted as absolute path,
           otherwise it will be interpreted as path relative to the current group.
         */
     template<class T>
-    inline void read(const std::string & datasetName, ArrayVectorView<T> array)
+    inline void read(const std::string& datasetName, ArrayVectorView<T> array)
     {
         // convert to a (trivial) MultiArrayView and forward.
         MultiArrayShape<1>::type shape(array.size());
@@ -2022,13 +2165,13 @@ class HDF5File
         read(datasetName, m_array);
     }
 
-        /** \brief Read data into an array vector. Resize the array vector to the correct size.
+    /** \brief Read data into an array vector. Resize the array vector to the correct size.
             If the first character of datasetName is a "/", the path will be interpreted as absolute path,
             otherwise it will be interpreted as path relative to the current group.
         */
     template<class T>
     inline void readAndResize(std::string datasetName,
-                              ArrayVector<T> & array)
+                              ArrayVector<T>& array)
     {
         // make dataset name clean
         datasetName = get_absolute_path(datasetName);
@@ -2038,7 +2181,7 @@ class HDF5File
 
         // check if dimensions are correct
         vigra_precondition(1 == MultiArrayIndex(dimshape.size()),
-            "HDF5File::readAndResize(): Array dimension disagrees with Dataset dimension must equal one for vigra::ArrayVector.");
+                           "HDF5File::readAndResize(): Array dimension disagrees with Dataset dimension must equal one for vigra::ArrayVector.");
 
         // resize target array vector
         array.resize((typename ArrayVector<T>::size_type)dimshape[0]);
@@ -2049,7 +2192,7 @@ class HDF5File
         read_(datasetName, m_array, detail::getH5DataType<T>(), 1);
     }
 
-        /** \brief Read a block of data into a multi array.
+    /** \brief Read a block of data into a multi array.
             This function allows to read a small block out of a larger volume stored
             in an HDF5 dataset.
 
@@ -2079,9 +2222,9 @@ class HDF5File
 
     template<unsigned int N, class T, class Stride>
     inline herr_t readBlock(HDF5HandleShared dataset,
-                          typename MultiArrayShape<N>::type blockOffset,
-                          typename MultiArrayShape<N>::type blockShape,
-                          MultiArrayView<N, T, Stride> array)
+                            typename MultiArrayShape<N>::type blockOffset,
+                            typename MultiArrayShape<N>::type blockShape,
+                            MultiArrayView<N, T, Stride> array)
     {
         typedef detail::HDF5TypeTraits<T> TypeTraits;
         return readBlock_(dataset, blockOffset, blockShape, array,
@@ -2100,7 +2243,7 @@ class HDF5File
 
     // non-scalar (TinyVector) MultiArray
     template<unsigned int N, class T, int SIZE, class Alloc>
-    inline void readAndResize(std::string datasetName, MultiArray<N, TinyVector<T, SIZE>, Alloc> & array)
+    inline void readAndResize(std::string datasetName, MultiArray<N, TinyVector<T, SIZE>, Alloc>& array)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -2109,14 +2252,14 @@ class HDF5File
         ArrayVector<hsize_t> dimshape = getDatasetShape(datasetName);
 
         // check if dimensions are correct
-        vigra_precondition((N+1) ==  MultiArrayIndex(dimshape.size()) &&
-                           SIZE == dimshape[0], // the object in the HDF5 file must have one additional dimension which we interpret as the pixel type bands
-            "HDF5File::readAndResize(): Array dimension disagrees with dataset dimension.");
+        vigra_precondition((N + 1) == MultiArrayIndex(dimshape.size()) &&
+                               SIZE == dimshape[0], // the object in the HDF5 file must have one additional dimension which we interpret as the pixel type bands
+                           "HDF5File::readAndResize(): Array dimension disagrees with dataset dimension.");
 
         // reshape target MultiArray
         typename MultiArrayShape<N>::type shape;
-        for(int k=1; k < static_cast<int>(dimshape.size()); ++k)
-            shape[k-1] = static_cast<MultiArrayIndex>(dimshape[k]);
+        for (int k = 1; k < static_cast<int>(dimshape.size()); ++k)
+            shape[k - 1] = static_cast<MultiArrayIndex>(dimshape[k]);
         array.reshape(shape);
 
         read_(datasetName, array, detail::getH5DataType<T>(), SIZE);
@@ -2134,7 +2277,7 @@ class HDF5File
 
     // non-scalar (RGBValue) MultiArray
     template<unsigned int N, class T, class Alloc>
-    inline void readAndResize(std::string datasetName, MultiArray<N, RGBValue<T>, Alloc> & array)
+    inline void readAndResize(std::string datasetName, MultiArray<N, RGBValue<T>, Alloc>& array)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -2143,39 +2286,84 @@ class HDF5File
         ArrayVector<hsize_t> dimshape = getDatasetShape(datasetName);
 
         // check if dimensions are correct
-        vigra_precondition((N+1) ==  MultiArrayIndex(dimshape.size()) &&
-                           3 == dimshape[0], // the object in the HDF5 file must have one additional dimension which we interpret as the pixel type bands
-            "HDF5File::readAndResize(): Array dimension disagrees with dataset dimension.");
+        vigra_precondition((N + 1) == MultiArrayIndex(dimshape.size()) &&
+                               3 == dimshape[0], // the object in the HDF5 file must have one additional dimension which we interpret as the pixel type bands
+                           "HDF5File::readAndResize(): Array dimension disagrees with dataset dimension.");
 
         // reshape target MultiArray
         typename MultiArrayShape<N>::type shape;
-        for(int k=1; k < static_cast<int>(dimshape.size()); ++k)
-            shape[k-1] = static_cast<MultiArrayIndex>(dimshape[k]);
+        for (int k = 1; k < static_cast<int>(dimshape.size()); ++k)
+            shape[k - 1] = static_cast<MultiArrayIndex>(dimshape[k]);
         array.reshape(shape);
 
         read_(datasetName, array, detail::getH5DataType<T>(), 3);
     }
 
-        /** \brief Read a single value.
+    /** \brief Read a single value.
             Specialization of the read function for simple datatypes
          */
-    inline void read(std::string datasetName, char &data) { readAtomic(datasetName,data); }
-    inline void read(std::string datasetName, signed char &data) { readAtomic(datasetName,data); }
-    inline void read(std::string datasetName, signed short &data) { readAtomic(datasetName,data); }
-    inline void read(std::string datasetName, signed int &data) { readAtomic(datasetName,data); }
-    inline void read(std::string datasetName, signed long &data) { readAtomic(datasetName,data); }
-    inline void read(std::string datasetName, signed long long &data) { readAtomic(datasetName,data); }
-    inline void read(std::string datasetName, unsigned char &data) { readAtomic(datasetName,data); }
-    inline void read(std::string datasetName, unsigned short &data) { readAtomic(datasetName,data); }
-    inline void read(std::string datasetName, unsigned int &data) { readAtomic(datasetName,data); }
-    inline void read(std::string datasetName, unsigned long &data) { readAtomic(datasetName,data); }
-    inline void read(std::string datasetName, unsigned long long &data) { readAtomic(datasetName,data); }
-    inline void read(std::string datasetName, float &data) { readAtomic(datasetName,data); }
-    inline void read(std::string datasetName, double &data) { readAtomic(datasetName,data); }
-    inline void read(std::string datasetName, long double &data) { readAtomic(datasetName,data); }
-    inline void read(std::string datasetName, std::string &data) { readAtomic(datasetName,data); }
+    inline void read(std::string datasetName, char& data)
+    {
+        readAtomic(datasetName, data);
+    }
+    inline void read(std::string datasetName, signed char& data)
+    {
+        readAtomic(datasetName, data);
+    }
+    inline void read(std::string datasetName, signed short& data)
+    {
+        readAtomic(datasetName, data);
+    }
+    inline void read(std::string datasetName, signed int& data)
+    {
+        readAtomic(datasetName, data);
+    }
+    inline void read(std::string datasetName, signed long& data)
+    {
+        readAtomic(datasetName, data);
+    }
+    inline void read(std::string datasetName, signed long long& data)
+    {
+        readAtomic(datasetName, data);
+    }
+    inline void read(std::string datasetName, unsigned char& data)
+    {
+        readAtomic(datasetName, data);
+    }
+    inline void read(std::string datasetName, unsigned short& data)
+    {
+        readAtomic(datasetName, data);
+    }
+    inline void read(std::string datasetName, unsigned int& data)
+    {
+        readAtomic(datasetName, data);
+    }
+    inline void read(std::string datasetName, unsigned long& data)
+    {
+        readAtomic(datasetName, data);
+    }
+    inline void read(std::string datasetName, unsigned long long& data)
+    {
+        readAtomic(datasetName, data);
+    }
+    inline void read(std::string datasetName, float& data)
+    {
+        readAtomic(datasetName, data);
+    }
+    inline void read(std::string datasetName, double& data)
+    {
+        readAtomic(datasetName, data);
+    }
+    inline void read(std::string datasetName, long double& data)
+    {
+        readAtomic(datasetName, data);
+    }
+    inline void read(std::string datasetName, std::string& data)
+    {
+        readAtomic(datasetName, data);
+    }
 
-        /** \brief Create a new dataset.
+    /** \brief Create a new dataset.
             This function can be used to create a dataset filled with a default value \a init,
             for example before writing data into it using \ref writeBlock().
 
@@ -2202,44 +2390,44 @@ class HDF5File
     template<int N, class T>
     HDF5HandleShared
     createDataset(std::string datasetName,
-                  TinyVector<MultiArrayIndex, N> const & shape,
+                  TinyVector<MultiArrayIndex, N> const& shape,
                   typename detail::HDF5TypeTraits<T>::value_type init =
-                                                     typename detail::HDF5TypeTraits<T>::value_type(),
+                      typename detail::HDF5TypeTraits<T>::value_type(),
 #ifdef _MSC_VER
-                  TinyVector<MultiArrayIndex, N> const & chunkSize = TinyVector<MultiArrayIndex, N>(),
+                  TinyVector<MultiArrayIndex, N> const& chunkSize = TinyVector<MultiArrayIndex, N>(),
 #else
-                  TinyVector<MultiArrayIndex, N> const & chunkSize = (TinyVector<MultiArrayIndex, N>()),
+                  TinyVector<MultiArrayIndex, N> const& chunkSize = (TinyVector<MultiArrayIndex, N>()),
 #endif
                   int compressionParameter = 0);
 
-        // for backwards compatibility
+    // for backwards compatibility
     template<int N, class T>
     HDF5HandleShared
     createDataset(std::string datasetName,
-                  TinyVector<MultiArrayIndex, N> const & shape,
+                  TinyVector<MultiArrayIndex, N> const& shape,
                   T init,
                   int iChunkSize,
                   int compressionParameter = 0)
     {
         typename MultiArrayShape<N>::type chunkSize;
-        for(int i = 0; i < N; i++){
+        for (int i = 0; i < N; i++)
+        {
             chunkSize[i] = iChunkSize;
         }
         return this->template createDataset<N, T>(datasetName, shape, init,
                                                   chunkSize, compressionParameter);
     }
 
-        /** \brief Immediately write all data to disk
+    /** \brief Immediately write all data to disk
         */
     inline void flushToDisk()
     {
-        if(fileHandle_)
+        if (fileHandle_)
             H5Fflush(fileHandle_, H5F_SCOPE_GLOBAL);
     }
 
-  private:
-
-        /* Simple extension of std::string for splitting into two parts
+private:
+    /* Simple extension of std::string for splitting into two parts
          *
          *  Strings (in particular: file/dataset paths) will be split into two
          *  parts. The split is made at the last occurrence of the delimiter.
@@ -2247,47 +2435,49 @@ class HDF5File
          *  For example, "/path/to/some/file" will be split (delimiter = "/") into
          *  first() = "/path/to/some" and last() = "file".
          */
-    class SplitString: public std::string {
+    class SplitString : public std::string
+    {
     public:
-        SplitString(std::string &sstring): std::string(sstring) {};
+        SplitString(std::string& sstring)
+            : std::string(sstring){};
 
         // return the part of the string before the delimiter
         std::string first(char delimiter = '/')
         {
             size_t lastPos = find_last_of(delimiter);
-            if(lastPos == std::string::npos) // delimiter not found --> no first
+            if (lastPos == std::string::npos) // delimiter not found --> no first
                 return "";
 
-            return std::string(begin(), begin()+lastPos+1);
+            return std::string(begin(), begin() + lastPos + 1);
         }
 
         // return the part of the string after the delimiter
         std::string last(char delimiter = '/')
         {
             size_t lastPos = find_last_of(delimiter);
-            if(lastPos == std::string::npos) // delimiter not found --> only last
+            if (lastPos == std::string::npos) // delimiter not found --> only last
                 return std::string(*this);
-            return std::string(begin()+lastPos+1, end());
+            return std::string(begin() + lastPos + 1, end());
         }
     };
 
-    template <class Shape>
+    template<class Shape>
     ArrayVector<hsize_t>
-    defineChunks(Shape chunks, Shape const & shape, int numBands, int compression = 0)
+    defineChunks(Shape chunks, Shape const& shape, int numBands, int compression = 0)
     {
-        if(prod(chunks) > 0)
+        if (prod(chunks) > 0)
         {
             ArrayVector<hsize_t> res(chunks.begin(), chunks.end());
-            if(numBands > 1)
+            if (numBands > 1)
                 res.insert(res.begin(), static_cast<hsize_t>(numBands));
             return res;
         }
-        else if(compression > 0)
+        else if (compression > 0)
         {
             // set default chunks to enable compression
             chunks = min(detail::ChunkShape<Shape::static_size>::defaultShape(), shape);
             ArrayVector<hsize_t> res(chunks.begin(), chunks.end());
-            if(numBands > 1)
+            if (numBands > 1)
                 res.insert(res.begin(), static_cast<hsize_t>(numBands));
             return res;
         }
@@ -2297,134 +2487,143 @@ class HDF5File
         }
     }
 
-  public:
-
-        /** \brief takes any path and converts it into an absolute path
+public:
+    /** \brief takes any path and converts it into an absolute path
              in the current file.
 
              Elements like "." and ".." are treated as expected.
              Links are not supported or resolved.
         */
-    inline std::string get_absolute_path(std::string path) const {
+    inline std::string get_absolute_path(std::string path) const
+    {
         // check for empty input or "." and return the current folder
-        if(path.length() == 0 || path == "."){
+        if (path.length() == 0 || path == ".")
+        {
             return currentGroupName_();
         }
 
         std::string str;
         // convert to absolute path
-        if(relativePath_(path)){
+        if (relativePath_(path))
+        {
             std::string cname = currentGroupName_();
             if (cname == "/")
-                str = currentGroupName_()+path;
+                str = currentGroupName_() + path;
             else
-                str = currentGroupName_()+"/"+path;
-        }else{
+                str = currentGroupName_() + "/" + path;
+        }
+        else
+        {
             str = path;
         }
 
         // cut out "./"
         std::string::size_type startpos = 0;
-        while(str.find(std::string("./"), startpos) != std::string::npos){
+        while (str.find(std::string("./"), startpos) != std::string::npos)
+        {
             std::string::size_type pos = str.find(std::string("./"), startpos);
-            startpos = pos+1;
+            startpos = pos + 1;
             // only cut if "./" is not part of "../" (see below)
-            if(str.substr(pos-1,3) != "../"){
+            if (str.substr(pos - 1, 3) != "../")
+            {
                 // cut out part of the string
-                str = str.substr(0,pos) + str.substr(pos+2,str.length()-pos-2);
+                str = str.substr(0, pos) + str.substr(pos + 2, str.length() - pos - 2);
                 startpos = pos;
             }
         }
 
         // cut out pairs of "bla/../"
-        while(str.find(std::string("..")) != std::string::npos){
+        while (str.find(std::string("..")) != std::string::npos)
+        {
             std::string::size_type pos = str.find(std::string(".."));
 
             // find first slash after ".."
-            std::string::size_type end = str.find("/",pos);
-            if(end != std::string::npos){
+            std::string::size_type end = str.find("/", pos);
+            if (end != std::string::npos)
+            {
                 // also include slash
                 end++;
-            }else{
+            }
+            else
+            {
                 // no "/" after ".." --> this is a group, add a "/"
                 str = str + "/";
                 end = str.length();
             }
 
             // find first slash before ".."
-            std::string::size_type prev_slash = str.rfind("/",pos);
+            std::string::size_type prev_slash = str.rfind("/", pos);
             // if the root slash is the first before ".." --> Error
             vigra_invariant(prev_slash != 0 && prev_slash != std::string::npos,
-                            "Error parsing path: "+str);
+                            "Error parsing path: " + str);
             // find second slash before ".."
-            std::string::size_type begin = str.rfind("/",prev_slash-1);
+            std::string::size_type begin = str.rfind("/", prev_slash - 1);
 
             // cut out part of the string
-            str = str.substr(0,begin+1) + str.substr(end,str.length()-end);
+            str = str.substr(0, begin + 1) + str.substr(end, str.length() - end);
         }
 
         return str;
     }
 
-  protected:
-
-        /* checks if the given path is a relative path.
+protected:
+    /* checks if the given path is a relative path.
          */
-    inline bool relativePath_(std::string & path) const
+    inline bool relativePath_(std::string& path) const
     {
-        std::string::size_type pos = path.find('/') ;
-        if(pos == 0)
+        std::string::size_type pos = path.find('/');
+        if (pos == 0)
             return false;
 
         return true;
     }
 
-        /* return the name of the current group
+    /* return the name of the current group
          */
     inline std::string currentGroupName_() const
     {
-        int len = H5Iget_name(cGroupHandle_,NULL,1000);
-        ArrayVector<char> name (len+1,0);
-        H5Iget_name(cGroupHandle_,name.begin(),len+1);
+        int len = H5Iget_name(cGroupHandle_, NULL, 1000);
+        ArrayVector<char> name(len + 1, 0);
+        H5Iget_name(cGroupHandle_, name.begin(), len + 1);
 
         return std::string(name.begin());
     }
 
-        /* return the name of the current file
+    /* return the name of the current file
          */
     inline std::string fileName_() const
     {
-        int len = H5Fget_name(fileHandle_,NULL,1000);
-        ArrayVector<char> name (len+1,0);
-        H5Fget_name(fileHandle_,name.begin(),len+1);
+        int len = H5Fget_name(fileHandle_, NULL, 1000);
+        ArrayVector<char> name(len + 1, 0);
+        H5Fget_name(fileHandle_, name.begin(), len + 1);
 
         return std::string(name.begin());
     }
 
-        /* create an empty file or open an existing one
+    /* create an empty file or open an existing one
          */
     inline hid_t createFile_(std::string filePath, OpenMode mode = Open)
     {
         // try to open file
-        FILE * pFile;
-        pFile = fopen ( filePath.c_str(), "r" );
+        FILE* pFile;
+        pFile = fopen(filePath.c_str(), "r");
         hid_t fileId;
 
         // check if opening was successful (= file exists)
-        if ( pFile == NULL )
+        if (pFile == NULL)
         {
             vigra_precondition(mode != OpenReadOnly,
-                "HDF5File::open(): cannot open non-existing file in read-only mode.");
+                               "HDF5File::open(): cannot open non-existing file in read-only mode.");
             fileId = H5Fcreate(filePath.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
         }
         else
         {
             fclose(pFile);
-            if(mode == OpenReadOnly)
+            if (mode == OpenReadOnly)
             {
                 fileId = H5Fopen(filePath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
             }
-            else if(mode == New)
+            else if (mode == New)
             {
                 std::remove(filePath.c_str());
                 fileId = H5Fcreate(filePath.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
@@ -2437,17 +2636,17 @@ class HDF5File
         return fileId;
     }
 
-        /* \brief Open a group.
+    /* \brief Open a group.
 
            A negative value is returned when the group does not exist or when opening
            fails for other reasons.
          */
     hid_t openGroup_(std::string groupName) const
     {
-        return const_cast<HDF5File *>(this)->openCreateGroup_(groupName, false);
+        return const_cast<HDF5File*>(this)->openCreateGroup_(groupName, false);
     }
 
-        /* \brief Open or create a group.
+    /* \brief Open or create a group.
 
            If \a create is <tt>true</tt> and the group does not exist, it will be created,
            including all necessary parent groups. If group creation fails, a negative
@@ -2462,16 +2661,16 @@ class HDF5File
 
         // open root group
         hid_t parent = H5Gopen(fileHandle_, "/", H5P_DEFAULT);
-        if(groupName == "/")
+        if (groupName == "/")
         {
             return parent;
         }
 
         // remove leading /
-        groupName = std::string(groupName.begin()+1, groupName.end());
+        groupName = std::string(groupName.begin() + 1, groupName.end());
 
         // check if the groupName has finishing slash
-        if( groupName.size() != 0 && *groupName.rbegin() != '/')
+        if (groupName.size() != 0 && *groupName.rbegin() != '/')
         {
             groupName = groupName + '/';
         }
@@ -2485,15 +2684,15 @@ class HDF5File
         std::string::size_type begin = 0, end = groupName.find('/');
         while (end != std::string::npos)
         {
-            std::string group(groupName.begin()+begin, groupName.begin()+end);
+            std::string group(groupName.begin() + begin, groupName.begin() + end);
 
             hid_t prevParent = parent;
             parent = H5Gopen(prevParent, group.c_str(), H5P_DEFAULT);
-            if(parent < 0 && create) // group doesn't exist, but we are supposed to create it
+            if (parent < 0 && create) // group doesn't exist, but we are supposed to create it
                 parent = H5Gcreate(prevParent, group.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
             H5Gclose(prevParent);
 
-            if(parent < 0)
+            if (parent < 0)
                 break;
 
             begin = end + 1;
@@ -2503,30 +2702,30 @@ class HDF5File
         return parent;
     }
 
-        /* delete a dataset by unlinking it from the file structure. This does not
+    /* delete a dataset by unlinking it from the file structure. This does not
            delete the data!
          */
     inline void deleteDataset_(hid_t parent, std::string datasetName)
     {
         // delete existing data and create new dataset
-        if(H5LTfind_dataset(parent, datasetName.c_str()))
+        if (H5LTfind_dataset(parent, datasetName.c_str()))
         {
 
-    #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
-            if(H5Gunlink(parent, datasetName.c_str()) < 0)
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
+            if (H5Gunlink(parent, datasetName.c_str()) < 0)
             {
                 vigra_postcondition(false, "HDF5File::deleteDataset_(): Unable to delete existing data.");
             }
-    #else
-            if(H5Ldelete(parent, datasetName.c_str(), H5P_DEFAULT ) < 0)
+#else
+            if (H5Ldelete(parent, datasetName.c_str(), H5P_DEFAULT) < 0)
             {
                 vigra_postcondition(false, "HDF5File::deleteDataset_(): Unable to delete existing data.");
             }
-    #endif
+#endif
         }
     }
 
-        /* get the handle of a dataset specified by a string
+    /* get the handle of a dataset specified by a string
          */
     hid_t getDatasetHandle_(std::string datasetName) const
     {
@@ -2536,7 +2735,7 @@ class HDF5File
         std::string groupname = SplitString(datasetName).first();
         std::string setname = SplitString(datasetName).last();
 
-        if(H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) <= 0)
+        if (H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) <= 0)
         {
             std::cerr << "HDF5File::getDatasetHandle_(): Dataset '" << datasetName << "' does not exist.\n";
             return -1;
@@ -2548,7 +2747,7 @@ class HDF5File
         return H5Dopen(groupHandle, setname.c_str(), H5P_DEFAULT);
     }
 
-        /* get the type of an object specified by a string
+    /* get the type of an object specified by a string
          */
     H5O_type_t get_object_type_(std::string name) const
     {
@@ -2559,24 +2758,25 @@ class HDF5File
             return H5O_TYPE_GROUP;
 
         htri_t exists = H5Lexists(fileHandle_, name.c_str(), H5P_DEFAULT);
-        vigra_precondition(exists > 0,  "HDF5File::get_object_type_(): "
-                                        "object \"" + name + "\" "
-                                        "not found.");
+        vigra_precondition(exists > 0, "HDF5File::get_object_type_(): "
+                                       "object \"" +
+                                           name + "\" "
+                                                  "not found.");
         // open parent group
         HDF5Handle group_handle(openGroup_(group_name), &H5Gclose, "Internal error");
         return HDF5_get_type(group_handle, name.c_str());
     }
 
-        /* low-level write function to write vigra MultiArray data as an attribute
+    /* low-level write function to write vigra MultiArray data as an attribute
          */
     template<unsigned int N, class T, class Stride>
     void write_attribute_(std::string name,
-                          const std::string & attribute_name,
-                          const MultiArrayView<N, T, Stride> & array,
+                          const std::string& attribute_name,
+                          const MultiArrayView<N, T, Stride>& array,
                           const hid_t datatype,
                           const int numBandsOfType);
 
-        /* Write single value attribute
+    /* Write single value attribute
            This function allows to write data of atomic datatypes (int, long, double)
            as an attribute in the HDF5 file. So it is not necessary to create a MultiArray
            of size 1 to write a single number.
@@ -2589,12 +2789,12 @@ class HDF5File
 
         typename MultiArrayShape<1>::type chunkSize;
         chunkSize[0] = 0;
-        MultiArray<1,T> array(MultiArrayShape<1>::type(1));
+        MultiArray<1, T> array(MultiArrayShape<1>::type(1));
         array[0] = data;
         write_attribute_(datasetName, attributeName, array, detail::getH5DataType<T>(), 1);
     }
 
-        /* low-level read function to read vigra MultiArray data from attributes
+    /* low-level read function to read vigra MultiArray data from attributes
          */
     template<unsigned int N, class T, class Stride>
     void read_attribute_(std::string datasetName,
@@ -2602,43 +2802,43 @@ class HDF5File
                          MultiArrayView<N, T, Stride> array,
                          const hid_t datatype, const int numBandsOfType);
 
-        /* Read a single value attribute.
+    /* Read a single value attribute.
            This functions allows to read a single value attribute of atomic datatype (int, long, double)
            from the HDF5 file. So it is not necessary to create a MultiArray
            of size 1 to read a single number.
         */
     template<class T>
-    inline void readAtomicAttribute(std::string datasetName, std::string attributeName, T & data)
+    inline void readAtomicAttribute(std::string datasetName, std::string attributeName, T& data)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
 
-        MultiArray<1,T> array(MultiArrayShape<1>::type(1));
+        MultiArray<1, T> array(MultiArrayShape<1>::type(1));
         read_attribute_(datasetName, attributeName, array, detail::getH5DataType<T>(), 1);
         data = array[0];
     }
 
-    inline void readAtomicAttribute(std::string datasetName, std::string attributeName, std::string & data)
+    inline void readAtomicAttribute(std::string datasetName, std::string attributeName, std::string& data)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
 
-        MultiArray<1,const char *> array(MultiArrayShape<1>::type(1));
-        read_attribute_(datasetName, attributeName, array, detail::getH5DataType<const char *>(), 1);
+        MultiArray<1, const char*> array(MultiArrayShape<1>::type(1));
+        read_attribute_(datasetName, attributeName, array, detail::getH5DataType<const char*>(), 1);
         data = std::string(array[0]);
     }
 
-        /* low-level write function to write vigra unstrided MultiArray data
+    /* low-level write function to write vigra unstrided MultiArray data
         */
     template<unsigned int N, class T, class Stride>
-    void write_(std::string &datasetName,
-                       const MultiArrayView<N, T, Stride> & array,
-                       const hid_t datatype,
-                       const int numBandsOfType,
-                       typename MultiArrayShape<N>::type &chunkSize,
-                       int compressionParameter = 0);
+    void write_(std::string& datasetName,
+                const MultiArrayView<N, T, Stride>& array,
+                const hid_t datatype,
+                const int numBandsOfType,
+                typename MultiArrayShape<N>::type& chunkSize,
+                int compressionParameter = 0);
 
-        /* Write single value as dataset.
+    /* Write single value as dataset.
            This functions allows to write data of atomic datatypes (int, long, double)
            as a dataset in the HDF5 file. So it is not necessary to create a MultiArray
            of size 1 to write a single number.
@@ -2654,19 +2854,19 @@ class HDF5File
 
         typename MultiArrayShape<1>::type chunkSize;
         chunkSize[0] = 0;
-        MultiArray<1,T> array(MultiArrayShape<1>::type(1));
+        MultiArray<1, T> array(MultiArrayShape<1>::type(1));
         array[0] = data;
-        write_(datasetName, array, detail::getH5DataType<T>(), 1, chunkSize,0);
+        write_(datasetName, array, detail::getH5DataType<T>(), 1, chunkSize, 0);
     }
 
-        /* low-level read function to read vigra unstrided MultiArray data
+    /* low-level read function to read vigra unstrided MultiArray data
          */
     template<unsigned int N, class T, class Stride>
     void read_(std::string datasetName,
-                      MultiArrayView<N, T, Stride> array,
-                      const hid_t datatype, const int numBandsOfType);
+               MultiArrayView<N, T, Stride> array,
+               const hid_t datatype, const int numBandsOfType);
 
-        /* Read a single value.
+    /* Read a single value.
            This functions allows to read a single datum of atomic datatype (int, long, double)
            from the HDF5 file. So it is not necessary to create a MultiArray
            of size 1 to read a single number.
@@ -2675,32 +2875,32 @@ class HDF5File
            otherwise it will be interpreted as path relative to the current group.
         */
     template<class T>
-    inline void readAtomic(std::string datasetName, T & data)
+    inline void readAtomic(std::string datasetName, T& data)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
 
-        MultiArray<1,T> array(MultiArrayShape<1>::type(1));
+        MultiArray<1, T> array(MultiArrayShape<1>::type(1));
         read_(datasetName, array, detail::getH5DataType<T>(), 1);
         data = array[0];
     }
 
-    inline void readAtomic(std::string datasetName, std::string & data)
+    inline void readAtomic(std::string datasetName, std::string& data)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
 
-        MultiArray<1,const char *> array(MultiArrayShape<1>::type(1));
-        read_(datasetName, array, detail::getH5DataType<const char *>(), 1);
+        MultiArray<1, const char*> array(MultiArrayShape<1>::type(1));
+        read_(datasetName, array, detail::getH5DataType<const char*>(), 1);
         data = std::string(array[0]);
     }
 
-       /* low-level write function to write vigra unstrided MultiArray data into a sub-block of a dataset
+    /* low-level write function to write vigra unstrided MultiArray data into a sub-block of a dataset
        */
     template<unsigned int N, class T, class Stride>
     void writeBlock_(std::string datasetName,
-                     typename MultiArrayShape<N>::type &blockOffset,
-                     const MultiArrayView<N, T, Stride> & array,
+                     typename MultiArrayShape<N>::type& blockOffset,
+                     const MultiArrayView<N, T, Stride>& array,
                      const hid_t datatype,
                      const int numBandsOfType)
     {
@@ -2709,63 +2909,63 @@ class HDF5File
         HDF5HandleShared dataset(getDatasetHandle_(datasetName), &H5Dclose, errorMessage.c_str());
         herr_t status = writeBlock_(dataset, blockOffset, array, datatype, numBandsOfType);
         vigra_postcondition(status >= 0,
-            "HDF5File::writeBlock(): write to dataset '" + datasetName + "' via H5Dwrite() failed.");
+                            "HDF5File::writeBlock(): write to dataset '" + datasetName + "' via H5Dwrite() failed.");
     }
 
-       /* low-level write function to write vigra unstrided MultiArray data into a
+    /* low-level write function to write vigra unstrided MultiArray data into a
           sub-block of a dataset.  Returns the result of the internal call
            to <tt>H5Dwrite()</tt>.
        */
     template<unsigned int N, class T, class Stride>
     herr_t writeBlock_(HDF5HandleShared dataset,
-                       typename MultiArrayShape<N>::type &blockOffset,
-                       const MultiArrayView<N, T, Stride> & array,
+                       typename MultiArrayShape<N>::type& blockOffset,
+                       const MultiArrayView<N, T, Stride>& array,
                        const hid_t datatype,
                        const int numBandsOfType);
 
-        /* low-level read function to read vigra unstrided MultiArray data from a sub-block of a dataset.
+    /* low-level read function to read vigra unstrided MultiArray data from a sub-block of a dataset.
 
            The array must have the same shape as the block.
         */
     template<unsigned int N, class T, class Stride>
     void readBlock_(std::string datasetName,
-                    typename MultiArrayShape<N>::type &blockOffset,
-                    typename MultiArrayShape<N>::type &blockShape,
+                    typename MultiArrayShape<N>::type& blockOffset,
+                    typename MultiArrayShape<N>::type& blockShape,
                     MultiArrayView<N, T, Stride> array,
                     const hid_t datatype, const int numBandsOfType)
     {
-        std::string errorMessage ("HDF5File::readBlock(): Unable to open dataset '" + datasetName + "'.");
+        std::string errorMessage("HDF5File::readBlock(): Unable to open dataset '" + datasetName + "'.");
         HDF5HandleShared dataset(getDatasetHandle_(datasetName), &H5Dclose, errorMessage.c_str());
         herr_t status = readBlock_(dataset, blockOffset, blockShape, array, datatype, numBandsOfType);
         vigra_postcondition(status >= 0,
-            "HDF5File::readBlock(): read from dataset '" + datasetName + "' via H5Dread() failed.");
+                            "HDF5File::readBlock(): read from dataset '" + datasetName + "' via H5Dread() failed.");
     }
 
-        /* low-level read function to read vigra unstrided MultiArray data from a sub-block of a dataset.
+    /* low-level read function to read vigra unstrided MultiArray data from a sub-block of a dataset.
 
            The array must have the same shape as the block. Returns the result of the internal call
            to <tt>H5Dread()</tt>.
         */
     template<unsigned int N, class T, class Stride>
     herr_t readBlock_(HDF5HandleShared dataset,
-                      typename MultiArrayShape<N>::type &blockOffset,
-                      typename MultiArrayShape<N>::type &blockShape,
+                      typename MultiArrayShape<N>::type& blockOffset,
+                      typename MultiArrayShape<N>::type& blockShape,
                       MultiArrayView<N, T, Stride> array,
                       const hid_t datatype, const int numBandsOfType);
-};  /* class HDF5File */
+}; /* class HDF5File */
 
 /********************************************************************/
 
 template<int N, class T>
 HDF5HandleShared
 HDF5File::createDataset(std::string datasetName,
-                        TinyVector<MultiArrayIndex, N> const & shape,
+                        TinyVector<MultiArrayIndex, N> const& shape,
                         typename detail::HDF5TypeTraits<T>::value_type init,
-                         TinyVector<MultiArrayIndex, N> const & chunkSize,
-                         int compressionParameter)
+                        TinyVector<MultiArrayIndex, N> const& chunkSize,
+                        int compressionParameter)
 {
     vigra_precondition(!isReadOnly(),
-        "HDF5File::createDataset(): file is read-only.");
+                       "HDF5File::createDataset(): file is read-only.");
 
     // make datasetName clean
     datasetName = get_absolute_path(datasetName);
@@ -2782,25 +2982,25 @@ HDF5File::createDataset(std::string datasetName,
     // add an extra dimension in case that the data is non-scalar
     typedef detail::HDF5TypeTraits<T> TypeTraits;
     ArrayVector<hsize_t> shape_inv;
-    if(TypeTraits::numberOfBands() > 1)
+    if (TypeTraits::numberOfBands() > 1)
     {
-        shape_inv.resize(N+1);
+        shape_inv.resize(N + 1);
         shape_inv[N] = TypeTraits::numberOfBands();
     }
     else
     {
         shape_inv.resize(N);
     }
-    for(int k=0; k<N; ++k)
-        shape_inv[N-1-k] = shape[k];
+    for (int k = 0; k < N; ++k)
+        shape_inv[N - 1 - k] = shape[k];
 
     // create dataspace
     HDF5Handle
-    dataspaceHandle = HDF5Handle(H5Screate_simple(shape_inv.size(), shape_inv.data(), NULL),
-                                &H5Sclose, "HDF5File::createDataset(): unable to create dataspace for scalar data.");
+        dataspaceHandle = HDF5Handle(H5Screate_simple(shape_inv.size(), shape_inv.data(), NULL),
+                                     &H5Sclose, "HDF5File::createDataset(): unable to create dataspace for scalar data.");
 
     // set fill value
-    HDF5Handle plist ( H5Pcreate(H5P_DATASET_CREATE), &H5Pclose, "HDF5File::createDataset(): unable to create property list." );
+    HDF5Handle plist(H5Pcreate(H5P_DATASET_CREATE), &H5Pclose, "HDF5File::createDataset(): unable to create property list.");
     H5Pset_fill_value(plist, TypeTraits::getH5DataType(), &init);
 
     // turn off time tagging of datasets by default.
@@ -2808,14 +3008,14 @@ HDF5File::createDataset(std::string datasetName,
 
     // enable chunks
     ArrayVector<hsize_t> chunks(defineChunks(chunkSize, shape, TypeTraits::numberOfBands(), compressionParameter));
-    if(chunks.size() > 0)
+    if (chunks.size() > 0)
     {
         std::reverse(chunks.begin(), chunks.end());
-        H5Pset_chunk (plist, chunks.size(), chunks.begin());
+        H5Pset_chunk(plist, chunks.size(), chunks.begin());
     }
 
     // enable compression
-    if(compressionParameter > 0)
+    if (compressionParameter > 0)
     {
         H5Pset_deflate(plist, compressionParameter);
     }
@@ -2826,7 +3026,7 @@ HDF5File::createDataset(std::string datasetName,
                                              dataspaceHandle, H5P_DEFAULT, plist, H5P_DEFAULT),
                                    &H5Dclose,
                                    "HDF5File::createDataset(): unable to create dataset.");
-    if(parent != cGroupHandle_)
+    if (parent != cGroupHandle_)
         H5Gclose(parent);
 
     return datasetHandle;
@@ -2835,15 +3035,16 @@ HDF5File::createDataset(std::string datasetName,
 /********************************************************************/
 
 template<unsigned int N, class T, class Stride>
-void HDF5File::write_(std::string &datasetName,
-                      const MultiArrayView<N, T, Stride> & array,
-                      const hid_t datatype,
-                      const int numBandsOfType,
-                      typename MultiArrayShape<N>::type &chunkSize,
-                      int compressionParameter)
+void
+HDF5File::write_(std::string& datasetName,
+                 const MultiArrayView<N, T, Stride>& array,
+                 const hid_t datatype,
+                 const int numBandsOfType,
+                 typename MultiArrayShape<N>::type& chunkSize,
+                 int compressionParameter)
 {
     vigra_precondition(!isReadOnly(),
-        "HDF5File::write(): file is read-only.");
+                       "HDF5File::write(): file is read-only.");
 
     std::string groupname = SplitString(datasetName).first();
     std::string setname = SplitString(datasetName).last();
@@ -2852,14 +3053,14 @@ void HDF5File::write_(std::string &datasetName,
     ArrayVector<hsize_t> shape(array.shape().begin(), array.shape().end());
     std::reverse(shape.begin(), shape.end());
 
-    if(numBandsOfType > 1)
+    if (numBandsOfType > 1)
         shape.push_back(numBandsOfType);
 
     HDF5Handle dataspace(H5Screate_simple(shape.size(), shape.begin(), NULL), &H5Sclose,
                          "HDF5File::write(): Can not create dataspace.");
 
     // create and open group:
-    std::string errorMessage ("HDF5File::write(): can not create group '" + groupname + "'.");
+    std::string errorMessage("HDF5File::write(): can not create group '" + groupname + "'.");
     HDF5Handle groupHandle(openCreateGroup_(groupname), &H5Gclose, errorMessage.c_str());
 
     // delete dataset, if it already exists
@@ -2867,31 +3068,31 @@ void HDF5File::write_(std::string &datasetName,
 
     // set up properties list
     HDF5Handle plist(H5Pcreate(H5P_DATASET_CREATE), &H5Pclose,
-                     "HDF5File::write(): unable to create property list." );
+                     "HDF5File::write(): unable to create property list.");
 
     // turn off time tagging of datasets by default.
     H5Pset_obj_track_times(plist, track_time);
 
     // enable chunks
     ArrayVector<hsize_t> chunks(defineChunks(chunkSize, array.shape(), numBandsOfType, compressionParameter));
-    if(chunks.size() > 0)
+    if (chunks.size() > 0)
     {
         std::reverse(chunks.begin(), chunks.end());
-        H5Pset_chunk (plist, chunks.size(), chunks.begin());
+        H5Pset_chunk(plist, chunks.size(), chunks.begin());
     }
 
     // enable compression
-    if(compressionParameter > 0)
+    if (compressionParameter > 0)
     {
         H5Pset_deflate(plist, compressionParameter);
     }
 
     // create dataset
-    HDF5Handle datasetHandle(H5Dcreate(groupHandle, setname.c_str(), datatype, dataspace,H5P_DEFAULT, plist, H5P_DEFAULT),
+    HDF5Handle datasetHandle(H5Dcreate(groupHandle, setname.c_str(), datatype, dataspace, H5P_DEFAULT, plist, H5P_DEFAULT),
                              &H5Dclose, "HDF5File::write(): Can not create dataset.");
 
     herr_t status = 0;
-    if(array.isUnstrided())
+    if (array.isUnstrided())
     {
         // Write the data directly from the array data buffer
         status = H5Dwrite(datasetHandle, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, array.data());
@@ -2906,7 +3107,7 @@ void HDF5File::write_(std::string &datasetName,
 
         int offset = numBandsOfType > 1 ? 1 : 0;
         std::reverse(shape.begin(), shape.end());
-        if(chunks.size() > 0)
+        if (chunks.size() > 0)
         {
             // if the file is chunked, we use a buffer that matches the chunk size.
             std::reverse(chunks.begin(), chunks.end());
@@ -2917,43 +3118,43 @@ void HDF5File::write_(std::string &datasetName,
             ArrayVector<hsize_t>(shape.size(), 1).swap(chunks);
             chunks[0] = numBandsOfType;
             MultiArrayIndex prod = 1;
-            for(unsigned int k=0; k<N;  ++k)
+            for (unsigned int k = 0; k < N; ++k)
             {
-                chunks[k+offset] = array.shape(k);
+                chunks[k + offset] = array.shape(k);
                 prod *= array.shape(k);
-                if(prod > 300000)
+                if (prod > 300000)
                     break;
             }
         }
 
         ArrayVector<hsize_t> null(shape.size(), 0),
-                             start(shape.size(), 0),
-                             count(shape.size(), 1);
+            start(shape.size(), 0),
+            count(shape.size(), 1);
 
-        count[N-1-offset] = numBandsOfType;
+        count[N - 1 - offset] = numBandsOfType;
 
         typedef typename MultiArrayShape<N>::type Shape;
         Shape chunkCount, chunkMaxShape;
-        for(unsigned int k=offset; k<chunks.size(); ++k)
+        for (unsigned int k = offset; k < chunks.size(); ++k)
         {
-            chunkMaxShape[k-offset] = chunks[k];
-            chunkCount[k-offset] = static_cast<MultiArrayIndex>(std::ceil(double(shape[k]) / chunks[k]));
+            chunkMaxShape[k - offset] = chunks[k];
+            chunkCount[k - offset] = static_cast<MultiArrayIndex>(std::ceil(double(shape[k]) / chunks[k]));
         }
 
         typename CoupledIteratorType<N>::type chunkIter = createCoupledIterator(chunkCount),
-                                              chunkEnd  = chunkIter.getEndIterator();
-        for(; chunkIter != chunkEnd; ++chunkIter)
+                                              chunkEnd = chunkIter.getEndIterator();
+        for (; chunkIter != chunkEnd; ++chunkIter)
         {
             Shape chunkStart(chunkIter.point() * chunkMaxShape),
-                  chunkStop(min(chunkStart + chunkMaxShape, array.shape()));
+                chunkStop(min(chunkStart + chunkMaxShape, array.shape()));
             MultiArray<N, T> buffer(array.subarray(chunkStart, chunkStop));
 
-            for(unsigned int k=0; k<N; ++k)
+            for (unsigned int k = 0; k < N; ++k)
             {
-                start[N-1-k] = chunkStart[k];
-                count[N-1-k] = buffer.shape(k);
+                start[N - 1 - k] = chunkStart[k];
+                count[N - 1 - k] = buffer.shape(k);
             }
-            if(offset == 1)
+            if (offset == 1)
             {
                 start[N] = 0;
                 count[N] = numBandsOfType;
@@ -2961,83 +3162,84 @@ void HDF5File::write_(std::string &datasetName,
             HDF5Handle filespace(H5Dget_space(datasetHandle),
                                  &H5Sclose, "HDF5File::write(): unable to create hyperslabs.");
             status = H5Sselect_hyperslab(filespace, H5S_SELECT_SET, start.data(), NULL, count.data(), NULL);
-            if(status < 0)
+            if (status < 0)
                 break;
 
             HDF5Handle dataspace2(H5Screate_simple(count.size(), count.data(), NULL),
-                                 &H5Sclose, "HDF5File::write(): unable to create hyperslabs.");
+                                  &H5Sclose, "HDF5File::write(): unable to create hyperslabs.");
             status = H5Sselect_hyperslab(dataspace2, H5S_SELECT_SET, null.data(), NULL, count.data(), NULL);
-            if(status < 0)
+            if (status < 0)
                 break;
 
             status = H5Dwrite(datasetHandle, datatype, dataspace2, filespace, H5P_DEFAULT, buffer.data());
-            if(status < 0)
+            if (status < 0)
                 break;
         }
     }
     vigra_postcondition(status >= 0,
-        "HDF5File::write(): write to dataset '" + datasetName + "' via H5Dwrite() failed.");
+                        "HDF5File::write(): write to dataset '" + datasetName + "' via H5Dwrite() failed.");
 }
 
 /********************************************************************/
 
 template<unsigned int N, class T, class Stride>
-herr_t HDF5File::writeBlock_(HDF5HandleShared datasetHandle,
-                             typename MultiArrayShape<N>::type &blockOffset,
-                             const MultiArrayView<N, T, Stride> & array,
-                             const hid_t datatype,
-                             const int numBandsOfType)
+herr_t
+HDF5File::writeBlock_(HDF5HandleShared datasetHandle,
+                      typename MultiArrayShape<N>::type& blockOffset,
+                      const MultiArrayView<N, T, Stride>& array,
+                      const hid_t datatype,
+                      const int numBandsOfType)
 {
     vigra_precondition(!isReadOnly(),
-        "HDF5File::writeBlock(): file is read-only.");
+                       "HDF5File::writeBlock(): file is read-only.");
 
-    ArrayVector<hsize_t> boffset, bshape, bones(N+1, 1);
+    ArrayVector<hsize_t> boffset, bshape, bones(N + 1, 1);
     hssize_t dimensions = getDatasetDimensions_(datasetHandle);
-    if(numBandsOfType > 1)
+    if (numBandsOfType > 1)
     {
-        vigra_precondition(N+1 == dimensions,
-            "HDF5File::readBlock(): Array dimension disagrees with data dimension.");
-        bshape.resize(N+1);
-        boffset.resize(N+1);
+        vigra_precondition(N + 1 == dimensions,
+                           "HDF5File::readBlock(): Array dimension disagrees with data dimension.");
+        bshape.resize(N + 1);
+        boffset.resize(N + 1);
         bshape[N] = numBandsOfType;
         boffset[N] = 0;
     }
     else
     {
         vigra_precondition(N == dimensions,
-            "HDF5File::readBlock(): Array dimension disagrees with data dimension.");
+                           "HDF5File::readBlock(): Array dimension disagrees with data dimension.");
         bshape.resize(N);
         boffset.resize(N);
     }
 
-    for(unsigned i = 0; i < N; ++i)
+    for (unsigned i = 0; i < N; ++i)
     {
         // vigra and hdf5 use different indexing
-        bshape[N-1-i] = array.shape(i);
-        boffset[N-1-i] = blockOffset[i];
+        bshape[N - 1 - i] = array.shape(i);
+        boffset[N - 1 - i] = blockOffset[i];
     }
 
     // create a target dataspace in memory with the shape of the desired block
-    HDF5Handle memspace_handle (H5Screate_simple(bshape.size(), bshape.data(), NULL),
-                                &H5Sclose,
-                                "Unable to get origin dataspace");
+    HDF5Handle memspace_handle(H5Screate_simple(bshape.size(), bshape.data(), NULL),
+                               &H5Sclose,
+                               "Unable to get origin dataspace");
 
     // get file dataspace and select the desired block
-    HDF5Handle dataspaceHandle (H5Dget_space(datasetHandle),&H5Sclose,"Unable to create target dataspace");
+    HDF5Handle dataspaceHandle(H5Dget_space(datasetHandle), &H5Sclose, "Unable to create target dataspace");
     H5Sselect_hyperslab(dataspaceHandle, H5S_SELECT_SET,
                         boffset.data(), bones.data(), bones.data(), bshape.data());
 
     herr_t status = 0;
-    if(array.isUnstrided())
+    if (array.isUnstrided())
     {
         // when the array is unstrided, we can read the data directly from the array buffer
-        status = H5Dwrite( datasetHandle, datatype, memspace_handle, dataspaceHandle, H5P_DEFAULT, array.data());
+        status = H5Dwrite(datasetHandle, datatype, memspace_handle, dataspaceHandle, H5P_DEFAULT, array.data());
     }
     else
     {
         // otherwise, we must copy the data into an unstrided extra buffer
         MultiArray<N, T> buffer(array);
-        status = H5Dwrite( datasetHandle, datatype, memspace_handle, dataspaceHandle, H5P_DEFAULT, buffer.data());
+        status = H5Dwrite(datasetHandle, datatype, memspace_handle, dataspaceHandle, H5P_DEFAULT, buffer.data());
     }
     return status;
 }
@@ -3045,19 +3247,20 @@ herr_t HDF5File::writeBlock_(HDF5HandleShared datasetHandle,
 /********************************************************************/
 
 template<unsigned int N, class T, class Stride>
-void HDF5File::write_attribute_(std::string name,
-                                const std::string & attribute_name,
-                                const MultiArrayView<N, T, Stride> & array,
-                                const hid_t datatype,
-                                const int numBandsOfType)
+void
+HDF5File::write_attribute_(std::string name,
+                           const std::string& attribute_name,
+                           const MultiArrayView<N, T, Stride>& array,
+                           const hid_t datatype,
+                           const int numBandsOfType)
 {
     vigra_precondition(!isReadOnly(),
-        "HDF5File::writeAttribute(): file is read-only.");
+                       "HDF5File::writeAttribute(): file is read-only.");
 
     // shape of the array. Add one dimension, if array contains non-scalars.
     ArrayVector<hsize_t> shape(array.shape().begin(), array.shape().end());
     std::reverse(shape.begin(), shape.end());
-    if(numBandsOfType > 1)
+    if (numBandsOfType > 1)
         shape.push_back(numBandsOfType);
 
     HDF5Handle dataspace(H5Screate_simple(shape.size(),
@@ -3065,15 +3268,15 @@ void HDF5File::write_attribute_(std::string name,
                          &H5Sclose, "HDF5File::writeAttribute(): Can not"
                                     " create dataspace.");
 
-    std::string errorMessage ("HDF5File::writeAttribute(): can not find "
-                              "object '" + name + "'.");
+    std::string errorMessage("HDF5File::writeAttribute(): can not find "
+                             "object '" +
+                             name + "'.");
 
     H5O_type_t h5_type = get_object_type_(name);
     bool is_group = h5_type == H5O_TYPE_GROUP;
     if (!is_group && h5_type != H5O_TYPE_DATASET)
-        vigra_precondition(0, "HDF5File::writeAttribute(): object \""
-                               + name + "\" is neither a group nor a "
-                               "dataset.");
+        vigra_precondition(0, "HDF5File::writeAttribute(): object \"" + name + "\" is neither a group nor a "
+                                                                               "dataset.");
     // get parent object handle
     HDF5Handle object_handle(is_group
                                  ? openCreateGroup_(name)
@@ -3085,18 +3288,18 @@ void HDF5File::write_attribute_(std::string name,
     // create / open attribute
     bool exists = existsAttribute(name, attribute_name);
     HDF5Handle attributeHandle(exists
-                               ? H5Aopen(object_handle,
-                                         attribute_name.c_str(),
-                                         H5P_DEFAULT)
-                               : H5Acreate(object_handle,
-                                           attribute_name.c_str(), datatype,
-                                           dataspace, H5P_DEFAULT,
-                                           H5P_DEFAULT),
+                                   ? H5Aopen(object_handle,
+                                             attribute_name.c_str(),
+                                             H5P_DEFAULT)
+                                   : H5Acreate(object_handle,
+                                               attribute_name.c_str(), datatype,
+                                               dataspace, H5P_DEFAULT,
+                                               H5P_DEFAULT),
                                &H5Aclose,
                                "HDF5File::writeAttribute(): Can not create"
                                " attribute.");
     herr_t status = 0;
-    if(array.isUnstrided())
+    if (array.isUnstrided())
     {
         // write the data directly from the array data buffer
         status = H5Awrite(attributeHandle, datatype, array.data());
@@ -3109,34 +3312,35 @@ void HDF5File::write_attribute_(std::string name,
         status = H5Awrite(attributeHandle, datatype, buffer.data());
     }
     vigra_postcondition(status >= 0,
-        "HDF5File::writeAttribute(): write to attribute '" + attribute_name + "' via H5Awrite() failed.");
+                        "HDF5File::writeAttribute(): write to attribute '" + attribute_name + "' via H5Awrite() failed.");
 }
 
 /********************************************************************/
 
 template<unsigned int N, class T, class Stride>
-void HDF5File::read_(std::string datasetName,
-                     MultiArrayView<N, T, Stride> array,
-                     const hid_t datatype, const int numBandsOfType)
+void
+HDF5File::read_(std::string datasetName,
+                MultiArrayView<N, T, Stride> array,
+                const hid_t datatype, const int numBandsOfType)
 {
     //Prepare to read without using HDF5ImportInfo
     ArrayVector<hsize_t> dimshape = getDatasetShape(datasetName);
 
-    std::string errorMessage ("HDF5File::read(): Unable to open dataset '" + datasetName + "'.");
+    std::string errorMessage("HDF5File::read(): Unable to open dataset '" + datasetName + "'.");
     HDF5Handle datasetHandle(getDatasetHandle_(datasetName), &H5Dclose, errorMessage.c_str());
 
     // the object in the HDF5 file may have one additional dimension which we
     // interprete as the pixel type's bands
     int offset = (numBandsOfType > 1)
-                    ? 1
-                    : 0;
+                     ? 1
+                     : 0;
 
     vigra_precondition(MultiArrayIndex(N + offset) == MultiArrayIndex(dimshape.size()),
-        "HDF5File::read(): Array dimension disagrees with dataset dimension.");
+                       "HDF5File::read(): Array dimension disagrees with dataset dimension.");
 
     typename MultiArrayShape<N>::type shape;
-    for(int k=offset; k < (int)dimshape.size(); ++k)
-        shape[k-offset] = (MultiArrayIndex)dimshape[k];
+    for (int k = offset; k < (int)dimshape.size(); ++k)
+        shape[k - offset] = (MultiArrayIndex)dimshape[k];
 
     vigra_precondition(shape == array.shape(),
                        "HDF5File::read(): Array shape disagrees with dataset shape.");
@@ -3145,23 +3349,23 @@ void HDF5File::read_(std::string datasetName,
                            "HDF5File::read(): Band count doesn't match destination array compound type.");
 
     herr_t status = 0;
-    if(array.isUnstrided())
+    if (array.isUnstrided())
     {
         // when the array is unstrided, we can read the data directly into the array buffer
-        status = H5Dread(datasetHandle, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, array.data() );
+        status = H5Dread(datasetHandle, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, array.data());
     }
     else
     {
         // otherwise, we need an intermediate buffer
 
         ArrayVector<hsize_t> null(dimshape.size(), 0),
-                             chunks(dimshape.size(), 1),
-                             start(dimshape.size(), 0),
-                             count(dimshape.size(), 1);
+            chunks(dimshape.size(), 1),
+            start(dimshape.size(), 0),
+            count(dimshape.size(), 1);
 
         HDF5Handle properties(H5Dget_create_plist(datasetHandle),
-                             &H5Pclose, "HDF5File::read(): failed to get property list");
-        if(H5D_CHUNKED == H5Pget_layout(properties))
+                              &H5Pclose, "HDF5File::read(): failed to get property list");
+        if (H5D_CHUNKED == H5Pget_layout(properties))
         {
             // if the file is chunked, we use a buffer that matches the chunk size.
             H5Pget_chunk(properties, static_cast<int>(chunks.size()), chunks.data());
@@ -3172,39 +3376,39 @@ void HDF5File::read_(std::string datasetName,
             // otherwise, we compute a suitable chunk size.
             chunks[0] = numBandsOfType;
             MultiArrayIndex prod = 1;
-            for(unsigned int k=0; k<N; ++k)
+            for (unsigned int k = 0; k < N; ++k)
             {
-                chunks[k+offset] = array.shape(k);
+                chunks[k + offset] = array.shape(k);
                 prod *= array.shape(k);
-                if(prod > 300000)
+                if (prod > 300000)
                     break;
             }
         }
 
-        count[N-1-offset] = static_cast<hsize_t>(numBandsOfType);
+        count[N - 1 - offset] = static_cast<hsize_t>(numBandsOfType);
 
         typedef typename MultiArrayShape<N>::type Shape;
         Shape chunkCount, chunkMaxShape;
-        for(unsigned int k=offset; k<chunks.size(); ++k)
+        for (unsigned int k = offset; k < chunks.size(); ++k)
         {
-            chunkMaxShape[k-offset] = chunks[k];
-            chunkCount[k-offset] = (MultiArrayIndex)std::ceil(double(dimshape[k]) / chunks[k]);
+            chunkMaxShape[k - offset] = chunks[k];
+            chunkCount[k - offset] = (MultiArrayIndex)std::ceil(double(dimshape[k]) / chunks[k]);
         }
 
         typename CoupledIteratorType<N>::type chunkIter = createCoupledIterator(chunkCount),
-                                              chunkEnd  = chunkIter.getEndIterator();
-        for(; chunkIter != chunkEnd; ++chunkIter)
+                                              chunkEnd = chunkIter.getEndIterator();
+        for (; chunkIter != chunkEnd; ++chunkIter)
         {
             Shape chunkStart(chunkIter.point() * chunkMaxShape),
-                  chunkStop(min(chunkStart + chunkMaxShape, array.shape()));
+                chunkStop(min(chunkStart + chunkMaxShape, array.shape()));
             MultiArray<N, T> buffer(chunkStop - chunkStart);
 
-            for(unsigned int k=0; k<N; ++k)
+            for (unsigned int k = 0; k < N; ++k)
             {
-                start[N-1-k] = chunkStart[k];
-                count[N-1-k] = buffer.shape(k);
+                start[N - 1 - k] = chunkStart[k];
+                count[N - 1 - k] = buffer.shape(k);
             }
-            if(offset == 1)
+            if (offset == 1)
             {
                 start[N] = 0;
                 count[N] = numBandsOfType;
@@ -3212,62 +3416,63 @@ void HDF5File::read_(std::string datasetName,
             HDF5Handle filespace(H5Dget_space(datasetHandle),
                                  &H5Sclose, "HDF5File::read(): unable to create hyperslabs.");
             status = H5Sselect_hyperslab(filespace, H5S_SELECT_SET, start.data(), NULL, count.data(), NULL);
-            if(status < 0)
+            if (status < 0)
                 break;
 
             HDF5Handle dataspace(H5Screate_simple(count.size(), count.data(), NULL),
                                  &H5Sclose, "HDF5File::read(): unable to create hyperslabs.");
             status = H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, null.data(), NULL, count.data(), NULL);
-            if(status < 0)
+            if (status < 0)
                 break;
 
             status = H5Dread(datasetHandle, datatype, dataspace, filespace, H5P_DEFAULT, buffer.data());
-            if(status < 0)
+            if (status < 0)
                 break;
 
             array.subarray(chunkStart, chunkStop) = buffer;
         }
     }
     vigra_postcondition(status >= 0,
-        "HDF5File::read(): read from dataset '" + datasetName + "' via H5Dread() failed.");
+                        "HDF5File::read(): read from dataset '" + datasetName + "' via H5Dread() failed.");
 }
 
 /********************************************************************/
 
 template<unsigned int N, class T, class Stride>
-herr_t HDF5File::readBlock_(HDF5HandleShared datasetHandle,
-                            typename MultiArrayShape<N>::type &blockOffset,
-                            typename MultiArrayShape<N>::type &blockShape,
-                            MultiArrayView<N, T, Stride> array,
-                            const hid_t datatype, const int numBandsOfType)
+herr_t
+HDF5File::readBlock_(HDF5HandleShared datasetHandle,
+                     typename MultiArrayShape<N>::type& blockOffset,
+                     typename MultiArrayShape<N>::type& blockShape,
+                     MultiArrayView<N, T, Stride> array,
+                     const hid_t datatype, const int numBandsOfType)
 {
     vigra_precondition(blockShape == array.shape(),
-         "HDF5File::readBlock(): Array shape disagrees with block size.");
+                       "HDF5File::readBlock(): Array shape disagrees with block size.");
 
-    ArrayVector<hsize_t> boffset, bshape, bones(N+1, 1);
+    ArrayVector<hsize_t> boffset, bshape, bones(N + 1, 1);
     hssize_t dimensions = getDatasetDimensions_(datasetHandle);
-    if(numBandsOfType > 1)
+    if (numBandsOfType > 1)
     {
-        vigra_precondition(N+1 == dimensions,
-            "HDF5File::readBlock(): Array dimension disagrees with data dimension.");
-        bshape.resize(N+1);
-        boffset.resize(N+1);
+        vigra_precondition(N + 1 == dimensions,
+                           "HDF5File::readBlock(): Array dimension disagrees with data dimension.");
+        bshape.resize(N + 1);
+        boffset.resize(N + 1);
         bshape[N] = numBandsOfType;
         boffset[N] = 0;
     }
     else
     {
         vigra_precondition(N == dimensions,
-            "HDF5File::readBlock(): Array dimension disagrees with data dimension.");
+                           "HDF5File::readBlock(): Array dimension disagrees with data dimension.");
         bshape.resize(N);
         boffset.resize(N);
     }
 
-    for(unsigned i = 0; i < N; ++i)
+    for (unsigned i = 0; i < N; ++i)
     {
         // vigra and hdf5 use different indexing
-        bshape[N-1-i] = blockShape[i];
-        boffset[N-1-i] = blockOffset[i];
+        bshape[N - 1 - i] = blockShape[i];
+        boffset[N - 1 - i] = blockOffset[i];
     }
 
     // create a target dataspace in memory with the shape of the desired block
@@ -3282,18 +3487,18 @@ herr_t HDF5File::readBlock_(HDF5HandleShared datasetHandle,
                         boffset.data(), bones.data(), bones.data(), bshape.data());
 
     herr_t status = 0;
-    if(array.isUnstrided())
+    if (array.isUnstrided())
     {
         // when the array is unstrided, we can read the data directly into the array buffer
-        status = H5Dread( datasetHandle, datatype, memspace_handle, dataspaceHandle, H5P_DEFAULT, array.data());
+        status = H5Dread(datasetHandle, datatype, memspace_handle, dataspaceHandle, H5P_DEFAULT, array.data());
     }
     else
     {
         // otherwise, we need an unstrided extra buffer ...
         MultiArray<N, T> buffer(array.shape());
-        status = H5Dread( datasetHandle, datatype, memspace_handle, dataspaceHandle, H5P_DEFAULT, buffer.data());
+        status = H5Dread(datasetHandle, datatype, memspace_handle, dataspaceHandle, H5P_DEFAULT, buffer.data());
         // ... and must copy the values
-        if(status >= 0)
+        if (status >= 0)
             array = buffer;
     }
     return status;
@@ -3302,25 +3507,26 @@ herr_t HDF5File::readBlock_(HDF5HandleShared datasetHandle,
 /********************************************************************/
 
 template<unsigned int N, class T, class Stride>
-void HDF5File::read_attribute_(std::string datasetName,
-                               std::string attributeName,
-                               MultiArrayView<N, T, Stride> array,
-                               const hid_t datatype, const int numBandsOfType)
+void
+HDF5File::read_attribute_(std::string datasetName,
+                          std::string attributeName,
+                          MultiArrayView<N, T, Stride> array,
+                          const hid_t datatype, const int numBandsOfType)
 {
     std::string dataset_path = get_absolute_path(datasetName);
     // open Attribute handle
-    std::string message = "HDF5File::readAttribute(): could not get handle for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";
-    HDF5Handle attr_handle (H5Aopen_by_name(fileHandle_,dataset_path.c_str(),attributeName.c_str(),H5P_DEFAULT,H5P_DEFAULT),&H5Aclose, message.c_str());
+    std::string message = "HDF5File::readAttribute(): could not get handle for attribute '" + attributeName + "'' of object '" + dataset_path + "'.";
+    HDF5Handle attr_handle(H5Aopen_by_name(fileHandle_, dataset_path.c_str(), attributeName.c_str(), H5P_DEFAULT, H5P_DEFAULT), &H5Aclose, message.c_str());
 
     // get Attribute dataspace
-    message = "HDF5File::readAttribute(): could not get dataspace for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";
-    HDF5Handle attr_dataspace_handle (H5Aget_space(attr_handle),&H5Sclose,message.c_str());
+    message = "HDF5File::readAttribute(): could not get dataspace for attribute '" + attributeName + "'' of object '" + dataset_path + "'.";
+    HDF5Handle attr_dataspace_handle(H5Aget_space(attr_handle), &H5Sclose, message.c_str());
 
     // obtain Attribute shape
     int raw_dims = H5Sget_simple_extent_ndims(attr_dataspace_handle);
     int dims = std::max(raw_dims, 1); // scalar attributes may be stored with raw_dims==0
     ArrayVector<hsize_t> dimshape(dims);
-    if(raw_dims > 0)
+    if (raw_dims > 0)
         H5Sget_simple_extent_dims(attr_dataspace_handle, dimshape.data(), NULL);
     else
         dimshape[0] = 1;
@@ -3329,34 +3535,34 @@ void HDF5File::read_attribute_(std::string datasetName,
     std::reverse(dimshape.begin(), dimshape.end());
 
     int offset = (numBandsOfType > 1)
-                    ? 1
-                    : 0;
+                     ? 1
+                     : 0;
     message = "HDF5File::readAttribute(): Array dimension disagrees with dataset dimension.";
     // the object in the HDF5 file may have one additional dimension which we then interpret as the pixel type bands
     vigra_precondition(MultiArrayIndex(N + offset) == MultiArrayIndex(dims), message);
 
-    for(int k=offset; k < (int)dimshape.size(); ++k)
-        vigra_precondition(array.shape()[k-offset] == (MultiArrayIndex)dimshape[k],
+    for (int k = offset; k < (int)dimshape.size(); ++k)
+        vigra_precondition(array.shape()[k - offset] == (MultiArrayIndex)dimshape[k],
                            "HDF5File::readAttribute(): Array shape disagrees with dataset shape");
 
     herr_t status = 0;
-    if(array.isUnstrided())
+    if (array.isUnstrided())
     {
         // when the array is unstrided, we can read the data directly into the array buffer
-        status = H5Aread( attr_handle, datatype, array.data());
+        status = H5Aread(attr_handle, datatype, array.data());
     }
     else
     {
         // otherwise, we need an unstrided extra buffer ...
         // (we assume that attributes are small arrays, so that the wasted memory is uncritical)
         MultiArray<N, T> buffer(array.shape());
-        status = H5Aread( attr_handle, datatype, buffer.data() );
+        status = H5Aread(attr_handle, datatype, buffer.data());
         // ... and must copy the values
-        if(status >= 0)
+        if (status >= 0)
             array = buffer;
     }
     vigra_postcondition(status >= 0,
-        "HDF5File::readAttribute(): read from attribute '" + attributeName + "' via H5Aread() failed.");
+                        "HDF5File::readAttribute(): read from attribute '" + attributeName + "' via H5Aread() failed.");
 }
 
 /********************************************************************/
@@ -3396,31 +3602,34 @@ void HDF5File::read_attribute_(std::string datasetName,
     readHDF5(info, array);
     \endcode
 */
-doxygen_overloaded_function(template <...> void readHDF5)
+doxygen_overloaded_function(template<...> void readHDF5)
 
-template<unsigned int N, class T, class StrideTag>
-inline void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, T, StrideTag> array)
+    template<unsigned int N, class T, class StrideTag>
+    inline void readHDF5(const HDF5ImportInfo& info, MultiArrayView<N, T, StrideTag> array)
 {
     HDF5File file(info.getFilePath(), HDF5File::OpenReadOnly);
     file.read(info.getPathInFile(), array);
 }
 
-inline hid_t openGroup(hid_t parent, std::string group_name)
+inline hid_t
+openGroup(hid_t parent, std::string group_name)
 {
     //std::cout << group_name << std::endl;
     size_t last_slash = group_name.find_last_of('/');
     if (last_slash == std::string::npos || last_slash != group_name.size() - 1)
         group_name = group_name + '/';
     std::string::size_type begin = 0, end = group_name.find('/');
-    int ii =  0;
+    int ii = 0;
     while (end != std::string::npos)
     {
-        std::string group(group_name.begin()+begin, group_name.begin()+end);
+        std::string group(group_name.begin() + begin, group_name.begin() + end);
         hid_t prev_parent = parent;
         parent = H5Gopen(prev_parent, group.c_str(), H5P_DEFAULT);
 
-        if(ii != 0)     H5Gclose(prev_parent);
-        if(parent < 0)  return parent;
+        if (ii != 0)
+            H5Gclose(prev_parent);
+        if (parent < 0)
+            return parent;
         ++ii;
         begin = end + 1;
         end = group_name.find('/', begin);
@@ -3428,29 +3637,34 @@ inline hid_t openGroup(hid_t parent, std::string group_name)
     return parent;
 }
 
-inline hid_t createGroup(hid_t parent, std::string group_name)
+inline hid_t
+createGroup(hid_t parent, std::string group_name)
 {
-    if(group_name.size() == 0 ||*group_name.rbegin() != '/')
+    if (group_name.size() == 0 || *group_name.rbegin() != '/')
         group_name = group_name + '/';
-    if(group_name == "/")
+    if (group_name == "/")
         return H5Gopen(parent, group_name.c_str(), H5P_DEFAULT);
 
     std::string::size_type begin = 0, end = group_name.find('/');
-    int ii =  0;
+    int ii = 0;
     while (end != std::string::npos)
     {
-        std::string group(group_name.begin()+begin, group_name.begin()+end);
+        std::string group(group_name.begin() + begin, group_name.begin() + end);
         hid_t prev_parent = parent;
 
-        if(H5LTfind_dataset(parent, group.c_str()) == 0)
+        if (H5LTfind_dataset(parent, group.c_str()) == 0)
         {
             parent = H5Gcreate(prev_parent, group.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-        } else {
+        }
+        else
+        {
             parent = H5Gopen(prev_parent, group.c_str(), H5P_DEFAULT);
         }
 
-        if(ii != 0)     H5Gclose(prev_parent);
-        if(parent < 0)  return parent;
+        if (ii != 0)
+            H5Gclose(prev_parent);
+        if (parent < 0)
+            return parent;
         ++ii;
         begin = end + 1;
         end = group_name.find('/', begin);
@@ -3458,19 +3672,20 @@ inline hid_t createGroup(hid_t parent, std::string group_name)
     return parent;
 }
 
-inline void deleteDataset(hid_t parent, std::string dataset_name)
+inline void
+deleteDataset(hid_t parent, std::string dataset_name)
 {
     // delete existing data and create new dataset
-    if(H5LTfind_dataset(parent, dataset_name.c_str()))
+    if (H5LTfind_dataset(parent, dataset_name.c_str()))
     {
         //std::cout << "dataset already exists" << std::endl;
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
-        if(H5Gunlink(parent, dataset_name.c_str()) < 0)
+        if (H5Gunlink(parent, dataset_name.c_str()) < 0)
         {
             vigra_postcondition(false, "writeToHDF5File(): Unable to delete existing data.");
         }
 #else
-        if(H5Ldelete(parent, dataset_name.c_str(), H5P_DEFAULT ) < 0)
+        if (H5Ldelete(parent, dataset_name.c_str(), H5P_DEFAULT) < 0)
         {
             vigra_postcondition(false, "createDataset(): Unable to delete existing data.");
         }
@@ -3478,18 +3693,19 @@ inline void deleteDataset(hid_t parent, std::string dataset_name)
     }
 }
 
-inline hid_t createFile(std::string filePath, bool append_ = true)
+inline hid_t
+createFile(std::string filePath, bool append_ = true)
 {
-    FILE * pFile;
-    pFile = fopen ( filePath.c_str(), "r" );
+    FILE* pFile;
+    pFile = fopen(filePath.c_str(), "r");
     hid_t file_id;
-    if ( pFile == NULL )
+    if (pFile == NULL)
     {
         file_id = H5Fcreate(filePath.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
     }
-    else if(append_)
+    else if (append_)
     {
-        fclose( pFile );
+        fclose(pFile);
         file_id = H5Fopen(filePath.c_str(), H5F_ACC_RDWR, H5P_DEFAULT);
     }
     else
@@ -3502,25 +3718,26 @@ inline hid_t createFile(std::string filePath, bool append_ = true)
 }
 
 template<unsigned int N, class T, class Tag>
-void createDataset(const char* filePath, const char* pathInFile, const MultiArrayView<N, T, Tag> & array, const hid_t datatype, const int numBandsOfType, HDF5Handle & file_handle, HDF5Handle & dataset_handle)
+void
+createDataset(const char* filePath, const char* pathInFile, const MultiArrayView<N, T, Tag>& array, const hid_t datatype, const int numBandsOfType, HDF5Handle& file_handle, HDF5Handle& dataset_handle)
 {
     std::string path_name(pathInFile), group_name, data_set_name, message;
     std::string::size_type delimiter = path_name.rfind('/');
 
     //create or open file
     file_handle = HDF5Handle(createFile(filePath), &H5Fclose,
-                       "createDataset(): unable to open output file.");
+                             "createDataset(): unable to open output file.");
 
     // get the groupname and the filename
-    if(delimiter == std::string::npos)
+    if (delimiter == std::string::npos)
     {
-        group_name    = "/";
+        group_name = "/";
         data_set_name = path_name;
     }
     else
     {
-        group_name = std::string(path_name.begin(), path_name.begin()+delimiter);
-        data_set_name = std::string(path_name.begin()+delimiter+1, path_name.end());
+        group_name = std::string(path_name.begin(), path_name.begin() + delimiter);
+        data_set_name = std::string(path_name.begin() + delimiter + 1, path_name.end());
     }
 
     // create all groups
@@ -3533,38 +3750,41 @@ void createDataset(const char* filePath, const char* pathInFile, const MultiArra
     // create dataspace
     // add an extra dimension in case that the data is non-scalar
     HDF5Handle dataspace_handle;
-    if(numBandsOfType > 1) {
+    if (numBandsOfType > 1)
+    {
         // invert dimensions to guarantee c-order
-        hsize_t shape_inv[N+1]; // one additional dimension for pixel type channel(s)
-        for(unsigned int k=0; k<N; ++k) {
-            shape_inv[N-1-k] = array.shape(k);  // the channels (eg of an RGB image) are represented by the first dimension (before inversion)
+        hsize_t shape_inv[N + 1]; // one additional dimension for pixel type channel(s)
+        for (unsigned int k = 0; k < N; ++k)
+        {
+            shape_inv[N - 1 - k] = array.shape(k); // the channels (eg of an RGB image) are represented by the first dimension (before inversion)
             //std::cout << shape_inv[N-k] << " (" << N << ")";
         }
         shape_inv[N] = numBandsOfType;
 
         // create dataspace
-        dataspace_handle = HDF5Handle(H5Screate_simple(N+1, shape_inv, NULL),
-                                    &H5Sclose, "createDataset(): unable to create dataspace for non-scalar data.");
-    } else {
+        dataspace_handle = HDF5Handle(H5Screate_simple(N + 1, shape_inv, NULL),
+                                      &H5Sclose, "createDataset(): unable to create dataspace for non-scalar data.");
+    }
+    else
+    {
         // invert dimensions to guarantee c-order
         hsize_t shape_inv[N];
-        for(unsigned int k=0; k<N; ++k)
-            shape_inv[N-1-k] = array.shape(k);
+        for (unsigned int k = 0; k < N; ++k)
+            shape_inv[N - 1 - k] = array.shape(k);
 
         // create dataspace
         dataspace_handle = HDF5Handle(H5Screate_simple(N, shape_inv, NULL),
-                                    &H5Sclose, "createDataset(): unable to create dataspace for scalar data.");
+                                      &H5Sclose, "createDataset(): unable to create dataspace for scalar data.");
     }
 
     //alloc memory for dataset.
     dataset_handle = HDF5Handle(H5Dcreate(group,
-                                        data_set_name.c_str(),
-                                        datatype,
-                                        dataspace_handle,
-                                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT),
-                              &H5Dclose, "createDataset(): unable to create dataset.");
+                                          data_set_name.c_str(),
+                                          datatype,
+                                          dataspace_handle,
+                                          H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT),
+                                &H5Dclose, "createDataset(): unable to create dataset.");
 }
-
 
 
 
@@ -3603,10 +3823,10 @@ void createDataset(const char* filePath, const char* pathInFile, const MultiArra
     writeHDF5("mydata.h5", "/group1/my_dataset", array);
     \endcode
 */
-doxygen_overloaded_function(template <...> void writeHDF5)
+doxygen_overloaded_function(template<...> void writeHDF5)
 
-template<unsigned int N, class T, class StrideTag>
-inline void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayView<N, T, StrideTag> & array)
+    template<unsigned int N, class T, class StrideTag>
+    inline void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayView<N, T, StrideTag>& array)
 {
     HDF5File file(filePath, HDF5File::Open);
     file.write(pathInFile, array);
@@ -3619,17 +3839,16 @@ struct MaxSizeFnc
     size_t size;
 
     MaxSizeFnc()
-    : size(0)
-    {}
-
-    void operator()(std::string const & in)
+        : size(0)
     {
-        size = in.size() > size ?
-                    in.size() :
-                    size;
+    }
+
+    void operator()(std::string const& in)
+    {
+        size = in.size() > size ? in.size() : size;
     }
 };
-}
+} // namespace detail
 
 
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 8) || DOXYGEN
@@ -3640,11 +3859,12 @@ struct MaxSizeFnc
     Namespace: vigra
 */
 template<size_t N, class T, class C>
-void writeHDF5Attr(hid_t loc,
-                   const char* name,
-                   MultiArrayView<N, T, C> const & array)
+void
+writeHDF5Attr(hid_t loc,
+              const char* name,
+              MultiArrayView<N, T, C> const& array)
 {
-    if(H5Aexists(loc, name) > 0)
+    if (H5Aexists(loc, name) > 0)
         H5Adelete(loc, name);
 
     ArrayVector<hsize_t> shape(array.shape().begin(),
@@ -3658,13 +3878,13 @@ void writeHDF5Attr(hid_t loc,
                               name,
                               detail::getH5DataType<T>(),
                               dataspace_handle,
-                              H5P_DEFAULT ,H5P_DEFAULT ),
+                              H5P_DEFAULT, H5P_DEFAULT),
                     &H5Aclose,
                     "writeHDF5Attr: unable to create Attribute");
 
     //copy data - since attributes are small - who cares!
     ArrayVector<T> buffer;
-    for(int ii = 0; ii < array.size(); ++ii)
+    for (int ii = 0; ii < array.size(); ++ii)
         buffer.push_back(array[ii]);
     H5Awrite(attr, detail::getH5DataType<T>(), buffer.data());
 }
@@ -3676,11 +3896,12 @@ void writeHDF5Attr(hid_t loc,
     Namespace: vigra
 */
 template<size_t N, class C>
-void writeHDF5Attr(hid_t loc,
-                   const char* name,
-                   MultiArrayView<N, std::string, C> const & array)
+void
+writeHDF5Attr(hid_t loc,
+              const char* name,
+              MultiArrayView<N, std::string, C> const& array)
 {
-    if(H5Aexists(loc, name) > 0)
+    if (H5Aexists(loc, name) > 0)
         H5Adelete(loc, name);
 
     ArrayVector<hsize_t> shape(array.shape().begin(),
@@ -3690,27 +3911,26 @@ void writeHDF5Attr(hid_t loc,
                          &H5Sclose,
                          "writeToHDF5File(): unable to create dataspace.");
 
-    HDF5Handle atype(H5Tcopy (H5T_C_S1),
+    HDF5Handle atype(H5Tcopy(H5T_C_S1),
                      &H5Tclose,
                      "writeToHDF5File(): unable to create type.");
 
     detail::MaxSizeFnc max_size;
-    max_size = std::for_each(array.data(),array.data()+ array.size(), max_size);
-    H5Tset_size (atype, max_size.size);
+    max_size = std::for_each(array.data(), array.data() + array.size(), max_size);
+    H5Tset_size(atype, max_size.size);
 
     HDF5Handle attr(H5Acreate(loc,
                               name,
                               atype,
                               dataspace_handle,
-                              H5P_DEFAULT ,H5P_DEFAULT ),
+                              H5P_DEFAULT, H5P_DEFAULT),
                     &H5Aclose,
                     "writeHDF5Attr: unable to create Attribute");
 
-    std::string buf ="";
-    for(int ii = 0; ii < array.size(); ++ii)
+    std::string buf = "";
+    for (int ii = 0; ii < array.size(); ++ii)
     {
-        buf = buf + array[ii]
-                  + std::string(max_size.size - array[ii].size(), ' ');
+        buf = buf + array[ii] + std::string(max_size.size - array[ii].size(), ' ');
     }
     H5Awrite(attr, atype, buf.c_str());
 }
@@ -3722,9 +3942,10 @@ void writeHDF5Attr(hid_t loc,
     Namespace: vigra
 */
 template<class T>
-inline void writeHDF5Attr(  hid_t loc,
-                            const char* name,
-                            ArrayVectorView<T>  & array)
+inline void
+writeHDF5Attr(hid_t loc,
+              const char* name,
+              ArrayVectorView<T>& array)
 {
     writeHDF5Attr(loc, name,
                   MultiArrayView<1, T>(MultiArrayShape<1>::type(array.size()),
@@ -3739,9 +3960,10 @@ inline void writeHDF5Attr(  hid_t loc,
     respectively
 */
 template<class Arr>
-inline void writeHDF5Attr(  std::string filePath,
-                            std::string pathInFile,
-                            Arr  & ar)
+inline void
+writeHDF5Attr(std::string filePath,
+              std::string pathInFile,
+              Arr& ar)
 {
     std::string path_name(pathInFile), group_name, data_set_name, message, attr_name;
     std::string::size_type delimiter = path_name.rfind('/');
@@ -3751,33 +3973,33 @@ inline void writeHDF5Attr(  std::string filePath,
                        "writeToHDF5File(): unable to open output file.");
 
     // get the groupname and the filename
-    if(delimiter == std::string::npos)
+    if (delimiter == std::string::npos)
     {
-        group_name    = "/";
+        group_name = "/";
         data_set_name = path_name;
     }
 
     else
     {
-        group_name = std::string(path_name.begin(), path_name.begin()+delimiter);
-        data_set_name = std::string(path_name.begin()+delimiter+1, path_name.end());
+        group_name = std::string(path_name.begin(), path_name.begin() + delimiter);
+        data_set_name = std::string(path_name.begin() + delimiter + 1, path_name.end());
     }
     delimiter = data_set_name.rfind('.');
-    if(delimiter == std::string::npos)
+    if (delimiter == std::string::npos)
     {
         attr_name = path_name;
         data_set_name = "/";
     }
     else
     {
-        attr_name = std::string(data_set_name.begin()+delimiter+1, data_set_name.end());
-        data_set_name = std::string(data_set_name.begin(), data_set_name.begin()+delimiter);
+        attr_name = std::string(data_set_name.begin() + delimiter + 1, data_set_name.end());
+        data_set_name = std::string(data_set_name.begin(), data_set_name.begin() + delimiter);
     }
 
     HDF5Handle group(openGroup(file_id, group_name), &H5Gclose,
                      "writeToHDF5File(): Unable to create and open group. attr ver");
 
-    if(data_set_name != "/")
+    if (data_set_name != "/")
     {
         HDF5Handle dset(H5Dopen(group, data_set_name.c_str(), H5P_DEFAULT), &H5Dclose,
                         "writeHDF5Attr():unable to open dataset");
@@ -3787,7 +4009,6 @@ inline void writeHDF5Attr(  std::string filePath,
     {
         writeHDF5Attr(hid_t(group), attr_name.c_str(), ar);
     }
-
 }
 #endif
 

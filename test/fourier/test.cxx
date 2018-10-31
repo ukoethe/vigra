@@ -29,25 +29,25 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
+#include "test.hxx"
 #include "vigra/unittest.hxx"
-#include <stdlib.h>
 #include <algorithm>
 #include <functional>
-#include <vigra/stdimage.hxx>
-#include <vigra/stdimagefunctions.hxx>
-#include <vigra/functorexpression.hxx>
+#include <stdlib.h>
+#include <vigra/convolution.hxx>
 #include <vigra/fftw3.hxx>
+#include <vigra/functorexpression.hxx>
+#include <vigra/gaborfilter.hxx>
 #include <vigra/impex.hxx>
 #include <vigra/inspectimage.hxx>
-#include <vigra/gaborfilter.hxx>
 #include <vigra/multi_fft.hxx>
 #include <vigra/multi_pointoperators.hxx>
-#include <vigra/convolution.hxx>
-#include "test.hxx"
+#include <vigra/stdimage.hxx>
+#include <vigra/stdimagefunctions.hxx>
 
 using namespace std;
 using namespace vigra;
@@ -61,50 +61,54 @@ struct Compare1
     typedef FFTWComplexImage::value_type result_type;
 
     Compare1(double is)
-    : s(is)
-    {}
+        : s(is)
+    {
+    }
 
     result_type operator()(value_type v1, value_type v2) const
-    { return v1 - v2/s; }
+    {
+        return v1 - v2 / s;
+    }
 };
 
 struct FFTWComplexTest
 {
     FFTWComplex<> clx0, clx1, clx2, clx3;
 
-    template <class VECTOR>
-    void printVector(VECTOR const & v)
+    template<class VECTOR>
+    void printVector(VECTOR const& v)
     {
         std::cerr << "(";
-        for(int i=0; i<v.size(); ++i)
+        for (int i = 0; i < v.size(); ++i)
             std::cerr << v[i] << ", ";
         std::cerr << ")\n";
     }
 
     FFTWComplexTest()
-    : clx0(), clx1(2.0), clx2(0.0, -2.0), clx3(2.0, -2.0)
-    {}
+        : clx0(), clx1(2.0), clx2(0.0, -2.0), clx3(2.0, -2.0)
+    {
+    }
 
     void testConstruction()
     {
-        shouldEqual(clx0.re() , 0.0);
-        shouldEqual(clx0.im() , 0.0);
-        shouldEqual(clx1.re() , 2.0);
-        shouldEqual(clx1.im() , 0.0);
-        shouldEqual(clx2.re() , 0.0);
-        shouldEqual(clx2.im() , -2.0);
-        shouldEqual(clx3.re() , 2.0);
-        shouldEqual(real(clx3) , 2.0);
-        shouldEqual(clx3.im() , -2.0);
-        shouldEqual(imag(clx3) , -2.0);
-        shouldEqual(clx0[0] , 0.0);
-        shouldEqual(clx0[1] , 0.0);
-        shouldEqual(clx1[0] , 2.0);
-        shouldEqual(clx1[1] , 0.0);
-        shouldEqual(clx2[0] , 0.0);
-        shouldEqual(clx2[1] , -2.0);
-        shouldEqual(clx3[0] , 2.0);
-        shouldEqual(clx3[1] , -2.0);
+        shouldEqual(clx0.re(), 0.0);
+        shouldEqual(clx0.im(), 0.0);
+        shouldEqual(clx1.re(), 2.0);
+        shouldEqual(clx1.im(), 0.0);
+        shouldEqual(clx2.re(), 0.0);
+        shouldEqual(clx2.im(), -2.0);
+        shouldEqual(clx3.re(), 2.0);
+        shouldEqual(real(clx3), 2.0);
+        shouldEqual(clx3.im(), -2.0);
+        shouldEqual(imag(clx3), -2.0);
+        shouldEqual(clx0[0], 0.0);
+        shouldEqual(clx0[1], 0.0);
+        shouldEqual(clx1[0], 2.0);
+        shouldEqual(clx1[1], 0.0);
+        shouldEqual(clx2[0], 0.0);
+        shouldEqual(clx2[1], -2.0);
+        shouldEqual(clx3[0], 2.0);
+        shouldEqual(clx3[1], -2.0);
     }
 
     void testComparison()
@@ -121,17 +125,17 @@ struct FFTWComplexTest
 
     void testArithmetic()
     {
-        shouldEqual(abs(clx0) , 0.0);
-        shouldEqual(abs(clx1) , 2.0);
-        shouldEqual(abs(clx2) , 2.0);
-        shouldEqual(abs(clx3) , sqrt(8.0));
+        shouldEqual(abs(clx0), 0.0);
+        shouldEqual(abs(clx1), 2.0);
+        shouldEqual(abs(clx2), 2.0);
+        shouldEqual(abs(clx3), sqrt(8.0));
         should(conj(clx3) == FFTWComplex<>(2.0, 2.0));
 
-        shouldEqual(clx1.phase() , 0.0);
-        shouldEqual(arg(clx1) , 0.0);
-        shouldEqualTolerance(arg(clx3), -0.25*M_PI, 1e-16);
-        shouldEqual(sin(clx2.phase()) , -1.0);
-        shouldEqualTolerance(sin(clx3.phase()), -sqrt(2.0)/2.0, 1.0e-7);
+        shouldEqual(clx1.phase(), 0.0);
+        shouldEqual(arg(clx1), 0.0);
+        shouldEqualTolerance(arg(clx3), -0.25 * M_PI, 1e-16);
+        shouldEqual(sin(clx2.phase()), -1.0);
+        shouldEqualTolerance(sin(clx3.phase()), -sqrt(2.0) / 2.0, 1.0e-7);
 
         should(FFTWComplex<>(2.0, -2.0) == clx1 + clx2);
 
@@ -139,18 +143,18 @@ struct FFTWComplexTest
         should(clx0 == clx2 - clx2);
         should(FFTWComplex<>(2.0, 2.0) == clx1 - clx2);
 
-        should(2.0*clx1 == FFTWComplex<>(4.0, 0.0));
-        should(2.0*clx2 == FFTWComplex<>(0.0, -4.0));
-        should(clx1*clx2 == FFTWComplex<>(0.0, -4.0));
-        should(clx3*conj(clx3) == clx3.squaredMagnitude());
+        should(2.0 * clx1 == FFTWComplex<>(4.0, 0.0));
+        should(2.0 * clx2 == FFTWComplex<>(0.0, -4.0));
+        should(clx1 * clx2 == FFTWComplex<>(0.0, -4.0));
+        should(clx3 * conj(clx3) == clx3.squaredMagnitude());
 
-        should(clx1/2.0 == FFTWComplex<>(1.0, 0.0));
-        should(clx2/2.0 == FFTWComplex<>(0.0, -1.0));
-        should(clx2/clx1 == FFTWComplex<>(0.0, -1.0));
-        should(clx3*conj(clx3) == clx3.squaredMagnitude());
+        should(clx1 / 2.0 == FFTWComplex<>(1.0, 0.0));
+        should(clx2 / 2.0 == FFTWComplex<>(0.0, -1.0));
+        should(clx2 / clx1 == FFTWComplex<>(0.0, -1.0));
+        should(clx3 * conj(clx3) == clx3.squaredMagnitude());
 
         std::complex<FFTWComplex<>::value_type> c(clx3.re(), clx3.im()),
-                                                   c1(clx1.re(), clx1.im());
+            c1(clx1.re(), clx1.im());
 
         shouldEqual(cos(clx3), FFTWComplex<>(cos(c)));
         shouldEqual(cosh(clx3), FFTWComplex<>(cosh(c)));
@@ -170,9 +174,9 @@ struct FFTWComplexTest
 
     void testAccessor()
     {
-        FFTWComplexImage img(2,2);
+        FFTWComplexImage img(2, 2);
         img = clx2;
-        img(0,0) = clx3;
+        img(0, 0) = clx3;
         FFTWComplexImage::Iterator i = img.upperLeft();
 
         FFTWComplexImage::Accessor get = img.accessor();
@@ -184,37 +188,37 @@ struct FFTWComplexTest
         FFTWWriteRealAccessor<> writeReal;
 
         should(get(i) == clx3);
-        should(get(i, Diff2D(1,1)) == clx2);
+        should(get(i, Diff2D(1, 1)) == clx2);
         should(real(i) == 2.0);
-        should(real(i, Diff2D(1,1)) == 0.0);
+        should(real(i, Diff2D(1, 1)) == 0.0);
         should(imag(i) == -2.0);
-        should(imag(i, Diff2D(1,1)) == -2.0);
-        shouldEqual(smag(i) , 8.0);
-        shouldEqual(smag(i, Diff2D(1,1)) , 4.0);
-        shouldEqual(mag(i) , sqrt(8.0));
-        shouldEqual(mag(i, Diff2D(1,1)) , 2.0);
-        shouldEqualTolerance(sin(phase(i)), -sqrt(2.0)/2.0, 1.0e-7);
-        shouldEqual(sin(phase(i, Diff2D(1,1))), -1.0);
+        should(imag(i, Diff2D(1, 1)) == -2.0);
+        shouldEqual(smag(i), 8.0);
+        shouldEqual(smag(i, Diff2D(1, 1)), 4.0);
+        shouldEqual(mag(i), sqrt(8.0));
+        shouldEqual(mag(i, Diff2D(1, 1)), 2.0);
+        shouldEqualTolerance(sin(phase(i)), -sqrt(2.0) / 2.0, 1.0e-7);
+        shouldEqual(sin(phase(i, Diff2D(1, 1))), -1.0);
 
         writeReal.set(2.0, i);
-        writeReal.set(2.0, i, Diff2D(1,1));
+        writeReal.set(2.0, i, Diff2D(1, 1));
         should(get(i) == clx1);
-        should(get(i, Diff2D(1,1)) == clx1);
+        should(get(i, Diff2D(1, 1)) == clx1);
     }
 
     void testForwardBackwardTrans()
     {
-        const int w=256, h=256;
+        const int w = 256, h = 256;
 
         FFTWComplexImage in(w, h);
-        for (int y=0; y<in.height(); y++)
-            for (int x=0; x<in.width(); x++)
+        for (int y = 0; y < in.height(); y++)
+            for (int x = 0; x < in.width(); x++)
             {
-                in(x,y)= rand()/(double)RAND_MAX;
+                in(x, y) = rand() / (double)RAND_MAX;
             }
 
         FFTWComplexImage out(w, h);
-        
+
         fourierTransform(srcImageRange(in), destImage(out));
         fourierTransformInverse(srcImageRange(out), destImage(out));
 
@@ -224,26 +228,26 @@ struct FFTWComplexTest
         shouldEqualTolerance(average(), 0.0, 1e-14);
 
         combineTwoImages(srcImageRange(in), srcImage(out), destImage(out),
-                         Compare1((double)w*h));
+                         Compare1((double)w * h));
 
         average = FindAverage<FFTWMagnitudeAccessor<>::value_type>();
         inspectImage(srcImageRange(out, FFTWMagnitudeAccessor<>()), average);
 
         shouldEqualTolerance(average(), 0.0, 1e-14);
 
-        for (int y=0; y<in.height(); y++)
-            for (int x=0; x<in.width(); x++)
+        for (int y = 0; y < in.height(); y++)
+            for (int x = 0; x < in.width(); x++)
             {
-                in(x,y)[1]= rand()/(double)RAND_MAX;
+                in(x, y)[1] = rand() / (double)RAND_MAX;
             }
 
         fourierTransform(srcImageRange(in), destImage(out));
         fourierTransformInverse(srcImageRange(out), destImage(out));
 
         combineTwoImages(srcImageRange(in), srcImage(out), destImage(out),
-                         Compare1((double)w*h));
+                         Compare1((double)w * h));
 
-        FindAverage<FFTWComplex<> > caverage;
+        FindAverage<FFTWComplex<>> caverage;
         inspectImage(srcImageRange(out), caverage);
 
         shouldEqualTolerance(caverage().magnitude(), 0.0, 1e-14);
@@ -251,41 +255,41 @@ struct FFTWComplexTest
 
     void testRearrangeQuadrants()
     {
-        double t4[] = { 0, 1, 2, 2,
-                        1, 1, 2, 2,
-                        3, 3, 4, 4,
-                        3, 3, 4, 4};
-        double t4res[] = { 4, 4, 3, 3,
-                           4, 4, 3, 3,
-                           2, 2, 0, 1,
-                           2, 2, 1, 1};
+        double t4[] = {0, 1, 2, 2,
+                       1, 1, 2, 2,
+                       3, 3, 4, 4,
+                       3, 3, 4, 4};
+        double t4res[] = {4, 4, 3, 3,
+                          4, 4, 3, 3,
+                          2, 2, 0, 1,
+                          2, 2, 1, 1};
 
-        FFTWComplexImage in4(4,4), out4(4,4);
-        copy(t4, t4+16, in4.begin());
+        FFTWComplexImage in4(4, 4), out4(4, 4);
+        copy(t4, t4 + 16, in4.begin());
         moveDCToCenter(srcImageRange(in4), destImage(out4));
         moveDCToUpperLeft(srcImageRange(out4), destImage(in4));
-        for(int i=0; i<16; ++i)
+        for (int i = 0; i < 16; ++i)
         {
             should(out4.begin()[i] == t4res[i]);
             should(in4.begin()[i] == t4[i]);
         }
 
-        double t5[] = { 0, 1, 1, 2, 2,
-                        1, 1, 1, 2, 2,
-                        1, 1, 1, 2, 2,
-                        3, 3, 3, 4, 4,
-                        3, 3, 3, 4, 4};
-        double t5res[] = { 4, 4, 3, 3, 3,
-                           4, 4, 3, 3, 3,
-                           2, 2, 0, 1, 1,
-                           2, 2, 1, 1, 1,
-                           2, 2, 1, 1, 1};
+        double t5[] = {0, 1, 1, 2, 2,
+                       1, 1, 1, 2, 2,
+                       1, 1, 1, 2, 2,
+                       3, 3, 3, 4, 4,
+                       3, 3, 3, 4, 4};
+        double t5res[] = {4, 4, 3, 3, 3,
+                          4, 4, 3, 3, 3,
+                          2, 2, 0, 1, 1,
+                          2, 2, 1, 1, 1,
+                          2, 2, 1, 1, 1};
 
-        FFTWComplexImage in5(5,5), out5(5,5);
-        copy(t5, t5+25, in5.begin());
+        FFTWComplexImage in5(5, 5), out5(5, 5);
+        copy(t5, t5 + 25, in5.begin());
         moveDCToCenter(srcImageRange(in5), destImage(out5));
         moveDCToUpperLeft(srcImageRange(out5), destImage(in5));
-        for(int i=0; i<25; ++i)
+        for (int i = 0; i < 25; ++i)
         {
             should(out5.begin()[i] == t5res[i]);
             should(in5.begin()[i] == t5[i]);
@@ -297,28 +301,28 @@ struct MultiFFTTest
 {
     typedef double R;
     typedef FFTWComplex<R> C;
-    typedef MultiArray<2, R, FFTWAllocator<R> > DArray2;
-    typedef MultiArray<2, C, FFTWAllocator<C> > CArray2;
+    typedef MultiArray<2, R, FFTWAllocator<R>> DArray2;
+    typedef MultiArray<2, C, FFTWAllocator<C>> CArray2;
     typedef MultiArrayShape<2>::type Shape2;
-    typedef MultiArray<3, R, FFTWAllocator<R> > DArray3;
-    typedef MultiArray<3, C, FFTWAllocator<C> > CArray3;
+    typedef MultiArray<3, R, FFTWAllocator<R>> DArray3;
+    typedef MultiArray<3, C, FFTWAllocator<C>> CArray3;
     typedef MultiArrayShape<3>::type Shape3;
 
     void testFFTShift()
     {
-        Shape3 s(5,5,5);
+        Shape3 s(5, 5, 5);
         MultiArray<3, unsigned int> a(s), ref(s), iref(s);
 
-        for(int z=0; z<5; ++z)
+        for (int z = 0; z < 5; ++z)
         {
-            for(int y=0; y<5; ++y)
+            for (int y = 0; y < 5; ++y)
             {
-                for(int x=0; x<5; ++x)
+                for (int x = 0; x < 5; ++x)
                 {
                     unsigned int v = ((z > 2) ? 4 : 0) + ((y > 2) ? 2 : 0) + ((x > 2) ? 1 : 0);
-                    a(x,y,z) = iref(x,y,z) = v;
+                    a(x, y, z) = iref(x, y, z) = v;
                     v = ((z < 2) ? 4 : 0) + ((y < 2) ? 2 : 0) + ((x < 2) ? 1 : 0);
-                    ref(x,y,z) = v;
+                    ref(x, y, z) = v;
                 }
             }
         }
@@ -328,92 +332,92 @@ struct MultiFFTTest
         moveDCToUpperLeft(a);
         should(a == iref);
 
-        MultiArrayView<3, unsigned int> b = a.subarray(Shape3(1,1,1), s);
+        MultiArrayView<3, unsigned int> b = a.subarray(Shape3(1, 1, 1), s);
         moveDCToCenter(b);
-        should(b == ref.subarray(Shape3(0,0,0), Shape3(4,4,4)));
+        should(b == ref.subarray(Shape3(0, 0, 0), Shape3(4, 4, 4)));
         moveDCToUpperLeft(b);
-        should(b == iref.subarray(Shape3(1,1,1), s));
+        should(b == iref.subarray(Shape3(1, 1, 1), s));
         moveDCToCenter(b);
         moveDCToCenter(b);
-        should(b == iref.subarray(Shape3(1,1,1), s));
+        should(b == iref.subarray(Shape3(1, 1, 1), s));
 
         MultiArrayShape<1>::type s1_e(10), s1_5(5), s1_6(6);
         MultiArray<1, double> e1(s1_e), k1_5(s1_5), k1_6(s1_6);
 
-        for(int k=0; k<k1_5.size(); ++k)
-            k1_5(k) = k+1;
+        for (int k = 0; k < k1_5.size(); ++k)
+            k1_5(k) = k + 1;
         detail::fftEmbedKernel(k1_5, e1);
 
         double k1_5ref[] = {3, 4, 5, 0, 0, 0, 0, 0, 1, 2};
-        shouldEqualSequence(e1.data(), e1.data()+e1.size(), k1_5ref);
+        shouldEqualSequence(e1.data(), e1.data() + e1.size(), k1_5ref);
 
-        for(int k=0; k<k1_6.size(); ++k)
-            k1_6(k) = k+1;
+        for (int k = 0; k < k1_6.size(); ++k)
+            k1_6(k) = k + 1;
         detail::fftEmbedKernel(k1_6, e1);
 
         double k1_6ref[] = {4, 5, 6, 0, 0, 0, 0, 1, 2, 3};
-        shouldEqualSequence(e1.data(), e1.data()+e1.size(), k1_6ref);
+        shouldEqualSequence(e1.data(), e1.data() + e1.size(), k1_6ref);
 
         detail::fftEmbedArray(k1_5, e1);
-        double a1_5ref[] = {3, 2, 1, 2, 3, 4, 5, 4, 3, 2 };
-        shouldEqualSequence(e1.data(), e1.data()+e1.size(), a1_5ref);
+        double a1_5ref[] = {3, 2, 1, 2, 3, 4, 5, 4, 3, 2};
+        shouldEqualSequence(e1.data(), e1.data() + e1.size(), a1_5ref);
 
         detail::fftEmbedArray(k1_6, e1);
-        double a1_6ref[] = {3, 2, 1, 2, 3, 4, 5, 6, 5, 4 };
-        shouldEqualSequence(e1.data(), e1.data()+e1.size(), a1_6ref);
+        double a1_6ref[] = {3, 2, 1, 2, 3, 4, 5, 6, 5, 4};
+        shouldEqualSequence(e1.data(), e1.data() + e1.size(), a1_6ref);
 
         MultiArrayShape<2>::type s2_e(8, 8), s2_4(4, 4), s2_5(5, 5);
         MultiArray<2, double> e2(s2_e), k2_4(s2_4), k2_5(s2_5);
 
-        for(int k=0; k<k2_4.size(); ++k)
-            k2_4(k) = k+1;
+        for (int k = 0; k < k2_4.size(); ++k)
+            k2_4(k) = k + 1;
         detail::fftEmbedKernel(k2_4, e2);
 
-        double k2_4ref[] = {11,12, 0, 0, 0, 0, 9,10,
-                            15,16, 0, 0, 0, 0,13,14,
-                             0, 0, 0, 0, 0, 0, 0, 0,
-                             0, 0, 0, 0, 0, 0, 0, 0,
-                             0, 0, 0, 0, 0, 0, 0, 0,
-                             0, 0, 0, 0, 0, 0, 0, 0,
-                             3, 4, 0, 0, 0, 0, 1, 2,
-                             7, 8, 0, 0, 0, 0, 5, 6};
-        shouldEqualSequence(e2.data(), e2.data()+e2.size(), k2_4ref);
+        double k2_4ref[] = {11, 12, 0, 0, 0, 0, 9, 10,
+                            15, 16, 0, 0, 0, 0, 13, 14,
+                            0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0,
+                            3, 4, 0, 0, 0, 0, 1, 2,
+                            7, 8, 0, 0, 0, 0, 5, 6};
+        shouldEqualSequence(e2.data(), e2.data() + e2.size(), k2_4ref);
 
-        for(int k=0; k<k2_5.size(); ++k)
-            k2_5(k) = k+1;
+        for (int k = 0; k < k2_5.size(); ++k)
+            k2_5(k) = k + 1;
         detail::fftEmbedKernel(k2_5, e2);
 
-        double k2_5ref[] = {13,14,15, 0, 0, 0,11,12,
-                            18,19,20, 0, 0, 0,16,17,
-                            23,24,25, 0, 0, 0,21,22,
-                             0, 0, 0, 0, 0, 0, 0, 0,
-                             0, 0, 0, 0, 0, 0, 0, 0,
-                             0, 0, 0, 0, 0, 0, 0, 0,
-                             3, 4, 5, 0, 0, 0, 1, 2,
-                             8, 9,10, 0, 0, 0, 6, 7};
-        shouldEqualSequence(e2.data(), e2.data()+e2.size(), k2_5ref);
+        double k2_5ref[] = {13, 14, 15, 0, 0, 0, 11, 12,
+                            18, 19, 20, 0, 0, 0, 16, 17,
+                            23, 24, 25, 0, 0, 0, 21, 22,
+                            0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0,
+                            3, 4, 5, 0, 0, 0, 1, 2,
+                            8, 9, 10, 0, 0, 0, 6, 7};
+        shouldEqualSequence(e2.data(), e2.data() + e2.size(), k2_5ref);
 
         detail::fftEmbedArray(k2_4, e2);
-        double a2_4ref[] = {11,10, 9,10,11,12,11,10,
-                             7, 6, 5, 6, 7, 8, 7, 6,
-                             3, 2, 1, 2, 3, 4, 3, 2,
-                             7, 6, 5, 6, 7, 8, 7, 6,
-                            11,10, 9,10,11,12,11,10,
-                            15,14,13,14,15,16,15,14,
-                            11,10, 9,10,11,12,11,10,
-                             7, 6, 5, 6, 7, 8, 7, 6};
-        shouldEqualSequence(e2.data(), e2.data()+e2.size(), a2_4ref);
+        double a2_4ref[] = {11, 10, 9, 10, 11, 12, 11, 10,
+                            7, 6, 5, 6, 7, 8, 7, 6,
+                            3, 2, 1, 2, 3, 4, 3, 2,
+                            7, 6, 5, 6, 7, 8, 7, 6,
+                            11, 10, 9, 10, 11, 12, 11, 10,
+                            15, 14, 13, 14, 15, 16, 15, 14,
+                            11, 10, 9, 10, 11, 12, 11, 10,
+                            7, 6, 5, 6, 7, 8, 7, 6};
+        shouldEqualSequence(e2.data(), e2.data() + e2.size(), a2_4ref);
 
         detail::fftEmbedArray(k2_5, e2);
-        double a2_5ref[] = { 7, 6, 7, 8, 9,10, 9, 8,
-                             2, 1, 2, 3, 4, 5, 4, 3,
-                             7, 6, 7, 8, 9,10, 9, 8,
-                            12,11,12,13,14,15,14,13,
-                            17,16,17,18,19,20,19,18,
-                            22,21,22,23,24,25,24,23,
-                            17,16,17,18,19,20,19,18,
-                            12,11,12,13,14,15,14,13};
-        shouldEqualSequence(e2.data(), e2.data()+e2.size(), a2_5ref);
+        double a2_5ref[] = {7, 6, 7, 8, 9, 10, 9, 8,
+                            2, 1, 2, 3, 4, 5, 4, 3,
+                            7, 6, 7, 8, 9, 10, 9, 8,
+                            12, 11, 12, 13, 14, 15, 14, 13,
+                            17, 16, 17, 18, 19, 20, 19, 18,
+                            22, 21, 22, 23, 24, 25, 24, 23,
+                            17, 16, 17, 18, 19, 20, 19, 18,
+                            12, 11, 12, 13, 14, 15, 14, 13};
+        shouldEqualSequence(e2.data(), e2.data() + e2.size(), a2_5ref);
     }
 
     void testFFT2D()
@@ -421,26 +425,26 @@ struct MultiFFTTest
         Shape2 s(256, 256);
 
         FFTWComplexImage in(s[0], s[1]);
-        for (int y=0; y<in.height(); y++)
-            for (int x=0; x<in.width(); x++)
+        for (int y = 0; y < in.height(); y++)
+            for (int x = 0; x < in.width(); x++)
             {
-                in(x,y)= rand()/(double)RAND_MAX;
+                in(x, y) = rand() / (double)RAND_MAX;
             }
 
         FFTWComplexImage out(in.size());
         CArray2 aout(s);
 
         fourierTransform(srcImageRange(in), destImage(out));
-        fourierTransform(MultiArrayView<2, C>(s, const_cast<C*>(in.data())), 
+        fourierTransform(MultiArrayView<2, C>(s, const_cast<C*>(in.data())),
                          aout);
 
-        shouldEqualSequence(aout.data(), aout.data()+aout.size(), out.data());
+        shouldEqualSequence(aout.data(), aout.data() + aout.size(), out.data());
 
         DArray2 rin(s);
         copyImage(srcImageRange(in, FFTWRealAccessor<>()), destImage(rin));
 
         fourierTransform(rin, aout);
-        shouldEqualSequence(aout.data(), aout.data()+aout.size(), out.data());
+        shouldEqualSequence(aout.data(), aout.data() + aout.size(), out.data());
     }
 
     void testFFT3D()
@@ -452,7 +456,7 @@ struct MultiFFTTest
 
         DArray3 re(s);
         copyMultiArray(srcMultiArrayRange(r, FFTWRealAccessor<>()), destMultiArray(re));
-        shouldEqualSequenceTolerance(re.data(), re.data()+re.size(), f3ref, 1e-10);
+        shouldEqualSequenceTolerance(re.data(), re.data() + re.size(), f3ref, 1e-10);
 
         FindMinMax<double> minmax;
         inspectMultiArray(srcMultiArrayRange(r, FFTWImaginaryAccessor<>()), minmax);
@@ -462,7 +466,7 @@ struct MultiFFTTest
         fourierTransformInverse(r, ir);
 
         copyMultiArray(srcMultiArrayRange(ir, FFTWRealAccessor<>()), destMultiArray(re));
-        shouldEqualSequenceTolerance(re.data(), re.data()+re.size(), f3data, 1e-10);
+        shouldEqualSequenceTolerance(re.data(), re.data() + re.size(), f3data, 1e-10);
 
         inspectMultiArray(srcMultiArrayRange(ir, FFTWImaginaryAccessor<>()), minmax);
         shouldEqualTolerance(minmax.min, 0.0, 1e-10);
@@ -499,34 +503,34 @@ struct MultiFFTTest
 
         double scale = 2.0;
         gaussianSmoothing(srcImageRange(in), destImage(ref), scale);
-        gaussianSmoothing(srcImageRange(in), destImage(ref2), 2.0*scale);
+        gaussianSmoothing(srcImageRange(in), destImage(ref2), 2.0 * scale);
 
         Kernel2D<double> gauss;
         gauss.initGaussian(scale);
         MV kernel(Shape2(gauss.width(), gauss.height()), &gauss[gauss.upperLeft()]);
         convolveFFT(in, kernel, out);
 
-        shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+        shouldEqualSequenceTolerance(out.data(), out.data() + out.size(),
                                      ref.data(), 1e-14);
-        
+
         Kernel2D<double> gauss2;
-        gauss2.initGaussian(2.0*scale);
+        gauss2.initGaussian(2.0 * scale);
         MV kernel2(Shape2(gauss2.width(), gauss2.height()), &gauss2[gauss2.upperLeft()]);
 
-        MV kernels[] = { kernel, kernel2 };
-        MV outs[] = { out, out2 };
-        convolveFFTMany(in, kernels, kernels+2, outs);
+        MV kernels[] = {kernel, kernel2};
+        MV outs[] = {out, out2};
+        convolveFFTMany(in, kernels, kernels + 2, outs);
 
-        shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+        shouldEqualSequenceTolerance(out.data(), out.data() + out.size(),
                                      ref.data(), 1e-14);
-        shouldEqualSequenceTolerance(out2.data(), out2.data()+out2.size(),
+        shouldEqualSequenceTolerance(out2.data(), out2.data() + out2.size(),
                                      ref2.data(), 1e-14);
     }
 
     void testConvolveFFTComplex()
     {
         typedef MultiArrayView<2, double> MV;
-        typedef MultiArrayView<2, FFTWComplex<double> > MVC;
+        typedef MultiArrayView<2, FFTWComplex<double>> MVC;
 
         ImageImportInfo info("ghouse.gif");
         Shape2 s(info.width(), info.height());
@@ -536,7 +540,7 @@ struct MultiFFTTest
         double scale = 2.0;
         Kernel2D<double> gauss, gauss2;
         gauss.initGaussian(scale);
-        gauss2.initGaussian(2.0*scale);
+        gauss2.initGaussian(2.0 * scale);
 
         convolveImage(srcImageRange(in), destImage(ref), kernel2d(gauss));
         convolveImage(srcImageRange(in), destImage(ref2), kernel2d(gauss2));
@@ -545,39 +549,39 @@ struct MultiFFTTest
         MV kernel2(Shape2(gauss2.width(), gauss2.height()), &gauss2[gauss2.upperLeft()]);
 
         //test complex double 2D convolution with spatial domain kernels
-        
-        MultiArray<2, FFTWComplex<double> > inc(in);
-        MultiArray<2, FFTWComplex<double> > outc(inc.shape()), outc2(inc.shape());
-        MultiArray<2, FFTWComplex<double> > kernelc(kernel), kernelc2(kernel2);
+
+        MultiArray<2, FFTWComplex<double>> inc(in);
+        MultiArray<2, FFTWComplex<double>> outc(inc.shape()), outc2(inc.shape());
+        MultiArray<2, FFTWComplex<double>> kernelc(kernel), kernelc2(kernel2);
         convolveFFTComplex(inc, kernelc, outc, false);
 
         copyMultiArray(srcMultiArrayRange(outc, FFTWRealAccessor<double>()), destMultiArray(out));
 
-        shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+        shouldEqualSequenceTolerance(out.data(), out.data() + out.size(),
                                      ref.data(), 1e-14);
 
         outc.init(0.0);
-        
-        MVC kernels[] = { kernelc, kernelc2 };
-        MVC outs[] = { outc, outc2 };
-        convolveFFTComplexMany(inc, kernels, kernels+2, outs, false);
+
+        MVC kernels[] = {kernelc, kernelc2};
+        MVC outs[] = {outc, outc2};
+        convolveFFTComplexMany(inc, kernels, kernels + 2, outs, false);
 
         copyMultiArray(srcMultiArrayRange(outc, FFTWRealAccessor<double>()), destMultiArray(out));
-        shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+        shouldEqualSequenceTolerance(out.data(), out.data() + out.size(),
                                      ref.data(), 1e-14);
         copyMultiArray(srcMultiArrayRange(outc2, FFTWRealAccessor<double>()), destMultiArray(out));
-        shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+        shouldEqualSequenceTolerance(out.data(), out.data() + out.size(),
                                      ref2.data(), 1e-14);
 
         //test complex double 2D convolution with Fourier domain kernels
-        
+
         gauss.setBorderTreatment(BORDER_TREATMENT_WRAP);
         gauss2.setBorderTreatment(BORDER_TREATMENT_WRAP);
 
         convolveImage(srcImageRange(in), destImage(ref), kernel2d(gauss));
         convolveImage(srcImageRange(in), destImage(ref2), kernel2d(gauss2));
 
-        MultiArray<2, FFTWComplex<double> > kernelf(in.shape()), kernelf2(in.shape());
+        MultiArray<2, FFTWComplex<double>> kernelf(in.shape()), kernelf2(in.shape());
 
         detail::fftEmbedKernel(kernelc, kernelf);
         fourierTransform(kernelf, kernelf);
@@ -592,20 +596,20 @@ struct MultiFFTTest
 
         copyMultiArray(srcMultiArrayRange(outc, FFTWRealAccessor<double>()), destMultiArray(out));
 
-        shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+        shouldEqualSequenceTolerance(out.data(), out.data() + out.size(),
                                      ref.data(), 1e-14);
 
         outc.init(0.0);
         outc2.init(0.0);
-        
-        MVC kernelsf[] = { kernelf, kernelf2 };
-        convolveFFTComplexMany(inc, kernelsf, kernelsf+2, outs, true);
+
+        MVC kernelsf[] = {kernelf, kernelf2};
+        convolveFFTComplexMany(inc, kernelsf, kernelsf + 2, outs, true);
 
         copyMultiArray(srcMultiArrayRange(outc, FFTWRealAccessor<double>()), destMultiArray(out));
-        shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+        shouldEqualSequenceTolerance(out.data(), out.data() + out.size(),
                                      ref.data(), 1e-14);
         copyMultiArray(srcMultiArrayRange(outc2, FFTWRealAccessor<double>()), destMultiArray(out));
-        shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+        shouldEqualSequenceTolerance(out.data(), out.data() + out.size(),
                                      ref2.data(), 1e-14);
 #if 0
         // test complex float 3D convolution
@@ -637,19 +641,19 @@ struct MultiFFTTest
 
         CArray2 kernel(kernelShape);
 
-        for(int y=0; y<kernelShape[1]; ++y)
+        for (int y = 0; y < kernelShape[1]; ++y)
         {
-            for(int x=0; x<kernelShape[0]; ++x)
+            for (int x = 0; x < kernelShape[0]; ++x)
             {
                 double xx = 2.0 * M_PI * (x - center[0]) / paddedShape[0];
                 double yy = 2.0 * M_PI * (y - center[1]) / paddedShape[1];
                 double r2 = sq(xx) + sq(yy);
-                kernel(x,y) = std::exp(-0.5 * sq(scale) * r2);
+                kernel(x, y) = std::exp(-0.5 * sq(scale) * r2);
             }
         }
         convolveFFT(in, kernel, out);
 
-        shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+        shouldEqualSequenceTolerance(out.data(), out.data() + out.size(),
                                      ref.data(), 1e-2);
 
         Kernel1D<double> gauss, grad;
@@ -660,14 +664,14 @@ struct MultiFFTTest
         separableConvolveY(srcImageRange(tmp), destImage(ref), kernel1d(gauss));
 
         CArray2 kernel2(kernelShape);
-        for(int y=0; y<kernelShape[1]; ++y)
+        for (int y = 0; y < kernelShape[1]; ++y)
         {
-            for(int x=0; x<kernelShape[0]; ++x)
+            for (int x = 0; x < kernelShape[0]; ++x)
             {
                 double xx = 2.0 * M_PI * (x - center[0]) / paddedShape[0];
                 double yy = 2.0 * M_PI * (y - center[1]) / paddedShape[1];
                 double r2 = sq(xx) + sq(yy);
-                kernel2(x,y) = C(0, xx*std::exp(-0.5 * sq(scale) * r2));
+                kernel2(x, y) = C(0, xx * std::exp(-0.5 * sq(scale) * r2));
             }
         }
         convolveFFT(in, kernel2, out2);
@@ -678,43 +682,43 @@ struct MultiFFTTest
         FindAverage<double> average;
         inspectImage(srcImageRange(ref), minmax);
         inspectImage(srcImageRange(ref), average);
-        
+
         should(std::max(minmax.max, -minmax.min) < 0.2);
         should(average.average() < 0.001);
 
-        MultiArrayView<2, C> kernels[] = { kernel, kernel2 };
-        MultiArrayView<2, R> outs[] = { out3, out4 };
-        convolveFFTMany(in, kernels, kernels+2, outs);
+        MultiArrayView<2, C> kernels[] = {kernel, kernel2};
+        MultiArrayView<2, R> outs[] = {out3, out4};
+        convolveFFTMany(in, kernels, kernels + 2, outs);
 
-        shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+        shouldEqualSequenceTolerance(out.data(), out.data() + out.size(),
                                      out3.data(), 1e-15);
-        shouldEqualSequenceTolerance(out2.data(), out2.data()+out2.size(),
+        shouldEqualSequenceTolerance(out2.data(), out2.data() + out2.size(),
                                      out4.data(), 1e-15);
     }
 };
 
 struct FFTWTestSuite
-: public test_suite
+    : public test_suite
 {
 
     FFTWTestSuite()
-    : test_suite("FFTWTest")
+        : test_suite("FFTWTest")
     {
 
-        add( testCase(&FFTWComplexTest::testConstruction));
-        add( testCase(&FFTWComplexTest::testComparison));
-        add( testCase(&FFTWComplexTest::testArithmetic));
-        add( testCase(&FFTWComplexTest::testAccessor));
-        add( testCase(&FFTWComplexTest::testForwardBackwardTrans));
-        add( testCase(&FFTWComplexTest::testRearrangeQuadrants));
+        add(testCase(&FFTWComplexTest::testConstruction));
+        add(testCase(&FFTWComplexTest::testComparison));
+        add(testCase(&FFTWComplexTest::testArithmetic));
+        add(testCase(&FFTWComplexTest::testAccessor));
+        add(testCase(&FFTWComplexTest::testForwardBackwardTrans));
+        add(testCase(&FFTWComplexTest::testRearrangeQuadrants));
 
-        add( testCase(&MultiFFTTest::testFFTShift));
-        add( testCase(&MultiFFTTest::testFFT2D));
-        add( testCase(&MultiFFTTest::testFFT3D));
-        add( testCase(&MultiFFTTest::testPadding));
-        add( testCase(&MultiFFTTest::testConvolveFFT));
-        add( testCase(&MultiFFTTest::testConvolveFFTComplex));
-        add( testCase(&MultiFFTTest::testConvolveFourierKernel));
+        add(testCase(&MultiFFTTest::testFFTShift));
+        add(testCase(&MultiFFTTest::testFFT2D));
+        add(testCase(&MultiFFTTest::testFFT3D));
+        add(testCase(&MultiFFTTest::testPadding));
+        add(testCase(&MultiFFTTest::testConvolveFFT));
+        add(testCase(&MultiFFTTest::testConvolveFFTComplex));
+        add(testCase(&MultiFFTTest::testConvolveFourierKernel));
     }
 };
 
@@ -724,13 +728,20 @@ struct CompareFunctor
 {
     double sumDifference_;
 
-    CompareFunctor(): sumDifference_(0) {}
+    CompareFunctor()
+        : sumDifference_(0)
+    {
+    }
 
-    void operator()(const fftw_real &a, const fftw_real &b)
-        { sumDifference_+= abs(a-b); }
+    void operator()(const fftw_real& a, const fftw_real& b)
+    {
+        sumDifference_ += abs(a - b);
+    }
 
     double operator()()
-        { return sumDifference_; }
+    {
+        return sumDifference_;
+    }
 };
 
 struct GaborTests
@@ -750,7 +761,7 @@ struct GaborTests
     }
 
     template<class Iterator, class Accessor>
-    void checkImage(triple<Iterator, Iterator, Accessor> src, const char *filename)
+    void checkImage(triple<Iterator, Iterator, Accessor> src, const char* filename)
     {
         if (initializing)
         {
@@ -774,10 +785,10 @@ struct GaborTests
     void testImages()
     {
         BasicImage<fftw_real> filter(w, h);
-        int directionCount= 8;
-        int dir= 1, scale= 1;
+        int directionCount = 8;
+        int dir = 1, scale = 1;
         double angle = dir * M_PI / directionCount;
-        double centerFrequency = 3.0/8.0 / VIGRA_CSTD::pow(2.0,scale);
+        double centerFrequency = 3.0 / 8.0 / VIGRA_CSTD::pow(2.0, scale);
 
         createGaborFilter(RView(filter),
                           angle, centerFrequency,
@@ -801,7 +812,7 @@ struct GaborTests
         shouldEqualTolerance(cmp(), 0.0, 1e-4);
 
         cout << "testing vector results..\n";
-        FVector2Image vectorResult(w,h);
+        FVector2Image vectorResult(w, h);
         applyFourierFilter(srcImageRange(image), srcImage(filter),
                            destImage(vectorResult));
         CompareFunctor iCmp;
@@ -813,8 +824,8 @@ struct GaborTests
         shouldEqualTolerance(cmp(), 0.0, 1e-4);
 
         cout << "applying on ROI...\n";
-        BasicImage<fftw_real> bigImage(w+20, h+20);
-        BasicImage<fftw_real>::Iterator bigUL= bigImage.upperLeft() + Diff2D(5, 5);
+        BasicImage<fftw_real> bigImage(w + 20, h + 20);
+        BasicImage<fftw_real>::Iterator bigUL = bigImage.upperLeft() + Diff2D(5, 5);
         copyImage(srcImageRange(image), destIter(bigUL));
         applyFourierFilter(srcIterRange(bigUL, bigUL + Diff2D(w, h)),
                            srcImage(filter), destImage(result));
@@ -840,7 +851,7 @@ struct GaborTests
         GaborFilterFamily<FImage> filters(w, h, 8, 2);
         ImageArray<FFTWComplexImage> results((unsigned int)filters.size(), filters.imageSize());
         applyFourierFilterFamily(srcImageRange(image), filters, results);
-        checkImage(srcImageRange(results[filters.filterIndex(1,1)], FFTWMagnitudeAccessor<>()),
+        checkImage(srcImageRange(results[filters.filterIndex(1, 1)], FFTWMagnitudeAccessor<>()),
                    "gaborresult.xv");
 
         ImageArray<FImage> realParts((unsigned int)filters.size(), filters.imageSize());
@@ -855,19 +866,20 @@ struct GaborTests
 };
 
 struct GaborTestSuite
-: public test_suite
+    : public test_suite
 {
     GaborTestSuite()
-    : test_suite("FFTWWithGaborTest")
+        : test_suite("FFTWWithGaborTest")
     {
         add(testCase(&GaborTests::testImages));
         add(testCase(&GaborTests::testFamily));
     }
 };
 
-int main(int argc, char **argv)
+int
+main(int argc, char** argv)
 {
-    initializing= argc>1 && std::string(argv[1]) == "init"; // global variable,
+    initializing = argc > 1 && std::string(argv[1]) == "init"; // global variable,
     // initializing means: don't compare with image files but create them
 
     FFTWTestSuite fftwTest;

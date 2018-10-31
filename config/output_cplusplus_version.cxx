@@ -1,6 +1,8 @@
 #include <iostream>
 
-int main() {
+int
+main()
+{
     if (__cplusplus == 1)
     {
         // This is a workaround for a gcc bug:

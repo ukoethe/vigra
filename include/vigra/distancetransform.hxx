@@ -37,11 +37,12 @@
 #ifndef VIGRA_DISTANCETRANSFORM_HXX
 #define VIGRA_DISTANCETRANSFORM_HXX
 
-#include <cmath>
-#include "stdimage.hxx"
 #include "multi_shape.hxx"
+#include "stdimage.hxx"
+#include <cmath>
 
-namespace vigra {
+namespace vigra
+{
 
 /*
  * functors to determine the distance norm
@@ -72,27 +73,27 @@ struct InternalDistanceTransformL2NormFunctor
 {
     float operator()(float dx, float dy) const
     {
-        return VIGRA_CSTD::sqrt(dx*dx + dy*dy);
+        return VIGRA_CSTD::sqrt(dx * dx + dy * dy);
     }
 };
 
 
-template <class SrcImageIterator, class SrcAccessor,
-                   class DestImageIterator, class DestAccessor,
-                   class ValueType, class NormFunctor>
+template<class SrcImageIterator, class SrcAccessor,
+         class DestImageIterator, class DestAccessor,
+         class ValueType, class NormFunctor>
 void
 internalDistanceTransform(SrcImageIterator src_upperleft,
-                SrcImageIterator src_lowerright, SrcAccessor sa,
-                DestImageIterator dest_upperleft, DestAccessor da,
-                ValueType background, NormFunctor norm)
+                          SrcImageIterator src_lowerright, SrcAccessor sa,
+                          DestImageIterator dest_upperleft, DestAccessor da,
+                          ValueType background, NormFunctor norm)
 {
     int w = src_lowerright.x - src_upperleft.x;
     int h = src_lowerright.y - src_upperleft.y;
 
-    FImage xdist(w,h), ydist(w,h);
+    FImage xdist(w, h), ydist(w, h);
 
-    xdist = (FImage::value_type)w;    // init x and
-    ydist = (FImage::value_type)h;    // y distances with 'large' values
+    xdist = (FImage::value_type)w; // init x and
+    ydist = (FImage::value_type)h; // y distances with 'large' values
 
     SrcImageIterator sy = src_upperleft;
     DestImageIterator ry = dest_upperleft;
@@ -108,8 +109,8 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     const Diff2D top(0, -1);
     const Diff2D bottom(0, 1);
 
-    int x,y;
-    if(sa(sx) != background)    // first pixel
+    int x, y;
+    if (sa(sx) != background) // first pixel
     {
         *xdx = 0.0;
         *ydx = 0.0;
@@ -121,11 +122,11 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     }
 
 
-    for(x=1, ++xdx.x, ++ydx.x, ++sx.x, ++rx.x;
-        x<w;
-        ++x, ++xdx.x, ++ydx.x, ++sx.x, ++rx.x)   // first row left to right
+    for (x = 1, ++xdx.x, ++ydx.x, ++sx.x, ++rx.x;
+         x < w;
+         ++x, ++xdx.x, ++ydx.x, ++sx.x, ++rx.x) // first row left to right
     {
-        if(sa(sx) != background)
+        if (sa(sx) != background)
         {
             *xdx = 0.0;
             *ydx = 0.0;
@@ -133,33 +134,34 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
         }
         else
         {
-            *xdx  = xdx[left] + 1.0f;   // propagate x and
-            *ydx  = ydx[left];         // y components of distance from left pixel
+            *xdx = xdx[left] + 1.0f;      // propagate x and
+            *ydx = ydx[left];             // y components of distance from left pixel
             da.set(norm(*xdx, *ydx), rx); // calculate distance from x and y components
         }
     }
-    for(x=w-2, xdx.x -= 2, ydx.x -= 2, sx.x -= 2, rx.x -= 2;
-        x>=0;
-        --x, --xdx.x, --ydx.x, --sx.x, --rx.x)   // first row right to left
+    for (x = w - 2, xdx.x -= 2, ydx.x -= 2, sx.x -= 2, rx.x -= 2;
+         x >= 0;
+         --x, --xdx.x, --ydx.x, --sx.x, --rx.x) // first row right to left
     {
         float d = norm(xdx[right] + 1.0f, ydx[right]);
 
-        if(da(rx) < d) continue;
+        if (da(rx) < d)
+            continue;
 
         *xdx = xdx[right] + 1.0f;
         *ydx = ydx[right];
         da.set(d, rx);
     }
-    for(y=1, ++xdy.y, ++ydy.y, ++sy.y, ++ry.y;
-        y<h;
-        ++y, ++xdy.y, ++ydy.y, ++sy.y, ++ry.y)   // top to bottom
+    for (y = 1, ++xdy.y, ++ydy.y, ++sy.y, ++ry.y;
+         y < h;
+         ++y, ++xdy.y, ++ydy.y, ++sy.y, ++ry.y) // top to bottom
     {
         sx = sy;
         rx = ry;
         xdx = xdy;
         ydx = ydy;
 
-        if(sa(sx) != background)    // first pixel of current row
+        if (sa(sx) != background) // first pixel of current row
         {
             *xdx = 0.0f;
             *ydx = 0.0f;
@@ -172,11 +174,11 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
             da.set(norm(*xdx, *ydx), rx);
         }
 
-        for(x=1, ++xdx.x, ++ydx.x, ++sx.x, ++rx.x;
-            x<w;
-            ++x, ++xdx.x, ++ydx.x, ++sx.x, ++rx.x)  // current row left to right
+        for (x = 1, ++xdx.x, ++ydx.x, ++sx.x, ++rx.x;
+             x < w;
+             ++x, ++xdx.x, ++ydx.x, ++sx.x, ++rx.x) // current row left to right
         {
-            if(sa(sx) != background)
+            if (sa(sx) != background)
             {
                 *xdx = 0.0f;
                 *ydx = 0.0f;
@@ -187,7 +189,7 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
                 float d1 = norm(xdx[left] + 1.0f, ydx[left]);
                 float d2 = norm(xdx[top], ydx[top] + 1.0f);
 
-                if(d1 < d2)
+                if (d1 < d2)
                 {
                     *xdx = xdx[left] + 1.0f;
                     *ydx = ydx[left];
@@ -201,22 +203,23 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
                 }
             }
         }
-        for(x=w-2, xdx.x -= 2, ydx.x -= 2, sx.x -= 2, rx.x -= 2;
-            x>=0;
-            --x, --xdx.x, --ydx.x, --sx.x, --rx.x)  // current row right to left
+        for (x = w - 2, xdx.x -= 2, ydx.x -= 2, sx.x -= 2, rx.x -= 2;
+             x >= 0;
+             --x, --xdx.x, --ydx.x, --sx.x, --rx.x) // current row right to left
         {
             float d1 = norm(xdx[right] + 1.0f, ydx[right]);
 
-            if(da(rx) < d1) continue;
+            if (da(rx) < d1)
+                continue;
 
             *xdx = xdx[right] + 1.0f;
             *ydx = ydx[right];
             da.set(d1, rx);
         }
     }
-    for(y=h-2, xdy.y -= 2, ydy.y -= 2, sy.y -= 2, ry.y -= 2;
-        y>=0;
-        --y, --xdy.y, --ydy.y, --sy.y, --ry.y)    // bottom to top
+    for (y = h - 2, xdy.y -= 2, ydy.y -= 2, sy.y -= 2, ry.y -= 2;
+         y >= 0;
+         --y, --xdy.y, --ydy.y, --sy.y, --ry.y) // bottom to top
     {
         sx = sy;
         rx = ry;
@@ -224,42 +227,45 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
         ydx = ydy;
 
         float d = norm(xdx[bottom], ydx[bottom] + 1.0f);
-        if(d < da(rx))    // first pixel of current row
+        if (d < da(rx)) // first pixel of current row
         {
             *xdx = xdx[bottom];
             *ydx = ydx[bottom] + 1.0f;
             da.set(d, rx);
         }
 
-        for(x=1, ++xdx.x, ++ydx.x, ++sx.x, ++rx.x;
-            x<w;
-            ++x, ++xdx.x, ++ydx.x, ++sx.x, ++rx.x)  // current row left to right
+        for (x = 1, ++xdx.x, ++ydx.x, ++sx.x, ++rx.x;
+             x < w;
+             ++x, ++xdx.x, ++ydx.x, ++sx.x, ++rx.x) // current row left to right
         {
             float d1 = norm(xdx[left] + 1.0f, ydx[left]);
             float d2 = norm(xdx[bottom], ydx[bottom] + 1.0f);
 
-            if(d1 < d2)
+            if (d1 < d2)
             {
-                if(da(rx) < d1) continue;
+                if (da(rx) < d1)
+                    continue;
                 *xdx = xdx[left] + 1.0f;
                 *ydx = ydx[left];
                 da.set(d1, rx);
             }
             else
             {
-                if(da(rx) < d2) continue;
+                if (da(rx) < d2)
+                    continue;
                 *xdx = xdx[bottom];
                 *ydx = ydx[bottom] + 1.0f;
                 da.set(d2, rx);
             }
         }
-        for(x=w-2, xdx.x -= 2, ydx.x -= 2, sx.x -= 2, rx.x -= 2;
-            x>=0;
-            --x, --xdx.x, --ydx.x, --sx.x, --rx.x)  // current row right to left
+        for (x = w - 2, xdx.x -= 2, ydx.x -= 2, sx.x -= 2, rx.x -= 2;
+             x >= 0;
+             --x, --xdx.x, --ydx.x, --sx.x, --rx.x) // current row right to left
         {
             float d1 = norm(xdx[right] + 1.0f, ydx[right]);
 
-            if(da(rx) < d1) continue;
+            if (da(rx) < d1)
+                continue;
             *xdx = xdx[right] + 1.0f;
             *ydx = ydx[right];
             da.set(d1, rx);
@@ -395,24 +401,23 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void distanceTransform)
+doxygen_overloaded_function(template<...> void distanceTransform)
 
-template <class SrcImageIterator, class SrcAccessor,
-                   class DestImageIterator, class DestAccessor,
-                   class ValueType>
-inline void
-distanceTransform(SrcImageIterator src_upperleft,
-                SrcImageIterator src_lowerright, SrcAccessor sa,
-                DestImageIterator dest_upperleft, DestAccessor da,
-                ValueType background, int norm)
+    template<class SrcImageIterator, class SrcAccessor,
+             class DestImageIterator, class DestAccessor,
+             class ValueType>
+    inline void distanceTransform(SrcImageIterator src_upperleft,
+                                  SrcImageIterator src_lowerright, SrcAccessor sa,
+                                  DestImageIterator dest_upperleft, DestAccessor da,
+                                  ValueType background, int norm)
 {
-    if(norm == 1)
+    if (norm == 1)
     {
         internalDistanceTransform(src_upperleft, src_lowerright, sa,
                                   dest_upperleft, da, background,
                                   InternalDistanceTransformL1NormFunctor());
     }
-    else if(norm == 2)
+    else if (norm == 2)
     {
         internalDistanceTransform(src_upperleft, src_lowerright, sa,
                                   dest_upperleft, da, background,
@@ -426,9 +431,9 @@ distanceTransform(SrcImageIterator src_upperleft,
     }
 }
 
-template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor,
-          class ValueType>
+template<class SrcImageIterator, class SrcAccessor,
+         class DestImageIterator, class DestAccessor,
+         class ValueType>
 inline void
 distanceTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                   pair<DestImageIterator, DestAccessor> dest,
@@ -438,16 +443,16 @@ distanceTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                       dest.first, dest.second, background, norm);
 }
 
-template <class T1, class S1,
-          class T2, class S2,
-          class ValueType>
+template<class T1, class S1,
+         class T2, class S2,
+         class ValueType>
 inline void
-distanceTransform(MultiArrayView<2, T1, S1> const & src,
-                  MultiArrayView<2, T2, S2> dest,
-                  ValueType background, int norm)
+    distanceTransform(MultiArrayView<2, T1, S1> const& src,
+                      MultiArrayView<2, T2, S2> dest,
+                      ValueType background, int norm)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "distanceTransform(): shape mismatch between input and output.");
+                       "distanceTransform(): shape mismatch between input and output.");
     distanceTransform(srcImageRange(src),
                       destImage(dest), background, norm);
 }
@@ -457,4 +462,3 @@ distanceTransform(MultiArrayView<2, T1, S1> const & src,
 } // namespace vigra
 
 #endif // VIGRA_DISTANCETRANSFORM_HXX
-

@@ -29,19 +29,20 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
 #ifndef VIGRA_TENSORUTILITIES_HXX
 #define VIGRA_TENSORUTILITIES_HXX
 
-#include <cmath>
-#include "utilities.hxx"
 #include "mathutil.hxx"
 #include "multi_shape.hxx"
+#include "utilities.hxx"
+#include <cmath>
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup TensorImaging Tensor Image Processing
 */
@@ -129,13 +130,13 @@ namespace vigra {
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void vectorToTensor)
+doxygen_overloaded_function(template<...> void vectorToTensor)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void vectorToTensor(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                    DestIterator dul, DestAccessor dest,
-                    bool negateComponent2)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    void vectorToTensor(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                        DestIterator dul, DestAccessor dest,
+                        bool negateComponent2)
 {
     vigra_precondition(src.size(sul) == 2,
                        "vectorToTensor(): input image must have 2 bands.");
@@ -145,44 +146,44 @@ void vectorToTensor(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
-    for(int y=0; y<h; ++y, ++sul.y, ++dul.y)
+    for (int y = 0; y < h; ++y, ++sul.y, ++dul.y)
     {
         typename SrcIterator::row_iterator s = sul.rowIterator();
         typename SrcIterator::row_iterator send = s + w;
         typename DestIterator::row_iterator d = dul.rowIterator();
-        if(negateComponent2)
+        if (negateComponent2)
         {
-            for(; s < send; ++s, ++d)
+            for (; s < send; ++s, ++d)
             {
                 dest.setComponent(sq(src.getComponent(s, 0)), d, 0);
-                dest.setComponent(-src.getComponent(s, 0)*src.getComponent(s, 1), d, 1);
-                               // ^ negative sign to turn left-handed into right-handed coordinates
+                dest.setComponent(-src.getComponent(s, 0) * src.getComponent(s, 1), d, 1);
+                // ^ negative sign to turn left-handed into right-handed coordinates
                 dest.setComponent(sq(src.getComponent(s, 1)), d, 2);
             }
         }
         else
         {
-            for(; s < send; ++s, ++d)
+            for (; s < send; ++s, ++d)
             {
                 dest.setComponent(sq(src.getComponent(s, 0)), d, 0);
-                dest.setComponent(src.getComponent(s, 0)*src.getComponent(s, 1), d, 1);
+                dest.setComponent(src.getComponent(s, 0) * src.getComponent(s, 1), d, 1);
                 dest.setComponent(sq(src.getComponent(s, 1)), d, 2);
             }
         }
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline
-void vectorToTensor(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                    DestIterator dul, DestAccessor dest)
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
+inline void
+vectorToTensor(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+               DestIterator dul, DestAccessor dest)
 {
     vectorToTensor(sul, slr, src, dul, dest, false);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                pair<DestIterator, DestAccessor> d,
@@ -191,8 +192,8 @@ vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     vectorToTensor(s.first, s.second, s.third, d.first, d.second, negateComponent2);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                pair<DestIterator, DestAccessor> d)
@@ -200,15 +201,15 @@ vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     vectorToTensor(s.first, s.second, s.third, d.first, d.second, false);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-vectorToTensor(MultiArrayView<2, T1, S1> const & src,
-               MultiArrayView<2, T2, S2> dest,
-               bool negateComponent2 = false)
+    vectorToTensor(MultiArrayView<2, T1, S1> const& src,
+                   MultiArrayView<2, T2, S2> dest,
+                   bool negateComponent2 = false)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "vectorToTensor(): shape mismatch between input and output.");
+                       "vectorToTensor(): shape mismatch between input and output.");
     vectorToTensor(srcImageRange(src), destImage(dest), negateComponent2);
 }
 
@@ -282,12 +283,12 @@ vectorToTensor(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void tensorEigenRepresentation)
+doxygen_overloaded_function(template<...> void tensorEigenRepresentation)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void tensorEigenRepresentation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                               DestIterator dul, DestAccessor dest)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    void tensorEigenRepresentation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                   DestIterator dul, DestAccessor dest)
 {
     vigra_precondition(src.size(sul) == 3,
                        "tensorEigenRepresentation(): input image must have 3 bands.");
@@ -297,23 +298,22 @@ void tensorEigenRepresentation(SrcIterator sul, SrcIterator slr, SrcAccessor src
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
-    for(int y=0; y<h; ++y, ++sul.y, ++dul.y)
+    for (int y = 0; y < h; ++y, ++sul.y, ++dul.y)
     {
         typename SrcIterator::row_iterator s = sul.rowIterator();
         typename SrcIterator::row_iterator send = s + w;
         typename DestIterator::row_iterator d = dul.rowIterator();
-        for(; s < send; ++s, ++d)
+        for (; s < send; ++s, ++d)
         {
-            typedef typename 
-               NumericTraits<typename SrcAccessor::component_type>::RealPromote TmpType;
-            TmpType d1 = src.getComponent(s,0) + src.getComponent(s,2);
-            TmpType d2 = src.getComponent(s,0) - src.getComponent(s,2);
-            TmpType d3 = TmpType(2.0) * src.getComponent(s,1);
+            typedef typename NumericTraits<typename SrcAccessor::component_type>::RealPromote TmpType;
+            TmpType d1 = src.getComponent(s, 0) + src.getComponent(s, 2);
+            TmpType d2 = src.getComponent(s, 0) - src.getComponent(s, 2);
+            TmpType d3 = TmpType(2.0) * src.getComponent(s, 1);
             TmpType d4 = (TmpType)hypot(d2, d3);
-            
+
             dest.setComponent(0.5 * (d1 + d4), d, 0); // large EV
             dest.setComponent(0.5 * (d1 - d4), d, 1); // small EV
-            if(d2==0.0 && d3==0.0)
+            if (d2 == 0.0 && d3 == 0.0)
             {
                 dest.setComponent(0, d, 2); // orientation
             }
@@ -325,8 +325,8 @@ void tensorEigenRepresentation(SrcIterator sul, SrcIterator slr, SrcAccessor src
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                           pair<DestIterator, DestAccessor> dest)
@@ -334,14 +334,14 @@ tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     tensorEigenRepresentation(src.first, src.second, src.third, dest.first, dest.second);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
-                          MultiArrayView<2, T2, S2> dest)
+    tensorEigenRepresentation(MultiArrayView<2, T1, S1> const& src,
+                              MultiArrayView<2, T2, S2> dest)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "tensorEigenRepresentation(): shape mismatch between input and output.");
+                       "tensorEigenRepresentation(): shape mismatch between input and output.");
     tensorEigenRepresentation(srcImageRange(src), destImage(dest));
 }
 
@@ -412,12 +412,12 @@ tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void tensorTrace)
+doxygen_overloaded_function(template<...> void tensorTrace)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void tensorTrace(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                 DestIterator dul, DestAccessor dest)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    void tensorTrace(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                     DestIterator dul, DestAccessor dest)
 {
     vigra_precondition(src.size(sul) == 3,
                        "tensorTrace(): input image must have 3 bands.");
@@ -425,20 +425,20 @@ void tensorTrace(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
-    for(int y=0; y<h; ++y, ++sul.y, ++dul.y)
+    for (int y = 0; y < h; ++y, ++sul.y, ++dul.y)
     {
         typename SrcIterator::row_iterator s = sul.rowIterator();
         typename SrcIterator::row_iterator send = s + w;
         typename DestIterator::row_iterator d = dul.rowIterator();
-        for(; s < send; ++s, ++d)
+        for (; s < send; ++s, ++d)
         {
-            dest.set(src.getComponent(s,0) + src.getComponent(s,2), d);
+            dest.set(src.getComponent(s, 0) + src.getComponent(s, 2), d);
         }
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 tensorTrace(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             pair<DestIterator, DestAccessor> dest)
@@ -446,14 +446,14 @@ tensorTrace(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     tensorTrace(src.first, src.second, src.third, dest.first, dest.second);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-tensorTrace(MultiArrayView<2, T1, S1> const & src,
-            MultiArrayView<2, T2, S2> dest)
+    tensorTrace(MultiArrayView<2, T1, S1> const& src,
+                MultiArrayView<2, T2, S2> dest)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "tensorTrace(): shape mismatch between input and output.");
+                       "tensorTrace(): shape mismatch between input and output.");
     tensorTrace(srcImageRange(src), destImage(dest));
 }
 
@@ -537,14 +537,14 @@ tensorTrace(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void tensorToEdgeCorner)
+doxygen_overloaded_function(template<...> void tensorToEdgeCorner)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator1, class DestAccessor1,
-          class DestIterator2, class DestAccessor2>
-void tensorToEdgeCorner(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                        DestIterator1 edgeul, DestAccessor1 edge,
-                        DestIterator2 cornerul, DestAccessor2 corner)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator1, class DestAccessor1,
+             class DestIterator2, class DestAccessor2>
+    void tensorToEdgeCorner(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                            DestIterator1 edgeul, DestAccessor1 edge,
+                            DestIterator2 cornerul, DestAccessor2 corner)
 {
     vigra_precondition(src.size(sul) == 3,
                        "tensorToEdgeCorner(): input image must have 3 bands.");
@@ -554,23 +554,22 @@ void tensorToEdgeCorner(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
-    for(int y=0; y<h; ++y, ++sul.y, ++edgeul.y, ++cornerul.y)
+    for (int y = 0; y < h; ++y, ++sul.y, ++edgeul.y, ++cornerul.y)
     {
         typename SrcIterator::row_iterator s = sul.rowIterator();
         typename SrcIterator::row_iterator send = s + w;
         typename DestIterator1::row_iterator e = edgeul.rowIterator();
         typename DestIterator2::row_iterator c = cornerul.rowIterator();
-        for(; s < send; ++s, ++e, ++c)
+        for (; s < send; ++s, ++e, ++c)
         {
-            typedef typename 
-               NumericTraits<typename SrcAccessor::component_type>::RealPromote TmpType;
-            TmpType d1 = src.getComponent(s,0) + src.getComponent(s,2);
-            TmpType d2 = src.getComponent(s,0) - src.getComponent(s,2);
-            TmpType d3 = 2.0 * src.getComponent(s,1);
+            typedef typename NumericTraits<typename SrcAccessor::component_type>::RealPromote TmpType;
+            TmpType d1 = src.getComponent(s, 0) + src.getComponent(s, 2);
+            TmpType d2 = src.getComponent(s, 0) - src.getComponent(s, 2);
+            TmpType d3 = 2.0 * src.getComponent(s, 1);
             TmpType d4 = (TmpType)hypot(d2, d3);
-            
+
             edge.setComponent(d4, e, 0); // edgeness = difference of EVs
-            if(d2 == 0.0 && d3 == 0.0)
+            if (d2 == 0.0 && d3 == 0.0)
             {
                 edge.setComponent(0.0, e, 1); // orientation
             }
@@ -583,29 +582,29 @@ void tensorToEdgeCorner(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator1, class DestAccessor1,
-          class DestIterator2, class DestAccessor2>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator1, class DestAccessor1,
+         class DestIterator2, class DestAccessor2>
 inline void
 tensorToEdgeCorner(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator1, DestAccessor1> edge,
                    pair<DestIterator2, DestAccessor2> corner)
 {
-    tensorToEdgeCorner(src.first, src.second, src.third, 
+    tensorToEdgeCorner(src.first, src.second, src.third,
                        edge.first, edge.second, corner.first, corner.second);
 }
 
-template <class T1, class S1,
-          class T21, class S21,
-          class T22, class S22>
+template<class T1, class S1,
+         class T21, class S21,
+         class T22, class S22>
 inline void
-tensorToEdgeCorner(MultiArrayView<2, T1, S1> const & src,
-                   MultiArrayView<2, T21, S21> edge,
-                   MultiArrayView<2, T22, S22> corner)
+    tensorToEdgeCorner(MultiArrayView<2, T1, S1> const& src,
+                       MultiArrayView<2, T21, S21> edge,
+                       MultiArrayView<2, T22, S22> corner)
 {
     vigra_precondition(src.shape() == edge.shape(),
-        "tensorToEdgeCorner(): shape mismatch between input and output.");
-    tensorToEdgeCorner(srcImageRange(src), 
+                       "tensorToEdgeCorner(): shape mismatch between input and output.");
+    tensorToEdgeCorner(srcImageRange(src),
                        destImage(edge), destImage(corner));
 }
 

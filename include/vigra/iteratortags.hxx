@@ -29,24 +29,34 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
 #ifndef VIGRA_ITERATORTAGS_HXX
 #define VIGRA_ITERATORTAGS_HXX
 
-#include <iterator>   // iterator tags
+#include <iterator> // iterator tags
 
-struct image_traverser_tag {};
+struct image_traverser_tag
+{
+};
 
-struct multi_dimensional_traverser_tag {};
+struct multi_dimensional_traverser_tag
+{
+};
 
-struct forward_circulator_tag {};
+struct forward_circulator_tag
+{
+};
 
-struct bidirectional_circulator_tag {};
+struct bidirectional_circulator_tag
+{
+};
 
-struct random_access_circulator_tag {};
+struct random_access_circulator_tag
+{
+};
 
 
 #endif /* VIGRA_ITERATORTAGS_HXX */

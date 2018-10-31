@@ -29,17 +29,17 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
+
 #ifndef VIGRA_TIFF_HXX
 #define VIGRA_TIFF_HXX
 
-#include "utilities.hxx"
+#include "multi_shape.hxx"
 #include "numerictraits.hxx"
 #include "rgbvalue.hxx"
-#include "multi_shape.hxx"
+#include "utilities.hxx"
 
 extern "C"
 {
@@ -47,7 +47,8 @@ extern "C"
 #include <tiffio.h>
 }
 
-namespace vigra {
+namespace vigra
+{
 
 typedef TIFF TiffImage;
 
@@ -137,42 +138,40 @@ typedef TIFF TiffImage;
     see \ref tiffToScalarImage() and \ref tiffToRGBImage()
     
 */
-doxygen_overloaded_function(template <...> void importTiffImage)
+doxygen_overloaded_function(template<...> void importTiffImage)
 
-template <class ImageIterator, class Accessor>
-inline void
-importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a)
+    template<class ImageIterator, class Accessor>
+    inline void importTiffImage(TiffImage* tiff, ImageIterator iter, Accessor a)
 {
-    typedef typename 
-        NumericTraits<typename Accessor::value_type>::isScalar
+    typedef typename NumericTraits<typename Accessor::value_type>::isScalar
         isScalar;
     importTiffImage(tiff, iter, a, isScalar());
 }
 
-template <class ImageIterator, class Accessor>
+template<class ImageIterator, class Accessor>
 inline void
-importTiffImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
+importTiffImage(TiffImage* tiff, pair<ImageIterator, Accessor> dest)
 {
     importTiffImage(tiff, dest.first, dest.second);
 }
 
-template <class T, class S>
+template<class T, class S>
 inline void
-importTiffImage(TiffImage * tiff, MultiArrayView<2, T, S> dest)
+importTiffImage(TiffImage* tiff, MultiArrayView<2, T, S> dest)
 {
     importTiffImage(tiff, destImage(dest));
 }
 
-template <class ImageIterator, class Accessor>
+template<class ImageIterator, class Accessor>
 inline void
-importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraTrueType)
+importTiffImage(TiffImage* tiff, ImageIterator iter, Accessor a, VigraTrueType)
 {
     tiffToScalarImage(tiff, iter, a);
 }
 
-template <class ImageIterator, class Accessor>
+template<class ImageIterator, class Accessor>
 inline void
-importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType)
+importTiffImage(TiffImage* tiff, ImageIterator iter, Accessor a, VigraFalseType)
 {
     tiffToRGBImage(tiff, iter, a);
 }
@@ -299,20 +298,19 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
        bitsPerSample == 64
     \endcode
 */
-doxygen_overloaded_function(template <...> void tiffToScalarImage)
+doxygen_overloaded_function(template<...> void tiffToScalarImage)
 
-template <class ImageIterator, class Accessor>
-void
-tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
+    template<class ImageIterator, class Accessor>
+    void tiffToScalarImage(TiffImage* tiff, ImageIterator iter, Accessor a)
 {
-    vigra_precondition(tiff != 0, 
-             "tiffToScalarImage(TiffImage *, ScalarImageIterator): " 
-             "NULL pointer to input data.");
-    
-    uint16 sampleFormat = 1, bitsPerSample, 
+    vigra_precondition(tiff != 0,
+                       "tiffToScalarImage(TiffImage *, ScalarImageIterator): "
+                       "NULL pointer to input data.");
+
+    uint16 sampleFormat = 1, bitsPerSample,
            fillorder, samplesPerPixel, photometric;
-    uint32 w,h;
-    
+    uint32 w, h;
+
     TIFFGetField(tiff, TIFFTAG_SAMPLEFORMAT, &sampleFormat);
     TIFFGetField(tiff, TIFFTAG_BITSPERSAMPLE, &bitsPerSample);
     TIFFGetField(tiff, TIFFTAG_SAMPLESPERPIXEL, &samplesPerPixel);
@@ -320,27 +318,27 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
     TIFFGetField(tiff, TIFFTAG_PHOTOMETRIC, &photometric);
     TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
     TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
-    
+
     vigra_precondition(photometric == PHOTOMETRIC_MINISWHITE ||
-                 photometric == PHOTOMETRIC_MINISBLACK, 
-             "tiffToScalarImage(TiffImage *, ScalarImageIterator): " 
-             "Image isn't grayscale.");
-    
-    vigra_precondition(samplesPerPixel == 1, 
-             "tiffToScalarImage(TiffImage *, ScalarImageIterator): " 
-             "Image is multiband, not scalar.");
-    
+                           photometric == PHOTOMETRIC_MINISBLACK,
+                       "tiffToScalarImage(TiffImage *, ScalarImageIterator): "
+                       "Image isn't grayscale.");
+
+    vigra_precondition(samplesPerPixel == 1,
+                       "tiffToScalarImage(TiffImage *, ScalarImageIterator): "
+                       "Image is multiband, not scalar.");
+
     vigra_precondition(sampleFormat != SAMPLEFORMAT_VOID,
-             "tiffToScalarImage(TiffImage *, ScalarImageIterator): " 
-             "undefined pixeltype (SAMPLEFORMAT_VOID).");
+                       "tiffToScalarImage(TiffImage *, ScalarImageIterator): "
+                       "undefined pixeltype (SAMPLEFORMAT_VOID).");
 
     ImageIterator yd(iter);
-    
+
     int bufsize = TIFFScanlineSize(tiff);
-    tdata_t * buf = new tdata_t[bufsize];
-    
+    tdata_t* buf = new tdata_t[bufsize];
+
     int offset, scale, max, min;
-    if(photometric == PHOTOMETRIC_MINISWHITE)
+    if (photometric == PHOTOMETRIC_MINISWHITE)
     {
         min = 255;
         max = 0;
@@ -354,203 +352,204 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
         min = 0;
         max = 255;
     }
-    
-    try{
-        switch(sampleFormat)
+
+    try
+    {
+        switch (sampleFormat)
         {
-          case SAMPLEFORMAT_UINT:
-          {
-            switch (bitsPerSample)
+            case SAMPLEFORMAT_UINT:
             {
-              case 1:
-              {
-                for(unsigned int y=0; y<h; ++y, ++yd.y)
+                switch (bitsPerSample)
                 {
-                    TIFFReadScanline(tiff, buf, y);
-                    ImageIterator xd(yd);
-
-                    for(unsigned int x=0; x<w; ++x, ++xd.x)
+                    case 1:
                     {
-                        if(fillorder == FILLORDER_MSB2LSB)
+                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
                         {
-                            a.set(((((uint8 *)buf)[x/8] >> (7 - x%8)) & 1) ? max : min, xd);
+                            TIFFReadScanline(tiff, buf, y);
+                            ImageIterator xd(yd);
+
+                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            {
+                                if (fillorder == FILLORDER_MSB2LSB)
+                                {
+                                    a.set(((((uint8*)buf)[x / 8] >> (7 - x % 8)) & 1) ? max : min, xd);
+                                }
+                                else
+                                {
+                                    a.set(((((uint8*)buf)[x / 8] >> (x % 8)) & 1) ? max : min, xd);
+                                }
+                            }
                         }
-                        else
+                        break;
+                    }
+                    case 8:
+                    {
+                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
                         {
-                            a.set(((((uint8 *)buf)[x/8] >> (x%8)) & 1) ? max : min, xd);
+                            TIFFReadScanline(tiff, buf, y);
+                            ImageIterator xd(yd);
+
+                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            {
+                                a.set(offset + scale * ((uint8*)buf)[x], xd);
+                            }
                         }
+                        break;
                     }
-                }
-                break;
-              }
-              case 8:
-              {
-                for(unsigned int y=0; y<h; ++y, ++yd.y)
-                {
-                    TIFFReadScanline(tiff, buf, y);
-                    ImageIterator xd(yd);
-
-                    for(unsigned int x=0; x<w; ++x, ++xd.x)
+                    case 16:
                     {
-                        a.set(offset + scale*((uint8 *)buf)[x], xd);
-                    }
-                }
-                break;
-              }
-              case 16:
-              {
-                for(unsigned int y=0; y<h; ++y, ++yd.y)
-                {
-                    TIFFReadScanline(tiff, buf, y);
-                    ImageIterator xd(yd);
+                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                        {
+                            TIFFReadScanline(tiff, buf, y);
+                            ImageIterator xd(yd);
 
-                    for(unsigned int x=0; x<w; ++x, ++xd.x)
-                    {
-                        a.set(((uint16 *)buf)[x], xd);
+                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            {
+                                a.set(((uint16*)buf)[x], xd);
+                            }
+                        }
+                        break;
                     }
-                }
-                break;
-              }
-              case 32:
-              {
-                for(unsigned int y=0; y<h; ++y, ++yd.y)
-                {
-                    TIFFReadScanline(tiff, buf, y);
-                    ImageIterator xd(yd);
+                    case 32:
+                    {
+                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                        {
+                            TIFFReadScanline(tiff, buf, y);
+                            ImageIterator xd(yd);
 
-                    for(unsigned int x=0; x<w; ++x, ++xd.x)
-                    {
-                        a.set(((uint32 *)buf)[x], xd);
+                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            {
+                                a.set(((uint32*)buf)[x], xd);
+                            }
+                        }
+                        break;
                     }
+                    default:
+                        vigra_fail("tiffToScalarImage(TiffImage *, ScalarImageIterator): "
+                                   "unsupported number of bits per pixel");
                 }
                 break;
-              }
-              default:
-                vigra_fail("tiffToScalarImage(TiffImage *, ScalarImageIterator): "
-                     "unsupported number of bits per pixel");
             }
-            break;
-          }
-          case SAMPLEFORMAT_INT:
-          {
-            switch (bitsPerSample)
+            case SAMPLEFORMAT_INT:
             {
-              case 1:
-              {
-                for(unsigned int y=0; y<h; ++y, ++yd.y)
+                switch (bitsPerSample)
                 {
-                    TIFFReadScanline(tiff, buf, y);
-                    ImageIterator xd(yd);
-
-                    for(unsigned int x=0; x<w; ++x, ++xd.x)
+                    case 1:
                     {
-                        if(fillorder == FILLORDER_MSB2LSB)
+                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
                         {
-                            a.set(((((int8 *)buf)[x/8] >> (7 - x%8)) & 1) ? max : min, xd);
+                            TIFFReadScanline(tiff, buf, y);
+                            ImageIterator xd(yd);
+
+                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            {
+                                if (fillorder == FILLORDER_MSB2LSB)
+                                {
+                                    a.set(((((int8*)buf)[x / 8] >> (7 - x % 8)) & 1) ? max : min, xd);
+                                }
+                                else
+                                {
+                                    a.set(((((int8*)buf)[x / 8] >> (x % 8)) & 1) ? max : min, xd);
+                                }
+                            }
                         }
-                        else
+                        break;
+                    }
+                    case 8:
+                    {
+                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
                         {
-                            a.set(((((int8 *)buf)[x/8] >> (x%8)) & 1) ? max : min, xd);
+                            TIFFReadScanline(tiff, buf, y);
+                            ImageIterator xd(yd);
+
+                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            {
+                                a.set(offset + scale * ((uint8*)buf)[x], xd);
+                            }
                         }
+                        break;
                     }
-                }
-                break;
-              }
-              case 8:
-              {
-                for(unsigned int y=0; y<h; ++y, ++yd.y)
-                {
-                    TIFFReadScanline(tiff, buf, y);
-                    ImageIterator xd(yd);
-
-                    for(unsigned int x=0; x<w; ++x, ++xd.x)
+                    case 16:
                     {
-                        a.set(offset + scale*((uint8 *)buf)[x], xd);
-                    }
-                }
-                break;
-              }
-              case 16:
-              {
-                for(unsigned int y=0; y<h; ++y, ++yd.y)
-                {
-                    TIFFReadScanline(tiff, buf, y);
-                    ImageIterator xd(yd);
+                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                        {
+                            TIFFReadScanline(tiff, buf, y);
+                            ImageIterator xd(yd);
 
-                    for(unsigned int x=0; x<w; ++x, ++xd.x)
-                    {
-                        a.set(((int16 *)buf)[x], xd);
+                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            {
+                                a.set(((int16*)buf)[x], xd);
+                            }
+                        }
+                        break;
                     }
-                }
-                break;
-              }
-              case 32:
-              {
-                for(unsigned int y=0; y<h; ++y, ++yd.y)
-                {
-                    TIFFReadScanline(tiff, buf, y);
-                    ImageIterator xd(yd);
+                    case 32:
+                    {
+                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                        {
+                            TIFFReadScanline(tiff, buf, y);
+                            ImageIterator xd(yd);
 
-                    for(unsigned int x=0; x<w; ++x, ++xd.x)
-                    {
-                        a.set(((int32 *)buf)[x], xd);
+                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            {
+                                a.set(((int32*)buf)[x], xd);
+                            }
+                        }
+                        break;
                     }
+                    default:
+                        vigra_fail("tiffToScalarImage(TiffImage *, ScalarImageIterator): "
+                                   "unsupported number of bits per pixel");
                 }
                 break;
-              }
-              default:
-                vigra_fail("tiffToScalarImage(TiffImage *, ScalarImageIterator): "
-                     "unsupported number of bits per pixel");
             }
-            break;
-          }
-          case SAMPLEFORMAT_IEEEFP:
-          {
-            switch (bitsPerSample)
+            case SAMPLEFORMAT_IEEEFP:
             {
-              case sizeof(float)*8:
-              {
-                for(unsigned int y=0; y<h; ++y, ++yd.y)
+                switch (bitsPerSample)
                 {
-                    TIFFReadScanline(tiff, buf, y);
-                    ImageIterator xd(yd);
-
-                    for(unsigned int x=0; x<w; ++x, ++xd.x)
+                    case sizeof(float) * 8:
                     {
-                        a.set(((float *)buf)[x], xd);
+                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                        {
+                            TIFFReadScanline(tiff, buf, y);
+                            ImageIterator xd(yd);
+
+                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            {
+                                a.set(((float*)buf)[x], xd);
+                            }
+                        }
+                        break;
                     }
+                    case sizeof(double) * 8:
+                    {
+                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                        {
+                            TIFFReadScanline(tiff, buf, y);
+                            ImageIterator xd(yd);
+
+                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            {
+                                a.set(((double*)buf)[x], xd);
+                            }
+                        }
+                        break;
+                    }
+                    default:
+                        vigra_fail("tiffToScalarImage(TiffImage *, ScalarImageIterator): "
+                                   "unsupported number of bits per pixel");
                 }
                 break;
-              }
-              case sizeof(double)*8:
-              {
-                for(unsigned int y=0; y<h; ++y, ++yd.y)
-                {
-                    TIFFReadScanline(tiff, buf, y);
-                    ImageIterator xd(yd);
-
-                    for(unsigned int x=0; x<w; ++x, ++xd.x)
-                    {
-                        a.set(((double *)buf)[x], xd);
-                    }
-                }
-                break;
-              }
-              default:
-                vigra_fail("tiffToScalarImage(TiffImage *, ScalarImageIterator): "
-                     "unsupported number of bits per pixel");
             }
-            break;
-          }
-          default:
-          {
-            // should never happen
-            vigra_fail("tiffToScalarImage(TiffImage *, ScalarImageIterator): " 
-                 "internal error.");
-          }
+            default:
+            {
+                // should never happen
+                vigra_fail("tiffToScalarImage(TiffImage *, ScalarImageIterator): "
+                           "internal error.");
+            }
         }
     }
-    catch(...)
+    catch (...)
     {
         delete[] buf;
         throw;
@@ -558,9 +557,9 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
     delete[] buf;
 }
 
-template <class ImageIterator, class Accessor>
+template<class ImageIterator, class Accessor>
 void
-tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
+tiffToScalarImage(TiffImage* tiff, pair<ImageIterator, Accessor> dest)
 {
     tiffToScalarImage(tiff, dest.first, dest.second);
 }
@@ -690,20 +689,19 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
        bitsPerSample == 64
     \endcode
 */
-doxygen_overloaded_function(template <...> void tiffToRGBImage)
+doxygen_overloaded_function(template<...> void tiffToRGBImage)
 
-template <class RGBImageIterator, class RGBAccessor>
-void
-tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
+    template<class RGBImageIterator, class RGBAccessor>
+    void tiffToRGBImage(TiffImage* tiff, RGBImageIterator iter, RGBAccessor a)
 {
     vigra_precondition(tiff != 0,
-              "tiffToRGBImage(TiffImage *, RGBImageIterator): " 
-          "NULL pointer to input data.");
-    
-    uint16 sampleFormat = 1, bitsPerSample, 
+                       "tiffToRGBImage(TiffImage *, RGBImageIterator): "
+                       "NULL pointer to input data.");
+
+    uint16 sampleFormat = 1, bitsPerSample,
            samplesPerPixel, planarConfig, photometric;
-    uint32 w,h;
-    
+    uint32 w, h;
+
     TIFFGetField(tiff, TIFFTAG_SAMPLEFORMAT, &sampleFormat);
     TIFFGetField(tiff, TIFFTAG_BITSPERSAMPLE, &bitsPerSample);
     TIFFGetField(tiff, TIFFTAG_SAMPLESPERPIXEL, &samplesPerPixel);
@@ -711,378 +709,378 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
     TIFFGetField(tiff, TIFFTAG_PLANARCONFIG, &planarConfig);
     TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
     TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
-    
+
     vigra_precondition(photometric == PHOTOMETRIC_RGB ||
-                 photometric == PHOTOMETRIC_PALETTE, 
-             "tiffToRGBImage(TiffImage *, RGBImageIterator): " 
-             "Image isn't RGB.");
-    
+                           photometric == PHOTOMETRIC_PALETTE,
+                       "tiffToRGBImage(TiffImage *, RGBImageIterator): "
+                       "Image isn't RGB.");
+
     vigra_precondition(sampleFormat != SAMPLEFORMAT_VOID,
-             "tiffToRGBImage(TiffImage *, RGBImageIterator): " 
-             "undefined pixeltype (SAMPLEFORMAT_VOID).");
-        
+                       "tiffToRGBImage(TiffImage *, RGBImageIterator): "
+                       "undefined pixeltype (SAMPLEFORMAT_VOID).");
+
     RGBImageIterator yd(iter);
-    
+
     switch (photometric)
     {
-      case PHOTOMETRIC_PALETTE:
-      {
-        uint32 * raster = new uint32[w*h];
-        try
+        case PHOTOMETRIC_PALETTE:
         {
-            if (!TIFFReadRGBAImage(tiff, w, h, raster, 0)) 
+            uint32* raster = new uint32[w * h];
+            try
             {
-                vigra_fail(
-                  "tiffToRGBImage(TiffImage *, RGBImageIterator): " 
-                  "unable to read image data.");
-            }
-          
-            for(unsigned int y=0; y<h; ++y, ++yd.y)
-            {
-                typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
-                typename RGBImageIterator::row_iterator rowend = rowit + w;
-                for(int x=0; rowit<rowend; ++rowit,++x )
+                if (!TIFFReadRGBAImage(tiff, w, h, raster, 0))
                 {
-                    uint32 rast = raster[x+y*w];
-                    a.setRGB(TIFFGetR(rast),TIFFGetG(rast),TIFFGetB(rast),rowit);
+                    vigra_fail(
+                        "tiffToRGBImage(TiffImage *, RGBImageIterator): "
+                        "unable to read image data.");
                 }
-            }
-        }
-        catch(...)
-        {
-            delete[] raster;
-            throw;
-        }
-        delete[] raster;
-        break;
-      }
-      case PHOTOMETRIC_RGB:
-      {
-        vigra_precondition(samplesPerPixel == 3,
-                 "tiffToRGBImage(TiffImage *, RGBImageIterator): " 
-                 "number of samples per pixel must be 3.");
-        
-        int bufsize = TIFFScanlineSize(tiff);
-        tdata_t * bufr = new tdata_t[bufsize];
-        tdata_t * bufg = new tdata_t[bufsize];
-        tdata_t * bufb = new tdata_t[bufsize];
-        
-        int offset = (planarConfig == PLANARCONFIG_CONTIG) ? 3 : 1;
-        
-        try
-        {
-            switch(sampleFormat)
-            {
-              case SAMPLEFORMAT_UINT:
-              {
-                switch (bitsPerSample)
-                {
-                  case 8:
-                  {
-                    for(unsigned int y=0; y<h; ++y, ++yd.y)
-                    {
-                        uint8 *pr, *pg, *pb;
-                        
-                        if(planarConfig == PLANARCONFIG_CONTIG)
-                        {
-                            TIFFReadScanline(tiff, bufr, y);
-                            pr = (uint8 *)bufr;
-                            pg = pr+1;
-                            pb = pg+1;
-                        }
-                        else
-                        {
-                            TIFFReadScanline(tiff, bufr, y, 0);
-                            TIFFReadScanline(tiff, bufg, y, 1);
-                            TIFFReadScanline(tiff, bufb, y, 2);
-                            pr = (uint8 *)bufr;
-                            pg = (uint8 *)bufg;
-                            pb = (uint8 *)bufb;
-                        }
-                        
-                        typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
-                        typename RGBImageIterator::row_iterator rowend = rowit + w;
-                        for(; rowit<rowend; ++rowit, pr+=offset, pg+=offset, pb+=offset)
-                            a.setRGB(*pr,*pg, *pb, rowit);
-                    }
-                    break;
-                  }
-                  case 16:
-                  {
-                    for(unsigned int y=0; y<h; ++y, ++yd.y)
-                    {
-                        uint16 *pr, *pg, *pb;
-                        
-                        if(planarConfig == PLANARCONFIG_CONTIG)
-                        {
-                            TIFFReadScanline(tiff, bufr, y);
-                            pr = (uint16 *)bufr;
-                            pg = pr+1;
-                            pb = pg+1;
-                        }
-                        else
-                        {
-                            TIFFReadScanline(tiff, bufr, y, 0);
-                            TIFFReadScanline(tiff, bufg, y, 1);
-                            TIFFReadScanline(tiff, bufb, y, 2);
-                            pr = (uint16 *)bufr;
-                            pg = (uint16 *)bufg;
-                            pb = (uint16 *)bufb;
-                        }
-                        
-                        typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
-                        typename RGBImageIterator::row_iterator rowend = rowit + w;
-                        for(; rowit<rowend; ++rowit, pr+=offset, pg+=offset, pb+=offset)
-                            a.setRGB(*pr,*pg, *pb, rowit);
-                    }
-                    break;
-                  }
-                  case 32:
-                  {
-                    for(unsigned int y=0; y<h; ++y, ++yd.y)
-                    {
-                        uint32 *pr, *pg, *pb;
-                        
-                        if(planarConfig == PLANARCONFIG_CONTIG)
-                        {
-                            TIFFReadScanline(tiff, bufr, y);
-                            pr = (uint32 *)bufr;
-                            pg = pr+1;
-                            pb = pg+1;
-                        }
-                        else
-                        {
-                            TIFFReadScanline(tiff, bufr, y, 0);
-                            TIFFReadScanline(tiff, bufg, y, 1);
-                            TIFFReadScanline(tiff, bufb, y, 2);
-                            pr = (uint32 *)bufr;
-                            pg = (uint32 *)bufg;
-                            pb = (uint32 *)bufb;
-                        }
-                                                                        
-                        typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
-                        typename RGBImageIterator::row_iterator rowend = rowit + w;
-                        for(; rowit<rowend; ++rowit, pr+=offset, pg+=offset, pb+=offset)
-                            a.setRGB(*pr,*pg, *pb, rowit);
-                    }
-                    break;
-                  }
-                  default:
-                  {
-                    vigra_fail("tiffToRGBImage(TiffImage *, RGBImageIterator): "
-                         "unsupported number of bits per pixel");
-                  }
-                }
-                break;
-              }
-              case SAMPLEFORMAT_INT:
-              {
-                switch (bitsPerSample)
-                {
-                  case 8:
-                  {
-                    for(unsigned int y=0; y<h; ++y, ++yd.y)
-                    {
-                        int8 *pr, *pg, *pb;
-                        
-                        if(planarConfig == PLANARCONFIG_CONTIG)
-                        {
-                            TIFFReadScanline(tiff, bufr, y);
-                            pr = (int8 *)bufr;
-                            pg = pr+1;
-                            pb = pg+1;
-                        }
-                        else
-                        {
-                            TIFFReadScanline(tiff, bufr, y, 0);
-                            TIFFReadScanline(tiff, bufg, y, 1);
-                            TIFFReadScanline(tiff, bufb, y, 2);
-                            pr = (int8 *)bufr;
-                            pg = (int8 *)bufg;
-                            pb = (int8 *)bufb;
-                        }
-                        
-                        typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
-                        typename RGBImageIterator::row_iterator rowend = rowit + w;
-                        for(; rowit<rowend; ++rowit, pr+=offset, pg+=offset, pb+=offset)
-                            a.setRGB(*pr,*pg, *pb, rowit);
-                    }
-                    break;
-                  }
-                  case 16:
-                  {
-                    for(unsigned int y=0; y<h; ++y, ++yd.y)
-                    {
-                        int16 *pr, *pg, *pb;
-                        
-                        if(planarConfig == PLANARCONFIG_CONTIG)
-                        {
-                            TIFFReadScanline(tiff, bufr, y);
-                            pr = (int16 *)bufr;
-                            pg = pr+1;
-                            pb = pg+1;
-                        }
-                        else
-                        {
-                            TIFFReadScanline(tiff, bufr, y, 0);
-                            TIFFReadScanline(tiff, bufg, y, 1);
-                            TIFFReadScanline(tiff, bufb, y, 2);
-                            pr = (int16 *)bufr;
-                            pg = (int16 *)bufg;
-                            pb = (int16 *)bufb;
-                        }
-                        typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
-                        typename RGBImageIterator::row_iterator rowend = rowit + w;
-                        for(; rowit<rowend; ++rowit, pr+=offset, pg+=offset, pb+=offset)
-                            a.setRGB(*pr,*pg, *pb, rowit);
-                    }
-                    break;
-                  }
-                  case 32:
-                  {
-                    for(unsigned int y=0; y<h; ++y, ++yd.y)
-                    {
-                        int32 *pr, *pg, *pb;
-                        
-                        if(planarConfig == PLANARCONFIG_CONTIG)
-                        {
-                            TIFFReadScanline(tiff, bufr, y);
-                            pr = (int32 *)bufr;
-                            pg = pr+1;
-                            pb = pg+1;
-                        }
-                        else
-                        {
-                            TIFFReadScanline(tiff, bufr, y, 0);
-                            TIFFReadScanline(tiff, bufg, y, 1);
-                            TIFFReadScanline(tiff, bufb, y, 2);
-                            pr = (int32 *)bufr;
-                            pg = (int32 *)bufg;
-                            pb = (int32 *)bufb;
-                        }
 
-                        typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
-                        typename RGBImageIterator::row_iterator rowend = rowit + w;
-                        for(; rowit<rowend; ++rowit, pr+=offset, pg+=offset, pb+=offset)
-                            a.setRGB(*pr,*pg, *pb, rowit);
-                    }
-                    break;
-                  }
-                  default:
-                    vigra_fail("tiffToRGBImage(TiffImage *, RGBImageIterator): "
-                         "unsupported number of bits per pixel");
-                }
-                break;
-              }
-              case SAMPLEFORMAT_IEEEFP:
-              {
-                switch (bitsPerSample)
+                for (unsigned int y = 0; y < h; ++y, ++yd.y)
                 {
-                  case sizeof(float)*8:
-                  {
-                    for(unsigned int y=0; y<h; ++y, ++yd.y)
+                    typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
+                    typename RGBImageIterator::row_iterator rowend = rowit + w;
+                    for (int x = 0; rowit < rowend; ++rowit, ++x)
                     {
-                        float *pr, *pg, *pb;
-                        
-                        if(planarConfig == PLANARCONFIG_CONTIG)
-                        {
-                            TIFFReadScanline(tiff, bufr, y);
-                            pr = (float *)bufr;
-                            pg = pr+1;
-                            pb = pg+1;
-                        }
-                        else
-                        {
-                            TIFFReadScanline(tiff, bufr, y, 0);
-                            TIFFReadScanline(tiff, bufg, y, 1);
-                            TIFFReadScanline(tiff, bufb, y, 2);
-                            pr = (float *)bufr;
-                            pg = (float *)bufg;
-                            pb = (float *)bufb;
-                        }
-                        
-                        typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
-                        typename RGBImageIterator::row_iterator rowend = rowit + w;
-                        for(; rowit<rowend; ++rowit, pr+=offset, pg+=offset, pb+=offset)
-                            a.setRGB(*pr,*pg, *pb, rowit);
+                        uint32 rast = raster[x + y * w];
+                        a.setRGB(TIFFGetR(rast), TIFFGetG(rast), TIFFGetB(rast), rowit);
                     }
-                    break;
-                  }
-                  case sizeof(double)*8:
-                  {
-                    for(unsigned int y=0; y<h; ++y, ++yd.y)
-                    {
-                        double *pr, *pg, *pb;
-                        
-                        if(planarConfig == PLANARCONFIG_CONTIG)
-                        {
-                            TIFFReadScanline(tiff, bufr, y);
-                            pr = (double *)bufr;
-                            pg = pr+1;
-                            pb = pg+1;
-                        }
-                        else
-                        {
-                            TIFFReadScanline(tiff, bufr, y, 0);
-                            TIFFReadScanline(tiff, bufg, y, 1);
-                            TIFFReadScanline(tiff, bufb, y, 2);
-                            pr = (double *)bufr;
-                            pg = (double *)bufg;
-                            pb = (double *)bufb;
-                        }
-                        
-                        typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
-                        typename RGBImageIterator::row_iterator rowend = rowit + w;
-                        for(; rowit<rowend; ++rowit, pr+=offset, pg+=offset, pb+=offset)
-                            a.setRGB(*pr,*pg, *pb, rowit);
-                    }
-                    break;
-                  }
-                  default:
-                    vigra_fail("tiffToRGBImage(TiffImage *, RGBImageIterator): "
-                         "unsupported number of bits per pixel");
                 }
-                break;
-              }
-              default:
-              {
-                // should never happen
-                vigra_fail("tiffToRGBImage(TiffImage *, RGBImageIterator): " 
-                     "internal error.");
-              }
-          }
+            }
+            catch (...)
+            {
+                delete[] raster;
+                throw;
+            }
+            delete[] raster;
+            break;
         }
-        catch(...)
+        case PHOTOMETRIC_RGB:
         {
+            vigra_precondition(samplesPerPixel == 3,
+                               "tiffToRGBImage(TiffImage *, RGBImageIterator): "
+                               "number of samples per pixel must be 3.");
+
+            int bufsize = TIFFScanlineSize(tiff);
+            tdata_t* bufr = new tdata_t[bufsize];
+            tdata_t* bufg = new tdata_t[bufsize];
+            tdata_t* bufb = new tdata_t[bufsize];
+
+            int offset = (planarConfig == PLANARCONFIG_CONTIG) ? 3 : 1;
+
+            try
+            {
+                switch (sampleFormat)
+                {
+                    case SAMPLEFORMAT_UINT:
+                    {
+                        switch (bitsPerSample)
+                        {
+                            case 8:
+                            {
+                                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                                {
+                                    uint8 *pr, *pg, *pb;
+
+                                    if (planarConfig == PLANARCONFIG_CONTIG)
+                                    {
+                                        TIFFReadScanline(tiff, bufr, y);
+                                        pr = (uint8*)bufr;
+                                        pg = pr + 1;
+                                        pb = pg + 1;
+                                    }
+                                    else
+                                    {
+                                        TIFFReadScanline(tiff, bufr, y, 0);
+                                        TIFFReadScanline(tiff, bufg, y, 1);
+                                        TIFFReadScanline(tiff, bufb, y, 2);
+                                        pr = (uint8*)bufr;
+                                        pg = (uint8*)bufg;
+                                        pb = (uint8*)bufb;
+                                    }
+
+                                    typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
+                                    typename RGBImageIterator::row_iterator rowend = rowit + w;
+                                    for (; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
+                                        a.setRGB(*pr, *pg, *pb, rowit);
+                                }
+                                break;
+                            }
+                            case 16:
+                            {
+                                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                                {
+                                    uint16 *pr, *pg, *pb;
+
+                                    if (planarConfig == PLANARCONFIG_CONTIG)
+                                    {
+                                        TIFFReadScanline(tiff, bufr, y);
+                                        pr = (uint16*)bufr;
+                                        pg = pr + 1;
+                                        pb = pg + 1;
+                                    }
+                                    else
+                                    {
+                                        TIFFReadScanline(tiff, bufr, y, 0);
+                                        TIFFReadScanline(tiff, bufg, y, 1);
+                                        TIFFReadScanline(tiff, bufb, y, 2);
+                                        pr = (uint16*)bufr;
+                                        pg = (uint16*)bufg;
+                                        pb = (uint16*)bufb;
+                                    }
+
+                                    typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
+                                    typename RGBImageIterator::row_iterator rowend = rowit + w;
+                                    for (; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
+                                        a.setRGB(*pr, *pg, *pb, rowit);
+                                }
+                                break;
+                            }
+                            case 32:
+                            {
+                                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                                {
+                                    uint32 *pr, *pg, *pb;
+
+                                    if (planarConfig == PLANARCONFIG_CONTIG)
+                                    {
+                                        TIFFReadScanline(tiff, bufr, y);
+                                        pr = (uint32*)bufr;
+                                        pg = pr + 1;
+                                        pb = pg + 1;
+                                    }
+                                    else
+                                    {
+                                        TIFFReadScanline(tiff, bufr, y, 0);
+                                        TIFFReadScanline(tiff, bufg, y, 1);
+                                        TIFFReadScanline(tiff, bufb, y, 2);
+                                        pr = (uint32*)bufr;
+                                        pg = (uint32*)bufg;
+                                        pb = (uint32*)bufb;
+                                    }
+
+                                    typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
+                                    typename RGBImageIterator::row_iterator rowend = rowit + w;
+                                    for (; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
+                                        a.setRGB(*pr, *pg, *pb, rowit);
+                                }
+                                break;
+                            }
+                            default:
+                            {
+                                vigra_fail("tiffToRGBImage(TiffImage *, RGBImageIterator): "
+                                           "unsupported number of bits per pixel");
+                            }
+                        }
+                        break;
+                    }
+                    case SAMPLEFORMAT_INT:
+                    {
+                        switch (bitsPerSample)
+                        {
+                            case 8:
+                            {
+                                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                                {
+                                    int8 *pr, *pg, *pb;
+
+                                    if (planarConfig == PLANARCONFIG_CONTIG)
+                                    {
+                                        TIFFReadScanline(tiff, bufr, y);
+                                        pr = (int8*)bufr;
+                                        pg = pr + 1;
+                                        pb = pg + 1;
+                                    }
+                                    else
+                                    {
+                                        TIFFReadScanline(tiff, bufr, y, 0);
+                                        TIFFReadScanline(tiff, bufg, y, 1);
+                                        TIFFReadScanline(tiff, bufb, y, 2);
+                                        pr = (int8*)bufr;
+                                        pg = (int8*)bufg;
+                                        pb = (int8*)bufb;
+                                    }
+
+                                    typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
+                                    typename RGBImageIterator::row_iterator rowend = rowit + w;
+                                    for (; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
+                                        a.setRGB(*pr, *pg, *pb, rowit);
+                                }
+                                break;
+                            }
+                            case 16:
+                            {
+                                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                                {
+                                    int16 *pr, *pg, *pb;
+
+                                    if (planarConfig == PLANARCONFIG_CONTIG)
+                                    {
+                                        TIFFReadScanline(tiff, bufr, y);
+                                        pr = (int16*)bufr;
+                                        pg = pr + 1;
+                                        pb = pg + 1;
+                                    }
+                                    else
+                                    {
+                                        TIFFReadScanline(tiff, bufr, y, 0);
+                                        TIFFReadScanline(tiff, bufg, y, 1);
+                                        TIFFReadScanline(tiff, bufb, y, 2);
+                                        pr = (int16*)bufr;
+                                        pg = (int16*)bufg;
+                                        pb = (int16*)bufb;
+                                    }
+                                    typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
+                                    typename RGBImageIterator::row_iterator rowend = rowit + w;
+                                    for (; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
+                                        a.setRGB(*pr, *pg, *pb, rowit);
+                                }
+                                break;
+                            }
+                            case 32:
+                            {
+                                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                                {
+                                    int32 *pr, *pg, *pb;
+
+                                    if (planarConfig == PLANARCONFIG_CONTIG)
+                                    {
+                                        TIFFReadScanline(tiff, bufr, y);
+                                        pr = (int32*)bufr;
+                                        pg = pr + 1;
+                                        pb = pg + 1;
+                                    }
+                                    else
+                                    {
+                                        TIFFReadScanline(tiff, bufr, y, 0);
+                                        TIFFReadScanline(tiff, bufg, y, 1);
+                                        TIFFReadScanline(tiff, bufb, y, 2);
+                                        pr = (int32*)bufr;
+                                        pg = (int32*)bufg;
+                                        pb = (int32*)bufb;
+                                    }
+
+                                    typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
+                                    typename RGBImageIterator::row_iterator rowend = rowit + w;
+                                    for (; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
+                                        a.setRGB(*pr, *pg, *pb, rowit);
+                                }
+                                break;
+                            }
+                            default:
+                                vigra_fail("tiffToRGBImage(TiffImage *, RGBImageIterator): "
+                                           "unsupported number of bits per pixel");
+                        }
+                        break;
+                    }
+                    case SAMPLEFORMAT_IEEEFP:
+                    {
+                        switch (bitsPerSample)
+                        {
+                            case sizeof(float) * 8:
+                            {
+                                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                                {
+                                    float *pr, *pg, *pb;
+
+                                    if (planarConfig == PLANARCONFIG_CONTIG)
+                                    {
+                                        TIFFReadScanline(tiff, bufr, y);
+                                        pr = (float*)bufr;
+                                        pg = pr + 1;
+                                        pb = pg + 1;
+                                    }
+                                    else
+                                    {
+                                        TIFFReadScanline(tiff, bufr, y, 0);
+                                        TIFFReadScanline(tiff, bufg, y, 1);
+                                        TIFFReadScanline(tiff, bufb, y, 2);
+                                        pr = (float*)bufr;
+                                        pg = (float*)bufg;
+                                        pb = (float*)bufb;
+                                    }
+
+                                    typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
+                                    typename RGBImageIterator::row_iterator rowend = rowit + w;
+                                    for (; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
+                                        a.setRGB(*pr, *pg, *pb, rowit);
+                                }
+                                break;
+                            }
+                            case sizeof(double) * 8:
+                            {
+                                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                                {
+                                    double *pr, *pg, *pb;
+
+                                    if (planarConfig == PLANARCONFIG_CONTIG)
+                                    {
+                                        TIFFReadScanline(tiff, bufr, y);
+                                        pr = (double*)bufr;
+                                        pg = pr + 1;
+                                        pb = pg + 1;
+                                    }
+                                    else
+                                    {
+                                        TIFFReadScanline(tiff, bufr, y, 0);
+                                        TIFFReadScanline(tiff, bufg, y, 1);
+                                        TIFFReadScanline(tiff, bufb, y, 2);
+                                        pr = (double*)bufr;
+                                        pg = (double*)bufg;
+                                        pb = (double*)bufb;
+                                    }
+
+                                    typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
+                                    typename RGBImageIterator::row_iterator rowend = rowit + w;
+                                    for (; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
+                                        a.setRGB(*pr, *pg, *pb, rowit);
+                                }
+                                break;
+                            }
+                            default:
+                                vigra_fail("tiffToRGBImage(TiffImage *, RGBImageIterator): "
+                                           "unsupported number of bits per pixel");
+                        }
+                        break;
+                    }
+                    default:
+                    {
+                        // should never happen
+                        vigra_fail("tiffToRGBImage(TiffImage *, RGBImageIterator): "
+                                   "internal error.");
+                    }
+                }
+            }
+            catch (...)
+            {
+                delete[] bufr;
+                delete[] bufg;
+                delete[] bufb;
+                throw;
+            }
             delete[] bufr;
             delete[] bufg;
             delete[] bufb;
-            throw;
+
+            break;
         }
-        delete[] bufr;
-        delete[] bufg;
-        delete[] bufb;
-        
-        break;
-      }
-      default:
-      {
-        // should never happen
-        vigra_fail(
-          "tiffToRGBImage(TiffImage *, RGBImageIterator): " 
-          "internal error.");
-      }
+        default:
+        {
+            // should never happen
+            vigra_fail(
+                "tiffToRGBImage(TiffImage *, RGBImageIterator): "
+                "internal error.");
+        }
     }
 }
 
-template <class ImageIterator, class VectorComponentAccessor>
+template<class ImageIterator, class VectorComponentAccessor>
 void
-tiffToRGBImage(TiffImage * tiff, pair<ImageIterator, VectorComponentAccessor> dest)
+tiffToRGBImage(TiffImage* tiff, pair<ImageIterator, VectorComponentAccessor> dest)
 {
     tiffToRGBImage(tiff, dest.first, dest.second);
 }
 
-template <class T>
+template<class T>
 struct CreateTiffImage;
 
 /********************************************************/
@@ -1169,27 +1167,26 @@ struct CreateTiffImage;
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void createTiffImage)
+doxygen_overloaded_function(template<...> void createTiffImage)
 
-template <class ImageIterator, class Accessor>
-inline void
-createTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, TiffImage * tiff)
+    template<class ImageIterator, class Accessor>
+    inline void createTiffImage(ImageIterator upperleft, ImageIterator lowerright,
+                                Accessor a, TiffImage* tiff)
 {
     CreateTiffImage<typename Accessor::value_type>::
         exec(upperleft, lowerright, a, tiff);
 }
 
-template <class ImageIterator, class Accessor>
+template<class ImageIterator, class Accessor>
 inline void
-createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * tiff)
+createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage* tiff)
 {
     createTiffImage(src.first, src.second, src.third, tiff);
 }
 
-template <class T, class S>
+template<class T, class S>
 inline void
-createTiffImage(MultiArrayView<2, T, S> const & src, TiffImage * tiff)
+    createTiffImage(MultiArrayView<2, T, S> const& src, TiffImage* tiff)
 {
     createTiffImage(srcImageRange(src), tiff);
 }
@@ -1273,32 +1270,31 @@ createTiffImage(MultiArrayView<2, T, S> const & src, TiffImage * tiff)
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void createScalarTiffImage)
+doxygen_overloaded_function(template<...> void createScalarTiffImage)
 
-template <class ImageIterator, class Accessor>
-inline void
-createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, TiffImage * tiff)
+    template<class ImageIterator, class Accessor>
+    inline void createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
+                                      Accessor a, TiffImage* tiff)
 {
     CreateTiffImage<typename Accessor::value_type>::
         exec(upperleft, lowerright, a, tiff);
 }
 
-template <class ImageIterator, class Accessor>
+template<class ImageIterator, class Accessor>
 inline void
-createScalarTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * tiff)
+createScalarTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage* tiff)
 {
     createScalarTiffImage(src.first, src.second, src.third, tiff);
 }
 
-template <class ImageIterator, class Accessor>
+template<class ImageIterator, class Accessor>
 void
-createBScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                                 Accessor a, TiffImage * tiff)
+createBScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
+                       Accessor a, TiffImage* tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
-    
+
     TIFFSetField(tiff, TIFFTAG_IMAGEWIDTH, w);
     TIFFSetField(tiff, TIFFTAG_IMAGELENGTH, h);
     TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, 8);
@@ -1306,27 +1302,27 @@ createBScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     TIFFSetField(tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
     TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_UINT);
     TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
-    
+
     int bufsize = TIFFScanlineSize(tiff);
-    tdata_t * buf = new tdata_t[bufsize];
-    
+    tdata_t* buf = new tdata_t[bufsize];
+
     ImageIterator ys(upperleft);
-    
+
     try
     {
-        for(int y=0; y<h; ++y, ++ys.y)
+        for (int y = 0; y < h; ++y, ++ys.y)
         {
-            uint8 * p = (uint8 *)buf;
+            uint8* p = (uint8*)buf;
             ImageIterator xs(ys);
-            
-            for(int x=0; x<w; ++x, ++xs.x)
+
+            for (int x = 0; x < w; ++x, ++xs.x)
             {
                 p[x] = a(xs);
             }
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch(...)
+    catch (...)
     {
         delete[] buf;
         throw;
@@ -1334,14 +1330,14 @@ createBScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     delete[] buf;
 }
 
-template <class ImageIterator, class Accessor>
+template<class ImageIterator, class Accessor>
 void
-createShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                                 Accessor a, TiffImage * tiff)
+createShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
+                           Accessor a, TiffImage* tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
-    
+
     TIFFSetField(tiff, TIFFTAG_IMAGEWIDTH, w);
     TIFFSetField(tiff, TIFFTAG_IMAGELENGTH, h);
     TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, 16);
@@ -1349,27 +1345,27 @@ createShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     TIFFSetField(tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
     TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_INT);
     TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
-    
+
     int bufsize = TIFFScanlineSize(tiff);
-    tdata_t * buf = new tdata_t[bufsize];
-    
+    tdata_t* buf = new tdata_t[bufsize];
+
     ImageIterator ys(upperleft);
-    
+
     try
     {
-        for(int y=0; y<h; ++y, ++ys.y)
+        for (int y = 0; y < h; ++y, ++ys.y)
         {
-            int16 * p = (int16 *)buf;
+            int16* p = (int16*)buf;
             ImageIterator xs(ys);
-            
-            for(int x=0; x<w; ++x, ++xs.x)
+
+            for (int x = 0; x < w; ++x, ++xs.x)
             {
                 p[x] = a(xs);
             }
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch(...)
+    catch (...)
     {
         delete[] buf;
         throw;
@@ -1377,14 +1373,14 @@ createShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     delete[] buf;
 }
 
-template <class ImageIterator, class Accessor>
+template<class ImageIterator, class Accessor>
 void
-createUShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                                 Accessor a, TiffImage * tiff)
+createUShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
+                            Accessor a, TiffImage* tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
-    
+
     TIFFSetField(tiff, TIFFTAG_IMAGEWIDTH, w);
     TIFFSetField(tiff, TIFFTAG_IMAGELENGTH, h);
     TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, 16);
@@ -1392,27 +1388,27 @@ createUShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     TIFFSetField(tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
     TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_UINT);
     TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
-    
+
     int bufsize = TIFFScanlineSize(tiff);
-    tdata_t * buf = new tdata_t[bufsize];
-    
+    tdata_t* buf = new tdata_t[bufsize];
+
     ImageIterator ys(upperleft);
-    
+
     try
     {
-        for(int y=0; y<h; ++y, ++ys.y)
+        for (int y = 0; y < h; ++y, ++ys.y)
         {
-            uint16 * p = (uint16 *)buf;
+            uint16* p = (uint16*)buf;
             ImageIterator xs(ys);
-            
-            for(int x=0; x<w; ++x, ++xs.x)
+
+            for (int x = 0; x < w; ++x, ++xs.x)
             {
                 p[x] = a(xs);
             }
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch(...)
+    catch (...)
     {
         delete[] buf;
         throw;
@@ -1420,14 +1416,14 @@ createUShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     delete[] buf;
 }
 
-template <class ImageIterator, class Accessor>
+template<class ImageIterator, class Accessor>
 void
-createIScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                                 Accessor a, TiffImage * tiff)
+createIScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
+                       Accessor a, TiffImage* tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
-    
+
     TIFFSetField(tiff, TIFFTAG_IMAGEWIDTH, w);
     TIFFSetField(tiff, TIFFTAG_IMAGELENGTH, h);
     TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, 32);
@@ -1435,27 +1431,27 @@ createIScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     TIFFSetField(tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
     TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_INT);
     TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
-    
+
     int bufsize = TIFFScanlineSize(tiff);
-    tdata_t * buf = new tdata_t[bufsize];
-    
+    tdata_t* buf = new tdata_t[bufsize];
+
     ImageIterator ys(upperleft);
-    
+
     try
     {
-        for(int y=0; y<h; ++y, ++ys.y)
+        for (int y = 0; y < h; ++y, ++ys.y)
         {
-            int32 * p = (int32 *)buf;
+            int32* p = (int32*)buf;
             ImageIterator xs(ys);
-            
-            for(int x=0; x<w; ++x, ++xs.x)
+
+            for (int x = 0; x < w; ++x, ++xs.x)
             {
                 p[x] = a(xs);
             }
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch(...)
+    catch (...)
     {
         delete[] buf;
         throw;
@@ -1463,42 +1459,42 @@ createIScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     delete[] buf;
 }
 
-template <class ImageIterator, class Accessor>
+template<class ImageIterator, class Accessor>
 void
-createFScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                                 Accessor a, TiffImage * tiff)
+createFScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
+                       Accessor a, TiffImage* tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
-    
+
     TIFFSetField(tiff, TIFFTAG_IMAGEWIDTH, w);
     TIFFSetField(tiff, TIFFTAG_IMAGELENGTH, h);
-    TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, sizeof(float)*8);
+    TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, sizeof(float) * 8);
     TIFFSetField(tiff, TIFFTAG_SAMPLESPERPIXEL, 1);
     TIFFSetField(tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
     TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_IEEEFP);
     TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
-    
+
     int bufsize = TIFFScanlineSize(tiff);
-    tdata_t * buf = new tdata_t[bufsize];
-    
+    tdata_t* buf = new tdata_t[bufsize];
+
     ImageIterator ys(upperleft);
-    
+
     try
     {
-        for(int y=0; y<h; ++y, ++ys.y)
+        for (int y = 0; y < h; ++y, ++ys.y)
         {
-            float * p = (float *)buf;
+            float* p = (float*)buf;
             ImageIterator xs(ys);
-            
-            for(int x=0; x<w; ++x, ++xs.x)
+
+            for (int x = 0; x < w; ++x, ++xs.x)
             {
                 p[x] = a(xs);
             }
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch(...)
+    catch (...)
     {
         delete[] buf;
         throw;
@@ -1506,42 +1502,42 @@ createFScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     delete[] buf;
 }
 
-template <class ImageIterator, class Accessor>
+template<class ImageIterator, class Accessor>
 void
-createDScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                                 Accessor a, TiffImage * tiff)
+createDScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
+                       Accessor a, TiffImage* tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
-    
+
     TIFFSetField(tiff, TIFFTAG_IMAGEWIDTH, w);
     TIFFSetField(tiff, TIFFTAG_IMAGELENGTH, h);
-    TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, sizeof(double)*8);
+    TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, sizeof(double) * 8);
     TIFFSetField(tiff, TIFFTAG_SAMPLESPERPIXEL, 1);
     TIFFSetField(tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
     TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_IEEEFP);
     TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
-    
+
     int bufsize = TIFFScanlineSize(tiff);
-    tdata_t * buf = new tdata_t[bufsize];
-    
+    tdata_t* buf = new tdata_t[bufsize];
+
     ImageIterator ys(upperleft);
-    
+
     try
     {
-        for(int y=0; y<h; ++y, ++ys.y)
+        for (int y = 0; y < h; ++y, ++ys.y)
         {
-            double * p = (double *)buf;
+            double* p = (double*)buf;
             ImageIterator xs(ys);
-            
-            for(int x=0; x<w; ++x, ++xs.x)
+
+            for (int x = 0; x < w; ++x, ++xs.x)
             {
                 p[x] = a(xs);
             }
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch(...)
+    catch (...)
     {
         delete[] buf;
         throw;
@@ -1549,73 +1545,73 @@ createDScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     delete[] buf;
 }
 
-template <>
+template<>
 struct CreateTiffImage<unsigned char>
 {
-    template <class ImageIterator, class Accessor>
+    template<class ImageIterator, class Accessor>
     static void
-    exec(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, TiffImage * tiff)
+    exec(ImageIterator upperleft, ImageIterator lowerright,
+         Accessor a, TiffImage* tiff)
     {
         createBScalarTiffImage(upperleft, lowerright, a, tiff);
     }
 };
 
-template <>
+template<>
 struct CreateTiffImage<short>
 {
-    template <class ImageIterator, class Accessor>
+    template<class ImageIterator, class Accessor>
     static void
-    exec(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, TiffImage * tiff)
+    exec(ImageIterator upperleft, ImageIterator lowerright,
+         Accessor a, TiffImage* tiff)
     {
         createShortScalarTiffImage(upperleft, lowerright, a, tiff);
     }
 };
 
-template <>
+template<>
 struct CreateTiffImage<unsigned short>
 {
-    template <class ImageIterator, class Accessor>
+    template<class ImageIterator, class Accessor>
     static void
-    exec(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, TiffImage * tiff)
+    exec(ImageIterator upperleft, ImageIterator lowerright,
+         Accessor a, TiffImage* tiff)
     {
         createUShortScalarTiffImage(upperleft, lowerright, a, tiff);
     }
 };
 
-template <>
+template<>
 struct CreateTiffImage<int>
 {
-    template <class ImageIterator, class Accessor>
+    template<class ImageIterator, class Accessor>
     static void
-    exec(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, TiffImage * tiff)
+    exec(ImageIterator upperleft, ImageIterator lowerright,
+         Accessor a, TiffImage* tiff)
     {
         createIScalarTiffImage(upperleft, lowerright, a, tiff);
     }
 };
 
-template <>
+template<>
 struct CreateTiffImage<float>
 {
-    template <class ImageIterator, class Accessor>
+    template<class ImageIterator, class Accessor>
     static void
-    exec(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, TiffImage * tiff)
+    exec(ImageIterator upperleft, ImageIterator lowerright,
+         Accessor a, TiffImage* tiff)
     {
         createFScalarTiffImage(upperleft, lowerright, a, tiff);
     }
 };
 
-template <>
+template<>
 struct CreateTiffImage<double>
 {
-    template <class ImageIterator, class Accessor>
+    template<class ImageIterator, class Accessor>
     static void
-    exec(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, TiffImage * tiff)
+    exec(ImageIterator upperleft, ImageIterator lowerright,
+         Accessor a, TiffImage* tiff)
     {
         createDScalarTiffImage(upperleft, lowerright, a, tiff);
     }
@@ -1702,32 +1698,31 @@ struct CreateTiffImage<double>
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void createRGBTiffImage)
+doxygen_overloaded_function(template<...> void createRGBTiffImage)
 
-template <class RGBImageIterator, class RGBAccessor>
-inline void
-createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
-                   RGBAccessor a, TiffImage * tiff)
+    template<class RGBImageIterator, class RGBAccessor>
+    inline void createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
+                                   RGBAccessor a, TiffImage* tiff)
 {
     CreateTiffImage<typename RGBAccessor::value_type>::
         exec(upperleft, lowerright, a, tiff);
 }
 
-template <class RGBImageIterator, class RGBAccessor>
+template<class RGBImageIterator, class RGBAccessor>
 inline void
-createRGBTiffImage(triple<RGBImageIterator, RGBImageIterator, RGBAccessor> src, TiffImage * tiff)
+createRGBTiffImage(triple<RGBImageIterator, RGBImageIterator, RGBAccessor> src, TiffImage* tiff)
 {
     createRGBTiffImage(src.first, src.second, src.third, tiff);
 }
 
-template <class RGBImageIterator, class RGBAccessor>
+template<class RGBImageIterator, class RGBAccessor>
 void
-createBRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
-                                   RGBAccessor a, TiffImage * tiff)
+createBRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
+                    RGBAccessor a, TiffImage* tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
-    
+
     TIFFSetField(tiff, TIFFTAG_IMAGEWIDTH, w);
     TIFFSetField(tiff, TIFFTAG_IMAGELENGTH, h);
     TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, 8);
@@ -1735,23 +1730,23 @@ createBRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     TIFFSetField(tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
     TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_UINT);
     TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
-    
+
     int bufsize = TIFFScanlineSize(tiff);
-    tdata_t * buf = new tdata_t[bufsize];
-    
+    tdata_t* buf = new tdata_t[bufsize];
+
     RGBImageIterator ys(upperleft);
-    
+
     try
     {
-        for(int y=0; y<h; ++y, ++ys.y)
+        for (int y = 0; y < h; ++y, ++ys.y)
         {
-            uint8 * pr = (uint8 *)buf;
-            uint8 * pg = pr+1;
-            uint8 * pb = pg+1;
-            
+            uint8* pr = (uint8*)buf;
+            uint8* pg = pr + 1;
+            uint8* pb = pg + 1;
+
             RGBImageIterator xs(ys);
-            
-            for(int x=0; x<w; ++x, ++xs.x, pr+=3, pg+=3, pb+=3)
+
+            for (int x = 0; x < w; ++x, ++xs.x, pr += 3, pg += 3, pb += 3)
             {
                 *pr = a.red(xs);
                 *pg = a.green(xs);
@@ -1760,7 +1755,7 @@ createBRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch(...)
+    catch (...)
     {
         delete[] buf;
         throw;
@@ -1768,14 +1763,14 @@ createBRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     delete[] buf;
 }
 
-template <class RGBImageIterator, class RGBAccessor>
+template<class RGBImageIterator, class RGBAccessor>
 void
-createShortRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
-                                   RGBAccessor a, TiffImage * tiff)
+createShortRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
+                        RGBAccessor a, TiffImage* tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
-    
+
     TIFFSetField(tiff, TIFFTAG_IMAGEWIDTH, w);
     TIFFSetField(tiff, TIFFTAG_IMAGELENGTH, h);
     TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, 16);
@@ -1783,23 +1778,23 @@ createShortRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     TIFFSetField(tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
     TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_INT);
     TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
-    
+
     int bufsize = TIFFScanlineSize(tiff);
-    tdata_t * buf = new tdata_t[bufsize];
-    
+    tdata_t* buf = new tdata_t[bufsize];
+
     RGBImageIterator ys(upperleft);
-    
+
     try
     {
-        for(int y=0; y<h; ++y, ++ys.y)
+        for (int y = 0; y < h; ++y, ++ys.y)
         {
-            uint16 * pr = (uint16 *)buf;
-            uint16 * pg = pr+1;
-            uint16 * pb = pg+1;
-            
+            uint16* pr = (uint16*)buf;
+            uint16* pg = pr + 1;
+            uint16* pb = pg + 1;
+
             RGBImageIterator xs(ys);
-            
-            for(int x=0; x<w; ++x, ++xs.x, pr+=3, pg+=3, pb+=3)
+
+            for (int x = 0; x < w; ++x, ++xs.x, pr += 3, pg += 3, pb += 3)
             {
                 *pr = a.red(xs);
                 *pg = a.green(xs);
@@ -1808,7 +1803,7 @@ createShortRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch(...)
+    catch (...)
     {
         delete[] buf;
         throw;
@@ -1816,14 +1811,14 @@ createShortRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     delete[] buf;
 }
 
-template <class RGBImageIterator, class RGBAccessor>
+template<class RGBImageIterator, class RGBAccessor>
 void
-createIRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
-                                   RGBAccessor a, TiffImage * tiff)
+createIRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
+                    RGBAccessor a, TiffImage* tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
-    
+
     TIFFSetField(tiff, TIFFTAG_IMAGEWIDTH, w);
     TIFFSetField(tiff, TIFFTAG_IMAGELENGTH, h);
     TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, 32);
@@ -1831,23 +1826,23 @@ createIRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     TIFFSetField(tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
     TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_INT);
     TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
-    
+
     int bufsize = TIFFScanlineSize(tiff);
-    tdata_t * buf = new tdata_t[bufsize];
-    
+    tdata_t* buf = new tdata_t[bufsize];
+
     RGBImageIterator ys(upperleft);
-    
+
     try
     {
-        for(int y=0; y<h; ++y, ++ys.y)
+        for (int y = 0; y < h; ++y, ++ys.y)
         {
-            uint32 * pr = (uint32 *)buf;
-            uint32 * pg = pr+1;
-            uint32 * pb = pg+1;
-            
+            uint32* pr = (uint32*)buf;
+            uint32* pg = pr + 1;
+            uint32* pb = pg + 1;
+
             RGBImageIterator xs(ys);
-            
-            for(int x=0; x<w; ++x, ++xs.x, pr+=3, pg+=3, pb+=3)
+
+            for (int x = 0; x < w; ++x, ++xs.x, pr += 3, pg += 3, pb += 3)
             {
                 *pr = a.red(xs);
                 *pg = a.green(xs);
@@ -1856,7 +1851,7 @@ createIRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch(...)
+    catch (...)
     {
         delete[] buf;
         throw;
@@ -1864,38 +1859,38 @@ createIRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     delete[] buf;
 }
 
-template <class RGBImageIterator, class RGBAccessor>
+template<class RGBImageIterator, class RGBAccessor>
 void
-createFRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
-                                   RGBAccessor a, TiffImage * tiff)
+createFRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
+                    RGBAccessor a, TiffImage* tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
-    
+
     TIFFSetField(tiff, TIFFTAG_IMAGEWIDTH, w);
     TIFFSetField(tiff, TIFFTAG_IMAGELENGTH, h);
-    TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, sizeof(float)*8);
+    TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, sizeof(float) * 8);
     TIFFSetField(tiff, TIFFTAG_SAMPLESPERPIXEL, 3);
     TIFFSetField(tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
     TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_IEEEFP);
     TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
-    
+
     int bufsize = TIFFScanlineSize(tiff);
-    tdata_t * buf = new tdata_t[bufsize];
-    
+    tdata_t* buf = new tdata_t[bufsize];
+
     RGBImageIterator ys(upperleft);
-    
+
     try
     {
-        for(int y=0; y<h; ++y, ++ys.y)
+        for (int y = 0; y < h; ++y, ++ys.y)
         {
-            float * pr = (float *)buf;
-            float * pg = pr+1;
-            float * pb = pg+1;
-            
+            float* pr = (float*)buf;
+            float* pg = pr + 1;
+            float* pb = pg + 1;
+
             RGBImageIterator xs(ys);
-            
-            for(int x=0; x<w; ++x, ++xs.x, pr+=3, pg+=3, pb+=3)
+
+            for (int x = 0; x < w; ++x, ++xs.x, pr += 3, pg += 3, pb += 3)
             {
                 *pr = a.red(xs);
                 *pg = a.green(xs);
@@ -1904,7 +1899,7 @@ createFRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch(...)
+    catch (...)
     {
         delete[] buf;
         throw;
@@ -1912,38 +1907,38 @@ createFRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     delete[] buf;
 }
 
-template <class RGBImageIterator, class RGBAccessor>
+template<class RGBImageIterator, class RGBAccessor>
 void
-createDRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
-                                   RGBAccessor a, TiffImage * tiff)
+createDRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
+                    RGBAccessor a, TiffImage* tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
-    
+
     TIFFSetField(tiff, TIFFTAG_IMAGEWIDTH, w);
     TIFFSetField(tiff, TIFFTAG_IMAGELENGTH, h);
-    TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, sizeof(double)*8);
+    TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, sizeof(double) * 8);
     TIFFSetField(tiff, TIFFTAG_SAMPLESPERPIXEL, 3);
     TIFFSetField(tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
     TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_IEEEFP);
     TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
-    
+
     int bufsize = TIFFScanlineSize(tiff);
-    tdata_t * buf = new tdata_t[bufsize];
-    
+    tdata_t* buf = new tdata_t[bufsize];
+
     RGBImageIterator ys(upperleft);
-    
+
     try
     {
-        for(int y=0; y<h; ++y, ++ys.y)
+        for (int y = 0; y < h; ++y, ++ys.y)
         {
-            double * pr = (double *)buf;
-            double * pg = pr+1;
-            double * pb = pg+1;
-            
+            double* pr = (double*)buf;
+            double* pg = pr + 1;
+            double* pb = pg + 1;
+
             RGBImageIterator xs(ys);
-            
-            for(int x=0; x<w; ++x, ++xs.x, pr+=3, pg+=3, pb+=3)
+
+            for (int x = 0; x < w; ++x, ++xs.x, pr += 3, pg += 3, pb += 3)
             {
                 *pr = a.red(xs);
                 *pg = a.green(xs);
@@ -1952,7 +1947,7 @@ createDRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch(...)
+    catch (...)
     {
         delete[] buf;
         throw;
@@ -1960,61 +1955,61 @@ createDRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     delete[] buf;
 }
 
-template <>
-struct CreateTiffImage<RGBValue<unsigned char> >
+template<>
+struct CreateTiffImage<RGBValue<unsigned char>>
 {
-    template <class ImageIterator, class Accessor>
+    template<class ImageIterator, class Accessor>
     static void
-    exec(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, TiffImage * tiff)
+    exec(ImageIterator upperleft, ImageIterator lowerright,
+         Accessor a, TiffImage* tiff)
     {
         createBRGBTiffImage(upperleft, lowerright, a, tiff);
     }
 };
 
-template <>
-struct CreateTiffImage<RGBValue<short> >
+template<>
+struct CreateTiffImage<RGBValue<short>>
 {
-    template <class ImageIterator, class Accessor>
+    template<class ImageIterator, class Accessor>
     static void
-    exec(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, TiffImage * tiff)
+    exec(ImageIterator upperleft, ImageIterator lowerright,
+         Accessor a, TiffImage* tiff)
     {
         createShortRGBTiffImage(upperleft, lowerright, a, tiff);
     }
 };
 
-template <>
-struct CreateTiffImage<RGBValue<int> >
+template<>
+struct CreateTiffImage<RGBValue<int>>
 {
-    template <class ImageIterator, class Accessor>
+    template<class ImageIterator, class Accessor>
     static void
-    exec(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, TiffImage * tiff)
+    exec(ImageIterator upperleft, ImageIterator lowerright,
+         Accessor a, TiffImage* tiff)
     {
         createIRGBTiffImage(upperleft, lowerright, a, tiff);
     }
 };
 
-template <>
-struct CreateTiffImage<RGBValue<float> >
+template<>
+struct CreateTiffImage<RGBValue<float>>
 {
-    template <class ImageIterator, class Accessor>
+    template<class ImageIterator, class Accessor>
     static void
-    exec(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, TiffImage * tiff)
+    exec(ImageIterator upperleft, ImageIterator lowerright,
+         Accessor a, TiffImage* tiff)
     {
         createFRGBTiffImage(upperleft, lowerright, a, tiff);
     }
 };
 
-template <>
-struct CreateTiffImage<RGBValue<double> >
+template<>
+struct CreateTiffImage<RGBValue<double>>
 {
-    template <class ImageIterator, class Accessor>
+    template<class ImageIterator, class Accessor>
     static void
-    exec(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, TiffImage * tiff)
+    exec(ImageIterator upperleft, ImageIterator lowerright,
+         Accessor a, TiffImage* tiff)
     {
         createDRGBTiffImage(upperleft, lowerright, a, tiff);
     }

@@ -59,24 +59,26 @@
 #include <execinfo.h>
 #include <stdio.h>
 #include <stdlib.h>
-    
 
-static char * program_name;
 
-static int vigra_addr2line(void const * const addr)
+static char* program_name;
+
+static int
+vigra_addr2line(void const* const addr)
 {
     char addr2line_cmd[512] = {0};
-    sprintf(addr2line_cmd,"addr2line -C -f -p -i -e %.256s %p", program_name, addr);
+    sprintf(addr2line_cmd, "addr2line -C -f -p -i -e %.256s %p", program_name, addr);
     return system(addr2line_cmd);
 }
 
-static void vigra_print_backtrace(int sig)
+static void
+vigra_print_backtrace(int sig)
 {
     int i, trace_size = 0;
-    char **messages = (char **)NULL;
+    char** messages = (char**)NULL;
     static const int BACKTRACE_SIZE = 100;
-    void *stack_traces[BACKTRACE_SIZE];
-    
+    void* stack_traces[BACKTRACE_SIZE];
+
     fprintf(stderr, "caught signal %d, printing backtrace\n\n", sig);
 
     trace_size = backtrace(stack_traces, BACKTRACE_SIZE);
@@ -89,8 +91,11 @@ static void vigra_print_backtrace(int sig)
             fprintf(stderr, "  error determining line # for: %sn", messages[i]);
         }
     }
-    if (messages) { free(messages); }
+    if (messages)
+    {
+        free(messages);
+    }
     exit(1);
 }
-    
+
 #endif // VIGRA_PRINT_BACKTRACE_HXX

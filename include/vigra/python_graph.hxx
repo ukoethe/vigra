@@ -43,60 +43,62 @@
 #define VIGRA_PYTHON_GRAPH_HXX
 
 /*boost*/
-#include <boost/python.hpp>
 #include <boost/iterator/transform_iterator.hpp>
+#include <boost/python.hpp>
 
 /*vigra*/
-#include <vigra/graphs.hxx>
-#include <vigra/numpy_array.hxx>
-#include <vigra/multi_gridgraph.hxx>
 #include <vigra/graph_generalization.hxx>
-#include <vigra/multi_array.hxx>
 #include <vigra/graphs.hxx>
-#include <vigra/priority_queue.hxx>
 #include <vigra/merge_graph_adaptor.hxx>
-namespace vigra{
-
-
-
+#include <vigra/multi_array.hxx>
+#include <vigra/multi_gridgraph.hxx>
+#include <vigra/numpy_array.hxx>
+#include <vigra/priority_queue.hxx>
+namespace vigra
+{
 
 
 
 template<class MAP>
 struct GraphMapTypeTraits;
 
-template< unsigned int DIM,class T>
-struct GraphMapTypeTraits<NumpyArray<DIM,T> >{
-    typedef typename NumpyArray<DIM,T>::value_type Value;
-    typedef Value &                                Reference;
-    typedef const Value  &                         ConstReference;
+template<unsigned int DIM, class T>
+struct GraphMapTypeTraits<NumpyArray<DIM, T>>
+{
+    typedef typename NumpyArray<DIM, T>::value_type Value;
+    typedef Value& Reference;
+    typedef const Value& ConstReference;
 };
 
 
-    
+
 template<class GRAPH>
-struct NodeHolder :  GRAPH::Node
+struct NodeHolder : GRAPH::Node
 {
     typedef typename GRAPH::Node Node;
-    NodeHolder(const lemon::Invalid & /*iv*/ = lemon::INVALID)
-    : Node(lemon::INVALID),
-      graph_(NULL)
-    {}
-    NodeHolder(const GRAPH & g , const Node & item)
-    : Node(item),
-      graph_(&g)
-    {}
+    NodeHolder(const lemon::Invalid& /*iv*/ = lemon::INVALID)
+        : Node(lemon::INVALID),
+          graph_(NULL)
+    {
+    }
+    NodeHolder(const GRAPH& g, const Node& item)
+        : Node(item),
+          graph_(&g)
+    {
+    }
 
-    typename GRAPH::index_type id()const{
+    typename GRAPH::index_type id() const
+    {
         return graph_->id(*this);
     }
 
     typename GraphDescriptorToMultiArrayIndex<GRAPH>::IntrinsicNodeMapShape
-    intrinsicNodeCoordinate()const{
-        return GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicNodeCoordinate(*graph_,*this);
+    intrinsicNodeCoordinate() const
+    {
+        return GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicNodeCoordinate(*graph_, *this);
     }
 
-    const GRAPH * graph_;
+    const GRAPH* graph_;
 };
 
 
@@ -106,127 +108,154 @@ struct EdgeHolder : GRAPH::Edge
 {
 
     typedef typename GRAPH::Edge Edge;
-    EdgeHolder(const lemon::Invalid & /*iv*/ = lemon::INVALID)
-    : Edge(lemon::INVALID),
-      graph_(NULL)
-    {}
-    EdgeHolder(const GRAPH & g , const Edge & item)
-    : Edge(item),
-      graph_(&g)
-    {}
+    EdgeHolder(const lemon::Invalid& /*iv*/ = lemon::INVALID)
+        : Edge(lemon::INVALID),
+          graph_(NULL)
+    {
+    }
+    EdgeHolder(const GRAPH& g, const Edge& item)
+        : Edge(item),
+          graph_(&g)
+    {
+    }
 
-    typename GRAPH::index_type id()const{
+    typename GRAPH::index_type id() const
+    {
         return graph_->id(*this);
     }
 
-    NodeHolder<GRAPH> u()const{
-        return NodeHolder<GRAPH>(*graph_,graph_->u(*this));
+    NodeHolder<GRAPH> u() const
+    {
+        return NodeHolder<GRAPH>(*graph_, graph_->u(*this));
     }
-    NodeHolder<GRAPH> v()const{
-        return NodeHolder<GRAPH>(*graph_,graph_->v(*this));
+    NodeHolder<GRAPH> v() const
+    {
+        return NodeHolder<GRAPH>(*graph_, graph_->v(*this));
     }
 
     typename GraphDescriptorToMultiArrayIndex<GRAPH>::IntrinsicEdgeMapShape
-    intrinsicEdgeCoordinate()const{
-        return GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicEdgeCoordinate(*graph_,*this);
+    intrinsicEdgeCoordinate() const
+    {
+        return GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicEdgeCoordinate(*graph_, *this);
     }
 
-    const GRAPH * graph_; 
+    const GRAPH* graph_;
 };
 
 
 
 template<class GRAPH>
-struct ArcHolder: GRAPH::Arc {
+struct ArcHolder : GRAPH::Arc
+{
     typedef typename GRAPH::Arc Arc;
-    ArcHolder(const lemon::Invalid & /*iv*/ = lemon::INVALID)
-    : Arc(lemon::INVALID),
-      graph_(NULL)
-    {}
-    ArcHolder(const GRAPH & g , const Arc & item)
-    : Arc(item),
-      graph_(&g)
-    {}
+    ArcHolder(const lemon::Invalid& /*iv*/ = lemon::INVALID)
+        : Arc(lemon::INVALID),
+          graph_(NULL)
+    {
+    }
+    ArcHolder(const GRAPH& g, const Arc& item)
+        : Arc(item),
+          graph_(&g)
+    {
+    }
 
-    typename GRAPH::index_type id()const{
+    typename GRAPH::index_type id() const
+    {
         return graph_->id(*this);
     }
 
     typename GraphDescriptorToMultiArrayIndex<GRAPH>::IntrinsicArcMapShape
-    intrinsicArcCoordinate()const{
-        return GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicArcCoordinate(*graph_,*this);
+    intrinsicArcCoordinate() const
+    {
+        return GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicArcCoordinate(*graph_, *this);
     }
 
 
-    const GRAPH * graph_;
+    const GRAPH* graph_;
 };
 
 
-namespace detail_python_graph{
+namespace detail_python_graph
+{
 
 template<class GRAPH>
-struct ArcToTargetNodeHolder{
+struct ArcToTargetNodeHolder
+{
     typedef typename GRAPH::Node Node;
     typedef typename GRAPH::Arc Arc;
-    ArcToTargetNodeHolder(const GRAPH & graph)
-    : graph_(&graph){
+    ArcToTargetNodeHolder(const GRAPH& graph)
+        : graph_(&graph)
+    {
     }
-    NodeHolder<GRAPH> operator()(const Arc & arc)const{
-        return NodeHolder<GRAPH>(*graph_,graph_->target(arc));
+    NodeHolder<GRAPH> operator()(const Arc& arc) const
+    {
+        return NodeHolder<GRAPH>(*graph_, graph_->target(arc));
     }
-    const GRAPH * graph_;
+    const GRAPH* graph_;
 };
 
 template<class GRAPH>
-struct ArcToEdgeHolder{
+struct ArcToEdgeHolder
+{
     typedef typename GRAPH::Edge Edge;
     typedef typename GRAPH::Arc Arc;
-    ArcToEdgeHolder(const GRAPH & graph)
-    : graph_(&graph){
+    ArcToEdgeHolder(const GRAPH& graph)
+        : graph_(&graph)
+    {
     }
-    EdgeHolder<GRAPH> operator()(const Arc & arc)const{
+    EdgeHolder<GRAPH> operator()(const Arc& arc) const
+    {
         const Edge edge(arc);
-        return EdgeHolder<GRAPH>(*graph_,edge);
+        return EdgeHolder<GRAPH>(*graph_, edge);
     }
-    const GRAPH * graph_;
+    const GRAPH* graph_;
 };
 
 template<class GRAPH>
-struct ArcToArcHolder{
+struct ArcToArcHolder
+{
     typedef typename GRAPH::Edge Edge;
     typedef typename GRAPH::Arc Arc;
-    ArcToArcHolder(const GRAPH & graph)
-    : graph_(&graph){
+    ArcToArcHolder(const GRAPH& graph)
+        : graph_(&graph)
+    {
     }
-    ArcHolder<GRAPH> operator()(const Arc & arc)const{
-        return ArcHolder<GRAPH>(*graph_,arc);
+    ArcHolder<GRAPH> operator()(const Arc& arc) const
+    {
+        return ArcHolder<GRAPH>(*graph_, arc);
     }
-    const GRAPH * graph_;
+    const GRAPH* graph_;
 };
 
 
 template<class GRAPH>
-struct NodeToNodeHolder{
+struct NodeToNodeHolder
+{
     typedef typename GRAPH::Node Node;
-    NodeToNodeHolder(const GRAPH & graph)
-    : graph_(&graph){
+    NodeToNodeHolder(const GRAPH& graph)
+        : graph_(&graph)
+    {
     }
-    NodeHolder<GRAPH> operator()(const Node & node)const{
-        return NodeHolder<GRAPH>(*graph_,node);
+    NodeHolder<GRAPH> operator()(const Node& node) const
+    {
+        return NodeHolder<GRAPH>(*graph_, node);
     }
-    const GRAPH * graph_;
+    const GRAPH* graph_;
 };
 
 template<class GRAPH>
-struct EdgeToEdgeHolder{
+struct EdgeToEdgeHolder
+{
     typedef typename GRAPH::Edge Edge;
-    EdgeToEdgeHolder(const GRAPH & graph)
-    : graph_(&graph){
+    EdgeToEdgeHolder(const GRAPH& graph)
+        : graph_(&graph)
+    {
     }
-    EdgeHolder<GRAPH> operator()(const Edge & edge)const{
-        return EdgeHolder<GRAPH>(*graph_,edge);
+    EdgeHolder<GRAPH> operator()(const Edge& edge) const
+    {
+        return EdgeHolder<GRAPH>(*graph_, edge);
     }
-    const GRAPH * graph_;
+    const GRAPH* graph_;
 };
 
 } // end namespace detail_python_graph
@@ -234,348 +263,399 @@ struct EdgeToEdgeHolder{
 
 
 template<class GRAPH>
-struct NodeIteratorHolder{
+struct NodeIteratorHolder
+{
     typedef typename GRAPH::Node Node;
     typedef typename GRAPH::NodeIt Iter;
     typedef detail_python_graph::NodeToNodeHolder<GRAPH> Transform;
-    typedef boost::transform_iterator<Transform ,Iter ,NodeHolder<GRAPH>, NodeHolder<GRAPH> > const_iterator;
-    NodeIteratorHolder(const GRAPH & graph,const Node & node = Node(lemon::INVALID) )
-    : graph_(&graph),
-      node_(node){
+    typedef boost::transform_iterator<Transform, Iter, NodeHolder<GRAPH>, NodeHolder<GRAPH>> const_iterator;
+    NodeIteratorHolder(const GRAPH& graph, const Node& node = Node(lemon::INVALID))
+        : graph_(&graph),
+          node_(node)
+    {
     }
-    const_iterator begin()const{
+    const_iterator begin() const
+    {
 
         Iter iter = GraphIteratorAccessor<GRAPH>::nodesBegin(*graph_);
-        return const_iterator(iter,Transform(*graph_));
+        return const_iterator(iter, Transform(*graph_));
     }
-    const_iterator end()const{
+    const_iterator end() const
+    {
         Iter iter = GraphIteratorAccessor<GRAPH>::nodesEnd(*graph_);
-        return const_iterator(iter,Transform(*graph_));
+        return const_iterator(iter, Transform(*graph_));
     }
-    const GRAPH * graph_;
+    const GRAPH* graph_;
     Node node_;
 };
 
 template<class GRAPH>
-struct EdgeIteratorHolder{
+struct EdgeIteratorHolder
+{
     typedef typename GRAPH::Edge Edge;
     typedef typename GRAPH::EdgeIt Iter;
     typedef detail_python_graph::EdgeToEdgeHolder<GRAPH> Transform;
-    typedef boost::transform_iterator<Transform ,Iter ,EdgeHolder<GRAPH>, EdgeHolder<GRAPH> > const_iterator;
-    EdgeIteratorHolder(const GRAPH & graph,const Edge & edge = Edge(lemon::INVALID) )
-    : graph_(&graph),
-      edge_(edge){
+    typedef boost::transform_iterator<Transform, Iter, EdgeHolder<GRAPH>, EdgeHolder<GRAPH>> const_iterator;
+    EdgeIteratorHolder(const GRAPH& graph, const Edge& edge = Edge(lemon::INVALID))
+        : graph_(&graph),
+          edge_(edge)
+    {
     }
-    const_iterator begin()const{
+    const_iterator begin() const
+    {
 
         Iter iter = GraphIteratorAccessor<GRAPH>::edgesBegin(*graph_);
-        return const_iterator(iter,Transform(*graph_));
+        return const_iterator(iter, Transform(*graph_));
     }
-    const_iterator end()const{
+    const_iterator end() const
+    {
         Iter iter = GraphIteratorAccessor<GRAPH>::edgesEnd(*graph_);
-        return const_iterator(iter,Transform(*graph_));
+        return const_iterator(iter, Transform(*graph_));
     }
-    const GRAPH * graph_;
+    const GRAPH* graph_;
     Edge edge_;
 };
 
 
 template<class GRAPH>
-struct NeighbourNodeIteratorHolder{
+struct NeighbourNodeIteratorHolder
+{
     typedef typename GRAPH::Node Node;
     typedef typename GRAPH::OutArcIt Iter;
     typedef detail_python_graph::ArcToTargetNodeHolder<GRAPH> Transform;
-    typedef boost::transform_iterator<Transform ,Iter ,NodeHolder<GRAPH>, NodeHolder<GRAPH> > const_iterator;
-    NeighbourNodeIteratorHolder(const GRAPH & graph,const Node & node)
-    : graph_(&graph),
-      node_(node){
+    typedef boost::transform_iterator<Transform, Iter, NodeHolder<GRAPH>, NodeHolder<GRAPH>> const_iterator;
+    NeighbourNodeIteratorHolder(const GRAPH& graph, const Node& node)
+        : graph_(&graph),
+          node_(node)
+    {
     }
-    const_iterator begin()const{
-        Iter iter = GraphIteratorAccessor<GRAPH>::outArcBegin(*graph_,node_);
-        return const_iterator(iter,Transform(*graph_));
+    const_iterator begin() const
+    {
+        Iter iter = GraphIteratorAccessor<GRAPH>::outArcBegin(*graph_, node_);
+        return const_iterator(iter, Transform(*graph_));
     }
-    const_iterator end()const{
-        Iter iter = GraphIteratorAccessor<GRAPH>::outArcEnd(*graph_,node_);
-        return const_iterator(iter,Transform(*graph_));
+    const_iterator end() const
+    {
+        Iter iter = GraphIteratorAccessor<GRAPH>::outArcEnd(*graph_, node_);
+        return const_iterator(iter, Transform(*graph_));
     }
-    const GRAPH * graph_;
+    const GRAPH* graph_;
     Node node_;
 };
 
 
 template<class GRAPH>
-struct IncEdgeIteratorHolder{
+struct IncEdgeIteratorHolder
+{
     typedef typename GRAPH::Node Node;
     typedef typename GRAPH::Edge Edge;
     typedef typename GRAPH::OutArcIt Iter;
     typedef detail_python_graph::ArcToArcHolder<GRAPH> Transform;
-    typedef boost::transform_iterator<Transform ,Iter ,ArcHolder<GRAPH>, ArcHolder<GRAPH> > const_iterator;
-    IncEdgeIteratorHolder(const GRAPH & graph,const Node & node)
-    : graph_(&graph),
-      node_(node){
+    typedef boost::transform_iterator<Transform, Iter, ArcHolder<GRAPH>, ArcHolder<GRAPH>> const_iterator;
+    IncEdgeIteratorHolder(const GRAPH& graph, const Node& node)
+        : graph_(&graph),
+          node_(node)
+    {
     }
-    const_iterator begin()const{
-        Iter iter = GraphIteratorAccessor<GRAPH>::outArcBegin(*graph_,node_);
-        return const_iterator(iter,Transform(*graph_));
+    const_iterator begin() const
+    {
+        Iter iter = GraphIteratorAccessor<GRAPH>::outArcBegin(*graph_, node_);
+        return const_iterator(iter, Transform(*graph_));
     }
-    const_iterator end()const{
-        Iter iter = GraphIteratorAccessor<GRAPH>::outArcEnd(*graph_,node_);
-        return const_iterator(iter,Transform(*graph_));
+    const_iterator end() const
+    {
+        Iter iter = GraphIteratorAccessor<GRAPH>::outArcEnd(*graph_, node_);
+        return const_iterator(iter, Transform(*graph_));
     }
-    const GRAPH * graph_;
+    const GRAPH* graph_;
     Node node_;
 };
 
 
-template<class G,class AV>
-class NumpyScalarEdgeMap{
+template<class G, class AV>
+class NumpyScalarEdgeMap
+{
 
 public:
-    typedef G  Graph;
+    typedef G Graph;
     typedef AV ArrayView;
-    typedef typename  Graph::Edge                Key;
-    typedef typename  ArrayView::value_type      Value;
-    typedef typename  ArrayView::reference       Reference;
-    typedef typename  ArrayView::const_reference ConstReference;
+    typedef typename Graph::Edge Key;
+    typedef typename ArrayView::value_type Value;
+    typedef typename ArrayView::reference Reference;
+    typedef typename ArrayView::const_reference ConstReference;
 
-    typedef typename  Graph::Edge                key_type;
-    typedef typename  ArrayView::value_type      value_type;
-    typedef typename  ArrayView::reference       reference;
-    typedef typename  ArrayView::const_reference const_reference;
+    typedef typename Graph::Edge key_type;
+    typedef typename ArrayView::value_type value_type;
+    typedef typename ArrayView::reference reference;
+    typedef typename ArrayView::const_reference const_reference;
 
     NumpyScalarEdgeMap()
-    :   graph_(NULL),
-        array_(){
+        : graph_(NULL),
+          array_()
+    {
     }
 
-    NumpyScalarEdgeMap(const Graph & graph,ArrayView array)
-    :   graph_(&graph),
-        array_(array){
+    NumpyScalarEdgeMap(const Graph& graph, ArrayView array)
+        : graph_(&graph),
+          array_(array)
+    {
     }
 
-    Reference operator[](const Key & key){
-        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicEdgeCoordinate(*graph_,key)];
+    Reference operator[](const Key& key)
+    {
+        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicEdgeCoordinate(*graph_, key)];
     }
-    ConstReference operator[](const Key & key)const{
-        return   array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicEdgeCoordinate(*graph_,key)];
+    ConstReference operator[](const Key& key) const
+    {
+        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicEdgeCoordinate(*graph_, key)];
     }
+
 private:
-    bool any()const{
+    bool any() const
+    {
         return array_.any();
     }
-    const Graph * graph_;
-    MultiArrayView<IntrinsicGraphShape<Graph>::IntrinsicEdgeMapDimension,Value> array_;
-
+    const Graph* graph_;
+    MultiArrayView<IntrinsicGraphShape<Graph>::IntrinsicEdgeMapDimension, Value> array_;
 };
 
-template<class G,class AV>
-class NumpyScalarNodeMap{
+template<class G, class AV>
+class NumpyScalarNodeMap
+{
 
 public:
-    typedef G  Graph;
+    typedef G Graph;
     typedef AV ArrayView;
-    typedef typename  Graph::Node                Key;
-    typedef typename  ArrayView::value_type      Value;
-    typedef typename  ArrayView::reference       Reference;
-    typedef typename  ArrayView::const_reference ConstReference;
+    typedef typename Graph::Node Key;
+    typedef typename ArrayView::value_type Value;
+    typedef typename ArrayView::reference Reference;
+    typedef typename ArrayView::const_reference ConstReference;
 
-    typedef typename  Graph::Node                key_type;
-    typedef typename  ArrayView::value_type      value_type;
-    typedef typename  ArrayView::reference       reference;
-    typedef typename  ArrayView::const_reference const_reference;
+    typedef typename Graph::Node key_type;
+    typedef typename ArrayView::value_type value_type;
+    typedef typename ArrayView::reference reference;
+    typedef typename ArrayView::const_reference const_reference;
     //typedef Value &                                Reference;
     //typedef const Value &                          ConstReference;
 
     NumpyScalarNodeMap()
-    :   graph_(NULL),
-        array_(){
+        : graph_(NULL),
+          array_()
+    {
     }
 
-    NumpyScalarNodeMap(const Graph & graph,ArrayView array)
-    :   graph_(&graph),
-        array_(array){
+    NumpyScalarNodeMap(const Graph& graph, ArrayView array)
+        : graph_(&graph),
+          array_(array)
+    {
     }
 
-    Reference operator[](const Key & key){
-        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_,key)];
+    Reference operator[](const Key& key)
+    {
+        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_, key)];
     }
-    ConstReference operator[](const Key & key)const{
-        return   array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_,key)];
+    ConstReference operator[](const Key& key) const
+    {
+        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_, key)];
     }
-    bool any()const{
+    bool any() const
+    {
         return array_.any();
     }
-private:
-    const Graph * graph_;
-    MultiArrayView<IntrinsicGraphShape<Graph>::IntrinsicNodeMapDimension,Value> array_;
 
+private:
+    const Graph* graph_;
+    MultiArrayView<IntrinsicGraphShape<Graph>::IntrinsicNodeMapDimension, Value> array_;
 };
 
 
-template<class G,class AV>
-class NumpyMultibandNodeMap{
+template<class G, class AV>
+class NumpyMultibandNodeMap
+{
 
 public:
-    typedef G  Graph;
+    typedef G Graph;
     typedef AV ArrayView;
-    typedef typename  Graph::Node                Key;
-    typedef typename  Graph::Node                key_type;
+    typedef typename Graph::Node Key;
+    typedef typename Graph::Node key_type;
 
     //typedef typename  ArrayView::value_type      Value;
     //typedef typename  ArrayView::reference       Reference;
     //typedef typename  ArrayView::const_reference ConstReference;
 
-    typedef  MultiArray<1,typename AV::value_type>           Value;
-    typedef  MultiArrayView<1,typename AV::value_type>       Reference;
-    typedef  MultiArrayView<1,typename AV::value_type> ConstReference;
-    typedef  MultiArray<1,typename AV::value_type>           value_type;
-    typedef  MultiArrayView<1,typename AV::value_type>       reference;
-    typedef  MultiArrayView<1,typename AV::value_type> const_reference;
+    typedef MultiArray<1, typename AV::value_type> Value;
+    typedef MultiArrayView<1, typename AV::value_type> Reference;
+    typedef MultiArrayView<1, typename AV::value_type> ConstReference;
+    typedef MultiArray<1, typename AV::value_type> value_type;
+    typedef MultiArrayView<1, typename AV::value_type> reference;
+    typedef MultiArrayView<1, typename AV::value_type> const_reference;
     //typedef Value &                                Reference;
     //typedef const Value &                          ConstReference;
 
     NumpyMultibandNodeMap()
-    :   graph_(NULL),
-        array_(){
+        : graph_(NULL),
+          array_()
+    {
     }
 
-    NumpyMultibandNodeMap(const Graph & graph,ArrayView array)
-    :   graph_(&graph),
-        array_(array){
+    NumpyMultibandNodeMap(const Graph& graph, ArrayView array)
+        : graph_(&graph),
+          array_(array)
+    {
     }
 
-    Reference operator[](const Key & key){
-        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_,key)];
+    Reference operator[](const Key& key)
+    {
+        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_, key)];
     }
-    ConstReference operator[](const Key & key)const{
-        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_,key)];
+    ConstReference operator[](const Key& key) const
+    {
+        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_, key)];
     }
-    bool any()const{
+    bool any() const
+    {
         return array_.any();
     }
-private:
-    const Graph * graph_;
-    mutable AV array_;
 
+private:
+    const Graph* graph_;
+    mutable AV array_;
 };
 
 
-template<class G,class AV>
-class NumpyMultibandEdgeMap{
+template<class G, class AV>
+class NumpyMultibandEdgeMap
+{
 
 public:
-    typedef G  Graph;
+    typedef G Graph;
     typedef AV ArrayView;
-    typedef typename  Graph::Edge                Key;
-    typedef typename  Graph::Edge                key_type;
+    typedef typename Graph::Edge Key;
+    typedef typename Graph::Edge key_type;
 
     //typedef typename  ArrayView::value_type      Value;
     //typedef typename  ArrayView::reference       Reference;
     //typedef typename  ArrayView::const_reference ConstReference;
 
-    typedef  MultiArray<1,typename AV::value_type>           Value;
-    typedef  MultiArrayView<1,typename AV::value_type>       Reference;
-    typedef  MultiArrayView<1,typename AV::value_type> ConstReference;
-    typedef  MultiArray<1,typename AV::value_type>           value_type;
-    typedef  MultiArrayView<1,typename AV::value_type>       reference;
-    typedef  MultiArrayView<1,typename AV::value_type> const_reference;
+    typedef MultiArray<1, typename AV::value_type> Value;
+    typedef MultiArrayView<1, typename AV::value_type> Reference;
+    typedef MultiArrayView<1, typename AV::value_type> ConstReference;
+    typedef MultiArray<1, typename AV::value_type> value_type;
+    typedef MultiArrayView<1, typename AV::value_type> reference;
+    typedef MultiArrayView<1, typename AV::value_type> const_reference;
     //typedef Value &                                Reference;
     //typedef const Value &                          ConstReference;
 
     NumpyMultibandEdgeMap()
-    :   graph_(NULL),
-        array_(){
+        : graph_(NULL),
+          array_()
+    {
     }
 
-    NumpyMultibandEdgeMap(const Graph & graph,ArrayView array)
-    :   graph_(&graph),
-        array_(array){
+    NumpyMultibandEdgeMap(const Graph& graph, ArrayView array)
+        : graph_(&graph),
+          array_(array)
+    {
     }
 
-    Reference operator[](const Key & key){
-        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicEdgeCoordinate(*graph_,key)];
+    Reference operator[](const Key& key)
+    {
+        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicEdgeCoordinate(*graph_, key)];
     }
-    ConstReference operator[](const Key & key)const{
-        return   array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicEdgeCoordinate(*graph_,key)];
+    ConstReference operator[](const Key& key) const
+    {
+        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicEdgeCoordinate(*graph_, key)];
     }
-    bool any()const{
+    bool any() const
+    {
         return array_.any();
     }
-private:
-    const Graph * graph_;
-    mutable AV array_;
 
+private:
+    const Graph* graph_;
+    mutable AV array_;
 };
 
 
 
-
-
-
 // tagged shape for lemon graphs
-// edge map / node map / arc map 
+// edge map / node map / arc map
 template<class G>
-class TaggedGraphShape{
+class TaggedGraphShape
+{
 public:
     typedef G Graph;
     const static unsigned int ND = IntrinsicGraphShape<Graph>::IntrinsicNodeMapDimension;
     const static unsigned int ED = IntrinsicGraphShape<Graph>::IntrinsicEdgeMapDimension;
     const static unsigned int AD = IntrinsicGraphShape<Graph>::IntrinsicArcMapDimension;
-    static TaggedShape  taggedNodeMapShape(const Graph & graph){
-        return NumpyArray<ND,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(graph),"n");
+    static TaggedShape taggedNodeMapShape(const Graph& graph)
+    {
+        return NumpyArray<ND, int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(graph), "n");
     }
-    static TaggedShape  taggedEdgeMapShape(const Graph & graph){
-        return NumpyArray<ED,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape(graph),"e");
+    static TaggedShape taggedEdgeMapShape(const Graph& graph)
+    {
+        return NumpyArray<ED, int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape(graph), "e");
     }
-    static TaggedShape  taggedArcMapShape(const Graph & graph){
-        return NumpyArray<AD,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicArcMapShape(graph),"e");
+    static TaggedShape taggedArcMapShape(const Graph& graph)
+    {
+        return NumpyArray<AD, int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicArcMapShape(graph), "e");
     }
 
-    static AxisInfo  axistagsNodeMap(const Graph & /*graph*/){
+    static AxisInfo axistagsNodeMap(const Graph& /*graph*/)
+    {
         return AxisInfo("n");
     }
-    static AxisInfo  axistagsEdgeMap(const Graph & /*graph*/){
+    static AxisInfo axistagsEdgeMap(const Graph& /*graph*/)
+    {
         return AxisInfo("e");
     }
-    static AxisTags  axistagsArcMap(const Graph & /*graph*/){
+    static AxisTags axistagsArcMap(const Graph& /*graph*/)
+    {
         return AxisInfo("e");
     }
 };
 
-// macro to specialize TaggedGraphShape for 
+// macro to specialize TaggedGraphShape for
 // grid graphs up to 4 dimensions
-#define VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(DIM,tn,te,ta) \
-template<class BOOST_DIRECTED_TAG> \
-class TaggedGraphShape<GridGraph<DIM,BOOST_DIRECTED_TAG> >{ \
-public: \
-    typedef GridGraph<DIM,BOOST_DIRECTED_TAG> Graph; \
-    const static unsigned int ND = IntrinsicGraphShape<Graph>::IntrinsicNodeMapDimension; \
-    const static unsigned int ED = IntrinsicGraphShape<Graph>::IntrinsicEdgeMapDimension; \
-    const static unsigned int AD = IntrinsicGraphShape<Graph>::IntrinsicArcMapDimension; \
-    static TaggedShape  taggedNodeMapShape(const Graph & graph){ \
-       return NumpyArray<ND,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(graph),tn); \
-    } \
-    static TaggedShape  taggedEdgeMapShape(const Graph & graph){  \
-       return NumpyArray<ED,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape(graph),te);  \
-    } \
-    static TaggedShape  taggedArcMapShape(const Graph & graph){  \
-       return NumpyArray<AD,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicArcMapShape(graph),ta);  \
-    } \
-    static AxisInfo  axistagsNodeMap(const Graph & /*graph*/){ \
-        return AxisInfo(tn); \
-    } \
-    static AxisInfo  axistagsEdgeMap(const Graph & /*graph*/){ \
-        return AxisInfo(te); \
-    } \
-    static AxisTags  axistagsArcMap(const Graph & /*graph*/){ \
-        return AxisInfo(ta); \
-    } \
-};
+#define VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(DIM, tn, te, ta)                                                                    \
+    template<class BOOST_DIRECTED_TAG>                                                                                          \
+    class TaggedGraphShape<GridGraph<DIM, BOOST_DIRECTED_TAG>>                                                                  \
+    {                                                                                                                           \
+    public:                                                                                                                     \
+        typedef GridGraph<DIM, BOOST_DIRECTED_TAG> Graph;                                                                       \
+        const static unsigned int ND = IntrinsicGraphShape<Graph>::IntrinsicNodeMapDimension;                                   \
+        const static unsigned int ED = IntrinsicGraphShape<Graph>::IntrinsicEdgeMapDimension;                                   \
+        const static unsigned int AD = IntrinsicGraphShape<Graph>::IntrinsicArcMapDimension;                                    \
+        static TaggedShape taggedNodeMapShape(const Graph& graph)                                                               \
+        {                                                                                                                       \
+            return NumpyArray<ND, int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(graph), tn); \
+        }                                                                                                                       \
+        static TaggedShape taggedEdgeMapShape(const Graph& graph)                                                               \
+        {                                                                                                                       \
+            return NumpyArray<ED, int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape(graph), te); \
+        }                                                                                                                       \
+        static TaggedShape taggedArcMapShape(const Graph& graph)                                                                \
+        {                                                                                                                       \
+            return NumpyArray<AD, int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicArcMapShape(graph), ta);  \
+        }                                                                                                                       \
+        static AxisInfo axistagsNodeMap(const Graph& /*graph*/)                                                                 \
+        {                                                                                                                       \
+            return AxisInfo(tn);                                                                                                \
+        }                                                                                                                       \
+        static AxisInfo axistagsEdgeMap(const Graph& /*graph*/)                                                                 \
+        {                                                                                                                       \
+            return AxisInfo(te);                                                                                                \
+        }                                                                                                                       \
+        static AxisTags axistagsArcMap(const Graph& /*graph*/)                                                                  \
+        {                                                                                                                       \
+            return AxisInfo(ta);                                                                                                \
+        }                                                                                                                       \
+    };
 
-VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(1,"x","xe","xe");
-VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(2,"xy","xye","xye");
-VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(3,"xyz","xyze","xyze");
-VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(4,"xyzt","xyzte","xyzte");
+VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(1, "x", "xe", "xe");
+VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(2, "xy", "xye", "xye");
+VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(3, "xyz", "xyze", "xyze");
+VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(4, "xyzt", "xyzte", "xyzte");
 
 #undef VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO
 
@@ -617,100 +697,92 @@ void reshapeNodeMapIfEmpty(
 
 
 
-template<class G,class T>
+template<class G, class T>
 struct NumpyNodeMap
-: 
-    IfBool<
-        IsMultiband<T>::value,
-        NumpyMultibandNodeMap< G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension+1,T> > , 
-        NumpyScalarNodeMap<    G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension  ,T> >
-    >::type
+    : IfBool<
+          IsMultiband<T>::value,
+          NumpyMultibandNodeMap<G, NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension + 1, T>>,
+          NumpyScalarNodeMap<G, NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension, T>>>::type
 
 {
     typedef typename IfBool<
         IsMultiband<T>::value,
-        NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension+1,T> , 
-        NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension  ,T>
-    >::type NumpyArrayType;
+        NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension + 1, T>,
+        NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension, T>>::type NumpyArrayType;
 
 
     typedef typename IfBool<
         IsMultiband<T>::value,
-        NumpyMultibandNodeMap< G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension+1,T> > , 
-        NumpyScalarNodeMap<    G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension  ,T> >
-    >::type BaseType;
+        NumpyMultibandNodeMap<G, NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension + 1, T>>,
+        NumpyScalarNodeMap<G, NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension, T>>>::type BaseType;
 
-    NumpyNodeMap(const G & g, NumpyArrayType numpyArray)
-    :BaseType(g,numpyArray){
+    NumpyNodeMap(const G& g, NumpyArrayType numpyArray)
+        : BaseType(g, numpyArray)
+    {
     }
-
 };
 
 
-template<class G,class T>
+template<class G, class T>
 struct NumpyEdgeMap
-: 
-    IfBool<
-        IsMultiband<T>::value,
-        NumpyMultibandEdgeMap< G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension+1,T> > , 
-        NumpyScalarEdgeMap<    G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension  ,T> >
-    >::type
+    : IfBool<
+          IsMultiband<T>::value,
+          NumpyMultibandEdgeMap<G, NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension + 1, T>>,
+          NumpyScalarEdgeMap<G, NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension, T>>>::type
 
 {
     typedef typename IfBool<
         IsMultiband<T>::value,
-        NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension+1,T> , 
-        NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension  ,T>
-    >::type NumpyArrayType;
+        NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension + 1, T>,
+        NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension, T>>::type NumpyArrayType;
 
 
     typedef typename IfBool<
         IsMultiband<T>::value,
-        NumpyMultibandEdgeMap< G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension+1,T> > , 
-        NumpyScalarEdgeMap<    G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension  ,T> >
-    >::type BaseType;
+        NumpyMultibandEdgeMap<G, NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension + 1, T>>,
+        NumpyScalarEdgeMap<G, NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension, T>>>::type BaseType;
 
-    NumpyEdgeMap(const G & g, NumpyArrayType numpyArray)
-    :BaseType(g,numpyArray){
+    NumpyEdgeMap(const G& g, NumpyArrayType numpyArray)
+        : BaseType(g, numpyArray)
+    {
     }
-
 };
 
 
 
-template<class G,class T>
-struct PyEdgeMapTraits{
-    typedef NumpyEdgeMap<G,T> Map;
+template<class G, class T>
+struct PyEdgeMapTraits
+{
+    typedef NumpyEdgeMap<G, T> Map;
     typedef typename IfBool<
         IsMultiband<T>::value,
-        NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension+1,T> , 
-        NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension  ,T>
-    >::type Array;
+        NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension + 1, T>,
+        NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension, T>>::type Array;
 };
 
 
 
-
-template<class G,class T>
-struct PyNodeMapTraits{
-    typedef NumpyNodeMap<G,T> Map;
+template<class G, class T>
+struct PyNodeMapTraits
+{
+    typedef NumpyNodeMap<G, T> Map;
     typedef typename IfBool<
         IsMultiband<T>::value,
-        NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension+1,T> , 
-        NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension  ,T>
-    >::type Array;
+        NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension + 1, T>,
+        NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension, T>>::type Array;
 };
 
 
-namespace cluster_operators{
+namespace cluster_operators
+{
 
 template<class MERGE_GRAPH>
-class PythonOperator{
-    
-    typedef PythonOperator<MERGE_GRAPH > SelfType;
+class PythonOperator
+{
+
+    typedef PythonOperator<MERGE_GRAPH> SelfType;
+
 public:
-
-
     typedef float WeightType;
     typedef MERGE_GRAPH MergeGraph;
     typedef typename MergeGraph::Graph Graph;
@@ -722,112 +794,132 @@ public:
     typedef typename MergeGraph::NodeIt NodeIt;
     typedef typename MergeGraph::IncEdgeIt IncEdgeIt;
     typedef typename MergeGraph::index_type index_type;
-    typedef MergeGraphItemHelper<MergeGraph,Edge> EdgeHelper;
-    typedef MergeGraphItemHelper<MergeGraph,Node> NodeHelper;
+    typedef MergeGraphItemHelper<MergeGraph, Edge> EdgeHelper;
+    typedef MergeGraphItemHelper<MergeGraph, Node> NodeHelper;
 
 
     typedef NodeHolder<MERGE_GRAPH> NodeHolderType;
     typedef EdgeHolder<MERGE_GRAPH> EdgeHolderType;
 
     PythonOperator(
-        MergeGraph & mergeGraph,
+        MergeGraph& mergeGraph,
         boost::python::object object,
         const bool useMergeNodeCallback,
         const bool useMergeEdgesCallback,
-        const bool useEraseEdgeCallback
-    )
-    :   mergeGraph_(mergeGraph),
-        object_(object)
+        const bool useEraseEdgeCallback)
+        : mergeGraph_(mergeGraph),
+          object_(object)
     {
-        if(useMergeNodeCallback){
+        if (useMergeNodeCallback)
+        {
             typedef typename MergeGraph::MergeNodeCallBackType Callback;
-            Callback cb(Callback:: template from_method<SelfType,&SelfType::mergeNodes>(this));
+            Callback cb(Callback::template from_method<SelfType, &SelfType::mergeNodes>(this));
             mergeGraph_.registerMergeNodeCallBack(cb);
-
         }
-        if(useMergeEdgesCallback){
+        if (useMergeEdgesCallback)
+        {
             typedef typename MergeGraph::MergeEdgeCallBackType Callback;
-            Callback cb(Callback:: template from_method<SelfType,&SelfType::mergeEdges>(this));
+            Callback cb(Callback::template from_method<SelfType, &SelfType::mergeEdges>(this));
             mergeGraph_.registerMergeEdgeCallBack(cb);
         }
-        if(useEraseEdgeCallback){
+        if (useEraseEdgeCallback)
+        {
             typedef typename MergeGraph::EraseEdgeCallBackType Callback;
-            Callback cb(Callback:: template from_method<SelfType,&SelfType::eraseEdge>(this));
+            Callback cb(Callback::template from_method<SelfType, &SelfType::eraseEdge>(this));
             mergeGraph_.registerEraseEdgeCallBack(cb);
         }
-
     }
-    bool done(){
+    bool done()
+    {
         bool retVal;
-        try{
-            retVal =  boost::python::extract<bool>(object_.attr("done")());
+        try
+        {
+            retVal = boost::python::extract<bool>(object_.attr("done")());
         }
-        catch(std::exception & e){
-            std::cout<<"reason: "<<e.what()<<"\n";
+        catch (std::exception& e)
+        {
+            std::cout << "reason: " << e.what() << "\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::done");
         }
         return retVal;
     }
-    void mergeEdges(const Edge & a,const Edge & b){
-        try{
-            const EdgeHolderType aa(mergeGraph_,a);
-            const EdgeHolderType bb(mergeGraph_,b);
-            object_.attr("mergeEdges")(aa,bb);
+    void mergeEdges(const Edge& a, const Edge& b)
+    {
+        try
+        {
+            const EdgeHolderType aa(mergeGraph_, a);
+            const EdgeHolderType bb(mergeGraph_, b);
+            object_.attr("mergeEdges")(aa, bb);
         }
-        catch(std::exception & e){
-            std::cout<<"reason: "<<e.what()<<"\n";
+        catch (std::exception& e)
+        {
+            std::cout << "reason: " << e.what() << "\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::mergeEdges");
         }
     }
-    void mergeNodes(const Node & a,const Node & b){\
-        try{
-            const NodeHolderType aa(mergeGraph_,a);
-            const NodeHolderType bb(mergeGraph_,b);
-            object_.attr("mergeNodes")(aa,bb);
+    void mergeNodes(const Node& a, const Node& b)
+    {
+        try
+        {
+            const NodeHolderType aa(mergeGraph_, a);
+            const NodeHolderType bb(mergeGraph_, b);
+            object_.attr("mergeNodes")(aa, bb);
         }
-        catch(std::exception & e){
-            std::cout<<"reason: "<<e.what()<<"\n";
+        catch (std::exception& e)
+        {
+            std::cout << "reason: " << e.what() << "\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::mergeNodes");
         }
     }
-    void eraseEdge(const Edge & e){
-        try{
-            const EdgeHolderType ee(mergeGraph_,e);
+    void eraseEdge(const Edge& e)
+    {
+        try
+        {
+            const EdgeHolderType ee(mergeGraph_, e);
             object_.attr("eraseEdge")(ee);
         }
-        catch(std::exception & e){
-            std::cout<<"reason: "<<e.what()<<"\n";
+        catch (std::exception& e)
+        {
+            std::cout << "reason: " << e.what() << "\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::eraseEdge");
         }
     }
-    Edge contractionEdge(){
+    Edge contractionEdge()
+    {
         EdgeHolderType eh;
-        try{
+        try
+        {
             eh = boost::python::extract<EdgeHolderType>(object_.attr("contractionEdge")());
         }
-        catch(std::exception & e){
-            std::cout<<"reason: "<<e.what()<<"\n";
+        catch (std::exception& e)
+        {
+            std::cout << "reason: " << e.what() << "\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::contractionEdge");
         }
         return eh;
     }
-    WeightType contractionWeight()const{
+    WeightType contractionWeight() const
+    {
         WeightType w;
-        try{
+        try
+        {
             w = boost::python::extract<WeightType>(object_.attr("contractionWeight")());
         }
-        catch(std::exception & e){
-            std::cout<<"reason: "<<e.what()<<"\n";
+        catch (std::exception& e)
+        {
+            std::cout << "reason: " << e.what() << "\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::contractionWeight");
         }
         return w;
     }
 
-    MergeGraph & mergeGraph(){
+    MergeGraph& mergeGraph()
+    {
         return mergeGraph_;
     }
+
 private:
-    MergeGraph & mergeGraph_;
+    MergeGraph& mergeGraph_;
     boost::python::object object_;
 };
 

@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -38,7 +38,8 @@
 
 #include "multi_shape.hxx"
 
-namespace vigra {
+namespace vigra
+{
 
 /********************************************************/
 /*                                                      */
@@ -93,43 +94,48 @@ namespace vigra {
     }
     \endcode
 */
-template <class MULTI_ITERATOR, unsigned int N>
+template<class MULTI_ITERATOR, unsigned int N>
 class MultiArrayNavigator
-#ifndef DOXYGEN  // doxygen doesn't understand this inheritance
-: public MultiArrayNavigator<MULTI_ITERATOR, N-1>
+#ifndef DOXYGEN // doxygen doesn't understand this inheritance
+    : public MultiArrayNavigator<MULTI_ITERATOR, N - 1>
 #endif
 {
-    typedef MultiArrayNavigator<MULTI_ITERATOR, N-1> base_type;
+    typedef MultiArrayNavigator<MULTI_ITERATOR, N - 1> base_type;
 
-  public:
-    enum { level = N-1 };
+public:
+    enum
+    {
+        level = N - 1
+    };
 
-        /** The required shape type for the given iterator type.
+    /** The required shape type for the given iterator type.
          */
     typedef typename MULTI_ITERATOR::multi_difference_type shape_type;
 
-        /** The iterator type for the inner loop (result of begin() and end()).
+    /** The iterator type for the inner loop (result of begin() and end()).
          */
     typedef typename MULTI_ITERATOR::iterator iterator;
 
-        /** Construct navigator for multi-dimensional iterator <TT>i</TT>, array shape <TT>shape</TT>
+    /** Construct navigator for multi-dimensional iterator <TT>i</TT>, array shape <TT>shape</TT>
             and inner loop dimension <TT>inner_dimension</TT>.
          */
-    MultiArrayNavigator(MULTI_ITERATOR const & i, shape_type const & shape, unsigned int inner_dimension)
-    : base_type(i, shape, inner_dimension)
-    {}
+    MultiArrayNavigator(MULTI_ITERATOR const& i, shape_type const& shape, unsigned int inner_dimension)
+        : base_type(i, shape, inner_dimension)
+    {
+    }
 
-    MultiArrayNavigator(MULTI_ITERATOR const & i, shape_type const & start, shape_type const & stop, 
+    MultiArrayNavigator(MULTI_ITERATOR const& i, shape_type const& start, shape_type const& stop,
                         unsigned int inner_dimension)
-    : base_type(i, start, stop, inner_dimension)
-    {}
+        : base_type(i, start, stop, inner_dimension)
+    {
+    }
 
-        /** Advance to next starting location.
+    /** Advance to next starting location.
          */
     void operator++()
     {
         base_type::operator++();
-        if(this->point_[level-1] == this->stop_[level-1])
+        if (this->point_[level - 1] == this->stop_[level - 1])
         {
             base_type::reset();
             ++this->point_[level];
@@ -137,28 +143,28 @@ class MultiArrayNavigator
         }
     }
 
-        /** Advance to next starting location.
+    /** Advance to next starting location.
          */
     void operator++(int)
     {
         ++*this;
     }
 
-        /** true if there are more elements.
+    /** true if there are more elements.
          */
     bool hasMore() const
     {
         return this->point_[level] < this->stop_[level];
     }
 
-        /** true if iterator is exhausted.
+    /** true if iterator is exhausted.
          */
     bool atEnd() const
     {
         return this->point_[level] >= this->stop_[level];
     }
 
-  protected:
+protected:
     void reset()
     {
         this->point_[level] = this->start_[level];
@@ -166,32 +172,35 @@ class MultiArrayNavigator
     }
 };
 
-template <class MULTI_ITERATOR>
+template<class MULTI_ITERATOR>
 class MultiArrayNavigator<MULTI_ITERATOR, 1>
 {
-  public:
-    enum { level = 0 };
+public:
+    enum
+    {
+        level = 0
+    };
     typedef typename MULTI_ITERATOR::multi_difference_type shape_type;
     typedef typename MULTI_ITERATOR::iterator iterator;
 
-    MultiArrayNavigator(MULTI_ITERATOR const & i, shape_type const & shape, unsigned int inner_dimension)
-    : start_(), stop_(shape), point_(start_),
-      inner_dimension_(inner_dimension),
-      inner_shape_(stop_[inner_dimension] - start_[inner_dimension]),
-      i_(i + start_)
+    MultiArrayNavigator(MULTI_ITERATOR const& i, shape_type const& shape, unsigned int inner_dimension)
+        : start_(), stop_(shape), point_(start_),
+          inner_dimension_(inner_dimension),
+          inner_shape_(stop_[inner_dimension] - start_[inner_dimension]),
+          i_(i + start_)
     {
-        if(stop_[inner_dimension] > start_[inner_dimension])
+        if (stop_[inner_dimension] > start_[inner_dimension])
             stop_[inner_dimension] = start_[inner_dimension] + 1;
     }
 
-    MultiArrayNavigator(MULTI_ITERATOR const & i, shape_type const & start, shape_type const & stop, 
+    MultiArrayNavigator(MULTI_ITERATOR const& i, shape_type const& start, shape_type const& stop,
                         unsigned int inner_dimension)
-    : start_(start), stop_(stop), point_(start_),
-      inner_dimension_(inner_dimension),
-      inner_shape_(stop_[inner_dimension] - start_[inner_dimension]),
-      i_(i + start_)
+        : start_(start), stop_(stop), point_(start_),
+          inner_dimension_(inner_dimension),
+          inner_shape_(stop_[inner_dimension] - start_[inner_dimension]),
+          i_(i + start_)
     {
-        if(stop_[inner_dimension] > start_[inner_dimension])
+        if (stop_[inner_dimension] > start_[inner_dimension])
             stop_[inner_dimension] = start_[inner_dimension] + 1;
     }
 
@@ -225,18 +234,18 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
     {
         return point_[level] >= stop_[level];
     }
-    
-    shape_type const & point() const
+
+    shape_type const& point() const
     {
         return point_;
     }
 
-  protected:
+protected:
     void reset()
     {
         point_[level] = start_[level];
         i_.template dim<level>() -= (stop_[level] - start_[level]);
-   }
+    }
 
     shape_type start_, stop_, point_;
     unsigned int inner_dimension_, inner_shape_;
@@ -292,97 +301,103 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
     }
     \endcode
 */
-template <unsigned int Dimensions, unsigned int N = Dimensions>
+template<unsigned int Dimensions, unsigned int N = Dimensions>
 class MultiCoordinateNavigator
-#ifndef DOXYGEN  // doxygen doesn't understand this inheritance
-: public MultiCoordinateNavigator<Dimensions, N-1>
+#ifndef DOXYGEN // doxygen doesn't understand this inheritance
+    : public MultiCoordinateNavigator<Dimensions, N - 1>
 #endif
 {
-    typedef MultiCoordinateNavigator<Dimensions, N-1> base_type;
+    typedef MultiCoordinateNavigator<Dimensions, N - 1> base_type;
 
-  public:
-    enum { level = N-1 };
+public:
+    enum
+    {
+        level = N - 1
+    };
 
-        /** The shape type for the given iterator type.
+    /** The shape type for the given iterator type.
          */
     typedef typename MultiArrayShape<Dimensions>::type value_type;
 
 
-        /** Construct navigator for multi-dimensional iterator <TT>i</TT>, array shape <TT>shape</TT>
+    /** Construct navigator for multi-dimensional iterator <TT>i</TT>, array shape <TT>shape</TT>
             and inner loop dimension <TT>inner_dimension</TT>.
          */
-    MultiCoordinateNavigator(value_type const & shape, unsigned int inner_dimension)
-    : base_type(shape, inner_dimension)
+    MultiCoordinateNavigator(value_type const& shape, unsigned int inner_dimension)
+        : base_type(shape, inner_dimension)
     {
         this->end_[level] = (this->inner_dimension_ == level)
-                                 ? 1
-                                 : this->shape_[level];
+                                ? 1
+                                : this->shape_[level];
     }
 
-        /** Advance to next starting location.
+    /** Advance to next starting location.
          */
     void operator++()
     {
         base_type::operator++();
-        if(base_type::atEnd() && this->i_[level] < this->end_[level])
+        if (base_type::atEnd() && this->i_[level] < this->end_[level])
         {
             ++this->i_[level];
-            if(this->i_[level] < this->end_[level])
+            if (this->i_[level] < this->end_[level])
                 base_type::reset();
         }
     }
 
-        /** Advance to next starting location.
+    /** Advance to next starting location.
          */
     void operator++(int)
     {
         ++*this;
     }
 
-        /** true if there are more elements.
+    /** true if there are more elements.
          */
     bool hasMore() const
     {
-        return this->inner_dimension_ == level 
-                     ? base_type::hasMore() 
-                     : this->i_[level] < this->end_[level];
+        return this->inner_dimension_ == level
+                   ? base_type::hasMore()
+                   : this->i_[level] < this->end_[level];
     }
 
-        /** true if iterator is exhausted.
+    /** true if iterator is exhausted.
          */
     bool atEnd() const
     {
         return !hasMore();
-        // return this->inner_dimension_ == level 
-                     // ? base_type::atEnd()
-                     // : !(this->i_[level] < this->end_[level]);
+        // return this->inner_dimension_ == level
+        // ? base_type::atEnd()
+        // : !(this->i_[level] < this->end_[level]);
     }
 
-  protected:
+protected:
     void reset()
     {
         this->i_[level] = 0;
         this->end_[level] = (this->inner_dimension_ == level)
-                                 ? 1
-                                 : this->shape_[level];
+                                ? 1
+                                : this->shape_[level];
         base_type::reset();
     }
 };
 
-template <unsigned int Dimensions>
+template<unsigned int Dimensions>
 class MultiCoordinateNavigator<Dimensions, 1>
 {
-  public:
-    enum { level = 0 };
+public:
+    enum
+    {
+        level = 0
+    };
     typedef typename MultiArrayShape<Dimensions>::type value_type;
- 
-    MultiCoordinateNavigator(value_type const & shape, unsigned int inner_dimension)
-    : shape_(shape),
-      inner_dimension_(inner_dimension)
+
+    MultiCoordinateNavigator(value_type const& shape, unsigned int inner_dimension)
+        : shape_(shape),
+          inner_dimension_(inner_dimension)
     {
         end_[level] = (inner_dimension_ == level)
-                         ? 1
-                         : shape_[level];
+                          ? 1
+                          : shape_[level];
     }
 
     void operator++()
@@ -395,7 +410,7 @@ class MultiCoordinateNavigator<Dimensions, 1>
         ++*this;
     }
 
-    value_type const & begin() const
+    value_type const& begin() const
     {
         return i_;
     }
@@ -414,16 +429,16 @@ class MultiCoordinateNavigator<Dimensions, 1>
 
     bool atEnd() const
     {
-      return !hasMore();
+        return !hasMore();
     }
 
-  protected:
+protected:
     void reset()
     {
         i_[level] = 0;
         end_[level] = (inner_dimension_ == level)
-                         ? 1
-                         : shape_[level];
+                          ? 1
+                          : shape_[level];
     }
 
     value_type shape_, i_, end_;

@@ -39,8 +39,8 @@
 #undef NDEBUG
 #endif
 
-#include "vigra/unittest.hxx"
 #include "vigra/error.hxx"
+#include "vigra/unittest.hxx"
 
 struct ErrorTest
 {
@@ -51,22 +51,22 @@ struct ErrorTest
             vigra_precondition(0, "Intentional error");
             failTest("no exception thrown");
         }
-        catch(vigra::ContractViolation & c)
+        catch (vigra::ContractViolation& c)
         {
             std::string expected("\nPrecondition violation!\nIntentional error");
             std::string message(c.what());
-            should(0 == expected.compare(message.substr(0,expected.size())));
+            should(0 == expected.compare(message.substr(0, expected.size())));
         }
         try
         {
             vigra_assert(0, "Intentional error");
             failTest("no exception thrown");
         }
-        catch(vigra::ContractViolation & c)
+        catch (vigra::ContractViolation& c)
         {
             std::string expected("\nPrecondition violation!\nIntentional error");
             std::string message(c.what());
-            should(0 == expected.compare(message.substr(0,expected.size())));
+            should(0 == expected.compare(message.substr(0, expected.size())));
         }
     }
 
@@ -77,11 +77,11 @@ struct ErrorTest
             vigra_postcondition(0, "Intentional error");
             failTest("no exception thrown");
         }
-        catch(vigra::ContractViolation & c)
+        catch (vigra::ContractViolation& c)
         {
             std::string expected("\nPostcondition violation!\nIntentional error");
             std::string message(c.what());
-            should(0 == expected.compare(message.substr(0,expected.size())));
+            should(0 == expected.compare(message.substr(0, expected.size())));
         }
     }
 
@@ -92,28 +92,29 @@ struct ErrorTest
             vigra_invariant(0, "Intentional error");
             failTest("no exception thrown");
         }
-        catch(vigra::ContractViolation & c)
+        catch (vigra::ContractViolation& c)
         {
             std::string expected("\nInvariant violation!\nIntentional error");
             std::string message(c.what());
-            should(0 == expected.compare(message.substr(0,expected.size())));
+            should(0 == expected.compare(message.substr(0, expected.size())));
         }
     }
 };
 
 struct ErrorTestSuite
-: public vigra::test_suite
+    : public vigra::test_suite
 {
     ErrorTestSuite()
-    : vigra::test_suite("ErrorTest")
+        : vigra::test_suite("ErrorTest")
     {
-        add( testCase(&ErrorTest::testPrecondition));
-        add( testCase(&ErrorTest::testPostcondition));
-        add( testCase(&ErrorTest::testInvariant));
+        add(testCase(&ErrorTest::testPrecondition));
+        add(testCase(&ErrorTest::testPostcondition));
+        add(testCase(&ErrorTest::testInvariant));
     }
 };
 
-int main(int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
     ErrorTestSuite test;
 

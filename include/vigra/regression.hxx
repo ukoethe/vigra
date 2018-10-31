@@ -37,12 +37,12 @@
 #ifndef VIGRA_REGRESSION_HXX
 #define VIGRA_REGRESSION_HXX
 
-#include "matrix.hxx"
-#include "linear_solve.hxx"
-#include "singular_value_decomposition.hxx"
-#include "numerictraits.hxx"
-#include "functorexpression.hxx"
 #include "autodiff.hxx"
+#include "functorexpression.hxx"
+#include "linear_solve.hxx"
+#include "matrix.hxx"
+#include "numerictraits.hxx"
+#include "singular_value_decomposition.hxx"
 
 
 namespace vigra
@@ -54,7 +54,7 @@ namespace linalg
 /** \addtogroup Optimization Optimization and Regression
  */
 //@{
-   /** Ordinary Least Squares Regression.
+/** Ordinary Least Squares Regression.
 
        Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
        and a column vector \a b of length <tt>m</tt> rows, this function computes
@@ -76,16 +76,16 @@ namespace linalg
        <b>\#include</b> \<vigra/regression.hxx\><br/>
        Namespaces: vigra and vigra::linalg
    */
-template <class T, class C1, class C2, class C3>
+template<class T, class C1, class C2, class C3>
 inline bool
-leastSquares(MultiArrayView<2, T, C1> const & A,
-             MultiArrayView<2, T, C2> const &b, MultiArrayView<2, T, C3> &x,
-             std::string method = "QR")
+    leastSquares(MultiArrayView<2, T, C1> const& A,
+                 MultiArrayView<2, T, C2> const& b, MultiArrayView<2, T, C3>& x,
+                 std::string method = "QR")
 {
     return linearSolve(A, b, x, method);
 }
 
-   /** Weighted Least Squares Regression.
+/** Weighted Least Squares Regression.
 
        Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
        a vector \a b of length <tt>m</tt>, and a weight vector \a weights of length <tt>m</tt>
@@ -118,41 +118,41 @@ leastSquares(MultiArrayView<2, T, C1> const & A,
        <b>\#include</b> \<vigra/regression.hxx\><br/>
        Namespaces: vigra and vigra::linalg
    */
-template <class T, class C1, class C2, class C3, class C4>
+template<class T, class C1, class C2, class C3, class C4>
 bool
-weightedLeastSquares(MultiArrayView<2, T, C1> const & A,
-             MultiArrayView<2, T, C2> const &b, MultiArrayView<2, T, C3> const &weights,
-             MultiArrayView<2, T, C4> &x, std::string method = "QR")
+    weightedLeastSquares(MultiArrayView<2, T, C1> const& A,
+                         MultiArrayView<2, T, C2> const& b, MultiArrayView<2, T, C3> const& weights,
+                         MultiArrayView<2, T, C4>& x, std::string method = "QR")
 {
     const unsigned int rows = rowCount(A);
     const unsigned int cols = columnCount(A);
     const unsigned int rhsCount = columnCount(b);
     vigra_precondition(rows >= cols,
-       "weightedLeastSquares(): Input matrix A must be rectangular with rowCount >= columnCount.");
+                       "weightedLeastSquares(): Input matrix A must be rectangular with rowCount >= columnCount.");
     vigra_precondition(rowCount(b) == rows,
-       "weightedLeastSquares(): Shape mismatch between matrices A and b.");
+                       "weightedLeastSquares(): Shape mismatch between matrices A and b.");
     vigra_precondition(rowCount(b) == rowCount(weights) && columnCount(weights) == 1,
-       "weightedLeastSquares(): Weight matrix has wrong shape.");
+                       "weightedLeastSquares(): Weight matrix has wrong shape.");
     vigra_precondition(rowCount(x) == cols && columnCount(x) == rhsCount,
-       "weightedLeastSquares(): Result matrix x has wrong shape.");
+                       "weightedLeastSquares(): Result matrix x has wrong shape.");
 
     Matrix<T> wa(A.shape()), wb(b.shape());
 
-    for(unsigned int k=0; k<rows; ++k)
+    for (unsigned int k = 0; k < rows; ++k)
     {
-        vigra_precondition(weights(k,0) >= 0,
-           "weightedLeastSquares(): Weights must be positive.");
-        T w = std::sqrt(weights(k,0));
-        for(unsigned int l=0; l<cols; ++l)
-            wa(k,l) = w * A(k,l);
-        for(unsigned int l=0; l<rhsCount; ++l)
-            wb(k,l) = w * b(k,l);
+        vigra_precondition(weights(k, 0) >= 0,
+                           "weightedLeastSquares(): Weights must be positive.");
+        T w = std::sqrt(weights(k, 0));
+        for (unsigned int l = 0; l < cols; ++l)
+            wa(k, l) = w * A(k, l);
+        for (unsigned int l = 0; l < rhsCount; ++l)
+            wb(k, l) = w * b(k, l);
     }
 
     return leastSquares(wa, wb, x, method);
 }
 
-   /** Ridge Regression.
+/** Ridge Regression.
 
        Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
        a vector \a b of length <tt>m</tt>, and a regularization parameter <tt>lambda \>= 0.0</tt>,
@@ -176,22 +176,22 @@ weightedLeastSquares(MultiArrayView<2, T, C1> const & A,
        <b>\#include</b> \<vigra/regression.hxx\><br/>
        Namespaces: vigra and vigra::linalg
    */
-template <class T, class C1, class C2, class C3>
+template<class T, class C1, class C2, class C3>
 bool
-ridgeRegression(MultiArrayView<2, T, C1> const & A,
-                MultiArrayView<2, T, C2> const &b, MultiArrayView<2, T, C3> &x, double lambda)
+    ridgeRegression(MultiArrayView<2, T, C1> const& A,
+                    MultiArrayView<2, T, C2> const& b, MultiArrayView<2, T, C3>& x, double lambda)
 {
     const unsigned int rows = rowCount(A);
     const unsigned int cols = columnCount(A);
     const unsigned int rhsCount = columnCount(b);
     vigra_precondition(rows >= cols,
-       "ridgeRegression(): Input matrix A must be rectangular with rowCount >= columnCount.");
+                       "ridgeRegression(): Input matrix A must be rectangular with rowCount >= columnCount.");
     vigra_precondition(rowCount(b) == rows,
-       "ridgeRegression(): Shape mismatch between matrices A and b.");
+                       "ridgeRegression(): Shape mismatch between matrices A and b.");
     vigra_precondition(rowCount(x) == cols && columnCount(x) == rhsCount,
-       "ridgeRegression(): Result matrix x has wrong shape.");
+                       "ridgeRegression(): Result matrix x has wrong shape.");
     vigra_precondition(lambda >= 0.0,
-       "ridgeRegression(): lambda >= 0.0 required.");
+                       "ridgeRegression(): lambda >= 0.0 required.");
 
     unsigned int m = rows;
     unsigned int n = cols;
@@ -199,18 +199,18 @@ ridgeRegression(MultiArrayView<2, T, C1> const & A,
     Matrix<T> u(m, n), s(n, 1), v(n, n);
 
     unsigned int rank = singularValueDecomposition(A, u, s, v);
-    if(rank < n && lambda == 0.0)
+    if (rank < n && lambda == 0.0)
         return false;
 
-    Matrix<T> t = transpose(u)*b;
-    for(unsigned int k=0; k<cols; ++k)
-        for(unsigned int l=0; l<rhsCount; ++l)
-            t(k,l) *= s(k,0) / (sq(s(k,0)) + lambda);
-    x = v*t;
+    Matrix<T> t = transpose(u) * b;
+    for (unsigned int k = 0; k < cols; ++k)
+        for (unsigned int l = 0; l < rhsCount; ++l)
+            t(k, l) *= s(k, 0) / (sq(s(k, 0)) + lambda);
+    x = v * t;
     return true;
 }
 
-   /** Weighted ridge Regression.
+/** Weighted ridge Regression.
 
        Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
        a vector \a b of length <tt>m</tt>, a weight vector \a weights of length <tt>m</tt>
@@ -247,43 +247,43 @@ ridgeRegression(MultiArrayView<2, T, C1> const & A,
        <b>\#include</b> \<vigra/regression.hxx\><br/>
        Namespaces: vigra and vigra::linalg
    */
-template <class T, class C1, class C2, class C3, class C4>
+template<class T, class C1, class C2, class C3, class C4>
 bool
-weightedRidgeRegression(MultiArrayView<2, T, C1> const & A,
-             MultiArrayView<2, T, C2> const &b, MultiArrayView<2, T, C3> const &weights,
-             MultiArrayView<2, T, C4> &x, double lambda)
+    weightedRidgeRegression(MultiArrayView<2, T, C1> const& A,
+                            MultiArrayView<2, T, C2> const& b, MultiArrayView<2, T, C3> const& weights,
+                            MultiArrayView<2, T, C4>& x, double lambda)
 {
     const unsigned int rows = rowCount(A);
     const unsigned int cols = columnCount(A);
     const unsigned int rhsCount = columnCount(b);
     vigra_precondition(rows >= cols,
-       "weightedRidgeRegression(): Input matrix A must be rectangular with rowCount >= columnCount.");
+                       "weightedRidgeRegression(): Input matrix A must be rectangular with rowCount >= columnCount.");
     vigra_precondition(rowCount(b) == rows,
-       "weightedRidgeRegression(): Shape mismatch between matrices A and b.");
+                       "weightedRidgeRegression(): Shape mismatch between matrices A and b.");
     vigra_precondition(rowCount(b) == rowCount(weights) && columnCount(weights) == 1,
-       "weightedRidgeRegression(): Weight matrix has wrong shape.");
+                       "weightedRidgeRegression(): Weight matrix has wrong shape.");
     vigra_precondition(rowCount(x) == cols && columnCount(x) == rhsCount,
-       "weightedRidgeRegression(): Result matrix x has wrong shape.");
+                       "weightedRidgeRegression(): Result matrix x has wrong shape.");
     vigra_precondition(lambda >= 0.0,
-       "weightedRidgeRegression(): lambda >= 0.0 required.");
+                       "weightedRidgeRegression(): lambda >= 0.0 required.");
 
     Matrix<T> wa(A.shape()), wb(b.shape());
 
-    for(unsigned int k=0; k<rows; ++k)
+    for (unsigned int k = 0; k < rows; ++k)
     {
-        vigra_precondition(weights(k,0) >= 0,
-           "weightedRidgeRegression(): Weights must be positive.");
-        T w = std::sqrt(weights(k,0));
-        for(unsigned int l=0; l<cols; ++l)
-            wa(k,l) = w * A(k,l);
-        for(unsigned int l=0; l<rhsCount; ++l)
-            wb(k,l) = w * b(k,l);
+        vigra_precondition(weights(k, 0) >= 0,
+                           "weightedRidgeRegression(): Weights must be positive.");
+        T w = std::sqrt(weights(k, 0));
+        for (unsigned int l = 0; l < cols; ++l)
+            wa(k, l) = w * A(k, l);
+        for (unsigned int l = 0; l < rhsCount; ++l)
+            wb(k, l) = w * b(k, l);
     }
 
     return ridgeRegression(wa, wb, x, lambda);
 }
 
-   /** Ridge Regression with many lambdas.
+/** Ridge Regression with many lambdas.
 
        This executes \ref ridgeRegression() for a sequence of regularization parameters. This
        is implemented so that the \ref singularValueDecomposition() has to be executed only once.
@@ -299,20 +299,20 @@ weightedRidgeRegression(MultiArrayView<2, T, C1> const & A,
        <b>\#include</b> \<vigra/regression.hxx\><br/>
        Namespaces: vigra and vigra::linalg
    */
-template <class T, class C1, class C2, class C3, class Array>
+template<class T, class C1, class C2, class C3, class Array>
 bool
-ridgeRegressionSeries(MultiArrayView<2, T, C1> const & A,
-          MultiArrayView<2, T, C2> const &b, MultiArrayView<2, T, C3> &x, Array const & lambda)
+    ridgeRegressionSeries(MultiArrayView<2, T, C1> const& A,
+                          MultiArrayView<2, T, C2> const& b, MultiArrayView<2, T, C3>& x, Array const& lambda)
 {
     const unsigned int rows = rowCount(A);
     const unsigned int cols = columnCount(A);
     const unsigned int lambdaCount = lambda.size();
     vigra_precondition(rows >= cols,
-       "ridgeRegressionSeries(): Input matrix A must be rectangular with rowCount >= columnCount.");
+                       "ridgeRegressionSeries(): Input matrix A must be rectangular with rowCount >= columnCount.");
     vigra_precondition(rowCount(b) == rows && columnCount(b) == 1,
-       "ridgeRegressionSeries(): Shape mismatch between matrices A and b.");
+                       "ridgeRegressionSeries(): Shape mismatch between matrices A and b.");
     vigra_precondition(rowCount(x) == cols && columnCount(x) == lambdaCount,
-       "ridgeRegressionSeries(): Result matrix x has wrong shape.");
+                       "ridgeRegressionSeries(): Result matrix x has wrong shape.");
 
     unsigned int m = rows;
     unsigned int n = cols;
@@ -321,17 +321,17 @@ ridgeRegressionSeries(MultiArrayView<2, T, C1> const & A,
 
     unsigned int rank = singularValueDecomposition(A, u, s, v);
 
-    Matrix<T> xl = transpose(u)*b;
-    Matrix<T> xt(cols,1);
-    for(unsigned int i=0; i<lambdaCount; ++i)
+    Matrix<T> xl = transpose(u) * b;
+    Matrix<T> xt(cols, 1);
+    for (unsigned int i = 0; i < lambdaCount; ++i)
     {
         vigra_precondition(lambda[i] >= 0.0,
-           "ridgeRegressionSeries(): lambda >= 0.0 required.");
-        if(lambda[i] == 0.0 && rank < rows)
+                           "ridgeRegressionSeries(): lambda >= 0.0 required.");
+        if (lambda[i] == 0.0 && rank < rows)
             continue;
-        for(unsigned int k=0; k<cols; ++k)
-            xt(k,0) = xl(k,0) * s(k,0) / (sq(s(k,0)) + lambda[i]);
-        columnVector(x, i) = v*xt;
+        for (unsigned int k = 0; k < cols; ++k)
+            xt(k, 0) = xl(k, 0) * s(k, 0) / (sq(s(k, 0)) + lambda[i]);
+        columnVector(x, i) = v * xt;
     }
     return (rank == n);
 }
@@ -343,46 +343,52 @@ ridgeRegressionSeries(MultiArrayView<2, T, C1> const & A,
 */
 class LeastAngleRegressionOptions
 {
-  public:
-    enum Mode { LARS, LASSO, NNLASSO };
+public:
+    enum Mode
+    {
+        LARS,
+        LASSO,
+        NNLASSO
+    };
 
-        /** Initialize all options with default values.
+    /** Initialize all options with default values.
         */
     LeastAngleRegressionOptions()
-    : max_solution_count(0),
-      unconstrained_dimension_count(0),
-      mode(LASSO),
-      least_squares_solutions(true)
-    {}
+        : max_solution_count(0),
+          unconstrained_dimension_count(0),
+          mode(LASSO),
+          least_squares_solutions(true)
+    {
+    }
 
-        /** Maximum number of solutions to be computed.
+    /** Maximum number of solutions to be computed.
 
             If \a n is 0 (the default), the number of solutions is determined by the length
             of the solution array. Otherwise, the minimum of maxSolutionCount() and that
             length is taken.<br>
             Default: 0 (use length of solution array)
         */
-    LeastAngleRegressionOptions & maxSolutionCount(unsigned int n)
+    LeastAngleRegressionOptions& maxSolutionCount(unsigned int n)
     {
         max_solution_count = static_cast<int>(n);
         return *this;
     }
 
-        /** Set the mode of the algorithm.
+    /** Set the mode of the algorithm.
 
             Mode must be one of "lars", "lasso", "nnlasso". The function just calls
             the member function of the corresponding name to set the mode.
 
             Default: "lasso"
         */
-    LeastAngleRegressionOptions & setMode(std::string mode)
+    LeastAngleRegressionOptions& setMode(std::string mode)
     {
         mode = tolower(mode);
-        if(mode == "lars")
+        if (mode == "lars")
             this->lars();
-        else if(mode == "lasso")
+        else if (mode == "lasso")
             this->lasso();
-        else if(mode == "nnlasso")
+        else if (mode == "nnlasso")
             this->nnlasso();
         else
             vigra_fail("LeastAngleRegressionOptions.setMode(): Invalid mode.");
@@ -390,46 +396,46 @@ class LeastAngleRegressionOptions
     }
 
 
-        /** Use the plain LARS algorithm.
+    /** Use the plain LARS algorithm.
 
             Default: inactive
         */
-    LeastAngleRegressionOptions & lars()
+    LeastAngleRegressionOptions& lars()
     {
         mode = LARS;
         return *this;
     }
 
-        /** Use the LASSO modification of the LARS algorithm.
+    /** Use the LASSO modification of the LARS algorithm.
 
             This allows features to be removed from the active set under certain conditions.<br>
             Default: active
         */
-    LeastAngleRegressionOptions & lasso()
+    LeastAngleRegressionOptions& lasso()
     {
         mode = LASSO;
         return *this;
     }
 
-        /** Use the non-negative LASSO modification of the LARS algorithm.
+    /** Use the non-negative LASSO modification of the LARS algorithm.
 
             This enforces all non-zero entries in the solution to be positive.<br>
             Default: inactive
         */
-    LeastAngleRegressionOptions & nnlasso()
+    LeastAngleRegressionOptions& nnlasso()
     {
         mode = NNLASSO;
         return *this;
     }
 
-        /** Compute least squares solutions.
+    /** Compute least squares solutions.
 
             Use least angle regression to determine active sets, but
             return least squares solutions for the features in each active set,
             instead of constrained solutions.<br>
             Default: <tt>true</tt>
         */
-    LeastAngleRegressionOptions & leastSquaresSolutions(bool select = true)
+    LeastAngleRegressionOptions& leastSquaresSolutions(bool select = true)
     {
         least_squares_solutions = select;
         return *this;
@@ -440,9 +446,10 @@ class LeastAngleRegressionOptions
     bool least_squares_solutions;
 };
 
-namespace detail {
+namespace detail
+{
 
-template <class T, class C1, class C2>
+template<class T, class C1, class C2>
 struct LarsData
 {
     typedef typename MultiArrayShape<2>::type Shape;
@@ -454,37 +461,37 @@ struct LarsData
     ArrayVector<MultiArrayIndex> columnPermutation;
 
     // init data for a new run
-    LarsData(MultiArrayView<2, T, C1> const & Ai, MultiArrayView<2, T, C2> const & bi)
-    : activeSetSize(1),
-      A(Ai), b(bi), R(A), qtb(b),
-      lars_solution(A.shape(1), 1), lars_prediction(A.shape(0), 1),
-      next_lsq_solution(A.shape(1), 1), next_lsq_prediction(A.shape(0), 1), searchVector(A.shape(0), 1),
-      columnPermutation(A.shape(1))
+    LarsData(MultiArrayView<2, T, C1> const& Ai, MultiArrayView<2, T, C2> const& bi)
+        : activeSetSize(1),
+          A(Ai), b(bi), R(A), qtb(b),
+          lars_solution(A.shape(1), 1), lars_prediction(A.shape(0), 1),
+          next_lsq_solution(A.shape(1), 1), next_lsq_prediction(A.shape(0), 1), searchVector(A.shape(0), 1),
+          columnPermutation(A.shape(1))
     {
-        for(unsigned int k=0; k<columnPermutation.size(); ++k)
+        for (unsigned int k = 0; k < columnPermutation.size(); ++k)
             columnPermutation[k] = k;
     }
 
     // copy data for the recursive call in nnlassolsq
-    LarsData(LarsData const & d, int asetSize)
-    : activeSetSize(asetSize),
-      A(d.R.subarray(Shape(0,0), Shape(d.A.shape(0), activeSetSize))), b(d.qtb), R(A), qtb(b),
-      lars_solution(d.lars_solution.subarray(Shape(0,0), Shape(activeSetSize, 1))), lars_prediction(d.lars_prediction),
-      next_lsq_solution(d.next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1))), 
-      next_lsq_prediction(d.next_lsq_prediction), searchVector(d.searchVector),
-      columnPermutation(A.shape(1))
+    LarsData(LarsData const& d, int asetSize)
+        : activeSetSize(asetSize),
+          A(d.R.subarray(Shape(0, 0), Shape(d.A.shape(0), activeSetSize))), b(d.qtb), R(A), qtb(b),
+          lars_solution(d.lars_solution.subarray(Shape(0, 0), Shape(activeSetSize, 1))), lars_prediction(d.lars_prediction),
+          next_lsq_solution(d.next_lsq_solution.subarray(Shape(0, 0), Shape(activeSetSize, 1))),
+          next_lsq_prediction(d.next_lsq_prediction), searchVector(d.searchVector),
+          columnPermutation(A.shape(1))
     {
-        for(unsigned int k=0; k<columnPermutation.size(); ++k)
+        for (unsigned int k = 0; k < columnPermutation.size(); ++k)
             columnPermutation[k] = k;
     }
 };
 
-template <class T, class C1, class C2, class Array1, class Array2, class Array3>
-unsigned int 
-leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
-                             Array1 & activeSets, 
-                             Array2 * lars_solutions, Array3 * lsq_solutions,
-                             LeastAngleRegressionOptions const & options)
+template<class T, class C1, class C2, class Array1, class Array2, class Array3>
+unsigned int
+leastAngleRegressionMainLoop(LarsData<T, C1, C2>& d,
+                             Array1& activeSets,
+                             Array2* lars_solutions, Array3* lsq_solutions,
+                             LeastAngleRegressionOptions const& options)
 {
     using namespace vigra::functor;
 
@@ -494,7 +501,7 @@ leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
     typedef typename Permutation::view_type ColumnSet;
 
     vigra_precondition(d.activeSetSize > 0,
-       "leastAngleRegressionMainLoop() must not be called with empty active set.");
+                       "leastAngleRegressionMainLoop() must not be called with empty active set.");
 
     bool enforce_positive = (options.mode == LeastAngleRegressionOptions::NNLASSO);
     bool lasso_modification = (options.mode != LeastAngleRegressionOptions::LARS);
@@ -504,52 +511,52 @@ leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
     const MultiArrayIndex maxRank = std::min(rows, cols);
 
     MultiArrayIndex maxSolutionCount = options.max_solution_count;
-    if(maxSolutionCount == 0)
+    if (maxSolutionCount == 0)
         maxSolutionCount = lasso_modification
-                                ? 10*maxRank
-                                : maxRank;
+                               ? 10 * maxRank
+                               : maxRank;
 
     bool needToRemoveColumn = false;
     MultiArrayIndex columnToBeAdded = 0, columnToBeRemoved = 0;
     MultiArrayIndex currentSolutionCount = 0;
-    while(currentSolutionCount < maxSolutionCount)
+    while (currentSolutionCount < maxSolutionCount)
     {
         //ColumnSet activeSet = d.columnPermutation.subarray(0, static_cast<unsigned int>(d.activeSetSize));
         ColumnSet inactiveSet = d.columnPermutation.subarray(static_cast<unsigned int>(d.activeSetSize), static_cast<unsigned int>(cols));
 
         // find next dimension to be activated
-        Matrix<T> cLARS = transpose(d.A) * (d.b - d.lars_prediction),      // correlation with LARS residual
-                  cLSQ  = transpose(d.A) * (d.b - d.next_lsq_prediction);  // correlation with LSQ residual
+        Matrix<T> cLARS = transpose(d.A) * (d.b - d.lars_prediction), // correlation with LARS residual
+            cLSQ = transpose(d.A) * (d.b - d.next_lsq_prediction);    // correlation with LSQ residual
 
         // In theory, all vectors in the active set should have the same correlation C, and
         // the correlation of all others should not exceed this. In practice, we may find the
         // maximum correlation in any variable due to tiny numerical inaccuracies. Therefore, we
         // determine C from the entire set of variables.
         MultiArrayIndex cmaxIndex = enforce_positive
-                                      ? argMax(cLARS)
-                                      : argMax(abs(cLARS));
+                                        ? argMax(cLARS)
+                                        : argMax(abs(cLARS));
         T C = abs(cLARS(cmaxIndex, 0));
 
         Matrix<T> ac(cols - d.activeSetSize, 1);
-        for(MultiArrayIndex k = 0; k<cols-d.activeSetSize; ++k)
+        for (MultiArrayIndex k = 0; k < cols - d.activeSetSize; ++k)
         {
-            T rho = cLSQ(inactiveSet[k], 0), 
-              cc  = C - sign(rho)*cLARS(inactiveSet[k], 0);
+            T rho = cLSQ(inactiveSet[k], 0),
+              cc = C - sign(rho) * cLARS(inactiveSet[k], 0);
 
-            if(rho == 0.0)  // make sure that 0/0 cannot happen in the other cases
-                ac(k,0) = 1.0; // variable k is linearly dependent on the active set
-            else if(rho > 0.0)
-                ac(k,0) = cc / (cc + rho); // variable k would enter the active set with positive sign
-            else if(enforce_positive)
-                ac(k,0) = 1.0; // variable k cannot enter the active set because it would be negative
+            if (rho == 0.0)     // make sure that 0/0 cannot happen in the other cases
+                ac(k, 0) = 1.0; // variable k is linearly dependent on the active set
+            else if (rho > 0.0)
+                ac(k, 0) = cc / (cc + rho); // variable k would enter the active set with positive sign
+            else if (enforce_positive)
+                ac(k, 0) = 1.0; // variable k cannot enter the active set because it would be negative
             else
-                ac(k,0) = cc / (cc - rho); // variable k would enter the active set with negative sign
+                ac(k, 0) = cc / (cc - rho); // variable k would enter the active set with negative sign
         }
 
         // in the non-negative case: make sure that a column just removed cannot re-enter right away
         // (in standard LASSO, this is allowed, because the variable may re-enter with opposite sign)
-        if(enforce_positive && needToRemoveColumn)
-                ac(columnToBeRemoved-d.activeSetSize,0) = 1.0;
+        if (enforce_positive && needToRemoveColumn)
+            ac(columnToBeRemoved - d.activeSetSize, 0) = 1.0;
 
         // find candidate
         // Note: R uses Arg1() > epsilon, but this is only possible because it allows several variables to
@@ -558,28 +565,28 @@ leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
 
         // if no new column can be added, we do a full step gamma = 1.0 and then stop, unless a column is removed below
         T gamma = (d.activeSetSize == maxRank)
-                     ? 1.0
-                     : ac(columnToBeAdded, 0);
+                      ? 1.0
+                      : ac(columnToBeAdded, 0);
 
         // adjust columnToBeAdded: we skipped the active set
-        if(columnToBeAdded >= 0)
+        if (columnToBeAdded >= 0)
             columnToBeAdded += d.activeSetSize;
 
         // check whether we have to remove a column from the active set
         needToRemoveColumn = false;
-        if(lasso_modification)
+        if (lasso_modification)
         {
             // find dimensions whose weight changes sign below gamma*searchDirection
             Matrix<T> s(Shape(d.activeSetSize, 1), NumericTraits<T>::max());
-            for(MultiArrayIndex k=0; k<d.activeSetSize; ++k)
+            for (MultiArrayIndex k = 0; k < d.activeSetSize; ++k)
             {
-                if(( enforce_positive && d.next_lsq_solution(k,0) < 0.0) ||
-                   (!enforce_positive && sign(d.lars_solution(k,0))*sign(d.next_lsq_solution(k,0)) == -1.0))
-                        s(k,0) = d.lars_solution(k,0) / (d.lars_solution(k,0) - d.next_lsq_solution(k,0));
+                if ((enforce_positive && d.next_lsq_solution(k, 0) < 0.0) ||
+                    (!enforce_positive && sign(d.lars_solution(k, 0)) * sign(d.next_lsq_solution(k, 0)) == -1.0))
+                    s(k, 0) = d.lars_solution(k, 0) / (d.lars_solution(k, 0) - d.next_lsq_solution(k, 0));
             }
 
             columnToBeRemoved = argMinIf(s, Arg1() <= Param(gamma));
-            if(columnToBeRemoved >= 0)
+            if (columnToBeRemoved >= 0)
             {
                 needToRemoveColumn = true; // remove takes precedence over add
                 gamma = s(columnToBeRemoved, 0);
@@ -587,30 +594,30 @@ leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
         }
 
         // compute the current solutions
-        d.lars_prediction  = gamma * d.next_lsq_prediction + (1.0 - gamma) * d.lars_prediction;
-        d.lars_solution    = gamma * d.next_lsq_solution   + (1.0 - gamma) * d.lars_solution;
-        if(needToRemoveColumn)
-            d.lars_solution(columnToBeRemoved, 0) = 0.0;  // turn possible epsilon into an exact zero
+        d.lars_prediction = gamma * d.next_lsq_prediction + (1.0 - gamma) * d.lars_prediction;
+        d.lars_solution = gamma * d.next_lsq_solution + (1.0 - gamma) * d.lars_solution;
+        if (needToRemoveColumn)
+            d.lars_solution(columnToBeRemoved, 0) = 0.0; // turn possible epsilon into an exact zero
 
         // write the current solution
         ++currentSolutionCount;
-        activeSets.push_back(typename Array1::value_type(d.columnPermutation.begin(), d.columnPermutation.begin()+d.activeSetSize));
+        activeSets.push_back(typename Array1::value_type(d.columnPermutation.begin(), d.columnPermutation.begin() + d.activeSetSize));
 
-        if(lsq_solutions != 0)
+        if (lsq_solutions != 0)
         {
-            if(enforce_positive)
+            if (enforce_positive)
             {
-                ArrayVector<Matrix<T> > nnresults;
-                ArrayVector<ArrayVector<MultiArrayIndex> > nnactiveSets;
+                ArrayVector<Matrix<T>> nnresults;
+                ArrayVector<ArrayVector<MultiArrayIndex>> nnactiveSets;
                 LarsData<T, C1, C2> nnd(d, d.activeSetSize);
 
                 leastAngleRegressionMainLoop(nnd, nnactiveSets, &nnresults, static_cast<Array3*>(0),
                                              LeastAngleRegressionOptions().leastSquaresSolutions(false).nnlasso());
                 //Matrix<T> nnlsq_solution(d.activeSetSize, 1);
                 typename Array2::value_type nnlsq_solution(Shape(d.activeSetSize, 1));
-                for(unsigned int k=0; k<nnactiveSets.back().size(); ++k)
+                for (unsigned int k = 0; k < nnactiveSets.back().size(); ++k)
                 {
-                    nnlsq_solution(nnactiveSets.back()[k],0) = nnresults.back()[k];
+                    nnlsq_solution(nnactiveSets.back()[k], 0) = nnresults.back()[k];
                 }
                 //lsq_solutions->push_back(nnlsq_solution);
                 lsq_solutions->push_back(typename Array3::value_type());
@@ -620,43 +627,43 @@ leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
             {
                 //lsq_solutions->push_back(d.next_lsq_solution.subarray(Shape(0,0), Shape(d.activeSetSize, 1)));
                 lsq_solutions->push_back(typename Array3::value_type());
-                lsq_solutions->back() = d.next_lsq_solution.subarray(Shape(0,0), Shape(d.activeSetSize, 1));
+                lsq_solutions->back() = d.next_lsq_solution.subarray(Shape(0, 0), Shape(d.activeSetSize, 1));
             }
         }
-        if(lars_solutions != 0)
+        if (lars_solutions != 0)
         {
             //lars_solutions->push_back(d.lars_solution.subarray(Shape(0,0), Shape(d.activeSetSize, 1)));
             lars_solutions->push_back(typename Array2::value_type());
-            lars_solutions->back() = d.lars_solution.subarray(Shape(0,0), Shape(d.activeSetSize, 1));
+            lars_solutions->back() = d.lars_solution.subarray(Shape(0, 0), Shape(d.activeSetSize, 1));
         }
 
         // no further solutions possible
-        if(gamma == 1.0)
+        if (gamma == 1.0)
             break;
 
-        if(needToRemoveColumn)
+        if (needToRemoveColumn)
         {
             --d.activeSetSize;
-            if(columnToBeRemoved != d.activeSetSize)
+            if (columnToBeRemoved != d.activeSetSize)
             {
                 // remove column 'columnToBeRemoved' and restore triangular form of R
                 // note: columnPermutation is automatically swapped here
                 detail::upperTriangularSwapColumns(columnToBeRemoved, d.activeSetSize, d.R, d.qtb, d.columnPermutation);
 
                 // swap solution entries
-                std::swap(d.lars_solution(columnToBeRemoved, 0), d.lars_solution(d.activeSetSize,0));
-                std::swap(d.next_lsq_solution(columnToBeRemoved, 0), d.next_lsq_solution(d.activeSetSize,0));
+                std::swap(d.lars_solution(columnToBeRemoved, 0), d.lars_solution(d.activeSetSize, 0));
+                std::swap(d.next_lsq_solution(columnToBeRemoved, 0), d.next_lsq_solution(d.activeSetSize, 0));
                 columnToBeRemoved = d.activeSetSize; // keep track of removed column
             }
-            d.lars_solution(d.activeSetSize,0) = 0.0;
-            d.next_lsq_solution(d.activeSetSize,0) = 0.0;
+            d.lars_solution(d.activeSetSize, 0) = 0.0;
+            d.next_lsq_solution(d.activeSetSize, 0) = 0.0;
         }
         else
         {
             vigra_invariant(columnToBeAdded >= 0,
-                "leastAngleRegression(): internal error (columnToBeAdded < 0)");
+                            "leastAngleRegression(): internal error (columnToBeAdded < 0)");
             // add column 'columnToBeAdded'
-            if(d.activeSetSize != columnToBeAdded)
+            if (d.activeSetSize != columnToBeAdded)
             {
                 std::swap(d.columnPermutation[d.activeSetSize], d.columnPermutation[columnToBeAdded]);
                 columnVector(d.R, d.activeSetSize).swapData(columnVector(d.R, columnToBeAdded));
@@ -664,8 +671,8 @@ leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
             }
 
             // zero the corresponding entries of the solutions
-            d.next_lsq_solution(d.activeSetSize,0) = 0.0;
-            d.lars_solution(d.activeSetSize,0) = 0.0;
+            d.next_lsq_solution(d.activeSetSize, 0) = 0.0;
+            d.lars_solution(d.activeSetSize, 0) = 0.0;
 
             // reduce R (i.e. its newly added column) to triangular form
             detail::qrColumnHouseholderStep(d.activeSetSize, d.R, d.qtb);
@@ -673,52 +680,52 @@ leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
         }
 
         // compute the LSQ solution of the new active set
-        Subarray Ractive = d.R.subarray(Shape(0,0), Shape(d.activeSetSize, d.activeSetSize));
-        Subarray qtbactive = d.qtb.subarray(Shape(0,0), Shape(d.activeSetSize, 1));
-        Subarray next_lsq_solution_view = d.next_lsq_solution.subarray(Shape(0,0), Shape(d.activeSetSize, 1));
+        Subarray Ractive = d.R.subarray(Shape(0, 0), Shape(d.activeSetSize, d.activeSetSize));
+        Subarray qtbactive = d.qtb.subarray(Shape(0, 0), Shape(d.activeSetSize, 1));
+        Subarray next_lsq_solution_view = d.next_lsq_solution.subarray(Shape(0, 0), Shape(d.activeSetSize, 1));
         linearSolveUpperTriangular(Ractive, qtbactive, next_lsq_solution_view);
 
         // compute the LSQ prediction of the new active set
         d.next_lsq_prediction.init(0.0);
-        for(MultiArrayIndex k=0; k<d.activeSetSize; ++k)
-            d.next_lsq_prediction += next_lsq_solution_view(k,0)*columnVector(d.A, d.columnPermutation[k]);
+        for (MultiArrayIndex k = 0; k < d.activeSetSize; ++k)
+            d.next_lsq_prediction += next_lsq_solution_view(k, 0) * columnVector(d.A, d.columnPermutation[k]);
     }
 
     return static_cast<unsigned int>(currentSolutionCount);
 }
 
-template <class T, class C1, class C2, class Array1, class Array2>
+template<class T, class C1, class C2, class Array1, class Array2>
 unsigned int
-leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b,
-                         Array1 & activeSets, Array2 * lasso_solutions, Array2 * lsq_solutions,
-                         LeastAngleRegressionOptions const & options)
+    leastAngleRegressionImpl(MultiArrayView<2, T, C1> const& A, MultiArrayView<2, T, C2> const& b,
+                             Array1& activeSets, Array2* lasso_solutions, Array2* lsq_solutions,
+                             LeastAngleRegressionOptions const& options)
 {
     using namespace vigra::functor;
 
     const MultiArrayIndex rows = rowCount(A);
 
     vigra_precondition(rowCount(b) == rows && columnCount(b) == 1,
-       "leastAngleRegression(): Shape mismatch between matrices A and b.");
+                       "leastAngleRegression(): Shape mismatch between matrices A and b.");
 
     bool enforce_positive = (options.mode == LeastAngleRegressionOptions::NNLASSO);
 
     detail::LarsData<T, C1, C2> d(A, b);
 
     // find dimension with largest correlation
-    Matrix<T> c = transpose(A)*b;
+    Matrix<T> c = transpose(A) * b;
     MultiArrayIndex initialColumn = enforce_positive
-                                       ? argMaxIf(c, Arg1() > Param(0.0))
-                                       : argMax(abs(c));
-    if(initialColumn == -1)
+                                        ? argMaxIf(c, Arg1() > Param(0.0))
+                                        : argMax(abs(c));
+    if (initialColumn == -1)
         return 0; // no solution found
 
     // prepare initial active set and search direction etc.
     std::swap(d.columnPermutation[0], d.columnPermutation[initialColumn]);
     columnVector(d.R, 0).swapData(columnVector(d.R, initialColumn));
     detail::qrColumnHouseholderStep(0, d.R, d.qtb);
-    d.next_lsq_solution(0,0) = d.qtb(0,0) / d.R(0,0);
-    d.next_lsq_prediction = d.next_lsq_solution(0,0) * columnVector(A, d.columnPermutation[0]);
-    d.searchVector = d.next_lsq_solution(0,0) * columnVector(A, d.columnPermutation[0]);
+    d.next_lsq_solution(0, 0) = d.qtb(0, 0) / d.R(0, 0);
+    d.next_lsq_prediction = d.next_lsq_solution(0, 0) * columnVector(A, d.columnPermutation[0]);
+    d.searchVector = d.next_lsq_solution(0, 0) * columnVector(A, d.columnPermutation[0]);
 
     return leastAngleRegressionMainLoop(d, activeSets, lasso_solutions, lsq_solutions, options);
 }
@@ -868,30 +875,29 @@ leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T
              <tt>a2.push_back(Matrix\<T\>());</tt>
         </ul>
    */
-doxygen_overloaded_function(template <...> unsigned int leastAngleRegression)
+doxygen_overloaded_function(template<...> unsigned int leastAngleRegression)
 
-template <class T, class C1, class C2, class Array1, class Array2>
-inline unsigned int
-leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b,
-                     Array1 & activeSets, Array2 & solutions,
-                     LeastAngleRegressionOptions const & options = LeastAngleRegressionOptions())
+    template<class T, class C1, class C2, class Array1, class Array2>
+    inline unsigned int leastAngleRegression(MultiArrayView<2, T, C1> const& A, MultiArrayView<2, T, C2> const& b,
+                                             Array1& activeSets, Array2& solutions,
+                                             LeastAngleRegressionOptions const& options = LeastAngleRegressionOptions())
 {
-    if(options.least_squares_solutions)
+    if (options.least_squares_solutions)
         return detail::leastAngleRegressionImpl(A, b, activeSets, static_cast<Array2*>(0), &solutions, options);
     else
         return detail::leastAngleRegressionImpl(A, b, activeSets, &solutions, static_cast<Array2*>(0), options);
 }
 
-template <class T, class C1, class C2, class Array1, class Array2>
+template<class T, class C1, class C2, class Array1, class Array2>
 inline unsigned int
-leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b,
-                     Array1 & activeSets, Array2 & lasso_solutions, Array2 & lsq_solutions,
-                     LeastAngleRegressionOptions const & options = LeastAngleRegressionOptions())
+    leastAngleRegression(MultiArrayView<2, T, C1> const& A, MultiArrayView<2, T, C2> const& b,
+                         Array1& activeSets, Array2& lasso_solutions, Array2& lsq_solutions,
+                         LeastAngleRegressionOptions const& options = LeastAngleRegressionOptions())
 {
     return detail::leastAngleRegressionImpl(A, b, activeSets, &lasso_solutions, &lsq_solutions, options);
 }
 
-    /** Non-negative Least Squares Regression.
+/** Non-negative Least Squares Regression.
 
         Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
         and a column vector \a b of length <tt>m</tt> rows, this function computes
@@ -924,27 +930,26 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
         }
         \endcode
     */
-doxygen_overloaded_function(template <...> unsigned int nonnegativeLeastSquares)
+doxygen_overloaded_function(template<...> unsigned int nonnegativeLeastSquares)
 
-template <class T, class C1, class C2, class C3>
-inline void
-nonnegativeLeastSquares(MultiArrayView<2, T, C1> const & A,
-                        MultiArrayView<2, T, C2> const &b, MultiArrayView<2, T, C3> &x)
+    template<class T, class C1, class C2, class C3>
+    inline void nonnegativeLeastSquares(MultiArrayView<2, T, C1> const& A,
+                                        MultiArrayView<2, T, C2> const& b, MultiArrayView<2, T, C3>& x)
 {
     vigra_precondition(columnCount(A) == rowCount(x) && rowCount(A) == rowCount(b),
-        "nonnegativeLeastSquares(): Matrix shape mismatch.");
+                       "nonnegativeLeastSquares(): Matrix shape mismatch.");
     vigra_precondition(columnCount(b) == 1 && columnCount(x) == 1,
-        "nonnegativeLeastSquares(): RHS and solution must be vectors (i.e. columnCount == 1).");
+                       "nonnegativeLeastSquares(): RHS and solution must be vectors (i.e. columnCount == 1).");
 
-    ArrayVector<ArrayVector<MultiArrayIndex> > activeSets;
-    ArrayVector<Matrix<T> > results;
+    ArrayVector<ArrayVector<MultiArrayIndex>> activeSets;
+    ArrayVector<Matrix<T>> results;
 
     leastAngleRegression(A, b, activeSets, results,
                          LeastAngleRegressionOptions().leastSquaresSolutions(false).nnlasso());
     x.init(NumericTraits<T>::zero());
-    if(activeSets.size() > 0)
-        for(unsigned int k=0; k<activeSets.back().size(); ++k)
-            x(activeSets.back()[k],0) = results.back()[k];
+    if (activeSets.size() > 0)
+        for (unsigned int k = 0; k < activeSets.back().size(); ++k)
+            x(activeSets.back()[k], 0) = results.back()[k];
 }
 
 
@@ -952,27 +957,28 @@ nonnegativeLeastSquares(MultiArrayView<2, T, C1> const & A,
 
 } // namespace linalg
 
-using linalg::leastSquares;
-using linalg::weightedLeastSquares;
-using linalg::ridgeRegression;
-using linalg::weightedRidgeRegression;
-using linalg::ridgeRegressionSeries;
-using linalg::nonnegativeLeastSquares;
 using linalg::leastAngleRegression;
 using linalg::LeastAngleRegressionOptions;
+using linalg::leastSquares;
+using linalg::nonnegativeLeastSquares;
+using linalg::ridgeRegression;
+using linalg::ridgeRegressionSeries;
+using linalg::weightedLeastSquares;
+using linalg::weightedRidgeRegression;
 
-namespace detail {
+namespace detail
+{
 
-template <class T, class S>
-inline T 
-getRow(MultiArrayView<1, T, S> const & a, MultiArrayIndex i)
+template<class T, class S>
+inline T
+    getRow(MultiArrayView<1, T, S> const& a, MultiArrayIndex i)
 {
     return a(i);
 }
 
-template <class T, class S>
+template<class T, class S>
 inline MultiArrayView<1, T>
-getRow(MultiArrayView<2, T, S> const & a, MultiArrayIndex i)
+    getRow(MultiArrayView<2, T, S> const& a, MultiArrayIndex i)
 {
     return a.bindInner(i);
 }
@@ -990,44 +996,44 @@ getRow(MultiArrayView<2, T, S> const & a, MultiArrayIndex i)
 */
 class NonlinearLSQOptions
 {
-  public:
-  
+public:
     double epsilon, lambda, tau;
     int max_iter;
-    
-        /** \brief Initialize options with default values.
+
+    /** \brief Initialize options with default values.
         */
     NonlinearLSQOptions()
-    : epsilon(0.0),
-      lambda(0.1),
-      tau(1.4),
-      max_iter(50)
-    {}
-    
-        /** \brief Set minimum relative improvement in residual.
+        : epsilon(0.0),
+          lambda(0.1),
+          tau(1.4),
+          max_iter(50)
+    {
+    }
+
+    /** \brief Set minimum relative improvement in residual.
         
             The algorithm stops when the relative improvement in residuals
             between consecutive iterations is less than this value.
             
             Default: 0 (i.e. choose tolerance automatically, will be 10*epsilon of the numeric type)
         */
-    NonlinearLSQOptions & tolerance(double eps)
+    NonlinearLSQOptions& tolerance(double eps)
     {
         epsilon = eps;
         return *this;
     }
-    
-        /** \brief Set maximum number of iterations.
+
+    /** \brief Set maximum number of iterations.
         
             Default: 50
         */
-    NonlinearLSQOptions & maxIterations(int iter)
+    NonlinearLSQOptions& maxIterations(int iter)
     {
         max_iter = iter;
         return *this;
     }
-    
-        /** \brief Set damping parameters for Levenberg-Marquardt algorithm.
+
+    /** \brief Set damping parameters for Levenberg-Marquardt algorithm.
         
             \a lambda determines by how much the diagonal is emphasized, and \a v is 
             the factor by which lambda will be increased if more damping is needed 
@@ -1037,82 +1043,82 @@ class NonlinearLSQOptions
         
             Default: lambda = 0.1, v = 1.4
         */
-    NonlinearLSQOptions & dampingParamters(double lambda, double v)
+    NonlinearLSQOptions& dampingParamters(double lambda, double v)
     {
         vigra_precondition(lambda > 0.0 && v > 0.0,
-            "NonlinearLSQOptions::dampingParamters(): parameters must be positive.");
+                           "NonlinearLSQOptions::dampingParamters(): parameters must be positive.");
         this->lambda = lambda;
         tau = v;
         return *this;
     }
 };
 
-template <unsigned int D, class T, class S1, class S2, 
-          class U, int N, 
-          class Functor>
+template<unsigned int D, class T, class S1, class S2,
+         class U, int N,
+         class Functor>
 T
-nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const & features,
-                          MultiArrayView<1, T, S2> const & response,
-                          TinyVector<U, N> & p, 
+nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const& features,
+                          MultiArrayView<1, T, S2> const& response,
+                          TinyVector<U, N>& p,
                           Functor model,
-                          NonlinearLSQOptions const & options)
+                          NonlinearLSQOptions const& options)
 {
     vigra_precondition(features.shape(0) == response.shape(0),
                        "nonlinearLeastSquares(): shape mismatch between features and response.");
-                       
-    double t = options.tau, l = options.lambda;  // initial damping parameters
-    
-    double epsilonT = NumericTraits<T>::epsilon()*10.0,
-           epsilonU = NumericTraits<U>::epsilon()*10.0,
+
+    double t = options.tau, l = options.lambda; // initial damping parameters
+
+    double epsilonT = NumericTraits<T>::epsilon() * 10.0,
+           epsilonU = NumericTraits<U>::epsilon() * 10.0,
            epsilon = options.epsilon <= 0.0
                          ? std::max(epsilonT, epsilonU)
                          : options.epsilon;
-    
-    linalg::Matrix<T> jj(N,N);  // outer product of the Jacobian
+
+    linalg::Matrix<T> jj(N, N); // outer product of the Jacobian
     TinyVector<U, N> jr, dp;
-    
+
     T residual = 0.0;
     bool didStep = true;
-    
-    for(int iter=0; iter<options.max_iter; ++iter)
+
+    for (int iter = 0; iter < options.max_iter; ++iter)
     {
-        if(didStep)
+        if (didStep)
         {
             // update the residual and Jacobian
             residual = 0.0;
             jr = 0.0;
             jj = 0.0;
-            
-            for(int i=0; i<features.shape(0); ++i)
+
+            for (int i = 0; i < features.shape(0); ++i)
             {
                 autodiff::DualVector<U, N> res = model(detail::getRow(features, i), autodiff::dualMatrix(p));
-                
+
                 T r = response(i) - res.v;
                 jr += r * res.d;
                 jj += outer(res.d);
                 residual += sq(r);
             }
         }
-        
+
         // perform a damped gradient step
         linalg::Matrix<T> djj(jj);
-        djj.diagonal() *= 1.0 + l;        
+        djj.diagonal() *= 1.0 + l;
         linearSolve(djj, jr, dp);
-        
+
         TinyVector<U, N> p_new = p + dp;
-        
+
         // compute the new residual
         T residual_new = 0.0;
-        for(int i=0; i<features.shape(0); ++i)
+        for (int i = 0; i < features.shape(0); ++i)
         {
             residual_new += sq(response(i) - model(detail::getRow(features, i), p_new));
         }
-        
-        if(residual_new < residual)
+
+        if (residual_new < residual)
         {
             // accept the step
             p = p_new;
-            if(std::abs((residual - residual_new) / residual) < epsilon)
+            if (std::abs((residual - residual_new) / residual) < epsilon)
                 return residual_new;
             // try less damping in the next iteration
             l /= t;
@@ -1125,7 +1131,7 @@ nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const & features,
             didStep = false;
         }
     }
-    
+
     return residual;
 }
 
@@ -1258,30 +1264,30 @@ nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const & features,
     std::cout << "Model parameters: a=" << p[0] << ", s=" << p[1] << ", b=" << p[2] << " (residual: " << residual << ")\n";
     \endcode
 */
-doxygen_overloaded_function(template <...> void nonlinearLeastSquares)
+doxygen_overloaded_function(template<...> void nonlinearLeastSquares)
 
-template <class T, class S1, class S2, 
-          class U, int N, 
-          class Functor>
-inline T
-nonlinearLeastSquares(MultiArrayView<1, T, S1> const & features,
-                      MultiArrayView<1, T, S2> const & response,
-                      TinyVector<U, N> & p, 
-                      Functor model,
-                      NonlinearLSQOptions const & options = NonlinearLSQOptions())
+    template<class T, class S1, class S2,
+             class U, int N,
+             class Functor>
+    inline T
+    nonlinearLeastSquares(MultiArrayView<1, T, S1> const& features,
+                          MultiArrayView<1, T, S2> const& response,
+                          TinyVector<U, N>& p,
+                          Functor model,
+                          NonlinearLSQOptions const& options = NonlinearLSQOptions())
 {
     return nonlinearLeastSquaresImpl(features, response, p, model, options);
 }
 
-template <class T, class S1, class S2, 
-          class U, int N, 
-          class Functor>
+template<class T, class S1, class S2,
+         class U, int N,
+         class Functor>
 inline T
-nonlinearLeastSquares(MultiArrayView<2, T, S1> const & features,
-                      MultiArrayView<1, T, S2> const & response,
-                      TinyVector<U, N> & p, 
-                      Functor model,
-                      NonlinearLSQOptions const & options = NonlinearLSQOptions())
+    nonlinearLeastSquares(MultiArrayView<2, T, S1> const& features,
+                          MultiArrayView<1, T, S2> const& response,
+                          TinyVector<U, N>& p,
+                          Functor model,
+                          NonlinearLSQOptions const& options = NonlinearLSQOptions())
 {
     return nonlinearLeastSquaresImpl(features, response, p, model, options);
 }

@@ -202,7 +202,7 @@ struct BinaryForestTests
         should(gr.numParents(n4) == 0);
     }
 
-    template <ContainerTag CTag>
+    template<ContainerTag CTag>
     void test_property_map()
     {
         PropertyMap<Node, int, CTag> m;
@@ -221,7 +221,7 @@ struct BinaryForestTests
         should(m[n0] == 27);
         should(m[n1] == 12);
         should(m[n2] == 73);
-        
+
         {
             auto it = m.find(n0);
             should(it != m.end());
@@ -240,15 +240,15 @@ struct BinaryForestTests
         }
 
         {
-            std::vector<Node> keys, keys_expected;// = {n0, n1, n2};
+            std::vector<Node> keys, keys_expected; // = {n0, n1, n2};
             keys_expected.push_back(n0);
             keys_expected.push_back(n1);
             keys_expected.push_back(n2);
-            std::vector<int> values, values_expected;// = {27, 12, 73};
+            std::vector<int> values, values_expected; // = {27, 12, 73};
             values_expected.push_back(27);
             values_expected.push_back(12);
             values_expected.push_back(73);
-            for (auto const & p : m)
+            for (auto const& p : m)
             {
                 keys.push_back(p.first);
                 values.push_back(p.second);
@@ -265,13 +265,13 @@ struct BinaryForestTests
         should(m[n2] == 73);
 
         {
-            std::vector<Node> keys, keys_expected;// = {n0, n2};
+            std::vector<Node> keys, keys_expected; // = {n0, n2};
             keys_expected.push_back(n0);
             keys_expected.push_back(n2);
-            std::vector<int> values, values_expected;// = {27, 73};
+            std::vector<int> values, values_expected; // = {27, 73};
             values_expected.push_back(27);
             values_expected.push_back(73);
-            for (auto const & p : m)
+            for (auto const& p : m)
             {
                 keys.push_back(p.first);
                 values.push_back(p.second);
@@ -288,8 +288,7 @@ struct BinaryForestTests
 struct BinaryForestTestSuite : public test_suite
 {
     BinaryForestTestSuite()
-        :
-        test_suite("BinaryForest test")
+        : test_suite("BinaryForest test")
     {
         add(testCase(&BinaryForestTests::test_basic_attributes));
         add(testCase(&BinaryForestTests::test_merge));
@@ -299,7 +298,8 @@ struct BinaryForestTestSuite : public test_suite
     }
 };
 
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
     BinaryForestTestSuite forest_test;
     int failed = forest_test.run(testsToBeExecuted(argc, argv));

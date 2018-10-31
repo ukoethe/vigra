@@ -32,34 +32,36 @@
 /*                                                                      */
 /************************************************************************/
 
-#include <iostream>
+#include "vigra/impex.hxx"
+#include "vigra/impexalpha.hxx"
+#include "vigra/multi_array.hxx"
+#include "vigra/stdimage.hxx"
+#include "vigra/unittest.hxx"
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
-#include "vigra/stdimage.hxx"
-#include "vigra/impex.hxx"
-#include "vigra/impexalpha.hxx"
-#include "vigra/unittest.hxx"
-#include "vigra/multi_array.hxx"
+#include <iostream>
 
 #if HasTIFF
-# include "vigra/tiff.hxx"
+#include "vigra/tiff.hxx"
 #endif
 
 using namespace vigra;
 
-template <class Image>
-void failCodec(Image const & img, ImageExportInfo const & info)
+template<class Image>
+void
+failCodec(Image const& img, ImageExportInfo const& info)
 {
-    try {
-        exportImage (srcImageRange (img), info);
-        failTest( "Failed to throw exception." );
+    try
+    {
+        exportImage(srcImageRange(img), info);
+        failTest("Failed to throw exception.");
     }
-    catch( vigra::PreconditionViolation & e )
+    catch (vigra::PreconditionViolation& e)
     {
         std::string expected = "\nPrecondition violation!\n";
         expected += "did not find a matching codec for the given file extension";
-        const bool rc = std::strncmp( expected.c_str(), e.what(), expected.length() ) == 0;
+        const bool rc = std::strncmp(expected.c_str(), e.what(), expected.length()) == 0;
         should(rc);
     }
 }
@@ -70,17 +72,16 @@ class ByteImageExportImportTest
     typedef vigra::MultiArrayView<2, unsigned char> View;
 
 public:
-
-    ByteImageExportImportTest ()
+    ByteImageExportImportTest()
     {
-        vigra::ImageImportInfo info ("lenna.xv");
+        vigra::ImageImportInfo info("lenna.xv");
 
-        const int w = info.width ();
-        const int h = info.height ();
+        const int w = info.width();
+        const int h = info.height();
 
-        img.resize (w, h);
+        img.resize(w, h);
 
-        importImage (info, destImage (img));
+        importImage(info, destImage(img));
     }
 
     void testListFormatsExtensions()
@@ -88,41 +89,41 @@ public:
         const std::string formats = impexListFormats();
         const std::string extensions = impexListExtensions();
 
-        const char * refFormats = "BMP "
+        const char* refFormats = "BMP "
 #if defined(HasEXR)
-        "EXR "
+                                 "EXR "
 #endif
-        "GIF HDR "
+                                 "GIF HDR "
 #if defined(HasJPEG)
-        "JPEG "
+                                 "JPEG "
 #endif
 #if defined(HasPNG)
-        "PNG "
+                                 "PNG "
 #endif
-        "PNM SUN "
+                                 "PNM SUN "
 #if defined(HasTIFF)
-        "TIFF "
+                                 "TIFF "
 #endif
-        "VIFF";
+                                 "VIFF";
         shouldEqual(formats, refFormats);
 
-        const char * refExtensions = "bmp "
+        const char* refExtensions = "bmp "
 #if defined(HasEXR)
-        "exr "
+                                    "exr "
 #endif
-        "gif hdr "
+                                    "gif hdr "
 #if defined(HasJPEG)
-        "jpeg jpg "
+                                    "jpeg jpg "
 #endif
-        "pbm pgm "
+                                    "pbm pgm "
 #if defined(HasPNG)
-        "png "
+                                    "png "
 #endif
-        "pnm ppm ras "
+                                    "pnm ppm ras "
 #if defined(HasTIFF)
-        "tif tiff "
+                                    "tif tiff "
 #endif
-        "xv";
+                                    "xv";
         shouldEqual(extensions, refExtensions);
     }
 
@@ -133,32 +134,32 @@ public:
         should(!isImage("filename-does-not-exist.gif"));
     }
 
-    void testFile (const char *filename);
+    void testFile(const char* filename);
 
-    void testGIF ()
+    void testGIF()
     {
-        exportImage (View(img), "res.gif");
+        exportImage(View(img), "res.gif");
 
-        vigra::ImageImportInfo info ("res.gif");
+        vigra::ImageImportInfo info("res.gif");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isGrayscale ());
-        should (info.pixelType () == vigra::ImageImportInfo::UINT8);
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isGrayscale());
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, View (res));
+        importImage(info, View(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = img.accessor();
 
         float sum = 0;
-        for (; i != img.end (); ++i, ++i1)
-            sum += std::abs (acc (i) - acc (i1));
+        for (; i != img.end(); ++i, ++i1)
+            sum += std::abs(acc(i) - acc(i1));
 
-        should (sum / (info.width () * info.height ()) < 0.1);
+        should(sum / (info.width() * info.height()) < 0.1);
 
         MultiArray<2, unsigned char> res1;
         importImage("res.gif", res1);
@@ -167,77 +168,77 @@ public:
 
     void testGrayToRGB()
     {
-        MultiArray<2, RGBValue<unsigned char> > rgb;
+        MultiArray<2, RGBValue<unsigned char>> rgb;
 
         importImage("lenna.xv", rgb);
 
-        should (rgb.shape(0) == img.width());
-        should (rgb.shape(1) == img.height());
+        should(rgb.shape(0) == img.width());
+        should(rgb.shape(1) == img.height());
         shouldEqualSequence(img.begin(), img.end(), rgb.bindElementChannel(0).begin());
         shouldEqualSequence(img.begin(), img.end(), rgb.bindElementChannel(1).begin());
         shouldEqualSequence(img.begin(), img.end(), rgb.bindElementChannel(2).begin());
     }
 
-    void testJPEG ()
+    void testJPEG()
     {
-        vigra::ImageExportInfo exportinfo ("res.jpg");
+        vigra::ImageExportInfo exportinfo("res.jpg");
 #if !defined(HasJPEG)
         failCodec(img, exportinfo);
 #else
-        exportinfo.setCompression ("JPEG QUALITY=100");
-        exportImage (srcImageRange (img), exportinfo);
+        exportinfo.setCompression("JPEG QUALITY=100");
+        exportImage(srcImageRange(img), exportinfo);
 
-        vigra::ImageImportInfo info ("res.jpg");
+        vigra::ImageImportInfo info("res.jpg");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isGrayscale ());
-        should (info.pixelType () == vigra::ImageImportInfo::UINT8);
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isGrayscale());
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = img.accessor();
 
         float sum = 0;
-        for (; i != img.end (); ++i, ++i1)
-            sum += std::abs (acc (i) - acc (i1));
+        for (; i != img.end(); ++i, ++i1)
+            sum += std::abs(acc(i) - acc(i1));
 
-        should (sum / (info.width () * info.height ()) < 0.1);
+        should(sum / (info.width() * info.height()) < 0.1);
 #endif
     }
 
-    void testTIFF ()
+    void testTIFF()
     {
-        vigra::ImageExportInfo exportinfo ("res.tif");
+        vigra::ImageExportInfo exportinfo("res.tif");
 #if !defined(HasTIFF)
         failCodec(img, exportinfo);
 #else
-        exportinfo.setCompression ("LZW");
-        exportImage (srcImageRange (img), exportinfo);
+        exportinfo.setCompression("LZW");
+        exportImage(srcImageRange(img), exportinfo);
 
-        vigra::ImageImportInfo info ("res.tif");
+        vigra::ImageImportInfo info("res.tif");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isGrayscale ());
-        should (info.getPixelType () == std::string ("UINT8"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isGrayscale());
+        should(info.getPixelType() == std::string("UINT8"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = img.accessor();
 
-        for (; i != img.end (); ++i, ++i1)
-            should (acc (i) == acc (i1));
+        for (; i != img.end(); ++i, ++i1)
+            should(acc(i) == acc(i1));
 
-        TiffImage * tiff = TIFFOpen("res2.tif", "w");
+        TiffImage* tiff = TIFFOpen("res2.tif", "w");
         createTiffImage(View(img), tiff);
         TIFFClose(tiff);
 
@@ -247,13 +248,13 @@ public:
         TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
         shouldEqual(w, img.width());
         shouldEqual(h, img.height());
-    
-        MultiArray<2, unsigned char> res2(w,h);
+
+        MultiArray<2, unsigned char> res2(w, h);
         importTiffImage(tiff, res2);
         TIFFClose(tiff);
 
         shouldEqualSequence(res2.begin(), res2.end(), img.data());
-        
+
         // test bilevel
         MultiArray<2, unsigned char> bilevel;
         importImage("bilevel.tiff", bilevel);
@@ -263,266 +264,266 @@ public:
         shouldEqual(m, 0);
         shouldEqual(M, 1);
         shouldEqual(bilevel.sum<int>(), 1653050); // 96% white pixels
-        
+
 #endif
     }
 
     void testTIFFSequence()
     {
 #if defined(HasTIFF)
-        for (int i=0; i < 3; ++i)
+        for (int i = 0; i < 3; ++i)
         {
             std::string fileName = std::string("lenna_") + vigra::asString(i) + ".tif";
-            vigra::ImageImportInfo ininfo (fileName.c_str());
+            vigra::ImageImportInfo ininfo(fileName.c_str());
             Image inimg(ininfo.width(), ininfo.height());
             importImage(ininfo, destImage(inimg));
-            vigra::ImageExportInfo outinfo ("resseq.tif", i==0?"w":"a");
+            vigra::ImageExportInfo outinfo("resseq.tif", i == 0 ? "w" : "a");
             exportImage(srcImageRange(inimg), outinfo);
         }
 
-        for (int j=0; j < 3; ++j)
+        for (int j = 0; j < 3; ++j)
         {
-            vigra::ImageImportInfo ininfo ("resseq.tif", j);
+            vigra::ImageImportInfo ininfo("resseq.tif", j);
             Image inimg(ininfo.width(), ininfo.height());
             std::string fileName = std::string("lenna_") + vigra::asString(j) + ".tif";
             importImage(ininfo, destImage(inimg));
-            vigra::ImageImportInfo originfo (fileName.c_str());
+            vigra::ImageImportInfo originfo(fileName.c_str());
             Image origimg(originfo.width(), originfo.height());
             importImage(originfo, destImage(origimg));
 
-            Image::ScanOrderIterator it = inimg.begin ();
-            Image::ScanOrderIterator it1 = origimg.begin ();
-            Image::Accessor acc = inimg.accessor ();
-            for (; it != inimg.end (); ++it, ++it1)
-                should (acc (it) == acc (it1));
+            Image::ScanOrderIterator it = inimg.begin();
+            Image::ScanOrderIterator it1 = origimg.begin();
+            Image::Accessor acc = inimg.accessor();
+            for (; it != inimg.end(); ++it, ++it1)
+                should(acc(it) == acc(it1));
         }
 #endif
     }
 
-    void testBMP ()
+    void testBMP()
     {
-        testFile ("res.bmp");
+        testFile("res.bmp");
     }
 
-    void testPGM ()
+    void testPGM()
     {
-        testFile ("res.pgm");
+        testFile("res.pgm");
     }
 
-    void testPNM ()
+    void testPNM()
     {
-        testFile ("res.pnm");
+        testFile("res.pnm");
     }
 
-    void testPNM2 ()
+    void testPNM2()
     {
-        vigra::ImageExportInfo exportinfo ("res.pgm");
-        exportinfo.setCompression ("ASCII");
-        exportImage (srcImageRange (img), exportinfo);
+        vigra::ImageExportInfo exportinfo("res.pgm");
+        exportinfo.setCompression("ASCII");
+        exportImage(srcImageRange(img), exportinfo);
 
-        vigra::ImageImportInfo info ("res.pgm");
+        vigra::ImageImportInfo info("res.pgm");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isGrayscale ());
-        should (info.getPixelType () == std::string ("UINT8"));
-        should (info.getFileType () == std::string ("PNM"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isGrayscale());
+        should(info.getPixelType() == std::string("UINT8"));
+        should(info.getFileType() == std::string("PNM"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = img.accessor();
 
-        for (; i != img.end (); ++i, ++i1)
-            should (acc (i) == acc (i1));
+        for (; i != img.end(); ++i, ++i1)
+            should(acc(i) == acc(i1));
     }
 
-    void testPNG ()
+    void testPNG()
     {
 #if !defined(HasPNG)
         failCodec(img, vigra::ImageExportInfo("res.png"));
 #else
-        testFile ("res.png");
+        testFile("res.png");
 #endif
     }
 
-    void testSUN ()
+    void testSUN()
     {
-        testFile ("res.ras");
+        testFile("res.ras");
     }
 
-    void testVIFF1 ()
+    void testVIFF1()
     {
-        testFile ("res.xv");
+        testFile("res.xv");
     }
 
-    void testVIFF2 ()
+    void testVIFF2()
     {
-        vigra::ImageExportInfo exportinfo ("res.foo");
-        exportinfo.setFileType ("VIFF");
-        exportImage (srcImageRange (img), exportinfo);
+        vigra::ImageExportInfo exportinfo("res.foo");
+        exportinfo.setFileType("VIFF");
+        exportImage(srcImageRange(img), exportinfo);
 
-        vigra::ImageImportInfo info ("res.foo");
+        vigra::ImageImportInfo info("res.foo");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isGrayscale ());
-        should (info.getPixelType () == std::string ("UINT8"));
-        should (info.getFileType () == std::string ("VIFF"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isGrayscale());
+        should(info.getPixelType() == std::string("UINT8"));
+        should(info.getFileType() == std::string("VIFF"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = img.accessor();
 
-        for (; i != img.end (); ++i, ++i1)
-            should (acc (i) == acc (i1));
+        for (; i != img.end(); ++i, ++i1)
+            should(acc(i) == acc(i1));
     }
 
     Image img;
 };
 
 void
-ByteImageExportImportTest::testFile (const char *filename)
+ByteImageExportImportTest::testFile(const char* filename)
 {
-    exportImage (srcImageRange (img), vigra::ImageExportInfo (filename));
+    exportImage(srcImageRange(img), vigra::ImageExportInfo(filename));
 
-    vigra::ImageImportInfo info (filename);
+    vigra::ImageImportInfo info(filename);
 
-    should (info.width () == img.width ());
-    should (info.height () == img.height ());
-    should (info.isGrayscale ());
-    should (info.getPixelType () == std::string ("UINT8"));
+    should(info.width() == img.width());
+    should(info.height() == img.height());
+    should(info.isGrayscale());
+    should(info.getPixelType() == std::string("UINT8"));
 
-    Image res (info.width (), info.height ());
+    Image res(info.width(), info.height());
 
-    importImage (info, destImage (res));
+    importImage(info, destImage(res));
 
-    Image::ScanOrderIterator i = img.begin ();
-    Image::ScanOrderIterator i1 = res.begin ();
-    Image::Accessor acc = img.accessor ();
+    Image::ScanOrderIterator i = img.begin();
+    Image::ScanOrderIterator i1 = res.begin();
+    Image::Accessor acc = img.accessor();
 
-    for (; i != img.end (); ++i, ++i1)
-        should (acc (i) == acc (i1));
+    for (; i != img.end(); ++i, ++i1)
+        should(acc(i) == acc(i1));
 }
 
 
 class ByteRGBImageExportImportTest
 {
     typedef vigra::BRGBImage Image;
+
 public:
-    ByteRGBImageExportImportTest ()
+    ByteRGBImageExportImportTest()
     {
-        vigra::ImageImportInfo info ("lennargb.xv");
+        vigra::ImageImportInfo info("lennargb.xv");
 
-        int w = info.width ();
-        int h = info.height ();
+        int w = info.width();
+        int h = info.height();
 
-        img.resize (w, h);
+        img.resize(w, h);
 
-        importImage (info, destImage (img));
+        importImage(info, destImage(img));
     }
 
-    void testFile (const char *fileName);
+    void testFile(const char* fileName);
 
-    void testGIF ()
+    void testGIF()
     {
-        exportImage (srcImageRange (img), vigra::ImageExportInfo ("resrgb.gif"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("resrgb.gif"));
 
-        vigra::ImageImportInfo info ("resrgb.gif");
+        vigra::ImageImportInfo info("resrgb.gif");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isColor ());
-        should (info.pixelType () == vigra::ImageImportInfo::UINT8);
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isColor());
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
 
-        Image res (info.width (), info.height ());
-        Image ref (info.width (), info.height ());
+        Image res(info.width(), info.height());
+        Image ref(info.width(), info.height());
 
-        importImage (info, destImage (res));
-        importImage (vigra::ImageImportInfo("lenna_gifref.xv"), destImage (ref));
+        importImage(info, destImage(res));
+        importImage(vigra::ImageImportInfo("lenna_gifref.xv"), destImage(ref));
 
-        Image::ScanOrderIterator i = ref.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = ref.accessor ();
+        Image::ScanOrderIterator i = ref.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = ref.accessor();
 
         double sum = 0.0;
-        for (; i != ref.end (); ++i, ++i1)
-                sum += (acc (i) - acc (i1)).magnitude ();
+        for (; i != ref.end(); ++i, ++i1)
+            sum += (acc(i) - acc(i1)).magnitude();
 
-        should (sum / (info.width () * info.height ()) < 4.0);  // use rather large tolerance to make the
-                                                                // test portable
+        should(sum / (info.width() * info.height()) < 4.0); // use rather large tolerance to make the
+                                                            // test portable
     }
 
-    void testJPEG ()
+    void testJPEG()
     {
 #if !defined(HasJPEG)
-        failCodec(img, vigra::ImageExportInfo ("res.jpg").setCompression ("JPEG QUALITY=100"));
+        failCodec(img, vigra::ImageExportInfo("res.jpg").setCompression("JPEG QUALITY=100"));
 #else
-        exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.jpg").setCompression ("JPEG QUALITY=100"));
+        exportImage(srcImageRange(img),
+                    vigra::ImageExportInfo("res.jpg").setCompression("JPEG QUALITY=100"));
 
-        vigra::ImageImportInfo info ("res.jpg");
+        vigra::ImageImportInfo info("res.jpg");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isColor ());
-        should (info.getPixelType () == std::string ("UINT8"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isColor());
+        should(info.getPixelType() == std::string("UINT8"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = img.accessor();
 
         double sum = 0.0;
-        for (; i != img.end (); ++i, ++i1)
-            {
-                sum += (acc (i) - acc (i1)).magnitude ();
-            }
-        should (sum / (info.width () * info.height ()) < 2.0);
+        for (; i != img.end(); ++i, ++i1)
+        {
+            sum += (acc(i) - acc(i1)).magnitude();
+        }
+        should(sum / (info.width() * info.height()) < 2.0);
 #endif
     }
 
-    void testTIFF ()
+    void testTIFF()
     {
 #if !defined(HasTIFF)
-        failCodec(img, vigra::ImageExportInfo ("res.tif").setCompression ("LZW"));
+        failCodec(img, vigra::ImageExportInfo("res.tif").setCompression("LZW"));
 #else
-        exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.tif").
-                     setCompression ("LZW"));
+        exportImage(srcImageRange(img),
+                    vigra::ImageExportInfo("res.tif").setCompression("LZW"));
 
-        vigra::ImageImportInfo info ("res.tif");
+        vigra::ImageImportInfo info("res.tif");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isColor ());
-        should (info.getPixelType () == std::string ("UINT8"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isColor());
+        should(info.getPixelType() == std::string("UINT8"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = img.accessor();
 
-        for (; i != img.end (); ++i, ++i1)
-            {
-                should (acc (i) == acc (i1));
-            }
+        for (; i != img.end(); ++i, ++i1)
+        {
+            should(acc(i) == acc(i1));
+        }
 
-        TiffImage * tiff = TIFFOpen("res2.tif", "w");
-        createTiffImage(MultiArrayView<2, RGBValue<unsigned char> >(img), tiff);
+        TiffImage* tiff = TIFFOpen("res2.tif", "w");
+        createTiffImage(MultiArrayView<2, RGBValue<unsigned char>>(img), tiff);
         TIFFClose(tiff);
 
         uint32 w, h;
@@ -531,8 +532,8 @@ public:
         TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
         shouldEqual(w, img.width());
         shouldEqual(h, img.height());
-    
-        MultiArray<2, RGBValue<unsigned char> > res2(w,h);
+
+        MultiArray<2, RGBValue<unsigned char>> res2(w, h);
         importTiffImage(tiff, res2);
         TIFFClose(tiff);
 
@@ -540,144 +541,144 @@ public:
 #endif
     }
 
-    void testBMP ()
+    void testBMP()
     {
-        testFile ("res.bmp");
+        testFile("res.bmp");
     }
 
-    void testPPM ()
+    void testPPM()
     {
-        testFile ("res.ppm");
+        testFile("res.ppm");
     }
 
-    void testPNM ()
+    void testPNM()
     {
-        testFile ("res.pnm");
+        testFile("res.pnm");
     }
 
 
-    void testPNM2 ()
+    void testPNM2()
     {
-        exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.ppm").setCompression ("ASCII"));
+        exportImage(srcImageRange(img),
+                    vigra::ImageExportInfo("res.ppm").setCompression("ASCII"));
 
-        vigra::ImageImportInfo info ("res.ppm");
+        vigra::ImageImportInfo info("res.ppm");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isColor ());
-        should (info.getPixelType () == std::string ("UINT8"));
-        should (info.getFileType () == std::string ("PNM"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isColor());
+        should(info.getPixelType() == std::string("UINT8"));
+        should(info.getFileType() == std::string("PNM"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = img.accessor();
 
-        for (; i != img.end (); ++i, ++i1)
-            should (acc (i) == acc (i1));
+        for (; i != img.end(); ++i, ++i1)
+            should(acc(i) == acc(i1));
     }
 
-    void testPNG ()
+    void testPNG()
     {
 #if !defined(HasPNG)
         failCodec(img, vigra::ImageExportInfo("res.png"));
 #else
-        testFile ("res.png");
+        testFile("res.png");
 #endif
     }
 
-    void testSUN ()
+    void testSUN()
     {
-        testFile ("res.ras");
+        testFile("res.ras");
     }
 
-    void testVIFF1 ()
+    void testVIFF1()
     {
-        testFile ("res.xv");
+        testFile("res.xv");
     }
 
-    void testVIFF2 ()
+    void testVIFF2()
     {
-        exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.foo").setFileType ("VIFF"));
+        exportImage(srcImageRange(img),
+                    vigra::ImageExportInfo("res.foo").setFileType("VIFF"));
 
-        vigra::ImageImportInfo info ("res.foo");
+        vigra::ImageImportInfo info("res.foo");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isColor ());
-        should (info.getPixelType () == std::string ("UINT8"));
-        should (info.getFileType () == std::string ("VIFF"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isColor());
+        should(info.getPixelType() == std::string("UINT8"));
+        should(info.getFileType() == std::string("VIFF"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = img.accessor();
 
-        for (; i != img.end (); ++i, ++i1)
-            should (acc (i) == acc (i1));
+        for (; i != img.end(); ++i, ++i1)
+            should(acc(i) == acc(i1));
     }
 
     Image img;
 };
 
 void
-ByteRGBImageExportImportTest::testFile (const char *fileName)
+ByteRGBImageExportImportTest::testFile(const char* fileName)
 {
-    exportImage (srcImageRange (img), vigra::ImageExportInfo (fileName));
+    exportImage(srcImageRange(img), vigra::ImageExportInfo(fileName));
 
-    vigra::ImageImportInfo info (fileName);
+    vigra::ImageImportInfo info(fileName);
 
-    should (info.width () == img.width ());
-    should (info.height () == img.height ());
-    should (info.isColor ());
-    should (info.getPixelType () == std::string ("UINT8"));
+    should(info.width() == img.width());
+    should(info.height() == img.height());
+    should(info.isColor());
+    should(info.getPixelType() == std::string("UINT8"));
 
-    Image res (info.width (), info.height ());
+    Image res(info.width(), info.height());
 
-    importImage (info, destImage (res));
+    importImage(info, destImage(res));
 
-    Image::ScanOrderIterator i = img.begin ();
-    Image::ScanOrderIterator i1 = res.begin ();
-    Image::Accessor acc = img.accessor ();
+    Image::ScanOrderIterator i = img.begin();
+    Image::ScanOrderIterator i1 = res.begin();
+    Image::Accessor acc = img.accessor();
 
-    for (; i != img.end (); ++i, ++i1)
-        should (acc (i) == acc (i1));
+    for (; i != img.end(); ++i, ++i1)
+        should(acc(i) == acc(i1));
 }
 
 class CanvasSizeTest
 {
-  public:
-    void testTIFFCanvasSize ()
+public:
+    void testTIFFCanvasSize()
     {
-        vigra::ImageExportInfo exportinfo ("res.tif");
+        vigra::ImageExportInfo exportinfo("res.tif");
         FRGBImage img(1, 1);
 #if !defined(HasTIFF)
         failCodec(img, exportinfo);
 #else
-        img(0,0) = 1;
-        exportinfo.setCompression ("LZW");
+        img(0, 0) = 1;
+        exportinfo.setCompression("LZW");
         Size2D canvasSize(3, 8);
-        exportinfo.setCanvasSize (canvasSize);
-        exportImage (srcImageRange (img), exportinfo);
+        exportinfo.setCanvasSize(canvasSize);
+        exportImage(srcImageRange(img), exportinfo);
 
-        vigra::ImageImportInfo info ("res.tif");
+        vigra::ImageImportInfo info("res.tif");
 
-        should (info.getCanvasSize () == canvasSize);
+        should(info.getCanvasSize() == canvasSize);
 #endif
     }
 };
 
 class PositionTest
 {
-  public:
+public:
     void testFile(const char* filename)
     {
         ImageExportInfo exportinfo(filename);
@@ -693,7 +694,7 @@ class PositionTest
 
         ImageImportInfo info(filename);
 
-        should (info.getPosition() == position);
+        should(info.getPosition() == position);
     }
 
     void testEXRPosition()
@@ -729,11 +730,11 @@ class PositionTest
 
 class PNGInt16Test
 {
-  public:
+public:
     void testByteOrder()
     {
-        UInt16Image i(1,1);
-        i(0,0) = 1;
+        UInt16Image i(1, 1);
+        i(0, 0) = 1;
         exportImage(srcImageRange(i), ImageExportInfo("res.png"));
         ImageImportInfo info("res.png");
         shouldEqual(info.width(), 1);
@@ -741,16 +742,16 @@ class PNGInt16Test
         shouldEqual(info.numBands(), 1);
         shouldEqual(info.isGrayscale(), true);
         shouldEqual(std::string(info.getPixelType()), std::string("UINT16"));
-        i(0,0) = 0;
+        i(0, 0) = 0;
         importImage(info, destImage(i));
-        shouldEqual(i(0,0), 1);
+        shouldEqual(i(0, 0), 1);
 
         // DGSW: Note that this produces a PNG standard conformant image
         //       but both Imagemagick 'identify' and photoshop CS2 see
         //       the data incorrectly
-        BasicImage<RGBValue<unsigned short> > rgb(1,1);
+        BasicImage<RGBValue<unsigned short>> rgb(1, 1);
         // Using unsigned values 0xff01, 0xfff1, 0xfffd
-        rgb(0,0) = RGBValue<unsigned short>(65281,65521,65533);
+        rgb(0, 0) = RGBValue<unsigned short>(65281, 65521, 65533);
         // Using unsigned values 0x7f01, 0x7ff1, 0x7ffd
         // rgb(0,0) = RGBValue<unsigned short>(32513,32753,32765);
         exportImage(srcImageRange(rgb), ImageExportInfo("res.png"));
@@ -759,10 +760,10 @@ class PNGInt16Test
         shouldEqual(rgbinfo.height(), 1);
         shouldEqual(rgbinfo.numBands(), 3);
         shouldEqual(std::string(rgbinfo.getPixelType()), std::string("UINT16"));
-        rgb(0,0) = RGBValue<short>(0,0,0);
+        rgb(0, 0) = RGBValue<short>(0, 0, 0);
         importImage(rgbinfo, destImage(rgb));
-        shouldEqual(rgb(0,0), RGBValue<unsigned short>(65281,65521,65533));
-//        shouldEqual(rgb(0,0), RGBValue<unsigned short>(32513,32753,32765));
+        shouldEqual(rgb(0, 0), RGBValue<unsigned short>(65281, 65521, 65533));
+        //        shouldEqual(rgb(0,0), RGBValue<unsigned short>(32513,32753,32765));
     }
 };
 
@@ -772,237 +773,236 @@ class FloatImageExportImportTest
     std::string rereadType;
 
 public:
-
-    FloatImageExportImportTest ()
-    : rereadType("DOUBLE")
+    FloatImageExportImportTest()
+        : rereadType("DOUBLE")
     {
-        vigra::ImageImportInfo info ("lenna.xv");
+        vigra::ImageImportInfo info("lenna.xv");
 
-        int w = info.width ();
-        int h = info.height ();
+        int w = info.width();
+        int h = info.height();
 
-        img.resize (w, h);
+        img.resize(w, h);
 
-        importImage (info, destImage (img));
+        importImage(info, destImage(img));
 
-        vigra::ImageImportInfo rinfo ("lennafloat.xv");
+        vigra::ImageImportInfo rinfo("lennafloat.xv");
 
-        reread.resize (w, h);
+        reread.resize(w, h);
 
-        importImage (rinfo, destImage (reread));
+        importImage(rinfo, destImage(reread));
     }
 
     void testGIF()
     {
-        exportImage (srcImageRange (img), vigra::ImageExportInfo ("res.gif"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.gif"));
 
-        vigra::ImageImportInfo info ("res.gif");
+        vigra::ImageImportInfo info("res.gif");
 
-        should (info.width () == reread.width ());
-        should (info.height () == reread.height ());
-        should (info.isGrayscale ());
-        should (info.getPixelType () == std::string ("UINT8"));
+        should(info.width() == reread.width());
+        should(info.height() == reread.height());
+        should(info.isGrayscale());
+        should(info.getPixelType() == std::string("UINT8"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = reread.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = reread.accessor ();
+        Image::ScanOrderIterator i = reread.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = reread.accessor();
 
         double sum = 0.0;
-        for (; i != reread.end (); ++i, ++i1)
-            sum += std::abs (acc (i) - acc (i1));
-        should (sum / (info.width () * info.height ()) < 0.1);
+        for (; i != reread.end(); ++i, ++i1)
+            sum += std::abs(acc(i) - acc(i1));
+        should(sum / (info.width() * info.height()) < 0.1);
     }
 
-    void testJPEG ()
+    void testJPEG()
     {
 #if !defined(HasJPEG)
-        failCodec(img, vigra::ImageExportInfo ("res.jpg").setCompression ("JPEG QUALITY=100"));
+        failCodec(img, vigra::ImageExportInfo("res.jpg").setCompression("JPEG QUALITY=100"));
 #else
-        exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.jpg").setCompression ("JPEG QUALITY=100"));
+        exportImage(srcImageRange(img),
+                    vigra::ImageExportInfo("res.jpg").setCompression("JPEG QUALITY=100"));
 
-        vigra::ImageImportInfo info ("res.jpg");
+        vigra::ImageImportInfo info("res.jpg");
 
-        should (info.width () == reread.width ());
-        should (info.height () == reread.height ());
-        should (info.isGrayscale ());
-        should (info.getPixelType () == std::string ("UINT8"));
+        should(info.width() == reread.width());
+        should(info.height() == reread.height());
+        should(info.isGrayscale());
+        should(info.getPixelType() == std::string("UINT8"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = reread.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = reread.accessor ();
+        Image::ScanOrderIterator i = reread.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = reread.accessor();
 
         double sum = 0.0;
-        for (; i != reread.end (); ++i, ++i1)
-            sum += std::abs (acc (i) - acc (i1));
-        should (sum / (info.width () * info.height ()) < 0.1);
+        for (; i != reread.end(); ++i, ++i1)
+            sum += std::abs(acc(i) - acc(i1));
+        should(sum / (info.width() * info.height()) < 0.1);
 #endif
     }
 
-    void testPNG ()
+    void testPNG()
     {
 #if !defined(HasPNG)
-        failCodec(img, vigra::ImageExportInfo ("res.png"));
+        failCodec(img, vigra::ImageExportInfo("res.png"));
 #else
-        exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res_.png"));
+        exportImage(srcImageRange(img),
+                    vigra::ImageExportInfo("res_.png"));
 
-        vigra::ImageImportInfo info ("res_.png");
+        vigra::ImageImportInfo info("res_.png");
 
-        should (info.width () == reread.width ());
-        should (info.height () == reread.height ());
-        should (info.isGrayscale ());
-        should (info.getPixelType () == std::string ("UINT8"));
+        should(info.width() == reread.width());
+        should(info.height() == reread.height());
+        should(info.isGrayscale());
+        should(info.getPixelType() == std::string("UINT8"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = reread.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = reread.accessor ();
+        Image::ScanOrderIterator i = reread.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = reread.accessor();
 
         double sum = 0.0;
-        for (; i != reread.end (); ++i, ++i1)
-            sum += std::abs (acc (i) - acc (i1));
-        should (sum / (info.width () * info.height ()) < 0.1);
+        for (; i != reread.end(); ++i, ++i1)
+            sum += std::abs(acc(i) - acc(i1));
+        should(sum / (info.width() * info.height()) < 0.1);
 #endif
     }
 
-    void testTIFF ()
+    void testTIFF()
     {
 #if !defined(HasTIFF)
-        failCodec(img, vigra::ImageExportInfo ("res.tif").setCompression ("LZW"));
+        failCodec(img, vigra::ImageExportInfo("res.tif").setCompression("LZW"));
 #else
-        exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.tif").setCompression ("LZW"));
+        exportImage(srcImageRange(img),
+                    vigra::ImageExportInfo("res.tif").setCompression("LZW"));
 
-        vigra::ImageImportInfo info ("res.tif");
+        vigra::ImageImportInfo info("res.tif");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isGrayscale ());
-        should (info.getPixelType () == rereadType);
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isGrayscale());
+        should(info.getPixelType() == rereadType);
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
         //Image::Accessor acc = img.accessor ();
 
         shouldEqualSequence(i, img.end(), i1);
 #endif
     }
 
-    void testTIFFForcedRange ()
+    void testTIFFForcedRange()
     {
 #if !defined(HasTIFF)
-        failCodec(img, vigra::ImageExportInfo ("res.tif").setForcedRangeMapping(0, 255, 1, 2));
+        failCodec(img, vigra::ImageExportInfo("res.tif").setForcedRangeMapping(0, 255, 1, 2));
 #else
-        exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.tif").setForcedRangeMapping(0, 255, 1, 2));
+        exportImage(srcImageRange(img),
+                    vigra::ImageExportInfo("res.tif").setForcedRangeMapping(0, 255, 1, 2));
 
-        vigra::ImageImportInfo info ("res.tif");
+        vigra::ImageImportInfo info("res.tif");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isGrayscale ());
-        should (info.getPixelType () == rereadType);
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isGrayscale());
+        should(info.getPixelType() == rereadType);
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = img.accessor();
 
-        for (; i != img.end (); ++i, ++i1)
-            shouldEqualTolerance(acc (i) / 255.0, acc (i1) - 1.0, 1e-12);
+        for (; i != img.end(); ++i, ++i1)
+            shouldEqualTolerance(acc(i) / 255.0, acc(i1) - 1.0, 1e-12);
 #endif
     }
 
-    void testBMP ()
+    void testBMP()
     {
-        exportImage (srcImageRange (img), vigra::ImageExportInfo ("res.bmp"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.bmp"));
 
-        vigra::ImageImportInfo info ("res.bmp");
+        vigra::ImageImportInfo info("res.bmp");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isGrayscale ());
-        should (info.getPixelType () == std::string ("UINT8"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isGrayscale());
+        should(info.getPixelType() == std::string("UINT8"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = reread.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = reread.accessor ();
+        Image::ScanOrderIterator i = reread.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = reread.accessor();
 
-        for (; i != reread.end (); ++i, ++i1)
-            should (acc (i) == acc (i1));
+        for (; i != reread.end(); ++i, ++i1)
+            should(acc(i) == acc(i1));
     }
 
-    void testSUN ()
+    void testSUN()
     {
-        exportImage (srcImageRange (img), vigra::ImageExportInfo ("res.ras"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.ras"));
 
-        vigra::ImageImportInfo info ("res.ras");
+        vigra::ImageImportInfo info("res.ras");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isGrayscale ());
-        should (info.getPixelType () == std::string ("UINT8"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isGrayscale());
+        should(info.getPixelType() == std::string("UINT8"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = reread.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = reread.accessor ();
+        Image::ScanOrderIterator i = reread.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = reread.accessor();
 
-        for (; i != reread.end (); ++i, ++i1)
-            {
-                should (acc (i) == acc (i1));
-            }
+        for (; i != reread.end(); ++i, ++i1)
+        {
+            should(acc(i) == acc(i1));
+        }
     }
 
-    void testVIFF ()
+    void testVIFF()
     {
-        exportImage (srcImageRange (img), vigra::ImageExportInfo ("res.xv"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.xv"));
 
-        vigra::ImageImportInfo info ("res.xv");
+        vigra::ImageImportInfo info("res.xv");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isGrayscale ());
-        should (info.getPixelType () == rereadType);
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isGrayscale());
+        should(info.getPixelType() == rereadType);
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = img.accessor();
 
-        for (; i != img.end (); ++i, ++i1)
-            {
-                should (acc (i) == acc (i1));
-            }
+        for (; i != img.end(); ++i, ++i1)
+        {
+            should(acc(i) == acc(i1));
+        }
     }
 
     Image img, reread;
@@ -1014,269 +1014,265 @@ class FloatRGBImageExportImportTest
     Image img, reread;
 
 public:
-
-    FloatRGBImageExportImportTest ()
+    FloatRGBImageExportImportTest()
     {
-        vigra::ImageImportInfo info ("lennargb.xv");
+        vigra::ImageImportInfo info("lennargb.xv");
 
-        int w = info.width ();
-        int h = info.height ();
+        int w = info.width();
+        int h = info.height();
 
-        img.resize (w, h);
+        img.resize(w, h);
 
-        importImage (info, destImage (img));
+        importImage(info, destImage(img));
 
-        vigra::ImageImportInfo rinfo ("lennafloatrgb.xv");
+        vigra::ImageImportInfo rinfo("lennafloatrgb.xv");
 
-        reread.resize (w, h);
+        reread.resize(w, h);
 
-        importImage (rinfo, destImage (reread));
+        importImage(rinfo, destImage(reread));
     }
 
-    void testJPEG ()
+    void testJPEG()
     {
 #if !defined(HasJPEG)
-        failCodec(img, vigra::ImageExportInfo ("res.jpg").setCompression ("JPEG QUALITY=100"));
+        failCodec(img, vigra::ImageExportInfo("res.jpg").setCompression("JPEG QUALITY=100"));
 #else
-        exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.jpg").setCompression ("JPEG QUALITY=100"));
+        exportImage(srcImageRange(img),
+                    vigra::ImageExportInfo("res.jpg").setCompression("JPEG QUALITY=100"));
 
-        vigra::ImageImportInfo info ("res.jpg");
+        vigra::ImageImportInfo info("res.jpg");
 
-        should (info.width () == reread.width ());
-        should (info.height () == reread.height ());
-        should (info.isColor ());
-        should (info.getPixelType () == std::string ("UINT8"));
+        should(info.width() == reread.width());
+        should(info.height() == reread.height());
+        should(info.isColor());
+        should(info.getPixelType() == std::string("UINT8"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = reread.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = reread.accessor ();
+        Image::ScanOrderIterator i = reread.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = reread.accessor();
 
         float sum = 0.0f;
-        for (; i != reread.end (); ++i, ++i1)
-            sum += (acc (i) - acc (i1)).magnitude ();
-        should (sum / (info.width () * info.height ()) < 2.0f);
+        for (; i != reread.end(); ++i, ++i1)
+            sum += (acc(i) - acc(i1)).magnitude();
+        should(sum / (info.width() * info.height()) < 2.0f);
 #endif
     }
 
-    void testTIFF ()
+    void testTIFF()
     {
 #if !defined(HasTIFF)
-        failCodec(img, vigra::ImageExportInfo ("res.tif"));
+        failCodec(img, vigra::ImageExportInfo("res.tif"));
 #else
-        exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.tif"));
+        exportImage(srcImageRange(img),
+                    vigra::ImageExportInfo("res.tif"));
 
-        vigra::ImageImportInfo info ("res.tif");
+        vigra::ImageImportInfo info("res.tif");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isColor ());
-        should (info.getPixelType () == std::string ("FLOAT"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isColor());
+        should(info.getPixelType() == std::string("FLOAT"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = img.accessor();
 
-        for (; i != img.end (); ++i, ++i1)
-            shouldEqual (acc (i), acc (i1));
+        for (; i != img.end(); ++i, ++i1)
+            shouldEqual(acc(i), acc(i1));
 #endif
     }
 
-    void testTIFFForcedRange ()
+    void testTIFFForcedRange()
     {
 #if !defined(HasTIFF)
-        failCodec(img, vigra::ImageExportInfo ("res.tif").setForcedRangeMapping(0, 255, 1, 2));
+        failCodec(img, vigra::ImageExportInfo("res.tif").setForcedRangeMapping(0, 255, 1, 2));
 #else
-        exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.tif").setForcedRangeMapping(0,255,1,2));
+        exportImage(srcImageRange(img),
+                    vigra::ImageExportInfo("res.tif").setForcedRangeMapping(0, 255, 1, 2));
 
-        vigra::ImageImportInfo info ("res.tif");
+        vigra::ImageImportInfo info("res.tif");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isColor ());
-        should (info.getPixelType () == std::string ("FLOAT"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isColor());
+        should(info.getPixelType() == std::string("FLOAT"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = img.accessor();
 
-        for (; i != img.end (); ++i, ++i1)
+        for (; i != img.end(); ++i, ++i1)
         {
-            shouldEqualTolerance(acc.red(i)/255.0f, acc.red(i1)-1.0f, 1e-4);
-            shouldEqualTolerance(acc.green(i)/255.0f, acc.green(i1)-1.0f, 1e-4);
-            shouldEqualTolerance(acc.blue(i)/255.0f, acc.blue(i1)-1.0f, 1e-4);
+            shouldEqualTolerance(acc.red(i) / 255.0f, acc.red(i1) - 1.0f, 1e-4);
+            shouldEqualTolerance(acc.green(i) / 255.0f, acc.green(i1) - 1.0f, 1e-4);
+            shouldEqualTolerance(acc.blue(i) / 255.0f, acc.blue(i1) - 1.0f, 1e-4);
         }
 #endif
     }
 
-    void testBMP ()
+    void testBMP()
     {
-        exportImage (srcImageRange (img), vigra::ImageExportInfo ("res.bmp"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.bmp"));
 
-        vigra::ImageImportInfo info ("res.bmp");
+        vigra::ImageImportInfo info("res.bmp");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isColor ());
-        should (info.getPixelType () == std::string ("UINT8"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isColor());
+        should(info.getPixelType() == std::string("UINT8"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = reread.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = reread.accessor ();
+        Image::ScanOrderIterator i = reread.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = reread.accessor();
 
         float sum = 0.0f;
-        for (; i != reread.end (); ++i, ++i1)
-            sum += (acc (i) - acc (i1)).magnitude ();
-        should (sum / (info.width () * info.height ()) < 2.0f);
+        for (; i != reread.end(); ++i, ++i1)
+            sum += (acc(i) - acc(i1)).magnitude();
+        should(sum / (info.width() * info.height()) < 2.0f);
     }
 
-    void testSUN ()
+    void testSUN()
     {
-        exportImage (srcImageRange (img), vigra::ImageExportInfo ("res.ras"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.ras"));
 
-        vigra::ImageImportInfo info ("res.ras");
+        vigra::ImageImportInfo info("res.ras");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isColor ());
-        should (info.getPixelType () == std::string ("UINT8"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isColor());
+        should(info.getPixelType() == std::string("UINT8"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = reread.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = reread.accessor ();
+        Image::ScanOrderIterator i = reread.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = reread.accessor();
 
         float sum = 0.0f;
-        for (; i != reread.end (); ++i, ++i1)
-            sum += (acc (i) - acc (i1)).magnitude ();
-        should (sum / (info.width () * info.height ()) < 2.0f);
+        for (; i != reread.end(); ++i, ++i1)
+            sum += (acc(i) - acc(i1)).magnitude();
+        should(sum / (info.width() * info.height()) < 2.0f);
     }
 
-    void testVIFF ()
+    void testVIFF()
     {
-        exportImage (srcImageRange (img), vigra::ImageExportInfo ("res.xv"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.xv"));
 
-        vigra::ImageImportInfo info ("res.xv");
+        vigra::ImageImportInfo info("res.xv");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isColor ());
-        should (info.getPixelType () == std::string ("FLOAT"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isColor());
+        should(info.getPixelType() == std::string("FLOAT"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = img.accessor();
 
-        for (; i != img.end (); ++i, ++i1)
-            should (acc (i) == acc (i1));
+        for (; i != img.end(); ++i, ++i1)
+            should(acc(i) == acc(i1));
     }
 
-    void testHDR ()
+    void testHDR()
     {
         vigra::ImageExportInfo exi("res.hdr");
 
-        exportImage (srcImageRange (img), exi );
+        exportImage(srcImageRange(img), exi);
 
-        vigra::ImageImportInfo info ("res.hdr");
+        vigra::ImageImportInfo info("res.hdr");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isColor ());
-        should (info.getPixelType () == std::string ("FLOAT"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isColor());
+        should(info.getPixelType() == std::string("FLOAT"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = img.accessor();
 
-        for (; i != img.end (); ++i, ++i1)
-            shouldEqual (acc (i), acc (i1));
+        for (; i != img.end(); ++i, ++i1)
+            shouldEqual(acc(i), acc(i1));
     }
-
 };
 
 class Vector4ExportImportTest
 {
-  public:
-
+public:
     typedef vigra::FVector4Image Image;
-    typedef vigra::BasicImage<TinyVector<UInt8, 4> > BImage;
+    typedef vigra::BasicImage<TinyVector<UInt8, 4>> BImage;
     Image img, reread;
     BImage breread, breference;
 
 public:
-
-    Vector4ExportImportTest ()
-    : img(2,3),
-      reread(2,3),
-      breread(2,3),
-      breference(2,3)
+    Vector4ExportImportTest()
+        : img(2, 3),
+          reread(2, 3),
+          breread(2, 3),
+          breference(2, 3)
     {
         double scale = 255.0 / 11.0;
         double offset = 5.5;
-        for(int y = 0; y<3; ++y)
+        for (int y = 0; y < 3; ++y)
         {
-            for(int x=0; x<2; ++x)
+            for (int x = 0; x < 2; ++x)
             {
-                img(x,y)[0] = 2*y+x + 0.5f;
-                img(x,y)[1] = -img(x,y)[0];
-                img(x,y)[2] = 0.0;
-                img(x,y)[3] = 0.5;
-                for(int b=0; b<4; ++b)
+                img(x, y)[0] = 2 * y + x + 0.5f;
+                img(x, y)[1] = -img(x, y)[0];
+                img(x, y)[2] = 0.0;
+                img(x, y)[3] = 0.5;
+                for (int b = 0; b < 4; ++b)
                 {
-                    breference(x,y)[b] =
-                        NumericTraits<UInt8>::fromRealPromote(scale*(img(x,y)[b]+offset));
+                    breference(x, y)[b] =
+                        NumericTraits<UInt8>::fromRealPromote(scale * (img(x, y)[b] + offset));
                 }
             }
         }
     }
 
-    void failingTest (char const * filename,
-                      char const * message = "exportImage(): file format does not support requested number of bands (color channels)")
+    void failingTest(char const* filename,
+                     char const* message = "exportImage(): file format does not support requested number of bands (color channels)")
     {
         try
         {
-            exportImage( srcImageRange(img), vigra::ImageExportInfo( filename ) );
-            failTest( "Failed to throw exception." );
+            exportImage(srcImageRange(img), vigra::ImageExportInfo(filename));
+            failTest("Failed to throw exception.");
         }
-        catch( vigra::PreconditionViolation & e )
+        catch (vigra::PreconditionViolation& e)
         {
             std::string expected = "\nPrecondition violation!\n";
             expected += message;
-            const bool rc = std::strncmp( expected.c_str(), e.what(), expected.length() ) == 0;
+            const bool rc = std::strncmp(expected.c_str(), e.what(), expected.length()) == 0;
             should(rc);
         }
     }
 
-    void testJPEG ()
+    void testJPEG()
     {
 #if !defined(HasJPEG)
         failingTest("res.jpg", "did not find a matching codec for the given file extension");
@@ -1285,126 +1281,126 @@ public:
 #endif
     }
 
-    void testGIF ()
+    void testGIF()
     {
         failingTest("res.gif");
     }
 
-    void testBMP ()
+    void testBMP()
     {
         failingTest("res.bmp");
     }
 
-    void testPNM ()
+    void testPNM()
     {
         failingTest("res.pnm");
     }
 
-    void testSUN ()
+    void testSUN()
     {
         failingTest("res.ras");
     }
 
-    void testVIFF ()
+    void testVIFF()
     {
-        exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.xv"));
+        exportImage(srcImageRange(img),
+                    vigra::ImageExportInfo("res.xv"));
 
-        vigra::ImageImportInfo info ("res.xv");
+        vigra::ImageImportInfo info("res.xv");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.numBands () == 4);
-        should (info.getPixelType () == std::string ("FLOAT"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.numBands() == 4);
+        should(info.getPixelType() == std::string("FLOAT"));
 
-        importImage (info, destImage (reread));
+        importImage(info, destImage(reread));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = reread.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = reread.begin();
+        Image::Accessor acc = img.accessor();
 
-        for (; i != img.end (); ++i, ++i1)
-            shouldEqual (acc (i), acc (i1));
+        for (; i != img.end(); ++i, ++i1)
+            shouldEqual(acc(i), acc(i1));
     }
 
-    void testTIFF ()
+    void testTIFF()
     {
 #if !defined(HasTIFF)
-        failCodec(img, vigra::ImageExportInfo ("res.tif"));
+        failCodec(img, vigra::ImageExportInfo("res.tif"));
 #else
-        exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.tif"));
+        exportImage(srcImageRange(img),
+                    vigra::ImageExportInfo("res.tif"));
 
-        vigra::ImageImportInfo info ("res.tif");
+        vigra::ImageImportInfo info("res.tif");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.numBands () == 4);
-        should (info.getPixelType () == std::string ("FLOAT"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.numBands() == 4);
+        should(info.getPixelType() == std::string("FLOAT"));
 
-        importImage (info, destImage (reread));
+        importImage(info, destImage(reread));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = reread.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = reread.begin();
+        Image::Accessor acc = img.accessor();
 
-        for (; i != img.end (); ++i, ++i1)
-            shouldEqual (acc (i), acc (i1));
+        for (; i != img.end(); ++i, ++i1)
+            shouldEqual(acc(i), acc(i1));
 #endif
     }
 
-    void testEXR ()
+    void testEXR()
     {
 #if !defined(HasEXR)
-        failCodec(img, vigra::ImageExportInfo ("res.exr"));
+        failCodec(img, vigra::ImageExportInfo("res.exr"));
 #else
-        exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.exr"));
+        exportImage(srcImageRange(img),
+                    vigra::ImageExportInfo("res.exr"));
 
-        vigra::ImageImportInfo info ("res.exr");
+        vigra::ImageImportInfo info("res.exr");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isColor ());
-        should (info.getPixelType () == std::string ("FLOAT"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isColor());
+        should(info.getPixelType() == std::string("FLOAT"));
 
-        Image res (info.width (), info.height ());
+        Image res(info.width(), info.height());
 
-        importImage (info, destImage (res));
+        importImage(info, destImage(res));
 
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::Accessor acc = img.accessor();
 
-        for (; i != img.end (); ++i, ++i1)
-            shouldEqual (acc (i), acc (i1));
+        for (; i != img.end(); ++i, ++i1)
+            shouldEqual(acc(i), acc(i1));
 #endif
     }
 
-    void testPNG ()
+    void testPNG()
     {
 #if !defined(HasPNG)
         failCodec(img, vigra::ImageExportInfo("res.png"));
 #else
-        exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.png"));
+        exportImage(srcImageRange(img),
+                    vigra::ImageExportInfo("res.png"));
 
-        vigra::ImageImportInfo info ("res.png");
+        vigra::ImageImportInfo info("res.png");
 
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.numBands () == 4);
-        should (info.getPixelType () == std::string ("UINT8"));
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.numBands() == 4);
+        should(info.getPixelType() == std::string("UINT8"));
 
-        importImage (info, destImage (breread));
+        importImage(info, destImage(breread));
 
-        BImage::ScanOrderIterator i = breference.begin ();
-        BImage::ScanOrderIterator i1 = breread.begin ();
-        BImage::Accessor acc = breference.accessor ();
+        BImage::ScanOrderIterator i = breference.begin();
+        BImage::ScanOrderIterator i1 = breread.begin();
+        BImage::Accessor acc = breference.accessor();
 
-        for (; i != breference.end (); ++i, ++i1)
+        for (; i != breference.end(); ++i, ++i1)
         {
-            should ((acc (i)- acc (i1)).magnitude() <= 1.0);
+            should((acc(i) - acc(i1)).magnitude() <= 1.0);
         }
 #endif
     }
@@ -1416,10 +1412,10 @@ class ImageExportImportFailureTest
     vigra::BImage img;
 
 public:
-
     ImageExportImportFailureTest()
-        : img( 3, 3 )
-    {}
+        : img(3, 3)
+    {
+    }
 
     // gif
 
@@ -1542,36 +1538,40 @@ public:
 
     // test implementation
 
-    void testImport( const char * fext )
+    void testImport(const char* fext)
     {
         std::string fname = "foo.";
         fname += fext;
-        try {
-            vigra::ImageImportInfo info( fname.c_str() );
-            failTest( "Failed to throw exception." );
+        try
+        {
+            vigra::ImageImportInfo info(fname.c_str());
+            failTest("Failed to throw exception.");
         }
-        catch( vigra::PreconditionViolation & e ) {
+        catch (vigra::PreconditionViolation& e)
+        {
             std::string expected = "\nPrecondition violation!\n";
             expected += "Unable to open file '";
             expected += fname;
             expected += "'.";
-            const bool rc = std::strncmp( expected.c_str(), e.what(), expected.length() ) == 0;
+            const bool rc = std::strncmp(expected.c_str(), e.what(), expected.length()) == 0;
             should(rc);
         }
     }
 
-    void testExport( const char * fext ,
-                     const char * message = 0)
+    void testExport(const char* fext,
+                    const char* message = 0)
     {
         std::string fname = "intentionalFailure/foo.";
         fname += fext;
-        try {
-            exportImage( srcImageRange(img), vigra::ImageExportInfo( fname.c_str() ) );
-            failTest( "Failed to throw exception." );
+        try
+        {
+            exportImage(srcImageRange(img), vigra::ImageExportInfo(fname.c_str()));
+            failTest("Failed to throw exception.");
         }
-        catch( vigra::PreconditionViolation & e ) {
+        catch (vigra::PreconditionViolation& e)
+        {
             std::string expected = "\nPrecondition violation!\n";
-            if(message)
+            if (message)
             {
                 expected += message;
             }
@@ -1581,34 +1581,38 @@ public:
                 expected += fname;
                 expected += "'.";
             }
-            const bool rc = std::strncmp( expected.c_str(), e.what(), expected.length() ) == 0;
+            const bool rc = std::strncmp(expected.c_str(), e.what(), expected.length()) == 0;
             should(rc);
         }
     }
 
-    void testShapeMismatch ()
+    void testShapeMismatch()
     {
-        MultiArray<2, RGBValue<UInt8> > rgb(1,1);
+        MultiArray<2, RGBValue<UInt8>> rgb(1, 1);
 
-        try {
+        try
+        {
             importImage(ImageImportInfo("lennargb.xv"), rgb);
-            failTest( "Failed to throw exception." );
+            failTest("Failed to throw exception.");
         }
-        catch( vigra::PreconditionViolation & e ) {
+        catch (vigra::PreconditionViolation& e)
+        {
             std::string expected = "\nPrecondition violation!\nimportImage(): shape mismatch between input and output.";
-            const bool rc = std::strncmp( expected.c_str(), e.what(), expected.length() ) == 0;
+            const bool rc = std::strncmp(expected.c_str(), e.what(), expected.length()) == 0;
             should(rc);
         }
 
-        MultiArray<2, TinyVector<UInt8, 4> > vec4;
-        
-        try {
+        MultiArray<2, TinyVector<UInt8, 4>> vec4;
+
+        try
+        {
             importImage("lennargb.xv", vec4);
-            failTest( "Failed to throw exception." );
+            failTest("Failed to throw exception.");
         }
-        catch( vigra::PreconditionViolation & e ) {
+        catch (vigra::PreconditionViolation& e)
+        {
             std::string expected = "\nPrecondition violation!\nimportImage(): Number of channels in input and destination image don't match.";
-            const bool rc = std::strncmp( expected.c_str(), e.what(), expected.length() ) == 0;
+            const bool rc = std::strncmp(expected.c_str(), e.what(), expected.length()) == 0;
             should(rc);
         }
     }
@@ -1621,14 +1625,14 @@ public:
     {
 #if defined(HasTIFF)
         vigra::ImageImportInfo info("lenna_masked_gray.tif");
-        
+
         image_.resize(info.size());
         alpha_.resize(info.size());
         importImageAlpha(info, destImage(image_), destImage(alpha_));
 #else
-        image_.resize(Size2D(20,10));
+        image_.resize(Size2D(20, 10));
         alpha_.resize(image_.size());
-        
+
         image_.init(10);
         alpha_.init(255);
 #endif
@@ -1709,7 +1713,7 @@ GrayscaleImportExportAlphaTest::testFileMultiArray(const char* filename)
 
     vigra::ImageImportInfo info(filename);
     MultiArray<2, unsigned char> image(info.shape()),
-                                 alpha(info.shape());
+        alpha(info.shape());
 
     importImageAlpha(info, image, alpha);
 
@@ -1739,10 +1743,10 @@ public:
         alpha_.resize(info.size());
         importImageAlpha(info, destImage(image_), destImage(alpha_));
 #else
-        image_.resize(Size2D(20,10));
+        image_.resize(Size2D(20, 10));
         alpha_.resize(image_.size());
-        
-        image_.init(RGBValue<unsigned char>(10,20,30));
+
+        image_.init(RGBValue<unsigned char>(10, 20, 30));
         alpha_.init(255);
 #endif
     }
@@ -1833,7 +1837,7 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&ByteImageExportImportTest::testVIFF1));
         add(testCase(&ByteImageExportImportTest::testVIFF2));
         add(testCase(&ByteImageExportImportTest::testGrayToRGB));
-        
+
         // rgb byte images
         add(testCase(&ByteRGBImageExportImportTest::testGIF));
         add(testCase(&ByteRGBImageExportImportTest::testJPEG));
@@ -1916,7 +1920,8 @@ struct ImageImportExportTestSuite : public vigra::test_suite
 };
 
 
-int main (int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
     ImageImportExportTestSuite test;
     const int failed = test.run(vigra::testsToBeExecuted(argc, argv));

@@ -36,20 +36,25 @@
 #ifndef CELLIMAGE_HXX
 #define CELLIMAGE_HXX
 
+#include <functional>
 #include <vigra/basicimage.hxx>
 #include <vigra/pixelneighborhood.hxx>
-#include <functional>
 
-namespace vigra {
+namespace vigra
+{
 
-namespace cellimage {
+namespace cellimage
+{
 
-enum CellType { CellTypeRegion = 0,
-                CellTypeLine = 1,
-                CellTypeVertex = 2,
-                CellTypeError = 3,
-                CellTypeVertexOrLine = 4,
-                CellTypeErrorOrLine = 5 };
+enum CellType
+{
+    CellTypeRegion = 0,
+    CellTypeLine = 1,
+    CellTypeVertex = 2,
+    CellTypeError = 3,
+    CellTypeVertexOrLine = 4,
+    CellTypeErrorOrLine = 5
+};
 
 // -------------------------------------------------------------------
 //                          CellPixel, CellImage
@@ -64,30 +69,49 @@ private:
     friend struct CellPixelSerializer;
 
 public:
-    CellPixel() {}
+    CellPixel()
+    {
+    }
     CellPixel(CellType type, CellLabel label = 0)
-    : typeLabel_((label << 2) | type)
-    {}
+        : typeLabel_((label << 2) | type)
+    {
+    }
 
     inline CellType type() const
-        { return (CellType)(typeLabel_ & 3); }
+    {
+        return (CellType)(typeLabel_ & 3);
+    }
     inline void setType(CellType type)
-        { typeLabel_ = (label() << 2) | type; }
+    {
+        typeLabel_ = (label() << 2) | type;
+    }
     inline void setType(CellType type, CellLabel label)
-        { typeLabel_ = label << 2 | type; }
+    {
+        typeLabel_ = label << 2 | type;
+    }
 
     inline CellLabel label() const
-        { return typeLabel_ >> 2; }
+    {
+        return typeLabel_ >> 2;
+    }
     inline void setLabel(CellLabel label)
-        { typeLabel_ = label << 2 | type(); }
+    {
+        typeLabel_ = label << 2 | type();
+    }
     inline void setLabel(CellLabel label, CellType type)
-        { typeLabel_ = label << 2 | type; }
+    {
+        typeLabel_ = label << 2 | type;
+    }
 
-    bool operator==(CellPixel const & rhs) const
-        { return typeLabel_ == rhs.typeLabel_; }
+    bool operator==(CellPixel const& rhs) const
+    {
+        return typeLabel_ == rhs.typeLabel_;
+    }
 
-    bool operator!=(CellPixel const & rhs) const
-        { return typeLabel_ != rhs.typeLabel_; }
+    bool operator!=(CellPixel const& rhs) const
+    {
+        return typeLabel_ != rhs.typeLabel_;
+    }
 };
 
 typedef BasicImage<CellPixel> CellImage;
@@ -100,7 +124,7 @@ typedef vigra::NeighborhoodCirculator<CellImage::Iterator, EightNeighborCode>
 // -------------------------------------------------------------------
 struct CellPixelSerializer
 {
-    int operator()(CellPixel const &p) const
+    int operator()(CellPixel const& p) const
     {
         return p.typeLabel_;
     }
@@ -123,13 +147,13 @@ struct TypeAccessor
     typedef VALUE_TYPE result_type;
 
     template<class Iterator>
-    value_type operator()(const Iterator &it) const
+    value_type operator()(const Iterator& it) const
     {
         return it->type();
     }
 
     template<class Iterator>
-    void set(value_type type, const Iterator &it) const
+    void set(value_type type, const Iterator& it) const
     {
         it->setType(type);
     }
@@ -144,13 +168,13 @@ struct LabelAccessor
     typedef CellLabel value_type;
 
     template<class Iterator>
-    CellLabel operator()(const Iterator &it) const
+    CellLabel operator()(const Iterator& it) const
     {
         return it->label();
     }
 
     template<class Iterator>
-    void set(CellLabel label, const Iterator &it) const
+    void set(CellLabel label, const Iterator& it) const
     {
         it->setLabel(label);
     }
@@ -162,7 +186,7 @@ struct LabelWriter
     typedef CellLabel value_type;
 
     template<class Iterator>
-    void set(CellLabel label, const Iterator &it) const
+    void set(CellLabel label, const Iterator& it) const
     {
         it->setLabel(label, type);
     }
@@ -177,7 +201,7 @@ struct CellTypeEquals : public std::unary_function<CellType, bool>
     }
 
     template<class Iterator>
-    bool operator()(const Iterator &it) const
+    bool operator()(const Iterator& it) const
     {
         return it->type() == type;
     }
@@ -188,11 +212,12 @@ struct CellMask : public std::unary_function<vigra::cellimage::CellPixel, bool>
     vigra::cellimage::CellPixel maskPixel_;
 
     CellMask(vigra::cellimage::CellPixel maskPixel)
-    : maskPixel_(maskPixel)
-    {}
+        : maskPixel_(maskPixel)
+    {
+    }
 
     template<class Iterator>
-    bool operator()(const Iterator &it) const
+    bool operator()(const Iterator& it) const
     {
         return *it == maskPixel_;
     }
@@ -211,7 +236,8 @@ struct RelabelFunctor
     RelabelFunctor(VALUETYPE oldValue, VALUETYPE newValue)
         : oldValue_(oldValue),
           newValue_(newValue)
-    {}
+    {
+    }
 
     VALUETYPE operator()(VALUETYPE value) const
     {
@@ -229,39 +255,43 @@ struct RelabelFunctor
 // algorithms.
 // srcCellRange can not be implemented that easy, because most VIGRA
 // functions expect an ImageIterator, not a std::iterator
-template <class EndIterator, class Accessor, class Functor>
-void inspectCell(EndIterator endIterator, Accessor a, Functor & f)
+template<class EndIterator, class Accessor, class Functor>
+void
+inspectCell(EndIterator endIterator, Accessor a, Functor& f)
 {
-    for(; endIterator.inRange(); ++endIterator)
+    for (; endIterator.inRange(); ++endIterator)
         f(a(endIterator));
 }
 
-template <class EndIterator, class Functor>
-void inspectCell(EndIterator endIterator, Functor & f)
+template<class EndIterator, class Functor>
+void
+inspectCell(EndIterator endIterator, Functor& f)
 {
-    for(; endIterator.inRange(); ++endIterator)
+    for (; endIterator.inRange(); ++endIterator)
         f(*endIterator);
 }
 
 // -------------------------------------------------------------------
 //                             transformCell
 // -------------------------------------------------------------------
-template <class SrcEndIterator, class SrcAccessor,
-          class DestEndIterator, class DestAccessor, class Functor>
-void transformCell(SrcEndIterator srcEndIterator, SrcAccessor sa,
-                   DestEndIterator destEndIterator, DestAccessor da,
-                   Functor const & f)
+template<class SrcEndIterator, class SrcAccessor,
+         class DestEndIterator, class DestAccessor, class Functor>
+void
+transformCell(SrcEndIterator srcEndIterator, SrcAccessor sa,
+              DestEndIterator destEndIterator, DestAccessor da,
+              Functor const& f)
 {
-    for(; srcEndIterator.inRange(); ++srcEndIterator, ++destEndIterator)
+    for (; srcEndIterator.inRange(); ++srcEndIterator, ++destEndIterator)
         da.set(f(sa(srcEndIterator)), destEndIterator);
 }
 
-template <class SrcEndIterator, class DestEndIterator, class Functor>
-void transformCell(SrcEndIterator srcEndIterator,
-                   DestEndIterator destEndIterator,
-                   Functor const & f)
+template<class SrcEndIterator, class DestEndIterator, class Functor>
+void
+transformCell(SrcEndIterator srcEndIterator,
+              DestEndIterator destEndIterator,
+              Functor const& f)
 {
-    for(; srcEndIterator.inRange(); ++srcEndIterator, ++destEndIterator)
+    for (; srcEndIterator.inRange(); ++srcEndIterator, ++destEndIterator)
         *destEndIterator = f(*srcEndIterator);
 }
 

@@ -34,66 +34,67 @@
 /************************************************************************/
 
 #include <iostream>
-#include <sstream>
 #include <map>
 #include <set>
+#include <sstream>
 
-#include <vigra/unittest.hxx>
-#include <vigra/multi_array.hxx>
 #include <vigra/accumulator.hxx>
+#include <vigra/multi_array.hxx>
+#include <vigra/unittest.hxx>
 
 
 using namespace vigra;
 
 // mask cl.exe shortcomings
 #if defined(_MSC_VER)
-#pragma warning( disable : 4503 )
+#pragma warning(disable : 4503)
 #endif
 
 struct StandAloneAccChainTest
 {
     StandAloneAccChainTest()
-    {}
-    
+    {
+    }
+
     void testStandardizeTag()
     {
         using namespace vigra::acc;
 
         typedef double DataType;
         typedef MultiArrayShape<3>::type CoordType;
-        typedef MultiArrayShape<3>::type   Point;
+        typedef MultiArrayShape<3>::type Point;
 
-        typedef Select< 
+        typedef Select<
             DataArg<1>,
-            Variance, 
-            Mean, 
-            StdDev, 
-            Minimum, 
-            Maximum, 
-            RootMeanSquares, 
+            Variance,
+            Mean,
+            StdDev,
+            Minimum,
+            Maximum,
+            RootMeanSquares,
             Skewness,
             Covariance,
-            RegionCenter
-        >  SelectType;
+            RegionCenter>
+            SelectType;
 
         typedef StandAloneAccumulatorChain<3, DataType, SelectType> FreeChain;
         FreeChain a;
 
-        a.updatePassN(1.0, Point(3,0,0), 1);
-        a.updatePassN(2.0, Point(0,3,0), 1);
-        a.updatePassN(3.0, Point(0,0,3), 1);
-        
+        a.updatePassN(1.0, Point(3, 0, 0), 1);
+        a.updatePassN(2.0, Point(0, 3, 0), 1);
+        a.updatePassN(3.0, Point(0, 0, 3), 1);
 
 
-        a.updatePassN(1.0, Point(3,0,0), 2);
-        a.updatePassN(2.0, Point(0,3,0), 2);
-        a.updatePassN(3.0, Point(0,0,3), 2);
 
-        shouldEqualTolerance( get<Mean>(a), 2.0, 0.000001);
+        a.updatePassN(1.0, Point(3, 0, 0), 2);
+        a.updatePassN(2.0, Point(0, 3, 0), 2);
+        a.updatePassN(3.0, Point(0, 0, 3), 2);
+
+        shouldEqualTolerance(get<Mean>(a), 2.0, 0.000001);
 
         CoordType rCenter = get<RegionCenter>(a);
-        CoordType trueCenter(1,1,1);
-        shouldEqualSequence(rCenter.begin(),rCenter.end(), trueCenter.begin());
+        CoordType trueCenter(1, 1, 1);
+        shouldEqualSequence(rCenter.begin(), rCenter.end(), trueCenter.begin());
     }
 };
 
@@ -108,7 +109,8 @@ struct StandAloneAccChainTestSuite : public vigra::test_suite
     }
 };
 
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
     StandAloneAccChainTestSuite test;
     const int failed = test.run(vigra::testsToBeExecuted(argc, argv));

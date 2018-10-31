@@ -36,9 +36,9 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpyfilters_PyArray_API
 #define NO_IMPORT_ARRAY
 
+#include <vigra/non_local_mean.hxx>
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <vigra/non_local_mean.hxx>
 
 namespace python = boost::python;
 
@@ -47,13 +47,11 @@ namespace vigra
 
 
 
-
-
-
-template<int DIM,class PIXEL_TYPE,class SMOOTH_POLICY>
-NumpyAnyArray  pyNonLocalMean(
-    NumpyArray<DIM,PIXEL_TYPE> image,
-    const typename SMOOTH_POLICY::ParameterType & policyParam,
+template<int DIM, class PIXEL_TYPE, class SMOOTH_POLICY>
+NumpyAnyArray
+pyNonLocalMean(
+    NumpyArray<DIM, PIXEL_TYPE> image,
+    const typename SMOOTH_POLICY::ParameterType& policyParam,
     const double sigmaSpatial,
     const int searchRadius,
     const int patchRadius,
@@ -62,47 +60,44 @@ NumpyAnyArray  pyNonLocalMean(
     const int iterations,
     const int nThreads,
     const bool verbose,
-    NumpyArray<DIM,PIXEL_TYPE> out = NumpyArray<DIM,PIXEL_TYPE>()
-){
+    NumpyArray<DIM, PIXEL_TYPE> out = NumpyArray<DIM, PIXEL_TYPE>())
+{
 
     SMOOTH_POLICY smoothPolicy(policyParam);
     NonLocalMeanParameter param;
-    param.sigmaSpatial_=sigmaSpatial;
-    param.searchRadius_=searchRadius;
-    param.patchRadius_=patchRadius;
-    param.sigmaMean_=sigmaMean;
-    param.stepSize_=stepSize;
-    param.iterations_=iterations;
+    param.sigmaSpatial_ = sigmaSpatial;
+    param.searchRadius_ = searchRadius;
+    param.patchRadius_ = patchRadius;
+    param.sigmaMean_ = sigmaMean;
+    param.stepSize_ = stepSize;
+    param.iterations_ = iterations;
     param.nThreads_ = nThreads;
-    param.verbose_=verbose;
+    param.verbose_ = verbose;
     out.reshapeIfEmpty(image.shape());
-    nonLocalMean<DIM,PIXEL_TYPE>(image,smoothPolicy,param,out);
+    nonLocalMean<DIM, PIXEL_TYPE>(image, smoothPolicy, param, out);
     return out;
 }
 
 
-void exportNonLocalMeanPolicyParameterObjects(){
+void
+exportNonLocalMeanPolicyParameterObjects()
+{
 
     {
         typedef RatioPolicyParameter ParamType;
 
         python::class_<ParamType>(
             "RatioPolicy",
-            python::init<const double,const double,const double,const double>(
+            python::init<const double, const double, const double, const double>(
                 (
                     python::arg("sigma"),
-                    python::arg("meanRatio")=0.95,
-                    python::arg("varRatio")=0.5,
-                    python::arg("epsilon")=0.00001
-                )
-            )
-        )
-        .def_readwrite("sigma", &ParamType::sigma_)
-        .def_readwrite("meanRatio", &ParamType::meanRatio_)
-        .def_readwrite("varRatio", &ParamType::varRatio_)
-        .def_readwrite("epsilon", &ParamType::epsilon_)
-        ;
-            
+                    python::arg("meanRatio") = 0.95,
+                    python::arg("varRatio") = 0.5,
+                    python::arg("epsilon") = 0.00001)))
+            .def_readwrite("sigma", &ParamType::sigma_)
+            .def_readwrite("meanRatio", &ParamType::meanRatio_)
+            .def_readwrite("varRatio", &ParamType::varRatio_)
+            .def_readwrite("epsilon", &ParamType::epsilon_);
     }
 
     {
@@ -110,54 +105,48 @@ void exportNonLocalMeanPolicyParameterObjects(){
 
         python::class_<ParamType>(
             "NormPolicy",
-            python::init<const double,const double,const double>(
+            python::init<const double, const double, const double>(
                 (
                     python::arg("sigma"),
                     python::arg("meanDist"),
-                    python::arg("varRatio")
-                )
-            )
-        )
-        .def_readwrite("sigma", &ParamType::sigma_)
-        .def_readwrite("meanDist", &ParamType::meanDist_)
-        .def_readwrite("varRatio", &ParamType::varRatio_)
-        ;
-            
+                    python::arg("varRatio"))))
+            .def_readwrite("sigma", &ParamType::sigma_)
+            .def_readwrite("meanDist", &ParamType::meanDist_)
+            .def_readwrite("varRatio", &ParamType::varRatio_);
     }
-
-
 }
 
 
 
-
-template<int DIM,class PIXEL_TYPE, class POLICY>
-void exportNonLocalMean(const std::string name){
+template<int DIM, class PIXEL_TYPE, class POLICY>
+void
+exportNonLocalMean(const std::string name)
+{
 
     typedef POLICY SmoothPolicyType;
     // export the function to python
-    python::def(name.c_str(), registerConverters(&pyNonLocalMean<DIM,PIXEL_TYPE,SmoothPolicyType>) ,
-        (
-            python::arg("image"),
-            python::arg("policy"),
-            python::arg("sigmaSpatial")=2.0,
-            python::arg("searchRadius")=3,
-            python::arg("patchRadius")=1,
-            python::arg("sigmaMean")=1.0,
-            python::arg("stepSize")=2,
-            python::arg("iterations")=1,
-            python::arg("nThreads")=8,
-            python::arg("verbose")=true,
-            python::arg("out") = boost::python::object()
-        ),
-        "loop over an image and do something with each pixels\n\n"
-        "Args:\n\n"
-        "   image : input image\n\n"
-        "returns an an image with the same shape as the input image"
-    );
+    python::def(name.c_str(), registerConverters(&pyNonLocalMean<DIM, PIXEL_TYPE, SmoothPolicyType>),
+                (
+                    python::arg("image"),
+                    python::arg("policy"),
+                    python::arg("sigmaSpatial") = 2.0,
+                    python::arg("searchRadius") = 3,
+                    python::arg("patchRadius") = 1,
+                    python::arg("sigmaMean") = 1.0,
+                    python::arg("stepSize") = 2,
+                    python::arg("iterations") = 1,
+                    python::arg("nThreads") = 8,
+                    python::arg("verbose") = true,
+                    python::arg("out") = boost::python::object()),
+                "loop over an image and do something with each pixels\n\n"
+                "Args:\n\n"
+                "   image : input image\n\n"
+                "returns an an image with the same shape as the input image");
 }
 
-void defineNonLocalMean(){
+void
+defineNonLocalMean()
+{
     using namespace python;
     docstring_options doc_options(true, true, false);
 
@@ -165,16 +154,16 @@ void defineNonLocalMean(){
     exportNonLocalMeanPolicyParameterObjects();
 
     {
-        exportNonLocalMean<2,TinyVector<float,3>, RatioPolicy<TinyVector<float,3> > >("nonLocalMean2d");
-        exportNonLocalMean<2,float, RatioPolicy<float> >("nonLocalMean2d");
-        exportNonLocalMean<3,float, RatioPolicy<float> >("nonLocalMean3d");
-        exportNonLocalMean<4,float, RatioPolicy<float> >("nonLocalMean4d");
+        exportNonLocalMean<2, TinyVector<float, 3>, RatioPolicy<TinyVector<float, 3>>>("nonLocalMean2d");
+        exportNonLocalMean<2, float, RatioPolicy<float>>("nonLocalMean2d");
+        exportNonLocalMean<3, float, RatioPolicy<float>>("nonLocalMean3d");
+        exportNonLocalMean<4, float, RatioPolicy<float>>("nonLocalMean4d");
     }
     {
-        exportNonLocalMean<2,TinyVector<float,3>, NormPolicy<TinyVector<float,3> > >("nonLocalMean2d");
-        exportNonLocalMean<2,float, NormPolicy<float> >("nonLocalMean2d");
-        exportNonLocalMean<3,float, NormPolicy<float> >("nonLocalMean3d");
-        exportNonLocalMean<4,float, NormPolicy<float> >("nonLocalMean4d");
+        exportNonLocalMean<2, TinyVector<float, 3>, NormPolicy<TinyVector<float, 3>>>("nonLocalMean2d");
+        exportNonLocalMean<2, float, NormPolicy<float>>("nonLocalMean2d");
+        exportNonLocalMean<3, float, NormPolicy<float>>("nonLocalMean3d");
+        exportNonLocalMean<4, float, NormPolicy<float>>("nonLocalMean4d");
     }
 }
 

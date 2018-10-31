@@ -37,95 +37,96 @@
 #ifndef VIGRA_MULTI_MORPHOLOGY_HXX
 #define VIGRA_MULTI_MORPHOLOGY_HXX
 
-#include <vector>
-#include <cmath>
-#include "multi_distance.hxx"
-#include "array_vector.hxx"
-#include "multi_array.hxx"
 #include "accessor.hxx"
-#include "numerictraits.hxx"
-#include "navigator.hxx"
-#include "metaprogramming.hxx"
-#include "multi_pointoperators.hxx"
+#include "array_vector.hxx"
 #include "functorexpression.hxx"
+#include "metaprogramming.hxx"
+#include "multi_array.hxx"
+#include "multi_distance.hxx"
+#include "multi_pointoperators.hxx"
+#include "navigator.hxx"
+#include "numerictraits.hxx"
+#include <cmath>
+#include <vector>
 
 namespace vigra
 {
 
-namespace detail {
+namespace detail
+{
 
 // this class simplifies the design, but more importantly, it makes sure
-// that the in-place code doesn't get compiled for boolean arrays 
+// that the in-place code doesn't get compiled for boolean arrays
 // (were it would never executed anyway -- see the specializations below)
-template <class DestType, class TmpType>
+template<class DestType, class TmpType>
 struct MultiBinaryMorphologyImpl
 {
-    template <class SrcIterator, class SrcShape, class SrcAccessor,
-              class DestIterator, class DestAccessor>
+    template<class SrcIterator, class SrcShape, class SrcAccessor,
+             class DestIterator, class DestAccessor>
     static void
-    exec( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-          DestIterator d, DestAccessor dest, 
-          double radius, bool dilation)
+    exec(SrcIterator s, SrcShape const& shape, SrcAccessor src,
+         DestIterator d, DestAccessor dest,
+         double radius, bool dilation)
     {
         using namespace vigra::functor;
-        
+
         // Allocate a new temporary array if the distances squared wouldn't fit
         MultiArray<SrcShape::static_size, TmpType> tmpArray(shape);
-            
-        separableMultiDistSquared(s, shape, src, 
-                                  tmpArray.traverser_begin(), typename AccessorTraits<TmpType>::default_accessor(), dilation );
-            
+
+        separableMultiDistSquared(s, shape, src,
+                                  tmpArray.traverser_begin(), typename AccessorTraits<TmpType>::default_accessor(), dilation);
+
         // threshold everything less than radius away from the edge
         double radius2 = radius * radius;
-        DestType foreground = dilation 
-                                 ? NumericTraits<DestType>::zero()
-                                 : NumericTraits<DestType>::one(),
-                 background = dilation 
-                                 ? NumericTraits<DestType>::one()
-                                 : NumericTraits<DestType>::zero();
-        transformMultiArray( tmpArray.traverser_begin(), shape, StandardValueAccessor<double>(), 
-                             d, dest, 
-                             ifThenElse( Arg1() > Param(radius2),
-                                         Param(foreground), Param(background) ) );
+        DestType foreground = dilation
+                                  ? NumericTraits<DestType>::zero()
+                                  : NumericTraits<DestType>::one(),
+                 background = dilation
+                                  ? NumericTraits<DestType>::one()
+                                  : NumericTraits<DestType>::zero();
+        transformMultiArray(tmpArray.traverser_begin(), shape, StandardValueAccessor<double>(),
+                            d, dest,
+                            ifThenElse(Arg1() > Param(radius2),
+                                       Param(foreground), Param(background)));
     }
 };
 
-template <class DestType>
+template<class DestType>
 struct MultiBinaryMorphologyImpl<DestType, DestType>
 {
-    template <class SrcIterator, class SrcShape, class SrcAccessor,
-              class DestIterator, class DestAccessor>
+    template<class SrcIterator, class SrcShape, class SrcAccessor,
+             class DestIterator, class DestAccessor>
     static void
-    exec( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-          DestIterator d, DestAccessor dest, 
-          double radius, bool dilation)
+    exec(SrcIterator s, SrcShape const& shape, SrcAccessor src,
+         DestIterator d, DestAccessor dest,
+         double radius, bool dilation)
     {
         using namespace vigra::functor;
 
-        separableMultiDistSquared( s, shape, src, d, dest, dilation );
-        
+        separableMultiDistSquared(s, shape, src, d, dest, dilation);
+
         // threshold everything less than radius away from the edge
         DestType radius2 = detail::RequiresExplicitCast<DestType>::cast(radius * radius);
-        DestType foreground = dilation 
-                                 ? NumericTraits<DestType>::zero()
-                                 : NumericTraits<DestType>::one(),
-                 background = dilation 
-                                 ? NumericTraits<DestType>::one()
-                                 : NumericTraits<DestType>::zero();
-        transformMultiArray( d, shape, dest, d, dest, 
-                             ifThenElse( Arg1() > Param(radius2),
-                                         Param(foreground), Param(background) ) );
+        DestType foreground = dilation
+                                  ? NumericTraits<DestType>::zero()
+                                  : NumericTraits<DestType>::one(),
+                 background = dilation
+                                  ? NumericTraits<DestType>::one()
+                                  : NumericTraits<DestType>::zero();
+        transformMultiArray(d, shape, dest, d, dest,
+                            ifThenElse(Arg1() > Param(radius2),
+                                       Param(foreground), Param(background)));
     }
 };
 
-template <>
+template<>
 struct MultiBinaryMorphologyImpl<bool, bool>
 {
-    template <class SrcIterator, class SrcShape, class SrcAccessor,
-              class DestIterator, class DestAccessor>
+    template<class SrcIterator, class SrcShape, class SrcAccessor,
+             class DestIterator, class DestAccessor>
     static void
-    exec( SrcIterator /*s*/, SrcShape const & /*shape*/, SrcAccessor /*src*/,
-          DestIterator /*d*/, DestAccessor /*dest*/, double /*radius*/, bool /*dilation*/)
+    exec(SrcIterator /*s*/, SrcShape const& /*shape*/, SrcAccessor /*src*/,
+         DestIterator /*d*/, DestAccessor /*dest*/, double /*radius*/, bool /*dilation*/)
     {
         vigra_fail("multiBinaryMorphology(): Internal error (this function should never be called).");
     }
@@ -218,51 +219,50 @@ struct MultiBinaryMorphologyImpl<bool, bool>
 
     \see vigra::discErosion(), vigra::multiGrayscaleErosion()
 */
-doxygen_overloaded_function(template <...> void multiBinaryErosion)
+doxygen_overloaded_function(template<...> void multiBinaryErosion)
 
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void
-multiBinaryErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                             DestIterator d, DestAccessor dest, double radius)
+    template<class SrcIterator, class SrcShape, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    void multiBinaryErosion(SrcIterator s, SrcShape const& shape, SrcAccessor src,
+                            DestIterator d, DestAccessor dest, double radius)
 {
     typedef typename DestAccessor::value_type DestType;
     typedef Int32 TmpType;
-    
+
     double dmax = squaredNorm(shape);
 
     // Get the distance squared transform of the image
-    if(dmax > NumericTraits<DestType>::toRealPromote(NumericTraits<DestType>::max()))
+    if (dmax > NumericTraits<DestType>::toRealPromote(NumericTraits<DestType>::max()))
     {
         detail::MultiBinaryMorphologyImpl<DestType, TmpType>::exec(s, shape, src, d, dest, radius, false);
     }
-    else    // work directly on the destination array
+    else // work directly on the destination array
     {
         detail::MultiBinaryMorphologyImpl<DestType, DestType>::exec(s, shape, src, d, dest, radius, false);
     }
 }
 
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcShape, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
-multiBinaryErosion(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                   pair<DestIterator, DestAccessor> const & dest, double radius)
+multiBinaryErosion(triple<SrcIterator, SrcShape, SrcAccessor> const& source,
+                   pair<DestIterator, DestAccessor> const& dest, double radius)
 {
-    multiBinaryErosion( source.first, source.second, source.third,
-                        dest.first, dest.second, radius );
+    multiBinaryErosion(source.first, source.second, source.third,
+                       dest.first, dest.second, radius);
 }
 
-template <unsigned int N, class T1, class S1,
-                          class T2, class S2>
+template<unsigned int N, class T1, class S1,
+         class T2, class S2>
 inline void
-multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
-                   MultiArrayView<N, T2, S2> dest, 
+multiBinaryErosion(MultiArrayView<N, T1, S1> const& source,
+                   MultiArrayView<N, T2, S2> dest,
                    double radius)
 {
     vigra_precondition(source.shape() == dest.shape(),
-        "multiBinaryErosion(): shape mismatch between input and output.");
-    multiBinaryErosion( srcMultiArrayRange(source),
-                        destMultiArray(dest), radius );
+                       "multiBinaryErosion(): shape mismatch between input and output.");
+    multiBinaryErosion(srcMultiArrayRange(source),
+                       destMultiArray(dest), radius);
 }
 
 /********************************************************/
@@ -342,51 +342,50 @@ multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
 
     \see vigra::discDilation(), vigra::multiGrayscaleDilation()
 */
-doxygen_overloaded_function(template <...> void multiBinaryDilation)
+doxygen_overloaded_function(template<...> void multiBinaryDilation)
 
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void
-multiBinaryDilation( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+    template<class SrcIterator, class SrcShape, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    void multiBinaryDilation(SrcIterator s, SrcShape const& shape, SrcAccessor src,
                              DestIterator d, DestAccessor dest, double radius)
 {
     typedef typename DestAccessor::value_type DestType;
     typedef Int32 TmpType;
-    
+
     double dmax = squaredNorm(shape);
 
     // Get the distance squared transform of the image
-    if(dmax > NumericTraits<DestType>::toRealPromote(NumericTraits<DestType>::max()))
+    if (dmax > NumericTraits<DestType>::toRealPromote(NumericTraits<DestType>::max()))
     {
         detail::MultiBinaryMorphologyImpl<DestType, TmpType>::exec(s, shape, src, d, dest, radius, true);
     }
-    else    // work directly on the destination array
+    else // work directly on the destination array
     {
         detail::MultiBinaryMorphologyImpl<DestType, DestType>::exec(s, shape, src, d, dest, radius, true);
     }
 }
 
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline void 
-multiBinaryDilation(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                    pair<DestIterator, DestAccessor> const & dest, double radius)
+template<class SrcIterator, class SrcShape, class SrcAccessor,
+         class DestIterator, class DestAccessor>
+inline void
+multiBinaryDilation(triple<SrcIterator, SrcShape, SrcAccessor> const& source,
+                    pair<DestIterator, DestAccessor> const& dest, double radius)
 {
-    multiBinaryDilation( source.first, source.second, source.third,
-                         dest.first, dest.second, radius );
+    multiBinaryDilation(source.first, source.second, source.third,
+                        dest.first, dest.second, radius);
 }
 
-template <unsigned int N, class T1, class S1,
-                          class T2, class S2>
-inline void 
-multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
+template<unsigned int N, class T1, class S1,
+         class T2, class S2>
+inline void
+multiBinaryDilation(MultiArrayView<N, T1, S1> const& source,
                     MultiArrayView<N, T2, S2> dest,
                     double radius)
 {
     vigra_precondition(source.shape() == dest.shape(),
-        "multiBinaryDilation(): shape mismatch between input and output.");
-    multiBinaryDilation( srcMultiArrayRange(source),
-                         destMultiArray(dest), radius );
+                       "multiBinaryDilation(): shape mismatch between input and output.");
+    multiBinaryDilation(srcMultiArrayRange(source),
+                        destMultiArray(dest), radius);
 }
 
 /********************************************************/
@@ -463,72 +462,74 @@ multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
 
     \see vigra::discErosion(), vigra::multiBinaryErosion()
 */
-doxygen_overloaded_function(template <...> void multiGrayscaleErosion)
+doxygen_overloaded_function(template<...> void multiGrayscaleErosion)
 
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void
-multiGrayscaleErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                       DestIterator d, DestAccessor dest, double sigma)
+    template<class SrcIterator, class SrcShape, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    void multiGrayscaleErosion(SrcIterator s, SrcShape const& shape, SrcAccessor src,
+                               DestIterator d, DestAccessor dest, double sigma)
 {
     typedef typename NumericTraits<typename DestAccessor::value_type>::ValueType DestType;
     typedef typename NumericTraits<typename DestAccessor::value_type>::Promote TmpType;
     DestType MaxValue = NumericTraits<DestType>::max();
-    enum { N = 1 + SrcIterator::level };
-    
+    enum
+    {
+        N = 1 + SrcIterator::level
+    };
+
     // temporary array to hold the current line to enable in-place operation
-    ArrayVector<TmpType> tmp( shape[0] );
-        
-    int MaxDim = 0; 
-    for( int i=0; i<N; i++)
-        if(MaxDim < shape[i]) MaxDim = shape[i];
-    
+    ArrayVector<TmpType> tmp(shape[0]);
+
+    int MaxDim = 0;
+    for (int i = 0; i < N; i++)
+        if (MaxDim < shape[i])
+            MaxDim = shape[i];
+
     using namespace vigra::functor;
-    
+
     ArrayVector<double> sigmas(shape.size(), sigma);
-    
+
     // Allocate a new temporary array if the distances squared wouldn't fit
-    if(N*MaxDim*MaxDim > MaxValue)
+    if (N * MaxDim * MaxDim > MaxValue)
     {
         MultiArray<SrcShape::static_size, TmpType> tmpArray(shape);
 
-        detail::internalSeparableMultiArrayDistTmp( s, shape, src, tmpArray.traverser_begin(),
-            typename AccessorTraits<TmpType>::default_accessor(), sigmas );
-        
-        transformMultiArray( tmpArray.traverser_begin(), shape,
-                typename AccessorTraits<TmpType>::default_accessor(), d, dest,
-                ifThenElse( Arg1() > Param(MaxValue), Param(MaxValue), Arg1() ) );
+        detail::internalSeparableMultiArrayDistTmp(s, shape, src, tmpArray.traverser_begin(),
+                                                   typename AccessorTraits<TmpType>::default_accessor(), sigmas);
+
+        transformMultiArray(tmpArray.traverser_begin(), shape,
+                            typename AccessorTraits<TmpType>::default_accessor(), d, dest,
+                            ifThenElse(Arg1() > Param(MaxValue), Param(MaxValue), Arg1()));
         //copyMultiArray( tmpArray.traverser_begin(), shape,
         //        typename AccessorTraits<TmpType>::default_accessor(), d, dest );
     }
     else
     {
-        detail::internalSeparableMultiArrayDistTmp( s, shape, src, d, dest, sigmas );
+        detail::internalSeparableMultiArrayDistTmp(s, shape, src, d, dest, sigmas);
     }
-
 }
 
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcShape, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
-multiGrayscaleErosion(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                      pair<DestIterator, DestAccessor> const & dest, double sigma)
+multiGrayscaleErosion(triple<SrcIterator, SrcShape, SrcAccessor> const& source,
+                      pair<DestIterator, DestAccessor> const& dest, double sigma)
 {
-    multiGrayscaleErosion( source.first, source.second, source.third, 
-                           dest.first, dest.second, sigma);
+    multiGrayscaleErosion(source.first, source.second, source.third,
+                          dest.first, dest.second, sigma);
 }
 
-template <unsigned int N, class T1, class S1,
-                          class T2, class S2>
+template<unsigned int N, class T1, class S1,
+         class T2, class S2>
 inline void
-multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
-                      MultiArrayView<N, T2, S2> dest, 
+multiGrayscaleErosion(MultiArrayView<N, T1, S1> const& source,
+                      MultiArrayView<N, T2, S2> dest,
                       double sigma)
 {
     vigra_precondition(source.shape() == dest.shape(),
-        "multiGrayscaleErosion(): shape mismatch between input and output.");
-    multiGrayscaleErosion( srcMultiArrayRange(source), 
-                           destMultiArray(dest), sigma);
+                       "multiGrayscaleErosion(): shape mismatch between input and output.");
+    multiGrayscaleErosion(srcMultiArrayRange(source),
+                          destMultiArray(dest), sigma);
 }
 
 /********************************************************/
@@ -605,76 +606,79 @@ multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
 
     \see vigra::discDilation(), vigra::multiBinaryDilation()
 */
-doxygen_overloaded_function(template <...> void multiGrayscaleDilation)
+doxygen_overloaded_function(template<...> void multiGrayscaleDilation)
 
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void multiGrayscaleDilation( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                             DestIterator d, DestAccessor dest, double sigma)
+    template<class SrcIterator, class SrcShape, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    void multiGrayscaleDilation(SrcIterator s, SrcShape const& shape, SrcAccessor src,
+                                DestIterator d, DestAccessor dest, double sigma)
 {
     typedef typename NumericTraits<typename DestAccessor::value_type>::ValueType DestType;
     typedef typename NumericTraits<typename DestAccessor::value_type>::Promote TmpType;
     DestType MinValue = NumericTraits<DestType>::min();
     DestType MaxValue = NumericTraits<DestType>::max();
-    enum { N = 1 + SrcIterator::level };
-        
+    enum
+    {
+        N = 1 + SrcIterator::level
+    };
+
     // temporary array to hold the current line to enable in-place operation
-    ArrayVector<TmpType> tmp( shape[0] );
-    
-    int MaxDim = 0; 
-    for( int i=0; i<N; i++)
-        if(MaxDim < shape[i]) MaxDim = shape[i];
-    
+    ArrayVector<TmpType> tmp(shape[0]);
+
+    int MaxDim = 0;
+    for (int i = 0; i < N; i++)
+        if (MaxDim < shape[i])
+            MaxDim = shape[i];
+
     using namespace vigra::functor;
 
     ArrayVector<double> sigmas(shape.size(), sigma);
 
     // Allocate a new temporary array if the distances squared wouldn't fit
-    if(-N*MaxDim*MaxDim < MinValue || N*MaxDim*MaxDim > MaxValue)
+    if (-N * MaxDim * MaxDim < MinValue || N * MaxDim * MaxDim > MaxValue)
     {
         MultiArray<SrcShape::static_size, TmpType> tmpArray(shape);
 
-        detail::internalSeparableMultiArrayDistTmp( s, shape, src, tmpArray.traverser_begin(),
-            typename AccessorTraits<TmpType>::default_accessor(), sigmas, true );
-        
-        transformMultiArray( tmpArray.traverser_begin(), shape,
-                typename AccessorTraits<TmpType>::default_accessor(), d, dest,
-                ifThenElse( Arg1() > Param(MaxValue), Param(MaxValue), 
-                    ifThenElse( Arg1() < Param(MinValue), Param(MinValue), Arg1() ) ) );
+        detail::internalSeparableMultiArrayDistTmp(s, shape, src, tmpArray.traverser_begin(),
+                                                   typename AccessorTraits<TmpType>::default_accessor(), sigmas, true);
+
+        transformMultiArray(tmpArray.traverser_begin(), shape,
+                            typename AccessorTraits<TmpType>::default_accessor(), d, dest,
+                            ifThenElse(Arg1() > Param(MaxValue), Param(MaxValue),
+                                       ifThenElse(Arg1() < Param(MinValue), Param(MinValue), Arg1())));
     }
     else
     {
-        detail::internalSeparableMultiArrayDistTmp( s, shape, src, d, dest, sigmas, true );
+        detail::internalSeparableMultiArrayDistTmp(s, shape, src, d, dest, sigmas, true);
     }
-
 }
 
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcShape, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
-multiGrayscaleDilation(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                       pair<DestIterator, DestAccessor> const & dest, double sigma)
+multiGrayscaleDilation(triple<SrcIterator, SrcShape, SrcAccessor> const& source,
+                       pair<DestIterator, DestAccessor> const& dest, double sigma)
 {
-    multiGrayscaleDilation( source.first, source.second, source.third, 
-                            dest.first, dest.second, sigma);
+    multiGrayscaleDilation(source.first, source.second, source.third,
+                           dest.first, dest.second, sigma);
 }
 
-template <unsigned int N, class T1, class S1,
-                          class T2, class S2>
+template<unsigned int N, class T1, class S1,
+         class T2, class S2>
 inline void
-multiGrayscaleDilation(MultiArrayView<N, T1, S1> const & source,
+multiGrayscaleDilation(MultiArrayView<N, T1, S1> const& source,
                        MultiArrayView<N, T2, S2> dest,
                        double sigma)
 {
     vigra_precondition(source.shape() == dest.shape(),
-        "multiGrayscaleDilation(): shape mismatch between input and output.");
-    multiGrayscaleDilation( srcMultiArrayRange(source), 
-                            destMultiArray(dest), sigma);
+                       "multiGrayscaleDilation(): shape mismatch between input and output.");
+    multiGrayscaleDilation(srcMultiArrayRange(source),
+                           destMultiArray(dest), sigma);
 }
 
 //@}
 
-} //-- namespace vigra
+} // namespace vigra
 
 
-#endif        //-- VIGRA_MULTI_MORPHOLOGY_HXX
+#endif //-- VIGRA_MULTI_MORPHOLOGY_HXX

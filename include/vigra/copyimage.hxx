@@ -29,18 +29,19 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
- 
+
+
 #ifndef VIGRA_COPYIMAGE_HXX
 #define VIGRA_COPYIMAGE_HXX
 
-#include "utilities.hxx"
 #include "multi_shape.hxx"
+#include "utilities.hxx"
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup CopyAlgo Algorithms to Copy Images
     Copy images or regions
@@ -53,39 +54,39 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 void
-copyLine(SrcIterator s, 
+copyLine(SrcIterator s,
          SrcIterator send, SrcAccessor src,
          DestIterator d, DestAccessor dest)
 {
-    for(; s != send; ++s, ++d)
+    for (; s != send; ++s, ++d)
         dest.set(src(s), d);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class MaskIterator, class MaskAccessor, 
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class MaskIterator, class MaskAccessor,
+         class DestIterator, class DestAccessor>
 void
-copyLineIf(SrcIterator s, 
+copyLineIf(SrcIterator s,
            SrcIterator send, SrcAccessor src,
            MaskIterator m, MaskAccessor mask,
            DestIterator d, DestAccessor dest)
 {
-    for(; s != send; ++s, ++d, ++m)
-        if(mask(m))
+    for (; s != send; ++s, ++d, ++m)
+        if (mask(m))
             dest.set(src(s), d);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 void
-swapLine(SrcIterator s, 
+swapLine(SrcIterator s,
          SrcIterator send, SrcAccessor src,
          DestIterator d, DestAccessor dest)
 {
-    for(; s != send; ++s, ++d)
+    for (; s != send; ++s, ++d)
     {
         typename SrcAccessor::value_type t = src(s);
         src.set(dest(d), s);
@@ -181,84 +182,80 @@ swapLine(SrcIterator s,
     dest_accessor.set(src_accessor(sx), dx);
     \endcode
 */
-doxygen_overloaded_function(template <...> void copyImage)
+doxygen_overloaded_function(template<...> void copyImage)
 
-template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-void
-copyImage(SrcImageIterator src_upperleft, 
-          SrcImageIterator src_lowerright, SrcAccessor sa,
-          DestImageIterator dest_upperleft, DestAccessor da)
+    template<class SrcImageIterator, class SrcAccessor,
+             class DestImageIterator, class DestAccessor>
+    void copyImage(SrcImageIterator src_upperleft,
+                   SrcImageIterator src_lowerright, SrcAccessor sa,
+                   DestImageIterator dest_upperleft, DestAccessor da)
 {
     int w = src_lowerright.x - src_upperleft.x;
-    
-    for(; src_upperleft.y<src_lowerright.y; ++src_upperleft.y, ++dest_upperleft.y)
+
+    for (; src_upperleft.y < src_lowerright.y; ++src_upperleft.y, ++dest_upperleft.y)
     {
-        copyLine(src_upperleft.rowIterator(), 
-                 src_upperleft.rowIterator() + w, sa, 
+        copyLine(src_upperleft.rowIterator(),
+                 src_upperleft.rowIterator() + w, sa,
                  dest_upperleft.rowIterator(), da);
     }
 }
-    
-template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-inline
-void
+
+template<class SrcImageIterator, class SrcAccessor,
+         class DestImageIterator, class DestAccessor>
+inline void
 copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
           pair<DestImageIterator, DestAccessor> dest)
 {
-    copyImage(src.first, src.second, src.third, 
+    copyImage(src.first, src.second, src.third,
               dest.first, dest.second);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-copyImage(MultiArrayView<2, T1, S1> const & src,
-          MultiArrayView<2, T2, S2> dest)
+    copyImage(MultiArrayView<2, T1, S1> const& src,
+              MultiArrayView<2, T2, S2> dest)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "copyImage(): shape mismatch between input and output.");
+                       "copyImage(): shape mismatch between input and output.");
     copyImage(srcImageRange(src), destImage(dest));
 }
 
-template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
+template<class SrcImageIterator, class SrcAccessor,
+         class DestImageIterator, class DestAccessor>
 void
-swapImageData(SrcImageIterator src_upperleft, 
+swapImageData(SrcImageIterator src_upperleft,
               SrcImageIterator src_lowerright, SrcAccessor sa,
               DestImageIterator dest_upperleft, DestAccessor da)
 {
     int w = src_lowerright.x - src_upperleft.x;
-    
-    for(; src_upperleft.y<src_lowerright.y; ++src_upperleft.y, ++dest_upperleft.y)
+
+    for (; src_upperleft.y < src_lowerright.y; ++src_upperleft.y, ++dest_upperleft.y)
     {
-        swapLine(src_upperleft.rowIterator(), 
-                 src_upperleft.rowIterator() + w, sa, 
+        swapLine(src_upperleft.rowIterator(),
+                 src_upperleft.rowIterator() + w, sa,
                  dest_upperleft.rowIterator(), da);
     }
 }
-    
-template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-inline
-void
+
+template<class SrcImageIterator, class SrcAccessor,
+         class DestImageIterator, class DestAccessor>
+inline void
 swapImageData(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
               pair<DestImageIterator, DestAccessor> dest)
 {
-    swapImageData(src.first, src.second, src.third, 
+    swapImageData(src.first, src.second, src.third,
                   dest.first, dest.second);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
-inline
-void
-swapImageData(MultiArrayView<2, T1, S1> const & src,
-              MultiArrayView<2, T2, S2> dest)
+template<class T1, class S1,
+         class T2, class S2>
+inline void
+    swapImageData(MultiArrayView<2, T1, S1> const& src,
+                  MultiArrayView<2, T2, S2> dest)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "swapImageData(): shape mismatch between input and output.");
+                       "swapImageData(): shape mismatch between input and output.");
     swapImageData(srcImageRange(src), destImage(dest));
 }
 
@@ -362,55 +359,53 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
 
     \endcode
 */
-doxygen_overloaded_function(template <...> void copyImageIf)
+doxygen_overloaded_function(template<...> void copyImageIf)
 
-template <class SrcImageIterator, class SrcAccessor,
-          class MaskImageIterator, class MaskAccessor,
-          class DestImageIterator, class DestAccessor>
-void
-copyImageIf(SrcImageIterator src_upperleft, 
-            SrcImageIterator src_lowerright, SrcAccessor sa,
-            MaskImageIterator mask_upperleft, MaskAccessor ma,
-        DestImageIterator dest_upperleft, DestAccessor da)
+    template<class SrcImageIterator, class SrcAccessor,
+             class MaskImageIterator, class MaskAccessor,
+             class DestImageIterator, class DestAccessor>
+    void copyImageIf(SrcImageIterator src_upperleft,
+                     SrcImageIterator src_lowerright, SrcAccessor sa,
+                     MaskImageIterator mask_upperleft, MaskAccessor ma,
+                     DestImageIterator dest_upperleft, DestAccessor da)
 {
     int w = src_lowerright.x - src_upperleft.x;
-    
-    for(; src_upperleft.y<src_lowerright.y; 
-             ++src_upperleft.y, ++mask_upperleft.y, ++dest_upperleft.y)
+
+    for (; src_upperleft.y < src_lowerright.y;
+         ++src_upperleft.y, ++mask_upperleft.y, ++dest_upperleft.y)
     {
-        copyLineIf(src_upperleft.rowIterator(), 
-                   src_upperleft.rowIterator() + w, sa, 
-                   mask_upperleft.rowIterator(), ma, 
+        copyLineIf(src_upperleft.rowIterator(),
+                   src_upperleft.rowIterator() + w, sa,
+                   mask_upperleft.rowIterator(), ma,
                    dest_upperleft.rowIterator(), da);
     }
 }
 
-template <class SrcImageIterator, class SrcAccessor,
-          class MaskImageIterator, class MaskAccessor,
-          class DestImageIterator, class DestAccessor>
-inline
-void
+template<class SrcImageIterator, class SrcAccessor,
+         class MaskImageIterator, class MaskAccessor,
+         class DestImageIterator, class DestAccessor>
+inline void
 copyImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
             pair<MaskImageIterator, MaskAccessor> mask,
             pair<DestImageIterator, DestAccessor> dest)
 {
-    copyImageIf(src.first, src.second, src.third, 
-                mask.first, mask.second, 
+    copyImageIf(src.first, src.second, src.third,
+                mask.first, mask.second,
                 dest.first, dest.second);
 }
 
-template <class T1, class S1,
-          class TM, class SM,
-          class T2, class S2>
+template<class T1, class S1,
+         class TM, class SM,
+         class T2, class S2>
 inline void
-copyImageIf(MultiArrayView<2, T1, S1> const & src,
-            MultiArrayView<2, TM, SM> const & mask,
-            MultiArrayView<2, T2, S2> dest)
+    copyImageIf(MultiArrayView<2, T1, S1> const& src,
+                MultiArrayView<2, TM, SM> const& mask,
+                MultiArrayView<2, T2, S2> dest)
 {
     vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
-        "copyImageIf(): shape mismatch between input and output.");
-    copyImageIf(srcImageRange(src), 
-                maskImage(mask), 
+                       "copyImageIf(): shape mismatch between input and output.");
+    copyImageIf(srcImageRange(src),
+                maskImage(mask),
                 destImage(dest));
 }
 

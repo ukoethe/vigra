@@ -33,23 +33,23 @@
 /*                                                                      */
 /************************************************************************/
 
+#include <algorithm>
 #include <cstddef>
 #include <iostream>
 #include <iterator>
-#include <algorithm>
 #include <queue>
 #include <set>
 
-#include "vigra/unittest.hxx"
 #include "vigra/accessor.hxx"
 #include "vigra/array_vector.hxx"
 #include "vigra/copyimage.hxx"
 #include "vigra/sized_int.hxx"
+#include "vigra/unittest.hxx"
 
-#include "vigra/priority_queue.hxx"
 #include "vigra/algorithm.hxx"
 #include "vigra/compression.hxx"
 #include "vigra/multi_blocking.hxx"
+#include "vigra/priority_queue.hxx"
 
 #include "vigra/any.hxx"
 
@@ -66,13 +66,14 @@ struct ArrayVectorTest
     Vector vector_;
 
     ArrayVectorTest()
-    {}
+    {
+    }
 
     void testAccessor()
     {
         vector_.resize(3, 0);
         Iterator i = vector_.begin();
-        ConstIterator ci = const_cast<Vector const &>(vector_).begin();
+        ConstIterator ci = const_cast<Vector const&>(vector_).begin();
 
         StandardValueAccessor<value_type> sva;
         StandardConstValueAccessor<value_type> scva;
@@ -81,11 +82,11 @@ struct ArrayVectorTest
         shouldEqual(sva(i), 3);
         shouldEqual(scva(i), 3);
         shouldEqual(scva(ci), 3);
-        sva.set(4, i+1);
+        sva.set(4, i + 1);
         shouldEqual(vector_[1], 4);
-        shouldEqual(sva(i+1), 4);
-        shouldEqual(scva(i+1), 4);
-        shouldEqual(scva(ci+1), 4);
+        shouldEqual(sva(i + 1), 4);
+        shouldEqual(scva(i + 1), 4);
+        shouldEqual(scva(ci + 1), 4);
         sva.set(5, i, 2);
         shouldEqual(vector_[2], 5);
         shouldEqual(sva(i, 2), 5);
@@ -99,24 +100,24 @@ struct ArrayVectorTest
         shouldEqual(sa(i), 6);
         shouldEqual(sca(i), 6);
         shouldEqual(sca(ci), 6);
-        sa.set(7, i+1);
+        sa.set(7, i + 1);
         shouldEqual(vector_[1], 7);
-        shouldEqual(sa(i+1), 7);
-        shouldEqual(sca(i+1), 7);
-        shouldEqual(sca(ci+1), 7);
+        shouldEqual(sa(i + 1), 7);
+        shouldEqual(sca(i + 1), 7);
+        shouldEqual(sca(ci + 1), 7);
         sa.set(8, i, 2);
         shouldEqual(vector_[2], 8);
         shouldEqual(sa(i, 2), 8);
         shouldEqual(sca(i, 2), 8);
         shouldEqual(sca(ci, 2), 8);
 
-        Vector varray[] = { vector_, vector_, vector_ };
-        Vector  * v = varray;
-        Vector const * cv = varray;
+        Vector varray[] = {vector_, vector_, vector_};
+        Vector* v = varray;
+        Vector const* cv = varray;
         int k;
 
         VectorComponentAccessor<Vector> vca(0);
-        for(k = 0; k<2; ++k, vca.setIndex(k))
+        for (k = 0; k < 2; ++k, vca.setIndex(k))
         {
             shouldEqual(vca(v), 6 + k);
             shouldEqual(vca(v + 1), 6 + k);
@@ -133,7 +134,7 @@ struct ArrayVectorTest
         }
 
         VectorComponentValueAccessor<Vector> vcva(0);
-        for(k = 0; k<2; ++k, vcva.setIndex(k))
+        for (k = 0; k < 2; ++k, vcva.setIndex(k))
         {
             shouldEqual(vcva(v), 3 + k);
             shouldEqual(vcva(v + 1), 3 + k);
@@ -150,8 +151,8 @@ struct ArrayVectorTest
         }
 
         VectorAccessor<Vector> va;
-        VectorElementAccessor<VectorAccessor<Vector> > vea(0, va);
-        for(k = 0; k<2; ++k, vea.setIndex(k))
+        VectorElementAccessor<VectorAccessor<Vector>> vea(0, va);
+        for (k = 0; k < 2; ++k, vea.setIndex(k))
         {
             shouldEqual(vea(v), 6 + k);
             shouldEqual(vea(v + 1), 6 + k);
@@ -167,7 +168,7 @@ struct ArrayVectorTest
             shouldEqual(v[2][k], 3 + k);
         }
 
-        for(k = 0; k<2; ++k)
+        for (k = 0; k < 2; ++k)
         {
             shouldEqual(va.getComponent(v, k), 3 + k);
             shouldEqual(va.getComponent(v + 1, k), 3 + k);
@@ -197,7 +198,7 @@ struct ArrayVectorTest
         should(sqca.end(cv) == cv[0].end());
         should(sqca.end(cv + 1) == cv[1].end());
         should(sqca.end(cv, 2) == cv[2].end());
-        for(k = 0; k<2; ++k)
+        for (k = 0; k < 2; ++k)
         {
             shouldEqual(sqa.begin(v)[k], 6 + k);
             shouldEqual(sqa.begin(v + 1)[k], 6 + k);
@@ -216,7 +217,7 @@ struct ArrayVectorTest
 
     void testBackInsertion()
     {
-        static value_type data[] = { 0, 1, 2, 3, 4 };
+        static value_type data[] = {0, 1, 2, 3, 4};
 
         shouldEqual(vector_.size(), 0u);
 
@@ -245,7 +246,7 @@ struct ArrayVectorTest
 
         shouldEqual(vector_.size(), N);
         shouldEqual(vector_[0], value);
-        shouldEqual(vector_[N-1], value);
+        shouldEqual(vector_[N - 1], value);
     }
 
     void testAmbiguousConstructor()
@@ -254,7 +255,6 @@ struct ArrayVectorTest
         ArrayVector<std::ptrdiff_t> b(a.begin(), a.end());
     }
 };
-
 
 
 
@@ -289,7 +289,7 @@ struct BucketQueueTest
         std::priority_queue<int> queue;
         BucketQueue<int> bqueue;
 
-        for(unsigned int k=0; k<idata.size(); ++k)
+        for (unsigned int k = 0; k < idata.size(); ++k)
         {
             queue.push(idata[k]);
             bqueue.push(idata[k], idata[k]);
@@ -298,7 +298,7 @@ struct BucketQueueTest
         shouldEqual(idata.size(), bqueue.size());
         shouldEqual(false, bqueue.empty());
 
-        for(unsigned int k=0; k<idata.size(); ++k)
+        for (unsigned int k = 0; k < idata.size(); ++k)
         {
             shouldEqual(queue.top(), bqueue.top());
             queue.pop();
@@ -311,10 +311,10 @@ struct BucketQueueTest
 
     void testAscending()
     {
-        std::priority_queue<int, std::vector<int>, std::greater<int> > queue;
+        std::priority_queue<int, std::vector<int>, std::greater<int>> queue;
         BucketQueue<int, true> bqueue;
 
-        for(unsigned int k=0; k<idata.size(); ++k)
+        for (unsigned int k = 0; k < idata.size(); ++k)
         {
             queue.push(idata[k]);
             bqueue.push(idata[k], idata[k]);
@@ -323,7 +323,7 @@ struct BucketQueueTest
         shouldEqual(idata.size(), bqueue.size());
         shouldEqual(false, bqueue.empty());
 
-        for(unsigned int k=0; k<idata.size(); ++k)
+        for (unsigned int k = 0; k < idata.size(); ++k)
         {
             shouldEqual(queue.top(), bqueue.top());
             queue.pop();
@@ -340,7 +340,7 @@ struct BucketQueueTest
         std::priority_queue<int> queue;
         MappedBucketQueue<double, Priority> bqueue;
 
-        for(unsigned int k=0; k<data.size(); ++k)
+        for (unsigned int k = 0; k < data.size(); ++k)
         {
             queue.push(idata[k]);
             bqueue.push(data[k]);
@@ -349,17 +349,17 @@ struct BucketQueueTest
         shouldEqual(data.size(), bqueue.size());
         shouldEqual(false, bqueue.empty());
 
-        for(unsigned int k=0; k<data.size(); ++k)
+        for (unsigned int k = 0; k < data.size(); ++k)
         {
             shouldEqual(queue.top(), priority(bqueue.top()));
-            switch(k)
+            switch (k)
             {
-              case 1:
-                  shouldEqual(4.4, bqueue.top());
-                  break;
-              case 2:
-                  shouldEqual(4.5, bqueue.top());
-                  break;
+                case 1:
+                    shouldEqual(4.4, bqueue.top());
+                    break;
+                case 2:
+                    shouldEqual(4.5, bqueue.top());
+                    break;
             }
             queue.pop();
             bqueue.pop();
@@ -372,10 +372,10 @@ struct BucketQueueTest
     void testAscendingMapped()
     {
         Priority priority;
-        std::priority_queue<int, std::vector<int>, std::greater<int> > queue;
+        std::priority_queue<int, std::vector<int>, std::greater<int>> queue;
         MappedBucketQueue<double, Priority, true> bqueue;
 
-        for(unsigned int k=0; k<data.size(); ++k)
+        for (unsigned int k = 0; k < data.size(); ++k)
         {
             queue.push(idata[k]);
             bqueue.push(data[k]);
@@ -384,17 +384,17 @@ struct BucketQueueTest
         shouldEqual(data.size(), bqueue.size());
         shouldEqual(false, bqueue.empty());
 
-        for(unsigned int k=0; k<data.size(); ++k)
+        for (unsigned int k = 0; k < data.size(); ++k)
         {
             shouldEqual(queue.top(), priority(bqueue.top()));
-            switch(k)
+            switch (k)
             {
-              case 3:
-                  shouldEqual(4.4, bqueue.top());
-                  break;
-              case 4:
-                  shouldEqual(4.5, bqueue.top());
-                  break;
+                case 3:
+                    shouldEqual(4.4, bqueue.top());
+                    break;
+                case 4:
+                    shouldEqual(4.5, bqueue.top());
+                    break;
             }
             queue.pop();
             bqueue.pop();
@@ -408,17 +408,17 @@ struct BucketQueueTest
 
 struct ChangeablePriorityQueueTest
 {
-    typedef ChangeablePriorityQueue<float, std::less<float>    > MinQueueType;
-    typedef ChangeablePriorityQueue<float, std::greater<float> > MaxQueueType;
+    typedef ChangeablePriorityQueue<float, std::less<float>> MinQueueType;
+    typedef ChangeablePriorityQueue<float, std::greater<float>> MaxQueueType;
 
     ChangeablePriorityQueueTest()
     {
-
     }
 
 
-    void testMinQueue(){
-        const float tol=0.001f;
+    void testMinQueue()
+    {
+        const float tol = 0.001f;
         {
             MinQueueType q(4);
 
@@ -429,7 +429,7 @@ struct ChangeablePriorityQueueTest
             // 2 => NONE
             // 3 => NONE
             should(q.empty());
-            shouldEqual(q.size(),0);
+            shouldEqual(q.size(), 0);
             should(!q.contains(0));
             should(!q.contains(1));
             should(!q.contains(2));
@@ -437,7 +437,7 @@ struct ChangeablePriorityQueueTest
 
 
 
-            q.push(0,3.0);
+            q.push(0, 3.0);
             // CURRENT VALUES
             //-----------------
             // 0 => 3.0
@@ -445,20 +445,20 @@ struct ChangeablePriorityQueueTest
             // 2 => NONE
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),1);
-            should( q.contains(0));
+            shouldEqual(q.size(), 1);
+            should(q.contains(0));
             should(!q.contains(1));
             should(!q.contains(2));
             should(!q.contains(3));
-            shouldEqualTolerance(q.priority(0),3.0, tol);
+            shouldEqualTolerance(q.priority(0), 3.0, tol);
             //shouldEqualTolerance(q.priority(1),3.0, tol);
             //shouldEqualTolerance(q.priority(2),3.0, tol);
             //shouldEqualTolerance(q.priority(3),3.0, tol);
-            shouldEqual(q.top(),0);
-            shouldEqualTolerance(q.topPriority(),3.0,tol);
+            shouldEqual(q.top(), 0);
+            shouldEqualTolerance(q.topPriority(), 3.0, tol);
 
 
-            q.push(2,2.0);
+            q.push(2, 2.0);
             // CURRENT VALUES
             //-----------------
             // 0 => 3.0
@@ -466,20 +466,20 @@ struct ChangeablePriorityQueueTest
             // 2 => 2.0
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),2);
-            should( q.contains(0));
+            shouldEqual(q.size(), 2);
+            should(q.contains(0));
             should(!q.contains(1));
-            should( q.contains(2));
+            should(q.contains(2));
             should(!q.contains(3));
-            shouldEqualTolerance(q.priority(0),3.0, tol);
+            shouldEqualTolerance(q.priority(0), 3.0, tol);
             //shouldEqualTolerance(q.priority(1),3.0, tol);
-            shouldEqualTolerance(q.priority(2),2.0, tol);
+            shouldEqualTolerance(q.priority(2), 2.0, tol);
             //shouldEqualTolerance(q.priority(3),3.0, tol);
-            shouldEqual(q.top(),2);
-            shouldEqualTolerance(q.topPriority(),2.0,tol);
+            shouldEqual(q.top(), 2);
+            shouldEqualTolerance(q.topPriority(), 2.0, tol);
 
 
-            q.push(1,3.0);
+            q.push(1, 3.0);
             // CURRENT VALUES
             //-----------------
             // 0 => 3.0
@@ -487,20 +487,20 @@ struct ChangeablePriorityQueueTest
             // 2 => 2.0
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),3);
-            should( q.contains(0));
-            should( q.contains(1));
-            should( q.contains(2));
+            shouldEqual(q.size(), 3);
+            should(q.contains(0));
+            should(q.contains(1));
+            should(q.contains(2));
             should(!q.contains(3));
-            shouldEqualTolerance(q.priority(0),3.0, tol);
-            shouldEqualTolerance(q.priority(1),3.0, tol);
-            shouldEqualTolerance(q.priority(2),2.0, tol);
+            shouldEqualTolerance(q.priority(0), 3.0, tol);
+            shouldEqualTolerance(q.priority(1), 3.0, tol);
+            shouldEqualTolerance(q.priority(2), 2.0, tol);
             //shouldEqualTolerance(q.priority(3),3.0, tol);
-            shouldEqual(q.top(),2);
-            shouldEqualTolerance(q.topPriority(),2.0,tol);
+            shouldEqual(q.top(), 2);
+            shouldEqualTolerance(q.topPriority(), 2.0, tol);
 
 
-            q.push(3,0.0);
+            q.push(3, 0.0);
             // CURRENT VALUES
             //-----------------
             // 0 => 3.0
@@ -508,17 +508,17 @@ struct ChangeablePriorityQueueTest
             // 2 => 2.0
             // 3 => 0.0
             should(!q.empty());
-            shouldEqual(q.size(),4);
-            should( q.contains(0));
-            should( q.contains(1));
-            should( q.contains(2));
-            should( q.contains(3));
-            shouldEqualTolerance(q.priority(0),3.0, tol);
-            shouldEqualTolerance(q.priority(1),3.0, tol);
-            shouldEqualTolerance(q.priority(2),2.0, tol);
-            shouldEqualTolerance(q.priority(3),0.0, tol);
-            shouldEqual(q.top(),3);
-            shouldEqualTolerance(q.topPriority(),0.0,tol);
+            shouldEqual(q.size(), 4);
+            should(q.contains(0));
+            should(q.contains(1));
+            should(q.contains(2));
+            should(q.contains(3));
+            shouldEqualTolerance(q.priority(0), 3.0, tol);
+            shouldEqualTolerance(q.priority(1), 3.0, tol);
+            shouldEqualTolerance(q.priority(2), 2.0, tol);
+            shouldEqualTolerance(q.priority(3), 0.0, tol);
+            shouldEqual(q.top(), 3);
+            shouldEqualTolerance(q.topPriority(), 0.0, tol);
 
             q.pop();
             // CURRENT VALUES
@@ -528,20 +528,20 @@ struct ChangeablePriorityQueueTest
             // 2 => 2.0
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),3);
-            should( q.contains(0));
-            should( q.contains(1));
-            should( q.contains(2));
+            shouldEqual(q.size(), 3);
+            should(q.contains(0));
+            should(q.contains(1));
+            should(q.contains(2));
             should(!q.contains(3));
-            shouldEqualTolerance(q.priority(0),3.0, tol);
-            shouldEqualTolerance(q.priority(1),3.0, tol);
-            shouldEqualTolerance(q.priority(2),2.0, tol);
+            shouldEqualTolerance(q.priority(0), 3.0, tol);
+            shouldEqualTolerance(q.priority(1), 3.0, tol);
+            shouldEqualTolerance(q.priority(2), 2.0, tol);
             //shouldEqualTolerance(q.priority(3),0.0, 0.01);
-            shouldEqual(q.top(),2);
-            shouldEqualTolerance(q.topPriority(),2.0,tol);
+            shouldEqual(q.top(), 2);
+            shouldEqualTolerance(q.topPriority(), 2.0, tol);
 
 
-            q.push(1,1.0);
+            q.push(1, 1.0);
             // CURRENT VALUES
             //-----------------
             // 0 => 3.0
@@ -549,19 +549,19 @@ struct ChangeablePriorityQueueTest
             // 2 => 2.0
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),3);
-            should( q.contains(0));
-            should( q.contains(1));
-            should( q.contains(2));
+            shouldEqual(q.size(), 3);
+            should(q.contains(0));
+            should(q.contains(1));
+            should(q.contains(2));
             should(!q.contains(3));
-            shouldEqualTolerance(q.priority(0),3.0, tol);
-            shouldEqualTolerance(q.priority(1),1.0, tol);
-            shouldEqualTolerance(q.priority(2),2.0, tol);
+            shouldEqualTolerance(q.priority(0), 3.0, tol);
+            shouldEqualTolerance(q.priority(1), 1.0, tol);
+            shouldEqualTolerance(q.priority(2), 2.0, tol);
             //shouldEqualTolerance(q.priority(3),0.0, 0.01);
-            shouldEqual(q.top(),1);
-            shouldEqualTolerance(q.topPriority(),1.0,tol);
+            shouldEqual(q.top(), 1);
+            shouldEqualTolerance(q.topPriority(), 1.0, tol);
 
-            q.push(1,4.0);
+            q.push(1, 4.0);
             // CURRENT VALUES
             //-----------------
             // 0 => 3.0
@@ -569,20 +569,20 @@ struct ChangeablePriorityQueueTest
             // 2 => 2.0
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),3);
-            should( q.contains(0));
-            should( q.contains(1));
-            should( q.contains(2));
+            shouldEqual(q.size(), 3);
+            should(q.contains(0));
+            should(q.contains(1));
+            should(q.contains(2));
             should(!q.contains(3));
-            shouldEqualTolerance(q.priority(0),3.0, tol);
-            shouldEqualTolerance(q.priority(1),4.0, tol);
-            shouldEqualTolerance(q.priority(2),2.0, tol);
+            shouldEqualTolerance(q.priority(0), 3.0, tol);
+            shouldEqualTolerance(q.priority(1), 4.0, tol);
+            shouldEqualTolerance(q.priority(2), 2.0, tol);
             //shouldEqualTolerance(q.priority(3),0.0, 0.01);
-            shouldEqual(q.top(),2);
-            shouldEqualTolerance(q.topPriority(),2.0,tol);
+            shouldEqual(q.top(), 2);
+            shouldEqualTolerance(q.topPriority(), 2.0, tol);
 
 
-            q.push(0,1.0);
+            q.push(0, 1.0);
             // CURRENT VALUES
             //-----------------
             // 0 => 1.0
@@ -590,17 +590,17 @@ struct ChangeablePriorityQueueTest
             // 2 => 2.0
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),3);
-            should( q.contains(0));
-            should( q.contains(1));
-            should( q.contains(2));
+            shouldEqual(q.size(), 3);
+            should(q.contains(0));
+            should(q.contains(1));
+            should(q.contains(2));
             should(!q.contains(3));
-            shouldEqualTolerance(q.priority(0),1.0, tol);
-            shouldEqualTolerance(q.priority(1),4.0, tol);
-            shouldEqualTolerance(q.priority(2),2.0, tol);
+            shouldEqualTolerance(q.priority(0), 1.0, tol);
+            shouldEqualTolerance(q.priority(1), 4.0, tol);
+            shouldEqualTolerance(q.priority(2), 2.0, tol);
             //shouldEqualTolerance(q.priority(3),0.0, 0.01);
-            shouldEqual(q.top(),0);
-            shouldEqualTolerance(q.topPriority(),1.0,tol);
+            shouldEqual(q.top(), 0);
+            shouldEqualTolerance(q.topPriority(), 1.0, tol);
 
 
             q.pop();
@@ -611,17 +611,17 @@ struct ChangeablePriorityQueueTest
             // 2 => 2.0
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),2);
+            shouldEqual(q.size(), 2);
             should(!q.contains(0));
-            should( q.contains(1));
-            should( q.contains(2));
+            should(q.contains(1));
+            should(q.contains(2));
             should(!q.contains(3));
             //shouldEqualTolerance(q.priority(0),1.0, tol);
-            shouldEqualTolerance(q.priority(1),4.0, tol);
-            shouldEqualTolerance(q.priority(2),2.0, tol);
+            shouldEqualTolerance(q.priority(1), 4.0, tol);
+            shouldEqualTolerance(q.priority(2), 2.0, tol);
             //shouldEqualTolerance(q.priority(3),0.0, 0.01);
-            shouldEqual(q.top(),2);
-            shouldEqualTolerance(q.topPriority(),2.0,tol);
+            shouldEqual(q.top(), 2);
+            shouldEqualTolerance(q.topPriority(), 2.0, tol);
 
 
             q.pop();
@@ -632,17 +632,17 @@ struct ChangeablePriorityQueueTest
             // 2 => NONE
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),1);
+            shouldEqual(q.size(), 1);
             should(!q.contains(0));
-            should( q.contains(1));
+            should(q.contains(1));
             should(!q.contains(2));
             should(!q.contains(3));
             //shouldEqualTolerance(q.priority(0),1.0, tol);
-            shouldEqualTolerance(q.priority(1),4.0, tol);
+            shouldEqualTolerance(q.priority(1), 4.0, tol);
             //shouldEqualTolerance(q.priority(2),2.0, tol);
             //shouldEqualTolerance(q.priority(3),0.0, 0.01);
-            shouldEqual(q.top(),1);
-            shouldEqualTolerance(q.topPriority(),4.0,tol);
+            shouldEqual(q.top(), 1);
+            shouldEqualTolerance(q.topPriority(), 4.0, tol);
 
 
             q.pop();
@@ -653,7 +653,7 @@ struct ChangeablePriorityQueueTest
             // 2 => NONE
             // 3 => NONE
             should(q.empty());
-            shouldEqual(q.size(),0);
+            shouldEqual(q.size(), 0);
             should(!q.contains(0));
             should(!q.contains(1));
             should(!q.contains(2));
@@ -664,13 +664,12 @@ struct ChangeablePriorityQueueTest
             //shouldEqualTolerance(q.priority(3),0.0, 0.01);
             //shouldEqual(q.top(),1);
             //shouldEqualTolerance(q.topPriority(),4.0,tol);
-
         }
-
     }
 
-    void testMaxQueue(){
-        const float tol=0.001f;
+    void testMaxQueue()
+    {
+        const float tol = 0.001f;
         {
             MaxQueueType q(4);
 
@@ -681,7 +680,7 @@ struct ChangeablePriorityQueueTest
             // 2 => NONE
             // 3 => NONE
             should(q.empty());
-            shouldEqual(q.size(),0);
+            shouldEqual(q.size(), 0);
             should(!q.contains(0));
             should(!q.contains(1));
             should(!q.contains(2));
@@ -689,7 +688,7 @@ struct ChangeablePriorityQueueTest
 
 
 
-            q.push(0,3.0);
+            q.push(0, 3.0);
             // CURRENT VALUES
             //-----------------
             // 0 => 3.0
@@ -697,20 +696,20 @@ struct ChangeablePriorityQueueTest
             // 2 => NONE
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),1);
-            should( q.contains(0));
+            shouldEqual(q.size(), 1);
+            should(q.contains(0));
             should(!q.contains(1));
             should(!q.contains(2));
             should(!q.contains(3));
-            shouldEqualTolerance(q.priority(0),3.0, tol);
+            shouldEqualTolerance(q.priority(0), 3.0, tol);
             //shouldEqualTolerance(q.priority(1),3.0, tol);
             //shouldEqualTolerance(q.priority(2),3.0, tol);
             //shouldEqualTolerance(q.priority(3),3.0, tol);
-            shouldEqual(q.top(),0);
-            shouldEqualTolerance(q.topPriority(),3.0,tol);
+            shouldEqual(q.top(), 0);
+            shouldEqualTolerance(q.topPriority(), 3.0, tol);
 
 
-            q.push(2,2.0);
+            q.push(2, 2.0);
             // CURRENT VALUES
             //-----------------
             // 0 => 3.0
@@ -718,20 +717,20 @@ struct ChangeablePriorityQueueTest
             // 2 => 2.0
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),2);
-            should( q.contains(0));
+            shouldEqual(q.size(), 2);
+            should(q.contains(0));
             should(!q.contains(1));
-            should( q.contains(2));
+            should(q.contains(2));
             should(!q.contains(3));
-            shouldEqualTolerance(q.priority(0),3.0, tol);
+            shouldEqualTolerance(q.priority(0), 3.0, tol);
             //shouldEqualTolerance(q.priority(1),3.0, tol);
-            shouldEqualTolerance(q.priority(2),2.0, tol);
+            shouldEqualTolerance(q.priority(2), 2.0, tol);
             //shouldEqualTolerance(q.priority(3),3.0, tol);
-            shouldEqual(q.top(),0);
-            shouldEqualTolerance(q.topPriority(),3.0,tol);
+            shouldEqual(q.top(), 0);
+            shouldEqualTolerance(q.topPriority(), 3.0, tol);
 
 
-            q.push(1,4.0);
+            q.push(1, 4.0);
             // CURRENT VALUES
             //-----------------
             // 0 => 3.0
@@ -739,20 +738,20 @@ struct ChangeablePriorityQueueTest
             // 2 => 2.0
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),3);
-            should( q.contains(0));
-            should( q.contains(1));
-            should( q.contains(2));
+            shouldEqual(q.size(), 3);
+            should(q.contains(0));
+            should(q.contains(1));
+            should(q.contains(2));
             should(!q.contains(3));
-            shouldEqualTolerance(q.priority(0),3.0, tol);
-            shouldEqualTolerance(q.priority(1),4.0, tol);
-            shouldEqualTolerance(q.priority(2),2.0, tol);
+            shouldEqualTolerance(q.priority(0), 3.0, tol);
+            shouldEqualTolerance(q.priority(1), 4.0, tol);
+            shouldEqualTolerance(q.priority(2), 2.0, tol);
             //shouldEqualTolerance(q.priority(3),3.0, tol);
-            shouldEqual(q.top(),1);
-            shouldEqualTolerance(q.topPriority(),4.0,tol);
+            shouldEqual(q.top(), 1);
+            shouldEqualTolerance(q.topPriority(), 4.0, tol);
 
 
-            q.push(3,5.0);
+            q.push(3, 5.0);
             // CURRENT VALUES
             //-----------------
             // 0 => 3.0
@@ -760,20 +759,20 @@ struct ChangeablePriorityQueueTest
             // 2 => 2.0
             // 3 => 5.0
             should(!q.empty());
-            shouldEqual(q.size(),4);
-            should( q.contains(0));
-            should( q.contains(1));
-            should( q.contains(2));
-            should( q.contains(3));
-            shouldEqualTolerance(q.priority(0),3.0, tol);
-            shouldEqualTolerance(q.priority(1),4.0, tol);
-            shouldEqualTolerance(q.priority(2),2.0, tol);
-            shouldEqualTolerance(q.priority(3),5.0, tol);
-            shouldEqual(q.top(),3);
-            shouldEqualTolerance(q.topPriority(),5.0,tol);
+            shouldEqual(q.size(), 4);
+            should(q.contains(0));
+            should(q.contains(1));
+            should(q.contains(2));
+            should(q.contains(3));
+            shouldEqualTolerance(q.priority(0), 3.0, tol);
+            shouldEqualTolerance(q.priority(1), 4.0, tol);
+            shouldEqualTolerance(q.priority(2), 2.0, tol);
+            shouldEqualTolerance(q.priority(3), 5.0, tol);
+            shouldEqual(q.top(), 3);
+            shouldEqualTolerance(q.topPriority(), 5.0, tol);
 
 
-            q.push(3,2.0);
+            q.push(3, 2.0);
             // CURRENT VALUES
             //-----------------
             // 0 => 3.0
@@ -781,20 +780,20 @@ struct ChangeablePriorityQueueTest
             // 2 => 2.0
             // 3 => 2.0
             should(!q.empty());
-            shouldEqual(q.size(),4);
-            should( q.contains(0));
-            should( q.contains(1));
-            should( q.contains(2));
-            should( q.contains(3));
-            shouldEqualTolerance(q.priority(0),3.0, tol);
-            shouldEqualTolerance(q.priority(1),4.0, tol);
-            shouldEqualTolerance(q.priority(2),2.0, tol);
-            shouldEqualTolerance(q.priority(3),2.0, tol);
-            shouldEqual(q.top(),1);
-            shouldEqualTolerance(q.topPriority(),4.0,tol);
+            shouldEqual(q.size(), 4);
+            should(q.contains(0));
+            should(q.contains(1));
+            should(q.contains(2));
+            should(q.contains(3));
+            shouldEqualTolerance(q.priority(0), 3.0, tol);
+            shouldEqualTolerance(q.priority(1), 4.0, tol);
+            shouldEqualTolerance(q.priority(2), 2.0, tol);
+            shouldEqualTolerance(q.priority(3), 2.0, tol);
+            shouldEqual(q.top(), 1);
+            shouldEqualTolerance(q.topPriority(), 4.0, tol);
 
 
-            q.push(1,0.0);
+            q.push(1, 0.0);
             // CURRENT VALUES
             //-----------------
             // 0 => 3.0
@@ -802,19 +801,19 @@ struct ChangeablePriorityQueueTest
             // 2 => 2.0
             // 3 => 2.0
             should(!q.empty());
-            shouldEqual(q.size(),4);
-            should( q.contains(0));
-            should( q.contains(1));
-            should( q.contains(2));
-            should( q.contains(3));
-            shouldEqualTolerance(q.priority(0),3.0, tol);
-            shouldEqualTolerance(q.priority(1),0.0, tol);
-            shouldEqualTolerance(q.priority(2),2.0, tol);
-            shouldEqualTolerance(q.priority(3),2.0, tol);
-            shouldEqual(q.top(),0);
-            shouldEqualTolerance(q.topPriority(),3.0,tol);
+            shouldEqual(q.size(), 4);
+            should(q.contains(0));
+            should(q.contains(1));
+            should(q.contains(2));
+            should(q.contains(3));
+            shouldEqualTolerance(q.priority(0), 3.0, tol);
+            shouldEqualTolerance(q.priority(1), 0.0, tol);
+            shouldEqualTolerance(q.priority(2), 2.0, tol);
+            shouldEqualTolerance(q.priority(3), 2.0, tol);
+            shouldEqual(q.top(), 0);
+            shouldEqualTolerance(q.topPriority(), 3.0, tol);
 
-            q.push(2,5.0);
+            q.push(2, 5.0);
             // CURRENT VALUES
             //-----------------
             // 0 => 3.0
@@ -822,19 +821,19 @@ struct ChangeablePriorityQueueTest
             // 2 => 5.0
             // 3 => 2.0
             should(!q.empty());
-            shouldEqual(q.size(),4);
-            should( q.contains(0));
-            should( q.contains(1));
-            should( q.contains(2));
-            should( q.contains(3));
-            shouldEqualTolerance(q.priority(0),3.0, tol);
-            shouldEqualTolerance(q.priority(1),0.0, tol);
-            shouldEqualTolerance(q.priority(2),5.0, tol);
-            shouldEqualTolerance(q.priority(3),2.0, tol);
-            shouldEqual(q.top(),2);
-            shouldEqualTolerance(q.topPriority(),5.0,tol);
+            shouldEqual(q.size(), 4);
+            should(q.contains(0));
+            should(q.contains(1));
+            should(q.contains(2));
+            should(q.contains(3));
+            shouldEqualTolerance(q.priority(0), 3.0, tol);
+            shouldEqualTolerance(q.priority(1), 0.0, tol);
+            shouldEqualTolerance(q.priority(2), 5.0, tol);
+            shouldEqualTolerance(q.priority(3), 2.0, tol);
+            shouldEqual(q.top(), 2);
+            shouldEqualTolerance(q.topPriority(), 5.0, tol);
 
-            q.push(3,1.0);
+            q.push(3, 1.0);
             // CURRENT VALUES
             //-----------------
             // 0 => 3.0
@@ -842,17 +841,17 @@ struct ChangeablePriorityQueueTest
             // 2 => 5.0
             // 3 => 1.0
             should(!q.empty());
-            shouldEqual(q.size(),4);
-            should( q.contains(0));
-            should( q.contains(1));
-            should( q.contains(2));
-            should( q.contains(3));
-            shouldEqualTolerance(q.priority(0),3.0, tol);
-            shouldEqualTolerance(q.priority(1),0.0, tol);
-            shouldEqualTolerance(q.priority(2),5.0, tol);
-            shouldEqualTolerance(q.priority(3),1.0, tol);
-            shouldEqual(q.top(),2);
-            shouldEqualTolerance(q.topPriority(),5.0,tol);
+            shouldEqual(q.size(), 4);
+            should(q.contains(0));
+            should(q.contains(1));
+            should(q.contains(2));
+            should(q.contains(3));
+            shouldEqualTolerance(q.priority(0), 3.0, tol);
+            shouldEqualTolerance(q.priority(1), 0.0, tol);
+            shouldEqualTolerance(q.priority(2), 5.0, tol);
+            shouldEqualTolerance(q.priority(3), 1.0, tol);
+            shouldEqual(q.top(), 2);
+            shouldEqualTolerance(q.topPriority(), 5.0, tol);
 
 
             q.pop();
@@ -863,17 +862,17 @@ struct ChangeablePriorityQueueTest
             // 2 => NONE
             // 3 => 1.0
             should(!q.empty());
-            shouldEqual(q.size(),3);
-            should( q.contains(0));
-            should( q.contains(1));
+            shouldEqual(q.size(), 3);
+            should(q.contains(0));
+            should(q.contains(1));
             should(!q.contains(2));
-            should( q.contains(3));
-            shouldEqualTolerance(q.priority(0),3.0, tol);
-            shouldEqualTolerance(q.priority(1),0.0, tol);
+            should(q.contains(3));
+            shouldEqualTolerance(q.priority(0), 3.0, tol);
+            shouldEqualTolerance(q.priority(1), 0.0, tol);
             //shouldEqualTolerance(q.priority(2),5.0, tol);
-            shouldEqualTolerance(q.priority(3),1.0, tol);
-            shouldEqual(q.top(),0);
-            shouldEqualTolerance(q.topPriority(),3.0,tol);
+            shouldEqualTolerance(q.priority(3), 1.0, tol);
+            shouldEqual(q.top(), 0);
+            shouldEqualTolerance(q.topPriority(), 3.0, tol);
 
 
 
@@ -885,17 +884,17 @@ struct ChangeablePriorityQueueTest
             // 2 => NONE
             // 3 => 1.0
             should(!q.empty());
-            shouldEqual(q.size(),2);
+            shouldEqual(q.size(), 2);
             should(!q.contains(0));
-            should( q.contains(1));
+            should(q.contains(1));
             should(!q.contains(2));
-            should( q.contains(3));
+            should(q.contains(3));
             //shouldEqualTolerance(q.priority(0),3.0, tol);
-            shouldEqualTolerance(q.priority(1),0.0, tol);
+            shouldEqualTolerance(q.priority(1), 0.0, tol);
             //shouldEqualTolerance(q.priority(2),5.0, tol);
-            shouldEqualTolerance(q.priority(3),1.0, tol);
-            shouldEqual(q.top(),3);
-            shouldEqualTolerance(q.topPriority(),1.0,tol);
+            shouldEqualTolerance(q.priority(3), 1.0, tol);
+            shouldEqual(q.top(), 3);
+            shouldEqualTolerance(q.topPriority(), 1.0, tol);
 
 
             q.pop();
@@ -906,17 +905,17 @@ struct ChangeablePriorityQueueTest
             // 2 => NONE
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),1);
+            shouldEqual(q.size(), 1);
             should(!q.contains(0));
-            should( q.contains(1));
+            should(q.contains(1));
             should(!q.contains(2));
             should(!q.contains(3));
             //shouldEqualTolerance(q.priority(0),3.0, tol);
-            shouldEqualTolerance(q.priority(1),0.0, tol);
+            shouldEqualTolerance(q.priority(1), 0.0, tol);
             //shouldEqualTolerance(q.priority(2),5.0, tol);
             //shouldEqualTolerance(q.priority(3),1.0, tol);
-            shouldEqual(q.top(),1);
-            shouldEqualTolerance(q.topPriority(),0.0,tol);
+            shouldEqual(q.top(), 1);
+            shouldEqualTolerance(q.topPriority(), 0.0, tol);
 
             q.pop();
             // CURRENT VALUES
@@ -926,7 +925,7 @@ struct ChangeablePriorityQueueTest
             // 2 => NONE
             // 3 => NONE
             should(q.empty());
-            shouldEqual(q.size(),0);
+            shouldEqual(q.size(), 0);
             should(!q.contains(0));
             should(!q.contains(1));
             should(!q.contains(2));
@@ -938,7 +937,7 @@ struct ChangeablePriorityQueueTest
             //shouldEqual(q.top(),1);
             //shouldEqualTolerance(q.topPriority(),0.0,tol);
 
-            q.push(2,1.0);
+            q.push(2, 1.0);
             // CURRENT VALUES
             //-----------------
             // 0 => NONE
@@ -946,20 +945,20 @@ struct ChangeablePriorityQueueTest
             // 2 => 1.0
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),1);
+            shouldEqual(q.size(), 1);
             should(!q.contains(0));
             should(!q.contains(1));
-            should( q.contains(2));
+            should(q.contains(2));
             should(!q.contains(3));
             //shouldEqualTolerance(q.priority(0),3.0, tol);
             //shouldEqualTolerance(q.priority(1),0.0, tol);
-            shouldEqualTolerance(q.priority(2),1.0, tol);
+            shouldEqualTolerance(q.priority(2), 1.0, tol);
             //shouldEqualTolerance(q.priority(3),1.0, tol);
-            shouldEqual(q.top(),2);
-            shouldEqualTolerance(q.topPriority(),1.0,tol);
+            shouldEqual(q.top(), 2);
+            shouldEqualTolerance(q.topPriority(), 1.0, tol);
 
 
-            q.push(2,3.0);
+            q.push(2, 3.0);
             // CURRENT VALUES
             //-----------------
             // 0 => NONE
@@ -967,20 +966,20 @@ struct ChangeablePriorityQueueTest
             // 2 => 3.0
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),1);
+            shouldEqual(q.size(), 1);
             should(!q.contains(0));
             should(!q.contains(1));
-            should( q.contains(2));
+            should(q.contains(2));
             should(!q.contains(3));
             //shouldEqualTolerance(q.priority(0),3.0, tol);
             //shouldEqualTolerance(q.priority(1),0.0, tol);
-            shouldEqualTolerance(q.priority(2),3.0, tol);
+            shouldEqualTolerance(q.priority(2), 3.0, tol);
             //shouldEqualTolerance(q.priority(3),1.0, tol);
-            shouldEqual(q.top(),2);
-            shouldEqualTolerance(q.topPriority(),3.0,tol);
+            shouldEqual(q.top(), 2);
+            shouldEqualTolerance(q.topPriority(), 3.0, tol);
 
 
-            q.push(1,4.0);
+            q.push(1, 4.0);
             // CURRENT VALUES
             //-----------------
             // 0 => NONE
@@ -988,20 +987,20 @@ struct ChangeablePriorityQueueTest
             // 2 => 3.0
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),2);
+            shouldEqual(q.size(), 2);
             should(!q.contains(0));
-            should( q.contains(1));
-            should( q.contains(2));
+            should(q.contains(1));
+            should(q.contains(2));
             should(!q.contains(3));
             //shouldEqualTolerance(q.priority(0),3.0, tol);
-            shouldEqualTolerance(q.priority(1),4.0, tol);
-            shouldEqualTolerance(q.priority(2),3.0, tol);
+            shouldEqualTolerance(q.priority(1), 4.0, tol);
+            shouldEqualTolerance(q.priority(2), 3.0, tol);
             //shouldEqualTolerance(q.priority(3),1.0, tol);
-            shouldEqual(q.top(),1);
-            shouldEqualTolerance(q.topPriority(),4.0,tol);
+            shouldEqual(q.top(), 1);
+            shouldEqualTolerance(q.topPriority(), 4.0, tol);
 
 
-            q.push(0,2.0);
+            q.push(0, 2.0);
             // CURRENT VALUES
             //-----------------
             // 0 => 2.0
@@ -1009,17 +1008,17 @@ struct ChangeablePriorityQueueTest
             // 2 => 3.0
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),3);
-            should( q.contains(0));
-            should( q.contains(1));
-            should( q.contains(2));
+            shouldEqual(q.size(), 3);
+            should(q.contains(0));
+            should(q.contains(1));
+            should(q.contains(2));
             should(!q.contains(3));
-            shouldEqualTolerance(q.priority(0),2.0, tol);
-            shouldEqualTolerance(q.priority(1),4.0, tol);
-            shouldEqualTolerance(q.priority(2),3.0, tol);
+            shouldEqualTolerance(q.priority(0), 2.0, tol);
+            shouldEqualTolerance(q.priority(1), 4.0, tol);
+            shouldEqualTolerance(q.priority(2), 3.0, tol);
             //shouldEqualTolerance(q.priority(3),1.0, tol);
-            shouldEqual(q.top(),1);
-            shouldEqualTolerance(q.topPriority(),4.0,tol);
+            shouldEqual(q.top(), 1);
+            shouldEqualTolerance(q.topPriority(), 4.0, tol);
 
 
             q.deleteItem(2);
@@ -1030,17 +1029,17 @@ struct ChangeablePriorityQueueTest
             // 2 => NONE
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),2);
-            should( q.contains(0));
-            should( q.contains(1));
+            shouldEqual(q.size(), 2);
+            should(q.contains(0));
+            should(q.contains(1));
             should(!q.contains(2));
             should(!q.contains(3));
-            shouldEqualTolerance(q.priority(0),2.0, tol);
-            shouldEqualTolerance(q.priority(1),4.0, tol);
+            shouldEqualTolerance(q.priority(0), 2.0, tol);
+            shouldEqualTolerance(q.priority(1), 4.0, tol);
             //shouldEqualTolerance(q.priority(2),3.0, tol);
             //shouldEqualTolerance(q.priority(3),1.0, tol);
-            shouldEqual(q.top(),1);
-            shouldEqualTolerance(q.topPriority(),4.0,tol);
+            shouldEqual(q.top(), 1);
+            shouldEqualTolerance(q.topPriority(), 4.0, tol);
 
 
             q.deleteItem(1);
@@ -1051,20 +1050,18 @@ struct ChangeablePriorityQueueTest
             // 2 => NONE
             // 3 => NONE
             should(!q.empty());
-            shouldEqual(q.size(),1);
-            should( q.contains(0));
+            shouldEqual(q.size(), 1);
+            should(q.contains(0));
             should(!q.contains(1));
             should(!q.contains(2));
             should(!q.contains(3));
-            shouldEqualTolerance(q.priority(0),2.0, tol);
+            shouldEqualTolerance(q.priority(0), 2.0, tol);
             //shouldEqualTolerance(q.priority(1),4.0, tol);
             //shouldEqualTolerance(q.priority(2),3.0, tol);
             //shouldEqualTolerance(q.priority(3),1.0, tol);
-            shouldEqual(q.top(),0);
-            shouldEqualTolerance(q.topPriority(),2.0,tol);
-
+            shouldEqual(q.top(), 0);
+            shouldEqualTolerance(q.topPriority(), 2.0, tol);
         }
-
     }
 };
 
@@ -1087,11 +1084,15 @@ struct SizedIntTest
 
 struct MetaprogrammingTest
 {
-    struct TrueResult {};
-    struct FalseResult {};
+    struct TrueResult
+    {
+    };
+    struct FalseResult
+    {
+    };
 
     struct Derived
-    : public TrueResult
+        : public TrueResult
     {
         typedef TrueResult result_type;
         typedef TrueResult value_type;
@@ -1100,8 +1101,8 @@ struct MetaprogrammingTest
     void testInt()
     {
         shouldEqual(MetaInt<1>::value, 1);
-        shouldEqual((MetaMax<1,2>::value), 2);
-        shouldEqual((MetaMin<1,2>::value), 1);
+        shouldEqual((MetaMax<1, 2>::value), 2);
+        shouldEqual((MetaMin<1, 2>::value), 1);
     }
 
     void testLogic()
@@ -1139,7 +1140,7 @@ struct MetaprogrammingTest
         should(typeid(has_value_type<Derived>::type) == typeid(VigraTrueType));
         should(typeid(has_value_type<FalseResult>::type) == typeid(VigraFalseType));
 
-        should(typeid(IsIterator<std::reverse_iterator<int*> >::type) == typeid(VigraTrueType));
+        should(typeid(IsIterator<std::reverse_iterator<int*>>::type) == typeid(VigraTrueType));
         should(typeid(IsIterator<int*>::type) == typeid(VigraTrueType));
         should(typeid(IsIterator<int const*>::type) == typeid(VigraTrueType));
         should(typeid(IsIterator<FalseResult>::type) == typeid(VigraFalseType));
@@ -1158,15 +1159,16 @@ struct MetaprogrammingTest
 
     struct FinallyTester
     {
-        int & v_;
+        int& v_;
 
-        FinallyTester(int & v)
+        FinallyTester(int& v)
             : v_(v)
-        {}
+        {
+        }
 
         void sq() const
         {
-            const_cast<int &>(v_) = v_*v_;
+            const_cast<int&>(v_) = v_ * v_;
         }
     };
 
@@ -1184,19 +1186,23 @@ struct MetaprogrammingTest
         }
         shouldEqual(v, 9);
 
-        try {
+        try
+        {
             VIGRA_FINALLY(v = 2);
 
             throw std::runtime_error("");
 
             VIGRA_FINALLY(v = 3);
         }
-        catch(std::runtime_error &) {}
+        catch (std::runtime_error&)
+        {
+        }
         shouldEqual(v, 2);
     }
 };
 
-void stringTest()
+void
+stringTest()
 {
     std::string s;
     s = s << "Hallo " << 1 << " " << 2.0 << " " << false;
@@ -1215,7 +1221,7 @@ struct CompressionTest
     ArrayVector<char> data;
 
     CompressionTest()
-    : data(1000000)
+        : data(1000000)
     {
         linearSequence(data.begin(), data.end(), 0);
     }
@@ -1223,7 +1229,7 @@ struct CompressionTest
     void testZLIB()
     {
         ArrayVector<char> compressed;
-    #ifdef HasZLIB
+#ifdef HasZLIB
         compress(data.begin(), data.size(), compressed, ZLIB);
 
         shouldEqual(compressed.size(), 4206);
@@ -1234,20 +1240,20 @@ struct CompressionTest
                    decompressed.begin(), decompressed.size(), ZLIB);
 
         shouldEqualSequence(data.begin(), data.end(), decompressed.begin());
-    #else
+#else
         try
         {
             compress(data.begin(), data.size(), compressed, ZLIB);
             failTest("missing ZLIB did not throw exception.");
         }
-        catch(ContractViolation & c)
+        catch (ContractViolation& c)
         {
             std::string expected("\nPrecondition violation!\ncompress(): VIGRA was compiled without ZLIB compression.");
             std::string message(c.what());
-            should(0 == expected.compare(message.substr(0,expected.size())));
+            should(0 == expected.compare(message.substr(0, expected.size())));
         }
 
-    #endif
+#endif
     }
 
     void testLZ4()
@@ -1295,12 +1301,12 @@ struct MultiBlockingTest
         typedef Mb::BlockWithBorderIter BlockWithBorderIter;
         typedef Mb::BlockIter BlockIter;
         {
-            Shape shape(10,11), blockShape(4,5);
+            Shape shape(10, 11), blockShape(4, 5);
             Mb blocking(shape, blockShape);
-            shouldEqual(blocking.numBlocks(),9);
+            shouldEqual(blocking.numBlocks(), 9);
 
 
-            BlockWithBorderIter bwbIter  = blocking.blockWithBorderBegin(Shape(1));
+            BlockWithBorderIter bwbIter = blocking.blockWithBorderBegin(Shape(1));
             BlockIter bIter = blocking.blockBegin();
 
             // get the first block
@@ -1372,20 +1378,20 @@ struct MultiBlockingTest
         {
 
 
-            Shape shape(13,14), blockShape(4,5), roiBegin(1,2), roiEnd(9,11);
+            Shape shape(13, 14), blockShape(4, 5), roiBegin(1, 2), roiEnd(9, 11);
             Mb blocking(shape, blockShape, roiBegin, roiEnd);
-            shouldEqual(blocking.numBlocks(),4);
+            shouldEqual(blocking.numBlocks(), 4);
 
             BlockIter bIter = blocking.blockBegin();
 
-            shouldEqual(bIter[0].begin(), Shape(1,2));
-            shouldEqual(bIter[0].end(),   Shape(5,7));
-            shouldEqual(bIter[1].begin(), Shape(5,2));
-            shouldEqual(bIter[1].end(),   Shape(9,7));
-            shouldEqual(bIter[2].begin(), Shape(1,7));
-            shouldEqual(bIter[2].end(),   Shape(5,11));
-            shouldEqual(bIter[3].begin(), Shape(5,7));
-            shouldEqual(bIter[3].end(),   Shape(9,11));
+            shouldEqual(bIter[0].begin(), Shape(1, 2));
+            shouldEqual(bIter[0].end(), Shape(5, 7));
+            shouldEqual(bIter[1].begin(), Shape(5, 2));
+            shouldEqual(bIter[1].end(), Shape(9, 7));
+            shouldEqual(bIter[2].begin(), Shape(1, 7));
+            shouldEqual(bIter[2].end(), Shape(5, 11));
+            shouldEqual(bIter[3].begin(), Shape(5, 7));
+            shouldEqual(bIter[3].end(), Shape(9, 11));
         }
     }
 
@@ -1395,21 +1401,21 @@ struct MultiBlockingTest
         typedef Mb::Shape Shape;
         //typedef  Mb::Block Block;
         typedef Mb::BlockWithBorder BlockWithBorder;
-        typedef  Mb::BlockWithBorderIter BlockWithBorderIter;
+        typedef Mb::BlockWithBorderIter BlockWithBorderIter;
         {
-            Shape shape(13,14), blockShape(4,5), roiBegin(1,2), roiEnd(9,11), width(2,3);
+            Shape shape(13, 14), blockShape(4, 5), roiBegin(1, 2), roiEnd(9, 11), width(2, 3);
             Mb blocking(shape, blockShape, roiBegin, roiEnd);
-            shouldEqual(blocking.numBlocks(),4);
+            shouldEqual(blocking.numBlocks(), 4);
 
             {
                 std::vector<BlockWithBorder> bwbVec(blocking.blockWithBorderBegin(width),
                                                     blocking.blockWithBorderEnd(width));
-                shouldEqual(bwbVec.size(),4);
+                shouldEqual(bwbVec.size(), 4);
             }
 
-            BlockWithBorderIter begin  = blocking.blockWithBorderBegin(width);
-            BlockWithBorderIter end    = begin.getEndIterator();
-            shouldEqual(begin+4==end, true);
+            BlockWithBorderIter begin = blocking.blockWithBorderBegin(width);
+            BlockWithBorderIter end = begin.getEndIterator();
+            shouldEqual(begin + 4 == end, true);
         }
     }
 };
@@ -1448,26 +1454,28 @@ struct AnyTest
         shouldNot(bool(b));
         should(b.empty());
 
-        try {
+        try
+        {
             a.get<float>();
             failTest("no exception thrown");
         }
-        catch(std::exception & e)
+        catch (std::exception& e)
         {
             std::string expected("\nPrecondition violation!\nAny::get(): object is not an instance of the target type.");
             std::string message(e.what());
-            should(0 == expected.compare(message.substr(0,expected.size())));
+            should(0 == expected.compare(message.substr(0, expected.size())));
         }
 
-        try {
+        try
+        {
             b.get<int>();
             failTest("no exception thrown");
         }
-        catch(std::exception & e)
+        catch (std::exception& e)
         {
             std::string expected("\nPrecondition violation!\nAny::get(): object empty.");
             std::string message(e.what());
-            should(0 == expected.compare(message.substr(0,expected.size())));
+            should(0 == expected.compare(message.substr(0, expected.size())));
         }
 
         shouldEqual(a.read<unsigned int>(), 10u);
@@ -1480,15 +1488,16 @@ struct AnyTest
         a = 12.25;
         shouldEqual(a.get<double>(), 12.25);
 
-        try {
+        try
+        {
             a.get<int>();
             failTest("no exception thrown");
         }
-        catch(std::exception & e)
+        catch (std::exception& e)
         {
             std::string expected("\nPrecondition violation!\nAny::get(): object is not an instance of the target type.");
             std::string message(e.what());
-            should(0 == expected.compare(message.substr(0,expected.size())));
+            should(0 == expected.compare(message.substr(0, expected.size())));
         }
 
         shouldEqual(a.read<int>(), 12);
@@ -1503,54 +1512,56 @@ struct AnyTest
         Any s(P(new int(5))), t(s);
         shouldEqual(s.get<P>().get(), t.get<P>().get());
         shouldEqual(*(s.get<P>()), 5);
-        try {
+        try
+        {
             s.read<int>();
             failTest("no exception thrown");
         }
-        catch(std::exception & e)
+        catch (std::exception& e)
         {
             std::string expected("\nPrecondition violation!\nAny::read(): object is not covertible to the target type.");
             std::string message(e.what());
-            should(0 == expected.compare(message.substr(0,expected.size())));
+            should(0 == expected.compare(message.substr(0, expected.size())));
         }
     }
 };
 
 struct UtilitiesTestSuite
-: public vigra::test_suite
+    : public vigra::test_suite
 {
     UtilitiesTestSuite()
-    : vigra::test_suite("UtilitiesTestSuite")
+        : vigra::test_suite("UtilitiesTestSuite")
     {
-        add( testCase( &MultiBlockingTest::test2d));
-        add( testCase( &MultiBlockingTest::test2dWithRoi));
-        add( testCase( &MultiBlockingTest::test2dIterator));
+        add(testCase(&MultiBlockingTest::test2d));
+        add(testCase(&MultiBlockingTest::test2dWithRoi));
+        add(testCase(&MultiBlockingTest::test2dIterator));
 
-        add( testCase( &ArrayVectorTest::testAccessor));
-        add( testCase( &ArrayVectorTest::testBackInsertion));
-        add( testCase( &ArrayVectorTest::testBackInsertionUntilReallocation));
-        add( testCase( &ArrayVectorTest::testAmbiguousConstructor));
-        add( testCase( &BucketQueueTest::testDescending));
-        add( testCase( &BucketQueueTest::testAscending));
-        add( testCase( &BucketQueueTest::testDescendingMapped));
-        add( testCase( &BucketQueueTest::testAscendingMapped));
-        add( testCase( &ChangeablePriorityQueueTest::testMinQueue));
-        add( testCase( &ChangeablePriorityQueueTest::testMaxQueue));
-        add( testCase( &SizedIntTest::testSizedInt));
-        add( testCase( &MetaprogrammingTest::testInt));
-        add( testCase( &MetaprogrammingTest::testLogic));
-        add( testCase( &MetaprogrammingTest::testTypeTools));
-        add( testCase( &MetaprogrammingTest::testFinally));
-        add( testCase( &stringTest));
-        add( testCase( &CompressionTest::testZLIB));
-        add( testCase( &CompressionTest::testLZ4));
-        add( testCase( &CompressionTest::testNoCompression));
+        add(testCase(&ArrayVectorTest::testAccessor));
+        add(testCase(&ArrayVectorTest::testBackInsertion));
+        add(testCase(&ArrayVectorTest::testBackInsertionUntilReallocation));
+        add(testCase(&ArrayVectorTest::testAmbiguousConstructor));
+        add(testCase(&BucketQueueTest::testDescending));
+        add(testCase(&BucketQueueTest::testAscending));
+        add(testCase(&BucketQueueTest::testDescendingMapped));
+        add(testCase(&BucketQueueTest::testAscendingMapped));
+        add(testCase(&ChangeablePriorityQueueTest::testMinQueue));
+        add(testCase(&ChangeablePriorityQueueTest::testMaxQueue));
+        add(testCase(&SizedIntTest::testSizedInt));
+        add(testCase(&MetaprogrammingTest::testInt));
+        add(testCase(&MetaprogrammingTest::testLogic));
+        add(testCase(&MetaprogrammingTest::testTypeTools));
+        add(testCase(&MetaprogrammingTest::testFinally));
+        add(testCase(&stringTest));
+        add(testCase(&CompressionTest::testZLIB));
+        add(testCase(&CompressionTest::testLZ4));
+        add(testCase(&CompressionTest::testNoCompression));
 
-        add( testCase( &AnyTest::test));
+        add(testCase(&AnyTest::test));
     }
 };
 
-int main(int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
     UtilitiesTestSuite test;
 
@@ -1560,4 +1571,3 @@ int main(int argc, char ** argv)
 
     return (failed != 0);
 }
-

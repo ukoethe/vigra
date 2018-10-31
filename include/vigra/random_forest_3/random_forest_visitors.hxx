@@ -35,11 +35,11 @@
 #ifndef VIGRA_RF3_VISITORS_HXX
 #define VIGRA_RF3_VISITORS_HXX
 
-#include <vector>
-#include <memory>
 #include "../multi_array.hxx"
 #include "../multi_shape.hxx"
+#include <memory>
 #include <typeinfo>
+#include <vector>
 
 
 namespace vigra
@@ -68,17 +68,17 @@ namespace rf3
 class RFVisitorBase
 {
 public:
-
     RFVisitorBase()
-        :
-        active_(true)
-    {}
+        : active_(true)
+    {
+    }
 
     /**
      * @brief Do something before training starts.
      */
     void visit_before_training()
-    {}
+    {
+    }
 
     /**
      * @brief Do something after all trees have been learned.
@@ -86,47 +86,51 @@ public:
      * @param v vector with pointers to the visitor copies
      * @param rf the trained random forest
      */
-    template <typename VISITORS, typename RF, typename FEATURES, typename LABELS>
-    void visit_after_training(VISITORS &, RF &, const FEATURES &, const LABELS &)
-    {}
+    template<typename VISITORS, typename RF, typename FEATURES, typename LABELS>
+    void visit_after_training(VISITORS&, RF&, const FEATURES&, const LABELS&)
+    {
+    }
 
     /**
      * @brief Do something before a tree has been learned.
      * 
      * @param weights the actual instance weights (after bootstrap sampling and class weights)
      */
-    template <typename TREE, typename FEATURES, typename LABELS, typename WEIGHTS>
-    void visit_before_tree(TREE &, FEATURES &, LABELS &, WEIGHTS &)
-    {}
+    template<typename TREE, typename FEATURES, typename LABELS, typename WEIGHTS>
+    void visit_before_tree(TREE&, FEATURES&, LABELS&, WEIGHTS&)
+    {
+    }
 
     /**
      * @brief Do something after a tree has been learned.
      */
-    template <typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
-    void visit_after_tree(RF &,
-                          FEATURES &,
-                          LABELS &,
-                          WEIGHTS &)
-    {}
+    template<typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
+    void visit_after_tree(RF&,
+                          FEATURES&,
+                          LABELS&,
+                          WEIGHTS&)
+    {
+    }
 
     /**
      * @brief Do something after the split was made.
      */
-    template <typename TREE,
-              typename FEATURES,
-              typename LABELS,
-              typename WEIGHTS,
-              typename SCORER,
-              typename ITER>
-    void visit_after_split(TREE &,
-                           FEATURES &,
-                           LABELS &,
-                           WEIGHTS &,
-                           SCORER &,
+    template<typename TREE,
+             typename FEATURES,
+             typename LABELS,
+             typename WEIGHTS,
+             typename SCORER,
+             typename ITER>
+    void visit_after_split(TREE&,
+                           FEATURES&,
+                           LABELS&,
+                           WEIGHTS&,
+                           SCORER&,
                            ITER,
                            ITER,
                            ITER)
-    {}
+    {
+    }
 
     /**
      * @brief Return whether the visitor is active or not.
@@ -153,9 +157,7 @@ public:
     }
 
 private:
-
     bool active_;
-
 };
 
 /////////////////////////////////////////////
@@ -172,17 +174,16 @@ private:
 class OOBError : public RFVisitorBase
 {
 public:
-
     /**
      * Save whether a data point is in-bag (weight > 0) or out-of-bag (weight == 0).
      */
-    template <typename TREE, typename FEATURES, typename LABELS, typename WEIGHTS>
+    template<typename TREE, typename FEATURES, typename LABELS, typename WEIGHTS>
     void visit_before_tree(
-            TREE & /*tree*/,
-            FEATURES & /*features*/,
-            LABELS & /*labels*/,
-            WEIGHTS & weights
-    ){
+        TREE& /*tree*/,
+        FEATURES& /*features*/,
+        LABELS& /*labels*/,
+        WEIGHTS& weights)
+    {
         double const EPS = 1e-20;
         bool found = false;
 
@@ -204,13 +205,13 @@ public:
     /**
      * Compute the out-of-bag error.
      */
-    template <typename VISITORS, typename RF, typename FEATURES, typename LABELS>
+    template<typename VISITORS, typename RF, typename FEATURES, typename LABELS>
     void visit_after_training(
-            VISITORS & visitors,
-            RF & rf,
-            const FEATURES & features,
-            const LABELS & labels
-    ){
+        VISITORS& visitors,
+        RF& rf,
+        const FEATURES& features,
+        const LABELS& labels)
+    {
         // Check the input sizes.
         vigra_precondition(rf.num_trees() > 0, "OOBError::visit_after_training(): Number of trees must be greater than zero after training.");
         vigra_precondition(visitors.size() == rf.num_trees(), "OOBError::visit_after_training(): Number of visitors must be equal to number of trees.");
@@ -232,7 +233,7 @@ public:
                     tree_indices.push_back(k);
 
             // Get the prediction using the above trees.
-            auto const sub_features = features.subarray(Shape2(i, 0), Shape2(i+1, num_features));
+            auto const sub_features = features.subarray(Shape2(i, 0), Shape2(i + 1, num_features));
             rf.predict(sub_features, pred, 1, tree_indices);
             if (pred(0) != labels(i))
                 oob_err_ += 1.0;
@@ -257,27 +258,26 @@ private:
 class VariableImportance : public RFVisitorBase
 {
 public:
-
     VariableImportance(size_t repetition_count = 10)
-        :
-        repetition_count_(repetition_count)
-    {}
+        : repetition_count_(repetition_count)
+    {
+    }
 
     /**
      * Resize the variable importance array and store in-bag / out-of-bag information.
      */
-    template <typename TREE, typename FEATURES, typename LABELS, typename WEIGHTS>
+    template<typename TREE, typename FEATURES, typename LABELS, typename WEIGHTS>
     void visit_before_tree(
-            TREE & tree,
-            FEATURES & features,
-            LABELS & /*labels*/,
-            WEIGHTS & weights
-    ){
+        TREE& tree,
+        FEATURES& features,
+        LABELS& /*labels*/,
+        WEIGHTS& weights)
+    {
         // Resize the variable importance array.
         // The shape differs from the shape of the actual output, since the single trees
         // only store the impurity decrease without the permutation importances.
         auto const num_features = features.shape()[1];
-        variable_importance_.reshape(Shape2(num_features, tree.num_classes()+2), 0.0);
+        variable_importance_.reshape(Shape2(num_features, tree.num_classes() + 2), 0.0);
 
         // Save the in-bags.
         double const EPS = 1e-20;
@@ -298,17 +298,17 @@ public:
     /**
      * Calculate the impurity decrease based variable importance after every split.
      */
-    template <typename TREE,
-              typename FEATURES,
-              typename LABELS,
-              typename WEIGHTS,
-              typename SCORER,
-              typename ITER>
-    void visit_after_split(TREE & tree,
-                           FEATURES & /*features*/,
-                           LABELS & labels,
-                           WEIGHTS & weights,
-                           SCORER & scorer,
+    template<typename TREE,
+             typename FEATURES,
+             typename LABELS,
+             typename WEIGHTS,
+             typename SCORER,
+             typename ITER>
+    void visit_after_split(TREE& tree,
+                           FEATURES& /*features*/,
+                           LABELS& labels,
+                           WEIGHTS& weights,
+                           SCORER& scorer,
                            ITER begin,
                            ITER /*split*/,
                            ITER end)
@@ -317,22 +317,22 @@ public:
         typename SCORER::Functor functor;
         auto const region_impurity = functor.region_score(labels, weights, begin, end);
         auto const split_impurity = scorer.best_score_;
-        variable_importance_(scorer.best_dim_, tree.num_classes()+1) += region_impurity - split_impurity;
+        variable_importance_(scorer.best_dim_, tree.num_classes() + 1) += region_impurity - split_impurity;
     }
 
     /**
      * Compute the permutation importance.
      */
-    template <typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
-    void visit_after_tree(RF & rf,
-                          const FEATURES & features,
-                          const LABELS & labels,
-                          WEIGHTS & /*weights*/)
+    template<typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
+    void visit_after_tree(RF& rf,
+                          const FEATURES& features,
+                          const LABELS& labels,
+                          WEIGHTS& /*weights*/)
     {
         // Non-const types of features and labels.
         typedef typename std::remove_const<FEATURES>::type Features;
         typedef typename std::remove_const<LABELS>::type Labels;
-        
+
         typedef typename Features::value_type FeatureType;
 
         auto const num_features = features.shape()[1];
@@ -346,14 +346,14 @@ public:
         auto const num_oobs = feats.shape()[0];
 
         // Compute (standard and class-wise) out-of-bag success rate with the original sample.
-        MultiArray<1, double> oob_right(Shape1(rf.num_classes()+1), 0.0);
-        vigra::MultiArray<1,int> pred( (Shape1(num_oobs)) );
+        MultiArray<1, double> oob_right(Shape1(rf.num_classes() + 1), 0.0);
+        vigra::MultiArray<1, int> pred((Shape1(num_oobs)));
         rf.predict(feats, pred, 1);
         for (size_t i = 0; i < (size_t)labs.size(); ++i)
         {
             if (labs(i) == pred(i))
             {
-                oob_right(labs(i)) += 1.0; // per class
+                oob_right(labs(i)) += 1.0;          // per class
                 oob_right(rf.num_classes()) += 1.0; // total
             }
         }
@@ -362,15 +362,15 @@ public:
         UniformIntRandomFunctor<MersenneTwister> randint;
         for (size_t j = 0; j < (size_t)num_features; ++j)
         {
-            MultiArray<1, FeatureType> backup(( Shape1(num_oobs) ));
+            MultiArray<1, FeatureType> backup((Shape1(num_oobs)));
             backup = feats.template bind<1>(j);
-            MultiArray<2, double> perm_oob_right(Shape2(1, rf.num_classes()+1), 0.0);
+            MultiArray<2, double> perm_oob_right(Shape2(1, rf.num_classes() + 1), 0.0);
 
             for (size_t k = 0; k < repetition_count_; ++k)
             {
                 // Permute the current dimension.
-                for (int ii = num_oobs-1; ii >= 1; --ii)
-                    std::swap(feats(ii, j), feats(randint(ii+1), j));
+                for (int ii = num_oobs - 1; ii >= 1; --ii)
+                    std::swap(feats(ii, j), feats(randint(ii + 1), j));
 
                 // Get the out-of-bag success rate after permuting.
                 rf.predict(feats, pred, 1);
@@ -378,7 +378,7 @@ public:
                 {
                     if (labs(i) == pred(i))
                     {
-                        perm_oob_right(0, labs(i)) += 1.0; // per class
+                        perm_oob_right(0, labs(i)) += 1.0;          // per class
                         perm_oob_right(0, rf.num_classes()) += 1.0; // total
                     }
                 }
@@ -389,7 +389,7 @@ public:
             perm_oob_right.bind<0>(0) -= oob_right;
             perm_oob_right *= -1;
             perm_oob_right /= num_oobs;
-            variable_importance_.subarray(Shape2(j, 0), Shape2(j+1, rf.num_classes()+1)) += perm_oob_right;
+            variable_importance_.subarray(Shape2(j, 0), Shape2(j + 1, rf.num_classes() + 1)) += perm_oob_right;
 
             // Copy back the permuted dimension.
             feats.template bind<1>(j) = backup;
@@ -399,19 +399,20 @@ public:
     /**
      * Accumulate the variable importances from the single trees.
      */
-    template <typename VISITORS, typename RF, typename FEATURES, typename LABELS>
+    template<typename VISITORS, typename RF, typename FEATURES, typename LABELS>
     void visit_after_training(
-            VISITORS & visitors,
-            RF & rf,
-            const FEATURES & features,
-            const LABELS & /*labels*/
-    ){
+        VISITORS& visitors,
+        RF& rf,
+        const FEATURES& features,
+        const LABELS& /*labels*/
+    )
+    {
         vigra_precondition(rf.num_trees() > 0, "VariableImportance::visit_after_training(): Number of trees must be greater than zero after training.");
         vigra_precondition(visitors.size() == rf.num_trees(), "VariableImportance::visit_after_training(): Number of visitors must be equal to number of trees.");
 
         // Sum the variable importances from the single trees.
         auto const num_features = features.shape()[1];
-        variable_importance_.reshape(Shape2(num_features, rf.num_classes()+2), 0.0);
+        variable_importance_.reshape(Shape2(num_features, rf.num_classes() + 2), 0.0);
         for (auto vptr : visitors)
         {
             vigra_precondition(vptr->variable_importance_.shape() == variable_importance_.shape(),
@@ -457,17 +458,16 @@ public:
     size_t repetition_count_;
 
 private:
-
     /**
      * Copy the out-of-bag features and labels.
      */
-    template <typename F0, typename L0, typename F1, typename L1>
+    template<typename F0, typename L0, typename F1, typename L1>
     void copy_out_of_bags(
-            F0 const & features_in,
-            L0 const & labels_in,
-            F1 & features_out,
-            L1 & labels_out
-    ) const {
+        F0 const& features_in,
+        L0 const& labels_in,
+        F1& features_out,
+        L1& labels_out) const
+    {
         auto const num_instances = features_in.shape()[0];
         auto const num_features = features_in.shape()[1];
 
@@ -507,7 +507,8 @@ private:
  * @brief The default visitor node (= "do nothing").
  */
 class RFStopVisiting : public RFVisitorBase
-{};
+{
+};
 
 namespace detail
 {
@@ -515,40 +516,39 @@ namespace detail
 /**
  * @brief Container elements of the statically linked visitor list. Use the create_visitor() functions to create visitors up to size 10.
  */
-template <typename VISITOR, typename NEXT = RFStopVisiting, bool CPY = false>
+template<typename VISITOR, typename NEXT = RFStopVisiting, bool CPY = false>
 class RFVisitorNode
 {
 public:
-
     typedef VISITOR Visitor;
     typedef NEXT Next;
 
-    typename std::conditional<CPY, Visitor, Visitor &>::type visitor_;
+    typename std::conditional<CPY, Visitor, Visitor&>::type visitor_;
     Next next_;
-    
-    RFVisitorNode(Visitor & visitor, Next next)
-        :
-        visitor_(visitor),
-        next_(next)
-    {}
 
-    explicit RFVisitorNode(Visitor & visitor)
-        :
-        visitor_(visitor),
-        next_(RFStopVisiting())
-    {}
+    RFVisitorNode(Visitor& visitor, Next next)
+        : visitor_(visitor),
+          next_(next)
+    {
+    }
 
-    explicit RFVisitorNode(RFVisitorNode<Visitor, Next, !CPY> & other)
-        :
-        visitor_(other.visitor_),
-        next_(other.next_)
-    {}
+    explicit RFVisitorNode(Visitor& visitor)
+        : visitor_(visitor),
+          next_(RFStopVisiting())
+    {
+    }
 
-    explicit RFVisitorNode(RFVisitorNode<Visitor, Next, !CPY> const & other)
-        :
-        visitor_(other.visitor_),
-        next_(other.next_)
-    {}
+    explicit RFVisitorNode(RFVisitorNode<Visitor, Next, !CPY>& other)
+        : visitor_(other.visitor_),
+          next_(other.next_)
+    {
+    }
+
+    explicit RFVisitorNode(RFVisitorNode<Visitor, Next, !CPY> const& other)
+        : visitor_(other.visitor_),
+          next_(other.next_)
+    {
+    }
 
     void visit_before_training()
     {
@@ -557,13 +557,13 @@ public:
         next_.visit_before_training();
     }
 
-    template <typename VISITORS, typename RF, typename FEATURES, typename LABELS>
-    void visit_after_training(VISITORS & v, RF & rf, const FEATURES & features, const LABELS & labels)
+    template<typename VISITORS, typename RF, typename FEATURES, typename LABELS>
+    void visit_after_training(VISITORS& v, RF& rf, const FEATURES& features, const LABELS& labels)
     {
         typedef typename VISITORS::value_type VisitorNodeType;
         typedef typename VisitorNodeType::Visitor VisitorType;
         typedef typename VisitorNodeType::Next NextType;
-        
+
         // We want to call the visit_after_training function of the concrete visitor (e. g. OOBError).
         // Since v is a vector of visitor nodes (and not a vector of concrete visitors), we have to
         // extract the concrete visitors.
@@ -571,50 +571,50 @@ public:
         if (visitor_.is_active())
         {
             std::vector<VisitorType*> visitors;
-            for (auto & x : v)
+            for (auto& x : v)
                 visitors.push_back(&x.visitor_);
             visitor_.visit_after_training(visitors, rf, features, labels);
         }
 
         // Remove the concrete visitors that we just visited.
         std::vector<NextType> nexts;
-        for (auto & x : v)
+        for (auto& x : v)
             nexts.push_back(x.next_);
 
         // Call the next visitor node in the chain.
         next_.visit_after_training(nexts, rf, features, labels);
     }
 
-    template <typename TREE, typename FEATURES, typename LABELS, typename WEIGHTS>
-    void visit_before_tree(TREE & tree, FEATURES & features, LABELS & labels, WEIGHTS & weights)
+    template<typename TREE, typename FEATURES, typename LABELS, typename WEIGHTS>
+    void visit_before_tree(TREE& tree, FEATURES& features, LABELS& labels, WEIGHTS& weights)
     {
         if (visitor_.is_active())
             visitor_.visit_before_tree(tree, features, labels, weights);
         next_.visit_before_tree(tree, features, labels, weights);
     }
 
-    template <typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
-    void visit_after_tree(RF & rf,
-                          FEATURES & features,
-                          LABELS & labels,
-                          WEIGHTS & weights)
+    template<typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
+    void visit_after_tree(RF& rf,
+                          FEATURES& features,
+                          LABELS& labels,
+                          WEIGHTS& weights)
     {
         if (visitor_.is_active())
             visitor_.visit_after_tree(rf, features, labels, weights);
         next_.visit_after_tree(rf, features, labels, weights);
     }
 
-    template <typename TREE,
-              typename FEATURES,
-              typename LABELS,
-              typename WEIGHTS,
-              typename SCORER,
-              typename ITER>
-    void visit_after_split(TREE & tree,
-                           FEATURES & features,
-                           LABELS & labels,
-                           WEIGHTS & weights,
-                           SCORER & scorer,
+    template<typename TREE,
+             typename FEATURES,
+             typename LABELS,
+             typename WEIGHTS,
+             typename SCORER,
+             typename ITER>
+    void visit_after_split(TREE& tree,
+                           FEATURES& features,
+                           LABELS& labels,
+                           WEIGHTS& weights,
+                           SCORER& scorer,
                            ITER begin,
                            ITER split,
                            ITER end)
@@ -623,7 +623,6 @@ public:
             visitor_.visit_after_split(tree, features, labels, weights, scorer, begin, split, end);
         next_.visit_after_split(tree, features, labels, weights, scorer, begin, split, end);
     }
-
 };
 
 } // namespace detail
@@ -631,13 +630,13 @@ public:
 /**
  * The VisitorCopy can be used to set the copy argument of the given visitor chain to true.
  */
-template <typename VISITOR>
+template<typename VISITOR>
 struct VisitorCopy
 {
     typedef detail::RFVisitorNode<typename VISITOR::Visitor, typename VisitorCopy<typename VISITOR::Next>::type, true> type;
 };
 
-template <>
+template<>
 struct VisitorCopy<RFStopVisiting>
 {
     typedef RFStopVisiting type;
@@ -652,7 +651,7 @@ struct VisitorCopy<RFStopVisiting>
 
 template<typename A>
 detail::RFVisitorNode<A>
-create_visitor(A & a)
+create_visitor(A& a)
 {
     typedef detail::RFVisitorNode<A> _0_t;
     _0_t _0(a);
@@ -660,8 +659,8 @@ create_visitor(A & a)
 }
 
 template<typename A, typename B>
-detail::RFVisitorNode<A, detail::RFVisitorNode<B> >
-create_visitor(A & a, B & b)
+detail::RFVisitorNode<A, detail::RFVisitorNode<B>>
+create_visitor(A& a, B& b)
 {
     typedef detail::RFVisitorNode<B> _1_t;
     _1_t _1(b);
@@ -671,8 +670,8 @@ create_visitor(A & a, B & b)
 }
 
 template<typename A, typename B, typename C>
-detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C> > >
-create_visitor(A & a, B & b, C & c)
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C>>>
+create_visitor(A& a, B& b, C& c)
 {
     typedef detail::RFVisitorNode<C> _2_t;
     _2_t _2(c);
@@ -684,9 +683,9 @@ create_visitor(A & a, B & b, C & c)
 }
 
 template<typename A, typename B, typename C, typename D>
-detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
-    detail::RFVisitorNode<D> > > >
-create_visitor(A & a, B & b, C & c, D & d)
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C,
+                                                                        detail::RFVisitorNode<D>>>>
+create_visitor(A& a, B& b, C& c, D& d)
 {
     typedef detail::RFVisitorNode<D> _3_t;
     _3_t _3(d);
@@ -700,9 +699,9 @@ create_visitor(A & a, B & b, C & c, D & d)
 }
 
 template<typename A, typename B, typename C, typename D, typename E>
-detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
-    detail::RFVisitorNode<D, detail::RFVisitorNode<E> > > > >
-create_visitor(A & a, B & b, C & c, D & d, E & e)
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C,
+                                                                        detail::RFVisitorNode<D, detail::RFVisitorNode<E>>>>>
+create_visitor(A& a, B& b, C& c, D& d, E& e)
 {
     typedef detail::RFVisitorNode<E> _4_t;
     _4_t _4(e);
@@ -719,9 +718,9 @@ create_visitor(A & a, B & b, C & c, D & d, E & e)
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F>
-detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
-    detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F> > > > > >
-create_visitor(A & a, B & b, C & c, D & d, E & e, F & f)
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C,
+                                                                        detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F>>>>>>
+create_visitor(A& a, B& b, C& c, D& d, E& e, F& f)
 {
     typedef detail::RFVisitorNode<F> _5_t;
     _5_t _5(f);
@@ -740,10 +739,10 @@ create_visitor(A & a, B & b, C & c, D & d, E & e, F & f)
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G>
-detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
-    detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F,
-    detail::RFVisitorNode<G> > > > > > >
-create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g)
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C,
+                                                                        detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F,
+                                                                                                                                                detail::RFVisitorNode<G>>>>>>>
+create_visitor(A& a, B& b, C& c, D& d, E& e, F& f, G& g)
 {
     typedef detail::RFVisitorNode<G> _6_t;
     _6_t _6(g);
@@ -764,10 +763,10 @@ create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g)
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H>
-detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
-    detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F,
-    detail::RFVisitorNode<G, detail::RFVisitorNode<H> > > > > > > >
-create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g, H & h)
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C,
+                                                                        detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F,
+                                                                                                                                                detail::RFVisitorNode<G, detail::RFVisitorNode<H>>>>>>>>
+create_visitor(A& a, B& b, C& c, D& d, E& e, F& f, G& g, H& h)
 {
     typedef detail::RFVisitorNode<H> _7_t;
     _7_t _7(h);
@@ -790,10 +789,10 @@ create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g, H & h)
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I>
-detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
-    detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F,
-    detail::RFVisitorNode<G, detail::RFVisitorNode<H, detail::RFVisitorNode<I> > > > > > > > >
-create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g, H & h, I & i)
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C,
+                                                                        detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F,
+                                                                                                                                                detail::RFVisitorNode<G, detail::RFVisitorNode<H, detail::RFVisitorNode<I>>>>>>>>>
+create_visitor(A& a, B& b, C& c, D& d, E& e, F& f, G& g, H& h, I& i)
 {
     typedef detail::RFVisitorNode<I> _8_t;
     _8_t _8(i);
@@ -818,12 +817,12 @@ create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g, H & h, I & i)
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J>
-detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
-    detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F,
-    detail::RFVisitorNode<G, detail::RFVisitorNode<H, detail::RFVisitorNode<I,
-    detail::RFVisitorNode<J> > > > > > > > > >
-create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g, H & h, I & i,
-               J & j)
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C,
+                                                                        detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F,
+                                                                                                                                                detail::RFVisitorNode<G, detail::RFVisitorNode<H, detail::RFVisitorNode<I,
+                                                                                                                                                                                                                        detail::RFVisitorNode<J>>>>>>>>>>
+create_visitor(A& a, B& b, C& c, D& d, E& e, F& f, G& g, H& h, I& i,
+               J& j)
 {
     typedef detail::RFVisitorNode<J> _9_t;
     _9_t _9(j);

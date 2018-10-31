@@ -37,34 +37,53 @@
 #ifndef VIGRA_FUNCTORTRAITS_HXX
 #define VIGRA_FUNCTORTRAITS_HXX
 
-#include <functional>
 #include "metaprogramming.hxx"
+#include <functional>
 
-namespace vigra {
+namespace vigra
+{
 
-struct InitializerTag {};
-struct UnaryFunctorTag {};
-struct BinaryFunctorTag {};
-struct TernaryFunctorTag {};
-struct UnaryAnalyserTag {};
-struct BinaryAnalyserTag {};
-struct TernaryAnalyserTag {};
+struct InitializerTag
+{
+};
+struct UnaryFunctorTag
+{
+};
+struct BinaryFunctorTag
+{
+};
+struct TernaryFunctorTag
+{
+};
+struct UnaryAnalyserTag
+{
+};
+struct BinaryAnalyserTag
+{
+};
+struct TernaryAnalyserTag
+{
+};
 
 struct UnaryReduceFunctorTag
-: public InitializerTag, public UnaryAnalyserTag
-{};
+    : public InitializerTag,
+      public UnaryAnalyserTag
+{
+};
 
 struct BinaryReduceFunctorTag
-: public InitializerTag, public BinaryAnalyserTag
-{};
+    : public InitializerTag,
+      public BinaryAnalyserTag
+{
+};
 
 typedef UnaryFunctorTag UnaryExpandFunctorTag;
 typedef BinaryFunctorTag BinaryExpandFunctorTag;
 
-template <class T>
+template<class T>
 class FunctorTraitsBase
 {
-  public:
+public:
     typedef T type;
 
     typedef typename IsDerivedFrom<T, InitializerTag>::result isInitializer;
@@ -153,28 +172,29 @@ class FunctorTraitsBase
     <b>\#include</b> \<vigra/functortraits.hxx\> <br/>
     Namespace: vigra
 */
-template <class T>
+template<class T>
 class FunctorTraits
-: public FunctorTraitsBase<T>
-{};
+    : public FunctorTraitsBase<T>
+{
+};
 
 #define VIGRA_DEFINE_STL_FUNCTOR(name, unary, binary) \
-template <class T> \
-class FunctorTraits<name<T> > \
-{ \
-  public: \
-    typedef T type; \
-     \
-    typedef VigraFalseType isInitializer; \
-     \
-    typedef unary          isUnaryFunctor; \
-    typedef binary         isBinaryFunctor; \
-    typedef VigraFalseType isTernaryFunctor; \
-     \
-    typedef VigraFalseType isUnaryAnalyser; \
-    typedef VigraFalseType isBinaryAnalyser; \
-    typedef VigraFalseType isTernaryAnalyser; \
-};
+    template<class T>                                 \
+    class FunctorTraits<name<T>>                      \
+    {                                                 \
+    public:                                           \
+        typedef T type;                               \
+                                                      \
+        typedef VigraFalseType isInitializer;         \
+                                                      \
+        typedef unary isUnaryFunctor;                 \
+        typedef binary isBinaryFunctor;               \
+        typedef VigraFalseType isTernaryFunctor;      \
+                                                      \
+        typedef VigraFalseType isUnaryAnalyser;       \
+        typedef VigraFalseType isBinaryAnalyser;      \
+        typedef VigraFalseType isTernaryAnalyser;     \
+    };
 
 // ???TODO: these should also be specialized for the ptr_fun and mem_fun_ptr wrappers
 VIGRA_DEFINE_STL_FUNCTOR(std::plus, VigraFalseType, VigraTrueType)
@@ -197,13 +217,13 @@ VIGRA_DEFINE_STL_FUNCTOR(std::logical_not, VigraTrueType, VigraFalseType)
 VIGRA_DEFINE_STL_FUNCTOR(std::unary_negate, VigraTrueType, VigraFalseType)
 #undef VIGRA_DEFINE_STL_FUNCTOR
 
-template <class R>
+template<class R>
 class FunctorTraits<R (*)()>
 {
-  public:
+public:
     typedef R (*type)();
 
-    typedef VigraTrueType  isInitializer;
+    typedef VigraTrueType isInitializer;
     typedef VigraFalseType isUnaryFunctor;
     typedef VigraFalseType isBinaryFunctor;
     typedef VigraFalseType isTernaryFunctor;
@@ -212,14 +232,14 @@ class FunctorTraits<R (*)()>
     typedef VigraFalseType isTernaryAnalyser;
 };
 
-template <class R, class T>
+template<class R, class T>
 class FunctorTraits<R (*)(T)>
 {
-  public:
+public:
     typedef R (*type)(T);
 
     typedef VigraFalseType isInitializer;
-    typedef VigraTrueType  isUnaryFunctor;
+    typedef VigraTrueType isUnaryFunctor;
     typedef VigraFalseType isBinaryFunctor;
     typedef VigraFalseType isTernaryFunctor;
     typedef VigraFalseType isUnaryAnalyser;
@@ -227,31 +247,31 @@ class FunctorTraits<R (*)(T)>
     typedef VigraFalseType isTernaryAnalyser;
 };
 
-template <class R, class T1, class T2>
+template<class R, class T1, class T2>
 class FunctorTraits<R (*)(T1, T2)>
 {
-  public:
+public:
     typedef R (*type)(T1, T2);
 
     typedef VigraFalseType isInitializer;
     typedef VigraFalseType isUnaryFunctor;
-    typedef VigraTrueType  isBinaryFunctor;
+    typedef VigraTrueType isBinaryFunctor;
     typedef VigraFalseType isTernaryFunctor;
     typedef VigraFalseType isUnaryAnalyser;
     typedef VigraFalseType isBinaryAnalyser;
     typedef VigraFalseType isTernaryAnalyser;
 };
 
-template <class R, class T1, class T2, class T3>
+template<class R, class T1, class T2, class T3>
 class FunctorTraits<R (*)(T1, T2, T3)>
 {
-  public:
+public:
     typedef R (*type)(T1, T2, T3);
 
     typedef VigraFalseType isInitializer;
     typedef VigraFalseType isUnaryFunctor;
     typedef VigraFalseType isBinaryFunctor;
-    typedef VigraTrueType  isTernaryFunctor;
+    typedef VigraTrueType isTernaryFunctor;
     typedef VigraFalseType isUnaryAnalyser;
     typedef VigraFalseType isBinaryAnalyser;
     typedef VigraFalseType isTernaryAnalyser;

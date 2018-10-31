@@ -38,13 +38,14 @@
 
 #include "mathutil.hxx"
 #include "matrix.hxx"
-#include "tinyvector.hxx"
-#include "splineimageview.hxx"
 #include "multi_shape.hxx"
+#include "splineimageview.hxx"
+#include "tinyvector.hxx"
 
 #include <cmath>
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup GeometricTransformations
 */
@@ -60,12 +61,12 @@ namespace vigra {
 
     For use with \ref affineWarpImage().
 */
-inline
-linalg::TemporaryMatrix<double> translationMatrix2D(TinyVector<double, 2> const & shift)
+inline linalg::TemporaryMatrix<double>
+translationMatrix2D(TinyVector<double, 2> const& shift)
 {
     linalg::TemporaryMatrix<double> ret(identityMatrix<double>(3));
-    ret(0,2) = shift[0];
-    ret(1,2) = shift[1];
+    ret(0, 2) = shift[0];
+    ret(1, 2) = shift[1];
     return ret;
 }
 
@@ -73,12 +74,12 @@ linalg::TemporaryMatrix<double> translationMatrix2D(TinyVector<double, 2> const 
 
     For use with \ref affineWarpImage().
 */
-inline
-linalg::TemporaryMatrix<double> scalingMatrix2D(double scalingFactor)
+inline linalg::TemporaryMatrix<double>
+scalingMatrix2D(double scalingFactor)
 {
     linalg::TemporaryMatrix<double> ret(identityMatrix<double>(3));
-    ret(0,0) = scalingFactor;
-    ret(1,1) = scalingFactor;
+    ret(0, 0) = scalingFactor;
+    ret(1, 1) = scalingFactor;
     return ret;
 }
 
@@ -86,12 +87,12 @@ linalg::TemporaryMatrix<double> scalingMatrix2D(double scalingFactor)
 
     For use with \ref affineWarpImage().
 */
-inline
-linalg::TemporaryMatrix<double> scalingMatrix2D(double sx, double sy)
+inline linalg::TemporaryMatrix<double>
+scalingMatrix2D(double sx, double sy)
 {
     linalg::TemporaryMatrix<double> ret(identityMatrix<double>(3));
-    ret(0,0) = sx;
-    ret(1,1) = sy;
+    ret(0, 0) = sx;
+    ret(1, 1) = sy;
     return ret;
 }
 
@@ -99,12 +100,12 @@ linalg::TemporaryMatrix<double> scalingMatrix2D(double sx, double sy)
 
     For use with \ref affineWarpImage().
 */
-inline
-linalg::TemporaryMatrix<double> shearMatrix2D(double s01, double s10)
+inline linalg::TemporaryMatrix<double>
+shearMatrix2D(double s01, double s10)
 {
     linalg::TemporaryMatrix<double> ret(identityMatrix<double>(3));
-    ret(0,1) = s01;
-    ret(1,0) = s10;
+    ret(0, 1) = s01;
+    ret(1, 0) = s10;
     return ret;
 }
 
@@ -112,16 +113,16 @@ linalg::TemporaryMatrix<double> shearMatrix2D(double s01, double s10)
 
     For use with \ref affineWarpImage(). Angle must be in radians.
 */
-inline
-linalg::TemporaryMatrix<double> rotationMatrix2DRadians(double angle)
+inline linalg::TemporaryMatrix<double>
+rotationMatrix2DRadians(double angle)
 {
     linalg::TemporaryMatrix<double> ret(identityMatrix<double>(3));
     double s = std::sin(angle);
     double c = std::cos(angle);
-    ret(0,0) = c;
-    ret(1,1) = c;
-    ret(0,1) = -s;
-    ret(1,0) = s;
+    ret(0, 0) = c;
+    ret(1, 1) = c;
+    ret(0, 1) = -s;
+    ret(1, 0) = s;
     return ret;
 }
 
@@ -129,18 +130,18 @@ linalg::TemporaryMatrix<double> rotationMatrix2DRadians(double angle)
 
     For use with \ref affineWarpImage(). Angle must be in degrees.
 */
-inline
-linalg::TemporaryMatrix<double> rotationMatrix2DDegrees(double angle)
+inline linalg::TemporaryMatrix<double>
+rotationMatrix2DDegrees(double angle)
 {
-    return rotationMatrix2DRadians(angle*M_PI/180.0);
+    return rotationMatrix2DRadians(angle * M_PI / 180.0);
 }
 
 /** \brief Create homogeneous matrix representing a 2D rotation about the given point.
 
     For use with \ref affineWarpImage(). Angle must be in radians.
 */
-inline
-linalg::TemporaryMatrix<double> rotationMatrix2DRadians(double angle, TinyVector<double, 2> const & center)
+inline linalg::TemporaryMatrix<double>
+rotationMatrix2DRadians(double angle, TinyVector<double, 2> const& center)
 {
     return translationMatrix2D(center) * rotationMatrix2DRadians(angle) * translationMatrix2D(-center);
 }
@@ -149,10 +150,10 @@ linalg::TemporaryMatrix<double> rotationMatrix2DRadians(double angle, TinyVector
 
     For use with \ref affineWarpImage(). Angle must be in degrees.
 */
-inline
-linalg::TemporaryMatrix<double> rotationMatrix2DDegrees(double angle, TinyVector<double, 2> const & center)
+inline linalg::TemporaryMatrix<double>
+rotationMatrix2DDegrees(double angle, TinyVector<double, 2> const& center)
 {
-    return rotationMatrix2DRadians(angle*M_PI/180.0, center);
+    return rotationMatrix2DRadians(angle * M_PI / 180.0, center);
 }
 
 /********************************************************/
@@ -162,82 +163,83 @@ linalg::TemporaryMatrix<double> rotationMatrix2DDegrees(double angle, TinyVector
 /********************************************************/
 
 // documentation is in basicgeometry.hxx
-template <int ORDER, class T,
-          class DestIterator, class DestAccessor>
-void rotateImage(SplineImageView<ORDER, T> const & src,
-                 DestIterator id, DestAccessor dest,
-                 double angleInDegree, TinyVector<double, 2> const & center)
+template<int ORDER, class T,
+         class DestIterator, class DestAccessor>
+void
+rotateImage(SplineImageView<ORDER, T> const& src,
+            DestIterator id, DestAccessor dest,
+            double angleInDegree, TinyVector<double, 2> const& center)
 {
     int w = src.width();
     int h = src.height();
 
-    double angle = angleInDegree/180.0;
+    double angle = angleInDegree / 180.0;
     double c = cos_pi(angle); // avoid round-off errors for simple rotations
     double s = sin_pi(angle);
 
-    for(int y = 0; y < h; ++y, ++id.y)
+    for (int y = 0; y < h; ++y, ++id.y)
     {
         typename DestIterator::row_iterator rd = id.rowIterator();
-        double sy =  (y - center[1])*c - center[0]*s + center[1];
-        double sx = -(y - center[1])*s - center[0]*c + center[0];
-        for(int x=0; x < w; ++x, ++rd, sx += c, sy += s)
+        double sy = (y - center[1]) * c - center[0] * s + center[1];
+        double sx = -(y - center[1]) * s - center[0] * c + center[0];
+        for (int x = 0; x < w; ++x, ++rd, sx += c, sy += s)
         {
-            if(src.isInside(sx, sy))
+            if (src.isInside(sx, sy))
                 dest.set(src(sx, sy), rd);
         }
     }
 }
 
-template <int ORDER, class T,
-          class DestIterator, class DestAccessor>
+template<int ORDER, class T,
+         class DestIterator, class DestAccessor>
 inline void
-rotateImage(SplineImageView<ORDER, T> const & src,
+rotateImage(SplineImageView<ORDER, T> const& src,
             pair<DestIterator, DestAccessor> dest,
-            double angleInDegree, TinyVector<double, 2> const & center)
+            double angleInDegree, TinyVector<double, 2> const& center)
 {
     rotateImage(src, dest.first, dest.second, angleInDegree, center);
 }
 
-template <int ORDER, class T,
-          class DestIterator, class DestAccessor>
+template<int ORDER, class T,
+         class DestIterator, class DestAccessor>
 inline void
-rotateImage(SplineImageView<ORDER, T> const & src,
+rotateImage(SplineImageView<ORDER, T> const& src,
             DestIterator id, DestAccessor dest,
             double angleInDegree)
 {
-    TinyVector<double, 2> center((src.width()-1.0) / 2.0, (src.height()-1.0) / 2.0);
+    TinyVector<double, 2> center((src.width() - 1.0) / 2.0, (src.height() - 1.0) / 2.0);
     rotateImage(src, id, dest, angleInDegree, center);
 }
 
-template <int ORDER, class T,
-          class DestIterator, class DestAccessor>
+template<int ORDER, class T,
+         class DestIterator, class DestAccessor>
 inline void
-rotateImage(SplineImageView<ORDER, T> const & src,
+rotateImage(SplineImageView<ORDER, T> const& src,
             pair<DestIterator, DestAccessor> dest,
             double angleInDegree)
 {
-    TinyVector<double, 2> center((src.width()-1.0) / 2.0, (src.height()-1.0) / 2.0);
+    TinyVector<double, 2> center((src.width() - 1.0) / 2.0, (src.height() - 1.0) / 2.0);
     rotateImage(src, dest.first, dest.second, angleInDegree, center);
 }
 
-template <int ORDER, class T,
-          class T2, class S2>
+template<int ORDER, class T,
+         class T2, class S2>
 inline void
-rotateImage(SplineImageView<ORDER, T> const & src,
+rotateImage(SplineImageView<ORDER, T> const& src,
             MultiArrayView<2, T2, S2> dest,
-            double angleInDegree, TinyVector<double, 2> const & center)
+            double angleInDegree, TinyVector<double, 2> const& center)
 {
     rotateImage(src, destImage(dest), angleInDegree, center);
 }
 
-template <int ORDER, class T,
-          class T2, class S2>
+template<int ORDER, class T,
+         class T2, class S2>
 inline void
-rotateImage(SplineImageView<ORDER, T> const & src,
+rotateImage(SplineImageView<ORDER, T> const& src,
             MultiArrayView<2, T2, S2> dest,
             double angleInDegree)
 {
-    TinyVector<double, 2> center((src.width()-1.0) / 2.0, (src.height()-1.0) / 2.0);
+    TinyVector<double, 2> center((src.width() - 1.0) / 2.0, (src.height() - 1.0) / 2.0);
     rotateImage(src, destImage(dest), angleInDegree, center);
 }
 
@@ -360,54 +362,54 @@ rotateImage(SplineImageView<ORDER, T> const & src,
     <b>See also:</b> Functions to specify affine transformation: \ref translationMatrix2D(), \ref scalingMatrix2D(),
                     \ref shearMatrix2D(), \ref rotationMatrix2DRadians(), \ref rotationMatrix2DDegrees()
 */
-doxygen_overloaded_function(template <...> void affineWarpImage)
+doxygen_overloaded_function(template<...> void affineWarpImage)
 
-template <int ORDER, class T,
-          class DestIterator, class DestAccessor,
-          class C>
-void affineWarpImage(SplineImageView<ORDER, T> const & src,
-                     DestIterator dul, DestIterator dlr, DestAccessor dest,
-                     MultiArrayView<2, double, C> const & affineMatrix)
+    template<int ORDER, class T,
+             class DestIterator, class DestAccessor,
+             class C>
+    void affineWarpImage(SplineImageView<ORDER, T> const& src,
+                         DestIterator dul, DestIterator dlr, DestAccessor dest,
+                         MultiArrayView<2, double, C> const& affineMatrix)
 {
     vigra_precondition(rowCount(affineMatrix) == 3 && columnCount(affineMatrix) == 3 &&
-                       affineMatrix(2,0) == 0.0 && affineMatrix(2,1) == 0.0 && affineMatrix(2,2) == 1.0,
-        "affineWarpImage(): matrix doesn't represent an affine transformation with homogeneous 2D coordinates.");
+                           affineMatrix(2, 0) == 0.0 && affineMatrix(2, 1) == 0.0 && affineMatrix(2, 2) == 1.0,
+                       "affineWarpImage(): matrix doesn't represent an affine transformation with homogeneous 2D coordinates.");
 
 
     double w = dlr.x - dul.x;
     double h = dlr.y - dul.y;
 
-    for(double y = 0.0; y < h; ++y, ++dul.y)
+    for (double y = 0.0; y < h; ++y, ++dul.y)
     {
         typename DestIterator::row_iterator rd = dul.rowIterator();
-        for(double x=0.0; x < w; ++x, ++rd)
+        for (double x = 0.0; x < w; ++x, ++rd)
         {
-            double sx = x*affineMatrix(0,0) + y*affineMatrix(0,1) + affineMatrix(0,2);
-            double sy = x*affineMatrix(1,0) + y*affineMatrix(1,1) + affineMatrix(1,2);
-            if(src.isInside(sx, sy))
+            double sx = x * affineMatrix(0, 0) + y * affineMatrix(0, 1) + affineMatrix(0, 2);
+            double sy = x * affineMatrix(1, 0) + y * affineMatrix(1, 1) + affineMatrix(1, 2);
+            if (src.isInside(sx, sy))
                 dest.set(src(sx, sy), rd);
         }
     }
 }
 
-template <int ORDER, class T,
-          class DestIterator, class DestAccessor,
-          class C>
+template<int ORDER, class T,
+         class DestIterator, class DestAccessor,
+         class C>
 inline void
-affineWarpImage(SplineImageView<ORDER, T> const & src,
+affineWarpImage(SplineImageView<ORDER, T> const& src,
                 triple<DestIterator, DestIterator, DestAccessor> dest,
-                MultiArrayView<2, double, C> const & affineMatrix)
+                MultiArrayView<2, double, C> const& affineMatrix)
 {
     affineWarpImage(src, dest.first, dest.second, dest.third, affineMatrix);
 }
 
-template <int ORDER, class T,
-          class T2, class S2,
-          class C>
+template<int ORDER, class T,
+         class T2, class S2,
+         class C>
 inline void
-affineWarpImage(SplineImageView<ORDER, T> const & src,
+affineWarpImage(SplineImageView<ORDER, T> const& src,
                 MultiArrayView<2, T2, S2> dest,
-                MultiArrayView<2, double, C> const & affineMatrix)
+                MultiArrayView<2, double, C> const& affineMatrix)
 {
     affineWarpImage(src, destImageRange(dest), affineMatrix);
 }

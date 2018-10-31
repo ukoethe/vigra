@@ -33,17 +33,18 @@
 /*                                                                      */
 /************************************************************************/
 
-#include <vigra/multi_array.hxx>
-#include <vigra/impex.hxx>
-#include <vigra/convolution.hxx>
-#include <vigra/multi_blockwise.hxx>
 #include <iostream>
+#include <vigra/convolution.hxx>
+#include <vigra/impex.hxx>
+#include <vigra/multi_array.hxx>
+#include <vigra/multi_blockwise.hxx>
 
 using namespace vigra;
 
-int main (int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
-    if(argc != 3)
+    if (argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
@@ -59,7 +60,7 @@ int main (int argc, char ** argv)
         if (info.isGrayscale())
         {
             MultiArray<2, float> imageArray(info.shape()),
-                                            exportArray(info.shape());
+                exportArray(info.shape());
 
             // copy image data into array
             importImage(info, imageArray);
@@ -69,12 +70,11 @@ int main (int argc, char ** argv)
 
             // write image data to the file given as second argument
             exportImage(exportArray, ImageExportInfo(argv[2]));
-
         }
         else
         {
-            MultiArray<2, RGBValue<float> > imageArray(info.shape()),
-                                            exportArray(info.shape());
+            MultiArray<2, RGBValue<float>> imageArray(info.shape()),
+                exportArray(info.shape());
 
             // copy image data into array
             importImage(info, imageArray);
@@ -85,10 +85,8 @@ int main (int argc, char ** argv)
             // write image data to the file given as second argument
             exportImage(exportArray, ImageExportInfo(argv[2]));
         }
-
-
     }
-    catch (std::exception & e)
+    catch (std::exception& e)
     {
         // catch any errors that might have occurred and print their reason
         std::cout << e.what() << std::endl;

@@ -29,34 +29,34 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
 
-#include <iostream>
+#include "vigra/convolution.hxx"
+#include "vigra/functorexpression.hxx"
+#include "vigra/impex.hxx"
+#include "vigra/labelimage.hxx"
+#include "vigra/localminmax.hxx"
+#include "vigra/resizeimage.hxx"
+#include "vigra/seededregiongrowing.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/stdimagefunctions.hxx"
-#include "vigra/functorexpression.hxx"
-#include "vigra/resizeimage.hxx"
-#include "vigra/convolution.hxx"
-#include "vigra/localminmax.hxx"
-#include "vigra/labelimage.hxx"
-#include "vigra/seededregiongrowing.hxx"
-#include "vigra/impex.hxx"
+#include <iostream>
 
-using namespace vigra; 
+using namespace vigra;
 
 // define a functor that calsulates the squared magnitude of the gradient
 // given the x- and y- components of the gradient
 struct GradientSquaredMagnitudeFunctor
 {
-    float operator()(float const & g1, float const & g2) const
+    float operator()(float const& g1, float const& g2) const
     {
         return g1 * g1 + g2 * g2;
     }
 
-    float operator()(vigra::RGBValue<float> const & rg1, vigra::RGBValue<float> const & rg2) const
+    float operator()(vigra::RGBValue<float> const& rg1, vigra::RGBValue<float> const& rg2) const
     {
         float g1 = rg1.squaredMagnitude();
         float g2 = rg2.squaredMagnitude();
@@ -66,19 +66,20 @@ struct GradientSquaredMagnitudeFunctor
 };
 
 // generic implementation of the watershed algorithm
-template <class InImage, class OutImage>
-void weightedWatershedSegmentation(InImage & in, OutImage & out, double scale, unsigned int oversampling = 1)
+template<class InImage, class OutImage>
+void
+weightedWatershedSegmentation(InImage& in, OutImage& out, double scale, unsigned int oversampling = 1)
 {
     using namespace vigra::functor;
-    
+
     typedef typename vigra::NumericTraits<typename InImage::value_type>::RealPromote
         TmpType;
 
     vigra_precondition(oversampling > 0,
-       "weightedWatershedSegmentation(): oversampling must not be zero.");
-    
-    int w = oversampling*(in.width() - 1) + 1;
-    int h = oversampling*(in.height() - 1) + 1;
+                       "weightedWatershedSegmentation(): oversampling must not be zero.");
+
+    int w = oversampling * (in.width() - 1) + 1;
+    int h = oversampling * (in.height() - 1) + 1;
 
     vigra::BasicImage<TmpType> gradientx(w, h);
     vigra::BasicImage<TmpType> gradienty(w, h);
@@ -86,17 +87,17 @@ void weightedWatershedSegmentation(InImage & in, OutImage & out, double scale, u
 
     // calculate the x- and y-components of the image gradient at given scale
     // optionally enlarge the image before
-    if(oversampling > 1)
+    if (oversampling > 1)
     {
         vigra::BasicImage<TmpType> big(w, h);
         resizeImageSplineInterpolation(srcImageRange(in), destImageRange(big));
-        gaussianGradient(srcImageRange(big), destImage(gradientx), destImage(gradienty), scale*oversampling);
+        gaussianGradient(srcImageRange(big), destImage(gradientx), destImage(gradienty), scale * oversampling);
     }
     else
     {
         gaussianGradient(srcImageRange(in), destImage(gradientx), destImage(gradienty), scale);
     }
-    
+
     // transform components into gradient magnitude
     combineTwoImages(srcImageRange(gradientx), srcImage(gradienty),
                      destImage(gradientmag), GradientSquaredMagnitudeFunctor());
@@ -114,8 +115,8 @@ void weightedWatershedSegmentation(InImage & in, OutImage & out, double scale, u
                                  false, 0);
 
     // create a statistics functor for region growing
-    vigra::ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<float> >
-                                          gradstat(max_region_label);
+    vigra::ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<float>>
+        gradstat(max_region_label);
 
     // perform region growing, starting from the minima of the gradient magnitude;
     // as the feature (first input) image contains the gradient magnitude,
@@ -123,18 +124,19 @@ void weightedWatershedSegmentation(InImage & in, OutImage & out, double scale, u
     seededRegionGrowing(srcImageRange(gradientmag), srcImage(labels),
                         destImage(labels), gradstat, KeepContours);
 
-    out.resize(w,h);
-    
+    out.resize(w, h);
+
     // set boundary pixels to the corresponding gradient value, non-boundary pixels to zero
     combineTwoImages(srcImageRange(gradientmag), srcImage(labels),
-                     destImage(out), 
-                     ifThenElse(Arg2()==Param(0), sqrt(Arg1()), Param(0.0)));
+                     destImage(out),
+                     ifThenElse(Arg2() == Param(0), sqrt(Arg1()), Param(0.0)));
 }
 
 
-int main(int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
-    if(argc != 3)
+    if (argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
@@ -154,7 +156,7 @@ int main(int argc, char ** argv)
         std::cout << "Oversampling ? ";
         std::cin >> oversampling;
 
-        if(info.isGrayscale())
+        if (info.isGrayscale())
         {
             int w = info.width();
             int h = info.height();
@@ -194,7 +196,7 @@ int main(int argc, char ** argv)
             exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
         }
     }
-    catch (vigra::StdException & e)
+    catch (vigra::StdException& e)
     {
         std::cout << e.what() << std::endl;
         return 1;

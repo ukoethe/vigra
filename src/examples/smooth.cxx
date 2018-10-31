@@ -29,122 +29,123 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
+
 
 #include <iostream>
-#include <vigra/multi_array.hxx>
 #include <vigra/convolution.hxx>
-#include <vigra/nonlineardiffusion.hxx>
 #include <vigra/impex.hxx>
+#include <vigra/multi_array.hxx>
+#include <vigra/nonlineardiffusion.hxx>
 
-using namespace vigra; 
+using namespace vigra;
 
 
-int main(int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
-    if(argc != 3)
+    if (argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
-        
+
         return 1;
     }
-    
-    // Type of smoothing: 
+
+    // Type of smoothing:
     int type;
     std::cout << "Type of smoothing (1 = Gauss, 2 = Exponential, 3 = nonlinear) ? ";
     std::cin >> type;
-    
-    // input width of smoothing filter 
+
+    // input width of smoothing filter
     double scale;
     std::cout << "Amount of smoothing (operator scale) ? ";
     std::cin >> scale;
-    
+
     double edge_threshold;
-    if(type == 3)
+    if (type == 3)
     {
         std::cout << "Edge threshold ? ";
         std::cin >> edge_threshold;
     }
-    
+
     try
     {
         ImageImportInfo info(argv[1]);
-        
-        if(info.isGrayscale())
+
+        if (info.isGrayscale())
         {
             MultiArray<2, UInt8> in(info.width(), info.height());
             MultiArray<2, float> out(info.width(), info.height());
-           
+
             importImage(info, destImage(in));
-            
-            switch(type)
+
+            switch (type)
             {
-              case 2:
-              {
-                // apply recursive filter (exponential filter) to gray image
-                recursiveSmoothX(in, out, scale);
-                recursiveSmoothY(out, out, scale);
-                break;
-              }
-              case 3:
-              {
-                // apply nonlinear diffusion to gray image
-                nonlinearDiffusion(in, out,
-                   DiffusivityFunctor<float>(edge_threshold), scale);
-                break;
-              }
-              default:
-              {
-                gaussianSmoothing(in, out, scale);
-              }
+                case 2:
+                {
+                    // apply recursive filter (exponential filter) to gray image
+                    recursiveSmoothX(in, out, scale);
+                    recursiveSmoothY(out, out, scale);
+                    break;
+                }
+                case 3:
+                {
+                    // apply nonlinear diffusion to gray image
+                    nonlinearDiffusion(in, out,
+                                       DiffusivityFunctor<float>(edge_threshold), scale);
+                    break;
+                }
+                default:
+                {
+                    gaussianSmoothing(in, out, scale);
+                }
             }
-            
+
             exportImage(out, ImageExportInfo(argv[2]));
         }
         else
         {
-            MultiArray<2, RGBValue<UInt8> > in(info.shape());
-            MultiArray<2, RGBValue<float> > out(info.shape());
-           
+            MultiArray<2, RGBValue<UInt8>> in(info.shape());
+            MultiArray<2, RGBValue<float>> out(info.shape());
+
             importImage(info, in);
-            
-            switch(type)
+
+            switch (type)
             {
-              case 2:
-              {
-                // apply recursive filter (exponential filter) to color image
-                recursiveSmoothX(in, out, scale);
-                recursiveSmoothY(out, out, scale);
-                break;
-              }
-              case 3:
-              {
-                // apply nonlinear diffusion to color image, one band at a time
-                for(int band = 0; band<3; ++band)
+                case 2:
                 {
-                    nonlinearDiffusion(in.bindElementChannel(band), out.bindElementChannel(band),
-                                       DiffusivityFunctor<float>(edge_threshold), scale);
+                    // apply recursive filter (exponential filter) to color image
+                    recursiveSmoothX(in, out, scale);
+                    recursiveSmoothY(out, out, scale);
+                    break;
                 }
-                break;
-              }
-              default:
-              {
-                gaussianSmoothing(in, out, scale);
-              }
+                case 3:
+                {
+                    // apply nonlinear diffusion to color image, one band at a time
+                    for (int band = 0; band < 3; ++band)
+                    {
+                        nonlinearDiffusion(in.bindElementChannel(band), out.bindElementChannel(band),
+                                           DiffusivityFunctor<float>(edge_threshold), scale);
+                    }
+                    break;
+                }
+                default:
+                {
+                    gaussianSmoothing(in, out, scale);
+                }
             }
-            
+
             exportImage(out, ImageExportInfo(argv[2]));
         }
     }
-    catch (std::exception & e)
+    catch (std::exception& e)
     {
         std::cout << e.what() << std::endl;
         return 1;
     }
-    
+
     return 0;
 }

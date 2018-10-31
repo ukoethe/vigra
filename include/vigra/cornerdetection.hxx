@@ -29,105 +29,106 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
- 
+
+
 #ifndef VIGRA_CORNERDETECTION_HXX
 #define VIGRA_CORNERDETECTION_HXX
 
-#include "utilities.hxx"
-#include "numerictraits.hxx"
-#include "stdimage.hxx"
 #include "combineimages.hxx"
 #include "convolution.hxx"
 #include "functortraits.hxx"
 #include "multi_shape.hxx"
+#include "numerictraits.hxx"
+#include "stdimage.hxx"
+#include "utilities.hxx"
 
-namespace vigra {
+namespace vigra
+{
 
-template <class SrcType>
+template<class SrcType>
 struct CornerResponseFunctor
 {
     typedef typename NumericTraits<SrcType>::RealPromote argument_type;
     typedef argument_type result_type;
-    
-    result_type operator()(argument_type a1, 
-                        argument_type a2, argument_type a3) const
+
+    result_type operator()(argument_type a1,
+                           argument_type a2, argument_type a3) const
     {
-      return detail::RequiresExplicitCast<result_type>::cast((a1*a2 - a3*a3) - 0.04 * (a1 + a2) * (a1 + a2));
+        return detail::RequiresExplicitCast<result_type>::cast((a1 * a2 - a3 * a3) - 0.04 * (a1 + a2) * (a1 + a2));
     }
 };
 
-template <class T>
-class FunctorTraits<CornerResponseFunctor<T> >
-: public FunctorTraitsBase<CornerResponseFunctor<T> >
+template<class T>
+class FunctorTraits<CornerResponseFunctor<T>>
+    : public FunctorTraitsBase<CornerResponseFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isTernaryFunctor;
 };
 
-template <class SrcType>
+template<class SrcType>
 struct FoerstnerCornerFunctor
 {
     typedef typename NumericTraits<SrcType>::RealPromote argument_type;
     typedef argument_type result_type;
-    
-    result_type operator()(argument_type a1, 
+
+    result_type operator()(argument_type a1,
                            argument_type a2, argument_type a3) const
     {
-        return (a1*a2 - a3*a3) / (a1 + a2);
+        return (a1 * a2 - a3 * a3) / (a1 + a2);
     }
 };
 
-template <class T>
-class FunctorTraits<FoerstnerCornerFunctor<T> >
-: public FunctorTraitsBase<FoerstnerCornerFunctor<T> >
+template<class T>
+class FunctorTraits<FoerstnerCornerFunctor<T>>
+    : public FunctorTraitsBase<FoerstnerCornerFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isTernaryFunctor;
 };
 
-template <class SrcType>
+template<class SrcType>
 struct RohrCornerFunctor
 {
     typedef typename NumericTraits<SrcType>::RealPromote argument_type;
     typedef argument_type result_type;
-    
-    result_type operator()(argument_type a1, 
-                        argument_type a2, argument_type a3) const
+
+    result_type operator()(argument_type a1,
+                           argument_type a2, argument_type a3) const
     {
-        return (a1*a2 - a3*a3);
+        return (a1 * a2 - a3 * a3);
     }
 };
 
-template <class T>
-class FunctorTraits<RohrCornerFunctor<T> >
-: public FunctorTraitsBase<RohrCornerFunctor<T> >
+template<class T>
+class FunctorTraits<RohrCornerFunctor<T>>
+    : public FunctorTraitsBase<RohrCornerFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isTernaryFunctor;
 };
 
-template <class SrcType>
+template<class SrcType>
 struct BeaudetCornerFunctor
 {
     typedef typename NumericTraits<SrcType>::RealPromote argument_type;
     typedef argument_type result_type;
-    
-    result_type operator()(argument_type a1, 
-                        argument_type a2, argument_type a3) const
+
+    result_type operator()(argument_type a1,
+                           argument_type a2, argument_type a3) const
     {
-        return (a3*a3 - a1*a2);
+        return (a3 * a3 - a1 * a2);
     }
 };
 
-template <class T>
-class FunctorTraits<BeaudetCornerFunctor<T> >
-: public FunctorTraitsBase<BeaudetCornerFunctor<T> >
+template<class T>
+class FunctorTraits<BeaudetCornerFunctor<T>>
+    : public FunctorTraitsBase<BeaudetCornerFunctor<T>>
 {
-  public:
+public:
     typedef VigraTrueType isTernaryFunctor;
 };
 
@@ -136,8 +137,8 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
     Note: The Kitchen-Rosenfeld detector is not implemented because of its
     inferior performance. The SUSAN detector is missing because it's patented.
 */
-//@{ 
-                                    
+//@{
+
 /********************************************************/
 /*                                                      */
 /*                 cornerResponseFunction               */
@@ -278,63 +279,62 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void cornerResponseFunction)
+doxygen_overloaded_function(template<...> void cornerResponseFunction)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void
-cornerResponseFunction(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-                       DestIterator dul, DestAccessor ad,
-                       double scale)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    void cornerResponseFunction(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+                                DestIterator dul, DestAccessor ad,
+                                double scale)
 {
     vigra_precondition(scale > 0.0,
-                 "cornerResponseFunction(): Scale must be > 0");
-                 
+                       "cornerResponseFunction(): Scale must be > 0");
+
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
-    
-    if(w <= 0 || h <= 0) return;
-    
-    typedef typename 
-        NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
-        
-    typedef BasicImage<TmpType> TmpImage;
-    
-    TmpImage gx(w,h);
-    TmpImage gy(w,h);
-    TmpImage gxy(w,h);
 
-    structureTensor(srcIterRange(sul, slr, as), 
-                    destImage(gx), destImage(gxy), destImage(gy), 
+    if (w <= 0 || h <= 0)
+        return;
+
+    typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+
+    typedef BasicImage<TmpType> TmpImage;
+
+    TmpImage gx(w, h);
+    TmpImage gy(w, h);
+    TmpImage gxy(w, h);
+
+    structureTensor(srcIterRange(sul, slr, as),
+                    destImage(gx), destImage(gxy), destImage(gy),
                     scale, scale);
-    CornerResponseFunctor<typename SrcAccessor::value_type > cf;
-                    
-    combineThreeImages(srcImageRange(gx), srcImage(gy), srcImage(gxy), 
-                       destIter(dul, ad), cf );
+    CornerResponseFunctor<typename SrcAccessor::value_type> cf;
+
+    combineThreeImages(srcImageRange(gx), srcImage(gy), srcImage(gxy),
+                       destIter(dul, ad), cf);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline 
-void cornerResponseFunction(
-           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           pair<DestIterator, DestAccessor> dest,
-           double scale)
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
+inline void
+cornerResponseFunction(
+    triple<SrcIterator, SrcIterator, SrcAccessor> src,
+    pair<DestIterator, DestAccessor> dest,
+    double scale)
 {
     cornerResponseFunction(src.first, src.second, src.third,
-                            dest.first, dest.second,
-                            scale);
+                           dest.first, dest.second,
+                           scale);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
-inline void 
-cornerResponseFunction(MultiArrayView<2, T1, S1> const & src,
-                       MultiArrayView<2, T2, S2> dest,
-                       double scale)
+template<class T1, class S1,
+         class T2, class S2>
+inline void
+    cornerResponseFunction(MultiArrayView<2, T1, S1> const& src,
+                           MultiArrayView<2, T2, S2> dest,
+                           double scale)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "cornerResponseFunction(): shape mismatch between input and output.");
+                       "cornerResponseFunction(): shape mismatch between input and output.");
     cornerResponseFunction(srcImageRange(src), destImage(dest), scale);
 }
 
@@ -465,43 +465,42 @@ cornerResponseFunction(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void foerstnerCornerDetector)
+doxygen_overloaded_function(template<...> void foerstnerCornerDetector)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void
-foerstnerCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-                       DestIterator dul, DestAccessor ad,
-                       double scale)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    void foerstnerCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+                                 DestIterator dul, DestAccessor ad,
+                                 double scale)
 {
     vigra_precondition(scale > 0.0,
-                 "foerstnerCornerDetector(): Scale must be > 0");
-                 
+                       "foerstnerCornerDetector(): Scale must be > 0");
+
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
-    
-    if(w <= 0 || h <= 0) return;
-    
-    typedef typename 
-        NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
-        
-    typedef BasicImage<TmpType> TmpImage;
-    
-    TmpImage gx(w,h);
-    TmpImage gy(w,h);
-    TmpImage gxy(w,h);
 
-    structureTensor(srcIterRange(sul, slr, as), 
-                    destImage(gx), destImage(gxy), destImage(gy), 
+    if (w <= 0 || h <= 0)
+        return;
+
+    typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+
+    typedef BasicImage<TmpType> TmpImage;
+
+    TmpImage gx(w, h);
+    TmpImage gy(w, h);
+    TmpImage gxy(w, h);
+
+    structureTensor(srcIterRange(sul, slr, as),
+                    destImage(gx), destImage(gxy), destImage(gy),
                     scale, scale);
-    FoerstnerCornerFunctor<typename SrcAccessor::value_type > cf;
-                    
-    combineThreeImages(srcImageRange(gx), srcImage(gy), srcImage(gxy), 
-                       destIter(dul, ad), cf );
+    FoerstnerCornerFunctor<typename SrcAccessor::value_type> cf;
+
+    combineThreeImages(srcImageRange(gx), srcImage(gy), srcImage(gxy),
+                       destIter(dul, ad), cf);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 foerstnerCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         pair<DestIterator, DestAccessor> dest,
@@ -512,15 +511,15 @@ foerstnerCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             scale);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
-                        MultiArrayView<2, T2, S2> dest,
-                        double scale)
+    foerstnerCornerDetector(MultiArrayView<2, T1, S1> const& src,
+                            MultiArrayView<2, T2, S2> dest,
+                            double scale)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "foerstnerCornerDetector(): shape mismatch between input and output.");
+                       "foerstnerCornerDetector(): shape mismatch between input and output.");
     foerstnerCornerDetector(srcImageRange(src),
                             destImage(dest),
                             scale);
@@ -649,43 +648,42 @@ foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void rohrCornerDetector)
+doxygen_overloaded_function(template<...> void rohrCornerDetector)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void
-rohrCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-                       DestIterator dul, DestAccessor ad,
-                       double scale)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    void rohrCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+                            DestIterator dul, DestAccessor ad,
+                            double scale)
 {
     vigra_precondition(scale > 0.0,
-                 "rohrCornerDetector(): Scale must be > 0");
-                 
+                       "rohrCornerDetector(): Scale must be > 0");
+
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
-    
-    if(w <= 0 || h <= 0) return;
-    
-    typedef typename 
-        NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
-        
-    typedef BasicImage<TmpType> TmpImage;
-    
-    TmpImage gx(w,h);
-    TmpImage gy(w,h);
-    TmpImage gxy(w,h);
 
-    structureTensor(srcIterRange(sul, slr, as), 
-                    destImage(gx), destImage(gxy), destImage(gy), 
+    if (w <= 0 || h <= 0)
+        return;
+
+    typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+
+    typedef BasicImage<TmpType> TmpImage;
+
+    TmpImage gx(w, h);
+    TmpImage gy(w, h);
+    TmpImage gxy(w, h);
+
+    structureTensor(srcIterRange(sul, slr, as),
+                    destImage(gx), destImage(gxy), destImage(gy),
                     scale, scale);
-    RohrCornerFunctor<typename SrcAccessor::value_type > cf;
-                    
-    combineThreeImages(srcImageRange(gx), srcImage(gy), srcImage(gxy), 
-                       destIter(dul, ad), cf );
+    RohrCornerFunctor<typename SrcAccessor::value_type> cf;
+
+    combineThreeImages(srcImageRange(gx), srcImage(gy), srcImage(gxy),
+                       destIter(dul, ad), cf);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 rohrCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
@@ -696,15 +694,15 @@ rohrCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        scale);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-rohrCornerDetector(MultiArrayView<2, T1, S1> const & src,
-                   MultiArrayView<2, T2, S2> dest,
-                   double scale)
+    rohrCornerDetector(MultiArrayView<2, T1, S1> const& src,
+                       MultiArrayView<2, T2, S2> dest,
+                       double scale)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "rohrCornerDetector(): shape mismatch between input and output.");
+                       "rohrCornerDetector(): shape mismatch between input and output.");
     rohrCornerDetector(srcImageRange(src),
                        destImage(dest),
                        scale);
@@ -824,43 +822,42 @@ rohrCornerDetector(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void beaudetCornerDetector)
+doxygen_overloaded_function(template<...> void beaudetCornerDetector)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void
-beaudetCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-                       DestIterator dul, DestAccessor ad,
-                       double scale)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    void beaudetCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+                               DestIterator dul, DestAccessor ad,
+                               double scale)
 {
     vigra_precondition(scale > 0.0,
-                 "beaudetCornerDetector(): Scale must be > 0");
-                 
+                       "beaudetCornerDetector(): Scale must be > 0");
+
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
-    
-    if(w <= 0 || h <= 0) return;
-    
-    typedef typename 
-        NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
-        
-    typedef BasicImage<TmpType> TmpImage;
-    
-    TmpImage gx(w,h);
-    TmpImage gy(w,h);
-    TmpImage gxy(w,h);
 
-    hessianMatrixOfGaussian(srcIterRange(sul, slr, as), 
-                    destImage(gx), destImage(gxy), destImage(gy), 
-                    scale);
-    BeaudetCornerFunctor<typename SrcAccessor::value_type > cf;
-                    
-    combineThreeImages(srcImageRange(gx), srcImage(gy), srcImage(gxy), 
-                       destIter(dul, ad), cf );
+    if (w <= 0 || h <= 0)
+        return;
+
+    typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+
+    typedef BasicImage<TmpType> TmpImage;
+
+    TmpImage gx(w, h);
+    TmpImage gy(w, h);
+    TmpImage gxy(w, h);
+
+    hessianMatrixOfGaussian(srcIterRange(sul, slr, as),
+                            destImage(gx), destImage(gxy), destImage(gy),
+                            scale);
+    BeaudetCornerFunctor<typename SrcAccessor::value_type> cf;
+
+    combineThreeImages(srcImageRange(gx), srcImage(gy), srcImage(gxy),
+                       destIter(dul, ad), cf);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 beaudetCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                       pair<DestIterator, DestAccessor> dest,
@@ -871,15 +868,15 @@ beaudetCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                           scale);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-beaudetCornerDetector(MultiArrayView<2, T1, S1> const & src,
-                      MultiArrayView<2, T2, S2> dest,
-                      double scale)
+    beaudetCornerDetector(MultiArrayView<2, T1, S1> const& src,
+                          MultiArrayView<2, T2, S2> dest,
+                          double scale)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "beaudetCornerDetector(): shape mismatch between input and output.");
+                       "beaudetCornerDetector(): shape mismatch between input and output.");
     beaudetCornerDetector(srcImageRange(src),
                           destImage(dest),
                           scale);

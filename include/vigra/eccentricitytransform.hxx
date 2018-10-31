@@ -43,46 +43,46 @@
 
 /*vigra*/
 #include "accumulator.hxx"
-#include "multi_labeling.hxx"
-#include "multi_distance.hxx"
-#include "multi_resize.hxx"
 #include "graph_algorithms.hxx"
+#include "multi_distance.hxx"
+#include "multi_labeling.hxx"
+#include "multi_resize.hxx"
 
 
 namespace vigra
 {
 
 
-template <class Graph, class WeightType,
-          class EdgeMap, class Shape>
+template<class Graph, class WeightType,
+         class EdgeMap, class Shape>
 TinyVector<MultiArrayIndex, Shape::static_size>
-eccentricityCentersOneRegionImpl(ShortestPathDijkstra<Graph, WeightType> & pathFinder,
-                        const EdgeMap & weights, WeightType maxWeight,
-                        Shape anchor, Shape const & start, Shape const & stop)
+eccentricityCentersOneRegionImpl(ShortestPathDijkstra<Graph, WeightType>& pathFinder,
+                                 const EdgeMap& weights, WeightType maxWeight,
+                                 Shape anchor, Shape const& start, Shape const& stop)
 {
     int maxIterations = 4;
-    for(int k=0; k < maxIterations; ++k)
+    for (int k = 0; k < maxIterations; ++k)
     {
         pathFinder.run(start, stop, weights, anchor, lemon::INVALID, maxWeight);
         anchor = pathFinder.target();
         // FIXME: implement early stopping when source and target don't change anymore
     }
 
-    Polygon<TinyVector<float, Shape::static_size> > path;
+    Polygon<TinyVector<float, Shape::static_size>> path;
     path.push_back_unsafe(anchor);
-    while(pathFinder.predecessors()[path.back()] != path.back())
+    while (pathFinder.predecessors()[path.back()] != path.back())
         path.push_back_unsafe(pathFinder.predecessors()[path.back()]);
     return path[roundi(path.arcLengthQuantile(0.5))];
 }
 
-template <unsigned int N, class T, class S, class Graph,
-          class ACCUMULATOR, class DIJKSTRA, class Array>
+template<unsigned int N, class T, class S, class Graph,
+         class ACCUMULATOR, class DIJKSTRA, class Array>
 void
-eccentricityCentersImpl(const MultiArrayView<N, T, S> & src,
-                        Graph const & g,
-                        ACCUMULATOR const & r,
-                        DIJKSTRA & pathFinder,
-                        Array & centers)
+eccentricityCentersImpl(const MultiArrayView<N, T, S>& src,
+                        Graph const& g,
+                        ACCUMULATOR const& r,
+                        DIJKSTRA& pathFinder,
+                        Array& centers)
 {
     using namespace acc;
     typedef typename MultiArrayShape<N>::type Shape;
@@ -95,7 +95,8 @@ eccentricityCentersImpl(const MultiArrayView<N, T, S> & src,
                minWeight = N;
     {
         AccumulatorChainArray<CoupledArrays<N, WeightType, T>,
-                              Select< DataArg<1>, LabelArg<2>, Maximum> > a;
+                              Select<DataArg<1>, LabelArg<2>, Maximum>>
+            a;
 
         MultiArray<N, WeightType> distances(src.shape());
         boundaryMultiDistance(src, distances, true);
@@ -104,14 +105,14 @@ eccentricityCentersImpl(const MultiArrayView<N, T, S> & src,
         {
             const Node u(g.u(*edge)), v(g.v(*edge));
             const T label = src[u];
-            if(label != src[v])
+            if (label != src[v])
             {
                 weights[*edge] = NumericTraits<WeightType>::max();
             }
             else
             {
                 WeightType weight = norm(u - v) *
-                                  (get<Maximum>(a, label) + minWeight - 0.5*(distances[u] + distances[v]));
+                                    (get<Maximum>(a, label) + minWeight - 0.5 * (distances[u] + distances[v]));
                 weights[*edge] = weight;
                 maxWeight = std::max(weight, maxWeight);
             }
@@ -120,16 +121,16 @@ eccentricityCentersImpl(const MultiArrayView<N, T, S> & src,
     maxWeight *= src.size();
 
     T maxLabel = r.maxRegionLabel();
-    centers.resize(maxLabel+1);
+    centers.resize(maxLabel + 1);
 
-    for (T i=0; i <= maxLabel; ++i)
+    for (T i = 0; i <= maxLabel; ++i)
     {
-        if(get<Count>(r, i) == 0)
+        if (get<Count>(r, i) == 0)
             continue;
         centers[i] = eccentricityCentersOneRegionImpl(pathFinder, weights, maxWeight,
-                                             get<RegionAnchor>(r, i),
-                                             get<Coord<Minimum> >(r, i),
-                                             get<Coord<Maximum> >(r, i) + Shape(1));
+                                                      get<RegionAnchor>(r, i),
+                                                      get<Coord<Minimum>>(r, i),
+                                                      get<Coord<Maximum>>(r, i) + Shape(1));
     }
 }
 
@@ -137,7 +138,7 @@ eccentricityCentersImpl(const MultiArrayView<N, T, S> & src,
 */
 //@{
 
-    /** \brief Find the (approximate) eccentricity center in each region of a labeled image.
+/** \brief Find the (approximate) eccentricity center in each region of a labeled image.
 
         <b> Declarations:</b>
 
@@ -169,10 +170,10 @@ eccentricityCentersImpl(const MultiArrayView<N, T, S> & src,
         eccentricityCenters(labels, centers);
         \endcode
     */
-template <unsigned int N, class T, class S, class Array>
+template<unsigned int N, class T, class S, class Array>
 void
-eccentricityCenters(const MultiArrayView<N, T, S> & src,
-                    Array & centers)
+eccentricityCenters(const MultiArrayView<N, T, S>& src,
+                    Array& centers)
 {
     using namespace acc;
     typedef GridGraph<N> Graph;
@@ -182,14 +183,15 @@ eccentricityCenters(const MultiArrayView<N, T, S> & src,
     ShortestPathDijkstra<Graph, WeightType> pathFinder(g);
 
     AccumulatorChainArray<CoupledArrays<N, T>,
-                          Select< DataArg<1>, LabelArg<1>,
-                                  Count, BoundingBox, RegionAnchor> > a;
+                          Select<DataArg<1>, LabelArg<1>,
+                                 Count, BoundingBox, RegionAnchor>>
+        a;
     extractFeatures(src, a);
 
     eccentricityCentersImpl(src, g, a, pathFinder, centers);
 }
 
-    /** \brief Computes the (approximate) eccentricity transform on each region of a labeled image.
+/** \brief Computes the (approximate) eccentricity transform on each region of a labeled image.
 
         <b> Declarations:</b>
 
@@ -231,11 +233,11 @@ eccentricityCenters(const MultiArrayView<N, T, S> & src,
         eccentricityTransformOnLabels(labels, dest, centers);
         \endcode
     */
-template <unsigned int N, class T, class S, class Array>
+template<unsigned int N, class T, class S, class Array>
 void
-eccentricityTransformOnLabels(MultiArrayView<N, T> const & src,
+eccentricityTransformOnLabels(MultiArrayView<N, T> const& src,
                               MultiArrayView<N, S> dest,
-                              Array & centers)
+                              Array& centers)
 {
     using namespace acc;
     typedef typename MultiArrayShape<N>::type Shape;
@@ -245,15 +247,16 @@ eccentricityTransformOnLabels(MultiArrayView<N, T> const & src,
     typedef float WeightType;
 
     vigra_precondition(src.shape() == dest.shape(),
-        "eccentricityTransformOnLabels(): Shape mismatch between src and dest.");
+                       "eccentricityTransformOnLabels(): Shape mismatch between src and dest.");
 
     Graph g(src.shape(), IndirectNeighborhood);
     ShortestPathDijkstra<Graph, WeightType> pathFinder(g);
 
     using namespace acc;
     AccumulatorChainArray<CoupledArrays<N, T>,
-                          Select< DataArg<1>, LabelArg<1>,
-                                  Count, BoundingBox, RegionAnchor> > a;
+                          Select<DataArg<1>, LabelArg<1>,
+                                 Count, BoundingBox, RegionAnchor>>
+        a;
     extractFeatures(src, a);
 
     eccentricityCentersImpl(src, g, a, pathFinder, centers);
@@ -263,25 +266,25 @@ eccentricityTransformOnLabels(MultiArrayView<N, T> const & src,
     {
         const Node u(g.u(*edge)), v(g.v(*edge));
         const T label = src[u];
-        if(label != src[v])
+        if (label != src[v])
             weights[*edge] = NumericTraits<WeightType>::max();
         else
             weights[*edge] = norm(u - v);
     }
     ArrayVector<Shape> filtered_centers;
-    for (T i=0; i <= a.maxRegionLabel(); ++i)
-        if(get<Count>(a, i) > 0)
+    for (T i = 0; i <= a.maxRegionLabel(); ++i)
+        if (get<Count>(a, i) > 0)
             filtered_centers.push_back(centers[i]);
     pathFinder.runMultiSource(weights, filtered_centers.begin(), filtered_centers.end());
     dest = pathFinder.distances();
 }
 
-template <unsigned int N, class T, class S>
+template<unsigned int N, class T, class S>
 inline void
-eccentricityTransformOnLabels(MultiArrayView<N, T> const & src,
+eccentricityTransformOnLabels(MultiArrayView<N, T> const& src,
                               MultiArrayView<N, S> dest)
 {
-    ArrayVector<TinyVector<MultiArrayIndex, N> > centers;
+    ArrayVector<TinyVector<MultiArrayIndex, N>> centers;
     eccentricityTransformOnLabels(src, dest, centers);
 }
 

@@ -36,33 +36,35 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpycore_PyArray_API
 
 #include <Python.h>
-#include <vigra/config.hxx>
-#include <iostream>
 #include <boost/python.hpp>
-#include <vigra/numpy_array.hxx>
-#include <vigra/numpy_array_converters.hxx>
+#include <iostream>
+#include <vector>
+#include <vigra/config.hxx>
 #include <vigra/functorexpression.hxx>
 #include <vigra/mathutil.hxx>
+#include <vigra/numpy_array.hxx>
+#include <vigra/numpy_array_converters.hxx>
 #include <vigra/utilities.hxx>
-#include <vector>
 
 namespace python = boost::python;
 
-namespace vigra {
+namespace vigra
+{
 
-UInt32 pychecksum(python::str const & s)
+UInt32
+pychecksum(python::str const& s)
 {
 #if PY_MAJOR_VERSION < 3
-	unsigned int size = len(s);
-	return checksum(PyString_AsString(s.ptr()), size);
+    unsigned int size = len(s);
+    return checksum(PyString_AsString(s.ptr()), size);
 #elif (PY_MAJOR_VERSION == 3) && (PY_MINOR_VERSION < 3)
-	Py_ssize_t size = PyUnicode_GET_DATA_SIZE(s.ptr());
-	const char * data = PyUnicode_AS_DATA(s.ptr());
-	return checksum(data, size);
+    Py_ssize_t size = PyUnicode_GET_DATA_SIZE(s.ptr());
+    const char* data = PyUnicode_AS_DATA(s.ptr());
+    return checksum(data, size);
 #else
-	Py_ssize_t size = 0;
-	const char * data = PyUnicode_AsUTF8AndSize(s.ptr(), &size);
-	return checksum(data, size);
+    Py_ssize_t size = 0;
+    const char* data = PyUnicode_AsUTF8AndSize(s.ptr(), &size);
+    return checksum(data, size);
 #endif
 }
 
@@ -77,11 +79,11 @@ using namespace vigra;
 
 BOOST_PYTHON_MODULE_INIT(vigranumpycore)
 {
-	if (_import_array() < 0)
-		pythonToCppException(0);
-	registerNumpyArrayConverters();
+    if (_import_array() < 0)
+        pythonToCppException(0);
+    registerNumpyArrayConverters();
     defineAxisTags();
     defineChunkedArray();
-    
+
     def("checksum", &pychecksum, args("data"));
 }

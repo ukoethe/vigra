@@ -47,105 +47,110 @@
 #ifndef VIGRA_IMPEX_TIFF_HXX
 #define VIGRA_IMPEX_TIFF_HXX
 
-#include <vector>
-#include "vigra/diff2d.hxx"
 #include "vigra/codec.hxx"
+#include "vigra/diff2d.hxx"
+#include <vector>
 
-namespace vigra {
+namespace vigra
+{
 
-    struct TIFFCodecFactory : public CodecFactory
+struct TIFFCodecFactory : public CodecFactory
+{
+    CodecDesc getCodecDesc() const;
+    VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
+    VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
+};
+
+class TIFFDecoderImpl;
+class TIFFEncoderImpl;
+
+class TIFFDecoder : public Decoder
+{
+    TIFFDecoderImpl* pimpl;
+
+public:
+    TIFFDecoder()
+        : pimpl(0)
     {
-        CodecDesc getCodecDesc() const;
-        VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
-        VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
-    };
+    }
 
-    class TIFFDecoderImpl;
-    class TIFFEncoderImpl;
+    ~TIFFDecoder();
 
-    class TIFFDecoder : public Decoder
+    std::string getFileType() const;
+    unsigned int getWidth() const;
+    unsigned int getHeight() const;
+    unsigned int getNumBands() const;
+
+    unsigned int getNumExtraBands() const;
+
+    unsigned int getNumImages() const;
+    void setImageIndex(unsigned int);
+    unsigned int getImageIndex() const;
+
+    Diff2D getPosition() const;
+    Size2D getCanvasSize() const;
+    float getXResolution() const;
+    float getYResolution() const;
+
+    const void* currentScanlineOfBand(unsigned int) const;
+    void nextScanline();
+
+    std::string getPixelType() const;
+    unsigned int getOffset() const;
+
+    void init(const std::string&, unsigned int);
+    void init(const std::string& fileName)
     {
-        TIFFDecoderImpl * pimpl;
+        init(fileName, 0);
+    }
 
-    public:
+    void close();
+    void abort();
+};
 
-        TIFFDecoder() : pimpl(0) {}
+class TIFFEncoder : public Encoder
+{
+    TIFFEncoderImpl* pimpl;
 
-        ~TIFFDecoder();
-
-        std::string getFileType() const;
-        unsigned int getWidth() const;
-        unsigned int getHeight() const;
-        unsigned int getNumBands() const;
-
-        unsigned int getNumExtraBands() const;
-
-        unsigned int getNumImages() const;
-        void setImageIndex(unsigned int);
-        unsigned int getImageIndex() const;
-
-        Diff2D getPosition() const;
-        Size2D getCanvasSize() const;
-        float getXResolution() const;
-        float getYResolution() const;
-
-        const void * currentScanlineOfBand( unsigned int ) const;
-        void nextScanline();
-
-        std::string getPixelType() const;
-        unsigned int getOffset() const;
-
-        void init( const std::string &, unsigned int );
-        void init( const std::string & fileName)
-        {
-            init(fileName, 0);
-        }
-
-        void close();
-        void abort();
-    };
-
-    class TIFFEncoder : public Encoder
+public:
+    TIFFEncoder()
+        : pimpl(0)
     {
-        TIFFEncoderImpl * pimpl;
+    }
 
-    public:
+    ~TIFFEncoder();
 
-        TIFFEncoder() : pimpl(0) {}
+    std::string getFileType() const;
+    void setWidth(unsigned int);
+    void setHeight(unsigned int);
+    void setNumBands(unsigned int);
 
-        ~TIFFEncoder();
+    void setCompressionType(const std::string&, int = -1);
+    void setPixelType(const std::string&);
 
-        std::string getFileType() const;
-        void setWidth( unsigned int );
-        void setHeight( unsigned int );
-        void setNumBands( unsigned int );
+    void setPosition(const vigra::Diff2D& pos);
+    void setCanvasSize(const Size2D& pos);
+    void setXResolution(float xres);
+    void setYResolution(float yres);
 
-        void setCompressionType( const std::string &, int = -1 );
-        void setPixelType( const std::string & );
+    unsigned int getOffset() const;
 
-        void setPosition( const vigra::Diff2D & pos );
-        void setCanvasSize( const Size2D & pos );
-        void setXResolution( float xres );
-        void setYResolution( float yres );
+    void finalizeSettings();
 
-        unsigned int getOffset() const;
+    void* currentScanlineOfBand(unsigned int);
+    void nextScanline();
 
-        void finalizeSettings();
+    void setICCProfile(const ICCProfile& data);
 
-        void * currentScanlineOfBand( unsigned int );
-        void nextScanline();
+    void init(const std::string&, const std::string&);
+    void init(const std::string& fileName)
+    {
+        init(fileName, "w");
+    }
 
-        void setICCProfile(const ICCProfile & data);
-
-        void init( const std::string &, const std::string & );
-        void init( const std::string & fileName)
-        {
-            init(fileName, "w");
-        }
-
-        void close();
-        void abort();
-    };
-}
+    void close();
+    void abort();
+};
+} // namespace vigra
 
 #endif // VIGRA_IMPEX_TIFF_HXX

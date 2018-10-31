@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -37,20 +37,21 @@
 #ifndef VIGRA_GABORFILTER_HXX
 #define VIGRA_GABORFILTER_HXX
 
-#include "imagecontainer.hxx"
-#include "config.hxx"
-#include "stdimage.hxx"
-#include "copyimage.hxx"
-#include "transformimage.hxx"
 #include "combineimages.hxx"
-#include "utilities.hxx"
+#include "config.hxx"
+#include "copyimage.hxx"
+#include "imagecontainer.hxx"
 #include "multi_shape.hxx"
+#include "stdimage.hxx"
+#include "transformimage.hxx"
+#include "utilities.hxx"
 
+#include <cmath>
 #include <functional>
 #include <vector>
-#include <cmath>
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup GaborFilter Gabor Filter
     Functions to create or apply gabor filter (latter based on FFTW).
@@ -133,50 +134,46 @@ namespace vigra {
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void createGaborFilter)
+doxygen_overloaded_function(template<...> void createGaborFilter)
 
-template <class DestImageIterator, class DestAccessor>
-void createGaborFilter(DestImageIterator destUpperLeft,
-                       DestImageIterator destLowerRight, DestAccessor da,
-                       double orientation, double centerFrequency,
-                       double angularSigma, double radialSigma)
+    template<class DestImageIterator, class DestAccessor>
+    void createGaborFilter(DestImageIterator destUpperLeft,
+                           DestImageIterator destLowerRight, DestAccessor da,
+                           double orientation, double centerFrequency,
+                           double angularSigma, double radialSigma)
 {
     int w = int(destLowerRight.x - destUpperLeft.x);
     int h = int(destLowerRight.y - destUpperLeft.y);
 
     double squaredSum = 0.0;
-    double cosTheta= VIGRA_CSTD::cos(orientation);
-    double sinTheta= VIGRA_CSTD::sin(orientation);
+    double cosTheta = VIGRA_CSTD::cos(orientation);
+    double sinTheta = VIGRA_CSTD::sin(orientation);
 
-    double radialSigma2 = radialSigma*radialSigma;
-    double angularSigma2 = angularSigma*angularSigma;
+    double radialSigma2 = radialSigma * radialSigma;
+    double angularSigma2 = angularSigma * angularSigma;
 
-    double wscale = w % 1 ?
-                    1.0f / (w-1) :
-                    1.0f / w;
-    double hscale = h % 1 ?
-                    1.0f / (h-1) :
-                    1.0f / h;
+    double wscale = w % 1 ? 1.0f / (w - 1) : 1.0f / w;
+    double hscale = h % 1 ? 1.0f / (h - 1) : 1.0f / h;
 
-    int dcX= (w+1)/2, dcY= (h+1)/2;
+    int dcX = (w + 1) / 2, dcY = (h + 1) / 2;
 
     double u, v;
-    for ( int y=0; y<h; y++, destUpperLeft.y++ )
+    for (int y = 0; y < h; y++, destUpperLeft.y++)
     {
         typename DestImageIterator::row_iterator dix = destUpperLeft.rowIterator();
 
-        v = hscale * ((h - (y - dcY))%h - dcY);
-        for ( int x=0; x<w; x++, dix++ )
+        v = hscale * ((h - (y - dcY)) % h - dcY);
+        for (int x = 0; x < w; x++, dix++)
         {
-            u= wscale*((x - dcX + w)%w - dcX);
+            u = wscale * ((x - dcX + w) % w - dcX);
 
-            double uu = cosTheta*u + sinTheta*v - centerFrequency;
-            double vv = -sinTheta*u + cosTheta*v;
+            double uu = cosTheta * u + sinTheta * v - centerFrequency;
+            double vv = -sinTheta * u + cosTheta * v;
             double gabor;
 
-            gabor = VIGRA_CSTD::exp(-0.5*(uu*uu / radialSigma2 + vv*vv / angularSigma2));
+            gabor = VIGRA_CSTD::exp(-0.5 * (uu * uu / radialSigma2 + vv * vv / angularSigma2));
             squaredSum += gabor * gabor;
-            da.set( gabor, dix );
+            da.set(gabor, dix);
         }
     }
     destUpperLeft.y -= h;
@@ -184,22 +181,22 @@ void createGaborFilter(DestImageIterator destUpperLeft,
     // clear out DC value and remove it from the squared sum
     double dcValue = da(destUpperLeft);
     squaredSum -= dcValue * dcValue;
-    da.set( 0.0, destUpperLeft );
+    da.set(0.0, destUpperLeft);
 
     // normalize energy to one
     double factor = VIGRA_CSTD::sqrt(squaredSum);
-    for ( int y=0; y<h; y++, destUpperLeft.y++ )
+    for (int y = 0; y < h; y++, destUpperLeft.y++)
     {
         typename DestImageIterator::row_iterator dix = destUpperLeft.rowIterator();
 
-        for ( int x=0; x<w; x++, dix++ )
+        for (int x = 0; x < w; x++, dix++)
         {
-            da.set( da(dix) / factor, dix );
+            da.set(da(dix) / factor, dix);
         }
     }
 }
 
-template <class DestImageIterator, class DestAccessor>
+template<class DestImageIterator, class DestAccessor>
 inline void
 createGaborFilter(triple<DestImageIterator, DestImageIterator, DestAccessor> dest,
                   double orientation, double centerFrequency,
@@ -210,11 +207,11 @@ createGaborFilter(triple<DestImageIterator, DestImageIterator, DestAccessor> des
                       angularSigma, radialSigma);
 }
 
-template <class T, class S>
+template<class T, class S>
 inline void
-createGaborFilter(MultiArrayView<2, T, S> dest,
-                  double orientation, double centerFrequency,
-                  double angularSigma, double radialSigma)
+    createGaborFilter(MultiArrayView<2, T, S> dest,
+                      double orientation, double centerFrequency,
+                      double angularSigma, double radialSigma)
 {
     createGaborFilter(destImageRange(dest),
                       orientation, centerFrequency,
@@ -241,7 +238,8 @@ createGaborFilter(MultiArrayView<2, T, S> dest,
     \endcode
  */
 
-inline double radialGaborSigma(double centerFrequency)
+inline double
+radialGaborSigma(double centerFrequency)
 {
     double sfactor = 3.0 * VIGRA_CSTD::sqrt(VIGRA_CSTD::log(4.0));
     return centerFrequency / sfactor;
@@ -284,10 +282,10 @@ inline double radialGaborSigma(double centerFrequency)
     \endcode
  */
 
-inline double angularGaborSigma(int directionCount, double centerFrequency)
+inline double
+angularGaborSigma(int directionCount, double centerFrequency)
 {
-    return VIGRA_CSTD::tan(M_PI/directionCount/2.0) * centerFrequency
-        * VIGRA_CSTD::sqrt(8.0 / (9 * VIGRA_CSTD::log(4.0)));
+    return VIGRA_CSTD::tan(M_PI / directionCount / 2.0) * centerFrequency * VIGRA_CSTD::sqrt(8.0 / (9 * VIGRA_CSTD::log(4.0)));
 }
 
 /********************************************************/
@@ -315,10 +313,10 @@ inline double angularGaborSigma(int directionCount, double centerFrequency)
     <b>\#include</b> \<vigra/gaborfilter.hxx\><br/>
     Namespace: vigra
 */
-template <class ImageType, 
-          class Alloc = typename ImageType::allocator_type::template rebind<ImageType>::other >
-class GaborFilterFamily 
-: public ImageArray<ImageType, Alloc>
+template<class ImageType,
+         class Alloc = typename ImageType::allocator_type::template rebind<ImageType>::other>
+class GaborFilterFamily
+    : public ImageArray<ImageType, Alloc>
 {
     typedef ImageArray<ImageType, Alloc> ParentClass;
     int scaleCount_, directionCount_;
@@ -327,8 +325,8 @@ class GaborFilterFamily
 protected:
     void initFilters()
     {
-        for(int direction= 0; direction<directionCount_; direction++)
-            for(int scale= 0; scale<scaleCount_; scale++)
+        for (int direction = 0; direction < directionCount_; direction++)
+            for (int scale = 0; scale < scaleCount_; scale++)
             {
                 double angle = direction * M_PI / directionCount();
                 double centerFrequency =
@@ -341,9 +339,14 @@ protected:
     }
 
 public:
-    enum { stdFilterSize= 128, stdDirectionCount= 6, stdScaleCount= 4 };
+    enum
+    {
+        stdFilterSize = 128,
+        stdDirectionCount = 6,
+        stdScaleCount = 4
+    };
 
-        /** Constructs a family of gabor filters in frequency
+    /** Constructs a family of gabor filters in frequency
             space. The filters will be calculated on construction, so
             it makes sense to provide good parameters right now
             although they can be changed later, too. If you leave them
@@ -351,11 +354,11 @@ public:
             scaleCount of 4 and a \ref maxCenterFrequency of
             3/8(=0.375).
         */
-    GaborFilterFamily(const Diff2D & size,
+    GaborFilterFamily(const Diff2D& size,
                       int directionCount = stdDirectionCount, int scaleCount = stdScaleCount,
-                      double maxCenterFrequency = 3.0/8.0,
-                      Alloc const & alloc = Alloc())
-        : ParentClass(directionCount*scaleCount, size, alloc),
+                      double maxCenterFrequency = 3.0 / 8.0,
+                      Alloc const& alloc = Alloc())
+        : ParentClass(directionCount * scaleCount, size, alloc),
           scaleCount_(scaleCount),
           directionCount_(directionCount),
           maxCenterFrequency_(maxCenterFrequency)
@@ -363,15 +366,15 @@ public:
         initFilters();
     }
 
-        /** Convenience variant of the above constructor taking width
+    /** Convenience variant of the above constructor taking width
             and height separately. Also, this one serves as default
             constructor constructing 128x128 pixel filters.
          */
-    GaborFilterFamily(int width= stdFilterSize, int height= -1,
+    GaborFilterFamily(int width = stdFilterSize, int height = -1,
                       int directionCount = stdDirectionCount, int scaleCount = stdScaleCount,
-                      double maxCenterFrequency = 3.0/8.0,
-                      Alloc const & alloc = Alloc())
-        : ParentClass(directionCount*scaleCount, 
+                      double maxCenterFrequency = 3.0 / 8.0,
+                      Alloc const& alloc = Alloc())
+        : ParentClass(directionCount * scaleCount,
                       Size2D(width, height > 0 ? height : width), alloc),
           scaleCount_(scaleCount),
           directionCount_(directionCount),
@@ -380,7 +383,7 @@ public:
         initFilters();
     }
 
-        /** Return the index of the filter with the given direction and
+    /** Return the index of the filter with the given direction and
             scale in this ImageArray. direction must in the range
             0..directionCount()-1 and scale in the range
             0..rangeCount()-1. This is useful for example if you used
@@ -390,39 +393,43 @@ public:
          */
     int filterIndex(int direction, int scale) const
     {
-        return scale*directionCount()+direction;
+        return scale * directionCount() + direction;
     }
 
-        /** Return the filter with the given direction and
+    /** Return the filter with the given direction and
             scale. direction must in the range 0..directionCount()-1
             and scale in the range 0..rangeCount()-1.
             <tt>filters.getFilter(direction, scale)</tt> is the same as
             <tt>filters[filterIndex(direction, scale)]</tt>.
          */
-    ImageType const & getFilter(int direction, int scale) const
+    ImageType const& getFilter(int direction, int scale) const
     {
         return this->images_[filterIndex(direction, scale)];
     }
 
-        /** Resize all filters (causing their recalculation).
+    /** Resize all filters (causing their recalculation).
          */
-    virtual void resizeImages(const Diff2D &newSize)
+    virtual void resizeImages(const Diff2D& newSize)
     {
         ParentClass::resizeImages(newSize);
         initFilters();
     }
 
-        /** Query the number of filter scales available.
+    /** Query the number of filter scales available.
          */
     int scaleCount() const
-        { return scaleCount_; }
+    {
+        return scaleCount_;
+    }
 
-        /** Query the number of filter directions available.
+    /** Query the number of filter directions available.
          */
     int directionCount() const
-        { return directionCount_; }
+    {
+        return directionCount_;
+    }
 
-        /** Change the number of directions / scales. This causes the
+    /** Change the number of directions / scales. This causes the
             recalculation of all filters.
          */
     void setDirectionScaleCounts(int directionCount, int scaleCount)
@@ -433,15 +440,17 @@ public:
         initFilters();
     }
 
-        /** Return the center frequency of the filter(s) with
+    /** Return the center frequency of the filter(s) with
             scale==0. Filters with scale>0 will have a center frequency
             reduced in octaves:
             <tt>centerFrequency= maxCenterFrequency / 2.0^scale</tt>
         */
     double maxCenterFrequency()
-        { return maxCenterFrequency_; }
+    {
+        return maxCenterFrequency_;
+    }
 
-        /** Change the center frequency of the filter(s) with
+    /** Change the center frequency of the filter(s) with
             scale==0. See \ref maxCenterFrequency().
          */
     void setMaxCenterFrequency(double maxCenterFrequency)

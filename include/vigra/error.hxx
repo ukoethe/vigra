@@ -29,19 +29,19 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
- 
+
+
 #ifndef VIGRA_ERROR_HXX
 #define VIGRA_ERROR_HXX
 
-#include <stdexcept>
-#include <sstream>
-#include <string>
 #include "config.hxx"
-          
+#include <sstream>
+#include <stdexcept>
+#include <string>
+
 /** \page ErrorReporting Error Reporting
     Exceptions and assertions provided by VIGRA
 
@@ -120,31 +120,38 @@
     \endcode
 **/
 
-namespace vigra {
+namespace vigra
+{
 
 class ContractViolation : public StdException
 {
-  public:
+public:
     ContractViolation()
-    {}
-    
-    ContractViolation(char const * prefix, char const * message, 
-                      char const * file, int line)
     {
-        (*this) << "\n" << prefix << "\n" << message << "\n("
-                 << file << ":" << line << ")\n";
     }
-    
-    ContractViolation(char const * prefix, char const * message)
+
+    ContractViolation(char const* prefix, char const* message,
+                      char const* file, int line)
     {
-        (*this) << "\n" << prefix << "\n" << message << "\n";
+        (*this) << "\n"
+                << prefix << "\n"
+                << message << "\n("
+                << file << ":" << line << ")\n";
     }
-    
+
+    ContractViolation(char const* prefix, char const* message)
+    {
+        (*this) << "\n"
+                << prefix << "\n"
+                << message << "\n";
+    }
+
     ~ContractViolation() throw()
-    {}
-    
+    {
+    }
+
     template<class T>
-    ContractViolation & operator<<(T const & data)
+    ContractViolation& operator<<(T const& data)
     {
         std::ostringstream what;
         what << data;
@@ -152,129 +159,137 @@ class ContractViolation : public StdException
         return *this;
     }
 
-    virtual const char * what() const throw()
+    virtual const char* what() const throw()
     {
         try
         {
             return what_.c_str();
         }
-        catch(...)
+        catch (...)
         {
             return "vigra::ContractViolation: error message was lost, sorry.";
         }
     }
-  
-  private:
+
+private:
     std::string what_;
 };
 
 class PreconditionViolation : public ContractViolation
 {
-  public:
-    PreconditionViolation(char const * message, const char * file, int line)
-    : ContractViolation("Precondition violation!", message, file, line)
-    {}
-    
-    PreconditionViolation(char const * message)
-    : ContractViolation("Precondition violation!", message)
-    {}
+public:
+    PreconditionViolation(char const* message, const char* file, int line)
+        : ContractViolation("Precondition violation!", message, file, line)
+    {
+    }
+
+    PreconditionViolation(char const* message)
+        : ContractViolation("Precondition violation!", message)
+    {
+    }
 };
 
 class PostconditionViolation : public ContractViolation
 {
-  public:
-    PostconditionViolation(char const * message, const char * file, int line)
-    : ContractViolation("Postcondition violation!", message, file, line)
-    {}
-    
-    PostconditionViolation(char const * message)
-    : ContractViolation("Postcondition violation!", message)
-    {}
+public:
+    PostconditionViolation(char const* message, const char* file, int line)
+        : ContractViolation("Postcondition violation!", message, file, line)
+    {
+    }
+
+    PostconditionViolation(char const* message)
+        : ContractViolation("Postcondition violation!", message)
+    {
+    }
 };
 
 class InvariantViolation : public ContractViolation
 {
-  public:
-    InvariantViolation(char const * message, const char * file, int line)
-    : ContractViolation("Invariant violation!", message, file, line)
-    {}
-    
-    InvariantViolation(char const * message)
-    : ContractViolation("Invariant violation!", message)
-    {}
+public:
+    InvariantViolation(char const* message, const char* file, int line)
+        : ContractViolation("Invariant violation!", message, file, line)
+    {
+    }
+
+    InvariantViolation(char const* message)
+        : ContractViolation("Invariant violation!", message)
+    {
+    }
 };
 
-inline
-void throw_invariant_error(bool predicate, char const * message, char const * file, int line)
+inline void
+throw_invariant_error(bool predicate, char const* message, char const* file, int line)
 {
-    if(!predicate)
-       throw vigra::InvariantViolation(message, file, line); 
+    if (!predicate)
+        throw vigra::InvariantViolation(message, file, line);
 }
 
-inline
-void throw_invariant_error(bool predicate, std::string message, char const * file, int line)
+inline void
+throw_invariant_error(bool predicate, std::string message, char const* file, int line)
 {
-    if(!predicate)
-       throw vigra::InvariantViolation(message.c_str(), file, line); 
+    if (!predicate)
+        throw vigra::InvariantViolation(message.c_str(), file, line);
 }
 
-inline
-void throw_precondition_error(bool predicate, char const * message, char const * file, int line)
+inline void
+throw_precondition_error(bool predicate, char const* message, char const* file, int line)
 {
-    if(!predicate)
-       throw vigra::PreconditionViolation(message, file, line); 
+    if (!predicate)
+        throw vigra::PreconditionViolation(message, file, line);
 }
 
-inline
-void throw_precondition_error(bool predicate, std::string message, char const * file, int line)
+inline void
+throw_precondition_error(bool predicate, std::string message, char const* file, int line)
 {
-    if(!predicate)
-       throw vigra::PreconditionViolation(message.c_str(), file, line); 
+    if (!predicate)
+        throw vigra::PreconditionViolation(message.c_str(), file, line);
 }
 
-inline
-void throw_postcondition_error(bool predicate, char const * message, char const * file, int line)
+inline void
+throw_postcondition_error(bool predicate, char const* message, char const* file, int line)
 {
-    if(!predicate)
-       throw vigra::PostconditionViolation(message, file, line); 
+    if (!predicate)
+        throw vigra::PostconditionViolation(message, file, line);
 }
 
-inline
-void throw_postcondition_error(bool predicate, std::string message, char const * file, int line)
+inline void
+throw_postcondition_error(bool predicate, std::string message, char const* file, int line)
 {
-    if(!predicate)
-       throw vigra::PostconditionViolation(message.c_str(), file, line); 
+    if (!predicate)
+        throw vigra::PostconditionViolation(message.c_str(), file, line);
 }
 
-inline
-void throw_runtime_error(char const * message, char const * file, int line)
+inline void
+throw_runtime_error(char const* message, char const* file, int line)
 {
     std::ostringstream what;
-    what << "\n" << message << "\n(" << file << ":" << line << ")\n";
-    throw std::runtime_error(what.str()); 
+    what << "\n"
+         << message << "\n(" << file << ":" << line << ")\n";
+    throw std::runtime_error(what.str());
 }
 
-inline
-void throw_runtime_error(std::string message, char const * file, int line)
+inline void
+throw_runtime_error(std::string message, char const* file, int line)
 {
     std::ostringstream what;
-    what << "\n" << message << "\n(" << file << ":" << line << ")\n";
-    throw std::runtime_error(what.str()); 
+    what << "\n"
+         << message << "\n(" << file << ":" << line << ")\n";
+    throw std::runtime_error(what.str());
 }
 
 #define vigra_precondition(PREDICATE, MESSAGE) vigra::throw_precondition_error((PREDICATE), MESSAGE, __FILE__, __LINE__)
 
 // Compile assertions only in debug mode
 #ifdef NDEBUG
-    #define vigra_assert(PREDICATE, MESSAGE)
+#define vigra_assert(PREDICATE, MESSAGE)
 #else
-    #define vigra_assert(PREDICATE, MESSAGE) vigra_precondition(PREDICATE, MESSAGE)
+#define vigra_assert(PREDICATE, MESSAGE) vigra_precondition(PREDICATE, MESSAGE)
 #endif
 
 #define vigra_postcondition(PREDICATE, MESSAGE) vigra::throw_postcondition_error((PREDICATE), MESSAGE, __FILE__, __LINE__)
 
 #define vigra_invariant(PREDICATE, MESSAGE) vigra::throw_invariant_error((PREDICATE), MESSAGE, __FILE__, __LINE__)
-            
+
 #define vigra_fail(MESSAGE) vigra::throw_runtime_error(MESSAGE, __FILE__, __LINE__)
 
 } // namespace vigra

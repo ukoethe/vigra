@@ -33,31 +33,31 @@
 /*                                                                      */
 /************************************************************************/
 
-#include <iostream>
-#include <functional>
-#include <cmath>
-#include <time.h>
-#include <stdio.h>
 #include "vigra/unittest.hxx"
-#include <vigra/wigner-matrix.hxx>
-#include <vigra/multi_pointoperators.hxx>
 #include "wigner-matrix-reference.hxx"
+#include <cmath>
+#include <functional>
+#include <iostream>
+#include <stdio.h>
+#include <time.h>
+#include <vigra/multi_pointoperators.hxx>
+#include <vigra/wigner-matrix.hxx>
 
 using namespace vigra;
 
-template <class Real>
+template<class Real>
 struct ComplexRealFunctor
 {
-    Real operator()(std::complex<Real> const & c) const
+    Real operator()(std::complex<Real> const& c) const
     {
         return c.real();
     }
 };
 
-template <class Real>
+template<class Real>
 struct ComplexImagFunctor
 {
-    Real operator()(std::complex<Real> const & c) const
+    Real operator()(std::complex<Real> const& c) const
     {
         return c.imag();
     }
@@ -74,34 +74,34 @@ struct InvariantFeaturesTest
     {
         typedef Matrix<float> M;
         typedef MultiArrayShape<2>::type Shape;
-        
+
         int l_max = 15;
         WignerMatrix<float> wigner(l_max);
-        
-        M ref[] = { M(), 
-                     M(3, 3, wignerRef1),
-                     M(5, 5, wignerRef2),
-                     M(7, 7, wignerRef3),
-                     M(9, 9, wignerRef4),
-                     M(11, 11, wignerRef5),
-                     M(13, 13, wignerRef6),
-                     M(15, 15, wignerRef7),
-                     M(17, 17, wignerRef8),
-                     M(19, 19, wignerRef9),
-                     M(21, 21, wignerRef10),
-                     M(23, 23, wignerRef11),
-                     M(25, 25, wignerRef12),
-                     M(27, 27, wignerRef13),
-                     M(29, 29, wignerRef14),
-                     M(31, 31, wignerRef15) };
-        
-        for(int l=1; l<=l_max; ++l)
+
+        M ref[] = {M(),
+                   M(3, 3, wignerRef1),
+                   M(5, 5, wignerRef2),
+                   M(7, 7, wignerRef3),
+                   M(9, 9, wignerRef4),
+                   M(11, 11, wignerRef5),
+                   M(13, 13, wignerRef6),
+                   M(15, 15, wignerRef7),
+                   M(17, 17, wignerRef8),
+                   M(19, 19, wignerRef9),
+                   M(21, 21, wignerRef10),
+                   M(23, 23, wignerRef11),
+                   M(25, 25, wignerRef12),
+                   M(27, 27, wignerRef13),
+                   M(29, 29, wignerRef14),
+                   M(31, 31, wignerRef15)};
+
+        for (int l = 1; l <= l_max; ++l)
         {
             wigner.compute_D(l);
-            
-            shouldEqual(wigner.get_D(l).shape(), Shape(2*l+1, 2*l+1));
-            
-            M diff(2*l+1, 2*l+1);
+
+            shouldEqual(wigner.get_D(l).shape(), Shape(2 * l + 1, 2 * l + 1));
+
+            M diff(2 * l + 1, 2 * l + 1);
             FindMinMax<float> minmax;
 
             transformMultiArray(srcMultiArrayRange(wigner.get_D(l)),
@@ -115,17 +115,17 @@ struct InvariantFeaturesTest
             diff -= ref[l];
             inspectMultiArray(srcMultiArrayRange(diff), minmax);
             should(minmax.min > -1e-4f);
-            should(minmax.max <  1e-4f);
+            should(minmax.max < 1e-4f);
         }
-        
+
         WignerMatrix<float> wigner2(l_max);
-        for(int l=1; l<=l_max; ++l)
+        for (int l = 1; l <= l_max; ++l)
         {
             wigner2.compute_D(l, 0.0f, float(M_PI / 2.0), 0.0f);
-            
-            shouldEqual(wigner2.get_D(l).shape(), Shape(2*l+1, 2*l+1));
-            
-            M diff(2*l+1, 2*l+1);
+
+            shouldEqual(wigner2.get_D(l).shape(), Shape(2 * l + 1, 2 * l + 1));
+
+            M diff(2 * l + 1, 2 * l + 1);
             FindMinMax<float> minmax;
 
             transformMultiArray(srcMultiArrayRange(wigner.get_D(l)),
@@ -133,32 +133,32 @@ struct InvariantFeaturesTest
             inspectMultiArray(srcMultiArrayRange(diff), minmax);
             shouldEqual(minmax.min, 0.0f);
             shouldEqual(minmax.max, 0.0f);
-            
+
             // FIXME: transpose() shouldn't be necessary below
             transformMultiArray(srcMultiArrayRange(transpose(wigner2.get_D(l))),
                                 destMultiArray(diff), ComplexRealFunctor<float>());
             diff -= ref[l];
             inspectMultiArray(srcMultiArrayRange(diff), minmax);
             should(minmax.min > -1e-4f);
-            should(minmax.max <  1e-4f);
+            should(minmax.max < 1e-4f);
         }
-        
+
         // FIXME: compute_D() with arbitrary angles, rot(), and rotatePH() are untested!
     }
-
 };
 
 struct FeaturesTestSuite
-: public vigra::test_suite
+    : public vigra::test_suite
 {
     FeaturesTestSuite()
-    : vigra::test_suite("FeaturesTestSuite")
+        : vigra::test_suite("FeaturesTestSuite")
     {
-        add( testCase( &InvariantFeaturesTest::wignerMatrixTest));
+        add(testCase(&InvariantFeaturesTest::wignerMatrixTest));
     }
 };
 
-int main(int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
     FeaturesTestSuite test;
 
@@ -168,4 +168,3 @@ int main(int argc, char ** argv)
 
     return (failed != 0);
 }
-

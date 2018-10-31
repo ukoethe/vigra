@@ -36,32 +36,34 @@
 #ifndef VIGRA_WATERSHEDS_HXX
 #define VIGRA_WATERSHEDS_HXX
 
-#include <functional>
-#include "mathutil.hxx"
-#include "stdimage.hxx"
-#include "pixelneighborhood.hxx"
-#include "localminmax.hxx"
-#include "labelimage.hxx"
-#include "seededregiongrowing.hxx"
 #include "functorexpression.hxx"
-#include "union_find.hxx"
+#include "labelimage.hxx"
+#include "localminmax.hxx"
+#include "mathutil.hxx"
 #include "multi_shape.hxx"
+#include "pixelneighborhood.hxx"
+#include "seededregiongrowing.hxx"
+#include "stdimage.hxx"
+#include "union_find.hxx"
+#include <functional>
 
-namespace vigra {
+namespace vigra
+{
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood>
-unsigned int watershedLabeling(SrcIterator upperlefts,
-                        SrcIterator lowerrights, SrcAccessor sa,
-                        DestIterator upperleftd, DestAccessor da,
-                        Neighborhood)
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class Neighborhood>
+unsigned int
+watershedLabeling(SrcIterator upperlefts,
+                  SrcIterator lowerrights, SrcAccessor sa,
+                  DestIterator upperleftd, DestAccessor da,
+                  Neighborhood)
 {
     typedef typename DestAccessor::value_type LabelType;
 
     int w = lowerrights.x - upperlefts.x;
     int h = lowerrights.y - upperlefts.y;
-    int x,y;
+    int x, y;
 
     SrcIterator ys(upperlefts);
     SrcIterator xs(ys);
@@ -96,10 +98,10 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
 
     ++xs.x;
     ++xd.x;
-    for(x = 1; x != w; ++x, ++xs.x, ++xd.x)
+    for (x = 1; x != w; ++x, ++xs.x, ++xd.x)
     {
-        if((sa(xs) & Neighborhood::directionBit(Neighborhood::West)) ||
-           (sa(xs, Neighborhood::west()) & Neighborhood::directionBit(Neighborhood::East)))
+        if ((sa(xs) & Neighborhood::directionBit(Neighborhood::West)) ||
+            (sa(xs, Neighborhood::west()) & Neighborhood::directionBit(Neighborhood::East)))
         {
             da.set(da(xd, Neighborhood::west()), xd);
         }
@@ -111,25 +113,25 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
 
     ++ys.y;
     ++yd.y;
-    for(y = 1; y != h; ++y, ++ys.y, ++yd.y)
+    for (y = 1; y != h; ++y, ++ys.y, ++yd.y)
     {
         xs = ys;
         xd = yd;
 
-        for(x = 0; x != w; ++x, ++xs.x, ++xd.x)
+        for (x = 0; x != w; ++x, ++xs.x, ++xd.x)
         {
-            NeighborOffsetCirculator<Neighborhood> nc(x == w-1
-                                                        ? ncstartBorder
-                                                        : ncstart);
+            NeighborOffsetCirculator<Neighborhood> nc(x == w - 1
+                                                          ? ncstartBorder
+                                                          : ncstart);
             NeighborOffsetCirculator<Neighborhood> nce(x == 0
-                                                         ? ncendBorder
-                                                         : ncend);
+                                                           ? ncendBorder
+                                                           : ncend);
             LabelType currentIndex = labels.nextFreeIndex();
-            for(; nc != nce; ++nc)
+            for (; nc != nce; ++nc)
             {
-                if((sa(xs) & nc.directionBit()) || (sa(xs, *nc) & nc.oppositeDirectionBit()))
+                if ((sa(xs) & nc.directionBit()) || (sa(xs, *nc) & nc.oppositeDirectionBit()))
                 {
-                    currentIndex = labels.makeUnion(da(xd,*nc), currentIndex);
+                    currentIndex = labels.makeUnion(da(xd, *nc), currentIndex);
                 }
             }
             da.set(labels.finalizeIndex(currentIndex), xd);
@@ -141,10 +143,10 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
     // pass 2: assign one label to each region (tree)
     // so that labels form a consecutive sequence 1, 2, ...
     yd = upperleftd;
-    for(y=0; y != h; ++y, ++yd.y)
+    for (y = 0; y != h; ++y, ++yd.y)
     {
         DestIterator xd(yd);
-        for(x = 0; x != w; ++x, ++xd.x)
+        for (x = 0; x != w; ++x, ++xd.x)
         {
             da.set(labels.findLabel(da(xd)), xd);
         }
@@ -152,122 +154,125 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
     return count;
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood>
-unsigned int watershedLabeling(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                               pair<DestIterator, DestAccessor> dest,
-                               Neighborhood neighborhood)
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class Neighborhood>
+unsigned int
+watershedLabeling(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                  pair<DestIterator, DestAccessor> dest,
+                  Neighborhood neighborhood)
 {
     return watershedLabeling(src.first, src.second, src.third,
                              dest.first, dest.second, neighborhood);
 }
 
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
-                      DestIterator upperleftd, DestAccessor da,
-                      FourNeighborCode)
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
+void
+prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
+                  DestIterator upperleftd, DestAccessor da,
+                  FourNeighborCode)
 {
     int w = lowerrights.x - upperlefts.x;
     int h = lowerrights.y - upperlefts.y;
-    int x,y;
+    int x, y;
 
     SrcIterator ys(upperlefts);
     SrcIterator xs(ys);
 
     DestIterator yd = upperleftd;
 
-    for(y = 0; y != h; ++y, ++ys.y, ++yd.y)
+    for (y = 0; y != h; ++y, ++ys.y, ++yd.y)
     {
         xs = ys;
         DestIterator xd = yd;
 
-        for(x = 0; x != w; ++x, ++xs.x, ++xd.x)
+        for (x = 0; x != w; ++x, ++xs.x, ++xd.x)
         {
-            AtImageBorder atBorder = isAtImageBorder(x,y,w,h);
+            AtImageBorder atBorder = isAtImageBorder(x, y, w, h);
             typename SrcAccessor::value_type v = sa(xs);
             // the following choice causes minima to point
             // to their lowest neighbor -- would this be better???
             // typename SrcAccessor::value_type v = NumericTraits<typename SrcAccessor::value_type>::max();
             int o = 0; // means center is minimum
-            if(atBorder == NotAtBorder)
+            if (atBorder == NotAtBorder)
             {
-                NeighborhoodCirculator<SrcIterator, FourNeighborCode>  c(xs), cend(c);
-                do {
-                    if(sa(c) <= v)
+                NeighborhoodCirculator<SrcIterator, FourNeighborCode> c(xs), cend(c);
+                do
+                {
+                    if (sa(c) <= v)
                     {
                         v = sa(c);
                         o = c.directionBit();
                     }
-                }
-                while(++c != cend);
+                } while (++c != cend);
             }
             else
             {
-                RestrictedNeighborhoodCirculator<SrcIterator, FourNeighborCode>  c(xs, atBorder), cend(c);
-                do {
-                    if(sa(c) <= v)
+                RestrictedNeighborhoodCirculator<SrcIterator, FourNeighborCode> c(xs, atBorder), cend(c);
+                do
+                {
+                    if (sa(c) <= v)
                     {
                         v = sa(c);
                         o = c.directionBit();
                     }
-                }
-                while(++c != cend);
+                } while (++c != cend);
             }
             da.set(o, xd);
         }
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
-                      DestIterator upperleftd, DestAccessor da,
-                      EightNeighborCode)
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
+void
+prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
+                  DestIterator upperleftd, DestAccessor da,
+                  EightNeighborCode)
 {
     int w = lowerrights.x - upperlefts.x;
     int h = lowerrights.y - upperlefts.y;
-    int x,y;
+    int x, y;
 
     SrcIterator ys(upperlefts);
     SrcIterator xs(ys);
 
     DestIterator yd = upperleftd;
 
-    for(y = 0; y != h; ++y, ++ys.y, ++yd.y)
+    for (y = 0; y != h; ++y, ++ys.y, ++yd.y)
     {
         xs = ys;
         DestIterator xd = yd;
 
-        for(x = 0; x != w; ++x, ++xs.x, ++xd.x)
+        for (x = 0; x != w; ++x, ++xs.x, ++xd.x)
         {
-            AtImageBorder atBorder = isAtImageBorder(x,y,w,h);
+            AtImageBorder atBorder = isAtImageBorder(x, y, w, h);
             typename SrcAccessor::value_type v = sa(xs);
             // the following choice causes minima to point
             // to their lowest neighbor -- would this be better???
             // typename SrcAccessor::value_type v = NumericTraits<typename SrcAccessor::value_type>::max();
             int o = 0; // means center is minimum
-            if(atBorder == NotAtBorder)
+            if (atBorder == NotAtBorder)
             {
                 // handle diagonal and principal neighbors separately
                 // so that principal neighbors are preferred when there are
                 // candidates with equal strength
                 NeighborhoodCirculator<SrcIterator, EightNeighborCode>
-                                      c(xs, EightNeighborCode::NorthEast);
-                for(int i = 0; i < 4; ++i, c += 2)
+                    c(xs, EightNeighborCode::NorthEast);
+                for (int i = 0; i < 4; ++i, c += 2)
                 {
-                    if(sa(c) <= v)
+                    if (sa(c) <= v)
                     {
                         v = sa(c);
                         o = c.directionBit();
                     }
                 }
                 --c;
-                for(int i = 0; i < 4; ++i, c += 2)
+                for (int i = 0; i < 4; ++i, c += 2)
                 {
-                    if(sa(c) <= v)
+                    if (sa(c) <= v)
                     {
                         v = sa(c);
                         o = c.directionBit();
@@ -277,29 +282,27 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
             else
             {
                 RestrictedNeighborhoodCirculator<SrcIterator, EightNeighborCode>
-                             c(xs, atBorder), cend(c);
+                    c(xs, atBorder), cend(c);
                 do
                 {
-                    if(!c.isDiagonal())
+                    if (!c.isDiagonal())
                         continue;
-                    if(sa(c) <= v)
+                    if (sa(c) <= v)
                     {
                         v = sa(c);
                         o = c.directionBit();
                     }
-                }
-                while(++c != cend);
+                } while (++c != cend);
                 do
                 {
-                    if(c.isDiagonal())
+                    if (c.isDiagonal())
                         continue;
-                    if(sa(c) <= v)
+                    if (sa(c) <= v)
                     {
                         v = sa(c);
                         o = c.directionBit();
                     }
-                }
-                while(++c != cend);
+                } while (++c != cend);
             }
             da.set(o, xd);
         }
@@ -310,7 +313,7 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
 */
 //@{
 
-    /**\brief Options object for generateWatershedSeeds().
+/**\brief Options object for generateWatershedSeeds().
      *
         <b> Usage:</b>
 
@@ -329,84 +332,91 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
 class SeedOptions
 {
 public:
-    enum DetectMinima { LevelSets, Minima, ExtendedMinima, Unspecified };
+    enum DetectMinima
+    {
+        LevelSets,
+        Minima,
+        ExtendedMinima,
+        Unspecified
+    };
 
     double thresh;
     DetectMinima mini;
 
-        /**\brief Construct default options object.
+    /**\brief Construct default options object.
          *
             Defaults are: detect minima without thresholding (i.e. all minima).
          */
     SeedOptions()
-    : thresh(NumericTraits<double>::max()),
-      mini(Minima)
-    {}
+        : thresh(NumericTraits<double>::max()),
+          mini(Minima)
+    {
+    }
 
-        /** Generate seeds at minima.
+    /** Generate seeds at minima.
 
             Default: true
          */
-    SeedOptions & minima()
+    SeedOptions& minima()
     {
         mini = Minima;
         return *this;
     }
 
-        /** Generate seeds at minima and minimal plateaus.
+    /** Generate seeds at minima and minimal plateaus.
 
             Default: false
          */
-    SeedOptions & extendedMinima()
+    SeedOptions& extendedMinima()
     {
         mini = ExtendedMinima;
         return *this;
     }
 
-        /** Generate seeds as level sets.
+    /** Generate seeds as level sets.
 
             Note that you must also set a threshold to define which level set is to be used.<br>
             Default: false
          */
-    SeedOptions & levelSets()
+    SeedOptions& levelSets()
     {
         mini = LevelSets;
         return *this;
     }
 
-        /** Generate seeds as level sets at given threshold.
+    /** Generate seeds as level sets at given threshold.
 
             Equivalent to <tt>SeedOptions().levelSet().threshold(threshold)</tt><br>
             Default: false
          */
-    SeedOptions & levelSets(double threshold)
+    SeedOptions& levelSets(double threshold)
     {
         mini = LevelSets;
         thresh = threshold;
         return *this;
     }
 
-        /** Set threshold.
+    /** Set threshold.
 
             The threshold will be used by both the minima and level set variants
             of seed generation.<br>
             Default: no thresholding
          */
-    SeedOptions & threshold(double threshold)
+    SeedOptions& threshold(double threshold)
     {
         thresh = threshold;
         return *this;
     }
 
-        // check whether the threshold has been set for the target type T
-    template <class T>
+    // check whether the threshold has been set for the target type T
+    template<class T>
     bool thresholdIsValid() const
     {
         return thresh < double(NumericTraits<T>::max());
     }
 
-        // indicate that this option object is invalid (for internal use in watersheds)
-    SeedOptions & unspecified()
+    // indicate that this option object is invalid (for internal use in watersheds)
+    SeedOptions& unspecified()
     {
         mini = Unspecified;
         return *this;
@@ -487,28 +497,27 @@ public:
 
     For detailed examples see \ref watershedsMultiArray() and \ref watershedsRegionGrowing().
 */
-doxygen_overloaded_function(template <...> unsigned int generateWatershedSeeds)
+doxygen_overloaded_function(template<...> unsigned int generateWatershedSeeds)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood>
-unsigned int
-generateWatershedSeeds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
-                       DestIterator upperleftd, DestAccessor da,
-                       Neighborhood,
-                       SeedOptions const & options = SeedOptions())
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor,
+             class Neighborhood>
+    unsigned int generateWatershedSeeds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
+                                        DestIterator upperleftd, DestAccessor da,
+                                        Neighborhood,
+                                        SeedOptions const& options = SeedOptions())
 {
     using namespace functor;
     typedef typename SrcAccessor::value_type SrcType;
 
     vigra_precondition(options.mini != SeedOptions::LevelSets ||
-                       options.thresholdIsValid<SrcType>(),
-        "generateWatershedSeeds(): SeedOptions.levelSets() must be specified with threshold.");
+                           options.thresholdIsValid<SrcType>(),
+                       "generateWatershedSeeds(): SeedOptions.levelSets() must be specified with threshold.");
 
     Diff2D shape = lowerrights - upperlefts;
     BImage seeds(shape);
 
-    if(options.mini == SeedOptions::LevelSets)
+    if (options.mini == SeedOptions::LevelSets)
     {
         transformImage(srcIterRange(upperlefts, lowerrights, sa),
                        destImage(seeds),
@@ -518,10 +527,10 @@ generateWatershedSeeds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
     {
         LocalMinmaxOptions lm_options;
         lm_options.neighborhood(Neighborhood::DirectionCount)
-                  .markWith(1.0)
-                  .allowAtBorder()
-                  .allowPlateaus(options.mini == SeedOptions::ExtendedMinima);
-        if(options.thresholdIsValid<SrcType>())
+            .markWith(1.0)
+            .allowAtBorder()
+            .allowPlateaus(options.mini == SeedOptions::ExtendedMinima);
+        if (options.thresholdIsValid<SrcType>())
             lm_options.threshold(options.thresh);
 
         localMinima(srcIterRange(upperlefts, lowerrights, sa), destImage(seeds),
@@ -532,41 +541,41 @@ generateWatershedSeeds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
                                     Neighborhood::DirectionCount == 8, 0);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline unsigned int
 generateWatershedSeeds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
                        DestIterator upperleftd, DestAccessor da,
-                       SeedOptions const & options = SeedOptions())
+                       SeedOptions const& options = SeedOptions())
 {
     return generateWatershedSeeds(upperlefts, lowerrights, sa, upperleftd, da,
-                                   EightNeighborCode(), options);
+                                  EightNeighborCode(), options);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class Neighborhood>
 inline unsigned int
 generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        pair<DestIterator, DestAccessor> dest,
                        Neighborhood neighborhood,
-                       SeedOptions const & options = SeedOptions())
+                       SeedOptions const& options = SeedOptions())
 {
     return generateWatershedSeeds(src.first, src.second, src.third,
-                                   dest.first, dest.second,
-                                   neighborhood, options);
+                                  dest.first, dest.second,
+                                  neighborhood, options);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline unsigned int
 generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        pair<DestIterator, DestAccessor> dest,
-                       SeedOptions const & options = SeedOptions())
+                       SeedOptions const& options = SeedOptions())
 {
     return generateWatershedSeeds(src.first, src.second, src.third,
-                                   dest.first, dest.second,
-                                   EightNeighborCode(), options);
+                                  dest.first, dest.second,
+                                  EightNeighborCode(), options);
 }
 
 /********************************************************/
@@ -694,36 +703,35 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> unsigned int watershedsUnionFind)
+doxygen_overloaded_function(template<...> unsigned int watershedsUnionFind)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood>
-unsigned int
-watershedsUnionFind(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
-                    DestIterator upperleftd, DestAccessor da,
-                    Neighborhood neighborhood)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor,
+             class Neighborhood>
+    unsigned int watershedsUnionFind(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
+                                     DestIterator upperleftd, DestAccessor da,
+                                     Neighborhood neighborhood)
 {
     SImage orientationImage(lowerrights - upperlefts);
 
     prepareWatersheds(upperlefts, lowerrights, sa,
-                     orientationImage.upperLeft(), orientationImage.accessor(), neighborhood);
+                      orientationImage.upperLeft(), orientationImage.accessor(), neighborhood);
     return watershedLabeling(orientationImage.upperLeft(), orientationImage.lowerRight(), orientationImage.accessor(),
                              upperleftd, da, neighborhood);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline unsigned int
 watershedsUnionFind(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
-           DestIterator upperleftd, DestAccessor da)
+                    DestIterator upperleftd, DestAccessor da)
 {
     return watershedsUnionFind(upperlefts, lowerrights, sa, upperleftd, da, EightNeighborCode());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class Neighborhood>
 inline unsigned int
 watershedsUnionFind(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     pair<DestIterator, DestAccessor> dest, Neighborhood neighborhood)
@@ -732,8 +740,8 @@ watershedsUnionFind(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                dest.first, dest.second, neighborhood);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline unsigned int
 watershedsUnionFind(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     pair<DestIterator, DestAccessor> dest)
@@ -742,25 +750,25 @@ watershedsUnionFind(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                dest.first, dest.second);
 }
 
-template <class T1, class S1,
-          class T2, class S2,
-          class Neighborhood>
+template<class T1, class S1,
+         class T2, class S2,
+         class Neighborhood>
 inline unsigned int
-watershedsUnionFind(MultiArrayView<2, T1, S1> const & src,
-                    MultiArrayView<2, T2, S2> dest, Neighborhood neighborhood)
+    watershedsUnionFind(MultiArrayView<2, T1, S1> const& src,
+                        MultiArrayView<2, T2, S2> dest, Neighborhood neighborhood)
 {
     return watershedsUnionFind(srcImageRange(src),
                                destImage(dest), neighborhood);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline unsigned int
-watershedsUnionFind(MultiArrayView<2, T1, S1> const & src,
-                    MultiArrayView<2, T2, S2> dest)
+    watershedsUnionFind(MultiArrayView<2, T1, S1> const& src,
+                        MultiArrayView<2, T2, S2> dest)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "watershedsUnionFind(): shape mismatch between input and output.");
+                       "watershedsUnionFind(): shape mismatch between input and output.");
     return watershedsUnionFind(srcImageRange(src),
                                destImage(dest));
 }
@@ -773,8 +781,12 @@ watershedsUnionFind(MultiArrayView<2, T1, S1> const & src,
 */
 class WatershedOptions
 {
-  public:
-    enum Method { RegionGrowing, UnionFind };
+public:
+    enum Method
+    {
+        RegionGrowing,
+        UnionFind
+    };
 
     double max_cost, bias;
     SRGType terminate;
@@ -784,71 +796,72 @@ class WatershedOptions
 
 
 
-        /** \brief Create options object with default settings.
+    /** \brief Create options object with default settings.
 
             Defaults are: perform complete grow (all pixels are assigned to regions),
             use standard algorithm, assume that the destination image already contains
             region seeds.
         */
     WatershedOptions()
-    : max_cost(0.0),
-      bias(1.0),
-      terminate(CompleteGrow),
-      method(RegionGrowing),
-      biased_label(0),
-      bucket_count(0),
-      seed_options(SeedOptions().unspecified())
-    {}
+        : max_cost(0.0),
+          bias(1.0),
+          terminate(CompleteGrow),
+          method(RegionGrowing),
+          biased_label(0),
+          bucket_count(0),
+          seed_options(SeedOptions().unspecified())
+    {
+    }
 
-        /** \brief Perform complete grow.
+    /** \brief Perform complete grow.
 
             That is, all pixels are assigned to regions, without explicit contours
             in between.
 
             Default: true
         */
-    WatershedOptions & completeGrow()
+    WatershedOptions& completeGrow()
     {
         terminate = SRGType(CompleteGrow | (terminate & StopAtThreshold));
         return *this;
     }
 
-        /** \brief Keep one-pixel wide contour between regions.
+    /** \brief Keep one-pixel wide contour between regions.
 
             Note that this option is unsupported by the turbo algorithm.
 
             Default: false
         */
-    WatershedOptions & keepContours()
+    WatershedOptions& keepContours()
     {
         terminate = SRGType(KeepContours | (terminate & StopAtThreshold));
         return *this;
     }
 
-        /** \brief Set \ref SRGType explicitly.
+    /** \brief Set \ref SRGType explicitly.
 
             Default: CompleteGrow
         */
-    WatershedOptions & srgType(SRGType type)
+    WatershedOptions& srgType(SRGType type)
     {
         terminate = type;
         return *this;
     }
 
-        /** \brief Stop region growing when the boundaryness exceeds the threshold.
+    /** \brief Stop region growing when the boundaryness exceeds the threshold.
 
             This option may be combined with completeGrow() and keepContours().
 
             Default: no early stopping
         */
-    WatershedOptions & stopAtThreshold(double threshold)
+    WatershedOptions& stopAtThreshold(double threshold)
     {
         terminate = SRGType(terminate | StopAtThreshold);
         max_cost = threshold;
         return *this;
     }
 
-        /** \brief Use a simpler, but faster region growing algorithm.
+    /** \brief Use a simpler, but faster region growing algorithm.
 
             The algorithm internally uses a \ref BucketQueue to determine
             the processing order of the pixels. This is only useful,
@@ -859,14 +872,14 @@ class WatershedOptions
 
             Default: don't use the turbo algorithm
         */
-    WatershedOptions & turboAlgorithm(unsigned int bucket_count = 256)
+    WatershedOptions& turboAlgorithm(unsigned int bucket_count = 256)
     {
         this->bucket_count = bucket_count;
         method = RegionGrowing;
         return *this;
     }
 
-        /** \brief Specify seed options.
+    /** \brief Specify seed options.
 
             In this case, watershedsRegionGrowing() assumes that the destination
             image does not yet contain seeds. It will therefore call
@@ -875,13 +888,13 @@ class WatershedOptions
             Default: don't compute seeds (i.e. assume that destination image already
             contains seeds).
         */
-    WatershedOptions & seedOptions(SeedOptions const & s)
+    WatershedOptions& seedOptions(SeedOptions const& s)
     {
         seed_options = s;
         return *this;
     }
 
-        /** \brief Bias the cost of the specified region by the given factor.
+    /** \brief Bias the cost of the specified region by the given factor.
 
             In certain applications, one region (typically the background) should
             be preferred in region growing. This is most easily achieved
@@ -891,14 +904,14 @@ class WatershedOptions
 
             Default: don't bias any region.
         */
-    WatershedOptions & biasLabel(unsigned int label, double factor)
+    WatershedOptions& biasLabel(unsigned int label, double factor)
     {
         biased_label = label;
         bias = factor;
         return *this;
     }
 
-        /** \brief Specify the algorithm to be used.
+    /** \brief Specify the algorithm to be used.
 
             Possible values are <tt>WatershedOptions::RegionGrowing</tt> and
             <tt>WatershedOptions::UnionFind</tt>. The latter algorithm is fastest
@@ -906,183 +919,205 @@ class WatershedOptions
 
             Default: RegionGrowing.
         */
-    WatershedOptions & useMethod(Method method)
+    WatershedOptions& useMethod(Method method)
     {
         this->method = method;
         return *this;
     }
 
-        /** \brief Use region-growing watershed.
+    /** \brief Use region-growing watershed.
 
             Use this method when you want to specify seeds explicitly (seeded watersheds)
             or use any of the other options.
 
             Default: true.
         */
-    WatershedOptions & regionGrowing()
+    WatershedOptions& regionGrowing()
     {
         method = RegionGrowing;
         return *this;
     }
 
-        /** \brief Use union-find watershed.
+    /** \brief Use union-find watershed.
 
             This is the fasted method, but it doesn't support seeds and any of the other
             options (they will be silently ignored).
 
             Default: false.
         */
-    WatershedOptions & unionFind()
+    WatershedOptions& unionFind()
     {
         method = UnionFind;
         return *this;
     }
 };
 
-namespace detail {
+namespace detail
+{
 
-template <class CostType, class LabelType>
+template<class CostType, class LabelType>
 class WatershedStatistics
 {
-  public:
-
+public:
     typedef SeedRgDirectValueFunctor<CostType> value_type;
-    typedef value_type & reference;
-    typedef value_type const & const_reference;
+    typedef value_type& reference;
+    typedef value_type const& const_reference;
 
-    typedef CostType  first_argument_type;
+    typedef CostType first_argument_type;
     typedef LabelType second_argument_type;
     typedef LabelType argument_type;
 
     WatershedStatistics()
-    {}
+    {
+    }
 
     void resize(unsigned int)
-    {}
+    {
+    }
 
     void reset()
-    {}
+    {
+    }
 
-        /** update regions statistics (do nothing in the watershed algorithm)
+    /** update regions statistics (do nothing in the watershed algorithm)
         */
-    template <class T1, class T2>
-    void operator()(first_argument_type const &, second_argument_type const &)
-    {}
+    template<class T1, class T2>
+    void operator()(first_argument_type const&, second_argument_type const&)
+    {
+    }
 
-        /** ask for maximal index (label) allowed
+    /** ask for maximal index (label) allowed
         */
     LabelType maxRegionLabel() const
-        { return size() - 1; }
+    {
+        return size() - 1;
+    }
 
-        /** ask for array size (i.e. maxRegionLabel() + 1)
+    /** ask for array size (i.e. maxRegionLabel() + 1)
         */
     LabelType size() const
-        { return NumericTraits<LabelType>::max(); }
+    {
+        return NumericTraits<LabelType>::max();
+    }
 
-        /** read the statistics functor for a region via its label
+    /** read the statistics functor for a region via its label
         */
     const_reference operator[](argument_type) const
-        { return stats; }
+    {
+        return stats;
+    }
 
-        /** access the statistics functor for a region via its label
+    /** access the statistics functor for a region via its label
         */
     reference operator[](argument_type)
-        { return stats; }
+    {
+        return stats;
+    }
 
     value_type stats;
 };
 
-template <class Value>
+template<class Value>
 class SeedRgBiasedValueFunctor
 {
-  public:
+public:
     double bias;
 
-        /* the functor's argument type
+    /* the functor's argument type
         */
     typedef Value argument_type;
 
-        /* the functor's result type (unused, only necessary for
+    /* the functor's result type (unused, only necessary for
             use of SeedRgDirectValueFunctor in \ref vigra::ArrayOfRegionStatistics
         */
     typedef Value result_type;
 
-        /* the return type of the cost() function
+    /* the return type of the cost() function
         */
     typedef Value cost_type;
 
     SeedRgBiasedValueFunctor(double b = 1.0)
-    : bias(b)
-    {}
-
-        /* Do nothing (since we need not update region statistics).
-        */
-    void operator()(argument_type const &) const {}
-
-        /* Return scaled argument
-        */
-    cost_type cost(argument_type const & v) const
+        : bias(b)
     {
-        return cost_type(bias*v);
+    }
+
+    /* Do nothing (since we need not update region statistics).
+        */
+    void operator()(argument_type const&) const
+    {
+    }
+
+    /* Return scaled argument
+        */
+    cost_type cost(argument_type const& v) const
+    {
+        return cost_type(bias * v);
     }
 };
 
-template <class CostType, class LabelType>
+template<class CostType, class LabelType>
 class BiasedWatershedStatistics
 {
-  public:
-
+public:
     typedef SeedRgBiasedValueFunctor<CostType> value_type;
-    typedef value_type & reference;
-    typedef value_type const & const_reference;
+    typedef value_type& reference;
+    typedef value_type const& const_reference;
 
-    typedef CostType  first_argument_type;
+    typedef CostType first_argument_type;
     typedef LabelType second_argument_type;
     typedef LabelType argument_type;
 
     BiasedWatershedStatistics(LabelType biasedLabel, double bias)
-    : biased_label(biasedLabel),
-      biased_stats(bias)
-    {}
+        : biased_label(biasedLabel),
+          biased_stats(bias)
+    {
+    }
 
     void resize(unsigned int)
-    {}
+    {
+    }
 
     void reset()
-    {}
+    {
+    }
 
-        /** update regions statistics (do nothing in the watershed algorithm)
+    /** update regions statistics (do nothing in the watershed algorithm)
         */
-    template <class T1, class T2>
-    void operator()(first_argument_type const &, second_argument_type const &)
-    {}
+    template<class T1, class T2>
+    void operator()(first_argument_type const&, second_argument_type const&)
+    {
+    }
 
-        /** ask for maximal index (label) allowed
+    /** ask for maximal index (label) allowed
         */
     LabelType maxRegionLabel() const
-        { return size() - 1; }
+    {
+        return size() - 1;
+    }
 
-        /** ask for array size (i.e. maxRegionLabel() + 1)
+    /** ask for array size (i.e. maxRegionLabel() + 1)
         */
     LabelType size() const
-        { return NumericTraits<LabelType>::max(); }
+    {
+        return NumericTraits<LabelType>::max();
+    }
 
-        /** read the statistics functor for a region via its label
+    /** read the statistics functor for a region via its label
         */
     const_reference operator[](argument_type label) const
     {
         return (label == biased_label)
-                    ? biased_stats
-                    : stats;
+                   ? biased_stats
+                   : stats;
     }
 
-        /** access the statistics functor for a region via its label
+    /** access the statistics functor for a region via its label
         */
     reference operator[](argument_type label)
     {
         return (label == biased_label)
-                    ? biased_stats
-                    : stats;
+                   ? biased_stats
+                   : stats;
     }
 
     LabelType biased_label;
@@ -1348,23 +1383,22 @@ class BiasedWatershedStatistics
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> unsigned int watershedsRegionGrowing)
+doxygen_overloaded_function(template<...> unsigned int watershedsRegionGrowing)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood>
-unsigned int
-watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
-                        DestIterator upperleftd, DestAccessor da,
-                        Neighborhood neighborhood,
-                        WatershedOptions const & options = WatershedOptions())
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor,
+             class Neighborhood>
+    unsigned int watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
+                                         DestIterator upperleftd, DestAccessor da,
+                                         Neighborhood neighborhood,
+                                         WatershedOptions const& options = WatershedOptions())
 {
     typedef typename SrcAccessor::value_type ValueType;
     typedef typename DestAccessor::value_type LabelType;
 
     unsigned int max_region_label = 0;
 
-    if(options.seed_options.mini != SeedOptions::Unspecified)
+    if (options.seed_options.mini != SeedOptions::Unspecified)
     {
         // we are supposed to compute seeds
         max_region_label =
@@ -1373,28 +1407,28 @@ watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcce
                                    neighborhood, options.seed_options);
     }
 
-    if(options.biased_label != 0)
+    if (options.biased_label != 0)
     {
         // create a statistics functor for biased region growing
         detail::BiasedWatershedStatistics<ValueType, LabelType>
-                                 regionstats(options.biased_label, options.bias);
+            regionstats(options.biased_label, options.bias);
 
         // perform region growing, starting from the seeds computed above
-        if(options.bucket_count == 0)
+        if (options.bucket_count == 0)
         {
             max_region_label =
-            seededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),
-                                srcIter(upperleftd, da),
-                                destIter(upperleftd, da),
-                                regionstats, options.terminate, neighborhood, options.max_cost);
+                seededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),
+                                    srcIter(upperleftd, da),
+                                    destIter(upperleftd, da),
+                                    regionstats, options.terminate, neighborhood, options.max_cost);
         }
         else
         {
             max_region_label =
-            fastSeededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),
-                                    destIter(upperleftd, da),
-                                    regionstats, options.terminate,
-                                    neighborhood, options.max_cost, options.bucket_count);
+                fastSeededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),
+                                        destIter(upperleftd, da),
+                                        regionstats, options.terminate,
+                                        neighborhood, options.max_cost, options.bucket_count);
         }
     }
     else
@@ -1403,89 +1437,89 @@ watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcce
         detail::WatershedStatistics<ValueType, LabelType> regionstats;
 
         // perform region growing, starting from the seeds computed above
-        if(options.bucket_count == 0)
+        if (options.bucket_count == 0)
         {
             max_region_label =
-            seededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),
-                                srcIter(upperleftd, da),
-                                destIter(upperleftd, da),
-                                regionstats, options.terminate, neighborhood, options.max_cost);
+                seededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),
+                                    srcIter(upperleftd, da),
+                                    destIter(upperleftd, da),
+                                    regionstats, options.terminate, neighborhood, options.max_cost);
         }
         else
         {
             max_region_label =
-            fastSeededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),
-                                    destIter(upperleftd, da),
-                                    regionstats, options.terminate,
-                                    neighborhood, options.max_cost, options.bucket_count);
+                fastSeededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),
+                                        destIter(upperleftd, da),
+                                        regionstats, options.terminate,
+                                        neighborhood, options.max_cost, options.bucket_count);
         }
     }
 
     return max_region_label;
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline unsigned int
 watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
                         DestIterator upperleftd, DestAccessor da,
-                        WatershedOptions const & options = WatershedOptions())
+                        WatershedOptions const& options = WatershedOptions())
 {
-    return watershedsRegionGrowing(upperlefts, lowerrights, sa, upperleftd,  da,
+    return watershedsRegionGrowing(upperlefts, lowerrights, sa, upperleftd, da,
                                    EightNeighborCode(), options);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class Neighborhood>
 inline unsigned int
 watershedsRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         pair<DestIterator, DestAccessor> dest,
                         Neighborhood neighborhood,
-                        WatershedOptions const & options = WatershedOptions())
+                        WatershedOptions const& options = WatershedOptions())
 {
     return watershedsRegionGrowing(src.first, src.second, src.third,
                                    dest.first, dest.second,
                                    neighborhood, options);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline unsigned int
 watershedsRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         pair<DestIterator, DestAccessor> dest,
-                        WatershedOptions const & options = WatershedOptions())
+                        WatershedOptions const& options = WatershedOptions())
 {
     return watershedsRegionGrowing(src.first, src.second, src.third,
                                    dest.first, dest.second,
                                    EightNeighborCode(), options);
 }
 
-template <class T1, class S1,
-          class T2, class S2,
-          class Neighborhood>
+template<class T1, class S1,
+         class T2, class S2,
+         class Neighborhood>
 inline unsigned int
-watershedsRegionGrowing(MultiArrayView<2, T1, S1> const & src,
-                        MultiArrayView<2, T2, S2> dest,
-                        Neighborhood neighborhood,
-                        WatershedOptions const & options = WatershedOptions())
+    watershedsRegionGrowing(MultiArrayView<2, T1, S1> const& src,
+                            MultiArrayView<2, T2, S2> dest,
+                            Neighborhood neighborhood,
+                            WatershedOptions const& options = WatershedOptions())
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "watershedsRegionGrowing(): shape mismatch between input and output.");
+                       "watershedsRegionGrowing(): shape mismatch between input and output.");
     return watershedsRegionGrowing(srcImageRange(src),
                                    destImage(dest),
                                    neighborhood, options);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline unsigned int
-watershedsRegionGrowing(MultiArrayView<2, T1, S1> const & src,
-                        MultiArrayView<2, T2, S2> dest,
-                        WatershedOptions const & options = WatershedOptions())
+    watershedsRegionGrowing(MultiArrayView<2, T1, S1> const& src,
+                            MultiArrayView<2, T2, S2> dest,
+                            WatershedOptions const& options = WatershedOptions())
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "watershedsRegionGrowing(): shape mismatch between input and output.");
+                       "watershedsRegionGrowing(): shape mismatch between input and output.");
     return watershedsRegionGrowing(srcImageRange(src),
                                    destImage(dest),
                                    EightNeighborCode(), options);

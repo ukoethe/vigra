@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -40,69 +40,74 @@
 
 // GIF format
 
-namespace vigra {
+namespace vigra
+{
 
-    struct GIFDecoderImpl;
-    struct GIFEncoderImpl;
+struct GIFDecoderImpl;
+struct GIFEncoderImpl;
 
-    struct GIFCodecFactory : public CodecFactory
+struct GIFCodecFactory : public CodecFactory
+{
+    CodecDesc getCodecDesc() const;
+    VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
+    VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
+};
+
+class GIFDecoder : public Decoder
+{
+    GIFDecoderImpl* pimpl;
+
+public:
+    GIFDecoder()
+        : pimpl(0)
     {
-        CodecDesc getCodecDesc() const;
-        VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
-        VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
-    };
+    }
 
-    class GIFDecoder : public Decoder
+    ~GIFDecoder();
+    void init(const std::string&);
+    void close();
+    void abort();
+
+    std::string getFileType() const;
+    std::string getPixelType() const;
+
+    unsigned int getWidth() const;
+    unsigned int getHeight() const;
+    unsigned int getNumBands() const;
+    unsigned int getOffset() const;
+
+    const void* currentScanlineOfBand(unsigned int) const;
+    void nextScanline();
+};
+
+class GIFEncoder : public Encoder
+{
+    GIFEncoderImpl* pimpl;
+
+public:
+    GIFEncoder()
+        : pimpl(0)
     {
-        GIFDecoderImpl * pimpl;
+    }
 
-    public:
+    ~GIFEncoder();
+    void init(const std::string&);
+    void close();
+    void abort();
 
-        GIFDecoder() : pimpl(0) {}
+    std::string getFileType() const;
+    unsigned int getOffset() const;
 
-        ~GIFDecoder();
-        void init( const std::string & );
-        void close();
-        void abort();
+    void setWidth(unsigned int);
+    void setHeight(unsigned int);
+    void setNumBands(unsigned int);
+    void setCompressionType(const std::string&, int = -1);
+    void setPixelType(const std::string&);
+    void finalizeSettings();
 
-        std::string getFileType() const;
-        std::string getPixelType() const;
-
-        unsigned int getWidth() const;
-        unsigned int getHeight() const;
-        unsigned int getNumBands() const;
-        unsigned int getOffset() const;
-
-        const void * currentScanlineOfBand( unsigned int ) const;
-        void nextScanline();
-    };
-
-    class GIFEncoder : public Encoder
-    {
-        GIFEncoderImpl * pimpl;
-
-    public:
-
-        GIFEncoder() : pimpl(0) {}
-
-        ~GIFEncoder();
-        void init( const std::string & );
-        void close();
-        void abort();
-
-        std::string getFileType() const;
-        unsigned int getOffset() const;
-
-        void setWidth( unsigned int );
-        void setHeight( unsigned int );
-        void setNumBands( unsigned int );
-        void setCompressionType( const std::string &, int = -1 );
-        void setPixelType( const std::string & );
-        void finalizeSettings();
-
-        void * currentScanlineOfBand( unsigned int );
-        void nextScanline();
-    };
-}
+    void* currentScanlineOfBand(unsigned int);
+    void nextScanline();
+};
+} // namespace vigra
 
 #endif // VIGRA_IMPEX_GIF_HXX

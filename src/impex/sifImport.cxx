@@ -54,153 +54,208 @@
 
 
 
-#include <iostream>
 #include "vigra/sifImport.hxx"
-#include "vigra/utilities.hxx"
 #include "byteorder.hxx"
+#include "vigra/utilities.hxx"
+#include <iostream>
 
-namespace vigra {
+namespace vigra
+{
 
 // private helper functions
-namespace helper {
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+namespace helper
+{
+std::vector<std::string>&
+split(const std::string& s, char delim, std::vector<std::string>& elems)
+{
     std::stringstream ss(s);
     std::string item;
-    while(std::getline(ss, item, delim)) {
+    while (std::getline(ss, item, delim))
+    {
         elems.push_back(item);
     }
     return elems;
 }
 
 
-std::vector<std::string> split(const std::string &s, char delim) {
+std::vector<std::string>
+split(const std::string& s, char delim)
+{
     std::vector<std::string> elems;
     return split(s, delim, elems);
 }
 
-class BadConversion : public std::runtime_error {
- public:
-   BadConversion(std::string const& s)
-     : std::runtime_error(s)
-     { }
+class BadConversion : public std::runtime_error
+{
+public:
+    BadConversion(std::string const& s)
+        : std::runtime_error(s)
+    {
+    }
 };
- 
-inline double convertToDouble(std::string const& s) {
-   std::istringstream i(s);
-   double x;
-   if (!(i >> x))
-     throw BadConversion("convertToDouble(\"" + s + "\")");
-   return x;
-} 
 
-inline int convertToInt(std::string const& s) {
-   std::istringstream i(s);
-   int x;
-   if (!(i >> x))
-     throw BadConversion("convertToDouble(\"" + s + "\")");
-   return x;
-} 
+inline double
+convertToDouble(std::string const& s)
+{
+    std::istringstream i(s);
+    double x;
+    if (!(i >> x))
+        throw BadConversion("convertToDouble(\"" + s + "\")");
+    return x;
+}
 
-}// namespace helper
- 
+inline int
+convertToInt(std::string const& s)
+{
+    std::istringstream i(s);
+    int x;
+    if (!(i >> x))
+        throw BadConversion("convertToDouble(\"" + s + "\")");
+    return x;
+}
+
+} // namespace helper
+
 /********************************************************/
 /*                                                      */
 /*                   SIFImportInfo                      */
 /*                                                      */
 /********************************************************/
 
-int SIFImportInfo::width() const {    return m_dims[0]; }
-int SIFImportInfo::height() const {    return m_dims[1]; }
-int SIFImportInfo::stacksize() const {    return m_dims[2]; }
-std::ptrdiff_t SIFImportInfo::getOffset() const {    return m_offset; }
-const char * SIFImportInfo::getFileName() const  {    return m_filename;    }    
+int
+SIFImportInfo::width() const
+{
+    return m_dims[0];
+}
+int
+SIFImportInfo::height() const
+{
+    return m_dims[1];
+}
+int
+SIFImportInfo::stacksize() const
+{
+    return m_dims[2];
+}
+std::ptrdiff_t
+SIFImportInfo::getOffset() const
+{
+    return m_offset;
+}
+const char*
+SIFImportInfo::getFileName() const
+{
+    return m_filename;
+}
 
-MultiArrayIndex SIFImportInfo::numDimensions() const { return 3; } // alway 3D data
-ArrayVector<size_t> const & SIFImportInfo::shape() const {return m_dims; }
-MultiArrayIndex SIFImportInfo::shapeOfDimension(const int dim) const { return m_dims[dim]; }
+MultiArrayIndex
+SIFImportInfo::numDimensions() const
+{
+    return 3;
+} // alway 3D data
+ArrayVector<size_t> const&
+SIFImportInfo::shape() const
+{
+    return m_dims;
+}
+MultiArrayIndex
+SIFImportInfo::shapeOfDimension(const int dim) const
+{
+    return m_dims[dim];
+}
 
 
 
-SIFImportInfo::SIFImportInfo(const char* filename) :
-    m_filename(filename), m_dims(3), m_offset(0), headerlen(32)
+SIFImportInfo::SIFImportInfo(const char* filename)
+    : m_filename(filename), m_dims(3), m_offset(0), headerlen(32)
 {
 
     // some initialisations
     left = 1, right = 512, bottom = 1, top = 512;
     xbin = 1, ybin = 1;
     xres = 1, yres = 1;
-    
-    std::ifstream siffile (filename);
-    if( !siffile.is_open() )
+
+    std::ifstream siffile(filename);
+    if (!siffile.is_open())
     {
         std::string msg("Unable to open file '");
         msg += filename;
         msg += "'. File not found.";
         vigra_precondition(0, msg.c_str());
-    }    
-    int spool = 0;    //If Data is Spooled one, spool is set to 1
-    for(int i=0;i<headerlen+spool+1;i++) {
+    }
+    int spool = 0; //If Data is Spooled one, spool is set to 1
+    for (int i = 0; i < headerlen + spool + 1; i++)
+    {
         std::string str;
         getline(siffile, str);
 #ifdef DEBUG
         std::cout << str << std::endl;
 #endif
-        if(i==0) {
-            vigra_precondition(str=="Andor Technology Multi-Channel File", "The file is not a valid sif File.");
+        if (i == 0)
+        {
+            vigra_precondition(str == "Andor Technology Multi-Channel File", "The file is not a valid sif File.");
         }
-        if(i==2) { // Extract parameters such as temperature, exposureTime and so on. 
+        if (i == 2)
+        { // Extract parameters such as temperature, exposureTime and so on.
             std::vector<std::string> tokens = helper::split(str, ' ');
             // TODO
             //~ d = new Date(Long.parseLong(tokens[4])*1000); // Date is recorded as seconds counted from 1970.1.1 00:00:00
             temperature1 = helper::convertToDouble(tokens[5]);
             exposureTime = tokens[12];
             cycleTime = tokens[13];
-            readout = 1/helper::convertToDouble(tokens[18])/1e+6;
+            readout = 1 / helper::convertToDouble(tokens[18]) / 1e+6;
             EMGain = tokens[21];
             verticalShiftSpeed = tokens[41];
             preAmpGain = tokens[43];
             temperature2 = helper::convertToDouble(tokens[47]);
-            if(tokens.size() > 57) {
-                version = tokens[54]+"."+tokens[55]+"."+tokens[56]+"."+tokens[57];
+            if (tokens.size() > 57)
+            {
+                version = tokens[54] + "." + tokens[55] + "." + tokens[56] + "." + tokens[57];
             }
-            if(temperature1 == -999) 
+            if (temperature1 == -999)
                 // If the temperature is unstable, temperature1 value is -999 and unstable temperature value is recored in temperature2
                 temperature = asString(temperature2) + " (Unstable)";
             else
                 temperature = asString(temperature1);
         }
-        if(i==3) {
+        if (i == 3)
+        {
             model = str; // Model of EMCCD camera
         }
-        if(i==5) {
+        if (i == 5)
+        {
             originalFilename = str; // Read original filename
         }
-        if(i==7) { // If the Data is spooled one, "spool" value is set to 1
+        if (i == 7)
+        { // If the Data is spooled one, "spool" value is set to 1
             std::vector<std::string> tokens = helper::split(str, ' ');
-            if(tokens.size() >= 1 && tokens[0]=="Spooled") {
-                spool=1;
+            if (tokens.size() >= 1 && tokens[0] == "Spooled")
+            {
+                spool = 1;
             }
         }
-        if(i > 7 && i < headerlen-12) 
+        if (i > 7 && i < headerlen - 12)
         {
-            if(str.size() == 17 && 
-                 str.substr(0,6)=="65539 " && 
-                 str[6] == 0x01 && str[7] == 0x20 && str[8] == 0x00) 
-            { // seems to be always ten lines before the dimensions-line 
-                 headerlen = i+12;
+            if (str.size() == 17 &&
+                str.substr(0, 6) == "65539 " &&
+                str[6] == 0x01 && str[7] == 0x20 && str[8] == 0x00)
+            { // seems to be always ten lines before the dimensions-line
+                headerlen = i + 12;
             }
         }
-        if(i==(headerlen-2)) { // Read size of stack (frame length)
-            std::string str2 = str.substr ( 0, 12 );
-            if(str2 == "Pixel number") str = str.substr(12); // drop "Pixel number" as first letters
+        if (i == (headerlen - 2))
+        { // Read size of stack (frame length)
+            std::string str2 = str.substr(0, 12);
+            if (str2 == "Pixel number")
+                str = str.substr(12); // drop "Pixel number" as first letters
             std::vector<std::string> tokens = helper::split(str, ' ');
             vigra_precondition(tokens.size() >= 6, "format error. Not able to read stacksize.");
             yres = helper::convertToInt(tokens[2]);
             xres = helper::convertToInt(tokens[3]);
             m_dims[2] = helper::convertToInt(tokens[5]);
-            
         }
-        if(i==(headerlen-1)) { // Read information about the size and bin
+        if (i == (headerlen - 1))
+        { // Read information about the size and bin
             std::vector<std::string> tokens = helper::split(str, ' ');
             vigra_precondition(tokens.size() >= 7, "format error. Not able to read image dimensions.");
             left = helper::convertToInt(tokens[1]);
@@ -211,94 +266,77 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
             ybin = helper::convertToInt(tokens[6]);
         }
     }
-    
+
     // determine filesize
-    siffile.seekg (0, std::ios::end); // goto the end
+    siffile.seekg(0, std::ios::end); // goto the end
     filesize = siffile.tellg();
-    siffile.seekg (0, std::ios::beg);  // goto the beginning
+    siffile.seekg(0, std::ios::beg); // goto the beginning
     filesize -= siffile.tellg();
 
     // Estimate the offset value (header length)
-    for (int i = 0; i < (headerlen+stacksize()); i++){
-        while(siffile.get() != 10) {
+    for (int i = 0; i < (headerlen + stacksize()); i++)
+    {
+        while (siffile.get() != 10)
+        {
             m_offset++;
         }
         m_offset++;
     }
-    if(siffile.get() == '0' && siffile.get() == 10) { // Newer sif version
+    if (siffile.get() == '0' && siffile.get() == 10)
+    { // Newer sif version
         m_offset += 2;
     }
     siffile.close();
-    
+
     // Calc the width and the height value of the ROI
-    size_t width=0, height=0;
-    width = right-left+1;
+    size_t width = 0, height = 0;
+    width = right - left + 1;
     mod = width % xbin;
-    width = (width-mod)/ybin;
-    height = top-bottom+1;
+    width = (width - mod) / ybin;
+    height = top - bottom + 1;
     mod = height % ybin;
-    height = (height-mod)/xbin;
+    height = (height - mod) / xbin;
     m_dims[0] = width;
     m_dims[1] = height;
 
     size_t data_size = (size_t)width * height * 4 * stacksize();
     vigra_precondition(m_offset + data_size + 8 == filesize, "error reading sif file: data with header should be equal to filesize. ");
-    
-
-
 }
 
 // this function only works for MultiArrayView<3, float> so we don't use a template here.
-void readSIF(const SIFImportInfo &info, MultiArrayView<3, float> array) 
+void
+readSIF(const SIFImportInfo& info, MultiArrayView<3, float> array)
 {
-    readSIFBlock(info, Shape3(0,0,0), Shape3(info.width(), info.height(), info.stacksize()), array);
+    readSIFBlock(info, Shape3(0, 0, 0), Shape3(info.width(), info.height(), info.stacksize()), array);
 }
 
-void readSIFBlock(const SIFImportInfo &info, Shape3 offset, Shape3 shape, MultiArrayView<3, float> array)
+void
+readSIFBlock(const SIFImportInfo& info, Shape3 offset, Shape3 shape, MultiArrayView<3, float> array)
 {
     vigra_precondition(array.isUnstrided(), "readSIFBlock(): Destination array must have consecutive memory.");
     vigra_precondition(sizeof(float) == 4, "SIF files can only be read into MultiArrayView<float32>. On your machine a float has more than 4 bytes.");
-    vigra_precondition(offset[0]==0 && shape[0]==info.width() && offset[1]==0 && shape[1]==info.height(), "readSIFBlock(): only complete frames implemented.");
-    float * memblock =  array.data();        // here we assume that MultiArray hat float32 values as the sif raw data!!
+    vigra_precondition(offset[0] == 0 && shape[0] == info.width() && offset[1] == 0 && shape[1] == info.height(), "readSIFBlock(): only complete frames implemented.");
+    float* memblock = array.data(); // here we assume that MultiArray hat float32 values as the sif raw data!!
 
-    std::ifstream file (info.getFileName(), std::ios::in|std::ios::binary);
+    std::ifstream file(info.getFileName(), std::ios::in | std::ios::binary);
     vigra_precondition(file.is_open(), "Unable to open sif file");
 
-    byteorder bo = byteorder("little endian");  // SIF file is little-endian
+    byteorder bo = byteorder("little endian"); // SIF file is little-endian
 
-    std::ptrdiff_t pos = file.tellg();        // pointer to beginning of the file
-    file.seekg(pos+info.getOffset()+offset[2]*info.width()*info.height()*4);
-    read_array( file, bo, memblock, shape[0]*shape[1]*shape[2] );
+    std::ptrdiff_t pos = file.tellg(); // pointer to beginning of the file
+    file.seekg(pos + info.getOffset() + offset[2] * info.width() * info.height() * 4);
+    read_array(file, bo, memblock, shape[0] * shape[1] * shape[2]);
     file.close();
 }
 
-std::ostream& operator<<(std::ostream& os, const SIFImportInfo& info)
+std::ostream&
+operator<<(std::ostream& os, const SIFImportInfo& info)
 {
     // output
-    os << "\n" <<
-        "SIF Image Information: " <<
-        "\nOriginal Filename:\t" << info.originalFilename <<
-        "\nDate and Time:\t" << info.d <<
-        "\nSoftware Version:\t" << info.version <<
-        "\nCamera Model:\t\t\t" << info.model <<
-        "\nTemperature (C):\t\t"        << info.temperature <<
-        "\nExposure Time (s):\t\t"    << info.exposureTime <<
-        "\nCycle Time (s):\t\t\t" << info.cycleTime <<
-        "\nPixel Readout Rate (MHz):\t" << info.readout <<
-        "\nHorizontal Camera Resolution:\t"    << info.xres <<
-        "\nVertical Camera Resolution:\t"        << info.yres <<
-        "\nImage width:\t\t"          << info.width() <<
-        "\nImage Height:\t\t"        << info.height() <<
-        "\nHorizontal Binning:\t"    << info.xbin <<
-        "\nVertical Binning:\t"        << info.ybin <<
-        "\nEM Gain level:\t"        << info.EMGain <<
-        "\nVertical Shift Speed (s):\t" << info.verticalShiftSpeed <<
-        "\nPre-Amplifier Gain:\t" << info.preAmpGain <<
-        "\nStacksize: \t\t\t" << info.stacksize() <<
-        "\nFilesize: \t\t\t" << info.filesize <<
-        "\nOffset to Image Data: \t" << info.m_offset <<
-        "\n";    
-        
+    os << "\n"
+       << "SIF Image Information: "
+       << "\nOriginal Filename:\t" << info.originalFilename << "\nDate and Time:\t" << info.d << "\nSoftware Version:\t" << info.version << "\nCamera Model:\t\t\t" << info.model << "\nTemperature (C):\t\t" << info.temperature << "\nExposure Time (s):\t\t" << info.exposureTime << "\nCycle Time (s):\t\t\t" << info.cycleTime << "\nPixel Readout Rate (MHz):\t" << info.readout << "\nHorizontal Camera Resolution:\t" << info.xres << "\nVertical Camera Resolution:\t" << info.yres << "\nImage width:\t\t" << info.width() << "\nImage Height:\t\t" << info.height() << "\nHorizontal Binning:\t" << info.xbin << "\nVertical Binning:\t" << info.ybin << "\nEM Gain level:\t" << info.EMGain << "\nVertical Shift Speed (s):\t" << info.verticalShiftSpeed << "\nPre-Amplifier Gain:\t" << info.preAmpGain << "\nStacksize: \t\t\t" << info.stacksize() << "\nFilesize: \t\t\t" << info.filesize << "\nOffset to Image Data: \t" << info.m_offset << "\n";
+
     return os;
 }
 

@@ -38,12 +38,12 @@
 
 #include <boost/python.hpp>
 
-#include <vigra/numpy_array.hxx>
-#include <vigra/numpy_array_converters.hxx>
-#include "vigra/merge_graph/merge_graph.hxx"
 #include "vigra/merge_graph/maps/multi_array_map.hxx"
 #include "vigra/merge_graph/maps/python_map.hxx"
+#include "vigra/merge_graph/merge_graph.hxx"
 #include <vigra/merge_graph/min_indexed_pq.hxx>
+#include <vigra/numpy_array.hxx>
+#include <vigra/numpy_array_converters.hxx>
 namespace python = boost::python;
 
 namespace vigra

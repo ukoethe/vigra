@@ -29,20 +29,21 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
- 
+
+
 #ifndef VIGRA_FLATMORPHOLOGY_HXX
 #define VIGRA_FLATMORPHOLOGY_HXX
 
+#include "multi_shape.hxx"
+#include "utilities.hxx"
 #include <cmath>
 #include <vector>
-#include "utilities.hxx"
-#include "multi_shape.hxx"
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup Morphology Basic Morphological Operations
     Perform erosion, dilation, and median with disc structuring functions
@@ -150,50 +151,49 @@ namespace vigra {
     radius >= 0
     \endcode
 */
-doxygen_overloaded_function(template <...> void discRankOrderFilter)
+doxygen_overloaded_function(template<...> void discRankOrderFilter)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void
-discRankOrderFilter(SrcIterator upperleft1, 
-                    SrcIterator lowerright1, SrcAccessor sa,
-                    DestIterator upperleft2, DestAccessor da,
-                    int radius, float rank)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    void discRankOrderFilter(SrcIterator upperleft1,
+                             SrcIterator lowerright1, SrcAccessor sa,
+                             DestIterator upperleft2, DestAccessor da,
+                             int radius, float rank)
 {
     vigra_precondition((rank >= 0.0) && (rank <= 1.0),
-            "discRankOrderFilter(): Rank must be between 0 and 1"
-            " (inclusive).");
-    
+                       "discRankOrderFilter(): Rank must be between 0 and 1"
+                       " (inclusive).");
+
     vigra_precondition(radius >= 0,
-            "discRankOrderFilter(): Radius must be >= 0.");
-    
+                       "discRankOrderFilter(): Radius must be >= 0.");
+
     int i, x, y, xmax, ymax, xx, yy;
     int rankpos, winsize, leftsum;
-    
+
     long hist[256];
-    
+
     // prepare structuring function
-    std::vector<int> struct_function(radius+1);
+    std::vector<int> struct_function(radius + 1);
     struct_function[0] = radius;
-    
-    double r2 = (double)radius*radius;
-    for(i=1; i<=radius; ++i)
+
+    double r2 = (double)radius * radius;
+    for (i = 1; i <= radius; ++i)
     {
-        double r = (double) i - 0.5;
-        struct_function[i] = (int)(VIGRA_CSTD::sqrt(r2 - r*r) + 0.5);
+        double r = (double)i - 0.5;
+        struct_function[i] = (int)(VIGRA_CSTD::sqrt(r2 - r * r) + 0.5);
     }
 
     int w = lowerright1.x - upperleft1.x;
     int h = lowerright1.y - upperleft1.y;
-    
+
     SrcIterator ys(upperleft1);
     DestIterator yd(upperleft2);
 
-    for(y=0; y<h; ++y, ++ys.y, ++yd.y)
+    for (y = 0; y < h; ++y, ++ys.y, ++yd.y)
     {
         SrcIterator xs(ys);
         DestIterator xd(yd);
-        
+
         // first column
         int x0 = 0;
         int y0 = y;
@@ -201,176 +201,191 @@ discRankOrderFilter(SrcIterator upperleft1,
         int y1 = h - y - 1;
 
         // clear histogram
-        for(i=0; i<256; ++i) hist[i] = 0;
+        for (i = 0; i < 256; ++i)
+            hist[i] = 0;
         winsize = 0;
-        
+
         // init histogram
         ymax = (y1 < radius) ? y1 : radius;
-        for(yy=0; yy<=ymax; ++yy)
+        for (yy = 0; yy <= ymax; ++yy)
         {
             xmax = (x1 < struct_function[yy]) ? x1 : struct_function[yy];
-            for(xx=0; xx<=xmax; ++xx)
+            for (xx = 0; xx <= xmax; ++xx)
             {
                 hist[sa(xs, Diff2D(xx, yy))]++;
                 winsize++;
             }
         }
-        
+
         ymax = (y0 < radius) ? y0 : radius;
-        for(yy=1; yy<=ymax; ++yy)
+        for (yy = 1; yy <= ymax; ++yy)
         {
             xmax = (x1 < struct_function[yy]) ? x1 : struct_function[yy];
-            for(xx=0; xx<=xmax; ++xx)
+            for (xx = 0; xx <= xmax; ++xx)
             {
                 hist[sa(xs, Diff2D(xx, -yy))]++;
                 winsize++;
             }
         }
-    
-        // find the desired histogram bin 
+
+        // find the desired histogram bin
         leftsum = 0;
-        if(rank == 0.0)
+        if (rank == 0.0)
         {
-            for(i=0; i<256; i++)
+            for (i = 0; i < 256; i++)
             {
-                if(hist[i]) break;
+                if (hist[i])
+                    break;
             }
             rankpos = i;
         }
         else
         {
-            for(i=0; i<256; i++)
+            for (i = 0; i < 256; i++)
             {
-                if((float)(hist[i]+leftsum) / winsize >= rank) break;
+                if ((float)(hist[i] + leftsum) / winsize >= rank)
+                    break;
                 leftsum += hist[i];
             }
             rankpos = i;
         }
-        
+
         da.set(rankpos, xd);
-        
+
         ++xs.x;
         ++xd.x;
-        
+
         // inner columns
-        for(x=1; x<w; ++x, ++xs.x, ++xd.x)
+        for (x = 1; x < w; ++x, ++xs.x, ++xd.x)
         {
             x0 = x;
             y0 = y;
             x1 = w - x - 1;
             y1 = h - y - 1;
-            
-            // update histogram 
-            // remove pixels at left border 
+
+            // update histogram
+            // remove pixels at left border
             yy = (y1 < radius) ? y1 : radius;
-            for(; yy>=0; yy--)
+            for (; yy >= 0; yy--)
             {
                 unsigned char cur;
-                xx = struct_function[yy]+1;
-                if(xx > x0) break;
-                
+                xx = struct_function[yy] + 1;
+                if (xx > x0)
+                    break;
+
                 cur = sa(xs, Diff2D(-xx, yy));
-                
+
                 hist[cur]--;
-                if(cur < rankpos) leftsum--;
+                if (cur < rankpos)
+                    leftsum--;
                 winsize--;
             }
             yy = (y0 < radius) ? y0 : radius;
-            for(; yy>=1; yy--)
+            for (; yy >= 1; yy--)
             {
                 unsigned char cur;
-                xx = struct_function[yy]+1;
-                if(xx > x0) break;
-                
+                xx = struct_function[yy] + 1;
+                if (xx > x0)
+                    break;
+
                 cur = sa(xs, Diff2D(-xx, -yy));
-                
+
                 hist[cur]--;
-                if(cur < rankpos) leftsum--;
+                if (cur < rankpos)
+                    leftsum--;
                 winsize--;
             }
-            
-            // add pixels at right border 
+
+            // add pixels at right border
             yy = (y1 < radius) ? y1 : radius;
-            for(; yy>=0; yy--)
+            for (; yy >= 0; yy--)
             {
                 unsigned char cur;
                 xx = struct_function[yy];
-                if(xx > x1) break;
-                
+                if (xx > x1)
+                    break;
+
                 cur = sa(xs, Diff2D(xx, yy));
-                
+
                 hist[cur]++;
-                if(cur < rankpos) leftsum++;
+                if (cur < rankpos)
+                    leftsum++;
                 winsize++;
             }
             yy = (y0 < radius) ? y0 : radius;
-            for(; yy>=1; yy--)
+            for (; yy >= 1; yy--)
             {
                 unsigned char cur;
                 xx = struct_function[yy];
-                if(xx > x1) break;
-                
+                if (xx > x1)
+                    break;
+
                 cur = sa(xs, Diff2D(xx, -yy));
-                
+
                 hist[cur]++;
-                if(cur < rankpos) leftsum++;
+                if (cur < rankpos)
+                    leftsum++;
                 winsize++;
             }
-        
-            // find the desired histogram bin 
-            if(rank == 0.0)
+
+            // find the desired histogram bin
+            if (rank == 0.0)
             {
-                if(leftsum == 0)
+                if (leftsum == 0)
                 {
-                    // search to the right 
-                    for(i=rankpos; i<256; i++)
+                    // search to the right
+                    for (i = rankpos; i < 256; i++)
                     {
-                        if(hist[i]) break;
+                        if (hist[i])
+                            break;
                     }
                     rankpos = i;
                 }
                 else
                 {
-                    // search to the left 
-                    for(i=rankpos-1; i>=0; i--)
+                    // search to the left
+                    for (i = rankpos - 1; i >= 0; i--)
                     {
                         leftsum -= hist[i];
-                        if(leftsum == 0) break;
+                        if (leftsum == 0)
+                            break;
                     }
                     rankpos = i;
                 }
             }
-            else  // rank > 0.0 
+            else // rank > 0.0
             {
-                if((float)leftsum / winsize < rank)
+                if ((float)leftsum / winsize < rank)
                 {
-                    // search to the right 
-                    for(i=rankpos; i<256; i++)
+                    // search to the right
+                    for (i = rankpos; i < 256; i++)
                     {
-                        if((float)(hist[i]+leftsum) / winsize >= rank) break;
-                        leftsum+=hist[i];
+                        if ((float)(hist[i] + leftsum) / winsize >= rank)
+                            break;
+                        leftsum += hist[i];
                     }
                     rankpos = i;
                 }
                 else
                 {
-                    // search to the left 
-                    for(i=rankpos-1; i>=0; i--)
+                    // search to the left
+                    for (i = rankpos - 1; i >= 0; i--)
                     {
-                        leftsum-=hist[i];
-                        if((float)leftsum / winsize < rank) break;
+                        leftsum -= hist[i];
+                        if ((float)leftsum / winsize < rank)
+                            break;
                     }
                     rankpos = i;
                 }
             }
-                    
+
             da.set(rankpos, xd);
         }
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     pair<DestIterator, DestAccessor> dest,
@@ -381,15 +396,15 @@ discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         radius, rank);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-discRankOrderFilter(MultiArrayView<2, T1, S1> const & src,
-                    MultiArrayView<2, T2, S2> dest,
-                    int radius, float rank)
+    discRankOrderFilter(MultiArrayView<2, T1, S1> const& src,
+                        MultiArrayView<2, T2, S2> dest,
+                        int radius, float rank)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "discRankOrderFilter(): shape mismatch between input and output.");
+                       "discRankOrderFilter(): shape mismatch between input and output.");
     discRankOrderFilter(srcImageRange(src),
                         destImage(dest),
                         radius, rank);
@@ -446,45 +461,44 @@ discRankOrderFilter(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void discErosion)
+doxygen_overloaded_function(template<...> void discErosion)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline void 
-discErosion(SrcIterator upperleft1, 
-            SrcIterator lowerright1, SrcAccessor sa,
-            DestIterator upperleft2, DestAccessor da,
-            int radius)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    inline void discErosion(SrcIterator upperleft1,
+                            SrcIterator lowerright1, SrcAccessor sa,
+                            DestIterator upperleft2, DestAccessor da,
+                            int radius)
 {
     vigra_precondition(radius >= 0, "discErosion(): Radius must be >= 0.");
-    
-    discRankOrderFilter(upperleft1, lowerright1, sa, 
+
+    discRankOrderFilter(upperleft1, lowerright1, sa,
                         upperleft2, da, radius, 0.0);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 void
 discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             pair<DestIterator, DestAccessor> dest,
             int radius)
 {
     vigra_precondition(radius >= 0, "discErosion(): Radius must be >= 0.");
-    
+
     discRankOrderFilter(src.first, src.second, src.third,
                         dest.first, dest.second,
                         radius, 0.0);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-discErosion(MultiArrayView<2, T1, S1> const & src,
-            MultiArrayView<2, T2, S2> dest,
-            int radius)
+    discErosion(MultiArrayView<2, T1, S1> const& src,
+                MultiArrayView<2, T2, S2> dest,
+                int radius)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "discErosion(): shape mismatch between input and output.");
+                       "discErosion(): shape mismatch between input and output.");
     discErosion(srcImageRange(src), destImage(dest), radius);
 }
 
@@ -539,45 +553,44 @@ discErosion(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void discDilation)
+doxygen_overloaded_function(template<...> void discDilation)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline void 
-discDilation(SrcIterator upperleft1, 
-            SrcIterator lowerright1, SrcAccessor sa,
-            DestIterator upperleft2, DestAccessor da,
-            int radius)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    inline void discDilation(SrcIterator upperleft1,
+                             SrcIterator lowerright1, SrcAccessor sa,
+                             DestIterator upperleft2, DestAccessor da,
+                             int radius)
 {
     vigra_precondition(radius >= 0, "discDilation(): Radius must be >= 0.");
-    
-    discRankOrderFilter(upperleft1, lowerright1, sa, 
+
+    discRankOrderFilter(upperleft1, lowerright1, sa,
                         upperleft2, da, radius, 1.0);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 void
 discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
              pair<DestIterator, DestAccessor> dest,
              int radius)
 {
     vigra_precondition(radius >= 0, "discDilation(): Radius must be >= 0.");
-    
+
     discRankOrderFilter(src.first, src.second, src.third,
                         dest.first, dest.second,
                         radius, 1.0);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-discDilation(MultiArrayView<2, T1, S1> const & src,
-             MultiArrayView<2, T2, S2> dest,
-             int radius)
+    discDilation(MultiArrayView<2, T1, S1> const& src,
+                 MultiArrayView<2, T2, S2> dest,
+                 int radius)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "discDilation(): shape mismatch between input and output.");
+                       "discDilation(): shape mismatch between input and output.");
     discDilation(srcImageRange(src), destImage(dest), radius);
 }
 
@@ -632,45 +645,44 @@ discDilation(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void discMedian)
+doxygen_overloaded_function(template<...> void discMedian)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline void 
-discMedian(SrcIterator upperleft1, 
-            SrcIterator lowerright1, SrcAccessor sa,
-            DestIterator upperleft2, DestAccessor da,
-            int radius)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    inline void discMedian(SrcIterator upperleft1,
+                           SrcIterator lowerright1, SrcAccessor sa,
+                           DestIterator upperleft2, DestAccessor da,
+                           int radius)
 {
     vigra_precondition(radius >= 0, "discMedian(): Radius must be >= 0.");
-    
-    discRankOrderFilter(upperleft1, lowerright1, sa, 
+
+    discRankOrderFilter(upperleft1, lowerright1, sa,
                         upperleft2, da, radius, 0.5);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 void
 discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
            pair<DestIterator, DestAccessor> dest,
            int radius)
 {
     vigra_precondition(radius >= 0, "discMedian(): Radius must be >= 0.");
-    
+
     discRankOrderFilter(src.first, src.second, src.third,
                         dest.first, dest.second,
                         radius, 0.5);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-discMedian(MultiArrayView<2, T1, S1> const & src,
-           MultiArrayView<2, T2, S2> dest,
-           int radius)
+    discMedian(MultiArrayView<2, T1, S1> const& src,
+               MultiArrayView<2, T2, S2> dest,
+               int radius)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "discMedian(): shape mismatch between input and output.");
+                       "discMedian(): shape mismatch between input and output.");
     discMedian(srcImageRange(src), destImage(dest), radius);
 }
 
@@ -791,53 +803,52 @@ discMedian(MultiArrayView<2, T1, S1> const & src,
     radius >= 0
     \endcode
 */
-doxygen_overloaded_function(template <...> void discRankOrderFilterWithMask)
+doxygen_overloaded_function(template<...> void discRankOrderFilterWithMask)
 
-template <class SrcIterator, class SrcAccessor,
-          class MaskIterator, class MaskAccessor,
-          class DestIterator, class DestAccessor>
-void
-discRankOrderFilterWithMask(SrcIterator upperleft1, 
-                            SrcIterator lowerright1, SrcAccessor sa,
-                            MaskIterator upperleftm, MaskAccessor mask,
-                            DestIterator upperleft2, DestAccessor da,
-                            int radius, float rank)
+    template<class SrcIterator, class SrcAccessor,
+             class MaskIterator, class MaskAccessor,
+             class DestIterator, class DestAccessor>
+    void discRankOrderFilterWithMask(SrcIterator upperleft1,
+                                     SrcIterator lowerright1, SrcAccessor sa,
+                                     MaskIterator upperleftm, MaskAccessor mask,
+                                     DestIterator upperleft2, DestAccessor da,
+                                     int radius, float rank)
 {
     vigra_precondition((rank >= 0.0) && (rank <= 1.0),
-                 "discRankOrderFilter(): Rank must be between 0 and 1"
-                 " (inclusive).");
-    
+                       "discRankOrderFilter(): Rank must be between 0 and 1"
+                       " (inclusive).");
+
     vigra_precondition(radius >= 0, "discRankOrderFilter(): Radius must be >= 0.");
-    
+
     int i, x, y, xmax, ymax, xx, yy;
     int rankpos, winsize, leftsum;
-    
+
     long hist[256];
-    
+
     // prepare structuring function
-    std::vector<int> struct_function(radius+1);
+    std::vector<int> struct_function(radius + 1);
     struct_function[0] = radius;
-    
-    double r2 = (double)radius*radius;
-    for(i=1; i<=radius; ++i)
+
+    double r2 = (double)radius * radius;
+    for (i = 1; i <= radius; ++i)
     {
-        double r = (double) i - 0.5;
-        struct_function[i] = (int)(VIGRA_CSTD::sqrt(r2 - r*r) + 0.5);
+        double r = (double)i - 0.5;
+        struct_function[i] = (int)(VIGRA_CSTD::sqrt(r2 - r * r) + 0.5);
     }
 
     int w = lowerright1.x - upperleft1.x;
     int h = lowerright1.y - upperleft1.y;
-        
+
     SrcIterator ys(upperleft1);
     MaskIterator ym(upperleftm);
     DestIterator yd(upperleft2);
 
-    for(y=0; y<h; ++y, ++ys.y, ++yd.y, ++ym.y)
+    for (y = 0; y < h; ++y, ++ys.y, ++yd.y, ++ym.y)
     {
         SrcIterator xs(ys);
         MaskIterator xm(ym);
         DestIterator xd(yd);
-        
+
         // first column
         int x0 = 0;
         int y0 = y;
@@ -845,200 +856,215 @@ discRankOrderFilterWithMask(SrcIterator upperleft1,
         int y1 = h - y - 1;
 
         // clear histogram
-        for(i=0; i<256; ++i) hist[i] = 0;
+        for (i = 0; i < 256; ++i)
+            hist[i] = 0;
         winsize = 0;
         leftsum = 0;
         rankpos = 0;
-        
+
         // init histogram
         ymax = (y1 < radius) ? y1 : radius;
-        for(yy=0; yy<=ymax; ++yy)
+        for (yy = 0; yy <= ymax; ++yy)
         {
             xmax = (x1 < struct_function[yy]) ? x1 : struct_function[yy];
-            for(xx=0; xx<=xmax; ++xx)
+            for (xx = 0; xx <= xmax; ++xx)
             {
                 Diff2D pos(xx, yy);
-                if(mask(xm, pos))
+                if (mask(xm, pos))
                 {
                     hist[sa(xs, pos)]++;
                     winsize++;
                 }
             }
         }
-        
+
         ymax = (y0 < radius) ? y0 : radius;
-        for(yy=1; yy<=ymax; ++yy)
+        for (yy = 1; yy <= ymax; ++yy)
         {
             xmax = (x1 < struct_function[yy]) ? x1 : struct_function[yy];
-            for(xx=0; xx<=xmax; ++xx)
+            for (xx = 0; xx <= xmax; ++xx)
             {
                 Diff2D pos(xx, -yy);
-                if(mask(xm, pos))
+                if (mask(xm, pos))
                 {
                     hist[sa(xs, pos)]++;
                     winsize++;
                 }
             }
         }
-    
-        // find the desired histogram bin 
-        if(winsize) 
+
+        // find the desired histogram bin
+        if (winsize)
         {
-            if(rank == 0.0)
+            if (rank == 0.0)
             {
-                for(i=0; i<256; i++)
+                for (i = 0; i < 256; i++)
                 {
-                    if(hist[i]) break;
+                    if (hist[i])
+                        break;
                 }
                 rankpos = i;
             }
             else
             {
-                for(i=0; i<256; i++)
+                for (i = 0; i < 256; i++)
                 {
-                    if((float)(hist[i]+leftsum) / winsize >= rank) break;
+                    if ((float)(hist[i] + leftsum) / winsize >= rank)
+                        break;
                     leftsum += hist[i];
                 }
                 rankpos = i;
             }
-            
+
             da.set(rankpos, xd);
         }
-            
+
         ++xs.x;
         ++xd.x;
         ++xm.x;
-        
+
         // inner columns
-        for(x=1; x<w; ++x, ++xs.x, ++xd.x, ++xm.x)
+        for (x = 1; x < w; ++x, ++xs.x, ++xd.x, ++xm.x)
         {
             x0 = x;
             y0 = y;
             x1 = w - x - 1;
             y1 = h - y - 1;
-            
-            // update histogram 
-            // remove pixels at left border 
+
+            // update histogram
+            // remove pixels at left border
             yy = (y1 < radius) ? y1 : radius;
-            for(; yy>=0; yy--)
+            for (; yy >= 0; yy--)
             {
                 unsigned char cur;
-                xx = struct_function[yy]+1;
-                if(xx > x0) break;
-                
+                xx = struct_function[yy] + 1;
+                if (xx > x0)
+                    break;
+
                 Diff2D pos(-xx, yy);
-                if(mask(xm, pos))
+                if (mask(xm, pos))
                 {
                     cur = sa(xs, pos);
-                    
+
                     hist[cur]--;
-                    if(cur < rankpos) leftsum--;
+                    if (cur < rankpos)
+                        leftsum--;
                     winsize--;
                 }
             }
             yy = (y0 < radius) ? y0 : radius;
-            for(; yy>=1; yy--)
+            for (; yy >= 1; yy--)
             {
                 unsigned char cur;
-                xx = struct_function[yy]+1;
-                if(xx > x0) break;
-                
+                xx = struct_function[yy] + 1;
+                if (xx > x0)
+                    break;
+
                 Diff2D pos(-xx, -yy);
-                if(mask(xm, pos))
+                if (mask(xm, pos))
                 {
                     cur = sa(xs, pos);
-                    
+
                     hist[cur]--;
-                    if(cur < rankpos) leftsum--;
+                    if (cur < rankpos)
+                        leftsum--;
                     winsize--;
                 }
             }
-            
-            // add pixels at right border 
+
+            // add pixels at right border
             yy = (y1 < radius) ? y1 : radius;
-            for(; yy>=0; yy--)
+            for (; yy >= 0; yy--)
             {
                 unsigned char cur;
                 xx = struct_function[yy];
-                if(xx > x1) break;
-                
+                if (xx > x1)
+                    break;
+
                 Diff2D pos(xx, yy);
-                if(mask(xm, pos))
+                if (mask(xm, pos))
                 {
                     cur = sa(xs, pos);
-                    
+
                     hist[cur]++;
-                    if(cur < rankpos) leftsum++;
+                    if (cur < rankpos)
+                        leftsum++;
                     winsize++;
                 }
             }
             yy = (y0 < radius) ? y0 : radius;
-            for(; yy>=1; yy--)
+            for (; yy >= 1; yy--)
             {
                 unsigned char cur;
                 xx = struct_function[yy];
-                if(xx > x1) break;
-                
+                if (xx > x1)
+                    break;
+
                 Diff2D pos(xx, -yy);
-                if(mask(xm, pos))
+                if (mask(xm, pos))
                 {
                     cur = sa(xs, pos);
-                    
+
                     hist[cur]++;
-                    if(cur < rankpos) leftsum++;
+                    if (cur < rankpos)
+                        leftsum++;
                     winsize++;
                 }
             }
-        
-            // find the desired histogram bin 
-            if(winsize) 
+
+            // find the desired histogram bin
+            if (winsize)
             {
-                if(rank == 0.0)
+                if (rank == 0.0)
                 {
-                    if(leftsum == 0)
+                    if (leftsum == 0)
                     {
-                        // search to the right 
-                        for(i=rankpos; i<256; i++)
+                        // search to the right
+                        for (i = rankpos; i < 256; i++)
                         {
-                            if(hist[i]) break;
+                            if (hist[i])
+                                break;
                         }
                         rankpos = i;
                     }
                     else
                     {
-                        // search to the left 
-                        for(i=rankpos-1; i>=0; i--)
+                        // search to the left
+                        for (i = rankpos - 1; i >= 0; i--)
                         {
                             leftsum -= hist[i];
-                            if(leftsum == 0) break;
+                            if (leftsum == 0)
+                                break;
                         }
                         rankpos = i;
                     }
                 }
-                else  // rank > 0.0 
+                else // rank > 0.0
                 {
-                    if((float)leftsum / winsize < rank)
+                    if ((float)leftsum / winsize < rank)
                     {
-                        // search to the right 
-                        for(i=rankpos; i<256; i++)
+                        // search to the right
+                        for (i = rankpos; i < 256; i++)
                         {
-                            if((float)(hist[i]+leftsum) / winsize >= rank) break;
-                            leftsum+=hist[i];
+                            if ((float)(hist[i] + leftsum) / winsize >= rank)
+                                break;
+                            leftsum += hist[i];
                         }
                         rankpos = i;
                     }
                     else
                     {
-                        // search to the left 
-                        for(i=rankpos-1; i>=0; i--)
+                        // search to the left
+                        for (i = rankpos - 1; i >= 0; i--)
                         {
-                            leftsum-=hist[i];
-                            if((float)leftsum / winsize < rank) break;
+                            leftsum -= hist[i];
+                            if ((float)leftsum / winsize < rank)
+                                break;
                         }
                         rankpos = i;
                     }
                 }
-                        
+
                 da.set(rankpos, xd);
             }
             else
@@ -1050,9 +1076,9 @@ discRankOrderFilterWithMask(SrcIterator upperleft1,
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class MaskIterator, class MaskAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class MaskIterator, class MaskAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<MaskIterator, MaskAccessor> mask,
@@ -1065,17 +1091,17 @@ discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 radius, rank);
 }
 
-template <class T1, class S1,
-          class TM, class SM,
-          class T2, class S2>
+template<class T1, class S1,
+         class TM, class SM,
+         class T2, class S2>
 inline void
-discRankOrderFilterWithMask(MultiArrayView<2, T1, S1> const & src,
-                            MultiArrayView<2, TM, SM> const & mask,
-                            MultiArrayView<2, T2, S2> dest,
-                            int radius, float rank)
+    discRankOrderFilterWithMask(MultiArrayView<2, T1, S1> const& src,
+                                MultiArrayView<2, TM, SM> const& mask,
+                                MultiArrayView<2, T2, S2> dest,
+                                int radius, float rank)
 {
     vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
-        "discRankOrderFilterWithMask(): shape mismatch between input and output.");
+                       "discRankOrderFilterWithMask(): shape mismatch between input and output.");
     discRankOrderFilterWithMask(srcImageRange(src),
                                 maskImage(mask),
                                 destImage(dest),
@@ -1140,54 +1166,53 @@ discRankOrderFilterWithMask(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void discErosionWithMask)
+doxygen_overloaded_function(template<...> void discErosionWithMask)
 
-template <class SrcIterator, class SrcAccessor,
-          class MaskIterator, class MaskAccessor,
-          class DestIterator, class DestAccessor>
-inline void 
-discErosionWithMask(SrcIterator upperleft1, 
-                    SrcIterator lowerright1, SrcAccessor sa,
-                    MaskIterator upperleftm, MaskAccessor mask,
-                    DestIterator upperleft2, DestAccessor da,
-                    int radius)
+    template<class SrcIterator, class SrcAccessor,
+             class MaskIterator, class MaskAccessor,
+             class DestIterator, class DestAccessor>
+    inline void discErosionWithMask(SrcIterator upperleft1,
+                                    SrcIterator lowerright1, SrcAccessor sa,
+                                    MaskIterator upperleftm, MaskAccessor mask,
+                                    DestIterator upperleft2, DestAccessor da,
+                                    int radius)
 {
     vigra_precondition(radius >= 0, "discErosionWithMask(): Radius must be >= 0.");
-    
-    discRankOrderFilterWithMask(upperleft1, lowerright1, sa, 
+
+    discRankOrderFilterWithMask(upperleft1, lowerright1, sa,
                                 upperleftm, mask,
                                 upperleft2, da,
                                 radius, 0.0);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class MaskIterator, class MaskAccessor,
-          class DestIterator, class DestAccessor>
-inline void 
+template<class SrcIterator, class SrcAccessor,
+         class MaskIterator, class MaskAccessor,
+         class DestIterator, class DestAccessor>
+inline void
 discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     pair<MaskIterator, MaskAccessor> mask,
                     pair<DestIterator, DestAccessor> dest,
                     int radius)
 {
     vigra_precondition(radius >= 0, "discErosionWithMask(): Radius must be >= 0.");
-    
+
     discRankOrderFilterWithMask(src.first, src.second, src.third,
                                 mask.first, mask.second,
                                 dest.first, dest.second,
                                 radius, 0.0);
 }
 
-template <class T1, class S1,
-          class TM, class SM,
-          class T2, class S2>
-inline void 
-discErosionWithMask(MultiArrayView<2, T1, S1> const & src,
-                    MultiArrayView<2, TM, SM> const & mask,
-                    MultiArrayView<2, T2, S2> dest,
-                    int radius)
+template<class T1, class S1,
+         class TM, class SM,
+         class T2, class S2>
+inline void
+    discErosionWithMask(MultiArrayView<2, T1, S1> const& src,
+                        MultiArrayView<2, TM, SM> const& mask,
+                        MultiArrayView<2, T2, S2> dest,
+                        int radius)
 {
     vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
-        "discErosionWithMask(): shape mismatch between input and output.");
+                       "discErosionWithMask(): shape mismatch between input and output.");
     discErosionWithMask(srcImageRange(src), maskImage(mask), destImage(dest), radius);
 }
 
@@ -1249,54 +1274,53 @@ discErosionWithMask(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void discDilationWithMask)
+doxygen_overloaded_function(template<...> void discDilationWithMask)
 
-template <class SrcIterator, class SrcAccessor,
-          class MaskIterator, class MaskAccessor,
-          class DestIterator, class DestAccessor>
-inline void 
-discDilationWithMask(SrcIterator upperleft1, 
-                     SrcIterator lowerright1, SrcAccessor sa,
-                     MaskIterator upperleftm, MaskAccessor mask,
-                     DestIterator upperleft2, DestAccessor da,
-                     int radius)
+    template<class SrcIterator, class SrcAccessor,
+             class MaskIterator, class MaskAccessor,
+             class DestIterator, class DestAccessor>
+    inline void discDilationWithMask(SrcIterator upperleft1,
+                                     SrcIterator lowerright1, SrcAccessor sa,
+                                     MaskIterator upperleftm, MaskAccessor mask,
+                                     DestIterator upperleft2, DestAccessor da,
+                                     int radius)
 {
     vigra_precondition(radius >= 0, "discDilationWithMask(): Radius must be >= 0.");
-    
-    discRankOrderFilterWithMask(upperleft1, lowerright1, sa, 
+
+    discRankOrderFilterWithMask(upperleft1, lowerright1, sa,
                                 upperleftm, mask,
                                 upperleft2, da,
                                 radius, 1.0);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class MaskIterator, class MaskAccessor,
-          class DestIterator, class DestAccessor>
-inline void 
+template<class SrcIterator, class SrcAccessor,
+         class MaskIterator, class MaskAccessor,
+         class DestIterator, class DestAccessor>
+inline void
 discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                      pair<MaskIterator, MaskAccessor> mask,
                      pair<DestIterator, DestAccessor> dest,
                      int radius)
 {
     vigra_precondition(radius >= 0, "discDilationWithMask(): Radius must be >= 0.");
-    
+
     discRankOrderFilterWithMask(src.first, src.second, src.third,
                                 mask.first, mask.second,
                                 dest.first, dest.second,
                                 radius, 1.0);
 }
 
-template <class T1, class S1,
-          class TM, class SM,
-          class T2, class S2>
-inline void 
-discDilationWithMask(MultiArrayView<2, T1, S1> const & src,
-                     MultiArrayView<2, TM, SM> const & mask,
-                     MultiArrayView<2, T2, S2> dest,
-                     int radius)
+template<class T1, class S1,
+         class TM, class SM,
+         class T2, class S2>
+inline void
+    discDilationWithMask(MultiArrayView<2, T1, S1> const& src,
+                         MultiArrayView<2, TM, SM> const& mask,
+                         MultiArrayView<2, T2, S2> dest,
+                         int radius)
 {
     vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
-        "discDilationWithMask(): shape mismatch between input and output.");
+                       "discDilationWithMask(): shape mismatch between input and output.");
     discDilationWithMask(srcImageRange(src), maskImage(mask), destImage(dest), radius);
 }
 
@@ -1358,54 +1382,53 @@ discDilationWithMask(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void discMedianWithMask)
+doxygen_overloaded_function(template<...> void discMedianWithMask)
 
-template <class SrcIterator, class SrcAccessor,
-          class MaskIterator, class MaskAccessor,
-          class DestIterator, class DestAccessor>
-inline void 
-discMedianWithMask(SrcIterator upperleft1, 
-                    SrcIterator lowerright1, SrcAccessor sa,
-                    MaskIterator upperleftm, MaskAccessor mask,
-                    DestIterator upperleft2, DestAccessor da,
-                    int radius)
+    template<class SrcIterator, class SrcAccessor,
+             class MaskIterator, class MaskAccessor,
+             class DestIterator, class DestAccessor>
+    inline void discMedianWithMask(SrcIterator upperleft1,
+                                   SrcIterator lowerright1, SrcAccessor sa,
+                                   MaskIterator upperleftm, MaskAccessor mask,
+                                   DestIterator upperleft2, DestAccessor da,
+                                   int radius)
 {
     vigra_precondition(radius >= 0, "discMedianWithMask(): Radius must be >= 0.");
-    
-    discRankOrderFilterWithMask(upperleft1, lowerright1, sa, 
+
+    discRankOrderFilterWithMask(upperleft1, lowerright1, sa,
                                 upperleftm, mask,
                                 upperleft2, da,
                                 radius, 0.5);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class MaskIterator, class MaskAccessor,
-          class DestIterator, class DestAccessor>
-inline void 
+template<class SrcIterator, class SrcAccessor,
+         class MaskIterator, class MaskAccessor,
+         class DestIterator, class DestAccessor>
+inline void
 discMedianWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<MaskIterator, MaskAccessor> mask,
                    pair<DestIterator, DestAccessor> dest,
                    int radius)
 {
     vigra_precondition(radius >= 0, "discMedianWithMask(): Radius must be >= 0.");
-    
+
     discRankOrderFilterWithMask(src.first, src.second, src.third,
-                        mask.first, mask.second,
-                        dest.first, dest.second,
-                        radius, 0.5);
+                                mask.first, mask.second,
+                                dest.first, dest.second,
+                                radius, 0.5);
 }
 
-template <class T1, class S1,
-          class TM, class SM,
-          class T2, class S2>
-inline void 
-discMedianWithMask(MultiArrayView<2, T1, S1> const & src,
-                   MultiArrayView<2, TM, SM> const & mask,
-                   MultiArrayView<2, T2, S2> dest,
-                   int radius)
+template<class T1, class S1,
+         class TM, class SM,
+         class T2, class S2>
+inline void
+    discMedianWithMask(MultiArrayView<2, T1, S1> const& src,
+                       MultiArrayView<2, TM, SM> const& mask,
+                       MultiArrayView<2, T2, S2> dest,
+                       int radius)
 {
     vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
-        "discMedianWithMask(): shape mismatch between input and output.");
+                       "discMedianWithMask(): shape mismatch between input and output.");
     discMedianWithMask(srcImageRange(src), maskImage(mask), destImage(dest), radius);
 }
 

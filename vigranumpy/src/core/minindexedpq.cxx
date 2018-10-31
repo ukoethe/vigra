@@ -46,52 +46,47 @@ namespace vigra
 
 
 template<class T>
-void defineMinIndexedPqT(const std::string name){
+void
+defineMinIndexedPqT(const std::string name)
+{
     using namespace python;
     docstring_options doc_options(true, true, false);
 
-    typedef MinIndexedPQ<T>  MinIndexedPQType;
+    typedef MinIndexedPQ<T> MinIndexedPQType;
 
-    class_<MinIndexedPQType>(name.c_str(),init<const size_t >())
-	    .def("insert",&MinIndexedPQType::insert,
-		    (
-		    	arg("index"),
-		    	arg("value")
-		    ),
-		    "insert a index with an value"
-    	)
-    	.def("changeValue",&MinIndexedPQType::changeValue,
-		    (
-		    	arg("index"),
-		    	arg("value")
-		    ),
-		    "insert a index with an value"
-    	)
-    	.def("decreaseValue",&MinIndexedPQType::decreaseValue,
-		    (
-		    	arg("index"),
-		    	arg("value")
-		    ),
-		    "insert a index with an value"
-    	)
-    	.def("increaseValue",&MinIndexedPQType::increaseValue,
-		    (
-		    	arg("index"),
-		    	arg("value")
-		    ),
-		    "insert a index with an value"
-    	)
-    	.def("__len__",&MinIndexedPQType::size,"number of elements in PQ")
-    	.def("isEmpty",&MinIndexedPQType::isEmpty,"check if pq is empty")
+    class_<MinIndexedPQType>(name.c_str(), init<const size_t>())
+        .def("insert", &MinIndexedPQType::insert,
+             (
+                 arg("index"),
+                 arg("value")),
+             "insert a index with an value")
+        .def("changeValue", &MinIndexedPQType::changeValue,
+             (
+                 arg("index"),
+                 arg("value")),
+             "insert a index with an value")
+        .def("decreaseValue", &MinIndexedPQType::decreaseValue,
+             (
+                 arg("index"),
+                 arg("value")),
+             "insert a index with an value")
+        .def("increaseValue", &MinIndexedPQType::increaseValue,
+             (
+                 arg("index"),
+                 arg("value")),
+             "insert a index with an value")
+        .def("__len__", &MinIndexedPQType::size, "number of elements in PQ")
+        .def("isEmpty", &MinIndexedPQType::isEmpty, "check if pq is empty")
 
-    ;
+        ;
 }
 
 
-void defineMinIndexedPq(){
-	defineMinIndexedPqT<float>("MinIndexedPQFloat");
+void
+defineMinIndexedPq()
+{
+    defineMinIndexedPqT<float>("MinIndexedPQFloat");
 }
 
 
 } // namespace vigra
-

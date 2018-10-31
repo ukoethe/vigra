@@ -37,118 +37,134 @@
 //#define NO_IMPORT_ARRAY
 
 #include <Python.h>
-#include <iostream>
-#include <cstring>
 #include <cstdio>
-#include <vigra/numpy_array.hxx>
+#include <cstring>
+#include <iostream>
+#include <vigra/axistags.hxx>
 #include <vigra/impex.hxx>
 #include <vigra/multi_impex.hxx>
-#include <vigra/axistags.hxx>
+#include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 
 namespace python = boost::python;
 
-namespace vigra {
+namespace vigra
+{
 
-namespace detail {
+namespace detail
+{
 
-template <class T>
-NumpyAnyArray readImageImpl(ImageImportInfo const & info, std::string order = "")
+template<class T>
+NumpyAnyArray
+readImageImpl(ImageImportInfo const& info, std::string order = "")
 {
     typedef UnstridedArrayTag Stride;
 
-    if(order == "")
+    if (order == "")
         order = detail::defaultOrder();
 
-    switch(info.numBands())
+    switch (info.numBands())
     {
-      case 1:
-      {
-        NumpyArray<2, Singleband<T>, Stride> res(MultiArrayShape<2>::type(info.width(), info.height()), order);
-        importImage(info, destImage(res));
-        return res;
-      }
-      case 2:
-      {
-        NumpyArray<2, TinyVector<T, 2>, Stride> res(MultiArrayShape<2>::type(info.width(), info.height()), order);
-        importImage(info, destImage(res));
-        return res;
-      }
-      case 3:
-      {
-        NumpyArray<2, RGBValue<T>, Stride> res(MultiArrayShape<2>::type(info.width(), info.height()), order);
-        importImage(info, destImage(res));
-        return res;
-      }
-      case 4:
-      {
-        NumpyArray<2, TinyVector<T, 4>, Stride> res(MultiArrayShape<2>::type(info.width(), info.height()), order);
-        importImage(info, destImage(res));
-        return res;
-      }
-      default:
-      {
-        NumpyArray<3, Multiband<T> > res(MultiArrayShape<3>::type(info.width(), info.height(), info.numBands()), order);
-        importImage(info, destImage(res));
-        return res;
-      }
+        case 1:
+        {
+            NumpyArray<2, Singleband<T>, Stride> res(MultiArrayShape<2>::type(info.width(), info.height()), order);
+            importImage(info, destImage(res));
+            return res;
+        }
+        case 2:
+        {
+            NumpyArray<2, TinyVector<T, 2>, Stride> res(MultiArrayShape<2>::type(info.width(), info.height()), order);
+            importImage(info, destImage(res));
+            return res;
+        }
+        case 3:
+        {
+            NumpyArray<2, RGBValue<T>, Stride> res(MultiArrayShape<2>::type(info.width(), info.height()), order);
+            importImage(info, destImage(res));
+            return res;
+        }
+        case 4:
+        {
+            NumpyArray<2, TinyVector<T, 4>, Stride> res(MultiArrayShape<2>::type(info.width(), info.height()), order);
+            importImage(info, destImage(res));
+            return res;
+        }
+        default:
+        {
+            NumpyArray<3, Multiband<T>> res(MultiArrayShape<3>::type(info.width(), info.height(), info.numBands()), order);
+            importImage(info, destImage(res));
+            return res;
+        }
     }
 }
 
-std::string numpyTypeIdToImpexString(NPY_TYPES typeID)
+std::string
+numpyTypeIdToImpexString(NPY_TYPES typeID)
 {
-    switch(typeID)
+    switch (typeID)
     {
-        case NPY_BOOL: return std::string("UINT8");
-        case NPY_INT8: return std::string("INT8");
-        case NPY_UINT8: return std::string("UINT8");
-        case NPY_INT16: return std::string("INT16");
-        case NPY_UINT16: return std::string("UINT16");
-        case NPY_INT32: return std::string("INT32");
-        case NPY_UINT32: return std::string("UINT32");
-        case NPY_INT64: return std::string("DOUBLE");
-        case NPY_UINT64: return std::string("DOUBLE");
-        case NPY_FLOAT32: return std::string("FLOAT");
-        case NPY_FLOAT64: return std::string("DOUBLE");
-        default: return std::string("UNKNOWN");
+        case NPY_BOOL:
+            return std::string("UINT8");
+        case NPY_INT8:
+            return std::string("INT8");
+        case NPY_UINT8:
+            return std::string("UINT8");
+        case NPY_INT16:
+            return std::string("INT16");
+        case NPY_UINT16:
+            return std::string("UINT16");
+        case NPY_INT32:
+            return std::string("INT32");
+        case NPY_UINT32:
+            return std::string("UINT32");
+        case NPY_INT64:
+            return std::string("DOUBLE");
+        case NPY_UINT64:
+            return std::string("DOUBLE");
+        case NPY_FLOAT32:
+            return std::string("FLOAT");
+        case NPY_FLOAT64:
+            return std::string("DOUBLE");
+        default:
+            return std::string("UNKNOWN");
     }
 }
 
 } // namespace detail
 
 NumpyAnyArray
-readImage(const char * filename, python::object import_type, unsigned int index, std::string order = "")
+readImage(const char* filename, python::object import_type, unsigned int index, std::string order = "")
 {
     ImageImportInfo info(filename, index);
     std::string importType(info.getPixelType());
 
-    if(python::extract<std::string>(import_type).check())
+    if (python::extract<std::string>(import_type).check())
     {
         std::string type = python::extract<std::string>(import_type)();
-        if(type != "" && type != "NATIVE")
+        if (type != "" && type != "NATIVE")
             importType = type;
     }
-    else if(python::extract<NPY_TYPES>(import_type).check())
+    else if (python::extract<NPY_TYPES>(import_type).check())
     {
         importType = detail::numpyTypeIdToImpexString(python::extract<NPY_TYPES>(import_type)());
     }
-    else if(import_type)
+    else if (import_type)
         vigra_precondition(false, "readImage(filename, import_type, order): import_type must be a string or a numpy dtype.");
 
     // FIXME: support all types, at least via a type cast at the end?
-    if(importType == "FLOAT")
+    if (importType == "FLOAT")
         return detail::readImageImpl<float>(info, order);
-    if(importType == "UINT8")
+    if (importType == "UINT8")
         return detail::readImageImpl<UInt8>(info, order);
-    if(importType == "INT16")
+    if (importType == "INT16")
         return detail::readImageImpl<Int16>(info, order);
-    if(importType == "UINT16")
+    if (importType == "UINT16")
         return detail::readImageImpl<UInt16>(info, order);
-    if(importType == "INT32")
+    if (importType == "INT32")
         return detail::readImageImpl<Int32>(info, order);
-    if(importType == "UINT32")
+    if (importType == "UINT32")
         return detail::readImageImpl<UInt32>(info, order);
-    if(importType == "DOUBLE")
+    if (importType == "DOUBLE")
         return detail::readImageImpl<double>(info, order);
     vigra_fail("readImage(filename, import_type, order): import_type specifies an unknown pixel type.");
     return NumpyAnyArray();
@@ -157,43 +173,44 @@ readImage(const char * filename, python::object import_type, unsigned int index,
 // when export_type == "", writeImage() will figure out the best compromise
 // between the input pixel type and the capabilities of the given file format
 // (see negotiatePixelType())
-template <class T>
-void writeImage(NumpyArray<3, Multiband<T> > const & image,
-                    const char * filename,
-                    python::object export_type,
-                    const char * compression = "",
-                    const char * mode = "w")
+template<class T>
+void writeImage(NumpyArray<3, Multiband<T>> const& image,
+                const char* filename,
+                python::object export_type,
+                const char* compression = "",
+                const char* mode = "w")
 {
     ImageExportInfo info(filename, mode);
 
-    if(python::extract<std::string>(export_type).check())
+    if (python::extract<std::string>(export_type).check())
     {
         std::string type = python::extract<std::string>(export_type)();
-        if(type == "NBYTE")
+        if (type == "NBYTE")
         {
             info.setForcedRangeMapping(0.0, 0.0, 0.0, 255.0);
             info.setPixelType("UINT8");
         }
-        else if(type != "" && type != "NATIVE")
+        else if (type != "" && type != "NATIVE")
         {
             info.setPixelType(type.c_str());
         }
     }
-    else if(python::extract<NPY_TYPES>(export_type).check())
+    else if (python::extract<NPY_TYPES>(export_type).check())
     {
         info.setPixelType(detail::numpyTypeIdToImpexString(python::extract<NPY_TYPES>(export_type)()).c_str());
     }
-    else if(export_type)
+    else if (export_type)
         vigra_precondition(false, "writeImage(filename, export_type): export_type must be a string or a numpy dtype.");
 
-    if(std::string(compression) == "RunLength")
+    if (std::string(compression) == "RunLength")
         info.setCompression("RLE");
-    else if(std::string(compression) != "")
+    else if (std::string(compression) != "")
         info.setCompression(compression);
     exportImage(srcImageRange(image), info);
 }
 
-unsigned int numberImages(const char * filename)
+unsigned int
+numberImages(const char* filename)
 {
     ImageImportInfo info(filename);
     return info.numImages();
@@ -201,128 +218,129 @@ unsigned int numberImages(const char * filename)
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywriteImage, writeImage)
 
-namespace detail {
-
-template <class T>
-NumpyAnyArray
-readVolumeImpl(VolumeImportInfo const & info, std::string order = "")
+namespace detail
 {
-    if(order == "")
+
+template<class T>
+NumpyAnyArray
+readVolumeImpl(VolumeImportInfo const& info, std::string order = "")
+{
+    if (order == "")
         order = detail::defaultOrder();
 
-    switch(info.numBands())
+    switch (info.numBands())
     {
-      case 1:
-      {
-        NumpyArray<3, Singleband<T> > volume(info.shape(), order);
-        importVolume(info, volume);
-        return volume;
-      }
-      case 2:
-      {
-        NumpyArray<3, TinyVector<T, 2> > volume(info.shape(), order);
-        importVolume(info, volume);
-        return volume;
-      }
-      case 3:
-      {
-        NumpyArray<3, RGBValue<T> > volume(info.shape(), order);
-        importVolume(info, volume);
-        return volume;
-      }
-      case 4:
-      {
-        NumpyArray<3, TinyVector<T, 4> > volume(info.shape(), order);
-        importVolume(info, volume);
-        return volume;
-      }
-      //FIXME not yet supported
-      /*default:
+        case 1:
+        {
+            NumpyArray<3, Singleband<T>> volume(info.shape(), order);
+            importVolume(info, volume);
+            return volume;
+        }
+        case 2:
+        {
+            NumpyArray<3, TinyVector<T, 2>> volume(info.shape(), order);
+            importVolume(info, volume);
+            return volume;
+        }
+        case 3:
+        {
+            NumpyArray<3, RGBValue<T>> volume(info.shape(), order);
+            importVolume(info, volume);
+            return volume;
+        }
+        case 4:
+        {
+            NumpyArray<3, TinyVector<T, 4>> volume(info.shape(), order);
+            importVolume(info, volume);
+            return volume;
+        }
+        //FIXME not yet supported
+        /*default:
       {
         NumpyArray<4, Multiband<T> > volume(MultiArrayShape<4>::type(info.width(), info.height(), info.depth(), info.numBands()));
         importVolume(info, volume);
         return volume;
       }*/
-      default:
-      {
-        NumpyArray<3, RGBValue<T> > volume(info.shape(), order);
-        importVolume(info, volume);
-        return volume;
-      }
+        default:
+        {
+            NumpyArray<3, RGBValue<T>> volume(info.shape(), order);
+            importVolume(info, volume);
+            return volume;
+        }
     }
 }
 
 } // namespace detail
 
 NumpyAnyArray
-readVolume(const char * filename, python::object import_type, std::string order = "")
+readVolume(const char* filename, python::object import_type, std::string order = "")
 {
     VolumeImportInfo info(filename);
     std::string importType(info.getPixelType());
 
-    if(python::extract<std::string>(import_type).check())
+    if (python::extract<std::string>(import_type).check())
     {
         std::string type = python::extract<std::string>(import_type)();
-        if(type != "" && type != "NATIVE")
+        if (type != "" && type != "NATIVE")
             importType = type;
     }
-    else if(python::extract<NPY_TYPES>(import_type).check())
+    else if (python::extract<NPY_TYPES>(import_type).check())
     {
         importType = detail::numpyTypeIdToImpexString(python::extract<NPY_TYPES>(import_type)());
     }
-    else if(import_type)
+    else if (import_type)
         vigra_precondition(false, "readVolume(filename, import_type, order): import_type must be a string or a numpy dtype.");
 
-    if(importType == "FLOAT")
+    if (importType == "FLOAT")
         return detail::readVolumeImpl<float>(info, order);
-    if(importType == "UINT8")
+    if (importType == "UINT8")
         return detail::readVolumeImpl<UInt8>(info, order);
-    if(importType == "INT16")
+    if (importType == "INT16")
         return detail::readVolumeImpl<Int16>(info, order);
-    if(importType == "UINT16")
+    if (importType == "UINT16")
         return detail::readVolumeImpl<UInt16>(info, order);
-    if(importType == "INT32")
+    if (importType == "INT32")
         return detail::readVolumeImpl<Int32>(info, order);
-    if(importType == "UINT32")
+    if (importType == "UINT32")
         return detail::readVolumeImpl<UInt32>(info, order);
-    if(importType == "DOUBLE")
+    if (importType == "DOUBLE")
         return detail::readVolumeImpl<double>(info, order);
     vigra_fail("readVolume(filename, import_type, order): import_type specifies an unknown pixel type.");
     return NumpyAnyArray();
 }
 
-template <class T>
-void writeVolume(NumpyArray<3, T > const & volume,
-                    const char * filename_base,
-                    const char * filename_ext,
-                    python::object export_type,
-                    const char * compression = "")
+template<class T>
+void writeVolume(NumpyArray<3, T> const& volume,
+                 const char* filename_base,
+                 const char* filename_ext,
+                 python::object export_type,
+                 const char* compression = "")
 {
     VolumeExportInfo info(filename_base, filename_ext);
 
-    if(python::extract<std::string>(export_type).check())
+    if (python::extract<std::string>(export_type).check())
     {
         std::string type = python::extract<std::string>(export_type)();
-        if(type == "NBYTE")
+        if (type == "NBYTE")
         {
             info.setForcedRangeMapping(0.0, 0.0, 0.0, 255.0);
             info.setPixelType("UINT8");
         }
-        else if(type != "" && type != "NATIVE")
+        else if (type != "" && type != "NATIVE")
         {
             info.setPixelType(type.c_str());
         }
     }
-    else if(python::extract<NPY_TYPES>(export_type).check())
+    else if (python::extract<NPY_TYPES>(export_type).check())
     {
         info.setPixelType(detail::numpyTypeIdToImpexString(python::extract<NPY_TYPES>(export_type)()).c_str());
     }
-    else if(export_type)
+    else if (export_type)
         vigra_precondition(false, "writeVolume(filename, export_type): export_type must be a string or a numpy dtype.");
 
-    if(std::string(compression) == "RunLength")
+    if (std::string(compression) == "RunLength")
         info.setCompression("RLE");
-    else if(std::string(compression) != "")
+    else if (std::string(compression) != "")
         info.setCompression(compression);
     exportVolume(volume, info);
 }
@@ -332,15 +350,24 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywriteVolume, writeVolume)
 NPY_TYPES
 impexTypeNameToNumpyTypeId(const std::string& typeName)
 {
-    if (typeName=="UINT8") return NPY_UINT8;
-    else if (typeName=="INT8") return NPY_INT8;
-    else if (typeName=="INT16") return NPY_INT16;
-    else if (typeName=="UINT16") return NPY_UINT16;
-    else if (typeName=="INT32") return NPY_INT32;
-    else if (typeName=="UINT32") return NPY_UINT32;
-    else if (typeName=="DOUBLE") return NPY_FLOAT64;
-    else if (typeName=="FLOAT") return NPY_FLOAT32;
-    else throw std::runtime_error("ImageInfo::getDtype(): unknown pixel type.");
+    if (typeName == "UINT8")
+        return NPY_UINT8;
+    else if (typeName == "INT8")
+        return NPY_INT8;
+    else if (typeName == "INT16")
+        return NPY_INT16;
+    else if (typeName == "UINT16")
+        return NPY_UINT16;
+    else if (typeName == "INT32")
+        return NPY_INT32;
+    else if (typeName == "UINT32")
+        return NPY_UINT32;
+    else if (typeName == "DOUBLE")
+        return NPY_FLOAT64;
+    else if (typeName == "FLOAT")
+        return NPY_FLOAT32;
+    else
+        throw std::runtime_error("ImageInfo::getDtype(): unknown pixel type.");
 }
 
 NPY_TYPES
@@ -352,7 +379,7 @@ pythonGetPixelType(const ImageImportInfo& info)
 python::tuple
 pythonGetShape(const ImageImportInfo& info)
 {
-    return python::make_tuple(info.width(),info.height(),info.numBands());
+    return python::make_tuple(info.width(), info.height(), info.numBands());
 }
 
 AxisTags
@@ -363,18 +390,18 @@ pythonGetAxisTags(const ImageImportInfo& /*info*/)
 
 /***************************************************************************/
 
-void defineImpexFunctions()
+void
+defineImpexFunctions()
 {
     using namespace python;
 
     docstring_options doc_options(true, false, false);
 
     class_<ImageImportInfo>("ImageInfo", python::no_init)
-        .def(init<char const *>(args("filename"), "Extract header info from given file.\n\n"))
+        .def(init<char const*>(args("filename"), "Extract header info from given file.\n\n"))
         .def("getDtype", &pythonGetPixelType, "Get dtype of pixels in the file.")
         .def("getShape", &pythonGetShape, "Get shape of image in the file.")
-        .def("getAxisTags", &pythonGetAxisTags, "Get axistags of image in the file.")
-    ;
+        .def("getAxisTags", &pythonGetAxisTags, "Get axistags of image in the file.");
 
     // FIXME: add an order parameter to the import functions
     def("readVolume", &readVolume, (arg("filename"), arg("dtype") = "FLOAT", arg("order") = ""),
@@ -422,22 +449,23 @@ void defineImpexFunctions()
         "For details see the help for :func:`readImage`.\n");
 
     multidef("writeVolume",
-        pywriteVolume<Singleband<Int8>, Singleband<UInt64>, Singleband<Int64>,
-                      Singleband<UInt16>, Singleband<Int16>, Singleband<UInt32>,
-                      Singleband<Int32>, Singleband<double>, Singleband<float>,
-                      Singleband<UInt8>, TinyVector<float, 3>, TinyVector<UInt8, 3> >().installFallback(),
-       (arg("volume"),
-        arg("filename_base"),
-        arg("filename_ext"),
-        arg("dtype") = "",
-        arg("compression") = ""),
-       "Write a volume as a sequence of images::\n\n"
-       "   writeVolume(volume, filename_base, filename_ext, dtype='', compression='')\n\n"
-       "The resulting image sequence will be enumerated in the form::\n\n"
-       "    filename_base+[0-9]+filename_ext\n\n"
-       "Write a volume as a multi-page tiff (filename_ext must be an empty string)::\n\n"
-       "   writeVolume(volume, filename, '', dtype='', compression='')\n\n"
-       "Parameters 'dtype' and 'compression' will be handled as in :func:`writeImage`.\n\n");
+             pywriteVolume<Singleband<Int8>, Singleband<UInt64>, Singleband<Int64>,
+                           Singleband<UInt16>, Singleband<Int16>, Singleband<UInt32>,
+                           Singleband<Int32>, Singleband<double>, Singleband<float>,
+                           Singleband<UInt8>, TinyVector<float, 3>, TinyVector<UInt8, 3>>()
+                 .installFallback(),
+             (arg("volume"),
+              arg("filename_base"),
+              arg("filename_ext"),
+              arg("dtype") = "",
+              arg("compression") = ""),
+             "Write a volume as a sequence of images::\n\n"
+             "   writeVolume(volume, filename_base, filename_ext, dtype='', compression='')\n\n"
+             "The resulting image sequence will be enumerated in the form::\n\n"
+             "    filename_base+[0-9]+filename_ext\n\n"
+             "Write a volume as a multi-page tiff (filename_ext must be an empty string)::\n\n"
+             "   writeVolume(volume, filename, '', dtype='', compression='')\n\n"
+             "Parameters 'dtype' and 'compression' will be handled as in :func:`writeImage`.\n\n");
 
     def("readImage", &readImage,
         (arg("filename"), arg("dtype") = "FLOAT", arg("index") = 0, arg("order") = ""),
@@ -470,90 +498,91 @@ void defineImpexFunctions()
         ":func:`isImage`.\n");
 
     multidef("writeImage",
-        pywriteImage<Int8, UInt64, Int64, UInt16, Int16, UInt32,
-                     Int32, double, float, UInt8>().installFallback(),
-        (arg("image"),
-         arg("filename"),
-         arg("dtype") = "",
-         arg("compression") = "",
-         arg("mode") = "w"),
-        "Save an image to a file::\n"
-        "\n"
-        "   writeImage(image, filename, dtype='', compression='', mode='w')\n"
-        "\n"
-        "Parameters:\n\n"
-        " image:\n"
-        "    the image to be saved\n"
-        " filename:\n"
-        "    the file name to save to. The file type will be deduced\n"
-        "    from the file name extension (see vigra.impexListExtensions()\n"
-        "    for a list of supported extensions).\n"
-        " dtype:\n"
-        "    the pixel type written to the file. Possible values:\n\n"
-        "     '' or 'NATIVE':\n"
-        "        save with original pixel type, or convert automatically\n"
-        "        when this type is unsupported by the target file format\n"
-        "     'UINT8', 'INT16', 'UINT16', 'INT32', 'UINT32', 'FLOAT', 'DOUBLE':\n"
-        "        save as specified, or raise exception when this type is not \n"
-        "        supported by the target file format (see list below)\n"
-        "     'NBYTE':\n"
-        "        normalize to range 0...255 and then save as 'UINT8'\n"
-        "     numpy.uint8, numpy.int16 etc.:\n"
-        "        behaves like the corresponding string argument\n\n"
-        " compression:\n"
-        "     how to compress the data (ignored when compression type is unsupported \n"
-        "     by the file format). Possible values:\n\n"
-        "     '' or not given:\n"
-        "        save with the native compression of the target file format\n"
-        "     'RLE', 'RunLength':\n"
-        "        use run length encoding (native in BMP, supported by TIFF)\n"
-        "     'DEFLATE':\n"
-        "        use deflate encoding (only supported by TIFF)\n"
-        "     'LZW':\n"
-        "        use LZW algorithm (only supported by TIFF with LZW enabled)\n"
-        "     'ASCII':\n"
-        "        write as ASCII rather than binary file (only supported by PNM)\n"
-        "     '1' ... '100':\n"
-        "        use this JPEG compression level (only supported by JPEG and TIFF)\n\n"
-        " mode:\n"
-        "     support for sequential file formats such as multi-image TIFF. \n"
-        "     Possible values:\n\n"
-        "     'w':\n"
-        "        create a new file (default)\n"
-        "     'a':\n"
-        "        append an image to a file or create a new one if the file does \n"
-        "        not exist (only supported by TIFF to create multi-page TIFF files)\n\n"
-        "Supported file formats are listed by the function vigra.impexListFormats().\n"
-        "The different file formats support the following pixel types:\n\n"
-        "   BMP:\n"
-        "       Microsoft Windows bitmap image file (pixel type: UINT8 as gray and RGB).\n"
-        "   GIF:\n"
-        "       CompuServe graphics interchange format; 8-bit color\n"
-        "       (pixel type: UINT8 as gray and RGB).\n"
-        "   JPEG:\n"
-        "       Joint Photographic Experts Group JFIF format; compressed 24-bit color\n"
-        "       (pixel types: UINT8 as gray and RGB). Only available if libjpeg is\n"
-        "       installed.\n"
-        "   PNG:\n"
-        "       Portable Network Graphic (pixel types: UINT8 and UINT16 with\n"
-        "       up to 4 channels). (only available if libpng is installed)\n"
-        "   PBM:\n"
-        "       Portable bitmap format (black and white).\n"
-        "   PGM:\n"
-        "       Portable graymap format (pixel types: UINT8, INT16, INT32 as gray scale).\n"
-        "   PNM:\n"
-        "       Portable anymap (pixel types: UINT8, INT16, INT32, gray and RGB)\n"
-        "   PPM:\n"
-        "       Portable pixmap format (pixel types: UINT8, INT16, INT32 as RGB)\n"
-        "   SUN:\n"
-        "       SUN Rasterfile (pixel types: UINT8 as gray and RGB).\n"
-        "   TIFF:\n"
-        "       Tagged Image File Format (pixel types: INT8, UINT8, INT16, UINT16,\n"
-        "       INT32, UINT32, FLOAT, DOUBLE with up to 4 channels). Only available\n"
-        "       if libtiff is installed.\n"
-        "   VIFF:\n"
-        "       Khoros Visualization image file (pixel types: UINT8, INT16\n"
-        "       INT32, FLOAT, DOUBLE with arbitrary many channels).\n\n");
+             pywriteImage<Int8, UInt64, Int64, UInt16, Int16, UInt32,
+                          Int32, double, float, UInt8>()
+                 .installFallback(),
+             (arg("image"),
+              arg("filename"),
+              arg("dtype") = "",
+              arg("compression") = "",
+              arg("mode") = "w"),
+             "Save an image to a file::\n"
+             "\n"
+             "   writeImage(image, filename, dtype='', compression='', mode='w')\n"
+             "\n"
+             "Parameters:\n\n"
+             " image:\n"
+             "    the image to be saved\n"
+             " filename:\n"
+             "    the file name to save to. The file type will be deduced\n"
+             "    from the file name extension (see vigra.impexListExtensions()\n"
+             "    for a list of supported extensions).\n"
+             " dtype:\n"
+             "    the pixel type written to the file. Possible values:\n\n"
+             "     '' or 'NATIVE':\n"
+             "        save with original pixel type, or convert automatically\n"
+             "        when this type is unsupported by the target file format\n"
+             "     'UINT8', 'INT16', 'UINT16', 'INT32', 'UINT32', 'FLOAT', 'DOUBLE':\n"
+             "        save as specified, or raise exception when this type is not \n"
+             "        supported by the target file format (see list below)\n"
+             "     'NBYTE':\n"
+             "        normalize to range 0...255 and then save as 'UINT8'\n"
+             "     numpy.uint8, numpy.int16 etc.:\n"
+             "        behaves like the corresponding string argument\n\n"
+             " compression:\n"
+             "     how to compress the data (ignored when compression type is unsupported \n"
+             "     by the file format). Possible values:\n\n"
+             "     '' or not given:\n"
+             "        save with the native compression of the target file format\n"
+             "     'RLE', 'RunLength':\n"
+             "        use run length encoding (native in BMP, supported by TIFF)\n"
+             "     'DEFLATE':\n"
+             "        use deflate encoding (only supported by TIFF)\n"
+             "     'LZW':\n"
+             "        use LZW algorithm (only supported by TIFF with LZW enabled)\n"
+             "     'ASCII':\n"
+             "        write as ASCII rather than binary file (only supported by PNM)\n"
+             "     '1' ... '100':\n"
+             "        use this JPEG compression level (only supported by JPEG and TIFF)\n\n"
+             " mode:\n"
+             "     support for sequential file formats such as multi-image TIFF. \n"
+             "     Possible values:\n\n"
+             "     'w':\n"
+             "        create a new file (default)\n"
+             "     'a':\n"
+             "        append an image to a file or create a new one if the file does \n"
+             "        not exist (only supported by TIFF to create multi-page TIFF files)\n\n"
+             "Supported file formats are listed by the function vigra.impexListFormats().\n"
+             "The different file formats support the following pixel types:\n\n"
+             "   BMP:\n"
+             "       Microsoft Windows bitmap image file (pixel type: UINT8 as gray and RGB).\n"
+             "   GIF:\n"
+             "       CompuServe graphics interchange format; 8-bit color\n"
+             "       (pixel type: UINT8 as gray and RGB).\n"
+             "   JPEG:\n"
+             "       Joint Photographic Experts Group JFIF format; compressed 24-bit color\n"
+             "       (pixel types: UINT8 as gray and RGB). Only available if libjpeg is\n"
+             "       installed.\n"
+             "   PNG:\n"
+             "       Portable Network Graphic (pixel types: UINT8 and UINT16 with\n"
+             "       up to 4 channels). (only available if libpng is installed)\n"
+             "   PBM:\n"
+             "       Portable bitmap format (black and white).\n"
+             "   PGM:\n"
+             "       Portable graymap format (pixel types: UINT8, INT16, INT32 as gray scale).\n"
+             "   PNM:\n"
+             "       Portable anymap (pixel types: UINT8, INT16, INT32, gray and RGB)\n"
+             "   PPM:\n"
+             "       Portable pixmap format (pixel types: UINT8, INT16, INT32 as RGB)\n"
+             "   SUN:\n"
+             "       SUN Rasterfile (pixel types: UINT8 as gray and RGB).\n"
+             "   TIFF:\n"
+             "       Tagged Image File Format (pixel types: INT8, UINT8, INT16, UINT16,\n"
+             "       INT32, UINT32, FLOAT, DOUBLE with up to 4 channels). Only available\n"
+             "       if libtiff is installed.\n"
+             "   VIFF:\n"
+             "       Khoros Visualization image file (pixel types: UINT8, INT16\n"
+             "       INT32, FLOAT, DOUBLE with arbitrary many channels).\n\n");
 
     def("listFormats", &impexListFormats,
         "Ask for the image file formats that vigra.impex understands::\n\n"
@@ -581,7 +610,6 @@ void defineImpexFunctions()
         "   numberImages(filename) -> int\n\n"
         "This function tests how many images an image file contains"
         "(Values > 1 are only expected for the TIFF format to support multi-image TIFF).");
-
 }
 
 } // namespace vigra

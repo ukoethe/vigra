@@ -37,11 +37,12 @@
 
 #include "vigra/hdf5impex.hxx"
 #include "vigra/multi_array.hxx"
-#include <iostream>
-#include <cstring>
 #include <cstdio>
+#include <cstring>
+#include <iostream>
 
-namespace vigra {
+namespace vigra
+{
 
 HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
 {
@@ -66,38 +67,38 @@ HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
 
     hid_t datatype = H5Dget_type(m_dataset_handle);
     H5T_class_t dataclass = H5Tget_class(datatype);
-    size_t datasize  = H5Tget_size(datatype);
-    H5T_sign_t datasign  = H5Tget_sign(datatype);
+    size_t datasize = H5Tget_size(datatype);
+    H5T_sign_t datasign = H5Tget_sign(datatype);
 
-    if(dataclass == H5T_FLOAT)
+    if (dataclass == H5T_FLOAT)
     {
-        if(datasize == 4)
+        if (datasize == 4)
             m_pixeltype = "FLOAT";
-        else if(datasize == 8)
+        else if (datasize == 8)
             m_pixeltype = "DOUBLE";
     }
-    else if(dataclass == H5T_INTEGER)
+    else if (dataclass == H5T_INTEGER)
     {
-        if(datasign == H5T_SGN_NONE)
+        if (datasign == H5T_SGN_NONE)
         {
-            if(datasize ==  1)
+            if (datasize == 1)
                 m_pixeltype = "UINT8";
-            else if(datasize == 2)
+            else if (datasize == 2)
                 m_pixeltype = "UINT16";
-            else if(datasize == 4)
+            else if (datasize == 4)
                 m_pixeltype = "UINT32";
-            else if(datasize == 8)
+            else if (datasize == 8)
                 m_pixeltype = "UINT64";
         }
         else
         {
-            if(datasize ==  1)
+            if (datasize == 1)
                 m_pixeltype = "INT8";
-            else if(datasize == 2)
+            else if (datasize == 2)
                 m_pixeltype = "INT16";
-            else if(datasize == 4)
+            else if (datasize == 4)
                 m_pixeltype = "INT32";
-            else if(datasize == 8)
+            else if (datasize == 8)
                 m_pixeltype = "INT64";
         }
     }
@@ -109,84 +110,96 @@ HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
     H5Sget_simple_extent_dims(dataspace_handle, size.data(), maxdims.data());
     //dset.getSpace().getSimpleExtentDims(size, NULL);
     // invert the dimensions to guarantee c-order
-    for(ArrayVector<hsize_t>::size_type i=0; i<ndims; i++) {
-        m_dims[i] = size[ndims-1-i];
+    for (ArrayVector<hsize_t>::size_type i = 0; i < ndims; i++)
+    {
+        m_dims[i] = size[ndims - 1 - i];
         //std::cout << "m_dims[" << i << "]=" << m_dims[i] << std::endl;
     }
 }
 
 HDF5ImportInfo::~HDF5ImportInfo()
-{}
-
-
-HDF5ImportInfo::PixelType HDF5ImportInfo::pixelType() const
 {
-   const std::string pixeltype=HDF5ImportInfo::getPixelType();
-   if (pixeltype == "UINT8")
-       return HDF5ImportInfo::UINT8;
-   if (pixeltype == "UINT16")
-     return HDF5ImportInfo::UINT16;
-   if (pixeltype == "UINT32")
-     return HDF5ImportInfo::UINT32;
-   if (pixeltype == "UINT64")
-     return HDF5ImportInfo::UINT64;
-   if (pixeltype == "INT8")
-       return HDF5ImportInfo::INT8;
-   if (pixeltype == "INT16")
-     return HDF5ImportInfo::INT16;
-   if (pixeltype == "INT32")
-     return HDF5ImportInfo::INT32;
-   if (pixeltype == "INT64")
-     return HDF5ImportInfo::INT64;
-   if (pixeltype == "FLOAT")
-     return HDF5ImportInfo::FLOAT;
-   if (pixeltype == "DOUBLE")
-     return HDF5ImportInfo::DOUBLE;
-   vigra_fail( "internal error: unknown pixel type" );
-   return HDF5ImportInfo::PixelType();
 }
 
-const char * HDF5ImportInfo::getPixelType() const
+
+HDF5ImportInfo::PixelType
+HDF5ImportInfo::pixelType() const
+{
+    const std::string pixeltype = HDF5ImportInfo::getPixelType();
+    if (pixeltype == "UINT8")
+        return HDF5ImportInfo::UINT8;
+    if (pixeltype == "UINT16")
+        return HDF5ImportInfo::UINT16;
+    if (pixeltype == "UINT32")
+        return HDF5ImportInfo::UINT32;
+    if (pixeltype == "UINT64")
+        return HDF5ImportInfo::UINT64;
+    if (pixeltype == "INT8")
+        return HDF5ImportInfo::INT8;
+    if (pixeltype == "INT16")
+        return HDF5ImportInfo::INT16;
+    if (pixeltype == "INT32")
+        return HDF5ImportInfo::INT32;
+    if (pixeltype == "INT64")
+        return HDF5ImportInfo::INT64;
+    if (pixeltype == "FLOAT")
+        return HDF5ImportInfo::FLOAT;
+    if (pixeltype == "DOUBLE")
+        return HDF5ImportInfo::DOUBLE;
+    vigra_fail("internal error: unknown pixel type");
+    return HDF5ImportInfo::PixelType();
+}
+
+const char*
+HDF5ImportInfo::getPixelType() const
 {
     return m_pixeltype.c_str();
 }
 
-ArrayVector<hsize_t> const & HDF5ImportInfo::shape() const
+ArrayVector<hsize_t> const&
+HDF5ImportInfo::shape() const
 {
     return m_dims;
 }
 
-MultiArrayIndex HDF5ImportInfo::shapeOfDimension(const int dim) const
+MultiArrayIndex
+HDF5ImportInfo::shapeOfDimension(const int dim) const
 {
     return MultiArrayIndex(m_dims[dim]);
 }
 
-MultiArrayIndex HDF5ImportInfo::numDimensions() const
+MultiArrayIndex
+HDF5ImportInfo::numDimensions() const
 {
     return MultiArrayIndex(m_dimensions);
 }
 
-const std::string & HDF5ImportInfo::getPathInFile() const
+const std::string&
+HDF5ImportInfo::getPathInFile() const
 {
     return m_path;
 }
 
-const std::string & HDF5ImportInfo::getFilePath() const
+const std::string&
+HDF5ImportInfo::getFilePath() const
 {
     return m_filename;
 }
 
-hid_t HDF5ImportInfo::getH5FileHandle() const
+hid_t
+HDF5ImportInfo::getH5FileHandle() const
 {
     return m_file_handle;
 }
 
-hid_t HDF5ImportInfo::getDatasetHandle() const
+hid_t
+HDF5ImportInfo::getDatasetHandle() const
 {
     return m_dataset_handle;
 }
 
-H5O_type_t HDF5_get_type(hid_t loc_id, const char* name)
+H5O_type_t
+HDF5_get_type(hid_t loc_id, const char* name)
 {
     // get information about object
     H5O_info_t infobuf;
@@ -195,15 +208,16 @@ H5O_type_t HDF5_get_type(hid_t loc_id, const char* name)
 }
 
 // helper friend function for callback ls_inserter_callback()
-void HDF5_ls_insert(void* operator_data, const std::string & x)
+void
+HDF5_ls_insert(void* operator_data, const std::string& x)
 {
     static_cast<HDF5File::ls_closure*>(operator_data)->insert(x);
 }
 
 // callback function for ls(), called via HDF5File::ls_H5Literate()
-extern "C"
-herr_t HDF5_ls_inserter_callback(hid_t loc_id, const char* name,
-                                 const H5L_info_t*, void* operator_data)
+extern "C" herr_t
+HDF5_ls_inserter_callback(hid_t loc_id, const char* name,
+                          const H5L_info_t*, void* operator_data)
 {
     H5O_type_t h5_type = HDF5_get_type(loc_id, name);
     // add name to list if object is a dataset or a group
@@ -219,9 +233,9 @@ herr_t HDF5_ls_inserter_callback(hid_t loc_id, const char* name,
 }
 
 // callback function for listAttributes(), called via HDF5File::ls_H5Literate()
-extern "C"
-herr_t HDF5_listAttributes_inserter_callback(hid_t, const char* name,
-                                             const H5A_info_t*, void* operator_data)
+extern "C" herr_t
+HDF5_listAttributes_inserter_callback(hid_t, const char* name,
+                                      const H5A_info_t*, void* operator_data)
 {
     HDF5_ls_insert(operator_data, name);
     return 0;

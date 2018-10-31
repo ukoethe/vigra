@@ -1,23 +1,24 @@
 #define VIGRA_CHECK_BOUNDS
 
-#include <limits>
 #include <algorithm>
 #include <cmath>
-#include <vigra/unittest.hxx>
+#include <limits>
 #include <vigra/multi_array.hxx>
 #include <vigra/polytope.hxx>
+#include <vigra/unittest.hxx>
 
 
 namespace vigra
 {
 
-template <class Iterable, class T>
-unsigned int count(const Iterable & vec, const T & value)
+template<class Iterable, class T>
+unsigned int
+count(const Iterable& vec, const T& value)
 {
     return std::count(
-            vec.begin(),
-            vec.end(),
-            value);
+        vec.begin(),
+        vec.end(),
+        value);
 }
 
 struct FloatStarPolytopeTest
@@ -28,77 +29,78 @@ struct FloatStarPolytopeTest
     typedef StarPolytope<3, double> Polytope3;
 
     FloatStarPolytopeTest()
-    : eps_(std::numeric_limits<double>::epsilon() * 3)
-    {}
+        : eps_(std::numeric_limits<double>::epsilon() * 3)
+    {
+    }
 
     void testContains2D()
     {
         Polytope2 poly(
-                Vector2(0.  , 0.  ),
-                Vector2(1.  , 0.  ),
-                Vector2(0.  , 1.  ),
-                Vector2(0.25, 0.25));
+            Vector2(0., 0.),
+            Vector2(1., 0.),
+            Vector2(0., 1.),
+            Vector2(0.25, 0.25));
         // Internal
         shouldEqual(poly.contains(Vector2(0.25, 0.25)), true);
         // External
-        shouldEqual(poly.contains(Vector2(1.  , 1.  )), false);
+        shouldEqual(poly.contains(Vector2(1., 1.)), false);
         // Edge
-        shouldEqual(poly.contains(Vector2(0.5 , 0.  )), true);
-        shouldEqual(poly.contains(Vector2(0.  , 0.5 )), true);
-        shouldEqual(poly.contains(Vector2(0.5 , 0.5 )), true);
+        shouldEqual(poly.contains(Vector2(0.5, 0.)), true);
+        shouldEqual(poly.contains(Vector2(0., 0.5)), true);
+        shouldEqual(poly.contains(Vector2(0.5, 0.5)), true);
         // Vertex
-        shouldEqual(poly.contains(Vector2(0.  , 0.  )), true);
-        shouldEqual(poly.contains(Vector2(1.  , 0.  )), true);
-        shouldEqual(poly.contains(Vector2(0.  , 1.  )), true);
+        shouldEqual(poly.contains(Vector2(0., 0.)), true);
+        shouldEqual(poly.contains(Vector2(1., 0.)), true);
+        shouldEqual(poly.contains(Vector2(0., 1.)), true);
     }
 
     void testContains3D()
     {
         Polytope3 poly(
-                Vector3(0.  , 0.  , 0.  ),
-                Vector3(1.  , 0.  , 0.  ),
-                Vector3(0.  , 1.  , 0.  ),
-                Vector3(0.  , 0.  , 1.  ),
-                Vector3(0.25, 0.25, 0.25));
+            Vector3(0., 0., 0.),
+            Vector3(1., 0., 0.),
+            Vector3(0., 1., 0.),
+            Vector3(0., 0., 1.),
+            Vector3(0.25, 0.25, 0.25));
         // Internal
         shouldEqual(poly.contains(Vector3(0.25, 0.25, 0.25)), true);
         // External
-        shouldEqual(poly.contains(Vector3(1.  , 1.  , 1.  )), false);
+        shouldEqual(poly.contains(Vector3(1., 1., 1.)), false);
         // Facet
-        shouldEqual(poly.contains(Vector3(0.  , 0.2 , 0.2)), true);
-        shouldEqual(poly.contains(Vector3(0.2 , 0.  , 0.2)), true);
-        shouldEqual(poly.contains(Vector3(0.2 , 0.2 , 0. )), true);
+        shouldEqual(poly.contains(Vector3(0., 0.2, 0.2)), true);
+        shouldEqual(poly.contains(Vector3(0.2, 0., 0.2)), true);
+        shouldEqual(poly.contains(Vector3(0.2, 0.2, 0.)), true);
         shouldEqual(poly.contains(Vector3(0.25, 0.25, 0.5)), true);
         // Edge
-        shouldEqual(poly.contains(Vector3(0.5 , 0.  , 0. )), true);
-        shouldEqual(poly.contains(Vector3(0.  , 0.5 , 0. )), true);
-        shouldEqual(poly.contains(Vector3(0.  , 0.  , 0.5)), true);
-        shouldEqual(poly.contains(Vector3(0.  , 0.5 , 0.5)), true);
-        shouldEqual(poly.contains(Vector3(0.5 , 0.  , 0.5)), true);
-        shouldEqual(poly.contains(Vector3(0.5 , 0.5 , 0.0)), true);
+        shouldEqual(poly.contains(Vector3(0.5, 0., 0.)), true);
+        shouldEqual(poly.contains(Vector3(0., 0.5, 0.)), true);
+        shouldEqual(poly.contains(Vector3(0., 0., 0.5)), true);
+        shouldEqual(poly.contains(Vector3(0., 0.5, 0.5)), true);
+        shouldEqual(poly.contains(Vector3(0.5, 0., 0.5)), true);
+        shouldEqual(poly.contains(Vector3(0.5, 0.5, 0.0)), true);
         // Vertex
-        shouldEqual(poly.contains(Vector3(0.  , 0.  , 0. )), true);
-        shouldEqual(poly.contains(Vector3(1.  , 0.  , 0. )), true);
-        shouldEqual(poly.contains(Vector3(0.  , 1.  , 0. )), true);
-        shouldEqual(poly.contains(Vector3(0.  , 0.  , 1. )), true);
+        shouldEqual(poly.contains(Vector3(0., 0., 0.)), true);
+        shouldEqual(poly.contains(Vector3(1., 0., 0.)), true);
+        shouldEqual(poly.contains(Vector3(0., 1., 0.)), true);
+        shouldEqual(poly.contains(Vector3(0., 0., 1.)), true);
     }
 
     void testNVolume2D()
     {
         {
             Polytope2 poly(
-                    Vector2(0.  , 0.  ),
-                    Vector2(1.  , 0.  ),
-                    Vector2(0.  , 1.  ),
-                    Vector2(0.25, 0.25));
+                Vector2(0., 0.),
+                Vector2(1., 0.),
+                Vector2(0., 1.),
+                Vector2(0.25, 0.25));
             shouldEqual(abs(poly.nVolume() - .5) < eps_, true);
         }
         {
             Polytope2 poly(
-                    Vector2(0.5 , 0.5 ),
-                    Vector2(0.5 , 1.  ),
-                    Vector2(1.  , 0.5 ),
-                    Vector2(0.6 , 0.6 ));
+                Vector2(0.5, 0.5),
+                Vector2(0.5, 1.),
+                Vector2(1., 0.5),
+                Vector2(0.6, 0.6));
             shouldEqual(abs(poly.nVolume() - .125) < eps_, true);
         }
     }
@@ -107,42 +109,42 @@ struct FloatStarPolytopeTest
     {
         {
             Polytope3 poly(
-                    Vector3(0.  , 0.  , 0.  ),
-                    Vector3(1.  , 0.  , 0.  ),
-                    Vector3(0.  , 1.  , 0.  ),
-                    Vector3(0.  , 0.  , 1.  ),
-                    Vector3(0.25, 0.25, 0.25));
-            shouldEqual(abs(poly.nVolume() - 1./6.) < eps_, true);
+                Vector3(0., 0., 0.),
+                Vector3(1., 0., 0.),
+                Vector3(0., 1., 0.),
+                Vector3(0., 0., 1.),
+                Vector3(0.25, 0.25, 0.25));
+            shouldEqual(abs(poly.nVolume() - 1. / 6.) < eps_, true);
         }
         {
             Polytope3 poly(
-                    Vector3(0.5 , 0.5 , 0.5 ),
-                    Vector3(1.  , 0.5 , 0.5 ),
-                    Vector3(0.5 , 1.  , 0.5 ),
-                    Vector3(0.5 , 0.5 , 1.  ),
-                    Vector3(0.6 , 0.6 , 0.6 ));
-            shouldEqual(abs(poly.nVolume() - 1./(6.*8.)) < eps_, true);
+                Vector3(0.5, 0.5, 0.5),
+                Vector3(1., 0.5, 0.5),
+                Vector3(0.5, 1., 0.5),
+                Vector3(0.5, 0.5, 1.),
+                Vector3(0.6, 0.6, 0.6));
+            shouldEqual(abs(poly.nVolume() - 1. / (6. * 8.)) < eps_, true);
         }
     }
 
     void testNSurface2D()
     {
         Polytope2 poly(
-                Vector2(0.  , 0.  ),
-                Vector2(1.  , 0.  ),
-                Vector2(0.  , 1.  ),
-                Vector2(0.25, 0.25));
+            Vector2(0., 0.),
+            Vector2(1., 0.),
+            Vector2(0., 1.),
+            Vector2(0.25, 0.25));
         shouldEqual(abs(poly.nSurface() - (2. + sqrt(2.))) < eps_, true);
     }
 
     void testNSurface3D()
     {
         Polytope3 poly(
-                Vector3(0.  , 0.  , 0.  ),
-                Vector3(1.  , 0.  , 0.  ),
-                Vector3(0.  , 1.  , 0.  ),
-                Vector3(0.  , 0.  , 1.  ),
-                Vector3(0.25, 0.25, 0.25));
+            Vector3(0., 0., 0.),
+            Vector3(1., 0., 0.),
+            Vector3(0., 1., 0.),
+            Vector3(0., 0., 1.),
+            Vector3(0.25, 0.25, 0.25));
         const double surf = (3. + sqrt(3.)) / 2.;
         shouldEqual(abs(poly.nSurface() - surf) < eps_, true);
     }
@@ -150,16 +152,16 @@ struct FloatStarPolytopeTest
     void testClosed2D()
     {
         Polytope2 poly_closed(
-                Vector2(0.  , 0.  ),
-                Vector2(1.  , 0.  ),
-                Vector2(0.  , 1.  ),
-                Vector2(0.25, 0.25));
+            Vector2(0., 0.),
+            Vector2(1., 0.),
+            Vector2(0., 1.),
+            Vector2(0.25, 0.25));
         shouldEqual(poly_closed.closed(), true);
 
         Polytope2 poly_open(Vector2(0.25, 0.25));
-        Polytope2::node_type n1 =  poly_open.addVertex(Vector2(0, 0));
-        Polytope2::node_type n2 =  poly_open.addVertex(Vector2(1, 0));
-        Polytope2::node_type n3 =  poly_open.addVertex(Vector2(0, 1));
+        Polytope2::node_type n1 = poly_open.addVertex(Vector2(0, 0));
+        Polytope2::node_type n2 = poly_open.addVertex(Vector2(1, 0));
+        Polytope2::node_type n3 = poly_open.addVertex(Vector2(0, 1));
         Polytope2::node_type f1 = poly_open.addFacet(n1, n2);
         Polytope2::node_type f2 = poly_open.addFacet(n1, n3);
         shouldEqual(poly_open.closed(), false);
@@ -170,10 +172,10 @@ struct FloatStarPolytopeTest
     void testClosed3D()
     {
         Polytope3 poly(Vector3(0.1, 0.1, 0.1));
-        Polytope3::node_type n1 =  poly.addVertex(Vector3(0, 0, 0));
-        Polytope3::node_type n2 =  poly.addVertex(Vector3(1, 0, 0));
-        Polytope3::node_type n3 =  poly.addVertex(Vector3(0, 1, 0));
-        Polytope3::node_type n4 =  poly.addVertex(Vector3(0, 0, 1));
+        Polytope3::node_type n1 = poly.addVertex(Vector3(0, 0, 0));
+        Polytope3::node_type n2 = poly.addVertex(Vector3(1, 0, 0));
+        Polytope3::node_type n3 = poly.addVertex(Vector3(0, 1, 0));
+        Polytope3::node_type n4 = poly.addVertex(Vector3(0, 0, 1));
         Polytope3::node_type f1 = poly.addFacet(n2, n3, n4);
         shouldEqual(poly.closed(), false);
         Polytope3::node_type f2 = poly.addFacet(n1, n3, n4);
@@ -187,21 +189,21 @@ struct FloatStarPolytopeTest
     void testFill2D()
     {
         Polytope2 poly(
-                Vector2(0.  , 0.  ),
-                Vector2(1.  , 0.  ),
-                Vector2(0.  , 1.  ),
-                Vector2(0.25, 0.25));
+            Vector2(0., 0.),
+            Vector2(1., 0.),
+            Vector2(0., 1.),
+            Vector2(0.25, 0.25));
         MultiArray<2, unsigned int> label_image(vigra::Shape2(5, 5));
         for (auto it = label_image.begin(); it != label_image.end(); it++)
         {
             *it = 0;
         }
         unsigned int ref[25] = {
-                0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0,
-                0, 0, 1, 1, 1,
-                0, 0, 1, 1, 0,
-                0, 0, 1, 0, 0};
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 1, 1, 1,
+            0, 0, 1, 1, 0,
+            0, 0, 1, 0, 0};
         Vector2 offset(-1., -1.);
         Vector2 scale(0.5, 0.5);
         poly.fill(label_image, 1, offset, scale);
@@ -211,19 +213,19 @@ struct FloatStarPolytopeTest
     void testLitFacets2D()
     {
         Polytope2 poly(Vector2(0.25, 0.25));
-        Polytope2::node_type n1 =  poly.addVertex(Vector2(0, 0));
-        Polytope2::node_type n2 =  poly.addVertex(Vector2(1, 0));
-        Polytope2::node_type n3 =  poly.addVertex(Vector2(0, 1));
+        Polytope2::node_type n1 = poly.addVertex(Vector2(0, 0));
+        Polytope2::node_type n2 = poly.addVertex(Vector2(1, 0));
+        Polytope2::node_type n3 = poly.addVertex(Vector2(0, 1));
         Polytope2::node_type f1 = poly.addFacet(n2, n3);
         Polytope2::node_type f2 = poly.addFacet(n1, n3);
         Polytope2::node_type f3 = poly.addFacet(n1, n2);
-        auto lit_v1 = poly.litFacets(Vector2(-1. , -1. ));
-        auto lit_v2 = poly.litFacets(Vector2( 2. , -0.5));
-        auto lit_v3 = poly.litFacets(Vector2(-0.5,  2. ));
-        auto lit_e1 = poly.litFacets(Vector2( 1. ,  1. ));
-        auto lit_e2 = poly.litFacets(Vector2(-2. ,  0.5));
-        auto lit_e3 = poly.litFacets(Vector2( 0.5, -2. ));
-        auto lit0 = poly.litFacets(Vector2( 0.2,  0.2));
+        auto lit_v1 = poly.litFacets(Vector2(-1., -1.));
+        auto lit_v2 = poly.litFacets(Vector2(2., -0.5));
+        auto lit_v3 = poly.litFacets(Vector2(-0.5, 2.));
+        auto lit_e1 = poly.litFacets(Vector2(1., 1.));
+        auto lit_e2 = poly.litFacets(Vector2(-2., 0.5));
+        auto lit_e3 = poly.litFacets(Vector2(0.5, -2.));
+        auto lit0 = poly.litFacets(Vector2(0.2, 0.2));
         shouldEqual(lit0.size(), 0);
         shouldEqual(lit_v1.size(), 2);
         shouldEqual(lit_v2.size(), 2);
@@ -245,9 +247,9 @@ struct FloatStarPolytopeTest
     void testFindNeighbor2D()
     {
         Polytope2 poly(Vector2(0.25, 0.25));
-        Polytope2::node_type n1 =  poly.addVertex(Vector2(0, 0));
-        Polytope2::node_type n2 =  poly.addVertex(Vector2(1, 0));
-        Polytope2::node_type n3 =  poly.addVertex(Vector2(0, 1));
+        Polytope2::node_type n1 = poly.addVertex(Vector2(0, 0));
+        Polytope2::node_type n2 = poly.addVertex(Vector2(1, 0));
+        Polytope2::node_type n3 = poly.addVertex(Vector2(0, 1));
         Polytope2::node_type f1 = poly.addFacet(n2, n3);
         {
             auto aligns1 = poly.aligns_map_[f1];
@@ -279,10 +281,10 @@ struct FloatStarPolytopeTest
     void testFindNeighbor3D()
     {
         Polytope3 poly(Vector3(0.1, 0.1, 0.1));
-        Polytope3::node_type n1 =  poly.addVertex(Vector3(0, 0, 0));
-        Polytope3::node_type n2 =  poly.addVertex(Vector3(1, 0, 0));
-        Polytope3::node_type n3 =  poly.addVertex(Vector3(0, 1, 0));
-        Polytope3::node_type n4 =  poly.addVertex(Vector3(0, 0, 1));
+        Polytope3::node_type n1 = poly.addVertex(Vector3(0, 0, 0));
+        Polytope3::node_type n2 = poly.addVertex(Vector3(1, 0, 0));
+        Polytope3::node_type n3 = poly.addVertex(Vector3(0, 1, 0));
+        Polytope3::node_type n4 = poly.addVertex(Vector3(0, 0, 1));
         Polytope3::node_type f1 = poly.addFacet(n2, n3, n4);
         {
             auto aligns1 = poly.aligns_map_[f1];
@@ -346,81 +348,82 @@ struct IntStarPolytopeTest
     typedef NumericTraits<int>::RealPromote RealPromote;
 
     IntStarPolytopeTest()
-    : eps_(std::numeric_limits<RealPromote>::epsilon() * 2)
-    {}
+        : eps_(std::numeric_limits<RealPromote>::epsilon() * 2)
+    {
+    }
 
     void testContains2D()
     {
         Polytope2 poly(
-                Vector2(0, 0),
-                Vector2(4, 0),
-                Vector2(0, 2),
-                Vector2(1, 1));
+            Vector2(0, 0),
+            Vector2(4, 0),
+            Vector2(0, 2),
+            Vector2(1, 1));
         // Internal
-        shouldEqual(poly.contains(Vector2( 1,  1)), true);
+        shouldEqual(poly.contains(Vector2(1, 1)), true);
         // External
-        shouldEqual(poly.contains(Vector2( 3,  1)), false);
-        shouldEqual(poly.contains(Vector2(-1,  1)), false);
-        shouldEqual(poly.contains(Vector2( 2, -1)), false);
+        shouldEqual(poly.contains(Vector2(3, 1)), false);
+        shouldEqual(poly.contains(Vector2(-1, 1)), false);
+        shouldEqual(poly.contains(Vector2(2, -1)), false);
         // Edge
-        shouldEqual(poly.contains(Vector2( 2,  1)), true);
-        shouldEqual(poly.contains(Vector2( 0,  1)), true);
-        shouldEqual(poly.contains(Vector2( 2,  0)), true);
+        shouldEqual(poly.contains(Vector2(2, 1)), true);
+        shouldEqual(poly.contains(Vector2(0, 1)), true);
+        shouldEqual(poly.contains(Vector2(2, 0)), true);
         // Vertex
-        shouldEqual(poly.contains(Vector2( 0,  0)), true);
-        shouldEqual(poly.contains(Vector2( 4,  0)), true);
-        shouldEqual(poly.contains(Vector2( 0,  2)), true);
+        shouldEqual(poly.contains(Vector2(0, 0)), true);
+        shouldEqual(poly.contains(Vector2(4, 0)), true);
+        shouldEqual(poly.contains(Vector2(0, 2)), true);
     }
 
     void testContains3D()
     {
         Polytope3 poly(
-                Vector3( 0,  0,  0),
-                Vector3( 6,  0,  0),
-                Vector3( 0,  6,  0),
-                Vector3( 0,  0,  6),
-                Vector3( 1,  1,  1));
+            Vector3(0, 0, 0),
+            Vector3(6, 0, 0),
+            Vector3(0, 6, 0),
+            Vector3(0, 0, 6),
+            Vector3(1, 1, 1));
         // Internal
-        shouldEqual(poly.contains(Vector3( 1,  1,  1)), true);
+        shouldEqual(poly.contains(Vector3(1, 1, 1)), true);
         // External
-        shouldEqual(poly.contains(Vector3( 6,  6,  6)), false);
+        shouldEqual(poly.contains(Vector3(6, 6, 6)), false);
         // Facet
-        shouldEqual(poly.contains(Vector3( 2,  2,  2)), true);
-        shouldEqual(poly.contains(Vector3( 0,  1,  1)), true);
-        shouldEqual(poly.contains(Vector3( 1,  0,  1)), true);
-        shouldEqual(poly.contains(Vector3( 1,  1,  0)), true);
+        shouldEqual(poly.contains(Vector3(2, 2, 2)), true);
+        shouldEqual(poly.contains(Vector3(0, 1, 1)), true);
+        shouldEqual(poly.contains(Vector3(1, 0, 1)), true);
+        shouldEqual(poly.contains(Vector3(1, 1, 0)), true);
         // Edge
-        shouldEqual(poly.contains(Vector3( 1,  0,  0)), true);
-        shouldEqual(poly.contains(Vector3( 0,  1,  0)), true);
-        shouldEqual(poly.contains(Vector3( 0,  0,  1)), true);
-        shouldEqual(poly.contains(Vector3( 0,  3,  3)), true);
-        shouldEqual(poly.contains(Vector3( 3,  0,  3)), true);
-        shouldEqual(poly.contains(Vector3( 3,  3,  0)), true);
+        shouldEqual(poly.contains(Vector3(1, 0, 0)), true);
+        shouldEqual(poly.contains(Vector3(0, 1, 0)), true);
+        shouldEqual(poly.contains(Vector3(0, 0, 1)), true);
+        shouldEqual(poly.contains(Vector3(0, 3, 3)), true);
+        shouldEqual(poly.contains(Vector3(3, 0, 3)), true);
+        shouldEqual(poly.contains(Vector3(3, 3, 0)), true);
         // Vertex
-        shouldEqual(poly.contains(Vector3( 0,  0,  0)), true);
-        shouldEqual(poly.contains(Vector3( 6,  0,  0)), true);
-        shouldEqual(poly.contains(Vector3( 0,  6,  0)), true);
-        shouldEqual(poly.contains(Vector3( 0,  0,  6)), true);
+        shouldEqual(poly.contains(Vector3(0, 0, 0)), true);
+        shouldEqual(poly.contains(Vector3(6, 0, 0)), true);
+        shouldEqual(poly.contains(Vector3(0, 6, 0)), true);
+        shouldEqual(poly.contains(Vector3(0, 0, 6)), true);
     }
 
     void testNVolume2D()
     {
         {
             Polytope2 poly(
-                    Vector2( 0,  0),
-                    Vector2( 3,  0),
-                    Vector2( 0,  3),
-                    Vector2( 1,  1));
+                Vector2(0, 0),
+                Vector2(3, 0),
+                Vector2(0, 3),
+                Vector2(1, 1));
             RealPromote n_volume = poly.nVolume();
             shouldEqualTolerance(n_volume, 4.5, eps_);
         }
         {
             Polytope2 poly(
-                    Vector2( 1,  1),
-                    Vector2( 4,  1),
-                    Vector2( 1,  4),
-                    Vector2( 2,  2));
-            shouldEqualTolerance(poly.nVolume(),  4.5, eps_);
+                Vector2(1, 1),
+                Vector2(4, 1),
+                Vector2(1, 4),
+                Vector2(2, 2));
+            shouldEqualTolerance(poly.nVolume(), 4.5, eps_);
         }
     }
 
@@ -428,20 +431,20 @@ struct IntStarPolytopeTest
     {
         {
             Polytope3 poly(
-                    Vector3(0,  0,  0),
-                    Vector3(6,  0,  0),
-                    Vector3(0,  6,  0),
-                    Vector3(0,  0,  6),
-                    Vector3(1,  1,  1));
+                Vector3(0, 0, 0),
+                Vector3(6, 0, 0),
+                Vector3(0, 6, 0),
+                Vector3(0, 0, 6),
+                Vector3(1, 1, 1));
             shouldEqualTolerance(poly.nVolume(), 36., eps_);
         }
         {
             Polytope3 poly(
-                    Vector3(1,  1,  1),
-                    Vector3(7,  1,  1),
-                    Vector3(1,  7,  1),
-                    Vector3(1,  1,  7),
-                    Vector3(2,  2,  2));
+                Vector3(1, 1, 1),
+                Vector3(7, 1, 1),
+                Vector3(1, 7, 1),
+                Vector3(1, 1, 7),
+                Vector3(2, 2, 2));
             shouldEqualTolerance(poly.nVolume(), 36., eps_);
         }
     }
@@ -449,10 +452,10 @@ struct IntStarPolytopeTest
     void testNSurface2D()
     {
         Polytope2 poly(
-                Vector2(0,  0),
-                Vector2(3,  0),
-                Vector2(0,  3),
-                Vector2(1,  1));
+            Vector2(0, 0),
+            Vector2(3, 0),
+            Vector2(0, 3),
+            Vector2(1, 1));
         const RealPromote surf = 2 * 3 + 3 * sqrt(2);
         shouldEqualTolerance(poly.nSurface(), surf, eps_);
     }
@@ -460,11 +463,11 @@ struct IntStarPolytopeTest
     void testNSurface3D()
     {
         Polytope3 poly(
-                Vector3(0,  0,  0),
-                Vector3(6,  0,  0),
-                Vector3(0,  6,  0),
-                Vector3(0,  0,  6),
-                Vector3(1,  1,  1));
+            Vector3(0, 0, 0),
+            Vector3(6, 0, 0),
+            Vector3(0, 6, 0),
+            Vector3(0, 0, 6),
+            Vector3(1, 1, 1));
         const RealPromote surf = 6 * 6 * (3. + sqrt(3.)) / 2.;
         shouldEqualTolerance(poly.nSurface(), surf, eps_);
     }
@@ -472,16 +475,16 @@ struct IntStarPolytopeTest
     void testClosed2D()
     {
         Polytope2 poly_closed(
-                Vector2(0,  0),
-                Vector2(3,  0),
-                Vector2(0,  3),
-                Vector2(1,  1));
+            Vector2(0, 0),
+            Vector2(3, 0),
+            Vector2(0, 3),
+            Vector2(1, 1));
         shouldEqual(poly_closed.closed(), true);
 
-        Polytope2 poly_open(Vector2(1,  1));
-        Polytope2::node_type n1 =  poly_open.addVertex(Vector2(0, 0));
-        Polytope2::node_type n2 =  poly_open.addVertex(Vector2(3, 0));
-        Polytope2::node_type n3 =  poly_open.addVertex(Vector2(0, 3));
+        Polytope2 poly_open(Vector2(1, 1));
+        Polytope2::node_type n1 = poly_open.addVertex(Vector2(0, 0));
+        Polytope2::node_type n2 = poly_open.addVertex(Vector2(3, 0));
+        Polytope2::node_type n3 = poly_open.addVertex(Vector2(0, 3));
         Polytope2::node_type f1 = poly_open.addFacet(n1, n2);
         Polytope2::node_type f2 = poly_open.addFacet(n1, n3);
         shouldEqual(poly_open.closed(), false);
@@ -492,10 +495,10 @@ struct IntStarPolytopeTest
     void testClosed3D()
     {
         Polytope3 poly(Vector3(1, 1, 1));
-        Polytope3::node_type n1 =  poly.addVertex(Vector3(0, 0, 0));
-        Polytope3::node_type n2 =  poly.addVertex(Vector3(6, 0, 0));
-        Polytope3::node_type n3 =  poly.addVertex(Vector3(0, 6, 0));
-        Polytope3::node_type n4 =  poly.addVertex(Vector3(0, 0, 6));
+        Polytope3::node_type n1 = poly.addVertex(Vector3(0, 0, 0));
+        Polytope3::node_type n2 = poly.addVertex(Vector3(6, 0, 0));
+        Polytope3::node_type n3 = poly.addVertex(Vector3(0, 6, 0));
+        Polytope3::node_type n4 = poly.addVertex(Vector3(0, 0, 6));
         Polytope3::node_type f1 = poly.addFacet(n2, n3, n4);
         shouldEqual(poly.closed(), false);
         Polytope3::node_type f2 = poly.addFacet(n1, n3, n4);
@@ -650,37 +653,38 @@ struct FloatConvexPolytopeTest
     typedef ConvexPolytope<3, double> Polytope3;
 
     FloatConvexPolytopeTest()
-    : eps_(std::numeric_limits<double>::epsilon() * 3)
-    {}
+        : eps_(std::numeric_limits<double>::epsilon() * 3)
+    {
+    }
 
     void testAddExtremeVertex2D()
     {
         const int N = 100;
         Polytope2 poly(
-                Vector2( 1.,  0.),
-                Vector2(-1.,  0.),
-                Vector2( 0.,  1.));
-        poly.addExtremeVertex(Vector2( 0., -1.));
+            Vector2(1., 0.),
+            Vector2(-1., 0.),
+            Vector2(0., 1.));
+        poly.addExtremeVertex(Vector2(0., -1.));
         shouldEqualTolerance(poly.nVolume(), 2., eps_);
         shouldEqualTolerance(poly.nSurface(), 4. * std::sqrt(2.), eps_);
         for (int n = 0; n < N; n++)
         {
             Vector2 vec(
-                    std::cos(2*M_PI*n/N),
-                    std::sin(2*M_PI*n/N));
+                std::cos(2 * M_PI * n / N),
+                std::sin(2 * M_PI * n / N));
             shouldEqualTolerance(vec.magnitude(), 1., eps_);
             poly.addExtremeVertex(vec);
             shouldEqual(poly.closed(), true);
         }
-        const double sur_tgt = 2.*N*std::sin(M_PI / N);
+        const double sur_tgt = 2. * N * std::sin(M_PI / N);
         shouldEqualTolerance(poly.nSurface(), sur_tgt, eps_);
-        const double vol_tgt = 1.*N*std::sin(M_PI / N) * std::cos(M_PI / N);
+        const double vol_tgt = 1. * N * std::sin(M_PI / N) * std::cos(M_PI / N);
         shouldEqualTolerance(poly.nVolume(), vol_tgt, eps_);
         for (int n = 0; n < 100; n++)
         {
             Vector2 vec(
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX));
+                (2 * rand() - 1) / static_cast<double>(RAND_MAX),
+                (2 * rand() - 1) / static_cast<double>(RAND_MAX));
             if (vec.magnitude() > 1)
             {
                 shouldEqual(poly.contains(vec), false);
@@ -691,36 +695,34 @@ struct FloatConvexPolytopeTest
             }
         }
     }
-    
+
     void testAddExtremeVertex3D()
     {
         const int N = 100;
         Polytope3 poly(
-                Vector3( 1.,  0.,  1.),
-                Vector3(-1.,  0.,  1.),
-                Vector3( 0.,  1.,  1.),
-                Vector3( 0.,  0.,  0.));
+            Vector3(1., 0., 1.),
+            Vector3(-1., 0., 1.),
+            Vector3(0., 1., 1.),
+            Vector3(0., 0., 0.));
         for (int n = 0; n < N; n++)
         {
             Vector3 vec(
-                    std::cos(2*M_PI*n/N),
-                    std::sin(2*M_PI*n/N),
-                    1.);
+                std::cos(2 * M_PI * n / N),
+                std::sin(2 * M_PI * n / N),
+                1.);
             poly.addExtremeVertex(vec);
             shouldEqual(poly.closed(), true);
         }
-        const double sur_tgt = N * std::sin(M_PI / N) * (
-                std::cos(M_PI / N) +  std::sqrt(
-                        std::cos(M_PI / N) * std::cos(M_PI / N) + 1.));
+        const double sur_tgt = N * std::sin(M_PI / N) * (std::cos(M_PI / N) + std::sqrt(std::cos(M_PI / N) * std::cos(M_PI / N) + 1.));
         shouldEqualTolerance(poly.nSurface(), sur_tgt, eps_ * N);
         const double vol_tgt = N * std::sin(M_PI / N) * std::cos(M_PI / N) / 3.;
         shouldEqualTolerance(poly.nVolume(), vol_tgt, eps_ * N);
         for (int n = 0; n < 100; n++)
         {
             Vector3 vec(
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
-                    rand()/static_cast<double>(RAND_MAX));
+                (2 * rand() - 1) / static_cast<double>(RAND_MAX),
+                (2 * rand() - 1) / static_cast<double>(RAND_MAX),
+                rand() / static_cast<double>(RAND_MAX));
             double dist = std::sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
             if (dist > vec[2])
             {
@@ -738,24 +740,24 @@ struct FloatConvexPolytopeTest
         const int N = 1000;
         const double eps = 4. / sqrt(N);
         Polytope2 poly(
-                Vector2( 1.,  0.),
-                Vector2(-1.,  0.),
-                Vector2( 0.,  1.));
+            Vector2(1., 0.),
+            Vector2(-1., 0.),
+            Vector2(0., 1.));
         poly.addExtremeVertex(Vector2(0., -1.));
         shouldEqual(abs(poly.nVolume() - 2.) < eps_, true);
         shouldEqual(abs(poly.nSurface() - 4. * sqrt(2.)) < eps, true);
         for (int n = 0; n < N; n++)
         {
             Vector2 vec(
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX));
+                (2 * rand() - 1) / static_cast<double>(RAND_MAX),
+                (2 * rand() - 1) / static_cast<double>(RAND_MAX));
             if (vec.magnitude() <= 1.)
             {
                 poly.addExtremeVertex(vec);
                 shouldEqual(poly.closed(), true);
             }
         }
-        const double sur_err = (2*M_PI - poly.nSurface()) / (2.*M_PI);
+        const double sur_err = (2 * M_PI - poly.nSurface()) / (2. * M_PI);
         shouldEqual(sur_err < eps, true);
         shouldEqual(sur_err > 0, true);
         const double vol_err = (M_PI - poly.nVolume()) / (M_PI);
@@ -764,8 +766,8 @@ struct FloatConvexPolytopeTest
         for (int n = 0; n < 100; n++)
         {
             Vector2 vec(
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX));
+                (2 * rand() - 1) / static_cast<double>(RAND_MAX),
+                (2 * rand() - 1) / static_cast<double>(RAND_MAX));
             if (abs(vec.magnitude() - 1) > eps)
             {
                 shouldEqual(poly.contains(vec), vec.magnitude() < 1.);
@@ -778,34 +780,34 @@ struct FloatConvexPolytopeTest
         const int N = 1000;
         const double eps = 9. / sqrt(N);
         Polytope3 poly(
-                Vector3( 1.,  0.,  0.),
-                Vector3(-1.,  0.,  0.),
-                Vector3( 0.,  1.,  0.),
-                Vector3( 0.,  0.,  1.));
+            Vector3(1., 0., 0.),
+            Vector3(-1., 0., 0.),
+            Vector3(0., 1., 0.),
+            Vector3(0., 0., 1.));
         for (int n = 0; n < N; n++)
         {
             Vector3 vec(
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX));
+                (2 * rand() - 1) / static_cast<double>(RAND_MAX),
+                (2 * rand() - 1) / static_cast<double>(RAND_MAX),
+                (2 * rand() - 1) / static_cast<double>(RAND_MAX));
             if (vec.magnitude() <= 1.)
             {
                 poly.addExtremeVertex(vec);
                 shouldEqual(poly.closed(), true);
             }
         }
-        const double sur_err = (4.*M_PI - poly.nSurface()) / (4.*M_PI);
+        const double sur_err = (4. * M_PI - poly.nSurface()) / (4. * M_PI);
         shouldEqualTolerance(sur_err, 0, eps);
         shouldEqual(sur_err > 0, true);
-        const double vol_err = (4./3.*M_PI - poly.nVolume()) / (4./3.*M_PI);
+        const double vol_err = (4. / 3. * M_PI - poly.nVolume()) / (4. / 3. * M_PI);
         shouldEqualTolerance(vol_err, 0, eps);
         shouldEqual(vol_err > 0, true);
         for (int n = 0; n < 100; n++)
         {
             Vector3 vec(
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX));
+                (2 * rand() - 1) / static_cast<double>(RAND_MAX),
+                (2 * rand() - 1) / static_cast<double>(RAND_MAX),
+                (2 * rand() - 1) / static_cast<double>(RAND_MAX));
             if (abs(vec.magnitude() - 1) > eps)
             {
                 shouldEqual(poly.contains(vec), vec.magnitude() < 1.);
@@ -818,7 +820,8 @@ struct FloatConvexPolytopeTest
 
 struct PolytopeTestSuite : public vigra::test_suite
 {
-    PolytopeTestSuite() : vigra::test_suite("PolytopeTestSuite")
+    PolytopeTestSuite()
+        : vigra::test_suite("PolytopeTestSuite")
     {
         add(testCase(&FloatStarPolytopeTest::testClosed2D));
         add(testCase(&FloatStarPolytopeTest::testClosed3D));
@@ -851,7 +854,8 @@ struct PolytopeTestSuite : public vigra::test_suite
 
 } // namespace vigra
 
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
     vigra::PolytopeTestSuite test;
     const int failed = test.run(vigra::testsToBeExecuted(argc, argv));
@@ -859,4 +863,3 @@ int main(int argc, char** argv)
 
     return failed != 0;
 }
-

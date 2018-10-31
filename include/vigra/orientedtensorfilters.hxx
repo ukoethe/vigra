@@ -29,20 +29,21 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
 #ifndef VIGRA_ORIENTEDTENSORFILTERS_HXX
 #define VIGRA_ORIENTEDTENSORFILTERS_HXX
 
-#include <cmath>
-#include "utilities.hxx"
 #include "initimage.hxx"
-#include "stdconvolution.hxx"
 #include "multi_shape.hxx"
+#include "stdconvolution.hxx"
+#include "utilities.hxx"
+#include <cmath>
 
-namespace vigra {
+namespace vigra
+{
 
 /** \addtogroup TensorImaging Tensor Image Processing
 */
@@ -149,13 +150,13 @@ namespace vigra {
     
     \see vectorToTensor()
 */
-doxygen_overloaded_function(template <...> void hourGlassFilter)
+doxygen_overloaded_function(template<...> void hourGlassFilter)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void hourGlassFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                     DestIterator dul, DestAccessor dest,
-                     double sigma, double rho)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    void hourGlassFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                         DestIterator dul, DestAccessor dest,
+                         double sigma, double rho)
 {
     vigra_precondition(sigma >= 0.0 && rho >= 0.0,
                        "hourGlassFilter(): sigma and rho must be >= 0.0");
@@ -169,22 +170,22 @@ void hourGlassFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
-    double radius = VIGRA_CSTD::floor(3.0*sigma + 0.5);
+    double radius = VIGRA_CSTD::floor(3.0 * sigma + 0.5);
     double sigma2 = -0.5 / sigma / sigma;
     double rho2 = -0.5 / rho / rho;
     double norm = 1.0 / (2.0 * M_PI * sigma * sigma);
 
-    initImage(dul, dul+Diff2D(w,h), dest, NumericTraits<typename DestAccessor::value_type>::zero());
+    initImage(dul, dul + Diff2D(w, h), dest, NumericTraits<typename DestAccessor::value_type>::zero());
 
-    for(int y=0; y<h; ++y, ++sul.y, ++dul.y)
+    for (int y = 0; y < h; ++y, ++sul.y, ++dul.y)
     {
         SrcIterator s = sul;
         DestIterator d = dul;
-        for(int x=0; x<w; ++x, ++s.x, ++d.x)
+        for (int x = 0; x < w; ++x, ++s.x, ++d.x)
         {
             double phi = 0.5 * VIGRA_CSTD::atan2(
-                                     2.0*src.getComponent(s,1),
-                                     (double)src.getComponent(s,0) - src.getComponent(s,2));
+                                   2.0 * src.getComponent(s, 1),
+                                   (double)src.getComponent(s, 0) - src.getComponent(s, 2));
             double u = VIGRA_CSTD::sin(phi);
             double v = VIGRA_CSTD::cos(phi);
 
@@ -195,28 +196,24 @@ void hourGlassFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
             DestIterator dwul = d + Diff2D((int)x0, (int)y0);
 
-            for(double yy=y0; yy <= y1; ++yy, ++dwul.y)
+            for (double yy = y0; yy <= y1; ++yy, ++dwul.y)
             {
                 typename DestIterator::row_iterator dw = dwul.rowIterator();
-                for(double xx=x0; xx <= x1; ++xx, ++dw)
+                for (double xx = x0; xx <= x1; ++xx, ++dw)
                 {
-                    double r2 = xx*xx + yy*yy;
-                    double p  = u*xx - v*yy;
-                    double q  = v*xx + u*yy;
-                    double kernel = (p == 0.0) ?
-                                      (q == 0.0) ?
-                                       norm :
-                                       0.0 :
-                                       norm * VIGRA_CSTD::exp(sigma2*r2 + rho2*q*q/p/p);
-                    dest.set(dest(dw) + kernel*src(s), dw);
+                    double r2 = xx * xx + yy * yy;
+                    double p = u * xx - v * yy;
+                    double q = v * xx + u * yy;
+                    double kernel = (p == 0.0) ? (q == 0.0) ? norm : 0.0 : norm * VIGRA_CSTD::exp(sigma2 * r2 + rho2 * q * q / p / p);
+                    dest.set(dest(dw) + kernel * src(s), dw);
                 }
             }
         }
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 hourGlassFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                 pair<DestIterator, DestAccessor> d,
@@ -225,15 +222,15 @@ hourGlassFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     hourGlassFilter(s.first, s.second, s.third, d.first, d.second, sigma, rho);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-hourGlassFilter(MultiArrayView<2, T1, S1> const & src,
-                MultiArrayView<2, T2, S2> dest,
-                double sigma, double rho)
+    hourGlassFilter(MultiArrayView<2, T1, S1> const& src,
+                    MultiArrayView<2, T2, S2> dest,
+                    double sigma, double rho)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "hourGlassFilter(): shape mismatch between input and output.");
+                       "hourGlassFilter(): shape mismatch between input and output.");
     hourGlassFilter(srcImageRange(src), destImage(dest), sigma, rho);
 }
 
@@ -243,11 +240,12 @@ hourGlassFilter(MultiArrayView<2, T1, S1> const & src,
 /*                                                      */
 /********************************************************/
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void ellipticGaussian(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                      DestIterator dul, DestAccessor dest,
-                      double sigmax, double sigmin)
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
+void
+ellipticGaussian(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                 DestIterator dul, DestAccessor dest,
+                 double sigmax, double sigmin)
 {
     vigra_precondition(sigmax >= sigmin && sigmin >= 0.0,
                        "ellipticGaussian(): "
@@ -256,27 +254,26 @@ void ellipticGaussian(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
-    double radius = VIGRA_CSTD::floor(3.0*sigmax + 0.5);
+    double radius = VIGRA_CSTD::floor(3.0 * sigmax + 0.5);
     double sigmin2 = -0.5 / sigmin / sigmin;
     double norm = 1.0 / (2.0 * M_PI * sigmin * sigmax);
 
-    initImage(dul, dul+Diff2D(w,h), dest, NumericTraits<typename DestAccessor::value_type>::zero());
+    initImage(dul, dul + Diff2D(w, h), dest, NumericTraits<typename DestAccessor::value_type>::zero());
 
-    for(int y=0; y<h; ++y, ++sul.y, ++dul.y)
+    for (int y = 0; y < h; ++y, ++sul.y, ++dul.y)
     {
         SrcIterator s = sul;
         DestIterator d = dul;
-        for(int x=0; x<w; ++x, ++s.x, ++d.x)
+        for (int x = 0; x < w; ++x, ++s.x, ++d.x)
         {
-            typedef typename 
-               NumericTraits<typename SrcAccessor::component_type>::RealPromote TmpType;
-            TmpType d1 = src.getComponent(s,0) + src.getComponent(s,2);
-            TmpType d2 = src.getComponent(s,0) - src.getComponent(s,2);
-            TmpType d3 = 2.0 * src.getComponent(s,1);
+            typedef typename NumericTraits<typename SrcAccessor::component_type>::RealPromote TmpType;
+            TmpType d1 = src.getComponent(s, 0) + src.getComponent(s, 2);
+            TmpType d2 = src.getComponent(s, 0) - src.getComponent(s, 2);
+            TmpType d3 = 2.0 * src.getComponent(s, 1);
             TmpType d4 = VIGRA_CSTD::sqrt(sq(d2) + sq(d3));
             TmpType excentricity = 1.0 - (d1 - d4) / (d1 + d4);
-            double sigmax2 = -0.5 / sq((sigmax - sigmin)*excentricity + sigmin);
-            
+            double sigmax2 = -0.5 / sq((sigmax - sigmin) * excentricity + sigmin);
+
             double phi = 0.5 * VIGRA_CSTD::atan2(d3, d2);
             double u = VIGRA_CSTD::sin(phi);
             double v = VIGRA_CSTD::cos(phi);
@@ -288,23 +285,23 @@ void ellipticGaussian(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
             DestIterator dwul = d + Diff2D((int)x0, (int)y0);
 
-            for(double yy=y0; yy <= y1; ++yy, ++dwul.y)
+            for (double yy = y0; yy <= y1; ++yy, ++dwul.y)
             {
                 typename DestIterator::row_iterator dw = dwul.rowIterator();
-                for(double xx=x0; xx <= x1; ++xx, ++dw)
+                for (double xx = x0; xx <= x1; ++xx, ++dw)
                 {
-                    double p  = u*xx - v*yy;
-                    double q  = v*xx + u*yy;
-                    double kernel = norm * VIGRA_CSTD::exp(sigmax2*p*p + sigmin2*q*q);
-                    dest.set(dest(dw) + kernel*src(s), dw);
+                    double p = u * xx - v * yy;
+                    double q = v * xx + u * yy;
+                    double kernel = norm * VIGRA_CSTD::exp(sigmax2 * p * p + sigmin2 * q * q);
+                    dest.set(dest(dw) + kernel * src(s), dw);
                 }
             }
         }
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 ellipticGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                  pair<DestIterator, DestAccessor> dest,
@@ -313,15 +310,15 @@ ellipticGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     ellipticGaussian(src.first, src.second, src.third, dest.first, dest.second, sigmax, sigmin);
 }
 
-template <class T1, class S1,
-          class T2, class S2>
+template<class T1, class S1,
+         class T2, class S2>
 inline void
-ellipticGaussian(MultiArrayView<2, T1, S1> const & src,
-                 MultiArrayView<2, T2, S2> dest,
-                 double sigmax, double sigmin)
+    ellipticGaussian(MultiArrayView<2, T1, S1> const& src,
+                     MultiArrayView<2, T2, S2> dest,
+                     double sigmax, double sigmin)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "ellipticGaussian(): shape mismatch between input and output.");
+                       "ellipticGaussian(): shape mismatch between input and output.");
     ellipticGaussian(srcImageRange(src), destImage(dest), sigmax, sigmin);
 }
 
@@ -333,37 +330,33 @@ ellipticGaussian(MultiArrayView<2, T1, S1> const & src,
 
 class FoerstnerKernelBase
 {
-  public:
+public:
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-    typedef VectorType::value_type    ValueType;
-  
+    typedef VectorType::value_type ValueType;
+
     FoerstnerKernelBase(double scale, bool ringShaped = false)
-    : radius_((int)(3.0*scale+0.5)),
-      weights_(2*radius_+1, 2*radius_+1),
-      vectors_(2*radius_+1, 2*radius_+1)
+        : radius_((int)(3.0 * scale + 0.5)),
+          weights_(2 * radius_ + 1, 2 * radius_ + 1),
+          vectors_(2 * radius_ + 1, 2 * radius_ + 1)
     {
         double norm = 1.0 / (2.0 * M_PI * scale * scale);
         double s2 = -0.5 / scale / scale;
-        
-        for(int y = -radius_; y <= radius_; ++y)
+
+        for (int y = -radius_; y <= radius_; ++y)
         {
-            for(int x = -radius_; x <= radius_; ++x)
+            for (int x = -radius_; x <= radius_; ++x)
             {
-                double d2 = x*x + y*y;
+                double d2 = x * x + y * y;
                 double d = VIGRA_CSTD::sqrt(d2);
-                vectors_(x+radius_,y+radius_) = d != 0.0 ?
-                                                  VectorType(x/d, -y/d) :
-                                                  VectorType(ValueType(0), ValueType(0));
-                weights_(x+radius_,y+radius_) = ringShaped ? 
-                                       norm * d2 * VIGRA_CSTD::exp(d2 * s2) :
-                                       norm * VIGRA_CSTD::exp(d2 * s2);
+                vectors_(x + radius_, y + radius_) = d != 0.0 ? VectorType(x / d, -y / d) : VectorType(ValueType(0), ValueType(0));
+                weights_(x + radius_, y + radius_) = ringShaped ? norm * d2 * VIGRA_CSTD::exp(d2 * s2) : norm * VIGRA_CSTD::exp(d2 * s2);
             }
         }
-    }   
-    
-    ResultType operator()(int /*x*/, int /*y*/, VectorType const &) const
+    }
+
+    ResultType operator()(int /*x*/, int /*y*/, VectorType const&) const
     {
         // isotropic filtering
         return weights_(radius_, radius_);
@@ -375,179 +368,188 @@ class FoerstnerKernelBase
 };
 
 class FoerstnerRingKernelBase
-: public FoerstnerKernelBase
+    : public FoerstnerKernelBase
 {
-  public:
+public:
     FoerstnerRingKernelBase(double scale)
-    : FoerstnerKernelBase(scale, true)
-    {}
+        : FoerstnerKernelBase(scale, true)
+    {
+    }
 };
 
 class Cos2RingKernel
-: public FoerstnerKernelBase
+    : public FoerstnerKernelBase
 {
-  public:
+public:
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-  
+
     Cos2RingKernel(double scale)
-    : FoerstnerKernelBase(scale, true)
-    {}
-    
-    ResultType operator()(int x, int y, VectorType const & v) const
+        : FoerstnerKernelBase(scale, true)
     {
-        if(x == 0 && y == 0)
+    }
+
+    ResultType operator()(int x, int y, VectorType const& v) const
+    {
+        if (x == 0 && y == 0)
             return weights_(radius_, radius_);
-        double d = dot(vectors_(x+radius_, y+radius_), v);
-        return d * d * weights_(x+radius_, y+radius_);
+        double d = dot(vectors_(x + radius_, y + radius_), v);
+        return d * d * weights_(x + radius_, y + radius_);
     }
 };
 
 class Cos2Kernel
-: public FoerstnerKernelBase
+    : public FoerstnerKernelBase
 {
-  public:
+public:
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-  
+
     Cos2Kernel(double scale)
-    : FoerstnerKernelBase(scale, false)
-    {}
-    
-    ResultType operator()(int x, int y, VectorType const & v) const
+        : FoerstnerKernelBase(scale, false)
     {
-        if(x == 0 && y == 0)
+    }
+
+    ResultType operator()(int x, int y, VectorType const& v) const
+    {
+        if (x == 0 && y == 0)
             return weights_(radius_, radius_);
-        double d = dot(vectors_(x+radius_, y+radius_), v);
-        return d * d * weights_(x+radius_, y+radius_);
+        double d = dot(vectors_(x + radius_, y + radius_), v);
+        return d * d * weights_(x + radius_, y + radius_);
     }
 };
 
 class Sin2RingKernel
-: public FoerstnerKernelBase
+    : public FoerstnerKernelBase
 {
-  public:
+public:
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-  
+
     Sin2RingKernel(double scale)
-    : FoerstnerKernelBase(scale, true)
-    {}
-    
-    ResultType operator()(int x, int y, VectorType const & v) const
+        : FoerstnerKernelBase(scale, true)
     {
-        if(x == 0 && y == 0)
+    }
+
+    ResultType operator()(int x, int y, VectorType const& v) const
+    {
+        if (x == 0 && y == 0)
             return weights_(radius_, radius_);
-        double d = dot(vectors_(x+radius_, y+radius_), v);
-        return (1.0 - d * d) * weights_(x+radius_, y+radius_);
+        double d = dot(vectors_(x + radius_, y + radius_), v);
+        return (1.0 - d * d) * weights_(x + radius_, y + radius_);
     }
 };
 
 class Sin2Kernel
-: public FoerstnerKernelBase
+    : public FoerstnerKernelBase
 {
-  public:
+public:
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-  
+
     Sin2Kernel(double scale)
-    : FoerstnerKernelBase(scale, false)
-    {}
-    
-    ResultType operator()(int x, int y, VectorType const & v) const
+        : FoerstnerKernelBase(scale, false)
     {
-        if(x == 0 && y == 0)
+    }
+
+    ResultType operator()(int x, int y, VectorType const& v) const
+    {
+        if (x == 0 && y == 0)
             return weights_(radius_, radius_);
-        double d = dot(vectors_(x+radius_, y+radius_), v);
-        return (1.0 - d * d) * weights_(x+radius_, y+radius_);
+        double d = dot(vectors_(x + radius_, y + radius_), v);
+        return (1.0 - d * d) * weights_(x + radius_, y + radius_);
     }
 };
 
 class Sin6RingKernel
-: public FoerstnerKernelBase
+    : public FoerstnerKernelBase
 {
-  public:
+public:
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-  
+
     Sin6RingKernel(double scale)
-    : FoerstnerKernelBase(scale, true)
-    {}
-    
-    ResultType operator()(int x, int y, VectorType const & v) const
+        : FoerstnerKernelBase(scale, true)
     {
-        if(x == 0 && y == 0)
+    }
+
+    ResultType operator()(int x, int y, VectorType const& v) const
+    {
+        if (x == 0 && y == 0)
             return weights_(radius_, radius_);
-        double d = dot(vectors_(x+radius_, y+radius_), v);
-        return VIGRA_CSTD::pow(1.0 - d * d, 3) * weights_(x+radius_, y+radius_);
+        double d = dot(vectors_(x + radius_, y + radius_), v);
+        return VIGRA_CSTD::pow(1.0 - d * d, 3) * weights_(x + radius_, y + radius_);
     }
 };
 
 class Sin6Kernel
-: public FoerstnerKernelBase
+    : public FoerstnerKernelBase
 {
-  public:
+public:
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-  
+
     Sin6Kernel(double scale)
-    : FoerstnerKernelBase(scale, false)
-    {}
-    
-    ResultType operator()(int x, int y, VectorType const & v) const
+        : FoerstnerKernelBase(scale, false)
     {
-        if(x == 0 && y == 0)
+    }
+
+    ResultType operator()(int x, int y, VectorType const& v) const
+    {
+        if (x == 0 && y == 0)
             return weights_(radius_, radius_);
-        double d = dot(vectors_(x+radius_, y+radius_), v);
-        return VIGRA_CSTD::pow(1.0 - d * d, 3) * weights_(x+radius_, y+radius_);
+        double d = dot(vectors_(x + radius_, y + radius_), v);
+        return VIGRA_CSTD::pow(1.0 - d * d, 3) * weights_(x + radius_, y + radius_);
     }
 };
 
 class Cos6RingKernel
-: public FoerstnerKernelBase
+    : public FoerstnerKernelBase
 {
-  public:
+public:
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-  
+
     Cos6RingKernel(double scale)
-    : FoerstnerKernelBase(scale, true)
-    {}
-    
-    ResultType operator()(int x, int y, VectorType const & v) const
+        : FoerstnerKernelBase(scale, true)
     {
-        if(x == 0 && y == 0)
+    }
+
+    ResultType operator()(int x, int y, VectorType const& v) const
+    {
+        if (x == 0 && y == 0)
             return weights_(radius_, radius_);
-        double d = dot(vectors_(x+radius_, y+radius_), v);
-        return (1.0 - VIGRA_CSTD::pow(1.0 - d * d, 3)) * weights_(x+radius_, y+radius_);
+        double d = dot(vectors_(x + radius_, y + radius_), v);
+        return (1.0 - VIGRA_CSTD::pow(1.0 - d * d, 3)) * weights_(x + radius_, y + radius_);
     }
 };
 
 class Cos6Kernel
-: public FoerstnerKernelBase
+    : public FoerstnerKernelBase
 {
-  public:
+public:
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-  
+
     Cos6Kernel(double scale)
-    : FoerstnerKernelBase(scale, false)
-    {}
-    
-    ResultType operator()(int x, int y, VectorType const & v) const
+        : FoerstnerKernelBase(scale, false)
     {
-        if(x == 0 && y == 0)
+    }
+
+    ResultType operator()(int x, int y, VectorType const& v) const
+    {
+        if (x == 0 && y == 0)
             return weights_(radius_, radius_);
-        double d = dot(vectors_(x+radius_, y+radius_), v);
-        return (1.0 - VIGRA_CSTD::pow(1.0 - d * d, 3)) * weights_(x+radius_, y+radius_);
+        double d = dot(vectors_(x + radius_, y + radius_), v);
+        return (1.0 - VIGRA_CSTD::pow(1.0 - d * d, 3)) * weights_(x + radius_, y + radius_);
     }
 };
 
@@ -557,12 +559,13 @@ class Cos6Kernel
 /*                                                      */
 /********************************************************/
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Kernel>
-void orientedTrigonometricFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                    DestIterator dul, DestAccessor dest,
-                    Kernel const & kernel)
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class Kernel>
+void
+orientedTrigonometricFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                            DestIterator dul, DestAccessor dest,
+                            Kernel const& kernel)
 {
     vigra_precondition(src.size(sul) == 2,
                        "orientedTrigonometricFilter(): input image must have 2 bands.");
@@ -572,17 +575,17 @@ void orientedTrigonometricFilter(SrcIterator sul, SrcIterator slr, SrcAccessor s
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
     int radius = kernel.radius_;
-    
+
     typedef typename SrcAccessor::value_type VectorType;
     typedef typename DestAccessor::value_type TensorType;
 
-    initImage(dul, dul+Diff2D(w,h), dest, NumericTraits<TensorType>::zero());
+    initImage(dul, dul + Diff2D(w, h), dest, NumericTraits<TensorType>::zero());
 
-    for(int y=0; y<h; ++y, ++sul.y, ++dul.y)
+    for (int y = 0; y < h; ++y, ++sul.y, ++dul.y)
     {
         SrcIterator s = sul;
         DestIterator d = dul;
-        for(int x=0; x<w; ++x, ++s.x, ++d.x)
+        for (int x = 0; x < w; ++x, ++s.x, ++d.x)
         {
             int x0 = x - radius < 0 ? -x : -radius;
             int y0 = y - radius < 0 ? -y : -radius;
@@ -590,17 +593,17 @@ void orientedTrigonometricFilter(SrcIterator sul, SrcIterator slr, SrcAccessor s
             int y1 = y + radius >= h ? h - y - 1 : radius;
 
             VectorType v(src(s));
-            TensorType t(sq(v[0]), v[0]*v[1], sq(v[1]));
+            TensorType t(sq(v[0]), v[0] * v[1], sq(v[1]));
             double sqMag = t[0] + t[2];
             double mag = VIGRA_CSTD::sqrt(sqMag);
-            if(mag != 0.0)
+            if (mag != 0.0)
                 v /= mag;
             else
                 v *= 0.0;
             Diff2D dd;
-            for(dd.y = y0; dd.y <= y1; ++dd.y)
+            for (dd.y = y0; dd.y <= y1; ++dd.y)
             {
-                for(dd.x = x0; dd.x <= x1; ++dd.x)
+                for (dd.x = x0; dd.x <= x1; ++dd.x)
                 {
                     dest.set(dest(d, dd) + kernel(dd.x, dd.y, v) * t, d, dd);
                 }
@@ -609,27 +612,27 @@ void orientedTrigonometricFilter(SrcIterator sul, SrcIterator slr, SrcAccessor s
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Kernel>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class Kernel>
 inline void
 orientedTrigonometricFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<DestIterator, DestAccessor> dest,
-                            Kernel const & kernel)
+                            Kernel const& kernel)
 {
     orientedTrigonometricFilter(src.first, src.second, src.third, dest.first, dest.second, kernel);
 }
 
-template <class T1, class S1,
-          class T2, class S2,
-          class Kernel>
+template<class T1, class S1,
+         class T2, class S2,
+         class Kernel>
 inline void
-orientedTrigonometricFilter(MultiArrayView<2, T1, S1> const & src,
-                            MultiArrayView<2, T2, S2> dest,
-                            Kernel const & kernel)
+    orientedTrigonometricFilter(MultiArrayView<2, T1, S1> const& src,
+                                MultiArrayView<2, T2, S2> dest,
+                                Kernel const& kernel)
 {
     vigra_precondition(src.shape() == dest.shape(),
-        "orientedTrigonometricFilter(): shape mismatch between input and output.");
+                       "orientedTrigonometricFilter(): shape mismatch between input and output.");
     orientedTrigonometricFilter(srcImageRange(src), destImage(dest), kernel);
 }
 

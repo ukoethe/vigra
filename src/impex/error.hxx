@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -38,7 +38,10 @@
 
 #include "vigra/error.hxx"
 
-#define VIGRA_IMPEX_FINALIZED(p) { if (p) \
-    vigra_precondition( false, "encoder settings were already finalized" ); }
+#define VIGRA_IMPEX_FINALIZED(p)                                                  \
+    {                                                                             \
+        if (p)                                                                    \
+            vigra_precondition(false, "encoder settings were already finalized"); \
+    }
 
 #endif // VIGRA_IMPEX_ERROR_HXX

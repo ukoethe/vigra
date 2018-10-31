@@ -38,103 +38,111 @@
 #define VIGRA_BASICS_HXX
 
 #include "config.hxx"
+#include "diff2d.hxx"
 #include "error.hxx"
+#include "mathutil.hxx"
 #include "metaprogramming.hxx"
 #include "tuple.hxx"
-#include "diff2d.hxx"
-#include "mathutil.hxx"
-#include <string>
-#include <sstream>
 #include <cctype>
+#include <sstream>
+#include <string>
 #include <tuple>
 
 /*! \file */
 
-namespace vigra {
+namespace vigra
+{
 
 /** Convert a value to a string. Available for integral and floating point types
     and void *.
 */
-doxygen_overloaded_function(template <class T> std::string asString(T t))
+doxygen_overloaded_function(template<class T> std::string asString(T t))
 
-#define VIGRA_AS_STRING(T) \
-inline std::string asString(T t) \
-{ \
-    std::stringstream s; \
-    s << t; \
-    return s.str(); \
-}
+#define VIGRA_AS_STRING(T)           \
+    inline std::string asString(T t) \
+    {                                \
+        std::stringstream s;         \
+        s << t;                      \
+        return s.str();              \
+    }
 
-VIGRA_AS_STRING(bool)
-VIGRA_AS_STRING(signed char)
-VIGRA_AS_STRING(unsigned char)
-VIGRA_AS_STRING(signed short)
-VIGRA_AS_STRING(unsigned short)
-VIGRA_AS_STRING(signed long)
-VIGRA_AS_STRING(unsigned long)
-VIGRA_AS_STRING(signed long long)
-VIGRA_AS_STRING(unsigned long long)
-VIGRA_AS_STRING(signed int)
-VIGRA_AS_STRING(unsigned int)
-VIGRA_AS_STRING(float)
-VIGRA_AS_STRING(double)
-VIGRA_AS_STRING(long double)
-VIGRA_AS_STRING(void *)
+    VIGRA_AS_STRING(bool)
+        VIGRA_AS_STRING(signed char)
+            VIGRA_AS_STRING(unsigned char)
+                VIGRA_AS_STRING(signed short)
+                    VIGRA_AS_STRING(unsigned short)
+                        VIGRA_AS_STRING(signed long)
+                            VIGRA_AS_STRING(unsigned long)
+                                VIGRA_AS_STRING(signed long long)
+                                    VIGRA_AS_STRING(unsigned long long)
+                                        VIGRA_AS_STRING(signed int)
+                                            VIGRA_AS_STRING(unsigned int)
+                                                VIGRA_AS_STRING(float)
+                                                    VIGRA_AS_STRING(double)
+                                                        VIGRA_AS_STRING(long double)
+                                                            VIGRA_AS_STRING(void*)
 
 #undef VIGRA_AS_STRING
 
-template <class T>
-std::string operator<<(std::string const & s, T const & t)
+                                                                template<class T>
+                                                                std::string
+                                                                operator<<(std::string const& s, T const& t)
 {
     std::stringstream ss;
     ss << t;
     return s + ss.str();
 }
 
-    /** Convert string to lower case.
+/** Convert string to lower case.
     */
-inline std::string tolower(std::string s)
+inline std::string
+tolower(std::string s)
 {
-    for(unsigned int k=0; k<s.size(); ++k)
+    for (unsigned int k = 0; k < s.size(); ++k)
         s[k] = (std::string::value_type)std::tolower(s[k]);
     return s;
 }
 
-inline std::string tolower(const char * s)
+inline std::string
+tolower(const char* s)
 {
     return tolower(std::string(s));
 }
 
-    /** Convert string to lower case and remove any white space characters.
+/** Convert string to lower case and remove any white space characters.
     */
-inline std::string normalizeString(std::string const & s)
+inline std::string
+normalizeString(std::string const& s)
 {
     std::string res;
 
-    for(unsigned int k=0; k<s.size(); ++k)
+    for (unsigned int k = 0; k < s.size(); ++k)
     {
-        if(std::isspace(s[k]))
+        if (std::isspace(s[k]))
             continue;
         res += (std::string::value_type)std::tolower(s[k]);
     }
     return res;
 }
 
-inline std::string normalizeString(const char * s)
+inline std::string
+normalizeString(const char* s)
 {
     return normalizeString(std::string(s));
 }
 
-namespace detail {
+namespace detail
+{
 
-template <class T>
+template<class T>
 struct FinallyImpl
 {
-    T & destructor_;
+    T& destructor_;
 
-    FinallyImpl(T & destructor)
-    : destructor_(destructor)
-    {}
+    FinallyImpl(T& destructor)
+        : destructor_(destructor)
+    {
+    }
 
     ~FinallyImpl()
     {
@@ -149,12 +157,12 @@ struct FinallyImpl
 #define VIGRA_TOKEN_PASTE_IMPL(x, y) x##y
 #define VIGRA_TOKEN_PASTE(x, y) VIGRA_TOKEN_PASTE_IMPL(x, y)
 
-#define VIGRA_FINALLY_IMPL(destructor, counter) \
-    auto VIGRA_TOKEN_PASTE(_vigra_finally_impl_, counter) = [&]() { destructor; }; \
+#define VIGRA_FINALLY_IMPL(destructor, counter)                                              \
+    auto VIGRA_TOKEN_PASTE(_vigra_finally_impl_, counter) = [&]() { destructor; };           \
     ::vigra::detail::FinallyImpl<decltype(VIGRA_TOKEN_PASTE(_vigra_finally_impl_, counter))> \
         VIGRA_TOKEN_PASTE(_vigra_finally_, counter)(VIGRA_TOKEN_PASTE(_vigra_finally_impl_, counter))
 
-    /** Emulate the 'finally' keyword as known from Python and other languages.
+/** Emulate the 'finally' keyword as known from Python and other languages.
 
         This macro improves upon the famous
         <a href="http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization">Resource Acquisition Is Initialization</a> idiom, where a resource (e.g. heap memory or a mutex) is automatically free'ed when program execution leaves the current scope. This is normally achieved by placing a call which  releases the resource into the destructor of a dedicated helper class (e.g. <tt>std::unique_ptr</tt> or <tt>std::lock_guard<std::mutex></tt>).
@@ -207,39 +215,42 @@ struct FinallyImpl
 #define VIGRA_FINALLY(destructor) \
     VIGRA_FINALLY_IMPL(destructor, __COUNTER__)
 
-namespace std {
+namespace std
+{
 
-template <class T1, class T2>
-ostream & operator<<(ostream & s, std::pair<T1, T2> const & p)
+template<class T1, class T2>
+ostream&
+operator<<(ostream& s, std::pair<T1, T2> const& p)
 {
     s << "(" << p.first << ", " << p.second << ")";
     return s;
 }
 
-}
+} // namespace std
 
 namespace vigra
 {
 namespace detail
 {
-    template <typename TPL, size_t N, typename FUNCTOR>
-    struct for_each_in_tuple_impl
-    {
-        typedef for_each_in_tuple_impl<TPL, N-1, FUNCTOR> ForEachRecursion;
+template<typename TPL, size_t N, typename FUNCTOR>
+struct for_each_in_tuple_impl
+{
+    typedef for_each_in_tuple_impl<TPL, N - 1, FUNCTOR> ForEachRecursion;
 
-        void operator()(TPL && t, FUNCTOR && f) const
-        {
-            ForEachRecursion()(std::forward<TPL>(t), std::forward<FUNCTOR>(f));
-            f(std::get<N-1>(std::forward<TPL>(t)));
-        }
-    };
-
-    template <typename TPL, typename FUNCTOR>
-    struct for_each_in_tuple_impl<TPL, 0, FUNCTOR>
+    void operator()(TPL&& t, FUNCTOR&& f) const
     {
-        void operator()(TPL &&, FUNCTOR &&) const
-        {}
-    };
+        ForEachRecursion()(std::forward<TPL>(t), std::forward<FUNCTOR>(f));
+        f(std::get<N - 1>(std::forward<TPL>(t)));
+    }
+};
+
+template<typename TPL, typename FUNCTOR>
+struct for_each_in_tuple_impl<TPL, 0, FUNCTOR>
+{
+    void operator()(TPL&&, FUNCTOR&&) const
+    {
+    }
+};
 } // namespace detail
 
 /**
@@ -278,8 +289,9 @@ namespace detail
  * }
  * \endcode
  */
-template <typename TPL, typename FUNCTOR>
-void for_each_in_tuple(TPL && t, FUNCTOR && f)
+template<typename TPL, typename FUNCTOR>
+void
+for_each_in_tuple(TPL&& t, FUNCTOR&& f)
 {
     typedef typename std::decay<TPL>::type UNQUALIFIED_TPL;
     typedef detail::for_each_in_tuple_impl<TPL, std::tuple_size<UNQUALIFIED_TPL>::value, FUNCTOR> ForEachImpl;

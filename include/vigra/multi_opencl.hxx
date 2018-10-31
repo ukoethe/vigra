@@ -45,7 +45,8 @@
 #include <CL/opencl.h>
 #endif
 
-namespace vigra {
+namespace vigra
+{
 
 /********************************************************/
 /*                                                      */
@@ -56,71 +57,123 @@ namespace vigra {
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 #define VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(basetype, n)               \
-  template<>                                                            \
-  struct NumericTraits< basetype##n >                                   \
-  {                                                                     \
-    typedef basetype##n Type;                                           \
-    typedef Type Promote;                                               \
-    typedef Type UnsignedPromote;                                       \
-    typedef Type RealPromote;                                           \
-    typedef std::complex<Type> ComplexPromote;                          \
-    typedef basetype ValueType;                                         \
+    template<>                                                          \
+    struct NumericTraits<basetype##n>                                   \
+    {                                                                   \
+        typedef basetype##n Type;                                       \
+        typedef Type Promote;                                           \
+        typedef Type UnsignedPromote;                                   \
+        typedef Type RealPromote;                                       \
+        typedef std::complex<Type> ComplexPromote;                      \
+        typedef basetype ValueType;                                     \
                                                                         \
-    typedef VigraFalseType isIntegral;                                  \
-    typedef VigraFalseType isScalar;                                    \
-    typedef typename NumericTraits<ValueType>::isSigned isSigned;       \
-    typedef VigraFalseType isOrdered;                                   \
-    typedef typename NumericTraits<ValueType>::isComplex isComplex;     \
+        typedef VigraFalseType isIntegral;                              \
+        typedef VigraFalseType isScalar;                                \
+        typedef typename NumericTraits<ValueType>::isSigned isSigned;   \
+        typedef VigraFalseType isOrdered;                               \
+        typedef typename NumericTraits<ValueType>::isComplex isComplex; \
                                                                         \
-    static Type zero() { Type x; bzero(&x, sizeof(x)); return x; }      \
-    static Type one() { Type x = {{1}}; return x; }                     \
-    static Type nonZero() { return one(); }                             \
+        static Type zero()                                              \
+        {                                                               \
+            Type x;                                                     \
+            bzero(&x, sizeof(x));                                       \
+            return x;                                                   \
+        }                                                               \
+        static Type one()                                               \
+        {                                                               \
+            Type x = {{1}};                                             \
+            return x;                                                   \
+        }                                                               \
+        static Type nonZero()                                           \
+        {                                                               \
+            return one();                                               \
+        }                                                               \
                                                                         \
-    static Promote toPromote(Type const & v) { return v; }              \
-    static Type fromPromote(Promote const & v) { return v; }            \
-    static Type fromRealPromote(RealPromote v) { return v; }            \
-  }
+        static Promote toPromote(Type const& v)                         \
+        {                                                               \
+            return v;                                                   \
+        }                                                               \
+        static Type fromPromote(Promote const& v)                       \
+        {                                                               \
+            return v;                                                   \
+        }                                                               \
+        static Type fromRealPromote(RealPromote v)                      \
+        {                                                               \
+            return v;                                                   \
+        }                                                               \
+    }
 
 #define VIGRA_OPENCL_VECTYPEN_REAL_TRAITS(basetype, n)                  \
-  template<>                                                            \
-  struct NumericTraits< basetype##n >                                   \
-  {                                                                     \
-    typedef basetype##n Type;                                           \
-    typedef Type Promote;                                               \
-    typedef Type UnsignedPromote;                                       \
-    typedef Type RealPromote;                                           \
-    typedef std::complex<Type> ComplexPromote;                          \
-    typedef basetype ValueType;                                         \
+    template<>                                                          \
+    struct NumericTraits<basetype##n>                                   \
+    {                                                                   \
+        typedef basetype##n Type;                                       \
+        typedef Type Promote;                                           \
+        typedef Type UnsignedPromote;                                   \
+        typedef Type RealPromote;                                       \
+        typedef std::complex<Type> ComplexPromote;                      \
+        typedef basetype ValueType;                                     \
                                                                         \
-    typedef VigraFalseType isIntegral;                                  \
-    typedef VigraFalseType isScalar;                                    \
-    typedef typename NumericTraits<ValueType>::isSigned isSigned;       \
-    typedef VigraFalseType isOrdered;                                   \
-    typedef typename NumericTraits<ValueType>::isComplex isComplex;     \
+        typedef VigraFalseType isIntegral;                              \
+        typedef VigraFalseType isScalar;                                \
+        typedef typename NumericTraits<ValueType>::isSigned isSigned;   \
+        typedef VigraFalseType isOrdered;                               \
+        typedef typename NumericTraits<ValueType>::isComplex isComplex; \
                                                                         \
-    static Type zero() { Type x; bzero(&x, sizeof(x)); return x; }      \
-    static Type one() { Type x = {{1}}; return x; }                     \
-    static Type nonZero() { return one(); }                             \
-    static Type epsilon() { Type x; x.x = NumericTraits<ValueType>::epsilon(); return x; } \
-    static Type smallestPositive() { Type x; x.x = NumericTraits<ValueType>::smallestPositive(); return x; } \
+        static Type zero()                                              \
+        {                                                               \
+            Type x;                                                     \
+            bzero(&x, sizeof(x));                                       \
+            return x;                                                   \
+        }                                                               \
+        static Type one()                                               \
+        {                                                               \
+            Type x = {{1}};                                             \
+            return x;                                                   \
+        }                                                               \
+        static Type nonZero()                                           \
+        {                                                               \
+            return one();                                               \
+        }                                                               \
+        static Type epsilon()                                           \
+        {                                                               \
+            Type x;                                                     \
+            x.x = NumericTraits<ValueType>::epsilon();                  \
+            return x;                                                   \
+        }                                                               \
+        static Type smallestPositive()                                  \
+        {                                                               \
+            Type x;                                                     \
+            x.x = NumericTraits<ValueType>::smallestPositive();         \
+            return x;                                                   \
+        }                                                               \
                                                                         \
-    static Promote toPromote(Type const & v) { return v; }              \
-    static Type fromPromote(Promote const & v) { return v; }            \
-    static Type fromRealPromote(RealPromote v) { return v; }            \
-  }
+        static Promote toPromote(Type const& v)                         \
+        {                                                               \
+            return v;                                                   \
+        }                                                               \
+        static Type fromPromote(Promote const& v)                       \
+        {                                                               \
+            return v;                                                   \
+        }                                                               \
+        static Type fromRealPromote(RealPromote v)                      \
+        {                                                               \
+            return v;                                                   \
+        }                                                               \
+    }
 
 /// \todo - fix one() - maybe with .hi and .lo accessors?
 
-#define VIGRA_OPENCL_VECN_TRAITS(n)                          \
-  VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(cl_char, n);          \
-    VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(cl_uchar, n);       \
-    VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(cl_short, n);       \
-    VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(cl_ushort, n);      \
-    VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(cl_int, n);         \
-    VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(cl_uint, n);        \
-    VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(cl_long, n);        \
-    VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(cl_ulong, n);       \
-    VIGRA_OPENCL_VECTYPEN_REAL_TRAITS(cl_float, n);          \
+#define VIGRA_OPENCL_VECN_TRAITS(n)                     \
+    VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(cl_char, n);   \
+    VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(cl_uchar, n);  \
+    VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(cl_short, n);  \
+    VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(cl_ushort, n); \
+    VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(cl_int, n);    \
+    VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(cl_uint, n);   \
+    VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(cl_long, n);   \
+    VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(cl_ulong, n);  \
+    VIGRA_OPENCL_VECTYPEN_REAL_TRAITS(cl_float, n);     \
     VIGRA_OPENCL_VECTYPEN_REAL_TRAITS(cl_double, n);
 
 VIGRA_OPENCL_VECN_TRAITS(2);
@@ -192,7 +245,8 @@ struct CanSkipInitialization<std::complex<T> >
 /*                                                      */
 /********************************************************/
 
-namespace multi_math {
+namespace multi_math
+{
 
 /// \todo !
 
@@ -289,135 +343,143 @@ namespace multi_math {
 //@}
 //@}
 
-#define VIGRA_OPENCL_TYPE_ACCESSOR(basetype, n, NTH) \
-  class basetype##n##Accessor_##NTH                  \
-  {                                                             \
-  public:                                                       \
-    /** The accessor's value type. */                           \
-    typedef NumericTraits< basetype##n >::ValueType value_type; \
-                                                                \
-    /** Read component at iterator position. */                 \
-    template <class ITERATOR>                                   \
-      value_type operator()(ITERATOR const & i) const {         \
-      return (*i).NTH;                                          \
-    }                                                           \
-                                                                \
-    /** Read component at offset from iterator position. */             \
-    template <class ITERATOR, class DIFFERENCE>                         \
-      value_type operator()(ITERATOR const & i, DIFFERENCE d) const {   \
-      return i[d].NTH;                                                  \
-    }                                                                   \
-                                                                        \
-    /** Write component at iterator position from a scalar. */          \
-    template <class ITERATOR>                                           \
-      void set(value_type const & v, ITERATOR const & i) const {        \
-      (*i).NTH = v;                                                     \
-    }                                                                   \
-                                                                        \
-    /** Write component at offset from iterator position from a scalar. */ \
-    template <class ITERATOR, class DIFFERENCE>                         \
-      void set(value_type const & v, ITERATOR const & i, DIFFERENCE d) const { \
-      i[d].NTH = v;                                                     \
-    }                                                                   \
-                                                                        \
-    /** Write component at iterator position into a scalar. */          \
-    template <class R, class ITERATOR>                                  \
-      void set(FFTWComplex<R> const & v, ITERATOR const & i) const {    \
-      *i = v.NTH;                                                       \
-    }                                                                   \
-                                                                        \
-    /** Write component at offset from iterator position into a scalar. */ \
-    template <class R, class ITERATOR, class DIFFERENCE>                \
-      void set(FFTWComplex<R> const & v, ITERATOR const & i, DIFFERENCE d) const { \
-      i[d] = v.NTH;                                                     \
-    }                                                                   \
-  };                                                                    \
-  class basetype##n##WriteAccessor_##NTH                                \
-    : public basetype##n##Accessor_##NTH                                \
-  {                                                                     \
-  public:                                                               \
-    /** The accessor's value type. */                                   \
-    typedef NumericTraits< basetype##n >::ValueType value_type;         \
-                                                                        \
-    /** Write component at iterator position. */                        \
-    template <class ITERATOR>                                           \
-    void set(value_type const & v, ITERATOR const & i) const {          \
-      (*i).NTH = v;                                                     \
-    }                                                                   \
-                                                                        \
-    /** Write component at offset from iterator position. */            \
-    template <class ITERATOR, class DIFFERENCE>                         \
-    void set(value_type const & v, ITERATOR const & i, DIFFERENCE d) const { \
-      i[d].NTH = v;                                                     \
-    }                                                                   \
-  }
+#define VIGRA_OPENCL_TYPE_ACCESSOR(basetype, n, NTH)                             \
+    class basetype##n##Accessor_##NTH                                            \
+    {                                                                            \
+    public:                                                                      \
+        /** The accessor's value type. */                                        \
+        typedef NumericTraits<basetype##n>::ValueType value_type;                \
+                                                                                 \
+        /** Read component at iterator position. */                              \
+        template<class ITERATOR>                                                 \
+        value_type operator()(ITERATOR const& i) const                           \
+        {                                                                        \
+            return (*i).NTH;                                                     \
+        }                                                                        \
+                                                                                 \
+        /** Read component at offset from iterator position. */                  \
+        template<class ITERATOR, class DIFFERENCE>                               \
+        value_type operator()(ITERATOR const& i, DIFFERENCE d) const             \
+        {                                                                        \
+            return i[d].NTH;                                                     \
+        }                                                                        \
+                                                                                 \
+        /** Write component at iterator position from a scalar. */               \
+        template<class ITERATOR>                                                 \
+        void set(value_type const& v, ITERATOR const& i) const                   \
+        {                                                                        \
+            (*i).NTH = v;                                                        \
+        }                                                                        \
+                                                                                 \
+        /** Write component at offset from iterator position from a scalar. */   \
+        template<class ITERATOR, class DIFFERENCE>                               \
+        void set(value_type const& v, ITERATOR const& i, DIFFERENCE d) const     \
+        {                                                                        \
+            i[d].NTH = v;                                                        \
+        }                                                                        \
+                                                                                 \
+        /** Write component at iterator position into a scalar. */               \
+        template<class R, class ITERATOR>                                        \
+        void set(FFTWComplex<R> const& v, ITERATOR const& i) const               \
+        {                                                                        \
+            *i = v.NTH;                                                          \
+        }                                                                        \
+                                                                                 \
+        /** Write component at offset from iterator position into a scalar. */   \
+        template<class R, class ITERATOR, class DIFFERENCE>                      \
+        void set(FFTWComplex<R> const& v, ITERATOR const& i, DIFFERENCE d) const \
+        {                                                                        \
+            i[d] = v.NTH;                                                        \
+        }                                                                        \
+    };                                                                           \
+    class basetype##n##WriteAccessor_##NTH                                       \
+        : public basetype##n##Accessor_##NTH                                     \
+    {                                                                            \
+    public:                                                                      \
+        /** The accessor's value type. */                                        \
+        typedef NumericTraits<basetype##n>::ValueType value_type;                \
+                                                                                 \
+        /** Write component at iterator position. */                             \
+        template<class ITERATOR>                                                 \
+        void set(value_type const& v, ITERATOR const& i) const                   \
+        {                                                                        \
+            (*i).NTH = v;                                                        \
+        }                                                                        \
+                                                                                 \
+        /** Write component at offset from iterator position. */                 \
+        template<class ITERATOR, class DIFFERENCE>                               \
+        void set(value_type const& v, ITERATOR const& i, DIFFERENCE d) const     \
+        {                                                                        \
+            i[d].NTH = v;                                                        \
+        }                                                                        \
+    }
 
-#define VIGRA_OPENCL_TYPE2_ACCESSORS(basetype)  \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 2, s0);  \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 2, s1);  \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 2, x);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 2, y);
+#define VIGRA_OPENCL_TYPE2_ACCESSORS(basetype)   \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 2, s0); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 2, s1); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 2, x);  \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 2, y);
 
-#define VIGRA_OPENCL_TYPE3_ACCESSORS(basetype)  \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 3, s0);  \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 3, s1);  \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 3, s2);  \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 3, x);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 3, y);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 3, z);
+#define VIGRA_OPENCL_TYPE3_ACCESSORS(basetype)   \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 3, s0); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 3, s1); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 3, s2); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 3, x);  \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 3, y);  \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 3, z);
 
 #define VIGRA_OPENCL_TYPE4_ACCESSORS(basetype)   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 4, s0);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 4, s1);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 4, s2);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 4, s3);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 4, x);    \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 4, y);    \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 4, z);    \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 4, w);
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 4, s0); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 4, s1); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 4, s2); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 4, s3); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 4, x);  \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 4, y);  \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 4, z);  \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 4, w);
 
 #define VIGRA_OPENCL_TYPE8_ACCESSORS(basetype)   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s0);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s1);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s2);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s3);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s4);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s5);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s6);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s7);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s8);
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s0); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s1); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s2); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s3); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s4); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s5); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s6); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s7); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 8, s8);
 
 #define VIGRA_OPENCL_TYPE16_ACCESSORS(basetype)   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s0);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s1);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s2);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s3);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s4);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s5);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s6);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s7);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s8);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sa);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sb);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sc);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sd);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, se);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sf);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sA);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sB);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sC);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sD);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sE);   \
-  VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sF);
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s0); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s1); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s2); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s3); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s4); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s5); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s6); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s7); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, s8); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sa); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sb); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sc); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sd); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, se); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sf); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sA); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sB); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sC); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sD); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sE); \
+    VIGRA_OPENCL_TYPE_ACCESSOR(basetype, 16, sF);
 
 /// \todo figure out half (.hi .lo, .even .odd) and other odd-sized accessors
 
-#define VIGRA_OPENCL_ACCESSORS(basetype)  \
-  VIGRA_OPENCL_TYPE2_ACCESSORS(basetype); \
-  VIGRA_OPENCL_TYPE3_ACCESSORS(basetype); \
-  VIGRA_OPENCL_TYPE4_ACCESSORS(basetype); \
-  VIGRA_OPENCL_TYPE8_ACCESSORS(basetype); \
-  VIGRA_OPENCL_TYPE16_ACCESSORS(basetype);
+#define VIGRA_OPENCL_ACCESSORS(basetype)    \
+    VIGRA_OPENCL_TYPE2_ACCESSORS(basetype); \
+    VIGRA_OPENCL_TYPE3_ACCESSORS(basetype); \
+    VIGRA_OPENCL_TYPE4_ACCESSORS(basetype); \
+    VIGRA_OPENCL_TYPE8_ACCESSORS(basetype); \
+    VIGRA_OPENCL_TYPE16_ACCESSORS(basetype);
 
 VIGRA_OPENCL_ACCESSORS(cl_char);
 VIGRA_OPENCL_ACCESSORS(cl_uchar);

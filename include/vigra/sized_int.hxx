@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -40,66 +40,73 @@
 #include "metaprogramming.hxx"
 #include <limits>
 
-#if   SHRT_MAX  == 0x7FL
-# define VIGRA_BITSOF_SHORT 8
-#elif SHRT_MAX  == 0x7FFFL
-# define VIGRA_BITSOF_SHORT 16
-#elif SHRT_MAX  == 0x7FFFFFFFL
-# define VIGRA_BITSOF_SHORT 32
-#elif SHRT_MAX  > 0xFFFFFFFFL
-# define VIGRA_BITSOF_SHORT 64
+#if SHRT_MAX == 0x7FL
+#define VIGRA_BITSOF_SHORT 8
+#elif SHRT_MAX == 0x7FFFL
+#define VIGRA_BITSOF_SHORT 16
+#elif SHRT_MAX == 0x7FFFFFFFL
+#define VIGRA_BITSOF_SHORT 32
+#elif SHRT_MAX > 0xFFFFFFFFL
+#define VIGRA_BITSOF_SHORT 64
 #else
-# define VIGRA_BITSOF_SHORT -1
+#define VIGRA_BITSOF_SHORT -1
 #endif
 
-#if   INT_MAX  == 0x7FL
-# define VIGRA_BITSOF_INT 8
-#elif INT_MAX  == 0x7FFFL
-# define VIGRA_BITSOF_INT 16
-#elif INT_MAX  == 0x7FFFFFFFL
-# define VIGRA_BITSOF_INT 32
-#elif INT_MAX  > 0xFFFFFFFFL
-# define VIGRA_BITSOF_INT 64
+#if INT_MAX == 0x7FL
+#define VIGRA_BITSOF_INT 8
+#elif INT_MAX == 0x7FFFL
+#define VIGRA_BITSOF_INT 16
+#elif INT_MAX == 0x7FFFFFFFL
+#define VIGRA_BITSOF_INT 32
+#elif INT_MAX > 0xFFFFFFFFL
+#define VIGRA_BITSOF_INT 64
 #else
-# define VIGRA_BITSOF_INT -1
+#define VIGRA_BITSOF_INT -1
 #endif
 
-#if   LONG_MAX  == 0x7FL
-# define VIGRA_BITSOF_LONG 8
-#elif LONG_MAX  == 0x7FFFL
-# define VIGRA_BITSOF_LONG 16
-#elif LONG_MAX  == 0x7FFFFFFFL
-# define VIGRA_BITSOF_LONG 32
-#elif LONG_MAX  > 0xFFFFFFFFL
-# define VIGRA_BITSOF_LONG 64
+#if LONG_MAX == 0x7FL
+#define VIGRA_BITSOF_LONG 8
+#elif LONG_MAX == 0x7FFFL
+#define VIGRA_BITSOF_LONG 16
+#elif LONG_MAX == 0x7FFFFFFFL
+#define VIGRA_BITSOF_LONG 32
+#elif LONG_MAX > 0xFFFFFFFFL
+#define VIGRA_BITSOF_LONG 64
 #else
-# define VIGRA_BITSOF_LONG -1
+#define VIGRA_BITSOF_LONG -1
 #endif
 
-#if   LLONG_MAX  == 0x7FL
-# define VIGRA_BITSOF_LONG_LONG 8
-#elif LLONG_MAX  == 0x7FFFL
-# define VIGRA_BITSOF_LONG_LONG 16
-#elif LLONG_MAX  == 0x7FFFFFFFL
-# define VIGRA_BITSOF_LONG_LONG 32
-#elif LLONG_MAX  > 0xFFFFFFFFL
-# define VIGRA_BITSOF_LONG_LONG 64
+#if LLONG_MAX == 0x7FL
+#define VIGRA_BITSOF_LONG_LONG 8
+#elif LLONG_MAX == 0x7FFFL
+#define VIGRA_BITSOF_LONG_LONG 16
+#elif LLONG_MAX == 0x7FFFFFFFL
+#define VIGRA_BITSOF_LONG_LONG 32
+#elif LLONG_MAX > 0xFFFFFFFFL
+#define VIGRA_BITSOF_LONG_LONG 64
 #else
-# define VIGRA_BITSOF_LONG_LONG -1
+#define VIGRA_BITSOF_LONG_LONG -1
 #endif
 
-namespace vigra {
+namespace vigra
+{
 
-class Int_type_not_supported_on_this_platform {};
+class Int_type_not_supported_on_this_platform
+{
+};
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-namespace detail {
+namespace detail
+{
 
 template<class T, class NEXT>
 struct IntTypeList
 {
-    enum { size = sizeof(T)*8 };
+    enum
+    {
+        size = sizeof(T) * 8
+    };
     typedef T type;
     typedef NEXT next;
 };
@@ -107,11 +114,10 @@ struct IntTypeList
 template<int SIZE, class LIST>
 struct SelectIntegerType
 {
-    typedef typename 
-       IfBool<(SIZE == LIST::size), 
-           typename LIST::type,
-           typename SelectIntegerType<SIZE, typename LIST::next>::type >::type
-       type;
+    typedef typename IfBool<(SIZE == LIST::size),
+                            typename LIST::type,
+                            typename SelectIntegerType<SIZE, typename LIST::next>::type>::type
+        type;
 };
 
 template<int SIZE>
@@ -123,35 +129,42 @@ struct SelectIntegerType<SIZE, Int_type_not_supported_on_this_platform>
 template<class LIST>
 struct SelectBiggestIntegerType
 {
-    enum { cursize = static_cast<int>(LIST::size), 
-           nextsize = static_cast<int>(SelectBiggestIntegerType<typename LIST::next>::size),
-           size = (cursize < nextsize) ? nextsize : cursize };
-    typedef typename 
-       IfBool<(cursize < nextsize), 
-           typename SelectBiggestIntegerType<typename LIST::next>::type,
-           typename LIST::type>::type
-       type;
+    enum
+    {
+        cursize = static_cast<int>(LIST::size),
+        nextsize = static_cast<int>(SelectBiggestIntegerType<typename LIST::next>::size),
+        size = (cursize < nextsize) ? nextsize : cursize
+    };
+    typedef typename IfBool<(cursize < nextsize),
+                            typename SelectBiggestIntegerType<typename LIST::next>::type,
+                            typename LIST::type>::type
+        type;
 };
 
 template<>
 struct SelectBiggestIntegerType<Int_type_not_supported_on_this_platform>
 {
-    enum { size = 0 };
+    enum
+    {
+        size = 0
+    };
     typedef Int_type_not_supported_on_this_platform type;
 };
 
-typedef IntTypeList<signed char, 
-        IntTypeList<signed short,
-        IntTypeList<signed int,
-        IntTypeList<signed long,
-        IntTypeList<signed long long,
-        Int_type_not_supported_on_this_platform > > > > > SignedIntTypes;
-typedef IntTypeList<unsigned char, 
-        IntTypeList<unsigned short,
-        IntTypeList<unsigned int,
-        IntTypeList<unsigned long,
-        IntTypeList<unsigned long long,
-        Int_type_not_supported_on_this_platform > > > > > UnsignedIntTypes;
+typedef IntTypeList<signed char,
+                    IntTypeList<signed short,
+                                IntTypeList<signed int,
+                                            IntTypeList<signed long,
+                                                        IntTypeList<signed long long,
+                                                                    Int_type_not_supported_on_this_platform>>>>>
+    SignedIntTypes;
+typedef IntTypeList<unsigned char,
+                    IntTypeList<unsigned short,
+                                IntTypeList<unsigned int,
+                                            IntTypeList<unsigned long,
+                                                        IntTypeList<unsigned long long,
+                                                                    Int_type_not_supported_on_this_platform>>>>>
+    UnsignedIntTypes;
 
 } // namespace detail
 
@@ -167,42 +180,42 @@ typedef IntTypeList<unsigned char,
 */
 //@{
 
-    /// 8-bit signed int
-typedef detail::SelectIntegerType<8,  detail::SignedIntTypes>::type Int8;
-    /// 16-bit signed int
+/// 8-bit signed int
+typedef detail::SelectIntegerType<8, detail::SignedIntTypes>::type Int8;
+/// 16-bit signed int
 typedef detail::SelectIntegerType<16, detail::SignedIntTypes>::type Int16;
-    /// 32-bit signed int
+/// 32-bit signed int
 typedef detail::SelectIntegerType<32, detail::SignedIntTypes>::type Int32;
-    /// 64-bit signed int
+/// 64-bit signed int
 typedef detail::SelectIntegerType<64, detail::SignedIntTypes>::type Int64;
-    /// 8-bit unsigned int
-typedef detail::SelectIntegerType<8,  detail::UnsignedIntTypes>::type UInt8;
-    /// 16-bit unsigned int
+/// 8-bit unsigned int
+typedef detail::SelectIntegerType<8, detail::UnsignedIntTypes>::type UInt8;
+/// 16-bit unsigned int
 typedef detail::SelectIntegerType<16, detail::UnsignedIntTypes>::type UInt16;
-    /// 32-bit unsigned int
+/// 32-bit unsigned int
 typedef detail::SelectIntegerType<32, detail::UnsignedIntTypes>::type UInt32;
-    /// 64-bit unsigned int
+/// 64-bit unsigned int
 typedef detail::SelectIntegerType<64, detail::UnsignedIntTypes>::type UInt64;
 
-    /// the biggest signed integer type of the system
-typedef detail::SelectBiggestIntegerType<detail::SignedIntTypes>::type   IntBiggest;
-    /// the biggest unsigned integer type of the system
+/// the biggest signed integer type of the system
+typedef detail::SelectBiggestIntegerType<detail::SignedIntTypes>::type IntBiggest;
+/// the biggest unsigned integer type of the system
 typedef detail::SelectBiggestIntegerType<detail::UnsignedIntTypes>::type UIntBiggest;
 
 //@}
 
 #else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-typedef signed char    Int8;
-typedef signed short   Int16;
-typedef signed int     Int32;
+typedef signed char Int8;
+typedef signed short Int16;
+typedef signed int Int32;
 typedef Int_type_not_supported_on_this_platform Int64;
-typedef unsigned char  UInt8;
+typedef unsigned char UInt8;
 typedef unsigned short UInt16;
-typedef unsigned int   UInt32;
+typedef unsigned int UInt32;
 typedef Int_type_not_supported_on_this_platform UInt64;
 
-typedef Int32  IntBiggest;
+typedef Int32 IntBiggest;
 typedef UInt32 UIntBiggest;
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION

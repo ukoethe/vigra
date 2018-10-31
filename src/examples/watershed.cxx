@@ -29,32 +29,33 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
 
 #include <iostream>
+#include <vigra/impex.hxx>
 #include <vigra/multi_array.hxx>
-#include <vigra/stdimagefunctions.hxx>
 #include <vigra/multi_convolution.hxx>
 #include <vigra/multi_watersheds.hxx>
-#include <vigra/impex.hxx>
+#include <vigra/stdimagefunctions.hxx>
 
-using namespace vigra; 
+using namespace vigra;
 
-template <class InImage, class OutImage>
-void watershedSegmentation(InImage & in, OutImage & out, double scale)
+template<class InImage, class OutImage>
+void
+watershedSegmentation(InImage& in, OutImage& out, double scale)
 {
     // compute the gradient magnitude as a suitable boundary indicator
     MultiArray<2, float> gradient(in.shape());
     gaussianGradientMagnitude(in, gradient, scale);
-    
+
     // Compute watershed segmentation using a region growing algorithm with 4-neighborhood.
-    // Use option object to ask the watershed algorithm to compute seeds automatically at 
+    // Use option object to ask the watershed algorithm to compute seeds automatically at
     // minima of the boundary indicator.
     MultiArray<2, unsigned int> labeling(in.shape());
-    unsigned int max_region_label = 
+    unsigned int max_region_label =
         watershedsMultiArray(gradient, labeling, DirectNeighborhood,
                              WatershedOptions().seedOptions(SeedOptions().minima()));
 
@@ -63,7 +64,7 @@ void watershedSegmentation(InImage & in, OutImage & out, double scale)
     // define a temporary type that can hold floating point values
     typedef typename NumericTraits<typename InImage::value_type>::RealPromote
         TmpType;
-    ArrayOfRegionStatistics<FindAverage<TmpType> > averages(max_region_label);
+    ArrayOfRegionStatistics<FindAverage<TmpType>> averages(max_region_label);
 
     // calculate the averages
     inspectTwoImages(in, labeling, averages);
@@ -78,9 +79,10 @@ void watershedSegmentation(InImage & in, OutImage & out, double scale)
 }
 
 
-int main(int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
-    if(argc != 3)
+    if (argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
@@ -97,13 +99,13 @@ int main(int argc, char ** argv)
         std::cout << "Scale for gradient calculation ? ";
         std::cin >> scale;
 
-        if(info.isGrayscale())
+        if (info.isGrayscale())
         {
             int w = info.width();
             int h = info.height();
 
             MultiArray<2, UInt8> in(w, h), out(w, h);
-            
+
             importImage(info, in);
 
             // perform watershed segmentation on gray image
@@ -120,7 +122,7 @@ int main(int argc, char ** argv)
             int w = info.width();
             int h = info.height();
 
-            MultiArray<2, RGBValue<UInt8> > in(w, h),  out(w, h);
+            MultiArray<2, RGBValue<UInt8>> in(w, h), out(w, h);
             importImage(info, in);
 
             // perform watershed segmentation on color image
@@ -133,7 +135,7 @@ int main(int argc, char ** argv)
             exportImage(out, ImageExportInfo(argv[2]));
         }
     }
-    catch (std::exception & e)
+    catch (std::exception& e)
     {
         std::cout << e.what() << std::endl;
         return 1;

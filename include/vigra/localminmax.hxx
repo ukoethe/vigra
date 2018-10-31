@@ -36,16 +36,16 @@
 #ifndef VIGRA_LOCALMINMAX_HXX
 #define VIGRA_LOCALMINMAX_HXX
 
-#include <vector>
-#include <functional>
-#include "utilities.hxx"
-#include "stdimage.hxx"
 #include "initimage.hxx"
 #include "labelimage.hxx"
 #include "labelvolume.hxx"
-#include "pixelneighborhood.hxx"
-#include "voxelneighborhood.hxx"
 #include "multi_shape.hxx"
+#include "pixelneighborhood.hxx"
+#include "stdimage.hxx"
+#include "utilities.hxx"
+#include "voxelneighborhood.hxx"
+#include <functional>
+#include <vector>
 
 namespace vigra
 {
@@ -57,35 +57,36 @@ namespace vigra
 */
 //@{
 
-namespace detail {
+namespace detail
+{
 
-template <class SrcIterator, class SrcAccessor,
-          class Neighborhood,
-          class Compare>
+template<class SrcIterator, class SrcAccessor,
+         class Neighborhood,
+         class Compare>
 inline bool
 isLocalExtremum(SrcIterator is, SrcAccessor sa, Neighborhood,
                 typename SrcAccessor::value_type threshold,
                 Compare compare, AtImageBorder atBorder)
 {
     typename SrcAccessor::value_type v = sa(is);
-    
-    if(!compare(v, threshold))
+
+    if (!compare(v, threshold))
         return false;
 
     int directionCount = Neighborhood::nearBorderDirectionCount(atBorder);
     RestrictedNeighborhoodCirculator<SrcIterator, Neighborhood> sc(is, atBorder);
-    for(int i = 0; i < directionCount; ++i, ++sc)
+    for (int i = 0; i < directionCount; ++i, ++sc)
     {
-        if(!compare(v, sa(sc)))
+        if (!compare(v, sa(sc)))
             return false;
     }
     return true;
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class DestValue, class Neighborhood,
-          class Compare>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class DestValue, class Neighborhood,
+         class Compare>
 void
 localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestIterator dul, DestAccessor da,
@@ -99,85 +100,85 @@ localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
 
     int x, y;
 
-    if(allowExtremaAtBorder)
+    if (allowExtremaAtBorder)
     {
         SrcIterator is = sul;
         DestIterator id = dul;
-        
-        for(x=0; x<w; ++x, ++is.x, ++id.x)
+
+        for (x = 0; x < w; ++x, ++is.x, ++id.x)
         {
-            if(isLocalExtremum(is, sa, neighborhood, threshold, compare, 
+            if (isLocalExtremum(is, sa, neighborhood, threshold, compare,
                                 isAtImageBorder(x, 0, w, h)))
                 da.set(marker, id);
         }
-        
-        is = sul + Diff2D(0,1);
-        id = dul + Diff2D(0,1);
-        
-        for(y=1; y<h-1; ++y, ++is.y, ++id.y)
+
+        is = sul + Diff2D(0, 1);
+        id = dul + Diff2D(0, 1);
+
+        for (y = 1; y < h - 1; ++y, ++is.y, ++id.y)
         {
-            if(isLocalExtremum(is, sa, neighborhood, threshold, compare, 
+            if (isLocalExtremum(is, sa, neighborhood, threshold, compare,
                                 isAtImageBorder(0, y, w, h)))
                 da.set(marker, id);
         }
-        
-        is = sul + Diff2D(w-1,1);
-        id = dul + Diff2D(w-1,1);
-        
-        for(y=1; y<h-1; ++y, ++is.y, ++id.y)
+
+        is = sul + Diff2D(w - 1, 1);
+        id = dul + Diff2D(w - 1, 1);
+
+        for (y = 1; y < h - 1; ++y, ++is.y, ++id.y)
         {
-            if(isLocalExtremum(is, sa, neighborhood, threshold, compare, 
-                                isAtImageBorder(w-1, y, w, h)))
+            if (isLocalExtremum(is, sa, neighborhood, threshold, compare,
+                                isAtImageBorder(w - 1, y, w, h)))
                 da.set(marker, id);
         }
-        
-        is = sul + Diff2D(0,h-1);
-        id = dul + Diff2D(0,h-1);
-        
-        for(x=0; x<w; ++x, ++is.x, ++id.x)
+
+        is = sul + Diff2D(0, h - 1);
+        id = dul + Diff2D(0, h - 1);
+
+        for (x = 0; x < w; ++x, ++is.x, ++id.x)
         {
-            if(isLocalExtremum(is, sa, neighborhood, threshold, compare, 
-                                isAtImageBorder(x, h-1, w, h)))
+            if (isLocalExtremum(is, sa, neighborhood, threshold, compare,
+                                isAtImageBorder(x, h - 1, w, h)))
                 da.set(marker, id);
         }
     }
 
     w -= 2;
     h -= 2;
-    sul += Diff2D(1,1);
-    dul += Diff2D(1,1);
+    sul += Diff2D(1, 1);
+    dul += Diff2D(1, 1);
 
-    for(y=0; y<h; ++y, ++sul.y, ++dul.y)
+    for (y = 0; y < h; ++y, ++sul.y, ++dul.y)
     {
-        SrcIterator  sx = sul;
+        SrcIterator sx = sul;
         DestIterator dx = dul;
 
-        for(x=0; x<w; ++x, ++sx.x, ++dx.x)
+        for (x = 0; x < w; ++x, ++sx.x, ++dx.x)
         {
             typename SrcAccessor::value_type v = sa(sx);
-            
-            if(!compare(v, threshold))
+
+            if (!compare(v, threshold))
                 continue;
 
             int i;
             NeighborhoodCirculator<SrcIterator, Neighborhood> sc(sx);
-            for(i = 0; i < Neighborhood::DirectionCount; ++i, ++sc)
+            for (i = 0; i < Neighborhood::DirectionCount; ++i, ++sc)
             {
-                if(!compare(v, sa(sc)))
+                if (!compare(v, sa(sc)))
                     break;
             }
-            
-            if(i == Neighborhood::DirectionCount)
+
+            if (i == Neighborhood::DirectionCount)
                 da.set(marker, dx);
         }
     }
 }
 
 template<class SrcIterator, class SrcShape, class SrcAccessor,
-        class DestIterator, class DestAccessor, class DestValue,
-        class Neighborhood, class Compare>
-void 
-localMinMax3D(SrcIterator sul, SrcShape shp, SrcAccessor sa, 
+         class DestIterator, class DestAccessor, class DestValue,
+         class Neighborhood, class Compare>
+void
+localMinMax3D(SrcIterator sul, SrcShape shp, SrcAccessor sa,
               DestIterator dul, DestAccessor da,
               DestValue marker,
               Neighborhood,
@@ -228,25 +229,25 @@ localMinMax3D(SrcIterator sul, SrcShape shp, SrcAccessor sa,
                 NeighborhoodCirculator<SrcIterator, Neighborhood> sc(xs);
                 for (i = 0; i < Neighborhood::DirectionCount; ++i, ++sc)
                 {
-                    if(!compare(v, sa(sc)))
+                    if (!compare(v, sa(sc)))
                         break;
                 }
 
-                if(i == Neighborhood::DirectionCount)
+                if (i == Neighborhood::DirectionCount)
                     da.set(marker, xd);
             }
         }
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, class DestValue,
-          class Neighborhood, class Compare, class Equal>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor, class DestValue,
+         class Neighborhood, class Compare, class Equal>
 void
 extendedLocalMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                     DestIterator dul, DestAccessor da, DestValue marker,
                     Neighborhood /*neighborhood*/,
-                    Compare compare, Equal equal, 
+                    Compare compare, Equal equal,
                     typename SrcAccessor::value_type threshold,
                     bool allowExtremaAtBorder = false)
 {
@@ -255,33 +256,33 @@ extendedLocalMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
-    int i,x,y;
+    int i, x, y;
 
-    BasicImage<int> labels(w,h);
+    BasicImage<int> labels(w, h);
 
     int number_of_regions =
         labelImage(sul, slr, sa, labels.upperLeft(), labels.accessor(),
                    (Neighborhood::DirectionCount == 8), equal);
 
     // assume that a region is a extremum until the opposite is proved
-    std::vector<unsigned char> isExtremum(number_of_regions+1, (unsigned char)1);
+    std::vector<unsigned char> isExtremum(number_of_regions + 1, (unsigned char)1);
 
     BasicImage<int>::traverser ly = labels.upperLeft();
 
-    for(y=0; y<h; ++y, ++sul.y, ++ly.y)
+    for (y = 0; y < h; ++y, ++sul.y, ++ly.y)
     {
-        SrcIterator  sx = sul;
+        SrcIterator sx = sul;
         BasicImage<int>::traverser lx(ly);
 
-        for(x=0; x<w; ++x, ++sx.x, ++lx.x)
+        for (x = 0; x < w; ++x, ++sx.x, ++lx.x)
         {
             int lab = *lx;
             SrcType v = sa(sx);
-            
-            if(isExtremum[lab] == 0)
+
+            if (isExtremum[lab] == 0)
                 continue;
-                
-            if(!compare(v, threshold))
+
+            if (!compare(v, threshold))
             {
                 // mark all regions that don't exceed the threshold as non-extremum
                 isExtremum[lab] = 0;
@@ -289,13 +290,13 @@ extendedLocalMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             }
 
             AtImageBorder atBorder = isAtImageBorder(x, y, w, h);
-            if(atBorder == NotAtBorder)
+            if (atBorder == NotAtBorder)
             {
                 NeighborhoodCirculator<SrcIterator, Neighborhood> sc(sx);
                 NeighborhoodCirculator<BasicImage<int>::traverser, Neighborhood> lc(lx);
-                for(i=0; i<Neighborhood::DirectionCount; ++i, ++sc, ++lc)
+                for (i = 0; i < Neighborhood::DirectionCount; ++i, ++sc, ++lc)
                 {
-                    if(lab != *lc && compare(sa(sc),v))
+                    if (lab != *lc && compare(sa(sc), v))
                     {
                         isExtremum[lab] = 0;
                         break;
@@ -304,19 +305,18 @@ extendedLocalMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             }
             else
             {
-                if(allowExtremaAtBorder)
+                if (allowExtremaAtBorder)
                 {
-                    RestrictedNeighborhoodCirculator<SrcIterator, Neighborhood> 
-                                                               sc(sx, atBorder), scend(sc);
+                    RestrictedNeighborhoodCirculator<SrcIterator, Neighborhood>
+                        sc(sx, atBorder), scend(sc);
                     do
                     {
-                        if(lab != *(lx+sc.diff()) && compare(sa(sc),v))
+                        if (lab != *(lx + sc.diff()) && compare(sa(sc), v))
                         {
                             isExtremum[lab] = 0;
                             break;
                         }
-                    }
-                    while(++sc != scend);
+                    } while (++sc != scend);
                 }
                 else
                 {
@@ -327,23 +327,23 @@ extendedLocalMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
     }
 
     ly = labels.upperLeft();
-    for(y=0; y<h; ++y, ++dul.y, ++ly.y)
+    for (y = 0; y < h; ++y, ++dul.y, ++ly.y)
     {
-        DestIterator  xd = dul;
+        DestIterator xd = dul;
         BasicImage<int>::Iterator lx(ly);
 
-        for(x=0; x<w; ++x, ++xd.x, ++lx.x)
+        for (x = 0; x < w; ++x, ++xd.x, ++lx.x)
         {
-            if(isExtremum[*lx])
+            if (isExtremum[*lx])
                 da.set(marker, xd);
         }
     }
 }
 
 template<class SrcIterator, class SrcShape, class SrcAccessor,
-        class DestIterator, class DestAccessor, class DestValue,
-        class Neighborhood, class Compare, class Equal>
-void 
+         class DestIterator, class DestAccessor, class DestValue,
+         class Neighborhood, class Compare, class Equal>
+void
 extendedLocalMinMax3D(SrcIterator sul, SrcShape shp, SrcAccessor sa,
                       DestIterator dul, DestAccessor da,
                       DestValue marker,
@@ -364,10 +364,10 @@ extendedLocalMinMax3D(SrcIterator sul, SrcShape shp, SrcAccessor sa,
     MultiArray<3, int> labels(shp);
 
     int number_of_regions =
-        labelVolume(sul, shp, sa, labels.traverser_begin(), 
+        labelVolume(sul, shp, sa, labels.traverser_begin(),
                     typename AccessorTraits<int>::default_accessor(),
                     neighbourhood);
-    
+
     MultiArray<3, int>::traverser zl(labels.traverser_begin());
 
     SrcIterator zs = sul;
@@ -424,7 +424,7 @@ extendedLocalMinMax3D(SrcIterator sul, SrcShape shp, SrcAccessor sa,
                     if (allowExtremaAtBorder)
                     {
                         RestrictedNeighborhoodCirculator<SrcIterator, Neighborhood>
-                        sc(xs, atBorder), scend(sc);
+                            sc(xs, atBorder), scend(sc);
                         do
                         {
                             if (lab != *(xl + sc.diff()) && compare(sa(sc), v))
@@ -432,8 +432,7 @@ extendedLocalMinMax3D(SrcIterator sul, SrcShape shp, SrcAccessor sa,
                                 isExtremum[lab] = 0;
                                 break;
                             }
-                        } 
-                        while (++sc != scend);
+                        } while (++sc != scend);
                     }
                     else
                     {
@@ -462,7 +461,7 @@ extendedLocalMinMax3D(SrcIterator sul, SrcShape shp, SrcAccessor sa,
 
             for (x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0(), ++xl.dim0())
             {
-                if(isExtremum[*xl])
+                if (isExtremum[*xl])
                     da.set(marker, xd);
             }
         }
@@ -492,26 +491,27 @@ extendedLocalMinMax3D(SrcIterator sul, SrcShape shp, SrcAccessor sa,
 */
 class LocalMinmaxOptions
 {
-  public:
+public:
     double marker, thresh;
     int neigh;
     bool use_threshold, allow_at_border, allow_plateaus;
-    
-        /**\brief Construct default options object.
+
+    /**\brief Construct default options object.
          *
             Defaults are: marker value '1', no threshold, indirect neighborhood, 
                           don't allow extrema at border and extremal plateaus.
          */
     LocalMinmaxOptions()
-    : marker(1.0), 
-      thresh(0.0),
-      neigh(1),
-      use_threshold(false),
-      allow_at_border(false),
-      allow_plateaus(false)
-    {}
-    
-        /**\brief Use the given neighborhood. 
+        : marker(1.0),
+          thresh(0.0),
+          neigh(1),
+          use_threshold(false),
+          allow_at_border(false),
+          allow_plateaus(false)
+    {
+    }
+
+    /**\brief Use the given neighborhood. 
         
             The value '0' indicates direct neighborhood (i.e. 4-neighborhood 
             in 2D, 6-neighborhood in 3D, 2*N neighborhood in N-D), the value '1'
@@ -522,60 +522,60 @@ class LocalMinmaxOptions
         
             Default: 1 (indirect neighborhood)
          */
-    LocalMinmaxOptions & neighborhood(unsigned int n)
+    LocalMinmaxOptions& neighborhood(unsigned int n)
     {
         neigh = n;
         return *this;
     }
-    
-    LocalMinmaxOptions & neighborhood(NeighborhoodType n)
+
+    LocalMinmaxOptions& neighborhood(NeighborhoodType n)
     {
         neigh = n;
         return *this;
     }
-    
-        /**\brief Mark extrema in the destination image with the given value.
+
+    /**\brief Mark extrema in the destination image with the given value.
         
             Default: 1
          */
-    LocalMinmaxOptions & markWith(double m)
+    LocalMinmaxOptions& markWith(double m)
     {
         marker = m;
         return *this;
     }
-    
-        /**\brief Threshold the extrema.
+
+    /**\brief Threshold the extrema.
         
            Discard minima whose gray value is not below the threshold.
            and maxima whose gray level is not above the threshold.
         
             Default: don't threshold (i.e. return all extrema)
          */
-    LocalMinmaxOptions & threshold(double t)
+    LocalMinmaxOptions& threshold(double t)
     {
         use_threshold = true;
         thresh = t;
         return *this;
     }
-    
-        /**\brief Detect extrema at the image border.
+
+    /**\brief Detect extrema at the image border.
         
             Default: false
          */
-    LocalMinmaxOptions & allowAtBorder(bool f = true)
+    LocalMinmaxOptions& allowAtBorder(bool f = true)
     {
         allow_at_border = f;
         return *this;
     }
-    
-        /**\brief Allow extremal plateaus.
+
+    /**\brief Allow extremal plateaus.
         
             That is regions of constant gray value whose neighbors are all
             higher (minima) or lower than the value of the region.
         
             Default: false
          */
-    LocalMinmaxOptions & allowPlateaus(bool f = true)
+    LocalMinmaxOptions& allowPlateaus(bool f = true)
     {
         allow_plateaus = f;
         return *this;
@@ -711,49 +711,47 @@ class LocalMinmaxOptions
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void localMinima)
+doxygen_overloaded_function(template<...> void localMinima)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline void
-localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-            DestIterator dul, DestAccessor da,
-            LocalMinmaxOptions const & options = LocalMinmaxOptions())
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    inline void localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+                            DestIterator dul, DestAccessor da,
+                            LocalMinmaxOptions const& options = LocalMinmaxOptions())
 {
     typedef typename SrcAccessor::value_type SrcType;
     typedef typename DestAccessor::value_type DestType;
-    
+
     SrcType threshold = options.use_threshold
-                           ? std::min(NumericTraits<SrcType>::max(), (SrcType)options.thresh)
-                           : NumericTraits<SrcType>::max();
+                            ? std::min(NumericTraits<SrcType>::max(), (SrcType)options.thresh)
+                            : NumericTraits<SrcType>::max();
     DestType marker = (DestType)options.marker;
-    
-    if(options.allow_plateaus)
+
+    if (options.allow_plateaus)
     {
-        if(options.neigh == 0 || options.neigh == 4)
+        if (options.neigh == 0 || options.neigh == 4)
         {
             detail::extendedLocalMinMax(sul, slr, sa, dul, da, marker, FourNeighborCode(),
-                                        std::less<SrcType>(), std::equal_to<SrcType>(), 
+                                        std::less<SrcType>(), std::equal_to<SrcType>(),
                                         threshold, options.allow_at_border);
         }
-        else if(options.neigh == 1 || options.neigh == 8)
+        else if (options.neigh == 1 || options.neigh == 8)
         {
             detail::extendedLocalMinMax(sul, slr, sa, dul, da, marker, EightNeighborCode(),
-                                        std::less<SrcType>(), std::equal_to<SrcType>(), 
+                                        std::less<SrcType>(), std::equal_to<SrcType>(),
                                         threshold, options.allow_at_border);
         }
         else
             vigra_precondition(false, "localMinima(): neighborhood must be 4 or 8.");
-
     }
     else
     {
-        if(options.neigh == 0 || options.neigh == 4)
+        if (options.neigh == 0 || options.neigh == 4)
         {
             detail::localMinMax(sul, slr, sa, dul, da, marker, FourNeighborCode(),
                                 threshold, std::less<SrcType>(), options.allow_at_border);
         }
-        else if(options.neigh == 1 || options.neigh == 8)
+        else if (options.neigh == 1 || options.neigh == 8)
         {
             detail::localMinMax(sul, slr, sa, dul, da, marker, EightNeighborCode(),
                                 threshold, std::less<SrcType>(), options.allow_at_border);
@@ -763,9 +761,9 @@ localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class DestValue>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class DestValue>
 inline void
 localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestIterator dul, DestAccessor da,
@@ -776,9 +774,9 @@ localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                         std::less<typename SrcAccessor::value_type>());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class DestValue>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class DestValue>
 inline void
 localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestIterator dul, DestAccessor da,
@@ -789,8 +787,8 @@ localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                         std::less<typename SrcAccessor::value_type>());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, class DestValue>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor, class DestValue>
 inline void
 localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestIterator dul, DestAccessor da,
@@ -799,9 +797,9 @@ localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
     localMinima(sul, slr, sa, dul, da, marker, EightNeighborCode());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class DestValue>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class DestValue>
 inline void
 localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             pair<DestIterator, DestAccessor> dest,
@@ -811,9 +809,9 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                 dest.first, dest.second, marker, neighborhood);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class DestValue>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class DestValue>
 inline void
 localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             pair<DestIterator, DestAccessor> dest,
@@ -823,8 +821,8 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                 dest.first, dest.second, marker, neighborhood);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, class DestValue>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor, class DestValue>
 inline void
 localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             pair<DestIterator, DestAccessor> dest,
@@ -834,12 +832,12 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                 dest.first, dest.second, marker, EightNeighborCode());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             pair<DestIterator, DestAccessor> dest,
-            LocalMinmaxOptions const & options = LocalMinmaxOptions())
+            LocalMinmaxOptions const& options = LocalMinmaxOptions())
 {
     localMinima(src.first, src.second, src.third,
                 dest.first, dest.second, options);
@@ -858,37 +856,36 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     Deprecated, use localMinima() instead.
 
  */
-doxygen_overloaded_function(template <...> void localMinima3D)
+doxygen_overloaded_function(template<...> void localMinima3D)
 
-template<class SrcIterator, class SrcAccessor, class SrcShape,
-         class DestIterator, class DestAccessor, class DestValue>
-inline void 
-localMinima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
-              DestIterator dul, DestAccessor da,
-              DestValue marker,
-              NeighborCode3DTwentySix neighborhood)
+    template<class SrcIterator, class SrcAccessor, class SrcShape,
+             class DestIterator, class DestAccessor, class DestValue>
+    inline void localMinima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
+                              DestIterator dul, DestAccessor da,
+                              DestValue marker,
+                              NeighborCode3DTwentySix neighborhood)
 {
     detail::localMinMax3D(sul, slr, sa, dul, da, marker, neighborhood,
-                NumericTraits<typename SrcAccessor::value_type>::max(),
-                std::less<typename SrcAccessor::value_type>());
+                          NumericTraits<typename SrcAccessor::value_type>::max(),
+                          std::less<typename SrcAccessor::value_type>());
 }
 
 template<class SrcIterator, class SrcAccessor, class SrcShape,
          class DestIterator, class DestAccessor, class DestValue>
-inline void 
+inline void
 localMinima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
               DestIterator dul, DestAccessor da,
               DestValue marker,
               NeighborCode3DSix neighborhood)
 {
     detail::localMinMax3D(sul, slr, sa, dul, da, marker, neighborhood,
-                NumericTraits<typename SrcAccessor::value_type>::max(),
-                std::less<typename SrcAccessor::value_type>());
+                          NumericTraits<typename SrcAccessor::value_type>::max(),
+                          std::less<typename SrcAccessor::value_type>());
 }
 
 template<class SrcIterator, class SrcShape, class SrcAccessor,
          class DestIterator, class DestAccessor, class DestValue>
-inline void 
+inline void
 localMinima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
               DestIterator dul, DestAccessor da,
               DestValue marker)
@@ -898,7 +895,7 @@ localMinima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
 
 template<class SrcIterator, class SrcShape, class SrcAccessor,
          class DestIterator, class DestAccessor, class DestValue>
-inline void 
+inline void
 localMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
               pair<DestIterator, DestAccessor> dest,
               DestValue marker,
@@ -924,11 +921,11 @@ template<class T1, class S1,
          class T2, class S2,
          class DestValue,
          class Neighborhood>
-inline void 
-localMinima3D(MultiArrayView<3, T1, S1> const & src,
-              MultiArrayView<3, T2, S2> dest,
-              DestValue marker,
-              Neighborhood neighborhood)
+inline void
+    localMinima3D(MultiArrayView<3, T1, S1> const& src,
+                  MultiArrayView<3, T2, S2> dest,
+                  DestValue marker,
+                  Neighborhood neighborhood)
 {
     localMinima3D(srcMultiArrayRange(src), destMultiArray(dest),
                   marker, neighborhood);
@@ -938,9 +935,9 @@ template<class T1, class S1,
          class T2, class S2,
          class DestValue>
 inline void
-localMinima3D(MultiArrayView<2, T1, S1> const & src,
-              MultiArrayView<2, T2, S2> dest,
-              DestValue marker)
+    localMinima3D(MultiArrayView<2, T1, S1> const& src,
+                  MultiArrayView<2, T2, S2> dest,
+                  DestValue marker)
 {
     localMinima3D(srcMultiArrayRange(src), destMultiArray(dest),
                   marker, NeighborCode3DSix());
@@ -1076,35 +1073,34 @@ localMinima3D(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void localMaxima)
+doxygen_overloaded_function(template<...> void localMaxima)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline void
-localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-            DestIterator dul, DestAccessor da,
-            LocalMinmaxOptions const & options = LocalMinmaxOptions())
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor>
+    inline void localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+                            DestIterator dul, DestAccessor da,
+                            LocalMinmaxOptions const& options = LocalMinmaxOptions())
 {
     typedef typename SrcAccessor::value_type SrcType;
     typedef typename DestAccessor::value_type DestType;
-    
+
     SrcType threshold = options.use_threshold
-                           ? std::max(NumericTraits<SrcType>::min(), (SrcType)options.thresh)
-                           : NumericTraits<SrcType>::min();
+                            ? std::max(NumericTraits<SrcType>::min(), (SrcType)options.thresh)
+                            : NumericTraits<SrcType>::min();
     DestType marker = (DestType)options.marker;
-    
-    if(options.allow_plateaus)
+
+    if (options.allow_plateaus)
     {
-        if(options.neigh == 0 || options.neigh == 4)
+        if (options.neigh == 0 || options.neigh == 4)
         {
             detail::extendedLocalMinMax(sul, slr, sa, dul, da, marker, FourNeighborCode(),
-                                        std::greater<SrcType>(), std::equal_to<SrcType>(), 
+                                        std::greater<SrcType>(), std::equal_to<SrcType>(),
                                         threshold, options.allow_at_border);
         }
-        else if(options.neigh == 1 || options.neigh == 8)
+        else if (options.neigh == 1 || options.neigh == 8)
         {
             detail::extendedLocalMinMax(sul, slr, sa, dul, da, marker, EightNeighborCode(),
-                                        std::greater<SrcType>(), std::equal_to<SrcType>(), 
+                                        std::greater<SrcType>(), std::equal_to<SrcType>(),
                                         threshold, options.allow_at_border);
         }
         else
@@ -1112,12 +1108,12 @@ localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
     }
     else
     {
-        if(options.neigh == 0 || options.neigh == 4)
+        if (options.neigh == 0 || options.neigh == 4)
         {
             detail::localMinMax(sul, slr, sa, dul, da, marker, FourNeighborCode(),
                                 threshold, std::greater<SrcType>(), options.allow_at_border);
         }
-        else if(options.neigh == 1 || options.neigh == 8)
+        else if (options.neigh == 1 || options.neigh == 8)
         {
             detail::localMinMax(sul, slr, sa, dul, da, marker, EightNeighborCode(),
                                 threshold, std::greater<SrcType>(), options.allow_at_border);
@@ -1127,9 +1123,9 @@ localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class DestValue>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class DestValue>
 inline void
 localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestIterator dul, DestAccessor da,
@@ -1140,9 +1136,9 @@ localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                         std::greater<typename SrcAccessor::value_type>());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class DestValue>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class DestValue>
 inline void
 localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestIterator dul, DestAccessor da,
@@ -1153,8 +1149,8 @@ localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                         std::greater<typename SrcAccessor::value_type>());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, class DestValue>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor, class DestValue>
 inline void
 localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestIterator dul, DestAccessor da,
@@ -1163,9 +1159,9 @@ localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
     localMaxima(sul, slr, sa, dul, da, marker, EightNeighborCode());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class DestValue>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class DestValue>
 inline void
 localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             pair<DestIterator, DestAccessor> dest,
@@ -1175,9 +1171,9 @@ localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                 dest.first, dest.second, marker, neighborhood);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class DestValue>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class DestValue>
 inline void
 localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             pair<DestIterator, DestAccessor> dest,
@@ -1187,8 +1183,8 @@ localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                 dest.first, dest.second, marker, neighborhood);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, class DestValue>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor, class DestValue>
 inline void
 localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             pair<DestIterator, DestAccessor> dest,
@@ -1198,12 +1194,12 @@ localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                 dest.first, dest.second, marker, EightNeighborCode());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             pair<DestIterator, DestAccessor> dest,
-            LocalMinmaxOptions const & options = LocalMinmaxOptions())
+            LocalMinmaxOptions const& options = LocalMinmaxOptions())
 {
     localMaxima(src.first, src.second, src.third,
                 dest.first, dest.second, options);
@@ -1221,78 +1217,77 @@ localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     Deprecated, use \ref localMaxima() instead.
  */
-doxygen_overloaded_function(template <...> void localMaxima3D)
+doxygen_overloaded_function(template<...> void localMaxima3D)
 
-template<class SrcIterator, class SrcShape, class SrcAccessor,
-         class DestIterator, class DestAccessor, class DestValue>
-inline void 
-localMaxima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
-              DestIterator dul, DestAccessor da,
-              DestValue marker,
-              NeighborCode3DSix neighborhood)
+    template<class SrcIterator, class SrcShape, class SrcAccessor,
+             class DestIterator, class DestAccessor, class DestValue>
+    inline void localMaxima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
+                              DestIterator dul, DestAccessor da,
+                              DestValue marker,
+                              NeighborCode3DSix neighborhood)
 {
     detail::localMinMax3D(sul, slr, sa, dul, da, marker, neighborhood,
-                NumericTraits<typename SrcAccessor::value_type>::min(),
-                std::greater<typename SrcAccessor::value_type>());
+                          NumericTraits<typename SrcAccessor::value_type>::min(),
+                          std::greater<typename SrcAccessor::value_type>());
 }
 
 template<class SrcIterator, class SrcShape, class SrcAccessor,
          class DestIterator, class DestAccessor, class DestValue>
-inline void 
+inline void
 localMaxima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
               DestIterator dul, DestAccessor da,
               DestValue marker,
               NeighborCode3DTwentySix neighborhood)
 {
     detail::localMinMax3D(sul, slr, sa, dul, da, marker, neighborhood,
-                NumericTraits<typename SrcAccessor::value_type>::min(),
-                std::greater<typename SrcAccessor::value_type>());
+                          NumericTraits<typename SrcAccessor::value_type>::min(),
+                          std::greater<typename SrcAccessor::value_type>());
 }
 
 template<class SrcIterator, class SrcShape, class SrcAccessor,
          class DestIterator, class DestAccessor, class DestValue>
-inline void 
+inline void
 localMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
               pair<DestIterator, DestAccessor> dest,
               DestValue marker,
               NeighborCode3DTwentySix neighborhood)
 {
     localMaxima3D(src.first, src.second, src.third, dest.first, dest.second,
-                marker, neighborhood);
+                  marker, neighborhood);
 }
 
 template<class SrcIterator, class SrcShape, class SrcAccessor,
          class DestIterator, class DestAccessor, class DestValue>
-inline void 
+inline void
 localMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
               pair<DestIterator, DestAccessor> dest,
               DestValue marker)
 {
     localMaxima3D(src.first, src.second, src.third, dest.first, dest.second,
-                marker, NeighborCode3DSix());
+                  marker, NeighborCode3DSix());
 }
 
 template<class SrcIterator, class SrcShape, class SrcAccessor,
          class DestIterator, class DestAccessor, class DestValue>
-inline void 
+inline void
 localMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
               pair<DestIterator, DestAccessor> dest,
               DestValue marker,
               NeighborCode3DSix neighborhood)
 {
     localMaxima3D(src.first, src.second, src.third, dest.first, dest.second,
-                marker, neighborhood);
+                  marker, neighborhood);
 }
 
 template<class T1, class S1,
          class T2, class S2,
          class DestValue,
          class Neighborhood>
-inline void 
-localMaxima3D(MultiArrayView<3, T1, S1> const & src,
-              MultiArrayView<3, T2, S2> dest,
-              DestValue marker,
-              Neighborhood neighborhood)
+inline void
+    localMaxima3D(MultiArrayView<3, T1, S1> const& src,
+                  MultiArrayView<3, T2, S2> dest,
+                  DestValue marker,
+                  Neighborhood neighborhood)
 {
     localMaxima3D(srcMultiArrayRange(src), destMultiArray(dest),
                   marker, neighborhood);
@@ -1301,10 +1296,10 @@ localMaxima3D(MultiArrayView<3, T1, S1> const & src,
 template<class T1, class S1,
          class T2, class S2,
          class DestValue>
-inline void 
-localMaxima3D(MultiArrayView<3, T1, S1> const & src,
-              MultiArrayView<3, T2, S2> dest,
-              DestValue marker)
+inline void
+    localMaxima3D(MultiArrayView<3, T1, S1> const& src,
+                  MultiArrayView<3, T2, S2> dest,
+                  DestValue marker)
 {
     localMaxima3D(srcMultiArrayRange(src), destMultiArray(dest),
                   marker, NeighborCode3DSix());
@@ -1489,33 +1484,32 @@ localMaxima3D(MultiArrayView<3, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void extendedLocalMinima)
+doxygen_overloaded_function(template<...> void extendedLocalMinima)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood, class EqualityFunctor>
-inline void
-extendedLocalMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-            DestIterator dul, DestAccessor da, 
-            typename DestAccessor::value_type marker,
-            Neighborhood neighborhood, EqualityFunctor equal)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor,
+             class Neighborhood, class EqualityFunctor>
+    inline void extendedLocalMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+                                    DestIterator dul, DestAccessor da,
+                                    typename DestAccessor::value_type marker,
+                                    Neighborhood neighborhood, EqualityFunctor equal)
 {
     typedef typename SrcAccessor::value_type SrcType;
 
     detail::extendedLocalMinMax(sul, slr, sa, dul, da,
                                 marker, neighborhood,
-                                std::less<SrcType>(), equal, 
+                                std::less<SrcType>(), equal,
                                 NumericTraits<typename SrcAccessor::value_type>::max());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class Neighborhood>
 inline void
 extendedLocalMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-            DestIterator dul, DestAccessor da, 
-            typename DestAccessor::value_type marker,
-            Neighborhood neighborhood)
+                    DestIterator dul, DestAccessor da,
+                    typename DestAccessor::value_type marker,
+                    Neighborhood neighborhood)
 {
     typedef typename SrcAccessor::value_type SrcType;
 
@@ -1523,68 +1517,68 @@ extendedLocalMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                         marker, neighborhood, std::equal_to<SrcType>());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 extendedLocalMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-            DestIterator dul, DestAccessor da, 
-            typename DestAccessor::value_type marker)
+                    DestIterator dul, DestAccessor da,
+                    typename DestAccessor::value_type marker)
 {
     extendedLocalMinima(sul, slr, sa, dul, da,
                         marker, EightNeighborCode());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 extendedLocalMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-            DestIterator dul, DestAccessor da)
+                    DestIterator dul, DestAccessor da)
 {
     extendedLocalMinima(sul, slr, sa, dul, da,
-                NumericTraits<typename DestAccessor::value_type>::one());
+                        NumericTraits<typename DestAccessor::value_type>::one());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood, class EqualityFunctor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class Neighborhood, class EqualityFunctor>
 inline void
 extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-            pair<DestIterator, DestAccessor> dest,
-            typename DestAccessor::value_type marker, Neighborhood neighborhood,
-            EqualityFunctor equal)
+                    pair<DestIterator, DestAccessor> dest,
+                    typename DestAccessor::value_type marker, Neighborhood neighborhood,
+                    EqualityFunctor equal)
 {
     extendedLocalMinima(src.first, src.second, src.third,
-                dest.first, dest.second, marker, neighborhood, equal);
+                        dest.first, dest.second, marker, neighborhood, equal);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class Neighborhood>
 inline void
 extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-            pair<DestIterator, DestAccessor> dest,
-            typename DestAccessor::value_type marker, Neighborhood neighborhood)
+                    pair<DestIterator, DestAccessor> dest,
+                    typename DestAccessor::value_type marker, Neighborhood neighborhood)
 {
     extendedLocalMinima(src.first, src.second, src.third,
                         dest.first, dest.second, marker, neighborhood);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-            pair<DestIterator, DestAccessor> dest,
-            typename DestAccessor::value_type marker)
+                    pair<DestIterator, DestAccessor> dest,
+                    typename DestAccessor::value_type marker)
 {
     extendedLocalMinima(src.first, src.second, src.third,
                         dest.first, dest.second, marker, EightNeighborCode());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-            pair<DestIterator, DestAccessor> dest)
+                    pair<DestIterator, DestAccessor> dest)
 {
     extendedLocalMinima(src.first, src.second, src.third,
                         dest.first, dest.second);
@@ -1603,28 +1597,27 @@ extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     See \ref extendedLocalMinima().
 
 */
-doxygen_overloaded_function(template <...> void extendedLocalMinima3D)
+doxygen_overloaded_function(template<...> void extendedLocalMinima3D)
 
-template<class SrcIterator, class SrcShape, class SrcAccessor,
-         class DestIterator, class DestAccessor, class Neighborhood,
-         class EqualityFunctor>
-inline void 
-extendedLocalMinima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
-                      DestIterator dul, DestAccessor da,
-                      typename DestAccessor::value_type marker,
-                      Neighborhood neighborhood,
-                      EqualityFunctor equal)
+    template<class SrcIterator, class SrcShape, class SrcAccessor,
+             class DestIterator, class DestAccessor, class Neighborhood,
+             class EqualityFunctor>
+    inline void extendedLocalMinima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
+                                      DestIterator dul, DestAccessor da,
+                                      typename DestAccessor::value_type marker,
+                                      Neighborhood neighborhood,
+                                      EqualityFunctor equal)
 {
     typedef typename SrcAccessor::value_type SrcType;
 
     detail::extendedLocalMinMax3D(sul, slr, sa, dul, da, marker, neighborhood,
-                std::less<SrcType>(), equal,
-                NumericTraits<typename SrcAccessor::value_type>::max());
+                                  std::less<SrcType>(), equal,
+                                  NumericTraits<typename SrcAccessor::value_type>::max());
 }
 
 template<class SrcIterator, class SrcShape, class SrcAccessor,
          class DestIterator, class DestAccessor, class Neighborhood>
-inline void 
+inline void
 extendedLocalMinima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
                       DestIterator dul, DestAccessor da,
                       typename DestAccessor::value_type marker,
@@ -1638,25 +1631,25 @@ extendedLocalMinima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
 
 template<class SrcIterator, class SrcShape, class SrcAccessor,
          class DestIterator, class DestAccessor>
-inline void 
+inline void
 extendedLocalMinima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
                       DestIterator dul, DestAccessor da)
 {
-    extendedLocalMinima3D(sul, slr, sa, dul, da, 
+    extendedLocalMinima3D(sul, slr, sa, dul, da,
                           NumericTraits<typename DestAccessor::value_type>::one(),
                           NeighborCode3DSix());
 }
 
 template<class SrcIterator, class SrcAccessor, class SrcShape,
          class DestIterator, class DestAccessor, class Neighborhood>
-inline void 
+inline void
 extendedLocalMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
                       pair<DestIterator, DestAccessor> dest,
                       typename DestAccessor::value_type marker,
                       Neighborhood neighborhood)
 {
-    extendedLocalMinima3D(src.first, src.second, src.third, 
-                          dest.first, dest.second, 
+    extendedLocalMinima3D(src.first, src.second, src.third,
+                          dest.first, dest.second,
                           marker, neighborhood);
 }
 
@@ -1837,33 +1830,32 @@ extendedLocalMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> void extendedLocalMaxima)
+doxygen_overloaded_function(template<...> void extendedLocalMaxima)
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood, class EqualityFunctor>
-inline void
-extendedLocalMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-            DestIterator dul, DestAccessor da, 
-            typename DestAccessor::value_type marker,
-            Neighborhood neighborhood, EqualityFunctor equal)
+    template<class SrcIterator, class SrcAccessor,
+             class DestIterator, class DestAccessor,
+             class Neighborhood, class EqualityFunctor>
+    inline void extendedLocalMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+                                    DestIterator dul, DestAccessor da,
+                                    typename DestAccessor::value_type marker,
+                                    Neighborhood neighborhood, EqualityFunctor equal)
 {
     typedef typename SrcAccessor::value_type SrcType;
 
     detail::extendedLocalMinMax(sul, slr, sa, dul, da,
                                 marker, neighborhood,
-                                std::greater<SrcType>(), equal, 
+                                std::greater<SrcType>(), equal,
                                 NumericTraits<typename SrcAccessor::value_type>::min());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class Neighborhood>
 inline void
 extendedLocalMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-            DestIterator dul, DestAccessor da, 
-            typename DestAccessor::value_type marker,
-            Neighborhood neighborhood)
+                    DestIterator dul, DestAccessor da,
+                    typename DestAccessor::value_type marker,
+                    Neighborhood neighborhood)
 {
     typedef typename SrcAccessor::value_type SrcType;
 
@@ -1871,68 +1863,68 @@ extendedLocalMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                         marker, neighborhood, std::equal_to<SrcType>());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 extendedLocalMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-            DestIterator dul, DestAccessor da, 
-            typename DestAccessor::value_type marker)
+                    DestIterator dul, DestAccessor da,
+                    typename DestAccessor::value_type marker)
 {
     extendedLocalMaxima(sul, slr, sa, dul, da,
                         marker, EightNeighborCode());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 extendedLocalMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-            DestIterator dul, DestAccessor da)
+                    DestIterator dul, DestAccessor da)
 {
     extendedLocalMaxima(sul, slr, sa, dul, da,
-                NumericTraits<typename DestAccessor::value_type>::one());
+                        NumericTraits<typename DestAccessor::value_type>::one());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood, class EqualityFunctor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class Neighborhood, class EqualityFunctor>
 inline void
 extendedLocalMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-            pair<DestIterator, DestAccessor> dest,
-            typename DestAccessor::value_type marker, Neighborhood neighborhood,
-            EqualityFunctor equal)
+                    pair<DestIterator, DestAccessor> dest,
+                    typename DestAccessor::value_type marker, Neighborhood neighborhood,
+                    EqualityFunctor equal)
 {
     extendedLocalMaxima(src.first, src.second, src.third,
-                dest.first, dest.second, marker, neighborhood, equal);
+                        dest.first, dest.second, marker, neighborhood, equal);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor,
+         class Neighborhood>
 inline void
 extendedLocalMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-            pair<DestIterator, DestAccessor> dest,
-            typename DestAccessor::value_type marker, Neighborhood neighborhood)
+                    pair<DestIterator, DestAccessor> dest,
+                    typename DestAccessor::value_type marker, Neighborhood neighborhood)
 {
     extendedLocalMaxima(src.first, src.second, src.third,
                         dest.first, dest.second, marker, neighborhood);
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 extendedLocalMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-            pair<DestIterator, DestAccessor> dest,
-            typename DestAccessor::value_type marker)
+                    pair<DestIterator, DestAccessor> dest,
+                    typename DestAccessor::value_type marker)
 {
     extendedLocalMaxima(src.first, src.second, src.third,
                         dest.first, dest.second, marker, EightNeighborCode());
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+template<class SrcIterator, class SrcAccessor,
+         class DestIterator, class DestAccessor>
 inline void
 extendedLocalMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-            pair<DestIterator, DestAccessor> dest)
+                    pair<DestIterator, DestAccessor> dest)
 {
     extendedLocalMaxima(src.first, src.second, src.third,
                         dest.first, dest.second);
@@ -1949,28 +1941,27 @@ extendedLocalMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     See \ref extendedLocalMaxima().
  */
 
-doxygen_overloaded_function(template <...> void extendedLocalMaxima3D)
+doxygen_overloaded_function(template<...> void extendedLocalMaxima3D)
 
-template<class SrcIterator, class SrcShape, class SrcAccessor,
-         class DestIterator, class DestAccessor, class Neighborhood,
-         class EqualityFunctor>
-inline void 
-extendedLocalMaxima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
-                      DestIterator dul, DestAccessor da,
-                      typename DestAccessor::value_type marker,
-                      Neighborhood neighborhood,
-                      EqualityFunctor equal)
+    template<class SrcIterator, class SrcShape, class SrcAccessor,
+             class DestIterator, class DestAccessor, class Neighborhood,
+             class EqualityFunctor>
+    inline void extendedLocalMaxima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
+                                      DestIterator dul, DestAccessor da,
+                                      typename DestAccessor::value_type marker,
+                                      Neighborhood neighborhood,
+                                      EqualityFunctor equal)
 {
     typedef typename SrcAccessor::value_type SrcType;
 
     detail::extendedLocalMinMax3D(sul, slr, sa, dul, da, marker, neighborhood,
-                                  std::greater<SrcType>(), equal, 
+                                  std::greater<SrcType>(), equal,
                                   NumericTraits<typename SrcAccessor::value_type>::min());
 }
 
 template<class SrcIterator, class SrcShape, class SrcAccessor,
          class DestIterator, class DestAccessor, class Neighborhood>
-inline void 
+inline void
 extendedLocalMaxima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
                       DestIterator dul, DestAccessor da,
                       typename DestAccessor::value_type marker,
@@ -1978,32 +1969,32 @@ extendedLocalMaxima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
 {
     typedef typename SrcAccessor::value_type SrcType;
 
-    extendedLocalMaxima3D(sul, slr, sa, dul, da, 
-                          marker, neighborhood, 
+    extendedLocalMaxima3D(sul, slr, sa, dul, da,
+                          marker, neighborhood,
                           std::equal_to<SrcType>());
 }
 
 template<class SrcIterator, class SrcShape, class SrcAccessor,
          class DestIterator, class DestAccessor>
-inline void 
+inline void
 extendedLocalMaxima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
                       DestIterator dul, DestAccessor da)
 {
-    extendedLocalMaxima3D(sul, slr, sa, dul, da, 
+    extendedLocalMaxima3D(sul, slr, sa, dul, da,
                           NumericTraits<typename DestAccessor::value_type>::one(),
                           NeighborCode3DSix());
 }
 
 template<class SrcIterator, class SrcShape, class SrcAccessor,
          class DestIterator, class DestAccessor, class Neighborhood>
-inline void 
+inline void
 extendedLocalMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
                       pair<DestIterator, DestAccessor> dest,
                       typename DestAccessor::value_type marker,
                       Neighborhood neighborhood)
 {
-    extendedLocalMaxima3D(src.first, src.second, src.third, 
-                          dest.first, dest.second, 
+    extendedLocalMaxima3D(src.first, src.second, src.third,
+                          dest.first, dest.second,
                           marker, neighborhood);
 }
 

@@ -36,36 +36,39 @@
 #ifndef VIGRA_INVARIANT_FEATURES3D_HXX
 #define VIGRA_INVARIANT_FEATURES3D_HXX
 
-#include <complex>
+#include "array_vector.hxx"
 #include "config.hxx"
 #include "error.hxx"
-#include "utilities.hxx"
 #include "mathutil.hxx"
-#include "array_vector.hxx"
 #include "matrix.hxx"
-#include "tinyvector.hxx"
 #include "quaternion.hxx"
+#include "tinyvector.hxx"
+#include "utilities.hxx"
+#include <complex>
 
-namespace vigra {
+namespace vigra
+{
 
-namespace detail  {
+namespace detail
+{
 
 // computes the normalization for SH base functions
-inline double realSH(double l, double m)
+inline double
+realSH(double l, double m)
 {
-    return std::sqrt((2.0*l + 1.0) / (4.0*M_PI*facLM(l,m)));
-
+    return std::sqrt((2.0 * l + 1.0) / (4.0 * M_PI * facLM(l, m)));
 }
 
 template<int N, class T, class C>
-TinyVector<float, N> centerOfBB(MultiArrayView<N, T, C> const & A)
+TinyVector<float, N>
+centerOfBB(MultiArrayView<N, T, C> const& A)
 {
-    return TinyVector<float, N>(A.shape()) /= 2.0;                        
+    return TinyVector<float, N>(A.shape()) /= 2.0;
 }
 
 } // namespace detail
 
 
-} // namespace vigra 
+} // namespace vigra
 
 #endif // VIGRA_INVARIANT_FEATURES3D_HXX

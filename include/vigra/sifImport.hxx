@@ -54,17 +54,18 @@
 #ifndef VIGRA_SIFIMPORT_HXX
 #define VIGRA_SIFIMPORT_HXX
 
-#include <fstream>
-#include <cstring>
-#include <cstddef>
-#include <vector> 
-#include "multi_array.hxx"
 #include "array_vector.hxx"
+#include "multi_array.hxx"
+#include <cstddef>
+#include <cstring>
+#include <fstream>
+#include <vector>
 
-namespace vigra {
- 
- 
- /** \addtogroup VigraSIFImport Import of Images from Andor Cameras
+namespace vigra
+{
+
+
+/** \addtogroup VigraSIFImport Import of Images from Andor Cameras
 
     Read an Andor SIF file into a MultiArrayView.
 */
@@ -86,8 +87,8 @@ Namespace: vigra
 */
 class SIFImportInfo
 {
-    public:
-        /** Construct SIFImportInfo object.
+public:
+    /** Construct SIFImportInfo object.
 
             The header of the Andor SIF file \a filename is accessed to 
             read the image properties. 
@@ -96,44 +97,44 @@ class SIFImportInfo
             SIFImportInfo info(filename);
             \endcode
          */
-        VIGRA_EXPORT SIFImportInfo(const char* filename);
+    VIGRA_EXPORT SIFImportInfo(const char* filename);
 
-        /** Get the width in pixels.
+    /** Get the width in pixels.
          */
-        VIGRA_EXPORT int width() const;
+    VIGRA_EXPORT int width() const;
 
-        /** Get the height in pixels.
+    /** Get the height in pixels.
          */
-        VIGRA_EXPORT int height() const;
+    VIGRA_EXPORT int height() const;
 
-        /** Get the stacksize, that is the number of 
+    /** Get the stacksize, that is the number of 
             images contained in the dataset.
          */
-        VIGRA_EXPORT int stacksize() const;
+    VIGRA_EXPORT int stacksize() const;
 
-        /** Get the number of dimensions of the dataset represented by this info object.
+    /** Get the number of dimensions of the dataset represented by this info object.
          */
-        VIGRA_EXPORT MultiArrayIndex numDimensions() const;
+    VIGRA_EXPORT MultiArrayIndex numDimensions() const;
 
-        /** Get the shape of the dataset represented by this info object.
+    /** Get the shape of the dataset represented by this info object.
          */
-        VIGRA_EXPORT ArrayVector<size_t> const & shape() const;
+    VIGRA_EXPORT ArrayVector<size_t> const& shape() const;
 
-        /** Get the shape (length) of the dataset along dimension \a dim.
+    /** Get the shape (length) of the dataset along dimension \a dim.
          */
-        VIGRA_EXPORT MultiArrayIndex shapeOfDimension(const int dim) const;
+    VIGRA_EXPORT MultiArrayIndex shapeOfDimension(const int dim) const;
 
-        /** Get the offset to the beginning of the actual data.
+    /** Get the offset to the beginning of the actual data.
             Everything before this point belongs to the 
             variable length header.
          */
-        VIGRA_EXPORT std::ptrdiff_t getOffset() const;
+    VIGRA_EXPORT std::ptrdiff_t getOffset() const;
 
-        /** Get the filename of this SIF object.
+    /** Get the filename of this SIF object.
          */
-        VIGRA_EXPORT const char * getFileName() const;
+    VIGRA_EXPORT const char* getFileName() const;
 
-        /** Output all information such as shutter, Temperature etc. 
+    /** Output all information such as shutter, Temperature etc. 
            as human readable output.
           
         <b> Usage:</b>
@@ -147,29 +148,27 @@ class SIFImportInfo
 
         \endcode
          */
-        VIGRA_EXPORT friend std::ostream& operator<<(std::ostream& os, const SIFImportInfo& info);
+    VIGRA_EXPORT friend std::ostream& operator<<(std::ostream& os, const SIFImportInfo& info);
 
-    private:
-        const char* m_filename;
-        ArrayVector<size_t> m_dims;
-        std::ptrdiff_t m_offset;
-        int mod;
-        int left, right, bottom, top;
-        int xbin, ybin, xres, yres;
-        int headerlen;
-        double readout;
-        double temperature1, temperature2;
-        long long d;
-        std::string cycleTime, temperature, exposureTime, EMGain,
-        verticalShiftSpeed, version, model, originalFilename, preAmpGain;   
-        size_t filesize;
-    
+private:
+    const char* m_filename;
+    ArrayVector<size_t> m_dims;
+    std::ptrdiff_t m_offset;
+    int mod;
+    int left, right, bottom, top;
+    int xbin, ybin, xres, yres;
+    int headerlen;
+    double readout;
+    double temperature1, temperature2;
+    long long d;
+    std::string cycleTime, temperature, exposureTime, EMGain,
+        verticalShiftSpeed, version, model, originalFilename, preAmpGain;
+    size_t filesize;
 };
 
 
 
-
-    /** \brief Read the image data specified by the given \ref vigra::SIFImportInfo object
+/** \brief Read the image data specified by the given \ref vigra::SIFImportInfo object
                 and write them into the given 'array'.
                 
     The array must have the correct number of dimensions and shape for the dataset 
@@ -199,15 +198,17 @@ class SIFImportInfo
     readSIF(info, in); 
     \endcode
 */
-VIGRA_EXPORT void readSIF(const SIFImportInfo &info, MultiArrayView<3, float> array);
+VIGRA_EXPORT void readSIF(const SIFImportInfo& info, MultiArrayView<3, float> array);
 
-template <unsigned int N, class T, class S>
-void readSIF(const SIFImportInfo &, MultiArrayView<N, T, S>)
+template<unsigned int N, class T, class S>
+void
+readSIF(const SIFImportInfo&, MultiArrayView<N, T, S>)
 {
     vigra_precondition(false, "readSIF(): Destination array must be MultiArrayView<3, float>.");
 }
 
-inline void readSIF(const SIFImportInfo &info, MultiArrayView<3, float, UnstridedArrayTag> array)
+inline void
+readSIF(const SIFImportInfo& info, MultiArrayView<3, float, UnstridedArrayTag> array)
 {
     readSIF(info, MultiArrayView<3, float>(array));
 }
@@ -226,15 +227,17 @@ inline void readSIF(const SIFImportInfo &info, MultiArrayView<3, float, Unstride
 
     \endcode
 */
-VIGRA_EXPORT void readSIFBlock(const SIFImportInfo &info, Shape3 offset, Shape3 shape, MultiArrayView<3, float> array);
+VIGRA_EXPORT void readSIFBlock(const SIFImportInfo& info, Shape3 offset, Shape3 shape, MultiArrayView<3, float> array);
 
-template <unsigned int N, class T, class S>
-void readSIFBlock(const SIFImportInfo &, Shape3, Shape3, MultiArrayView<N, T, S>)
+template<unsigned int N, class T, class S>
+void
+readSIFBlock(const SIFImportInfo&, Shape3, Shape3, MultiArrayView<N, T, S>)
 {
     vigra_precondition(false, "readSIFBlock(): Destination array must be MultiArrayView<3, float>.");
 }
 
-inline void readSIFBlock(const SIFImportInfo &info, Shape3 offset, Shape3 shape, MultiArrayView<3, float, UnstridedArrayTag> array)
+inline void
+readSIFBlock(const SIFImportInfo& info, Shape3 offset, Shape3 shape, MultiArrayView<3, float, UnstridedArrayTag> array)
 {
     readSIFBlock(info, offset, shape, MultiArrayView<3, float>(array));
 }

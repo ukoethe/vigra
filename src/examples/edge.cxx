@@ -29,35 +29,36 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
+
 
 #include <iostream>
-#include <vigra/multi_array.hxx>
 #include <vigra/edgedetection.hxx>
 #include <vigra/impex.hxx>
+#include <vigra/multi_array.hxx>
 
-using namespace vigra; 
+using namespace vigra;
 
 
-int main(int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
-    if(argc != 3)
+    if (argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
-        
+
         return 1;
     }
-    
+
     try
     {
         ImageImportInfo info(argv[1]);
-        
+
         vigra_precondition(info.isGrayscale(), "Sorry, cannot operate on color images");
-        
+
         MultiArray<2, UInt8> in(info.shape());
 
         importImage(info, in);
@@ -76,14 +77,14 @@ int main(int argc, char ** argv)
         double threshold;
         std::cout << "Gradient threshold ? ";
         std::cin >> threshold;
-    
+
         // create output image of appropriate size
         MultiArray<2, UInt8> out(info.shape());
-        
+
         // paint output image white
         out = 255;
-        
-        if(which == 2)
+
+        if (which == 2)
         {
             // call Shen-Castan edge detection algorithm
             // edges will be marked black
@@ -95,14 +96,14 @@ int main(int argc, char ** argv)
             // edges will be marked black
             cannyEdgeImage(in, out, scale, threshold, 0);
         }
-        
+
         exportImage(out, ImageExportInfo(argv[2]));
     }
-    catch (std::exception & e)
+    catch (std::exception& e)
     {
         std::cout << e.what() << std::endl;
         return 1;
     }
-    
+
     return 0;
 }

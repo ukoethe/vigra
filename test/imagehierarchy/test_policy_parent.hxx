@@ -15,13 +15,13 @@ template<class ToTestImage>
 class TestPolicy
 {
 public:
-    typedef ToTestImage                          Image;                      //es handelt sich um ein EinBandImage, wie FImage, BImage, GrayImage usw. ChildImage und Image sind aequivalent.
-    typedef ToTestImage                          ChildImage;                 //es handelt sich um ein EinBandImage, wie FImage, BImage, GrayImage usw. ChildImage und Image sind aequivalent.
-    typedef typename ToTestImage::PixelType      PixelType;
-    typedef typename Image::value_type           value_type;
-    typedef typename Image::value_type           child_value_type;
-    typedef std::vector<value_type>              data_array_type;
-    typedef std::vector<value_type>              child_data_array_type;
+    typedef ToTestImage Image;      //es handelt sich um ein EinBandImage, wie FImage, BImage, GrayImage usw. ChildImage und Image sind aequivalent.
+    typedef ToTestImage ChildImage; //es handelt sich um ein EinBandImage, wie FImage, BImage, GrayImage usw. ChildImage und Image sind aequivalent.
+    typedef typename ToTestImage::PixelType PixelType;
+    typedef typename Image::value_type value_type;
+    typedef typename Image::value_type child_value_type;
+    typedef std::vector<value_type> data_array_type;
+    typedef std::vector<value_type> child_data_array_type;
 
     /** factory() - Methoden sind dazu, da um den Aufruf des richtigen Konstruktors
     * zu kapseln. Insbesondere geht es darum, dass fuer Tests von SingleBandImage
@@ -31,39 +31,38 @@ public:
     * der Testklasse selber aufgerufen werden. Aus diesem Grunde auch die Unterscheidung
     * zwischen Image und ChildImage.
     */
-    static ChildImage * factory()
+    static ChildImage* factory()
     {
         return new ChildImage();
     }
 
-    static ChildImage * factory(int x, int y)
+    static ChildImage* factory(int x, int y)
     {
-        return new ChildImage(x,y);
+        return new ChildImage(x, y);
     }
 
-    static ChildImage * factory(vigra::Diff2D size)
+    static ChildImage* factory(vigra::Diff2D size)
     {
         return new ChildImage(size);
     }
 
-    static ChildImage * factory(int x, int y, value_type pixel)
+    static ChildImage* factory(int x, int y, value_type pixel)
     {
         return new ChildImage(x, y, pixel);
     }
 
-    static ChildImage * factory(ChildImage image)
+    static ChildImage* factory(ChildImage image)
     {
         return new ChildImage(image);
     }
 
 #ifdef IMAGEHIERARCHY
-    static ChildImage * factory(typename ChildImage::InnerImage image)
+    static ChildImage* factory(typename ChildImage::InnerImage image)
     {
         return new ChildImage(image);
     }
 #endif // IMAGEHIERARCHY
 
-};// end of class TestPolicy
+}; // end of class TestPolicy
 
 #endif // VIGRA_TEST_POLICY_PARENT_HXX
-

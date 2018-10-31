@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -40,69 +40,74 @@
 
 // VIFF - Khoros Visualization/Image File Format
 
-namespace vigra {
+namespace vigra
+{
 
-    struct ViffCodecFactory : public CodecFactory
+struct ViffCodecFactory : public CodecFactory
+{
+    CodecDesc getCodecDesc() const;
+    VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
+    VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
+};
+
+struct ViffDecoderImpl;
+struct ViffEncoderImpl;
+
+class ViffDecoder : public Decoder
+{
+    ViffDecoderImpl* pimpl;
+
+public:
+    ViffDecoder()
+        : pimpl(0)
     {
-        CodecDesc getCodecDesc() const;
-        VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
-        VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
-    };
+    }
 
-    struct ViffDecoderImpl;
-    struct ViffEncoderImpl;
+    ~ViffDecoder();
+    void init(const std::string&);
+    void close();
+    void abort();
 
-    class ViffDecoder : public Decoder
+    std::string getFileType() const;
+    std::string getPixelType() const;
+
+    unsigned int getWidth() const;
+    unsigned int getHeight() const;
+    unsigned int getNumBands() const;
+    unsigned int getOffset() const;
+
+    const void* currentScanlineOfBand(unsigned int) const;
+    void nextScanline();
+};
+
+class ViffEncoder : public Encoder
+{
+    ViffEncoderImpl* pimpl;
+
+public:
+    ViffEncoder()
+        : pimpl(0)
     {
-        ViffDecoderImpl * pimpl;
+    }
 
-    public:
+    ~ViffEncoder();
+    void init(const std::string&);
+    void close();
+    void abort();
 
-        ViffDecoder() : pimpl(0) {}
+    std::string getFileType() const;
+    unsigned int getOffset() const;
 
-        ~ViffDecoder();
-        void init( const std::string & );
-        void close();
-        void abort();
+    void setWidth(unsigned int);
+    void setHeight(unsigned int);
+    void setNumBands(unsigned int);
+    void setCompressionType(const std::string&, int = -1);
+    void setPixelType(const std::string&);
+    void finalizeSettings();
 
-        std::string getFileType() const;
-        std::string getPixelType() const;
-
-        unsigned int getWidth() const;
-        unsigned int getHeight() const;
-        unsigned int getNumBands() const;
-        unsigned int getOffset() const;
-
-        const void * currentScanlineOfBand( unsigned int ) const;
-        void nextScanline();
-    };
-
-    class ViffEncoder : public Encoder
-    {
-        ViffEncoderImpl * pimpl;
-
-    public:
-
-        ViffEncoder() : pimpl(0) {}
-
-        ~ViffEncoder();
-        void init( const std::string & );
-        void close();
-        void abort();
-
-        std::string getFileType() const;
-        unsigned int getOffset() const;
-
-        void setWidth( unsigned int );
-        void setHeight( unsigned int );
-        void setNumBands( unsigned int );
-        void setCompressionType( const std::string &, int = -1 );
-        void setPixelType( const std::string & );
-        void finalizeSettings();
-
-        void * currentScanlineOfBand( unsigned int );
-        void nextScanline();
-    };
-}
+    void* currentScanlineOfBand(unsigned int);
+    void nextScanline();
+};
+} // namespace vigra
 
 #endif // VIGRA_IMPEX_VIFF_HXX

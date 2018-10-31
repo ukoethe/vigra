@@ -33,69 +33,71 @@
 /*                                                                      */
 /************************************************************************/
 
-#include <algorithm>
 #include "vigra/compression.hxx"
 #include "lz4.h"
+#include <algorithm>
 
 #ifdef HasZLIB
 #include <zlib.h>
 #endif
 
-namespace vigra {
-
-std::size_t compressImpl(char const * source, std::size_t srcSize, 
-                         ArrayVector<char> & buffer,
-                         CompressionMethod method)
+namespace vigra
 {
-    switch(method)
-    {
-      case NO_COMPRESSION:
-      {
-        ArrayVector<char>(source, source+srcSize).swap(buffer);
-        return srcSize;
-      }
-      case ZLIB:
-      case ZLIB_NONE:
-      case ZLIB_FAST:
-      case ZLIB_BEST:
-      {
-    #ifdef HasZLIB
-        uLong destSize = ::compressBound(srcSize);
-        buffer.resize(destSize);
-        int res = ::compress2((Bytef *)buffer.data(), &destSize, (Bytef *)source, srcSize, method);
-        vigra_postcondition(res == Z_OK, "compress(): zlib compression failed.");                    
-        return destSize;
-    #else
-        vigra_precondition(false, "compress(): VIGRA was compiled without ZLIB compression.");
-        return 0;
-    #endif
-      }
-      case DEFAULT_COMPRESSION:
-      case LZ4:
-      {
-        std::size_t destSize = ::LZ4_compressBound(srcSize);
-        buffer.resize(destSize);
-        destSize = ::LZ4_compress(source, buffer.data(), srcSize);
-        vigra_postcondition(destSize > 0, "compress(): lz4 compression failed.");
-        return destSize;
-      }
 
-#if 0  // currently unsupported
+std::size_t
+compressImpl(char const* source, std::size_t srcSize,
+             ArrayVector<char>& buffer,
+             CompressionMethod method)
+{
+    switch (method)
+    {
+        case NO_COMPRESSION:
+        {
+            ArrayVector<char>(source, source + srcSize).swap(buffer);
+            return srcSize;
+        }
+        case ZLIB:
+        case ZLIB_NONE:
+        case ZLIB_FAST:
+        case ZLIB_BEST:
+        {
+#ifdef HasZLIB
+            uLong destSize = ::compressBound(srcSize);
+            buffer.resize(destSize);
+            int res = ::compress2((Bytef*)buffer.data(), &destSize, (Bytef*)source, srcSize, method);
+            vigra_postcondition(res == Z_OK, "compress(): zlib compression failed.");
+            return destSize;
+#else
+            vigra_precondition(false, "compress(): VIGRA was compiled without ZLIB compression.");
+            return 0;
+#endif
+        }
+        case DEFAULT_COMPRESSION:
+        case LZ4:
+        {
+            std::size_t destSize = ::LZ4_compressBound(srcSize);
+            buffer.resize(destSize);
+            destSize = ::LZ4_compress(source, buffer.data(), srcSize);
+            vigra_postcondition(destSize > 0, "compress(): lz4 compression failed.");
+            return destSize;
+        }
+
+#if 0 // currently unsupported
       case SNAPPY:
       {
-    #ifdef HasSNAPPY
+#ifdef HasSNAPPY
         std::size_t destSize = snappy::MaxCompressedLength(srcSize);
         buffer.resize(destSize);
         snappy::RawCompress(source, srcSize, buffer.data(), &destSize);
         return destSize;
-    #else
+#else
         vigra_precondition(false, "compress(): VIGRA was compiled without SNAPPY compression.");
         return 0;
-    #endif
+#endif
       }
       case LZO:
       {
-    #ifdef HasLZO
+#ifdef HasLZO
         static const int workmemSize = 
                   (LZO1X_1_MEM_COMPRESS + sizeof(lzo_align_t) - 1) / sizeof(lzo_align_t);
         ArrayVector<lzo_align_t> wrkmem(workmemSize);
@@ -106,19 +108,20 @@ std::size_t compressImpl(char const * source, std::size_t srcSize,
                                      (lzo_bytep)buffer.data(), &destSize, 
                                      wrkmem.data());
         return destSize;
-    #else
+#else
         vigra_precondition(false, "compress(): VIGRA was compiled without LZO compression.");
         return 0;
-    #endif
+#endif
       }
 #endif
-      default:
-        vigra_precondition(false, "compress(): Unknown compression method.");
+        default:
+            vigra_precondition(false, "compress(): Unknown compression method.");
     }
     return 0;
 }
 
-void compress(char const * source, std::size_t size, ArrayVector<char> & dest, CompressionMethod method)
+void
+compress(char const* source, std::size_t size, ArrayVector<char>& dest, CompressionMethod method)
 {
     ArrayVector<char> buffer;
     std::size_t destSize = compressImpl(source, size, buffer, method);
@@ -126,70 +129,72 @@ void compress(char const * source, std::size_t size, ArrayVector<char> & dest, C
     std::copy(buffer.data(), buffer.data() + destSize, dest.begin());
 }
 
-void compress(char const * source, std::size_t size, std::vector<char> & dest, CompressionMethod method)
+void
+compress(char const* source, std::size_t size, std::vector<char>& dest, CompressionMethod method)
 {
     ArrayVector<char> buffer;
     std::size_t destSize = compressImpl(source, size, buffer, method);
     dest.insert(dest.begin(), buffer.data(), buffer.data() + destSize);
 }
 
-void uncompress(char const * source, std::size_t srcSize, 
-                char * dest, std::size_t destSize, CompressionMethod method)
+void
+uncompress(char const* source, std::size_t srcSize,
+           char* dest, std::size_t destSize, CompressionMethod method)
 {
-    switch(method)
+    switch (method)
     {
-      case NO_COMPRESSION:
-      {
-        std::copy(source, source+srcSize, dest);
-        break;
-      }
-      case ZLIB:
-      case ZLIB_NONE:
-      case ZLIB_FAST:
-      case ZLIB_BEST:
-      {
-    #ifdef HasZLIB
-        uLong destLen = destSize;
-        int res = ::uncompress((Bytef *)dest, &destLen, (Bytef *)source, srcSize);
-        vigra_postcondition(res == Z_OK, "uncompress(): zlib decompression failed.");
-    #else
-        vigra_precondition(false, "uncompress(): VIGRA was compiled without ZLIB compression.");
-    #endif
-        break;
-      }
-      case DEFAULT_COMPRESSION:
-      case LZ4:
-      {
-        int sourceLen = ::LZ4_decompress_fast(source, dest, destSize);
-        vigra_postcondition(sourceLen >= 0 && static_cast<unsigned>(sourceLen) == srcSize, "uncompress(): lz4 decompression failed.");
-        break;
-      }
-      
+        case NO_COMPRESSION:
+        {
+            std::copy(source, source + srcSize, dest);
+            break;
+        }
+        case ZLIB:
+        case ZLIB_NONE:
+        case ZLIB_FAST:
+        case ZLIB_BEST:
+        {
+#ifdef HasZLIB
+            uLong destLen = destSize;
+            int res = ::uncompress((Bytef*)dest, &destLen, (Bytef*)source, srcSize);
+            vigra_postcondition(res == Z_OK, "uncompress(): zlib decompression failed.");
+#else
+            vigra_precondition(false, "uncompress(): VIGRA was compiled without ZLIB compression.");
+#endif
+            break;
+        }
+        case DEFAULT_COMPRESSION:
+        case LZ4:
+        {
+            int sourceLen = ::LZ4_decompress_fast(source, dest, destSize);
+            vigra_postcondition(sourceLen >= 0 && static_cast<unsigned>(sourceLen) == srcSize, "uncompress(): lz4 decompression failed.");
+            break;
+        }
+
 #if 0 // currently unsupported
       case SNAPPY:
       {
-    #ifdef HasSNAPPY
+#ifdef HasSNAPPY
         snappy::RawUncompress(source, srcSize, dest);
-    #else
+#else
         vigra_precondition(false, "compress(): VIGRA was compiled without SNAPPY compression.");
-    #endif
+#endif
         break;
       }
       case LZO:
       {
-    #ifdef HasLZO
+#ifdef HasLZO
         lzo_uint destLen = destSize;
         int res = ::lzo1x_decompress((const lzo_bytep)source, srcSize,
                                      (lzo_bytep)dest, &destLen, NULL);
         vigra_postcondition(res == LZO_E_OK, "uncompress(): lzo decompression failed.");
-    #else
+#else
         vigra_precondition(false, "compress(): VIGRA was compiled without LZO compression.");
-    #endif
+#endif
         break;
       }
 #endif
-      default:
-        vigra_precondition(false, "uncompress(): Unknown compression method.");
+        default:
+            vigra_precondition(false, "uncompress(): Unknown compression method.");
     }
 }
 
@@ -197,8 +202,8 @@ void uncompress(char const * source, std::size_t srcSize,
 
     The destination array will be resized as required.
 */
-void uncompress(char const * source, std::size_t size, ArrayVector<char> & dest, CompressionMethod method);
-void uncompress(char const * source, std::size_t size, std::vector<char> & dest, CompressionMethod method);
+void uncompress(char const* source, std::size_t size, ArrayVector<char>& dest, CompressionMethod method);
+void uncompress(char const* source, std::size_t size, std::vector<char>& dest, CompressionMethod method);
 
 
 } // namespace vigra

@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -40,69 +40,74 @@
 
 // SUN Rasterfile format
 
-namespace vigra {
+namespace vigra
+{
 
-    struct SunDecoderImpl;
-    struct SunEncoderImpl;
+struct SunDecoderImpl;
+struct SunEncoderImpl;
 
-    struct SunCodecFactory : public CodecFactory
+struct SunCodecFactory : public CodecFactory
+{
+    CodecDesc getCodecDesc() const;
+    VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
+    VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
+};
+
+class SunDecoder : public Decoder
+{
+    SunDecoderImpl* pimpl;
+
+public:
+    SunDecoder()
+        : pimpl(0)
     {
-        CodecDesc getCodecDesc() const;
-        VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
-        VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
-    };
+    }
 
-    class SunDecoder : public Decoder
+    ~SunDecoder();
+    void init(const std::string&);
+    void close();
+    void abort();
+
+    std::string getFileType() const;
+    std::string getPixelType() const;
+
+    unsigned int getWidth() const;
+    unsigned int getHeight() const;
+    unsigned int getNumBands() const;
+    unsigned int getOffset() const;
+
+    const void* currentScanlineOfBand(unsigned int) const;
+    void nextScanline();
+};
+
+class SunEncoder : public Encoder
+{
+    SunEncoderImpl* pimpl;
+
+public:
+    SunEncoder()
+        : pimpl(0)
     {
-        SunDecoderImpl * pimpl;
+    }
 
-    public:
+    ~SunEncoder();
+    void init(const std::string&);
+    void close();
+    void abort();
 
-        SunDecoder() : pimpl(0) {}
+    std::string getFileType() const;
+    unsigned int getOffset() const;
 
-        ~SunDecoder();
-        void init( const std::string & );
-        void close();
-        void abort();
+    void setWidth(unsigned int);
+    void setHeight(unsigned int);
+    void setNumBands(unsigned int);
+    void setCompressionType(const std::string&, int = -1);
+    void setPixelType(const std::string&);
+    void finalizeSettings();
 
-        std::string getFileType() const;
-        std::string getPixelType() const;
-
-        unsigned int getWidth() const;
-        unsigned int getHeight() const;
-        unsigned int getNumBands() const;
-        unsigned int getOffset() const;
-
-        const void * currentScanlineOfBand( unsigned int ) const;
-        void nextScanline();
-    };
-
-    class SunEncoder : public Encoder
-    {
-        SunEncoderImpl * pimpl;
-
-    public:
-
-        SunEncoder() : pimpl(0) {}
-
-        ~SunEncoder();
-        void init( const std::string & );
-        void close();
-        void abort();
-
-        std::string getFileType() const;
-        unsigned int getOffset() const;
-
-        void setWidth( unsigned int );
-        void setHeight( unsigned int );
-        void setNumBands( unsigned int );
-        void setCompressionType( const std::string &, int = -1 );
-        void setPixelType( const std::string & );
-        void finalizeSettings();
-
-        void * currentScanlineOfBand( unsigned int );
-        void nextScanline();
-    };
-}
+    void* currentScanlineOfBand(unsigned int);
+    void nextScanline();
+};
+} // namespace vigra
 
 #endif // VIGRA_IMPEX_SUN_HXX

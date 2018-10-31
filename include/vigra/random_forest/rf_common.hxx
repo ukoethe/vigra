@@ -42,14 +42,16 @@ namespace vigra
 
 
 struct ClassificationTag
-{};
+{
+};
 
 struct RegressionTag
-{};
+{
+};
 
 namespace detail
 {
-    class RF_DEFAULT;
+class RF_DEFAULT;
 }
 inline detail::RF_DEFAULT& rf_default();
 namespace detail
@@ -62,13 +64,15 @@ namespace detail
  */
 class RF_DEFAULT
 {
-    private:
-        RF_DEFAULT()
-        {}
-    public:
-        friend RF_DEFAULT& ::vigra::rf_default();
+private:
+    RF_DEFAULT()
+    {
+    }
 
-        /** ok workaround for automatic choice of the decisiontree
+public:
+    friend RF_DEFAULT& ::vigra::rf_default();
+
+    /** ok workaround for automatic choice of the decisiontree
          * stackentry.
          */
 };
@@ -101,7 +105,7 @@ class Value_Chooser
 {
 public:
     typedef T type;
-    static T & choose(T & t, C &)
+    static T& choose(T& t, C&)
     {
         return t;
     }
@@ -113,12 +117,11 @@ class Value_Chooser<detail::RF_DEFAULT, C>
 public:
     typedef C type;
 
-    static C & choose(detail::RF_DEFAULT &, C & c)
+    static C& choose(detail::RF_DEFAULT&, C& c)
     {
         return c;
     }
 };
-
 
 
 
@@ -128,7 +131,8 @@ public:
 /**\brief factory function to return a RF_DEFAULT tag
  * \sa RandomForest<>::learn()
  */
-detail::RF_DEFAULT& rf_default()
+detail::RF_DEFAULT&
+rf_default()
 {
     static detail::RF_DEFAULT result;
     return result;
@@ -137,15 +141,18 @@ detail::RF_DEFAULT& rf_default()
 /** tags used with the RandomForestOptions class
  * \sa RF_Traits::Option_t
  */
-enum RF_OptionTag   { RF_EQUAL,
-                      RF_PROPORTIONAL,
-                      RF_EXTERNAL,
-                      RF_NONE,
-                      RF_FUNCTION,
-                      RF_LOG,
-                      RF_SQRT,
-                      RF_CONST,
-                      RF_ALL};
+enum RF_OptionTag
+{
+    RF_EQUAL,
+    RF_PROPORTIONAL,
+    RF_EXTERNAL,
+    RF_NONE,
+    RF_FUNCTION,
+    RF_LOG,
+    RF_SQRT,
+    RF_CONST,
+    RF_ALL
+};
 
 
 /** \addtogroup MachineLearning
@@ -169,19 +176,19 @@ enum RF_OptionTag   { RF_EQUAL,
  */
 class RandomForestOptions
 {
-  public:
+public:
     /**\name sampling options*/
     /*\{*/
     // look at the member access functions for documentation
-    double  training_set_proportion_;
-    int     training_set_size_;
+    double training_set_proportion_;
+    int training_set_size_;
     int (*training_set_func_)(int);
     RF_OptionTag
         training_set_calc_switch_;
 
-    bool    sample_with_replacement_;
+    bool sample_with_replacement_;
     RF_OptionTag
-            stratification_method_;
+        stratification_method_;
 
 
     /**\name general random forest options
@@ -190,9 +197,9 @@ class RandomForestOptions
      * stopping predicates
      */
     /*\{*/
-    RF_OptionTag    mtry_switch_;
-    int     mtry_;
-    int (*mtry_func_)(int) ;
+    RF_OptionTag mtry_switch_;
+    int mtry_;
+    int (*mtry_func_)(int);
 
     bool predict_weighted_;
     int tree_count_;
@@ -209,10 +216,10 @@ class RandomForestOptions
     }
 
 
-    bool operator==(RandomForestOptions & rhs) const
+    bool operator==(RandomForestOptions& rhs) const
     {
         bool result = true;
-        #define COMPARE(field) result = result && (this->field == rhs.field);
+#define COMPARE(field) result = result && (this->field == rhs.field);
         COMPARE(training_set_proportion_);
         COMPARE(training_set_size_);
         COMPARE(training_set_calc_switch_);
@@ -223,47 +230,51 @@ class RandomForestOptions
         COMPARE(tree_count_);
         COMPARE(min_split_node_size_);
         COMPARE(predict_weighted_);
-        #undef COMPARE
+#undef COMPARE
 
         return result;
     }
-    bool operator!=(RandomForestOptions & rhs_) const
+    bool operator!=(RandomForestOptions& rhs_) const
     {
         return !(*this == rhs_);
     }
     template<class Iter>
-    void unserialize(Iter const & begin, Iter const & end)
+    void unserialize(Iter const& begin, Iter const& end)
     {
         Iter iter = begin;
         vigra_precondition(static_cast<int>(end - begin) == serialized_size(),
                            "RandomForestOptions::unserialize():"
                            "wrong number of parameters");
-        #define PULL(item_, type_) item_ = type_(*iter); ++iter;
+#define PULL(item_, type_) \
+    item_ = type_(*iter);  \
+    ++iter;
         PULL(training_set_proportion_, double);
         PULL(training_set_size_, int);
         ++iter; //PULL(training_set_func_, double);
-        PULL(training_set_calc_switch_, (RF_OptionTag)int);
-        PULL(sample_with_replacement_, 0 != );
-        PULL(stratification_method_, (RF_OptionTag)int);
-        PULL(mtry_switch_, (RF_OptionTag)int);
+        PULL(training_set_calc_switch_, (RF_OptionTag) int);
+        PULL(sample_with_replacement_, 0 !=);
+        PULL(stratification_method_, (RF_OptionTag) int);
+        PULL(mtry_switch_, (RF_OptionTag) int);
         PULL(mtry_, int);
         ++iter; //PULL(mtry_func_, double);
         PULL(tree_count_, int);
         PULL(min_split_node_size_, int);
         PULL(predict_weighted_, 0 !=);
-        #undef PULL
+#undef PULL
     }
     template<class Iter>
-    void serialize(Iter const &  begin, Iter const & end) const
+    void serialize(Iter const& begin, Iter const& end) const
     {
         Iter iter = begin;
         vigra_precondition(static_cast<int>(end - begin) == serialized_size(),
                            "RandomForestOptions::serialize():"
                            "wrong number of parameters");
-        #define PUSH(item_) *iter = double(item_); ++iter;
+#define PUSH(item_)        \
+    *iter = double(item_); \
+    ++iter;
         PUSH(training_set_proportion_);
         PUSH(training_set_size_);
-        if(training_set_func_ != 0)
+        if (training_set_func_ != 0)
         {
             PUSH(1);
         }
@@ -276,7 +287,7 @@ class RandomForestOptions
         PUSH(stratification_method_);
         PUSH(mtry_switch_);
         PUSH(mtry_);
-        if(mtry_func_ != 0)
+        if (mtry_func_ != 0)
         {
             PUSH(1);
         }
@@ -287,14 +298,14 @@ class RandomForestOptions
         PUSH(tree_count_);
         PUSH(min_split_node_size_);
         PUSH(predict_weighted_);
-        #undef PUSH
+#undef PUSH
     }
 
-    void make_from_map(map_type & in) // -> const: .operator[] -> .find
+    void make_from_map(map_type& in) // -> const: .operator[] -> .find
     {
-        #define PULL(item_, type_) item_ = type_(in[#item_][0]);
-        #define PULLBOOL(item_, type_) item_ = type_(in[#item_][0] > 0);
-        PULL(training_set_proportion_,double);
+#define PULL(item_, type_) item_ = type_(in[#item_][0]);
+#define PULLBOOL(item_, type_) item_ = type_(in[#item_][0] > 0);
+        PULL(training_set_proportion_, double);
         PULL(training_set_size_, int);
         PULL(mtry_, int);
         PULL(tree_count_, int);
@@ -308,17 +319,17 @@ class RandomForestOptions
         PULL(stratification_method_, (RF_OptionTag)(int));
         PULL(mtry_switch_, (RF_OptionTag)(int));
 
-        /*don't pull*/
-        //PULL(mtry_func_!=0, int);
-        //PULL(training_set_func,int);
-        #undef PULL
-        #undef PULLBOOL
+/*don't pull*/
+//PULL(mtry_func_!=0, int);
+//PULL(training_set_func,int);
+#undef PULL
+#undef PULLBOOL
     }
-    void make_map(map_type & in) const
+    void make_map(map_type& in) const
     {
-        #define PUSH(item_, type_) in[#item_] = double_array(1, double(item_));
-        #define PUSHFUNC(item_, type_) in[#item_] = double_array(1, double(item_!=0));
-        PUSH(training_set_proportion_,double);
+#define PUSH(item_, type_) in[#item_] = double_array(1, double(item_));
+#define PUSHFUNC(item_, type_) in[#item_] = double_array(1, double(item_ != 0));
+        PUSH(training_set_proportion_, double);
         PUSH(training_set_size_, int);
         PUSH(mtry_, int);
         PUSH(tree_count_, int);
@@ -332,9 +343,9 @@ class RandomForestOptions
         PUSH(mtry_switch_, RF_OptionTag);
 
         PUSHFUNC(mtry_func_, int);
-        PUSHFUNC(training_set_func_,int);
-        #undef PUSH
-        #undef PUSHFUNC
+        PUSHFUNC(training_set_func_, int);
+#undef PUSH
+#undef PUSHFUNC
     }
 
 
@@ -344,21 +355,21 @@ class RandomForestOptions
      * values
      */
     RandomForestOptions()
-    :
-        training_set_proportion_(1.0),
-        training_set_size_(0),
-        training_set_func_(0),
-        training_set_calc_switch_(RF_PROPORTIONAL),
-        sample_with_replacement_(true),
-        stratification_method_(RF_NONE),
-        mtry_switch_(RF_SQRT),
-        mtry_(0),
-        mtry_func_(0),
-        predict_weighted_(false),
-        tree_count_(255),
-        min_split_node_size_(1),
-        prepare_online_learning_(false)
-    {}
+        : training_set_proportion_(1.0),
+          training_set_size_(0),
+          training_set_func_(0),
+          training_set_calc_switch_(RF_PROPORTIONAL),
+          sample_with_replacement_(true),
+          stratification_method_(RF_NONE),
+          mtry_switch_(RF_SQRT),
+          mtry_(0),
+          mtry_func_(0),
+          predict_weighted_(false),
+          tree_count_(255),
+          min_split_node_size_(1),
+          prepare_online_learning_(false)
+    {
+    }
 
     /**\brief specify stratification strategy
      *
@@ -371,12 +382,12 @@ class RandomForestOptions
      * RF_EXTERNAL:     strata_weights_ field of the ProblemSpec_t object
      *                  has been set externally. (defunct)
      */
-    RandomForestOptions & use_stratification(RF_OptionTag in)
+    RandomForestOptions& use_stratification(RF_OptionTag in)
     {
         vigra_precondition(in == RF_EQUAL ||
-                           in == RF_PROPORTIONAL ||
-                           in == RF_EXTERNAL ||
-                           in == RF_NONE,
+                               in == RF_PROPORTIONAL ||
+                               in == RF_EXTERNAL ||
+                               in == RF_NONE,
                            "RandomForestOptions::use_stratification()"
                            "input must be RF_EQUAL, RF_PROPORTIONAL,"
                            "RF_EXTERNAL or RF_NONE");
@@ -384,9 +395,9 @@ class RandomForestOptions
         return *this;
     }
 
-    RandomForestOptions & prepare_online_learning(bool in)
+    RandomForestOptions& prepare_online_learning(bool in)
     {
-        prepare_online_learning_=in;
+        prepare_online_learning_ = in;
         return *this;
     }
 
@@ -394,7 +405,7 @@ class RandomForestOptions
      *
      * <br> Default: true
      */
-    RandomForestOptions & sample_with_replacement(bool in)
+    RandomForestOptions& sample_with_replacement(bool in)
     {
         sample_with_replacement_ = in;
         return *this;
@@ -408,7 +419,7 @@ class RandomForestOptions
      *
      * <br> default : 1.0
      */
-    RandomForestOptions & samples_per_tree(double in)
+    RandomForestOptions& samples_per_tree(double in)
     {
         training_set_proportion_ = in;
         training_set_calc_switch_ = RF_PROPORTIONAL;
@@ -420,7 +431,7 @@ class RandomForestOptions
 	 * This value should not be higher than the total number of
 	 * samples if sampling without replacement has been specified.
      */
-    RandomForestOptions & samples_per_tree(int in)
+    RandomForestOptions& samples_per_tree(int in)
     {
         training_set_size_ = in;
         training_set_calc_switch_ = RF_CONST;
@@ -433,7 +444,7 @@ class RandomForestOptions
      * \param in function pointer that takes the number of rows in the
      *           learning data and outputs the number samples per tree.
      */
-    RandomForestOptions & samples_per_tree(int (*in)(int))
+    RandomForestOptions& samples_per_tree(int (*in)(int))
     {
         training_set_func_ = in;
         training_set_calc_switch_ = RF_FUNCTION;
@@ -442,7 +453,7 @@ class RandomForestOptions
 
     /**\brief weight each tree with number of samples in that node
      */
-    RandomForestOptions & predict_weighted()
+    RandomForestOptions& predict_weighted()
     {
         predict_weighted_ = true;
         return *this;
@@ -457,11 +468,11 @@ class RandomForestOptions
 	 *  - RF_SQRT (default, the number of features considered for each split is  \f$ \lfloor \sqrt{n_f} + 0.5 \rfloor \f$)
 	 *  - RF_ALL (all features are considered for each split)
      */
-    RandomForestOptions & features_per_node(RF_OptionTag in)
+    RandomForestOptions& features_per_node(RF_OptionTag in)
     {
         vigra_precondition(in == RF_LOG ||
-                           in == RF_SQRT||
-                           in == RF_ALL,
+                               in == RF_SQRT ||
+                               in == RF_ALL,
                            "RandomForestOptions()::features_per_node():"
                            "input must be of type RF_LOG or RF_SQRT");
         mtry_switch_ = in;
@@ -474,7 +485,7 @@ class RandomForestOptions
      * to select the best split from.
      *
      */
-    RandomForestOptions & features_per_node(int in)
+    RandomForestOptions& features_per_node(int in)
     {
         mtry_ = in;
         mtry_switch_ = RF_CONST;
@@ -486,7 +497,7 @@ class RandomForestOptions
      * \param in function pointer that takes int (number of columns
      *           of the and outputs int (mtry)
      */
-    RandomForestOptions & features_per_node(int(*in)(int))
+    RandomForestOptions& features_per_node(int (*in)(int))
     {
         mtry_func_ = in;
         mtry_switch_ = RF_FUNCTION;
@@ -497,7 +508,7 @@ class RandomForestOptions
      *
      * <br> Default: 255.
      */
-    RandomForestOptions & tree_count(unsigned int in)
+    RandomForestOptions& tree_count(unsigned int in)
     {
         tree_count_ = in;
         return *this;
@@ -511,7 +522,7 @@ class RandomForestOptions
      *  (among the remaining examples) during the prediction phase.
      *  <br> Default: 1 (complete growing)
      */
-    RandomForestOptions & min_split_node_size(int in)
+    RandomForestOptions& min_split_node_size(int in)
     {
         min_split_node_size_ = in;
         return *this;
@@ -521,7 +532,12 @@ class RandomForestOptions
 
 /* \brief problem types
  */
-enum Problem_t{REGRESSION, CLASSIFICATION, CHECKLATER};
+enum Problem_t
+{
+    REGRESSION,
+    CLASSIFICATION,
+    CHECKLATER
+};
 
 
 /** \brief problem specification class for the random forest.
@@ -540,32 +556,31 @@ class ProblemSpec
 
 
 public:
-
     /** \brief  problem class
      */
 
-    typedef LabelType       Label_t;
-    ArrayVector<Label_t>    classes;
-    typedef ArrayVector<double>                 double_array;
+    typedef LabelType Label_t;
+    ArrayVector<Label_t> classes;
+    typedef ArrayVector<double> double_array;
     typedef std::map<std::string, double_array> map_type;
 
-    int                     column_count_;    // number of features
-    int                     class_count_;     // number of classes
-    int                     row_count_;       // number of samples
+    int column_count_; // number of features
+    int class_count_;  // number of classes
+    int row_count_;    // number of samples
 
-    int                     actual_mtry_;     // mtry used in training
-    int                     actual_msample_;  // number if in-bag samples per tree
+    int actual_mtry_;    // mtry used in training
+    int actual_msample_; // number if in-bag samples per tree
 
-    Problem_t               problem_type_;    // classification or regression
+    Problem_t problem_type_; // classification or regression
 
-    int used_;                                // this ProblemSpec is valid
-    ArrayVector<double>     class_weights_;   // if classes have different importance
-    int                     is_weighted_;     // class_weights_ are used
-    double                  precision_;       // termination criterion for regression loss
-    int                     response_size_;
+    int used_;                          // this ProblemSpec is valid
+    ArrayVector<double> class_weights_; // if classes have different importance
+    int is_weighted_;                   // class_weights_ are used
+    double precision_;                  // termination criterion for regression loss
+    int response_size_;
 
     template<class T>
-    void to_classlabel(int index, T & out) const
+    void to_classlabel(int index, T& out) const
     {
         out = T(classes[index]);
     }
@@ -575,50 +590,48 @@ public:
         return std::find(classes.begin(), classes.end(), index) - classes.begin();
     }
 
-    #define EQUALS(field) field(rhs.field)
-    ProblemSpec(ProblemSpec const & rhs)
-    :
-        EQUALS(column_count_),
-        EQUALS(class_count_),
-        EQUALS(row_count_),
-        EQUALS(actual_mtry_),
-        EQUALS(actual_msample_),
-        EQUALS(problem_type_),
-        EQUALS(used_),
-        EQUALS(class_weights_),
-        EQUALS(is_weighted_),
-        EQUALS(precision_),
-        EQUALS(response_size_)
+#define EQUALS(field) field(rhs.field)
+    ProblemSpec(ProblemSpec const& rhs)
+        : EQUALS(column_count_),
+          EQUALS(class_count_),
+          EQUALS(row_count_),
+          EQUALS(actual_mtry_),
+          EQUALS(actual_msample_),
+          EQUALS(problem_type_),
+          EQUALS(used_),
+          EQUALS(class_weights_),
+          EQUALS(is_weighted_),
+          EQUALS(precision_),
+          EQUALS(response_size_)
     {
-        std::back_insert_iterator<ArrayVector<Label_t> >
-                        iter(classes);
+        std::back_insert_iterator<ArrayVector<Label_t>>
+            iter(classes);
         std::copy(rhs.classes.begin(), rhs.classes.end(), iter);
     }
-    #undef EQUALS
-    #define EQUALS(field) field(rhs.field)
+#undef EQUALS
+#define EQUALS(field) field(rhs.field)
     template<class T>
-    ProblemSpec(ProblemSpec<T> const & rhs)
-    :
-        EQUALS(column_count_),
-        EQUALS(class_count_),
-        EQUALS(row_count_),
-        EQUALS(actual_mtry_),
-        EQUALS(actual_msample_),
-        EQUALS(problem_type_),
-        EQUALS(used_),
-        EQUALS(class_weights_),
-        EQUALS(is_weighted_),
-        EQUALS(precision_),
-        EQUALS(response_size_)
+    ProblemSpec(ProblemSpec<T> const& rhs)
+        : EQUALS(column_count_),
+          EQUALS(class_count_),
+          EQUALS(row_count_),
+          EQUALS(actual_mtry_),
+          EQUALS(actual_msample_),
+          EQUALS(problem_type_),
+          EQUALS(used_),
+          EQUALS(class_weights_),
+          EQUALS(is_weighted_),
+          EQUALS(precision_),
+          EQUALS(response_size_)
     {
-        std::back_insert_iterator<ArrayVector<Label_t> >
-                        iter(classes);
+        std::back_insert_iterator<ArrayVector<Label_t>>
+            iter(classes);
         std::copy(rhs.classes.begin(), rhs.classes.end(), iter);
     }
-    #undef EQUALS
+#undef EQUALS
 
-    #define EQUALS(field) (this->field = rhs.field);
-    ProblemSpec & operator=(ProblemSpec const & rhs)
+#define EQUALS(field) (this->field = rhs.field);
+    ProblemSpec& operator=(ProblemSpec const& rhs)
     {
         EQUALS(column_count_);
         EQUALS(class_count_);
@@ -631,18 +644,18 @@ public:
         EQUALS(precision_);
         EQUALS(response_size_)
         class_weights_.clear();
-        std::back_insert_iterator<ArrayVector<double> >
-                        iter2(class_weights_);
+        std::back_insert_iterator<ArrayVector<double>>
+            iter2(class_weights_);
         std::copy(rhs.class_weights_.begin(), rhs.class_weights_.end(), iter2);
         classes.clear();
-        std::back_insert_iterator<ArrayVector<Label_t> >
-                        iter(classes);
+        std::back_insert_iterator<ArrayVector<Label_t>>
+            iter(classes);
         std::copy(rhs.classes.begin(), rhs.classes.end(), iter);
         return *this;
     }
 
     template<class T>
-    ProblemSpec<Label_t> & operator=(ProblemSpec<T> const & rhs)
+    ProblemSpec<Label_t>& operator=(ProblemSpec<T> const& rhs)
     {
         EQUALS(column_count_);
         EQUALS(class_count_);
@@ -655,22 +668,22 @@ public:
         EQUALS(precision_);
         EQUALS(response_size_)
         class_weights_.clear();
-        std::back_insert_iterator<ArrayVector<double> >
-                        iter2(class_weights_);
+        std::back_insert_iterator<ArrayVector<double>>
+            iter2(class_weights_);
         std::copy(rhs.class_weights_.begin(), rhs.class_weights_.end(), iter2);
         classes.clear();
-        std::back_insert_iterator<ArrayVector<Label_t> >
-                        iter(classes);
+        std::back_insert_iterator<ArrayVector<Label_t>>
+            iter(classes);
         std::copy(rhs.classes.begin(), rhs.classes.end(), iter);
         return *this;
     }
-    #undef EQUALS
+#undef EQUALS
 
     template<class T>
-    bool operator==(ProblemSpec<T> const & rhs)
+    bool operator==(ProblemSpec<T> const& rhs)
     {
         bool result = true;
-        #define COMPARE(field) result = result && (this->field == rhs.field);
+#define COMPARE(field) result = result && (this->field == rhs.field);
         COMPARE(column_count_);
         COMPARE(class_count_);
         COMPARE(row_count_);
@@ -683,11 +696,11 @@ public:
         COMPARE(class_weights_);
         COMPARE(classes);
         COMPARE(response_size_)
-        #undef COMPARE
+#undef COMPARE
         return result;
     }
 
-    bool operator!=(ProblemSpec & rhs)
+    bool operator!=(ProblemSpec& rhs)
     {
         return !(*this == rhs);
     }
@@ -695,34 +708,36 @@ public:
 
     size_t serialized_size() const
     {
-        return 10 + class_count_ *int(is_weighted_+1);
+        return 10 + class_count_ * int(is_weighted_ + 1);
     }
 
 
     template<class Iter>
-    void unserialize(Iter const & begin, Iter const & end)
+    void unserialize(Iter const& begin, Iter const& end)
     {
         Iter iter = begin;
         vigra_precondition(end - begin >= 10,
                            "ProblemSpec::unserialize():"
                            "wrong number of parameters");
-        #define PULL(item_, type_) item_ = type_(*iter); ++iter;
-        PULL(column_count_,int);
+#define PULL(item_, type_) \
+    item_ = type_(*iter);  \
+    ++iter;
+        PULL(column_count_, int);
         PULL(class_count_, int);
 
         vigra_precondition(end - begin >= 10 + class_count_,
                            "ProblemSpec::unserialize(): 1");
         PULL(row_count_, int);
-        PULL(actual_mtry_,int);
+        PULL(actual_mtry_, int);
         PULL(actual_msample_, int);
         PULL(problem_type_, Problem_t);
         PULL(is_weighted_, int);
         PULL(used_, int);
         PULL(precision_, double);
         PULL(response_size_, int);
-        if(is_weighted_)
+        if (is_weighted_)
         {
-            vigra_precondition(end - begin == 10 + 2*class_count_,
+            vigra_precondition(end - begin == 10 + 2 * class_count_,
                                "ProblemSpec::unserialize(): 2");
             class_weights_.insert(class_weights_.end(),
                                   iter,
@@ -730,18 +745,20 @@ public:
             iter += class_count_;
         }
         classes.insert(classes.end(), iter, end);
-        #undef PULL
+#undef PULL
     }
 
 
     template<class Iter>
-    void serialize(Iter const & begin, Iter const & end) const
+    void serialize(Iter const& begin, Iter const& end) const
     {
         Iter iter = begin;
         vigra_precondition(end - begin == serialized_size(),
                            "RandomForestOptions::serialize():"
                            "wrong number of parameters");
-        #define PUSH(item_) *iter = double(item_); ++iter;
+#define PUSH(item_)        \
+    *iter = double(item_); \
+    ++iter;
         PUSH(column_count_);
         PUSH(class_count_)
         PUSH(row_count_);
@@ -752,7 +769,7 @@ public:
         PUSH(used_);
         PUSH(precision_);
         PUSH(response_size_);
-        if(is_weighted_)
+        if (is_weighted_)
         {
             std::copy(class_weights_.begin(),
                       class_weights_.end(),
@@ -762,28 +779,28 @@ public:
         std::copy(classes.begin(),
                   classes.end(),
                   iter);
-        #undef PUSH
+#undef PUSH
     }
 
-    void make_from_map(map_type & in) // -> const: .operator[] -> .find
+    void make_from_map(map_type& in) // -> const: .operator[] -> .find
     {
-        #define PULL(item_, type_) item_ = type_(in[#item_][0]);
-        PULL(column_count_,int);
+#define PULL(item_, type_) item_ = type_(in[#item_][0]);
+        PULL(column_count_, int);
         PULL(class_count_, int);
         PULL(row_count_, int);
-        PULL(actual_mtry_,int);
+        PULL(actual_mtry_, int);
         PULL(actual_msample_, int);
-        PULL(problem_type_, (Problem_t)int);
+        PULL(problem_type_, (Problem_t) int);
         PULL(is_weighted_, int);
         PULL(used_, int);
         PULL(precision_, double);
         PULL(response_size_, int);
         class_weights_ = in["class_weights_"];
-        #undef PULL
+#undef PULL
     }
-    void make_map(map_type & in) const
+    void make_map(map_type& in) const
     {
-        #define PUSH(item_) in[#item_] = double_array(1, double(item_));
+#define PUSH(item_) in[#item_] = double_array(1, double(item_));
         PUSH(column_count_);
         PUSH(class_count_)
         PUSH(row_count_);
@@ -795,26 +812,27 @@ public:
         PUSH(precision_);
         PUSH(response_size_);
         in["class_weights_"] = class_weights_;
-        #undef PUSH
+#undef PUSH
     }
 
     /**\brief set default values (-> values not set)
      */
     ProblemSpec()
-    :   column_count_(0),
-        class_count_(0),
-        row_count_(0),
-        actual_mtry_(0),
-        actual_msample_(0),
-        problem_type_(CHECKLATER),
-        used_(false),
-        is_weighted_(false),
-        precision_(0.0),
-        response_size_(1)
-    {}
+        : column_count_(0),
+          class_count_(0),
+          row_count_(0),
+          actual_mtry_(0),
+          actual_msample_(0),
+          problem_type_(CHECKLATER),
+          used_(false),
+          is_weighted_(false),
+          precision_(0.0),
+          response_size_(1)
+    {
+    }
 
 
-    ProblemSpec & column_count(int in)
+    ProblemSpec& column_count(int in)
     {
         column_count_ = in;
         return *this;
@@ -825,11 +843,11 @@ public:
      * the preprocessor will not calculate the labels needed in this case.
      */
     template<class C_Iter>
-    ProblemSpec & classes_(C_Iter begin, C_Iter end)
+    ProblemSpec& classes_(C_Iter begin, C_Iter end)
     {
         classes.clear();
-        int size = end-begin;
-        for(int k=0; k<size; ++k, ++begin)
+        int size = end - begin;
+        for (int k = 0; k < size; ++k, ++begin)
             classes.push_back(detail::RequiresExplicitCast<LabelType>::cast(*begin));
         class_count_ = size;
         return *this;
@@ -841,7 +859,7 @@ public:
      * create a ProblemSpec object.
      */
     template<class W_Iter>
-    ProblemSpec & class_weights(W_Iter begin, W_Iter end)
+    ProblemSpec& class_weights(W_Iter begin, W_Iter end)
     {
         class_weights_.clear();
         class_weights_.insert(class_weights_.end(), begin, end);
@@ -856,15 +874,14 @@ public:
         used_ = false;
         classes.clear();
         class_weights_.clear();
-        column_count_ = 0 ;
+        column_count_ = 0;
         class_count_ = 0;
         actual_mtry_ = 0;
         actual_msample_ = 0;
         problem_type_ = CHECKLATER;
         is_weighted_ = false;
-        precision_   = 0.0;
+        precision_ = 0.0;
         response_size_ = 0;
-
     }
 
     bool used() const
@@ -884,17 +901,19 @@ public:
  */
 class EarlyStoppStd
 {
-    public:
+public:
     int min_split_node_size_;
 
     template<class Opt>
     EarlyStoppStd(Opt opt)
-    :   min_split_node_size_(opt.min_split_node_size_)
-    {}
+        : min_split_node_size_(opt.min_split_node_size_)
+    {
+    }
 
     template<class T>
-    void set_external_parameters(ProblemSpec<T>const  &, int /* tree_count */ = 0, bool /* is_weighted_ */ = false)
-    {}
+    void set_external_parameters(ProblemSpec<T> const&, int /* tree_count */ = 0, bool /* is_weighted_ */ = false)
+    {
+    }
 
     template<class Region>
     bool operator()(Region& region)
@@ -903,7 +922,7 @@ class EarlyStoppStd
     }
 
     template<class WeightIter, class T, class C>
-    bool after_prediction(WeightIter,  int /* k */, MultiArrayView<2, T, C> /* prob */, double /* totalCt */)
+    bool after_prediction(WeightIter, int /* k */, MultiArrayView<2, T, C> /* prob */, double /* totalCt */)
     {
         return false;
     }

@@ -29,56 +29,55 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
 #ifndef VIGRA_IMPEX_AUTO_FILE_HXX
 #define VIGRA_IMPEX_AUTO_FILE_HXX
 
-#include <string>
-#include <cstdio>
 #include "vigra/error.hxx"
+#include <cstdio>
+#include <string>
 
 namespace vigra
 {
-    // resource aquisition is initialisation
+// resource aquisition is initialisation
 
-    struct auto_file
-    {
-        FILE * m_file;
+struct auto_file
+{
+    FILE* m_file;
 
-        auto_file( const char * name, const char * mode )
+    auto_file(const char* name, const char* mode)
         : m_file(0)
+    {
+        m_file = VIGRA_CSTD::fopen(name, mode);
+        if (!m_file)
         {
-            m_file = VIGRA_CSTD::fopen( name, mode );
-            if(!m_file)
-            {
-                std::string msg("Unable to open file '");
-                msg += name;
-                msg += "'.";
-                vigra_precondition(0, msg.c_str());
-            }
+            std::string msg("Unable to open file '");
+            msg += name;
+            msg += "'.";
+            vigra_precondition(0, msg.c_str());
         }
+    }
 
-        ~auto_file()
-        {
-            if(m_file)
-                VIGRA_CSTD::fclose(m_file);
-        }
+    ~auto_file()
+    {
+        if (m_file)
+            VIGRA_CSTD::fclose(m_file);
+    }
 
-        FILE * get()
-        {
-            return m_file;
-        }
+    FILE* get()
+    {
+        return m_file;
+    }
 
-    private:
-
-        // this can not be default constructed, copy constructed or assigned
-        auto_file();
-        auto_file( const auto_file & );
-        auto_file & operator=( const auto_file & );
-    };
-}
+private:
+    // this can not be default constructed, copy constructed or assigned
+    auto_file();
+    auto_file(const auto_file&);
+    auto_file& operator=(const auto_file&);
+};
+} // namespace vigra
 
 #endif // VIGRA_IMPEX_AUTO_FILE_HXX

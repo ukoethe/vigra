@@ -36,24 +36,25 @@
 #ifndef VIGRA_watersheds3D_HXX
 #define VIGRA_watersheds3D_HXX
 
-#include "voxelneighborhood.hxx"
+#include "labelvolume.hxx"
 #include "multi_array.hxx"
 #include "multi_localminmax.hxx"
-#include "labelvolume.hxx"
 #include "seededregiongrowing3d.hxx"
+#include "voxelneighborhood.hxx"
 #include "watersheds.hxx"
 
 namespace vigra
 {
 
-template <class SrcIterator, class SrcAccessor, class SrcShape,
-          class DestIterator, class DestAccessor, class Neighborhood3D>
-int preparewatersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
-                         DestIterator d_Iter, DestAccessor da, Neighborhood3D)
+template<class SrcIterator, class SrcAccessor, class SrcShape,
+         class DestIterator, class DestAccessor, class Neighborhood3D>
+int
+preparewatersheds3D(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
+                    DestIterator d_Iter, DestAccessor da, Neighborhood3D)
 {
     //basically needed for iteration and border-checks
     int w = srcShape[0], h = srcShape[1], d = srcShape[2];
-    int x,y,z, local_min_count=0;
+    int x, y, z, local_min_count = 0;
 
     //declare and define Iterators for all three dims at src
     SrcIterator zs = s_Iter;
@@ -63,78 +64,80 @@ int preparewatersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
     //Declare Iterators for all three dims at dest
     DestIterator zd = d_Iter;
 
-    for(z = 0; z != d; ++z, ++zs.dim2(), ++zd.dim2())
+    for (z = 0; z != d; ++z, ++zs.dim2(), ++zd.dim2())
     {
         ys = zs;
         DestIterator yd(zd);
 
-        for(y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1())
+        for (y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1())
         {
             xs = ys;
             DestIterator xd(yd);
 
-            for(x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0())
+            for (x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0())
             {
-                AtVolumeBorder atBorder = isAtVolumeBorder(x,y,z,w,h,d);
+                AtVolumeBorder atBorder = isAtVolumeBorder(x, y, z, w, h, d);
                 typename SrcAccessor::value_type v = sa(xs);
                 // the following choice causes minima to point
                 // to their lowest neighbor -- would this be better???
                 // typename SrcAccessor::value_type v = NumericTraits<typename SrcAccessor::value_type>::max();
                 int o = 0; // means center is minimum
                 typename SrcAccessor::value_type my_v = v;
-                if(atBorder == NotAtBorder)
+                if (atBorder == NotAtBorder)
                 {
-                    NeighborhoodCirculator<SrcIterator, Neighborhood3D>  c(xs), cend(c);
+                    NeighborhoodCirculator<SrcIterator, Neighborhood3D> c(xs), cend(c);
 
-                    do {
-                        if(sa(c) < v)
+                    do
+                    {
+                        if (sa(c) < v)
                         {
                             v = sa(c);
                             o = c.directionBit();
                         }
-                        else if(sa(c) == my_v && my_v == v)
+                        else if (sa(c) == my_v && my_v == v)
                         {
-                            o =  o | c.directionBit();
+                            o = o | c.directionBit();
                         }
-                    }
-                    while(++c != cend);
+                    } while (++c != cend);
                 }
                 else
                 {
-                    RestrictedNeighborhoodCirculator<SrcIterator, Neighborhood3D>  c(xs, atBorder), cend(c);
-                    do {
-                        if(sa(c) < v)
+                    RestrictedNeighborhoodCirculator<SrcIterator, Neighborhood3D> c(xs, atBorder), cend(c);
+                    do
+                    {
+                        if (sa(c) < v)
                         {
                             v = sa(c);
                             o = c.directionBit();
                         }
-                        else if(sa(c) == my_v && my_v == v)
+                        else if (sa(c) == my_v && my_v == v)
                         {
-                            o =  o | c.directionBit();
+                            o = o | c.directionBit();
                         }
-                    }
-                    while(++c != cend);
+                    } while (++c != cend);
                 }
-                if (o==0) local_min_count++;
+                if (o == 0)
+                    local_min_count++;
                 da.set(o, xd);
-            }//end x-iteration
-        }//end y-iteration
-    }//end z-iteration
+            } //end x-iteration
+        }     //end y-iteration
+    }         //end z-iteration
     return local_min_count;
 }
 
-template <class SrcIterator, class SrcAccessor,class SrcShape,
-          class DestIterator, class DestAccessor,
-          class Neighborhood3D>
-unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
-                                  DestIterator d_Iter, DestAccessor da,
-                                  Neighborhood3D)
+template<class SrcIterator, class SrcAccessor, class SrcShape,
+         class DestIterator, class DestAccessor,
+         class Neighborhood3D>
+unsigned int
+watershedLabeling3D(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
+                    DestIterator d_Iter, DestAccessor da,
+                    Neighborhood3D)
 {
     typedef typename DestAccessor::value_type LabelType;
 
     //basically needed for iteration and border-checks
     int w = srcShape[0], h = srcShape[1], d = srcShape[2];
-    int x,y,z;
+    int x, y, z;
 
     //declare and define Iterators for all three dims at src
     SrcIterator zs = s_Iter;
@@ -160,25 +163,25 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     // tree is distinguished by pointing to itself (it contains its
     // own scan order address). This condition is enforced whenever a
     // new region is found or two regions are merged
-    for(z = 0; z != d; ++z, ++zs.dim2(), ++zd.dim2())
+    for (z = 0; z != d; ++z, ++zs.dim2(), ++zd.dim2())
     {
         SrcIterator ys = zs;
         DestIterator yd = zd;
 
-        for(y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1())
+        for (y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1())
         {
             SrcIterator xs = ys;
             DestIterator xd = yd;
 
-            for(x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0())
+            for (x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0())
             {
                 LabelType currentIndex = labels.nextFreeIndex(); // default: new region
 
                 //check whether there is a special border treatment to be used or not
-                AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,d);
+                AtVolumeBorder atBorder = isAtVolumeBorderCausal(x, y, z, w, h, d);
 
                 //We are not at the border!
-                if(atBorder == NotAtBorder)
+                if (atBorder == NotAtBorder)
                 {
 
                     nc = NeighborOffsetCirculator<Neighborhood3D>(Neighborhood3D::CausalFirst);
@@ -187,27 +190,27 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
                     {
                         //   Direction of NTraversr       Neighbor's direction bit is pointing
                         // = Direction of voxel           towards us?
-                        if((sa(xs) & nc.directionBit()) || (sa(xs,*nc) & nc.oppositeDirectionBit()))
+                        if ((sa(xs) & nc.directionBit()) || (sa(xs, *nc) & nc.oppositeDirectionBit()))
                         {
-                            currentIndex = labels.makeUnion(da(xd,*nc), currentIndex);
+                            currentIndex = labels.makeUnion(da(xd, *nc), currentIndex);
                         }
                         ++nc;
-                    }while(nc!=nce);
+                    } while (nc != nce);
                 }
                 //we are at a border - handle this!!
                 else
                 {
-                    nc = NeighborOffsetCirculator<Neighborhood3D>(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
-                    int j=0;
-                    while(nc.direction() != Neighborhood3D::Error)
+                    nc = NeighborOffsetCirculator<Neighborhood3D>(Neighborhood3D::nearBorderDirectionsCausal(atBorder, 0));
+                    int j = 0;
+                    while (nc.direction() != Neighborhood3D::Error)
                     {
                         //   Direction of NTraversr       Neighbor's direction bit is pointing
                         // = Direction of voxel           towards us?
-                        if((sa(xs) & nc.directionBit()) || (sa(xs,*nc) & nc.oppositeDirectionBit()))
+                        if ((sa(xs) & nc.directionBit()) || (sa(xs, *nc) & nc.oppositeDirectionBit()))
                         {
-                            currentIndex = labels.makeUnion(da(xd,*nc), currentIndex);
+                            currentIndex = labels.makeUnion(da(xd, *nc), currentIndex);
                         }
-                        nc.turnTo(Neighborhood3D::nearBorderDirectionsCausal(atBorder,++j));
+                        nc.turnTo(Neighborhood3D::nearBorderDirectionsCausal(atBorder, ++j));
                     }
                 }
                 da.set(labels.finalizeIndex(currentIndex), xd);
@@ -220,15 +223,15 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     // pass 2: assign one label to each region (tree)
     // so that labels form a consecutive sequence 1, 2, ...
     zd = d_Iter;
-    for(z=0; z != d; ++z, ++zd.dim2())
+    for (z = 0; z != d; ++z, ++zd.dim2())
     {
         DestIterator yd(zd);
 
-        for(y=0; y != h; ++y, ++yd.dim1())
+        for (y = 0; y != h; ++y, ++yd.dim1())
         {
             DestIterator xd(yd);
 
-            for(x = 0; x != w; ++x, ++xd.dim0())
+            for (x = 0; x != w; ++x, ++xd.dim0())
             {
                 da.set(labels.findLabel(da(xd)), xd);
             }
@@ -382,79 +385,83 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template <...> unsigned int watersheds3D)
+doxygen_overloaded_function(template<...> unsigned int watersheds3D)
 
-template <class SrcIterator, class SrcAccessor, class SrcShape,
-          class DestIterator, class DestAccessor,
-          class Neighborhood3D>
-unsigned int watersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
-                           DestIterator d_Iter, DestAccessor da, Neighborhood3D neighborhood3D)
+    template<class SrcIterator, class SrcAccessor, class SrcShape,
+             class DestIterator, class DestAccessor,
+             class Neighborhood3D>
+    unsigned int watersheds3D(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
+                              DestIterator d_Iter, DestAccessor da, Neighborhood3D neighborhood3D)
 {
     //create temporary volume to store the DAG of directions to minima
-    if ((int)Neighborhood3D::DirectionCount>7){  //If we have 3D-TwentySix Neighborhood
+    if ((int)Neighborhood3D::DirectionCount > 7)
+    { //If we have 3D-TwentySix Neighborhood
 
-        vigra::MultiArray<3,int> orientationVolume(srcShape);
+        vigra::MultiArray<3, int> orientationVolume(srcShape);
 
-        preparewatersheds3D( s_Iter, srcShape, sa,
-                             destMultiArray(orientationVolume).first, destMultiArray(orientationVolume).second,
-                             neighborhood3D);
+        preparewatersheds3D(s_Iter, srcShape, sa,
+                            destMultiArray(orientationVolume).first, destMultiArray(orientationVolume).second,
+                            neighborhood3D);
 
-        return watershedLabeling3D( srcMultiArray(orientationVolume).first, srcShape, srcMultiArray(orientationVolume).second,
-                                    d_Iter, da,
-                                    neighborhood3D);
+        return watershedLabeling3D(srcMultiArray(orientationVolume).first, srcShape, srcMultiArray(orientationVolume).second,
+                                   d_Iter, da,
+                                   neighborhood3D);
     }
-    else{
+    else
+    {
 
-        vigra::MultiArray<3,unsigned char> orientationVolume(srcShape);
+        vigra::MultiArray<3, unsigned char> orientationVolume(srcShape);
 
-        preparewatersheds3D( s_Iter, srcShape, sa,
-                              destMultiArray(orientationVolume).first, destMultiArray(orientationVolume).second,
-                              neighborhood3D);
+        preparewatersheds3D(s_Iter, srcShape, sa,
+                            destMultiArray(orientationVolume).first, destMultiArray(orientationVolume).second,
+                            neighborhood3D);
 
-        return watershedLabeling3D( srcMultiArray(orientationVolume).first, srcShape, srcMultiArray(orientationVolume).second,
-                                    d_Iter, da,
-                                    neighborhood3D);
+        return watershedLabeling3D(srcMultiArray(orientationVolume).first, srcShape, srcMultiArray(orientationVolume).second,
+                                   d_Iter, da,
+                                   neighborhood3D);
     }
 }
 
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline unsigned int watersheds3DSix( triple<SrcIterator, SrcShape, SrcAccessor> src,
-                                     pair<DestIterator, DestAccessor> dest)
+template<class SrcIterator, class SrcShape, class SrcAccessor,
+         class DestIterator, class DestAccessor>
+inline unsigned int
+watersheds3DSix(triple<SrcIterator, SrcShape, SrcAccessor> src,
+                pair<DestIterator, DestAccessor> dest)
 {
     return watersheds3D(src.first, src.second, src.third, dest.first, dest.second, NeighborCode3DSix());
 }
 
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline unsigned int watersheds3DTwentySix( triple<SrcIterator, SrcShape, SrcAccessor> src,
-                                           pair<DestIterator, DestAccessor> dest)
+template<class SrcIterator, class SrcShape, class SrcAccessor,
+         class DestIterator, class DestAccessor>
+inline unsigned int
+watersheds3DTwentySix(triple<SrcIterator, SrcShape, SrcAccessor> src,
+                      pair<DestIterator, DestAccessor> dest)
 {
     return watersheds3D(src.first, src.second, src.third, dest.first, dest.second, NeighborCode3DTwentySix());
 }
 
-template <unsigned int N, class T1, class S1,
-                          class T2, class S2>
+template<unsigned int N, class T1, class S1,
+         class T2, class S2>
 inline unsigned int
-watersheds3DSix(MultiArrayView<N, T1, S1> const & source,
+watersheds3DSix(MultiArrayView<N, T1, S1> const& source,
                 MultiArrayView<N, T2, S2> dest)
 {
     vigra_precondition(source.shape() == dest.shape(),
-        "watersheds3DSix(): shape mismatch between input and output.");
+                       "watersheds3DSix(): shape mismatch between input and output.");
     return watersheds3DSix(srcMultiArrayRange(source), destMultiArray(dest));
 }
 
-template <unsigned int N, class T1, class S1,
-          class T2, class S2>
+template<unsigned int N, class T1, class S1,
+         class T2, class S2>
 inline unsigned int
-watersheds3DTwentySix(MultiArrayView<N, T1, S1> const & source,
+watersheds3DTwentySix(MultiArrayView<N, T1, S1> const& source,
                       MultiArrayView<N, T2, S2> dest)
 {
     vigra_precondition(source.shape() == dest.shape(),
-        "watersheds3DTwentySix(): shape mismatch between input and output.");
+                       "watersheds3DTwentySix(): shape mismatch between input and output.");
     return watersheds3DTwentySix(srcMultiArrayRange(source), destMultiArray(dest));
 }
 
-}//namespace vigra
+} //namespace vigra
 
 #endif //VIGRA_watersheds3D_HXX
