@@ -54,6 +54,18 @@ using namespace vigra;
 using namespace vigra::functor;
 
 template <class T>
+void BindError(const vigra::MultiArray<3, T>& aTypeDed,const vigra::MultiArray<3, double>& aDouble) {
+    // As function call in test_bindT, both input variables are of type
+    // vigra::MultiArray<3u, double, std::allocator<double> > const&
+    
+    // These three instantiations should evaluate to the same if T = double.
+    // However as of 2018.10.19 the third implementation does not compile.
+    MultiArrayView <2, T> array2 = aTypeDed.bindOuter(11);
+    MultiArrayView <2, double> array3 = aDouble.bind<2>(11);
+    MultiArrayView <2, T> array1 = aTypeDed.bind<2>(11);
+}
+
+template <class T>
 class MultiArrayDataTest
 {
 public:
@@ -171,6 +183,12 @@ public:
         shouldEqual ((array (0, 0)), 4);
         shouldEqual ((array (1, 0)), 14);
         shouldEqual ((array (0, 1)), 104);
+    }
+
+    void test_bindT ()
+    {
+        vigra::MultiArray<3, double> aWorkImages(vigra::Shape3(128, 128, 128));
+        BindError(aWorkImages,aWorkImages);
     }
 
     void test_singletonDimension ()
@@ -3100,6 +3118,7 @@ struct MultiArrayDataTestSuite
             add( testCase( &MultiArrayDataTest<T>::test_bindAt ) );
             add( testCase( &MultiArrayDataTest<T>::test_bind ) );
             add( testCase( &MultiArrayDataTest<T>::test_bind0 ) );
+            add( testCase( &MultiArrayDataTest<T>::test_bindT ) );
             add( testCase( &MultiArrayDataTest<T>::testIsUnstrided ) );
             add( testCase( &MultiArrayDataTest<T>::test_singletonDimension ) );
             add( testCase( &MultiArrayDataTest<T>::testPermute ) );
