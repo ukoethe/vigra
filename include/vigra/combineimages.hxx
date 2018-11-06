@@ -42,6 +42,7 @@
 #include "numerictraits.hxx"
 #include "rgbvalue.hxx"
 #include "utilities.hxx"
+#include "rgbvalue.hxx"
 
 #include <cmath>
 

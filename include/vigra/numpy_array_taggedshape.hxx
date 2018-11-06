@@ -40,13 +40,14 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #endif
 
-#include <numpy/arrayobject.h>
 #include <numpy/ndarrayobject.h>
 #include <numpy/ndarraytypes.h>
+#include <numpy/arrayobject.h>
 
 #include "array_vector.hxx"
 #include "axistags.hxx"
 #include "python_utility.hxx"
+
 #include <string>
 
 namespace vigra

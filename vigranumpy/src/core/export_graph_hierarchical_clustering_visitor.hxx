@@ -23,6 +23,7 @@
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/python_graph.hxx>
 #include <vigra/timing.hxx>
+#include "export_graph_visitor.hxx"
 
 namespace python = boost::python;
 
