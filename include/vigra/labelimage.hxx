@@ -183,11 +183,11 @@ namespace vigra
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> unsigned int labelImage)
+doxygen_overloaded_function(template <...> unsigned int labelImage)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class EqualityFunctor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class EqualityFunctor>
     unsigned int labelImage(SrcIterator upperlefts,
                             SrcIterator lowerrights, SrcAccessor sa,
                             DestIterator upperleftd, DestAccessor da,
@@ -229,28 +229,28 @@ doxygen_overloaded_function(template<...> unsigned int labelImage)
     // new region is found or two regions are merged
 
 
-    for (y = 0; y != h; ++y, ++ys.y, ++yd.y)
+    for(y = 0; y != h; ++y, ++ys.y, ++yd.y)
     {
         SrcIterator xs = ys;
         DestIterator xd = yd;
 
         int endNeighbor = (y == 0) ? left : (eight_neighbors ? topright : top);
 
-        for (x = 0; x != w; ++x, ++xs.x, ++xd.x)
+        for(x = 0; x != w; ++x, ++xs.x, ++xd.x)
         {
             int beginNeighbor = (x == 0) ? top : left;
-            if (x == w - 1 && endNeighbor == topright)
+            if(x == w - 1 && endNeighbor == topright)
                 endNeighbor = top;
 
-            for (i = beginNeighbor; i <= endNeighbor; i += step)
+            for(i = beginNeighbor; i <= endNeighbor; i += step)
             {
-                if (equal(sa(xs), sa(xs, neighbor[i])))
+                if(equal(sa(xs), sa(xs, neighbor[i])))
                 {
                     LabelType neighborIndex = label.findIndex(da(xd, neighbor[i]));
 
-                    for (int j = i + 2; j <= endNeighbor; j += step)
+                    for(int j = i + 2; j <= endNeighbor; j += step)
                     {
-                        if (equal(sa(xs), sa(xs, neighbor[j])))
+                        if(equal(sa(xs), sa(xs, neighbor[j])))
                         {
                             neighborIndex = label.makeUnion(da(xd, neighbor[j]), neighborIndex);
                             break;
@@ -260,7 +260,7 @@ doxygen_overloaded_function(template<...> unsigned int labelImage)
                     break;
                 }
             }
-            if (i > endNeighbor)
+            if(i > endNeighbor)
             {
                 da.set(label.makeNewIndex(), xd);
             }
@@ -272,10 +272,10 @@ doxygen_overloaded_function(template<...> unsigned int labelImage)
     unsigned int count = label.makeContiguous();
 
     yd = upperleftd;
-    for (y = 0; y != h; ++y, ++yd.y)
+    for(y = 0; y != h; ++y, ++yd.y)
     {
         typename DestIterator::row_iterator xd = yd.rowIterator();
-        for (x = 0; x != w; ++x, ++xd)
+        for(x = 0; x != w; ++x, ++xd)
         {
             da.set(label.findLabel(da(xd)), xd);
         }
@@ -283,8 +283,8 @@ doxygen_overloaded_function(template<...> unsigned int labelImage)
     return count;
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline unsigned int
 labelImage(SrcIterator upperlefts,
            SrcIterator lowerrights, SrcAccessor sa,
@@ -296,9 +296,9 @@ labelImage(SrcIterator upperlefts,
                       std::equal_to<typename SrcAccessor::value_type>());
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class EqualityFunctor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class EqualityFunctor>
 inline unsigned int
 labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
            pair<DestIterator, DestAccessor> dest,
@@ -308,8 +308,8 @@ labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                       dest.first, dest.second, eight_neighbors, equal);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline unsigned int
 labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
            pair<DestIterator, DestAccessor> dest,
@@ -320,9 +320,9 @@ labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                       std::equal_to<typename SrcAccessor::value_type>());
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class EqualityFunctor>
+template <class T1, class S1,
+          class T2, class S2,
+          class EqualityFunctor>
 inline unsigned int
     labelImage(MultiArrayView<2, T1, S1> const& src,
                MultiArrayView<2, T2, S2> dest,
@@ -334,8 +334,8 @@ inline unsigned int
                       destImage(dest), eight_neighbors, equal);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline unsigned int
     labelImage(MultiArrayView<2, T1, S1> const& src,
                MultiArrayView<2, T2, S2> dest,
@@ -484,11 +484,11 @@ inline unsigned int
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> unsigned int labelImageWithBackground)
+doxygen_overloaded_function(template <...> unsigned int labelImageWithBackground)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class ValueType, class EqualityFunctor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class ValueType, class EqualityFunctor>
     unsigned int labelImageWithBackground(
         SrcIterator upperlefts,
         SrcIterator lowerrights, SrcAccessor sa,
@@ -523,56 +523,56 @@ doxygen_overloaded_function(template<...> unsigned int labelImageWithBackground)
     // pass 1: scan image from upper left to lower right
     // find connected components
 
-    for (y = 0; y != h; ++y, ++ys.y, ++yt.y)
+    for(y = 0; y != h; ++y, ++ys.y, ++yt.y)
     {
         xs = ys;
         xt = yt;
 
         int endNeighbor = (y == 0) ? left : (eight_neighbors ? topright : top);
 
-        for (x = 0; x != w; ++x, ++xs.x, ++xt.x)
+        for(x = 0; x != w; ++x, ++xs.x, ++xt.x)
         {
-            if (equal(sa(xs), background_value))
+            if(equal(sa(xs), background_value))
             {
                 *xt = -1;
             }
             else
             {
                 int beginNeighbor = (x == 0) ? top : left;
-                if (x == w - 1 && endNeighbor == topright)
+                if(x == w - 1 && endNeighbor == topright)
                     endNeighbor = top;
 
-                for (i = beginNeighbor; i <= endNeighbor; i += step)
+                for(i = beginNeighbor; i <= endNeighbor; i += step)
                 {
-                    if (equal(sa(xs), sa(xs, neighbor[i])))
+                    if(equal(sa(xs), sa(xs, neighbor[i])))
                     {
                         IntBiggest neighborIndex = xt[neighbor[i]];
 
-                        for (int j = i + 2; j <= endNeighbor; j += step)
+                        for(int j = i + 2; j <= endNeighbor; j += step)
                         {
-                            if (equal(sa(xs), sa(xs, neighbor[j])))
+                            if(equal(sa(xs), sa(xs, neighbor[j])))
                             {
                                 IntBiggest neighborLabel1 = xt[neighbor[j]];
 
-                                if (neighborIndex != neighborLabel1)
+                                if(neighborIndex != neighborLabel1)
                                 {
                                     // find roots of the region trees
-                                    while (neighborIndex != label[neighborIndex])
+                                    while(neighborIndex != label[neighborIndex])
                                     {
                                         neighborIndex = label[neighborIndex];
                                     }
-                                    while (neighborLabel1 != label[neighborLabel1])
+                                    while(neighborLabel1 != label[neighborLabel1])
                                     {
                                         neighborLabel1 = label[neighborLabel1];
                                     }
 
                                     // merge the trees
-                                    if (neighborLabel1 < neighborIndex)
+                                    if(neighborLabel1 < neighborIndex)
                                     {
                                         label[neighborIndex] = neighborLabel1;
                                         neighborIndex = neighborLabel1;
                                     }
-                                    else if (neighborIndex < neighborLabel1)
+                                    else if(neighborIndex < neighborLabel1)
                                     {
                                         label[neighborLabel1] = neighborIndex;
                                     }
@@ -584,7 +584,7 @@ doxygen_overloaded_function(template<...> unsigned int labelImageWithBackground)
                         break;
                     }
                 }
-                if (i > endNeighbor)
+                if(i > endNeighbor)
                 {
                     // new region
                     // The initial label of a new region equals the
@@ -601,15 +601,15 @@ doxygen_overloaded_function(template<...> unsigned int labelImageWithBackground)
 
     int count = 0;
     i = 0;
-    for (y = 0; y != h; ++y, ++yd.y)
+    for(y = 0; y != h; ++y, ++yd.y)
     {
         DestIterator xd(yd);
-        for (x = 0; x != w; ++x, ++xd.x, ++i)
+        for(x = 0; x != w; ++x, ++xd.x, ++i)
         {
-            if (label[i] == -1)
+            if(label[i] == -1)
                 continue;
 
-            if (label[i] == i)
+            if(label[i] == i)
             {
                 label[i] = count++;
             }
@@ -624,9 +624,9 @@ doxygen_overloaded_function(template<...> unsigned int labelImageWithBackground)
     return count;
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class ValueType>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class ValueType>
 inline unsigned int
 labelImageWithBackground(
     SrcIterator upperlefts,
@@ -641,9 +641,9 @@ labelImageWithBackground(
                                     std::equal_to<typename SrcAccessor::value_type>());
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class ValueType, class EqualityFunctor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class ValueType, class EqualityFunctor>
 inline unsigned int
 labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                          pair<DestIterator, DestAccessor> dest,
@@ -655,9 +655,9 @@ labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                     eight_neighbors, background_value, equal);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class ValueType>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class ValueType>
 inline unsigned int
 labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                          pair<DestIterator, DestAccessor> dest,
@@ -670,9 +670,9 @@ labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                     std::equal_to<typename SrcAccessor::value_type>());
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class ValueType, class EqualityFunctor>
+template <class T1, class S1,
+          class T2, class S2,
+          class ValueType, class EqualityFunctor>
 inline unsigned int
     labelImageWithBackground(MultiArrayView<2, T1, S1> const& src,
                              MultiArrayView<2, T2, S2> dest,
@@ -686,9 +686,9 @@ inline unsigned int
                                     eight_neighbors, background_value, equal);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class ValueType>
+template <class T1, class S1,
+          class T2, class S2,
+          class ValueType>
 inline unsigned int
     labelImageWithBackground(MultiArrayView<2, T1, S1> const& src,
                              MultiArrayView<2, T2, S2> dest,
@@ -866,10 +866,10 @@ enum EdgeImageLabelPolicy
     h_dest = 2 * h_src - 1
     \endcode
 */
-doxygen_overloaded_function(template<...> void regionImageToCrackEdgeImage)
+doxygen_overloaded_function(template <...> void regionImageToCrackEdgeImage)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor, class DestValue>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor, class DestValue>
     void regionImageToCrackEdgeImage(
         SrcIterator sul, SrcIterator slr, SrcAccessor sa,
         DestIterator dul, DestAccessor da,
@@ -889,46 +889,46 @@ doxygen_overloaded_function(template<...> void regionImageToCrackEdgeImage)
     SrcIterator iy = sul;
     DestIterator dy = dul;
 
-    for (y = 0; y < h - 1; ++y, ++iy.y, dy.y += 2)
+    for(y = 0; y < h - 1; ++y, ++iy.y, dy.y += 2)
     {
         SrcIterator ix = iy;
         DestIterator dx = dy;
 
-        for (x = 0; x < w - 1; ++x, ++ix.x, dx.x += 2)
+        for(x = 0; x < w - 1; ++x, ++ix.x, dx.x += 2)
         {
-            if (labelPolicy == CopyRegionLabels)
+            if(labelPolicy == CopyRegionLabels)
             {
                 da.set(sa(ix), dx);
                 da.set(sa(ix), dx, bottomright);
             }
 
-            if (sa(ix, right) != sa(ix))
+            if(sa(ix, right) != sa(ix))
             {
                 da.set(edge_marker, dx, right);
             }
-            else if (labelPolicy == CopyRegionLabels)
+            else if(labelPolicy == CopyRegionLabels)
             {
                 da.set(sa(ix), dx, right);
             }
-            if (sa(ix, bottom) != sa(ix))
+            if(sa(ix, bottom) != sa(ix))
             {
                 da.set(edge_marker, dx, bottom);
             }
-            else if (labelPolicy == CopyRegionLabels)
+            else if(labelPolicy == CopyRegionLabels)
             {
                 da.set(sa(ix), dx, bottom);
             }
         }
 
-        if (labelPolicy == CopyRegionLabels)
+        if(labelPolicy == CopyRegionLabels)
         {
             da.set(sa(ix), dx);
         }
-        if (sa(ix, bottom) != sa(ix))
+        if(sa(ix, bottom) != sa(ix))
         {
             da.set(edge_marker, dx, bottom);
         }
-        else if (labelPolicy == CopyRegionLabels)
+        else if(labelPolicy == CopyRegionLabels)
         {
             da.set(sa(ix), dx, bottom);
         }
@@ -937,22 +937,22 @@ doxygen_overloaded_function(template<...> void regionImageToCrackEdgeImage)
     SrcIterator ix = iy;
     DestIterator dx = dy;
 
-    for (x = 0; x < w - 1; ++x, ++ix.x, dx.x += 2)
+    for(x = 0; x < w - 1; ++x, ++ix.x, dx.x += 2)
     {
-        if (labelPolicy == CopyRegionLabels)
+        if(labelPolicy == CopyRegionLabels)
         {
             da.set(sa(ix), dx);
         }
-        if (sa(ix, right) != sa(ix))
+        if(sa(ix, right) != sa(ix))
         {
             da.set(edge_marker, dx, right);
         }
-        else if (labelPolicy == CopyRegionLabels)
+        else if(labelPolicy == CopyRegionLabels)
         {
             da.set(sa(ix), dx, right);
         }
     }
-    if (labelPolicy == CopyRegionLabels)
+    if(labelPolicy == CopyRegionLabels)
     {
         da.set(sa(ix), dx);
     }
@@ -960,27 +960,27 @@ doxygen_overloaded_function(template<...> void regionImageToCrackEdgeImage)
 
     const Diff2D dist[] = {right, top, left, bottom};
     // find missing 0-cells
-    for (y = 0; y < h - 1; ++y, dy.y += 2)
+    for(y = 0; y < h - 1; ++y, dy.y += 2)
     {
         DestIterator dx = dy;
 
-        for (x = 0; x < w - 1; ++x, dx.x += 2)
+        for(x = 0; x < w - 1; ++x, dx.x += 2)
         {
             int i;
-            for (i = 0; i < 4; ++i)
+            for(i = 0; i < 4; ++i)
             {
-                if (da(dx, dist[i]) == edge_marker)
+                if(da(dx, dist[i]) == edge_marker)
                     break;
             }
 
-            if (i < 4)
+            if(i < 4)
                 da.set(edge_marker, dx);
         }
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor, class DestValue>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor, class DestValue>
 inline void
 regionImageToCrackEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<DestIterator, DestAccessor> dest,
@@ -992,8 +992,8 @@ regionImageToCrackEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 edge_marker, labelPolicy);
 }
 
-template<class T1, class S1,
-         class T2, class S2, class DestValue>
+template <class T1, class S1,
+          class T2, class S2, class DestValue>
 inline void
     regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const& src,
                                 MultiArrayView<2, T2, S2> dest,
@@ -1129,10 +1129,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void regionImageToEdgeImage)
+doxygen_overloaded_function(template <...> void regionImageToEdgeImage)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor, class DestValue>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor, class DestValue>
     void regionImageToEdgeImage(
         SrcIterator sul, SrcIterator slr, SrcAccessor sa,
         DestIterator dul, DestAccessor da,
@@ -1151,24 +1151,24 @@ doxygen_overloaded_function(template<...> void regionImageToEdgeImage)
     SrcIterator iy = sul;
     DestIterator dy = dul;
 
-    for (y = 0; y < h - 1; ++y, ++iy.y, ++dy.y)
+    for(y = 0; y < h - 1; ++y, ++iy.y, ++dy.y)
     {
         SrcIterator ix = iy;
         DestIterator dx = dy;
 
-        for (x = 0; x < w - 1; ++x, ++ix.x, ++dx.x)
+        for(x = 0; x < w - 1; ++x, ++ix.x, ++dx.x)
         {
-            if (sa(ix, right) != sa(ix))
+            if(sa(ix, right) != sa(ix))
             {
                 da.set(edge_marker, dx);
             }
-            if (sa(ix, bottom) != sa(ix))
+            if(sa(ix, bottom) != sa(ix))
             {
                 da.set(edge_marker, dx);
             }
         }
 
-        if (sa(ix, bottom) != sa(ix))
+        if(sa(ix, bottom) != sa(ix))
         {
             da.set(edge_marker, dx);
         }
@@ -1177,17 +1177,17 @@ doxygen_overloaded_function(template<...> void regionImageToEdgeImage)
     SrcIterator ix = iy;
     DestIterator dx = dy;
 
-    for (x = 0; x < w - 1; ++x, ++ix.x, ++dx.x)
+    for(x = 0; x < w - 1; ++x, ++ix.x, ++dx.x)
     {
-        if (sa(ix, right) != sa(ix))
+        if(sa(ix, right) != sa(ix))
         {
             da.set(edge_marker, dx);
         }
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor, class DestValue>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor, class DestValue>
 inline void
 regionImageToEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        pair<DestIterator, DestAccessor> dest,
@@ -1198,8 +1198,8 @@ regionImageToEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                            edge_marker);
 }
 
-template<class T1, class S1,
-         class T2, class S2, class DestValue>
+template <class T1, class S1,
+          class T2, class S2, class DestValue>
 inline void
     regionImageToEdgeImage(MultiArrayView<2, T1, S1> const& src,
                            MultiArrayView<2, T2, S2> dest,

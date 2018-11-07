@@ -50,7 +50,7 @@
 
 using namespace vigra;
 
-template<unsigned int N>
+template <unsigned int N>
 struct SlicTest
 {
     typedef MultiArray<N, float> FArray;
@@ -93,9 +93,9 @@ struct SlicTest
         typename IArray::iterator iter = labels.begin(),
                                   end = iter.getEndIterator();
         int count = 0;
-        for (; iter != end; ++iter)
+        for(; iter != end; ++iter)
         {
-            if (*iter == 0)
+            if(*iter == 0)
                 continue;
             should(*iter <= 9 && *iter > 0);
             shouldEqual(iter.point(), seeds_ref[*iter - 1]);

@@ -60,7 +60,7 @@ static inline void
 import_vigranumpy()
 {
     // roughly equivalent to import_array():
-    if (_import_array() < 0)
+    if(_import_array() < 0)
         pythonToCppException(0);
 
     // Import vigra to activate the numpy array converters, but ensure that
@@ -78,7 +78,7 @@ import_vigranumpy()
 /*                                                      */
 /********************************************************/
 
-template<class T>
+template <class T>
 class MultibandVectorAccessor
 {
     MultiArrayIndex size_, stride_;
@@ -102,7 +102,7 @@ public:
     /** Read the component data at given vector index
             at given iterator position
         */
-    template<class ITERATOR>
+    template <class ITERATOR>
     component_type const& getComponent(ITERATOR const& i, int idx) const
     {
         return *(&*i + idx * stride_);
@@ -113,7 +113,7 @@ public:
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class V, class ITERATOR>
+    template <class V, class ITERATOR>
     void setComponent(V const& value, ITERATOR const& i, int idx) const
     {
         *(&*i + idx * stride_) = detail::RequiresExplicitCast<component_type>::cast(value);
@@ -122,7 +122,7 @@ public:
     /** Read the component data at given vector index
             at an offset of given iterator position
         */
-    template<class ITERATOR, class DIFFERENCE>
+    template <class ITERATOR, class DIFFERENCE>
     component_type const& getComponent(ITERATOR const& i, DIFFERENCE const& diff, int idx) const
     {
         return *(&i[diff] + idx * stride_);
@@ -133,14 +133,14 @@ public:
         in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
     */
-    template<class V, class ITERATOR, class DIFFERENCE>
+    template <class V, class ITERATOR, class DIFFERENCE>
     void
     setComponent(V const& value, ITERATOR const& i, DIFFERENCE const& diff, int idx) const
     {
         *(&i[diff] + idx * stride_) = detail::RequiresExplicitCast<component_type>::cast(value);
     }
 
-    template<class U>
+    template <class U>
     MultiArrayIndex size(U) const
     {
         return size_;
@@ -149,69 +149,69 @@ public:
 
 /********************************************************/
 
-template<class TYPECODE> // pseudo-template to avoid inline expansion of the function
-                         // will always be NPY_TYPES
+template <class TYPECODE> // pseudo-template to avoid inline expansion of the function
+                          // will always be NPY_TYPES
 PyObject*
 constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init,
                python_ptr arraytype = python_ptr());
 
 /********************************************************/
 
-template<class Shape>
+template <class Shape>
 void
 numpyParseSlicing(Shape const& shape, PyObject* idx, Shape& start, Shape& stop)
 {
     int N = shape.size();
-    for (int k = 0; k < N; ++k)
+    for(int k = 0; k < N; ++k)
     {
         start[k] = 0;
         stop[k] = shape[k];
     }
 
     python_ptr index(idx);
-    if (!PySequence_Check(index))
+    if(!PySequence_Check(index))
     {
         index = python_ptr(PyTuple_Pack(1, index.ptr()), python_ptr::new_nonzero_reference);
     }
     int lindex = PyTuple_Size(index);
     int kindex = 0;
-    for (; kindex < lindex; ++kindex)
+    for(; kindex < lindex; ++kindex)
     {
-        if (PyTuple_GET_ITEM((PyTupleObject*)index.ptr(), kindex) == Py_Ellipsis)
+        if(PyTuple_GET_ITEM((PyTupleObject*)index.ptr(), kindex) == Py_Ellipsis)
             break;
     }
-    if (kindex == lindex && lindex < N)
+    if(kindex == lindex && lindex < N)
     {
         python_ptr ellipsis = python_ptr(PyTuple_Pack(1, Py_Ellipsis), python_ptr::new_nonzero_reference);
         index = python_ptr(PySequence_Concat(index, ellipsis), python_ptr::new_nonzero_reference);
         ++lindex;
     }
     kindex = 0;
-    for (int k = 0; k < N; ++k)
+    for(int k = 0; k < N; ++k)
     {
         PyObject* item = PyTuple_GET_ITEM((PyTupleObject*)index.ptr(), kindex);
 #if PY_MAJOR_VERSION < 3
-        if (PyInt_Check(item))
+        if(PyInt_Check(item))
         {
             MultiArrayIndex i = PyInt_AsLong(item);
 #else
-        if (PyLong_Check(item))
+        if(PyLong_Check(item))
         {
             MultiArrayIndex i = PyLong_AsLong(item);
 #endif
             start[k] = i;
-            if (start[k] < 0)
+            if(start[k] < 0)
                 start[k] += shape[k];
             stop[k] = start[k];
             ++kindex;
         }
-        else if (PySlice_Check(item))
+        else if(PySlice_Check(item))
         {
             Py_ssize_t sstart, sstop, step;
 #if PY_MAJOR_VERSION < 3
-            if (PySlice_GetIndices((PySliceObject*)item, shape[k], &sstart, &sstop, &step) != 0)
+            if(PySlice_GetIndices((PySliceObject*)item, shape[k], &sstart, &sstop, &step) != 0)
 #else
-            if (PySlice_GetIndices(item, shape[k], &sstart, &sstop, &step) != 0)
+            if(PySlice_GetIndices(item, shape[k], &sstart, &sstop, &step) != 0)
 #endif
                 pythonToCppException(0);
             vigra_precondition(step == 1,
@@ -220,9 +220,9 @@ numpyParseSlicing(Shape const& shape, PyObject* idx, Shape& start, Shape& stop)
             stop[k] = sstop;
             ++kindex;
         }
-        else if (item == Py_Ellipsis)
+        else if(item == Py_Ellipsis)
         {
-            if (lindex == N)
+            if(lindex == N)
                 ++kindex;
             else
                 ++lindex;
@@ -291,11 +291,11 @@ public:
          */
     explicit NumpyAnyArray(PyObject* obj = 0, bool createCopy = false, PyTypeObject* type = 0)
     {
-        if (obj == 0)
+        if(obj == 0)
             return;
         vigra_precondition(type == 0 || PyType_IsSubtype(type, &PyArray_Type),
                            "NumpyAnyArray(obj, createCopy, type): type must be numpy.ndarray or a subclass thereof.");
-        if (createCopy)
+        if(createCopy)
             makeCopy(obj, type);
         else
             vigra_precondition(makeReference(obj, type), "NumpyAnyArray(obj): obj isn't a numpy array.");
@@ -308,11 +308,11 @@ public:
          */
     NumpyAnyArray(NumpyAnyArray const& other, bool createCopy = false, PyTypeObject* type = 0)
     {
-        if (!other.hasData())
+        if(!other.hasData())
             return;
         vigra_precondition(type == 0 || PyType_IsSubtype(type, &PyArray_Type),
                            "NumpyAnyArray(obj, createCopy, type): type must be numpy.ndarray or a subclass thereof.");
-        if (createCopy)
+        if(createCopy)
             makeCopy(other.pyObject(), type);
         else
             makeReference(other.pyObject(), type);
@@ -332,14 +332,14 @@ public:
          */
     NumpyAnyArray& operator=(NumpyAnyArray const& other)
     {
-        if (hasData())
+        if(hasData())
         {
             vigra_precondition(other.hasData(),
                                "NumpyArray::operator=(): Cannot assign from empty array.");
 
             python_ptr arraytype = getArrayTypeObject();
             python_ptr f(pythonFromData("_copyValuesImpl"));
-            if (PyObject_HasAttr(arraytype, f))
+            if(PyObject_HasAttr(arraytype, f))
             {
                 python_ptr res(PyObject_CallMethodObjArgs(arraytype, f.get(),
                                                           pyArray_.get(), other.pyArray_.get(), NULL),
@@ -352,7 +352,7 @@ public:
                 PyArrayObject* sarray = (PyArrayObject*)pyArray_.get();
                 PyArrayObject* tarray = (PyArrayObject*)other.pyArray_.get();
 
-                if (PyArray_CopyInto(tarray, sarray) == -1)
+                if(PyArray_CopyInto(tarray, sarray) == -1)
                     pythonToCppException(0);
             }
         }
@@ -369,7 +369,7 @@ public:
          */
     MultiArrayIndex ndim() const
     {
-        if (hasData())
+        if(hasData())
             return PyArray_NDIM(pyArray());
         return 0;
     }
@@ -381,28 +381,28 @@ public:
          */
     MultiArrayIndex spatialDimensions() const
     {
-        if (!hasData())
+        if(!hasData())
             return 0;
         return pythonGetAttr(pyObject(), "spatialDimensions", ndim());
     }
 
     bool hasChannelAxis() const
     {
-        if (!hasData())
+        if(!hasData())
             return false;
         return channelIndex() == ndim();
     }
 
     MultiArrayIndex channelIndex() const
     {
-        if (!hasData())
+        if(!hasData())
             return 0;
         return pythonGetAttr(pyObject(), "channelIndex", ndim());
     }
 
     MultiArrayIndex innerNonchannelIndex() const
     {
-        if (!hasData())
+        if(!hasData())
             return 0;
         return pythonGetAttr(pyObject(), "innerNonchannelIndex", ndim());
     }
@@ -413,7 +413,7 @@ public:
          */
     difference_type shape() const
     {
-        if (hasData())
+        if(hasData())
             return difference_type(PyArray_DIMS(pyArray()), PyArray_DIMS(pyArray()) + ndim());
         return difference_type();
     }
@@ -424,29 +424,29 @@ public:
         */
     difference_type strideOrdering() const
     {
-        if (!hasData())
+        if(!hasData())
             return difference_type();
         MultiArrayIndex N = ndim();
         difference_type stride(PyArray_STRIDES(pyArray()), PyArray_STRIDES(pyArray()) + N),
             permutation(N);
-        for (MultiArrayIndex k = 0; k < N; ++k)
+        for(MultiArrayIndex k = 0; k < N; ++k)
             permutation[k] = k;
-        for (MultiArrayIndex k = 0; k < N - 1; ++k)
+        for(MultiArrayIndex k = 0; k < N - 1; ++k)
         {
             MultiArrayIndex smallest = k;
-            for (MultiArrayIndex j = k + 1; j < N; ++j)
+            for(MultiArrayIndex j = k + 1; j < N; ++j)
             {
-                if (stride[j] < stride[smallest])
+                if(stride[j] < stride[smallest])
                     smallest = j;
             }
-            if (smallest != k)
+            if(smallest != k)
             {
                 std::swap(stride[k], stride[smallest]);
                 std::swap(permutation[k], permutation[smallest]);
             }
         }
         difference_type ordering(N);
-        for (MultiArrayIndex k = 0; k < N; ++k)
+        for(MultiArrayIndex k = 0; k < N; ++k)
             ordering[permutation[k]] = k;
         return ordering;
     }
@@ -479,7 +479,7 @@ public:
          */
     int dtype() const
     {
-        if (hasData())
+        if(hasData())
             return PyArray_DESCR(pyArray())->type_num;
         return -1;
     }
@@ -487,7 +487,7 @@ public:
     /**
          Constructs a slicing from the given shape objects and calls '__getitem__'.
          */
-    template<class Shape>
+    template <class Shape>
     NumpyAnyArray
     getitem(Shape start, Shape stop) const
     {
@@ -498,16 +498,16 @@ public:
         difference_type s(this->shape());
 
         python_ptr index(PyTuple_New(size), python_ptr::new_nonzero_reference);
-        for (unsigned int k = 0; k < size; ++k)
+        for(unsigned int k = 0; k < size; ++k)
         {
-            if (start[k] < 0)
+            if(start[k] < 0)
                 start[k] += s[k];
-            if (stop[k] < 0)
+            if(stop[k] < 0)
                 stop[k] += s[k];
             vigra_precondition(0 <= start[k] && start[k] <= stop[k] && stop[k] <= s[k],
                                "NumpyAnyArray::getitem(): slice out of bounds.");
             PyObject* item = 0;
-            if (start[k] == stop[k])
+            if(start[k] == stop[k])
             {
                 item = pythonFromData(start[k]);
             }
@@ -534,11 +534,11 @@ public:
     python_ptr axistags() const
     {
         python_ptr axistags;
-        if (pyObject())
+        if(pyObject())
         {
             python_ptr key(pythonFromData("axistags"));
             axistags.reset(PyObject_GetAttr(pyObject(), key), python_ptr::keep_count);
-            if (!axistags)
+            if(!axistags)
                 PyErr_Clear();
         }
         return axistags;
@@ -571,9 +571,9 @@ public:
          */
     bool makeReference(PyObject* obj, PyTypeObject* type = 0)
     {
-        if (obj == 0 || !PyArray_Check(obj))
+        if(obj == 0 || !PyArray_Check(obj))
             return false;
-        if (type != 0)
+        if(type != 0)
         {
             vigra_precondition(PyType_IsSubtype(type, &PyArray_Type) != 0,
                                "NumpyAnyArray::makeReference(obj, type): type must be numpy.ndarray or a subclass thereof.");
@@ -622,16 +622,16 @@ namespace detail
 inline bool
 nontrivialPermutation(ArrayVector<npy_intp> const& p)
 {
-    for (unsigned int k = 0; k < p.size(); ++k)
-        if (p[k] != k)
+    for(unsigned int k = 0; k < p.size(); ++k)
+        if(p[k] != k)
             return true;
     return false;
 }
 
 } // namespace detail
 
-template<class TYPECODE> // pseudo-template to avoid inline expansion of the function
-                         // will always be NPY_TYPES
+template <class TYPECODE> // pseudo-template to avoid inline expansion of the function
+                          // will always be NPY_TYPES
 PyObject*
 constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init, python_ptr arraytype)
 {
@@ -642,9 +642,9 @@ constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init, python_pt
     ArrayVector<npy_intp> inverse_permutation;
     int order = 1; // Fortran order
 
-    if (axistags)
+    if(axistags)
     {
-        if (!arraytype)
+        if(!arraytype)
             arraytype = NumpyAnyArray::getArrayTypeObject();
 
         inverse_permutation = axistags.permutationFromNormalOrder();
@@ -664,7 +664,7 @@ constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init, python_pt
                      python_ptr::keep_count);
     pythonToCppException(array);
 
-    if (detail::nontrivialPermutation(inverse_permutation))
+    if(detail::nontrivialPermutation(inverse_permutation))
     {
         PyArray_Dims permute = {inverse_permutation.begin(), ndim};
         array = python_ptr(PyArray_Transpose((PyArrayObject*)array.get(), &permute),
@@ -672,17 +672,17 @@ constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init, python_pt
         pythonToCppException(array);
     }
 
-    if (arraytype != (PyObject*)&PyArray_Type && axistags)
+    if(arraytype != (PyObject*)&PyArray_Type && axistags)
         pythonToCppException(PyObject_SetAttrString(array, "axistags", axistags.axistags) != -1);
 
-    if (init)
+    if(init)
         PyArray_FILLWBYTE((PyArrayObject*)array.get(), 0);
 
     return array.release();
 }
 
 // FIXME: reimplement in terms of TaggedShape?
-template<class TINY_VECTOR>
+template <class TINY_VECTOR>
 inline python_ptr
 constructNumpyArrayFromData(
     TINY_VECTOR const& shape, npy_intp* strides,
@@ -716,7 +716,7 @@ constructNumpyArrayFromData(
     <b>\#include</b> \<vigra/numpy_array.hxx\><br>
     Namespace: vigra
 */
-template<unsigned int N, class T, class Stride = StridedArrayTag>
+template <unsigned int N, class T, class Stride = StridedArrayTag>
 class NumpyArray
     : public MultiArrayView<N, typename NumpyArrayTraits<N, T, Stride>::value_type, Stride>,
       public NumpyAnyArray
@@ -825,9 +825,9 @@ public:
          */
     explicit NumpyArray(PyObject* obj = 0, bool createCopy = false)
     {
-        if (obj == 0)
+        if(obj == 0)
             return;
-        if (createCopy)
+        if(createCopy)
             makeCopy(obj);
         else
             vigra_precondition(makeReference(obj),
@@ -845,9 +845,9 @@ public:
         : view_type(),
           NumpyAnyArray()
     {
-        if (!other.hasData())
+        if(!other.hasData())
             return;
-        if (createCopy)
+        if(createCopy)
             makeCopy(other.pyObject());
         else
             makeReferenceUnchecked(other.pyObject());
@@ -856,10 +856,10 @@ public:
     /**
          * Allocate new memory and copy data from a MultiArrayView.
          */
-    template<class U, class S>
+    template <class U, class S>
     explicit NumpyArray(const MultiArrayView<N, U, S>& other)
     {
-        if (!other.hasData())
+        if(!other.hasData())
             return;
         vigra_postcondition(makeReference(init(other.shape(), false)),
                             "NumpyArray(MultiArrayView): Python constructor did not produce a compatible array.");
@@ -897,9 +897,9 @@ public:
          */
     explicit NumpyArray(const NumpyAnyArray& other, bool createCopy = false)
     {
-        if (!other.hasData())
+        if(!other.hasData())
             return;
-        if (createCopy)
+        if(createCopy)
             makeCopy(other.pyObject());
         else
             vigra_precondition(makeReference(other.pyObject()), //, false),
@@ -916,7 +916,7 @@ public:
          */
     NumpyArray& operator=(const NumpyArray& other)
     {
-        if (hasData())
+        if(hasData())
             view_type::operator=(other);
         else
             makeReferenceUnchecked(other.pyObject());
@@ -931,16 +931,16 @@ public:
          * See MultiArrayView::operator= for further information on
          * semantics.
          */
-    template<class U, class S>
+    template <class U, class S>
     NumpyArray& operator=(const NumpyArray<N, U, S>& other)
     {
-        if (hasData())
+        if(hasData())
         {
             vigra_precondition(shape() == other.shape(),
                                "NumpyArray::operator=(): shape mismatch.");
             view_type::operator=(other);
         }
-        else if (other.hasData())
+        else if(other.hasData())
         {
             NumpyArray copy;
             copy.reshapeIfEmpty(other.taggedShape(),
@@ -957,16 +957,16 @@ public:
          * array contents are copied.  If this is an empty view,
          * a new buffer with the RHS shape is allocated before copying.
          */
-    template<class U, class S>
+    template <class U, class S>
     NumpyArray& operator=(const MultiArrayView<N, U, S>& other)
     {
-        if (hasData())
+        if(hasData())
         {
             vigra_precondition(shape() == other.shape(),
                                "NumpyArray::operator=(): shape mismatch.");
             view_type::operator=(other);
         }
-        else if (other.hasData())
+        else if(other.hasData())
         {
             NumpyArray copy;
             copy.reshapeIfEmpty(other.shape(),
@@ -987,11 +987,11 @@ public:
          */
     NumpyArray& operator=(const NumpyAnyArray& other)
     {
-        if (hasData())
+        if(hasData())
         {
             NumpyAnyArray::operator=(other);
         }
-        else if (isReferenceCompatible(other.pyObject()))
+        else if(isReferenceCompatible(other.pyObject()))
         {
             makeReferenceUnchecked(other.pyObject());
         }
@@ -1007,7 +1007,7 @@ public:
          Permute the entries of the given array \a data exactly like the axes of this NumpyArray
          were permuted upon conversion from numpy.
          */
-    template<class U>
+    template <class U>
     ArrayVector<U>
     permuteLikewise(ArrayVector<U> const& data) const
     {
@@ -1023,7 +1023,7 @@ public:
          Permute the entries of the given array \a data exactly like the axes of this NumpyArray
          were permuted upon conversion from numpy.
          */
-    template<class U, int K>
+    template <class U, int K>
     TinyVector<U, K>
     permuteLikewise(TinyVector<U, K> const& data) const
     {
@@ -1039,7 +1039,7 @@ public:
          Get the permutation of the axes of this NumpyArray
          that was performed upon conversion from numpy.
          */
-    template<int K>
+    template <int K>
     TinyVector<npy_intp, K>
     permuteLikewise() const
     {
@@ -1099,7 +1099,7 @@ public:
     static difference_type standardStrideOrdering()
     {
         difference_type strideOrdering;
-        for (unsigned int k = 0; k < N; ++k)
+        for(unsigned int k = 0; k < N; ++k)
             strideOrdering[k] = k;
         return strideOrdering;
     }
@@ -1124,7 +1124,7 @@ public:
          */
     bool makeReference(PyObject* obj, bool /* strict */ = false)
     {
-        if (!isReferenceCompatible(obj))
+        if(!isReferenceCompatible(obj))
             return false;
         makeReferenceUnchecked(obj);
         return true;
@@ -1221,7 +1221,7 @@ public:
     {
         ArrayTraits::finalizeTaggedShape(tagged_shape);
 
-        if (hasData())
+        if(hasData())
         {
             vigra_precondition(tagged_shape.compatible(taggedShape()), message.c_str());
         }
@@ -1241,11 +1241,11 @@ public:
 };
 
 // this function assumes that pyArray_ has already been set, and compatibility been checked
-template<unsigned int N, class T, class Stride>
+template <unsigned int N, class T, class Stride>
 void
 NumpyArray<N, T, Stride>::setupArrayView()
 {
-    if (NumpyAnyArray::hasData())
+    if(NumpyAnyArray::hasData())
     {
         permutation_type permute;
         ArrayTraits::permutationToSetupOrder(this->pyArray_, permute);
@@ -1258,7 +1258,7 @@ NumpyArray<N, T, Stride>::setupArrayView()
         applyPermutation(permute.begin(), permute.end(),
                          PyArray_STRIDES(pyArray()), this->m_stride.begin());
 
-        if ((int)permute.size() == actual_dimension - 1)
+        if((int)permute.size() == actual_dimension - 1)
         {
             this->m_shape[actual_dimension - 1] = 1;
             this->m_stride[actual_dimension - 1] = sizeof(value_type);
@@ -1266,9 +1266,9 @@ NumpyArray<N, T, Stride>::setupArrayView()
 
         this->m_stride /= sizeof(value_type);
         // make sure that singleton axes have non-zero stride
-        for (int k = 0; k < actual_dimension; ++k)
+        for(int k = 0; k < actual_dimension; ++k)
         {
-            if (this->m_stride[k] == 0)
+            if(this->m_stride[k] == 0)
             {
                 vigra_precondition(this->m_shape[k] == 1,
                                    "NumpyArray::setupArrayView(): only singleton axes may have zero stride.");
@@ -1303,7 +1303,7 @@ typedef NumpyArray<4, Multiband<float>> NumpyFMultibandVolume;
 /*                                                      */
 /********************************************************/
 
-template<class PixelType, class Stride>
+template <class PixelType, class Stride>
 inline triple<ConstStridedImageIterator<PixelType>,
               ConstStridedImageIterator<PixelType>,
               MultibandVectorAccessor<PixelType>>
@@ -1316,7 +1316,7 @@ inline triple<ConstStridedImageIterator<PixelType>,
                   MultibandVectorAccessor<PixelType>>(ul, ul + Size2D(img.shape(0), img.shape(1)), MultibandVectorAccessor<PixelType>(img.shape(2), img.stride(2)));
 }
 
-template<class PixelType, class Stride>
+template <class PixelType, class Stride>
 inline pair<ConstStridedImageIterator<PixelType>,
             MultibandVectorAccessor<PixelType>>
     srcImage(NumpyArray<3, Multiband<PixelType>, Stride> const& img)
@@ -1326,7 +1326,7 @@ inline pair<ConstStridedImageIterator<PixelType>,
     return pair<ConstStridedImageIterator<PixelType>, MultibandVectorAccessor<PixelType>>(ul, MultibandVectorAccessor<PixelType>(img.shape(2), img.stride(2)));
 }
 
-template<class PixelType, class Stride>
+template <class PixelType, class Stride>
 inline triple<StridedImageIterator<PixelType>,
               StridedImageIterator<PixelType>,
               MultibandVectorAccessor<PixelType>>
@@ -1340,7 +1340,7 @@ inline triple<StridedImageIterator<PixelType>,
                                                       MultibandVectorAccessor<PixelType>(img.shape(2), img.stride(2)));
 }
 
-template<class PixelType, class Stride>
+template <class PixelType, class Stride>
 inline pair<StridedImageIterator<PixelType>,
             MultibandVectorAccessor<PixelType>>
     destImage(NumpyArray<3, Multiband<PixelType>, Stride>& img)
@@ -1350,7 +1350,7 @@ inline pair<StridedImageIterator<PixelType>,
     return pair<StridedImageIterator<PixelType>, MultibandVectorAccessor<PixelType>>(ul, MultibandVectorAccessor<PixelType>(img.shape(2), img.stride(2)));
 }
 
-template<class PixelType, class Stride>
+template <class PixelType, class Stride>
 inline pair<ConstStridedImageIterator<PixelType>,
             MultibandVectorAccessor<PixelType>>
     maskImage(NumpyArray<3, Multiband<PixelType>, Stride> const& img)

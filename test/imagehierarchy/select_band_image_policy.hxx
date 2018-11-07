@@ -4,7 +4,7 @@
 #include "vigra/imagehierarchy.hxx"
 #include <unittest.hxx>
 
-template<class MULTI_BAND_IMAGE_POLICY, int TO_SELECT_BAND>
+template <class MULTI_BAND_IMAGE_POLICY, int TO_SELECT_BAND>
 class SelectBandImagePolicy
 {
 public:
@@ -24,7 +24,7 @@ public:
         static value_type variable = 1;
         variable = variable / 100 + (variable * 5) / 1000 + variable;
         static value_type data[15];
-        for (int i = 0; i <= 14; i++)
+        for(int i = 0; i <= 14; i++)
         {
             data[i] = variable + i;
         }

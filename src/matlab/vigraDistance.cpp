@@ -52,7 +52,7 @@ using namespace matlab;
 
 //#define RN_DEBUG
 #define cP2_(a, b) cP<(int)a, b>::value
-template<class T>
+template <class T>
 void
 vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
 {
@@ -86,20 +86,20 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
     //This is a cheap way of checking whether pitch option has been set - if not the pointers of pitch and defaultPitch
     //should be the same;
     //Some more errorchecking
-    if (method == IMAG_DIST_TRANS)
+    if(method == IMAG_DIST_TRANS)
     {
-        if (numOfDim == VOLUME)
+        if(numOfDim == VOLUME)
             mexErrMsgTxt("vigraDistance(): method 'IMAG_DIST_TRANS' requires 2D data.");
-        if (pitch.data() != defaultPitch.data())
+        if(pitch.data() != defaultPitch.data())
             mexErrMsgTxt("vigraDistance(): 'IMAG_DIST_TRANS' does not support 'pitch' Option");
-        if (backgroundMode != 1)
+        if(backgroundMode != 1)
             mexErrMsgTxt("vigraDistance(): method 'IMAG_DIST_TRANS' requires 'backgroundMode' = 1.");
     }
     else
     {
-        if (backgroundValue != 0)
+        if(backgroundValue != 0)
             mexErrMsgTxt("vigraDistance(): methods 'MULT' and 'MULT_SQUARED' require 'backgroundValue' = 0.");
-        if (norm != 2)
+        if(norm != 2)
             mexErrMsgTxt("vigraDistance(): methods 'MULT' and 'MULT_SQUARED' require 'norm' = 2.");
     }
 
@@ -118,7 +118,7 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
     // catorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function)
     using namespace vigra::functor;
 
-    switch (cantorPair(computeSignedDist, method))
+    switch(cantorPair(computeSignedDist, method))
     {
         //In this case function pointers may have been more elegant.
         case cP2_(false, MULT):
@@ -160,7 +160,7 @@ void
 vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
     //Add classes as you feel
-    switch (inputs.typeOf(0))
+    switch(inputs.typeOf(0))
     {
         ALLOW_FD
         ALLOW_UINT_8_64

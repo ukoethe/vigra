@@ -24,7 +24,7 @@ main(int argc, char** argv)
     float wardness = 0.8f;     // importance of cluster size
     int numClusters = 30;      // desired number of resulting regions (clusters)
 
-    if (argc != 3)
+    if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
@@ -87,10 +87,10 @@ main(int argc, char** argv)
             edgeLengths(rag);
 
         // iterate over all RAG edges (this loop follows a standard LEMON idiom)
-        for (RAG::EdgeIt rag_edge(rag); rag_edge != lemon::INVALID; ++rag_edge)
+        for(RAG::EdgeIt rag_edge(rag); rag_edge != lemon::INVALID; ++rag_edge)
         {
             // iterate over all grid edges that constitute the present RAG edge
-            for (unsigned int k = 0; k < affiliatedEdges[*rag_edge].size(); ++k)
+            for(unsigned int k = 0; k < affiliatedEdges[*rag_edge].size(); ++k)
             {
                 // look up the current grid edge and its end points
                 auto const& grid_edge = affiliatedEdges[*rag_edge][k];
@@ -120,7 +120,7 @@ main(int argc, char** argv)
         // copy superpixel features into NodeMaps to be passed to hierarchicalClustering()
         RAG::NodeMap<TinyVector<float, 3>> meanColor(rag);
         RAG::NodeMap<unsigned int> regionSize(rag);
-        for (unsigned int k = 0; k <= max_label; ++k)
+        for(unsigned int k = 0; k <= max_label; ++k)
         {
             meanColor[k] = get<Mean>(features, k);
             regionSize[k] = get<Count>(features, k);
@@ -147,7 +147,7 @@ main(int argc, char** argv)
         // write result into image file given by argv[2]
         exportImage(imageArrayBig, argv[2]);
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         // catch any errors that might have occurred and print their reason
         std::cout << e.what() << std::endl;

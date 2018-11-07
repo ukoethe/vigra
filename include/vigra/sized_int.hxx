@@ -100,7 +100,7 @@ class Int_type_not_supported_on_this_platform
 namespace detail
 {
 
-template<class T, class NEXT>
+template <class T, class NEXT>
 struct IntTypeList
 {
     enum
@@ -111,7 +111,7 @@ struct IntTypeList
     typedef NEXT next;
 };
 
-template<int SIZE, class LIST>
+template <int SIZE, class LIST>
 struct SelectIntegerType
 {
     typedef typename IfBool<(SIZE == LIST::size),
@@ -120,13 +120,13 @@ struct SelectIntegerType
         type;
 };
 
-template<int SIZE>
+template <int SIZE>
 struct SelectIntegerType<SIZE, Int_type_not_supported_on_this_platform>
 {
     typedef Int_type_not_supported_on_this_platform type;
 };
 
-template<class LIST>
+template <class LIST>
 struct SelectBiggestIntegerType
 {
     enum
@@ -141,7 +141,7 @@ struct SelectBiggestIntegerType
         type;
 };
 
-template<>
+template <>
 struct SelectBiggestIntegerType<Int_type_not_supported_on_this_platform>
 {
     enum

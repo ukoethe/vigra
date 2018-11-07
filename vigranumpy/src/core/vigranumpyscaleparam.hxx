@@ -11,7 +11,7 @@ namespace python = boost::python;
 namespace vigra
 {
 
-template<unsigned ndim>
+template <unsigned ndim>
 struct pythonScaleParam1
 {
     typedef TinyVector<double, ndim> p_vector;
@@ -21,9 +21,9 @@ struct pythonScaleParam1
                               const char* const function_name)
     {
         unsigned count = python::len(val);
-        if (count == 1)
+        if(count == 1)
             return 0;
-        if (count == ndim)
+        if(count == ndim)
             return 1;
 
         std::string msg = std::string(function_name) + "(): Parameter number "
@@ -38,11 +38,11 @@ struct pythonScaleParam1
     pythonScaleParam1(python::object val,
                       const char* const function_name = "pythonScaleParam1")
     {
-        if (PySequence_Check(val.ptr()))
+        if(PySequence_Check(val.ptr()))
         {
             unsigned increment = len_check(val, function_name);
             unsigned i_v = 0;
-            for (unsigned i = 0; i != ndim; ++i, i_v += increment)
+            for(unsigned i = 0; i != ndim; ++i, i_v += increment)
                 vec[i] = python::extract<double>(val[i_v]);
         }
         else
@@ -57,7 +57,7 @@ struct pythonScaleParam1
     }
 };
 
-template<unsigned ndim>
+template <unsigned ndim>
 struct pythonScaleParam
 {
     typedef ConvolutionOptions<ndim> return_type;
@@ -93,7 +93,7 @@ struct pythonScaleParam
         return opt.stdDev(sigma_eff()).resolutionStdDev(sigma_d()).stepSize(step_size()).outerScale(outer_scale());
     }
 
-    template<class Array>
+    template <class Array>
     void permuteLikewise(Array const& a)
     {
         sigma_eff.vec = a.permuteLikewise(sigma_eff.vec);

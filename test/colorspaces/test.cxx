@@ -102,9 +102,9 @@ struct ColorConversionsTest
 
     static bool equalColors(Color* c1, Color* c1end, Color* c2, double epsilon = 0.001)
     {
-        for (; c1 != c1end; ++c1, ++c2)
+        for(; c1 != c1end; ++c1, ++c2)
         {
-            if (!equalColors(*c1, *c2, epsilon))
+            if(!equalColors(*c1, *c2, epsilon))
                 return false;
         }
         return true;
@@ -113,10 +113,10 @@ struct ColorConversionsTest
     static bool checkLimits(Color* c, Color* cend,
                             Color const& min, Color const& max, double epsilon = 0.001)
     {
-        for (; c != cend; ++c)
+        for(; c != cend; ++c)
         {
-            for (int i = 0; i < 3; ++i)
-                if (min[i] - (*c)[i] > epsilon || (*c)[i] - max[i] > epsilon)
+            for(int i = 0; i < 3; ++i)
+                if(min[i] - (*c)[i] > epsilon || (*c)[i] - max[i] > epsilon)
                     return false;
         }
         return true;
@@ -134,7 +134,7 @@ struct ColorConversionsTest
 
     static void printColors(Color* c, Color* cend)
     {
-        for (; c != cend; ++c)
+        for(; c != cend; ++c)
         {
             printColor(*c);
         }

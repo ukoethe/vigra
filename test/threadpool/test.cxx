@@ -48,12 +48,12 @@ struct ThreadPoolTests
         size_t const n = 10000;
         std::vector<int> v(n);
         ThreadPool pool(4);
-        for (size_t i = 0; i < v.size(); ++i)
+        for(size_t i = 0; i < v.size(); ++i)
         {
             pool.enqueue(
                 [&v, i](size_t /*thread_id*/) {
                     v[i] = 0;
-                    for (size_t k = 0; k < i + 1; ++k)
+                    for(size_t k = 0; k < i + 1; ++k)
                     {
                         v[i] += k;
                     }
@@ -62,7 +62,7 @@ struct ThreadPoolTests
         pool.waitFinished();
 
         std::vector<int> v_expected(n);
-        for (size_t i = 0; i < v_expected.size(); ++i)
+        for(size_t i = 0; i < v_expected.size(); ++i)
             v_expected[i] = i * (i + 1) / 2;
 
         shouldEqualSequence(v.begin(), v.end(), v_expected.begin());
@@ -75,24 +75,24 @@ struct ThreadPoolTests
         std::vector<int> v(10000);
         ThreadPool pool(4);
         std::vector<threading::future<void>> futures;
-        for (size_t i = 0; i < v.size(); ++i)
+        for(size_t i = 0; i < v.size(); ++i)
         {
             futures.emplace_back(
                 pool.enqueue(
                     [&v, &exception_string, i](size_t /*thread_id*/) {
                         v[i] = 1;
-                        if (i == 5000)
+                        if(i == 5000)
                             throw std::runtime_error(exception_string);
                     }));
         }
         try
         {
-            for (auto& fut : futures)
+            for(auto& fut : futures)
                 fut.get();
         }
-        catch (std::runtime_error& ex)
+        catch(std::runtime_error& ex)
         {
-            if (ex.what() == exception_string)
+            if(ex.what() == exception_string)
                 caught = true;
         }
         should(caught);
@@ -110,7 +110,7 @@ struct ThreadPoolTests
                          });
 
         std::vector<int> v_expected(n);
-        for (size_t i = 0; i < v_expected.size(); ++i)
+        for(size_t i = 0; i < v_expected.size(); ++i)
             v_expected[i] = i * (i + 1) / 2;
 
         shouldEqualSequence(v_out.begin(), v_out.end(), v_expected.begin());
@@ -128,14 +128,14 @@ struct ThreadPoolTests
         {
             parallel_foreach(4, v_in.begin(), v_in.end(),
                              [&v_out, &exception_string](size_t /*thread_id*/, int x) {
-                                 if (x == 5000)
+                                 if(x == 5000)
                                      throw std::runtime_error(exception_string);
                                  v_out[x] = x;
                              });
         }
-        catch (std::runtime_error& ex)
+        catch(std::runtime_error& ex)
         {
-            if (ex.what() == exception_string)
+            if(ex.what() == exception_string)
                 caught = true;
         }
         should(caught);

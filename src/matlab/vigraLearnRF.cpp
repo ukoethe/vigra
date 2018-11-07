@@ -63,7 +63,7 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
     options.sample_with_replacement(inputs.getBool("sample_with_replacement",
                                                    v_default(true)));
 
-    if (inputs.getBool("sample_classes_individually", v_default(false)))
+    if(inputs.getBool("sample_classes_individually", v_default(false)))
         options.use_stratification(vigra::RF_EQUAL);
     options.min_split_node_size(static_cast<int>(inputs
                                                      .getScalarMinMax<double>("min_split_node_size",
@@ -71,9 +71,9 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
                                                                               0.0, "inf")));
     options.tree_count(static_cast<int>(inputs
                                             .getScalarMinMax<double>(2, v_default(255.0), 0.0, "inf")));
-    if (inputs.hasData("mtry"))
+    if(inputs.hasData("mtry"))
     {
-        if (inputs.typeOf("mtry") == mxCHAR_CLASS)
+        if(inputs.typeOf("mtry") == mxCHAR_CLASS)
         {
             std::map<std::string, int> map_;
             map_["RF_LOG"] = int(RF_LOG);
@@ -89,7 +89,7 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
     }
 
     double training_set_size = inputs.getScalar<double>("training_set_size", v_default(0));
-    if (training_set_size != 0)
+    if(training_set_size != 0)
     {
         options.samples_per_tree(int(training_set_size));
     }
@@ -103,7 +103,7 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
     MultiArrayView<2, inputType> features = inputs.getMultiArray<2, inputType>(0, v_required());
     MultiArrayView<1, inputType> weights = inputs.getMultiArray<1, inputType>("weights", v_optional());
 
-    if (weights.size() != 0)
+    if(weights.size() != 0)
         ext_param.class_weights(weights.data(), weights.data() + weights.size());
 
     double var_imp_rep = inputs.getScalar<double>("importance_repetition", v_default(10));
@@ -111,7 +111,7 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
     VariableImportanceVisitor var_imp(static_cast<int>(var_imp_rep));
     OOB_Error oob_err;
     MatlabRandomForestProgressVisitor progress;
-    if (!outputs.isValid(2))
+    if(!outputs.isValid(2))
         var_imp.deactivate();
 
 
@@ -129,7 +129,7 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
                                                                          MultiArrayShape<2>::type(var_imp
                                                                                                       .variable_importance_
                                                                                                       .shape()));
-    if (vari.size() != 0)
+    if(vari.size() != 0)
         vari = var_imp.variable_importance_;
 }
 

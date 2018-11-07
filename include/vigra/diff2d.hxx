@@ -49,7 +49,7 @@ namespace vigra
 {
 
 
-template<class Diff>
+template <class Diff>
 class Diff2DConstRowIteratorPolicy
 {
 public:
@@ -107,7 +107,7 @@ public:
     }
 };
 
-template<class Diff>
+template <class Diff>
 class Diff2DConstColumnIteratorPolicy
 {
 public:
@@ -287,7 +287,7 @@ public:
         */
     Diff2D& operator=(Diff2D const& v)
     {
-        if (this != &v)
+        if(this != &v)
         {
             x = v.x;
             y = v.y;
@@ -478,7 +478,7 @@ public:
 };
 
 
-template<>
+template <>
 struct IteratorTraits<Diff2D>
 {
     typedef Diff2D Iterator;
@@ -1218,20 +1218,20 @@ public:
          */
     Rect2D& operator|=(Point2D const& p)
     {
-        if (isEmpty())
+        if(isEmpty())
         {
             upperLeft_ = p;
             lowerRight_ = p + Diff2D(1, 1);
         }
         else
         {
-            if (p.x < upperLeft_.x)
+            if(p.x < upperLeft_.x)
                 upperLeft_.x = p.x;
-            if (p.y < upperLeft_.y)
+            if(p.y < upperLeft_.y)
                 upperLeft_.y = p.y;
-            if (lowerRight_.x <= p.x)
+            if(lowerRight_.x <= p.x)
                 lowerRight_.x = p.x + 1;
-            if (lowerRight_.y <= p.y)
+            if(lowerRight_.y <= p.y)
                 lowerRight_.y = p.y + 1;
         }
         return *this;
@@ -1256,18 +1256,18 @@ public:
          */
     Rect2D& operator|=(Rect2D const& r)
     {
-        if (r.isEmpty())
+        if(r.isEmpty())
             return *this;
-        if (isEmpty())
+        if(isEmpty())
             return operator=(r);
 
-        if (r.upperLeft_.x < upperLeft_.x)
+        if(r.upperLeft_.x < upperLeft_.x)
             upperLeft_.x = r.upperLeft_.x;
-        if (r.upperLeft_.y < upperLeft_.y)
+        if(r.upperLeft_.y < upperLeft_.y)
             upperLeft_.y = r.upperLeft_.y;
-        if (lowerRight_.x < r.lowerRight_.x)
+        if(lowerRight_.x < r.lowerRight_.x)
             lowerRight_.x = r.lowerRight_.x;
-        if (lowerRight_.y < r.lowerRight_.y)
+        if(lowerRight_.y < r.lowerRight_.y)
             lowerRight_.y = r.lowerRight_.y;
         return *this;
     }
@@ -1291,7 +1291,7 @@ public:
          */
     Rect2D& operator&=(Point2D const& p)
     {
-        if (contains(p))
+        if(contains(p))
         {
             upperLeft_ = p;
             lowerRight_ = p + Diff2D(1, 1);
@@ -1320,18 +1320,18 @@ public:
          */
     Rect2D& operator&=(Rect2D const& r)
     {
-        if (isEmpty())
+        if(isEmpty())
             return *this;
-        if (r.isEmpty())
+        if(r.isEmpty())
             return operator=(r);
 
-        if (upperLeft_.x < r.upperLeft_.x)
+        if(upperLeft_.x < r.upperLeft_.x)
             upperLeft_.x = r.upperLeft_.x;
-        if (upperLeft_.y < r.upperLeft_.y)
+        if(upperLeft_.y < r.upperLeft_.y)
             upperLeft_.y = r.upperLeft_.y;
-        if (r.lowerRight_.x < lowerRight_.x)
+        if(r.lowerRight_.x < lowerRight_.x)
             lowerRight_.x = r.lowerRight_.x;
-        if (r.lowerRight_.y < lowerRight_.y)
+        if(r.lowerRight_.y < lowerRight_.y)
             lowerRight_.y = r.lowerRight_.y;
         return *this;
     }
@@ -1415,7 +1415,7 @@ public:
 
     Dist2D& operator=(Dist2D const& s)
     {
-        if (this != &s)
+        if(this != &s)
         {
             width = s.width;
             height = s.height;

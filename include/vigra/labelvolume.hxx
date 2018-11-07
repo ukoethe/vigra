@@ -198,12 +198,12 @@ namespace vigra
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> unsigned int labelVolume)
+doxygen_overloaded_function(template <...> unsigned int labelVolume)
 
 
-    template<class SrcIterator, class SrcAccessor, class SrcShape,
-             class DestIterator, class DestAccessor,
-             class Neighborhood3D, class EqualityFunctor>
+    template <class SrcIterator, class SrcAccessor, class SrcShape,
+              class DestIterator, class DestAccessor,
+              class Neighborhood3D, class EqualityFunctor>
     unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                              DestIterator d_Iter, DestAccessor da,
                              Neighborhood3D, EqualityFunctor equal)
@@ -237,17 +237,17 @@ doxygen_overloaded_function(template<...> unsigned int labelVolume)
     // tree is distinguished by pointing to itself (it contains its
     // own scan order address). This condition is enforced whenever a
     // new region is found or two regions are merged
-    for (z = 0; z != d; ++z, ++zs.dim2(), ++zd.dim2())
+    for(z = 0; z != d; ++z, ++zs.dim2(), ++zd.dim2())
     {
         SrcIterator ys(zs);
         DestIterator yd(zd);
 
-        for (y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1())
+        for(y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1())
         {
             SrcIterator xs(ys);
             DestIterator xd(yd);
 
-            for (x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0())
+            for(x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0())
             {
                 LabelType currentIndex = label.nextFreeIndex();
 
@@ -255,33 +255,33 @@ doxygen_overloaded_function(template<...> unsigned int labelVolume)
                 AtVolumeBorder atBorder = isAtVolumeBorderCausal(x, y, z, w, h, d);
 
                 //We are not at the border!
-                if (atBorder == NotAtBorder)
+                if(atBorder == NotAtBorder)
                 {
                     NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
 
                     do
                     {
                         // if colors are equal
-                        if (equal(sa(xs), sa(xs, *nc)))
+                        if(equal(sa(xs), sa(xs, *nc)))
                         {
                             currentIndex = label.makeUnion(da(xd, *nc), currentIndex);
                         }
                         ++nc;
-                    } while (nc != nce);
+                    } while(nc != nce);
                 }
                 else //we are at a border - handle this!!
                 {
                     NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::nearBorderDirectionsCausal(atBorder, 0));
                     int j = 0;
-                    while (nc.direction() != Neighborhood3D::Error)
+                    while(nc.direction() != Neighborhood3D::Error)
                     {
                         int dummy = x + (*nc)[0]; // prevents an apparently incorrect optimization in gcc 4.8
-                        if (dummy < 0)
+                        if(dummy < 0)
                         {
                             std::cerr << "internal error " << dummy << std::endl;
                         }
                         //   colors equal???
-                        if (equal(sa(xs), sa(xs, *nc)))
+                        if(equal(sa(xs), sa(xs, *nc)))
                         {
                             currentIndex = label.makeUnion(da(xd, *nc), currentIndex);
                         }
@@ -298,15 +298,15 @@ doxygen_overloaded_function(template<...> unsigned int labelVolume)
     // pass 2: assign one label to each region (tree)
     // so that labels form a consecutive sequence 1, 2, ...
     zd = d_Iter;
-    for (z = 0; z != d; ++z, ++zd.dim2())
+    for(z = 0; z != d; ++z, ++zd.dim2())
     {
         DestIterator yd(zd);
 
-        for (y = 0; y != h; ++y, ++yd.dim1())
+        for(y = 0; y != h; ++y, ++yd.dim1())
         {
             DestIterator xd(yd);
 
-            for (x = 0; x != w; ++x, ++xd.dim0())
+            for(x = 0; x != w; ++x, ++xd.dim0())
             {
                 da.set(label.findLabel(da(xd)), xd);
             }
@@ -315,9 +315,9 @@ doxygen_overloaded_function(template<...> unsigned int labelVolume)
     return count;
 }
 
-template<class SrcIterator, class SrcAccessor, class SrcShape,
-         class DestIterator, class DestAccessor,
-         class Neighborhood3D>
+template <class SrcIterator, class SrcAccessor, class SrcShape,
+          class DestIterator, class DestAccessor,
+          class Neighborhood3D>
 unsigned int
 labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
             DestIterator d_Iter, DestAccessor da,
@@ -326,9 +326,9 @@ labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
     return labelVolume(s_Iter, srcShape, sa, d_Iter, da, neighborhood3D, std::equal_to<typename SrcAccessor::value_type>());
 }
 
-template<class SrcIterator, class SrcShape, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class Neighborhood3D>
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Neighborhood3D>
 unsigned int
 labelVolume(triple<SrcIterator, SrcShape, SrcAccessor> src,
             pair<DestIterator, DestAccessor> dest,
@@ -337,9 +337,9 @@ labelVolume(triple<SrcIterator, SrcShape, SrcAccessor> src,
     return labelVolume(src.first, src.second, src.third, dest.first, dest.second, neighborhood3D, std::equal_to<typename SrcAccessor::value_type>());
 }
 
-template<class SrcIterator, class SrcShape, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class Neighborhood3D, class EqualityFunctor>
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Neighborhood3D, class EqualityFunctor>
 unsigned int
 labelVolume(triple<SrcIterator, SrcShape, SrcAccessor> src,
             pair<DestIterator, DestAccessor> dest,
@@ -348,9 +348,9 @@ labelVolume(triple<SrcIterator, SrcShape, SrcAccessor> src,
     return labelVolume(src.first, src.second, src.third, dest.first, dest.second, neighborhood3D, equal);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class Neighborhood3D, class EqualityFunctor>
+template <class T1, class S1,
+          class T2, class S2,
+          class Neighborhood3D, class EqualityFunctor>
 inline unsigned int
     labelVolume(MultiArrayView<3, T1, S1> const& source,
                 MultiArrayView<3, T2, S2> dest,
@@ -362,9 +362,9 @@ inline unsigned int
     return labelVolume(srcMultiArrayRange(source), destMultiArray(dest), neighborhood3D, equal);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class Neighborhood3D>
+template <class T1, class S1,
+          class T2, class S2,
+          class Neighborhood3D>
 inline unsigned int
     labelVolume(MultiArrayView<3, T1, S1> const& source,
                 MultiArrayView<3, T2, S2> dest,
@@ -387,8 +387,8 @@ inline unsigned int
      See \ref labelVolume() for detailed documentation.
 
 */
-template<class SrcIterator, class SrcAccessor, class SrcShape,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor, class SrcShape,
+          class DestIterator, class DestAccessor>
 unsigned int
 labelVolumeSix(triple<SrcIterator, SrcShape, SrcAccessor> src,
                pair<DestIterator, DestAccessor> dest)
@@ -396,8 +396,8 @@ labelVolumeSix(triple<SrcIterator, SrcShape, SrcAccessor> src,
     return labelVolume(src.first, src.second, src.third, dest.first, dest.second, NeighborCode3DSix(), std::equal_to<typename SrcAccessor::value_type>());
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const& source,
                             MultiArrayView<3, T2, S2> dest)
 {
@@ -537,12 +537,12 @@ unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const& source,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> unsigned int labelVolumeWithBackground)
+doxygen_overloaded_function(template <...> unsigned int labelVolumeWithBackground)
 
-    template<class SrcIterator, class SrcAccessor, class SrcShape,
-             class DestIterator, class DestAccessor,
-             class Neighborhood3D,
-             class ValueType, class EqualityFunctor>
+    template <class SrcIterator, class SrcAccessor, class SrcShape,
+              class DestIterator, class DestAccessor,
+              class Neighborhood3D,
+              class ValueType, class EqualityFunctor>
     unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                                            DestIterator d_Iter, DestAccessor da,
                                            Neighborhood3D,
@@ -577,19 +577,19 @@ doxygen_overloaded_function(template<...> unsigned int labelVolumeWithBackground
     // tree is distinguished by pointing to itself (it contains its
     // own scan order address). This condition is enforced whenever a
     // new region is found or two regions are merged
-    for (z = 0; z != d; ++z, ++zs.dim2(), ++zd.dim2())
+    for(z = 0; z != d; ++z, ++zs.dim2(), ++zd.dim2())
     {
         SrcIterator ys(zs);
         DestIterator yd(zd);
 
-        for (y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1())
+        for(y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1())
         {
             SrcIterator xs(ys);
             DestIterator xd(yd);
 
-            for (x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0())
+            for(x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0())
             {
-                if (equal(sa(xs), backgroundValue))
+                if(equal(sa(xs), backgroundValue))
                 {
                     //da.set(label.getIndex(0), xd);
                     da.set(0, xd);
@@ -602,33 +602,33 @@ doxygen_overloaded_function(template<...> unsigned int labelVolumeWithBackground
                 AtVolumeBorder atBorder = isAtVolumeBorderCausal(x, y, z, w, h, d);
 
                 //We are not at the border!
-                if (atBorder == NotAtBorder)
+                if(atBorder == NotAtBorder)
                 {
                     NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
 
                     do
                     {
                         // if colors are equal
-                        if (equal(sa(xs), sa(xs, *nc)))
+                        if(equal(sa(xs), sa(xs, *nc)))
                         {
                             currentIndex = label.makeUnion(da(xd, *nc), currentIndex);
                         }
                         ++nc;
-                    } while (nc != nce);
+                    } while(nc != nce);
                 }
                 else //we are at a border - handle this!!
                 {
                     NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::nearBorderDirectionsCausal(atBorder, 0));
                     int j = 0;
-                    while (nc.direction() != Neighborhood3D::Error)
+                    while(nc.direction() != Neighborhood3D::Error)
                     {
                         int dummy = x + (*nc)[0]; // prevents an apparently incorrect optimization in gcc 4.8
-                        if (dummy < 0)
+                        if(dummy < 0)
                         {
                             std::cerr << "internal error " << dummy << std::endl;
                         }
                         //   colors equal???
-                        if (equal(sa(xs), sa(xs, *nc)))
+                        if(equal(sa(xs), sa(xs, *nc)))
                         {
                             currentIndex = label.makeUnion(da(xd, *nc), currentIndex);
                         }
@@ -645,15 +645,15 @@ doxygen_overloaded_function(template<...> unsigned int labelVolumeWithBackground
     // pass 2: assign one label to each region (tree)
     // so that labels form a consecutive sequence 1, 2, ...
     zd = d_Iter;
-    for (z = 0; z != d; ++z, ++zd.dim2())
+    for(z = 0; z != d; ++z, ++zd.dim2())
     {
         DestIterator yd(zd);
 
-        for (y = 0; y != h; ++y, ++yd.dim1())
+        for(y = 0; y != h; ++y, ++yd.dim1())
         {
             DestIterator xd(yd);
 
-            for (x = 0; x != w; ++x, ++xd.dim0())
+            for(x = 0; x != w; ++x, ++xd.dim0())
             {
                 da.set(label.findLabel(da(xd)), xd);
             }
@@ -662,10 +662,10 @@ doxygen_overloaded_function(template<...> unsigned int labelVolumeWithBackground
     return count;
 }
 
-template<class SrcIterator, class SrcAccessor, class SrcShape,
-         class DestIterator, class DestAccessor,
-         class Neighborhood3D,
-         class ValueType>
+template <class SrcIterator, class SrcAccessor, class SrcShape,
+          class DestIterator, class DestAccessor,
+          class Neighborhood3D,
+          class ValueType>
 inline unsigned int
 labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                           DestIterator d_Iter, DestAccessor da,
@@ -674,11 +674,11 @@ labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
     return labelVolumeWithBackground(s_Iter, srcShape, sa, d_Iter, da, neighborhood3D, backgroundValue, std::equal_to<typename SrcAccessor::value_type>());
 }
 
-template<class SrcIterator, class SrcShape, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class Neighborhood3D,
-         class ValueType,
-         class EqualityFunctor>
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Neighborhood3D,
+          class ValueType,
+          class EqualityFunctor>
 inline unsigned int
 labelVolumeWithBackground(triple<SrcIterator, SrcShape, SrcAccessor> src,
                           pair<DestIterator, DestAccessor> dest,
@@ -687,10 +687,10 @@ labelVolumeWithBackground(triple<SrcIterator, SrcShape, SrcAccessor> src,
     return labelVolumeWithBackground(src.first, src.second, src.third, dest.first, dest.second, neighborhood3D, backgroundValue, equal);
 }
 
-template<class SrcIterator, class SrcShape, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class Neighborhood3D,
-         class ValueType>
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Neighborhood3D,
+          class ValueType>
 inline unsigned int
 labelVolumeWithBackground(triple<SrcIterator, SrcShape, SrcAccessor> src,
                           pair<DestIterator, DestAccessor> dest,
@@ -700,11 +700,11 @@ labelVolumeWithBackground(triple<SrcIterator, SrcShape, SrcAccessor> src,
                                      neighborhood3D, backgroundValue, std::equal_to<typename SrcAccessor::value_type>());
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class Neighborhood3D,
-         class ValueType,
-         class EqualityFunctor>
+template <class T1, class S1,
+          class T2, class S2,
+          class Neighborhood3D,
+          class ValueType,
+          class EqualityFunctor>
 inline unsigned int
     labelVolumeWithBackground(MultiArrayView<3, T1, S1> const& source,
                               MultiArrayView<3, T2, S2> dest,
@@ -718,10 +718,10 @@ inline unsigned int
                                      neighborhood3D, backgroundValue, equal);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class Neighborhood3D,
-         class ValueType>
+template <class T1, class S1,
+          class T2, class S2,
+          class Neighborhood3D,
+          class ValueType>
 inline unsigned int
     labelVolumeWithBackground(MultiArrayView<3, T1, S1> const& source,
                               MultiArrayView<3, T2, S2> dest,

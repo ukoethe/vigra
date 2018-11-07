@@ -43,49 +43,49 @@
 
 using namespace vigra::functor;
 
-template<class EXPR>
+template <class EXPR>
 typename ResultTraits0<UnaryFunctor<EXPR>>::Res
 exec(UnaryFunctor<EXPR> f)
 {
     return f();
 }
 
-template<class EXPR, class T1>
+template <class EXPR, class T1>
 typename ResultTraits1<UnaryFunctor<EXPR>, T1>::Res
 exec(UnaryFunctor<EXPR> f, T1 const& a1)
 {
     return f(a1);
 }
 
-template<class EXPR, class T1, class T2>
+template <class EXPR, class T1, class T2>
 typename ResultTraits2<UnaryFunctor<EXPR>, T1, T2>::Res
 exec(UnaryFunctor<EXPR> f, T1 const& a1, T2 const& a2)
 {
     return f(a1, a2);
 }
 
-template<class EXPR, class T1, class T2, class T3>
+template <class EXPR, class T1, class T2, class T3>
 typename ResultTraits3<UnaryFunctor<EXPR>, T1, T2, T3>::Res
 exec(UnaryFunctor<EXPR> f, T1 const& a1, T2 const& a2, T3 const& a3)
 {
     return f(a1, a2, a3);
 }
 
-template<class EXPR, class T1>
+template <class EXPR, class T1>
 void
 exec(UnaryAnalyser<EXPR> f, T1 const& a1)
 {
     f(a1);
 }
 
-template<class EXPR, class T1, class T2>
+template <class EXPR, class T1, class T2>
 void
 exec(UnaryAnalyser<EXPR> f, T1 const& a1, T2 const& a2)
 {
     f(a1, a2);
 }
 
-template<class EXPR, class T1, class T2, class T3>
+template <class EXPR, class T1, class T2, class T3>
 void
 exec(UnaryAnalyser<EXPR> f, T1 const& a1, T2 const& a2, T3 const& a3)
 {
@@ -285,7 +285,7 @@ struct FunctorExpressionTest
 
         should(count == 0);
 
-        for (int i = 0; i < 6; ++i)
+        for(int i = 0; i < 6; ++i)
             should(res[i] == 2 * data[i]);
     }
 };

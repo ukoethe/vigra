@@ -4,12 +4,12 @@
 
 using namespace vigra;
 
-template<class T>
+template <class T>
 void print(MultiArrayView<2, T> array)
 {
-    for (int y = 0; y < array.shape(1); ++y)
+    for(int y = 0; y < array.shape(1); ++y)
     {
-        for (int x = 0; x < array.shape(0); ++x)
+        for(int x = 0; x < array.shape(0); ++x)
             std::cout << array(x, y) << "  ";
         std::cout << "\n";
     }
@@ -22,7 +22,7 @@ main(int argc, char** argv)
     MultiArray<2, int> base_array(Shape2(4, 4));
 
     // init array such that pixel values are equal to their x coordinate
-    for (int i = 0; i < base_array.size(); i++)
+    for(int i = 0; i < base_array.size(); i++)
     {
         base_array[i] = i % base_array.shape(0);
     }

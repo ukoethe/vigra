@@ -178,7 +178,7 @@ HDRDecoderImpl::nextScanline()
     auto_file& f = const_cast<auto_file&>(infile);
     VIGRA_RGBE_ReadPixels_RLE(f.get(), scanline.data(), width, 1);
 #ifdef DEBUG_HDR
-    for (int i = 0; i < width; i++)
+    for(int i = 0; i < width; i++)
     {
         fprintf(dbgFile.get(), "%f ", scanline[i]);
     }
@@ -293,7 +293,7 @@ public:
     void nextScanline()
     {
         // save one scanline
-        if (VIGRA_RGBE_WritePixels_RLE(file.get(), scanline.begin(), width, 1) != VIGRA_RGBE_RETURN_SUCCESS)
+        if(VIGRA_RGBE_WritePixels_RLE(file.get(), scanline.begin(), width, 1) != VIGRA_RGBE_RETURN_SUCCESS)
         {
             vigra_fail("HDREncoder: Could not write scanline");
         }
@@ -315,7 +315,7 @@ HDREncoderImpl::finalizeSettings()
 
     scanline.resize(samples_per_pixel * width);
 
-    if (VIGRA_RGBE_WriteHeader(file.get(), width, height, &rgbe_h) != VIGRA_RGBE_RETURN_SUCCESS)
+    if(VIGRA_RGBE_WriteHeader(file.get(), width, height, &rgbe_h) != VIGRA_RGBE_RETURN_SUCCESS)
     {
         vigra_fail("HDREncoder: Could not write header");
     }
@@ -363,7 +363,7 @@ void
 HDREncoder::setNumBands(unsigned int bands)
 {
     VIGRA_IMPEX_FINALIZED(pimpl->finalized);
-    if (bands != 3)
+    if(bands != 3)
     {
         vigra_fail("HDREncoder: can only save 3 channel images");
     }
@@ -379,7 +379,7 @@ void
 HDREncoder::setPixelType(const std::string& pixeltype)
 {
     VIGRA_IMPEX_FINALIZED(pimpl->finalized);
-    if (pixeltype != "FLOAT")
+    if(pixeltype != "FLOAT")
         vigra_fail("internal error: pixeltype not supported.");
     pimpl->pixeltype = "FLOAT";
 }

@@ -147,7 +147,7 @@ struct edge_property_tag
 
 // tie() support for std::pair, similar to Boost's one:
 // (necessary because std::pair doesn't define a suitable assignment operator)
-template<class T1, class T2>
+template <class T1, class T2>
 class tie_adapter
 {
 public:
@@ -156,7 +156,7 @@ public:
     {
     }
 
-    template<class X, class Y>
+    template <class X, class Y>
     tie_adapter& operator=(const std::pair<X, Y>& pair)
     {
         x_ = pair.first;
@@ -169,7 +169,7 @@ protected:
     T2& y_;
 };
 
-template<class T1, class T2>
+template <class T1, class T2>
 inline tie_adapter<T1, T2>
 tie(T1& t1, T2& t2)
 {
@@ -177,7 +177,7 @@ tie(T1& t1, T2& t2)
 }
 
 // graph_traits class template
-template<typename G>
+template <typename G>
 struct graph_traits
 {
     typedef typename G::vertex_descriptor vertex_descriptor;
@@ -203,7 +203,7 @@ struct graph_traits
 };
 
 // property_traits class template
-template<typename PropMap>
+template <typename PropMap>
 struct property_traits
 {
     typedef typename PropMap::key_type key_type;
@@ -241,7 +241,7 @@ public:
         return false;
     }
 
-    template<class T, int N>
+    template <class T, int N>
     operator vigra::TinyVector<T, N>() const
     {
         return vigra::TinyVector<T, N>(-1);
@@ -260,28 +260,28 @@ typedef vigra::VigraFalseType False;
 namespace lemon
 {
 
-template<class T>
+template <class T>
 inline bool
 operator==(T const& t, Invalid)
 {
     return t == T(Invalid());
 }
 
-template<class T>
+template <class T>
 inline bool
 operator==(Invalid, T const& t)
 {
     return t == T(Invalid());
 }
 
-template<class T>
+template <class T>
 inline bool
 operator!=(T const& t, Invalid)
 {
     return t != T(Invalid());
 }
 
-template<class T>
+template <class T>
 inline bool
 operator!=(Invalid, T const& t)
 {
@@ -294,10 +294,10 @@ namespace vigra
 {
 
 
-template<class GRAPH, class ITEM>
+template <class GRAPH, class ITEM>
 struct GraphItemHelper;
 
-template<class GRAPH>
+template <class GRAPH>
 struct GraphItemHelper<GRAPH, typename GRAPH::Edge>
 {
     typedef typename GRAPH::index_type index_type;
@@ -319,7 +319,7 @@ struct GraphItemHelper<GRAPH, typename GRAPH::Edge>
     }
 };
 
-template<class GRAPH>
+template <class GRAPH>
 struct GraphItemHelper<GRAPH, typename GRAPH::Node>
 {
     typedef typename GRAPH::index_type index_type;
@@ -342,7 +342,7 @@ struct GraphItemHelper<GRAPH, typename GRAPH::Node>
 };
 
 
-template<class GRAPH>
+template <class GRAPH>
 struct GraphItemHelper<GRAPH, typename GRAPH::Arc>
 {
     typedef typename GRAPH::index_type index_type;
@@ -382,7 +382,7 @@ namespace vigra
 namespace detail
 {
 
-template<typename INDEXTYPE>
+template <typename INDEXTYPE>
 class NodeDescriptor
 {
 public:
@@ -416,14 +416,14 @@ protected:
     index_type id_;
 };
 
-template<typename INDEXTYPE>
+template <typename INDEXTYPE>
 std::ostream&
 operator<<(std::ostream& os, NodeDescriptor<INDEXTYPE> const& item)
 {
     return os << item.id();
 }
 
-template<typename INDEXTYPE>
+template <typename INDEXTYPE>
 class ArcDescriptor
 {
 public:
@@ -457,7 +457,7 @@ protected:
     index_type id_;
 };
 
-template<typename INDEXTYPE>
+template <typename INDEXTYPE>
 std::ostream&
 operator<<(std::ostream& os, ArcDescriptor<INDEXTYPE> const& item)
 {
@@ -487,7 +487,7 @@ enum ContainerTag
  * If ContainerTag == MapTag: at() and operator[] behave like std::map::at().
  * If ContainerTag == IndexVectorTag: at() behaves like std::map::at(). operator[] does not check if the key exists.
  */
-template<typename KEYTYPE, typename MAPPEDTYPE, ContainerTag = MapTag>
+template <typename KEYTYPE, typename MAPPEDTYPE, ContainerTag = MapTag>
 class PropertyMap
 {
 public:
@@ -573,7 +573,7 @@ protected:
 
 namespace detail
 {
-template<typename VALUE_TYPE>
+template <typename VALUE_TYPE>
 struct PMapValueSkipper
 {
 public:
@@ -596,7 +596,7 @@ private:
 /**
  * @brief Specialization of PropertyMap that stores the elements in a vector (size = max node id of stored elements).
  */
-template<typename KEYTYPE, typename MAPPEDTYPE>
+template <typename KEYTYPE, typename MAPPEDTYPE>
 class PropertyMap<KEYTYPE, MAPPEDTYPE, VectorTag>
 {
 public:
@@ -619,7 +619,7 @@ public:
     mapped_type& at(key_type const& k)
     {
 #ifdef VIGRA_CHECK_BOUNDS
-        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == default_key_)
+        if(k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == default_key_)
             throw std::out_of_range("PropertyMap::at(): Key not found.");
 #endif
         return map_[k.id()].second;
@@ -628,7 +628,7 @@ public:
     mapped_type const& at(key_type const& k) const
     {
 #ifdef VIGRA_CHECK_BOUNDS
-        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == default_key_)
+        if(k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == default_key_)
             throw std::out_of_range("PropertyMap::at(): Key not found.");
 #endif
         return map_[k.id()].second;
@@ -646,14 +646,14 @@ public:
 
     void insert(key_type const& k, mapped_type const& v)
     {
-        if (k.id() < 0)
+        if(k.id() < 0)
             throw std::out_of_range("PropertyMap::insert(): Key must not be negative.");
 
-        if ((size_t)k.id() >= map_.size())
+        if((size_t)k.id() >= map_.size())
             map_.resize(k.id() + 1, value_type(default_key_, mapped_type()));
 
         auto& elt = map_[k.id()];
-        if (elt.first == default_key_)
+        if(elt.first == default_key_)
             ++num_elements_;
 
         elt.first = k;
@@ -695,7 +695,7 @@ public:
 
     iterator find(key_type const& k)
     {
-        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == default_key_)
+        if(k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == default_key_)
             return end();
         else
             return MAKE_ITER(std::next(map_.begin(), k.id()));
@@ -703,7 +703,7 @@ public:
 
     const_iterator find(key_type const& k) const
     {
-        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == default_key_)
+        if(k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == default_key_)
             return end();
         else
             return MAKE_ITER(std::next(map_.begin(), k.id()));
@@ -725,7 +725,7 @@ public:
 
     size_t erase(key_type const& k)
     {
-        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == default_key_)
+        if(k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == default_key_)
         {
             return 0;
         }
@@ -750,7 +750,7 @@ protected:
  * Specialization of PropertyMap that stores the elements in a vector (size = number of stored elements).
  * An additional index vector is needed for bookkeeping (size = max node id of stored elements).
  */
-template<typename KEYTYPE, typename MAPPEDTYPE>
+template <typename KEYTYPE, typename MAPPEDTYPE>
 class PropertyMap<KEYTYPE, MAPPEDTYPE, IndexVectorTag>
 {
 public:
@@ -766,7 +766,7 @@ public:
     mapped_type& at(key_type const& k)
     {
 #ifdef VIGRA_CHECK_BOUNDS
-        if (indices_.at(k.id()) == -1)
+        if(indices_.at(k.id()) == -1)
             throw std::out_of_range("PropertyMap::at(): Key not found.");
 #endif
         return map_[indices_[k.id()]].second;
@@ -775,7 +775,7 @@ public:
     mapped_type const& at(key_type const& k) const
     {
 #ifdef VIGRA_CHECK_BOUNDS
-        if (indices_.at(k.id()) == -1)
+        if(indices_.at(k.id()) == -1)
             throw std::out_of_range("PropertyMap::at(): Key not found.");
 #endif
         return map_[indices_[k.id()]].second;
@@ -793,13 +793,13 @@ public:
 
     void insert(key_type const& k, mapped_type const& v)
     {
-        if (k.id() < 0)
+        if(k.id() < 0)
             throw std::out_of_range("PropertyMap::insert(): Key must not be negative.");
 
-        if (k.id() >= indices_.size())
+        if(k.id() >= indices_.size())
             indices_.resize(k.id() + 1, -1);
 
-        if (indices_[k.id()] == -1)
+        if(indices_[k.id()] == -1)
         {
             indices_[k.id()] = map_.size();
             map_.push_back(value_type(k, v));
@@ -844,7 +844,7 @@ public:
 
     iterator find(key_type const& k)
     {
-        if (k.id() < 0 || k.id() >= indices_.size() || indices_[k.id()] == -1)
+        if(k.id() < 0 || k.id() >= indices_.size() || indices_[k.id()] == -1)
             return map_.end();
         else
             return std::next(map_.begin(), indices_[k.id()]);
@@ -852,7 +852,7 @@ public:
 
     const_iterator find(key_type const& k) const
     {
-        if (k.id() < 0 || k.id() >= indices_.size() || indices_[k.id()] == -1)
+        if(k.id() < 0 || k.id() >= indices_.size() || indices_[k.id()] == -1)
             return map_.end();
         else
             return std::next(map_.begin(), indices_[k.id()]);
@@ -865,7 +865,7 @@ public:
 
     size_t erase(key_type const& k)
     {
-        if (k.id() < 0 || k.id() >= indices_.size() || indices_[k.id()] == -1)
+        if(k.id() < 0 || k.id() >= indices_.size() || indices_[k.id()] == -1)
         {
             return 0;
         }
@@ -877,8 +877,8 @@ public:
             map_.erase(std::next(map_.begin(), ind));
 
             // Adjust the indices.
-            for (size_t i = 0; i < indices_.size(); ++i)
-                if (indices_[i] > ind)
+            for(size_t i = 0; i < indices_.size(); ++i)
+                if(indices_[i] > ind)
                     --indices_[i];
             return 1;
         }

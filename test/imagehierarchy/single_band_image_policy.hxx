@@ -4,7 +4,7 @@
 #include "vigra/imagehierarchy.hxx"
 #include <unittest.hxx>
 
-template<class IMAGEPOLICY> // Bei der IMAGEPOLICY handelt es sich bis jetzt nur um GrayImage, spaeter soll SelectBandImage folgen
+template <class IMAGEPOLICY> // Bei der IMAGEPOLICY handelt es sich bis jetzt nur um GrayImage, spaeter soll SelectBandImage folgen
 class SingleBandImagePolicy
 {
 

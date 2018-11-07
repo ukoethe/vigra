@@ -75,11 +75,11 @@ struct FFTWComplexTest
 {
     FFTWComplex<> clx0, clx1, clx2, clx3;
 
-    template<class VECTOR>
+    template <class VECTOR>
     void printVector(VECTOR const& v)
     {
         std::cerr << "(";
-        for (int i = 0; i < v.size(); ++i)
+        for(int i = 0; i < v.size(); ++i)
             std::cerr << v[i] << ", ";
         std::cerr << ")\n";
     }
@@ -211,8 +211,8 @@ struct FFTWComplexTest
         const int w = 256, h = 256;
 
         FFTWComplexImage in(w, h);
-        for (int y = 0; y < in.height(); y++)
-            for (int x = 0; x < in.width(); x++)
+        for(int y = 0; y < in.height(); y++)
+            for(int x = 0; x < in.width(); x++)
             {
                 in(x, y) = rand() / (double)RAND_MAX;
             }
@@ -235,8 +235,8 @@ struct FFTWComplexTest
 
         shouldEqualTolerance(average(), 0.0, 1e-14);
 
-        for (int y = 0; y < in.height(); y++)
-            for (int x = 0; x < in.width(); x++)
+        for(int y = 0; y < in.height(); y++)
+            for(int x = 0; x < in.width(); x++)
             {
                 in(x, y)[1] = rand() / (double)RAND_MAX;
             }
@@ -268,7 +268,7 @@ struct FFTWComplexTest
         copy(t4, t4 + 16, in4.begin());
         moveDCToCenter(srcImageRange(in4), destImage(out4));
         moveDCToUpperLeft(srcImageRange(out4), destImage(in4));
-        for (int i = 0; i < 16; ++i)
+        for(int i = 0; i < 16; ++i)
         {
             should(out4.begin()[i] == t4res[i]);
             should(in4.begin()[i] == t4[i]);
@@ -289,7 +289,7 @@ struct FFTWComplexTest
         copy(t5, t5 + 25, in5.begin());
         moveDCToCenter(srcImageRange(in5), destImage(out5));
         moveDCToUpperLeft(srcImageRange(out5), destImage(in5));
-        for (int i = 0; i < 25; ++i)
+        for(int i = 0; i < 25; ++i)
         {
             should(out5.begin()[i] == t5res[i]);
             should(in5.begin()[i] == t5[i]);
@@ -313,11 +313,11 @@ struct MultiFFTTest
         Shape3 s(5, 5, 5);
         MultiArray<3, unsigned int> a(s), ref(s), iref(s);
 
-        for (int z = 0; z < 5; ++z)
+        for(int z = 0; z < 5; ++z)
         {
-            for (int y = 0; y < 5; ++y)
+            for(int y = 0; y < 5; ++y)
             {
-                for (int x = 0; x < 5; ++x)
+                for(int x = 0; x < 5; ++x)
                 {
                     unsigned int v = ((z > 2) ? 4 : 0) + ((y > 2) ? 2 : 0) + ((x > 2) ? 1 : 0);
                     a(x, y, z) = iref(x, y, z) = v;
@@ -344,14 +344,14 @@ struct MultiFFTTest
         MultiArrayShape<1>::type s1_e(10), s1_5(5), s1_6(6);
         MultiArray<1, double> e1(s1_e), k1_5(s1_5), k1_6(s1_6);
 
-        for (int k = 0; k < k1_5.size(); ++k)
+        for(int k = 0; k < k1_5.size(); ++k)
             k1_5(k) = k + 1;
         detail::fftEmbedKernel(k1_5, e1);
 
         double k1_5ref[] = {3, 4, 5, 0, 0, 0, 0, 0, 1, 2};
         shouldEqualSequence(e1.data(), e1.data() + e1.size(), k1_5ref);
 
-        for (int k = 0; k < k1_6.size(); ++k)
+        for(int k = 0; k < k1_6.size(); ++k)
             k1_6(k) = k + 1;
         detail::fftEmbedKernel(k1_6, e1);
 
@@ -369,7 +369,7 @@ struct MultiFFTTest
         MultiArrayShape<2>::type s2_e(8, 8), s2_4(4, 4), s2_5(5, 5);
         MultiArray<2, double> e2(s2_e), k2_4(s2_4), k2_5(s2_5);
 
-        for (int k = 0; k < k2_4.size(); ++k)
+        for(int k = 0; k < k2_4.size(); ++k)
             k2_4(k) = k + 1;
         detail::fftEmbedKernel(k2_4, e2);
 
@@ -383,7 +383,7 @@ struct MultiFFTTest
                             7, 8, 0, 0, 0, 0, 5, 6};
         shouldEqualSequence(e2.data(), e2.data() + e2.size(), k2_4ref);
 
-        for (int k = 0; k < k2_5.size(); ++k)
+        for(int k = 0; k < k2_5.size(); ++k)
             k2_5(k) = k + 1;
         detail::fftEmbedKernel(k2_5, e2);
 
@@ -425,8 +425,8 @@ struct MultiFFTTest
         Shape2 s(256, 256);
 
         FFTWComplexImage in(s[0], s[1]);
-        for (int y = 0; y < in.height(); y++)
-            for (int x = 0; x < in.width(); x++)
+        for(int y = 0; y < in.height(); y++)
+            for(int x = 0; x < in.width(); x++)
             {
                 in(x, y) = rand() / (double)RAND_MAX;
             }
@@ -641,9 +641,9 @@ struct MultiFFTTest
 
         CArray2 kernel(kernelShape);
 
-        for (int y = 0; y < kernelShape[1]; ++y)
+        for(int y = 0; y < kernelShape[1]; ++y)
         {
-            for (int x = 0; x < kernelShape[0]; ++x)
+            for(int x = 0; x < kernelShape[0]; ++x)
             {
                 double xx = 2.0 * M_PI * (x - center[0]) / paddedShape[0];
                 double yy = 2.0 * M_PI * (y - center[1]) / paddedShape[1];
@@ -664,9 +664,9 @@ struct MultiFFTTest
         separableConvolveY(srcImageRange(tmp), destImage(ref), kernel1d(gauss));
 
         CArray2 kernel2(kernelShape);
-        for (int y = 0; y < kernelShape[1]; ++y)
+        for(int y = 0; y < kernelShape[1]; ++y)
         {
-            for (int x = 0; x < kernelShape[0]; ++x)
+            for(int x = 0; x < kernelShape[0]; ++x)
             {
                 double xx = 2.0 * M_PI * (x - center[0]) / paddedShape[0];
                 double yy = 2.0 * M_PI * (y - center[1]) / paddedShape[1];
@@ -760,10 +760,10 @@ struct GaborTests
         importImage(info, destImage(image));
     }
 
-    template<class Iterator, class Accessor>
+    template <class Iterator, class Accessor>
     void checkImage(triple<Iterator, Iterator, Accessor> src, const char* filename)
     {
-        if (initializing)
+        if(initializing)
         {
             exportImage(src, ImageExportInfo(filename));
             cout << "wrote " << filename << endl;

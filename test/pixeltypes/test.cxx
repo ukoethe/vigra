@@ -50,7 +50,7 @@ using namespace vigra;
 static float di[] = {1, 2, 4, 5, 8, 10};
 static float df[] = {1.2f, 2.4f, 3.6f, 4.8f, 8.1f, 9.7f};
 
-template<class BVector, class IVector, class FVector, int SIZE>
+template <class BVector, class IVector, class FVector, int SIZE>
 struct TinyVectorTest
 {
     typedef BVector BV;
@@ -61,40 +61,40 @@ struct TinyVectorTest
     IV iv0, iv1, iv3;
     FV fv0, fv1, fv3;
 
-    template<class VECTOR>
+    template <class VECTOR>
     void printVector(VECTOR const& v)
     {
         std::cerr << "(";
-        for (unsigned int i = 0; i < v.size(); ++i)
+        for(unsigned int i = 0; i < v.size(); ++i)
             std::cerr << (float)v[i] << ", ";
         std::cerr << ")\n";
     }
 
-    template<class VECTOR, class VALUE>
+    template <class VECTOR, class VALUE>
     bool equalValue(VECTOR const& v, VALUE const& vv)
     {
-        for (unsigned int i = 0; i < v.size(); ++i)
-            if (v[i] != vv)
+        for(unsigned int i = 0; i < v.size(); ++i)
+            if(v[i] != vv)
                 return false;
         return true;
     }
 
-    template<class VECTOR1, class VECTOR2>
+    template <class VECTOR1, class VECTOR2>
     bool equalVector(VECTOR1 const& v1, VECTOR2 const& v2)
     {
-        for (unsigned int i = 0; i < v1.size(); ++i)
-            if (v1[i] != v2[i])
+        for(unsigned int i = 0; i < v1.size(); ++i)
+            if(v1[i] != v2[i])
                 return false;
         return true;
     }
 
-    template<class ITER1, class ITER2>
+    template <class ITER1, class ITER2>
     bool equalIter(ITER1 i1, ITER1 i1end, ITER2 i2)
     {
-        if (i1end - i1 != SIZE)
+        if(i1end - i1 != SIZE)
             return false;
-        for (; i1 < i1end; ++i1, ++i2)
-            if (*i1 != *i2)
+        for(; i1 < i1end; ++i1, ++i2)
+            if(*i1 != *i2)
                 return false;
         return true;
     }
@@ -172,7 +172,7 @@ struct TinyVectorTest
         shouldEqual(1, (iv3.template subarray<1, 2>().size()));
         shouldEqual(iv3[1], (iv3.template subarray<1, 2>()[0]));
 
-        for (int k = 0; k < SIZE; ++k)
+        for(int k = 0; k < SIZE; ++k)
         {
             IV iv = IV::unitVector(k);
             shouldEqual(iv[k], 1);
@@ -193,7 +193,7 @@ struct TinyVectorTest
         shouldEqual(seq, seq_ref);
 
         IV r = reverse(iv3);
-        for (int k = 0; k < SIZE; ++k)
+        for(int k = 0; k < SIZE; ++k)
             shouldEqual(iv3[k], r[SIZE - 1 - k]);
 
         shouldEqual(transpose(r, IV::linearSequence(SIZE - 1, -1)), iv3);
@@ -308,7 +308,7 @@ struct TinyVectorTest
         should(fv1.squaredMagnitude() == (float)SIZE);
 
         float expectedSM = 1.2f * 1.2f + 2.4f * 2.4f + 3.6f * 3.6f;
-        if (SIZE == 6)
+        if(SIZE == 6)
             expectedSM += 4.8f * 4.8f + 8.1f * 8.1f + 9.7f * 9.7f;
         shouldEqualTolerance(fv3.squaredMagnitude(), expectedSM, 1e-7f);
 
@@ -344,7 +344,7 @@ struct TinyVectorTest
         BV bv = bv3;
         bv[2] = 200;
         int expectedSM2 = 40005;
-        if (SIZE == 6)
+        if(SIZE == 6)
             expectedSM2 += 189;
         should(dot(bv, bv) == expectedSM2);
         should(bv.squaredMagnitude() == expectedSM2);

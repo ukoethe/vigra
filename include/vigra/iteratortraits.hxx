@@ -106,7 +106,7 @@ namespace vigra
     <b>\#include</b> \<vigra/iteratortraits.hxx\>
     Namespace: vigra
 */
-template<class T>
+template <class T>
 struct IteratorTraits
 {
     typedef T Iterator;
@@ -126,7 +126,7 @@ struct IteratorTraits
     typedef VigraFalseType hasConstantStrides;
 };
 
-template<class T>
+template <class T>
 struct IteratorTraitsBase
 {
     typedef T Iterator;
@@ -613,28 +613,28 @@ struct IteratorTraitsBase
     </table>
 */
 
-template<class Iterator, class Accessor>
+template <class Iterator, class Accessor>
 inline triple<Iterator, Iterator, Accessor>
 srcIterRange(Iterator const& upperleft, Iterator const& lowerright, Accessor a)
 {
     return triple<Iterator, Iterator, Accessor>(upperleft, lowerright, a);
 }
 
-template<class Iterator, class Accessor>
+template <class Iterator, class Accessor>
 inline pair<Iterator, Accessor>
 srcIter(Iterator const& upperleft, Accessor a)
 {
     return pair<Iterator, Accessor>(upperleft, a);
 }
 
-template<class Iterator, class Accessor>
+template <class Iterator, class Accessor>
 inline pair<Iterator, Accessor>
 maskIter(Iterator const& upperleft, Accessor a)
 {
     return pair<Iterator, Accessor>(upperleft, a);
 }
 
-template<class Iterator, class Accessor>
+template <class Iterator, class Accessor>
 inline pair<Iterator, Accessor>
 destIter(Iterator const& upperleft, Accessor a)
 {
@@ -642,14 +642,14 @@ destIter(Iterator const& upperleft, Accessor a)
 }
 
 
-template<class Iterator, class Accessor>
+template <class Iterator, class Accessor>
 inline triple<Iterator, Iterator, Accessor>
 destIterRange(Iterator const& upperleft, Iterator const& lowerright, Accessor a)
 {
     return triple<Iterator, Iterator, Accessor>(upperleft, lowerright, a);
 }
 
-template<class Iterator>
+template <class Iterator>
 inline pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
 srcIter(Iterator const& upperleft)
 {
@@ -658,7 +658,7 @@ srcIter(Iterator const& upperleft)
         typename IteratorTraits<Iterator>::DefaultAccessor());
 }
 
-template<class Iterator>
+template <class Iterator>
 inline triple<Iterator, Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
 srcIterRange(Iterator const& upperleft, Iterator const& lowerright)
 {
@@ -668,7 +668,7 @@ srcIterRange(Iterator const& upperleft, Iterator const& lowerright)
         typename IteratorTraits<Iterator>::DefaultAccessor());
 }
 
-template<class Iterator>
+template <class Iterator>
 inline pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
 maskIter(Iterator const& upperleft)
 {
@@ -677,7 +677,7 @@ maskIter(Iterator const& upperleft)
         typename IteratorTraits<Iterator>::DefaultAccessor());
 }
 
-template<class Iterator>
+template <class Iterator>
 inline pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
 destIter(Iterator const& upperleft)
 {
@@ -686,7 +686,7 @@ destIter(Iterator const& upperleft)
         typename IteratorTraits<Iterator>::DefaultAccessor());
 }
 
-template<class Iterator>
+template <class Iterator>
 inline triple<Iterator, Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
 destIterRange(Iterator const& upperleft, Iterator const& lowerright)
 {

@@ -70,7 +70,7 @@ split(const std::string& s, char delim, std::vector<std::string>& elems)
 {
     std::stringstream ss(s);
     std::string item;
-    while (std::getline(ss, item, delim))
+    while(std::getline(ss, item, delim))
     {
         elems.push_back(item);
     }
@@ -99,7 +99,7 @@ convertToDouble(std::string const& s)
 {
     std::istringstream i(s);
     double x;
-    if (!(i >> x))
+    if(!(i >> x))
         throw BadConversion("convertToDouble(\"" + s + "\")");
     return x;
 }
@@ -109,7 +109,7 @@ convertToInt(std::string const& s)
 {
     std::istringstream i(s);
     int x;
-    if (!(i >> x))
+    if(!(i >> x))
         throw BadConversion("convertToDouble(\"" + s + "\")");
     return x;
 }
@@ -176,7 +176,7 @@ SIFImportInfo::SIFImportInfo(const char* filename)
     xres = 1, yres = 1;
 
     std::ifstream siffile(filename);
-    if (!siffile.is_open())
+    if(!siffile.is_open())
     {
         std::string msg("Unable to open file '");
         msg += filename;
@@ -184,18 +184,18 @@ SIFImportInfo::SIFImportInfo(const char* filename)
         vigra_precondition(0, msg.c_str());
     }
     int spool = 0; //If Data is Spooled one, spool is set to 1
-    for (int i = 0; i < headerlen + spool + 1; i++)
+    for(int i = 0; i < headerlen + spool + 1; i++)
     {
         std::string str;
         getline(siffile, str);
 #ifdef DEBUG
         std::cout << str << std::endl;
 #endif
-        if (i == 0)
+        if(i == 0)
         {
             vigra_precondition(str == "Andor Technology Multi-Channel File", "The file is not a valid sif File.");
         }
-        if (i == 2)
+        if(i == 2)
         { // Extract parameters such as temperature, exposureTime and so on.
             std::vector<std::string> tokens = helper::split(str, ' ');
             // TODO
@@ -208,45 +208,45 @@ SIFImportInfo::SIFImportInfo(const char* filename)
             verticalShiftSpeed = tokens[41];
             preAmpGain = tokens[43];
             temperature2 = helper::convertToDouble(tokens[47]);
-            if (tokens.size() > 57)
+            if(tokens.size() > 57)
             {
                 version = tokens[54] + "." + tokens[55] + "." + tokens[56] + "." + tokens[57];
             }
-            if (temperature1 == -999)
+            if(temperature1 == -999)
                 // If the temperature is unstable, temperature1 value is -999 and unstable temperature value is recored in temperature2
                 temperature = asString(temperature2) + " (Unstable)";
             else
                 temperature = asString(temperature1);
         }
-        if (i == 3)
+        if(i == 3)
         {
             model = str; // Model of EMCCD camera
         }
-        if (i == 5)
+        if(i == 5)
         {
             originalFilename = str; // Read original filename
         }
-        if (i == 7)
+        if(i == 7)
         { // If the Data is spooled one, "spool" value is set to 1
             std::vector<std::string> tokens = helper::split(str, ' ');
-            if (tokens.size() >= 1 && tokens[0] == "Spooled")
+            if(tokens.size() >= 1 && tokens[0] == "Spooled")
             {
                 spool = 1;
             }
         }
-        if (i > 7 && i < headerlen - 12)
+        if(i > 7 && i < headerlen - 12)
         {
-            if (str.size() == 17 &&
-                str.substr(0, 6) == "65539 " &&
-                str[6] == 0x01 && str[7] == 0x20 && str[8] == 0x00)
+            if(str.size() == 17 &&
+               str.substr(0, 6) == "65539 " &&
+               str[6] == 0x01 && str[7] == 0x20 && str[8] == 0x00)
             { // seems to be always ten lines before the dimensions-line
                 headerlen = i + 12;
             }
         }
-        if (i == (headerlen - 2))
+        if(i == (headerlen - 2))
         { // Read size of stack (frame length)
             std::string str2 = str.substr(0, 12);
-            if (str2 == "Pixel number")
+            if(str2 == "Pixel number")
                 str = str.substr(12); // drop "Pixel number" as first letters
             std::vector<std::string> tokens = helper::split(str, ' ');
             vigra_precondition(tokens.size() >= 6, "format error. Not able to read stacksize.");
@@ -254,7 +254,7 @@ SIFImportInfo::SIFImportInfo(const char* filename)
             xres = helper::convertToInt(tokens[3]);
             m_dims[2] = helper::convertToInt(tokens[5]);
         }
-        if (i == (headerlen - 1))
+        if(i == (headerlen - 1))
         { // Read information about the size and bin
             std::vector<std::string> tokens = helper::split(str, ' ');
             vigra_precondition(tokens.size() >= 7, "format error. Not able to read image dimensions.");
@@ -274,15 +274,15 @@ SIFImportInfo::SIFImportInfo(const char* filename)
     filesize -= siffile.tellg();
 
     // Estimate the offset value (header length)
-    for (int i = 0; i < (headerlen + stacksize()); i++)
+    for(int i = 0; i < (headerlen + stacksize()); i++)
     {
-        while (siffile.get() != 10)
+        while(siffile.get() != 10)
         {
             m_offset++;
         }
         m_offset++;
     }
-    if (siffile.get() == '0' && siffile.get() == 10)
+    if(siffile.get() == '0' && siffile.get() == 10)
     { // Newer sif version
         m_offset += 2;
     }

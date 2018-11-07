@@ -95,7 +95,7 @@ splitString(
     bool reverse = false)
 {
     std::size_t splitPos = (reverse ? s.rfind(separator) : s.find(separator));
-    if (splitPos >= s.size())
+    if(splitPos >= s.size())
         return false;
     a = std::string(s.begin(), s.begin() + splitPos);
     b = std::string(s.begin() + splitPos + 1, s.end());
@@ -106,10 +106,10 @@ std::string
 trimString(const std::string& s)
 {
     unsigned int begin = 0;
-    while (begin < s.size() && ((s[begin] == ' ') || (s[begin] == '\t')))
+    while(begin < s.size() && ((s[begin] == ' ') || (s[begin] == '\t')))
         ++begin;
     std::size_t end = s.size();
-    while (end > 0 && ((s[end - 1] == ' ') || (s[end - 1] == '\t')))
+    while(end > 0 && ((s[end - 1] == ' ') || (s[end - 1] == '\t')))
         --end;
     return std::string(s.begin() + begin, s.begin() + end);
 }
@@ -126,16 +126,16 @@ splitPathFromFilename(const std::string& pathAndName,
     // on Windows, both '/' and '\' are valid path separators
     // note: std::basic_string.rfind() may return 'unsigned int', so explicitely cast to 'int'
     int split = std::max(static_cast<int>(pathAndName.rfind('/')), static_cast<int>(pathAndName.rfind('\\')));
-    if (split == static_cast<int>(std::string::npos))
+    if(split == static_cast<int>(std::string::npos))
     {
         path = ".";
         name = pathAndName;
     }
     else
     {
-        for (int i = 0; i < split; ++i)
+        for(int i = 0; i < split; ++i)
         {
-            if (pathAndName[i] == '/')
+            if(pathAndName[i] == '/')
                 path += '\\';
             else
                 path += pathAndName[i];
@@ -167,7 +167,7 @@ findImageSequence(const std::string& name_base,
 
     // Get the first file
     hList = FindFirstFile(szDir, &FileData);
-    if (hList == INVALID_HANDLE_VALUE)
+    if(hList == INVALID_HANDLE_VALUE)
     {
         std::string message("importVolume(): No files matching '");
         message = message + szDir + "'.";
@@ -177,22 +177,22 @@ findImageSequence(const std::string& name_base,
     {
         // Traverse through the directory structure
         fFinished = FALSE;
-        while (!fFinished)
+        while(!fFinished)
         {
-            if (sscanf(FileData.cFileName, pattern.c_str(), numbuf, extbuf) == 2)
+            if(sscanf(FileData.cFileName, pattern.c_str(), numbuf, extbuf) == 2)
             {
-                if (strcmp(name_ext.c_str(), extbuf) == 0)
+                if(strcmp(name_ext.c_str(), extbuf) == 0)
                 {
                     std::string num(numbuf);
                     std::string name = name_base + num + name_ext;
                     // skip matching files names that are not images
-                    if (isImage(name.c_str()))
+                    if(isImage(name.c_str()))
                         result.push_back(num);
                 }
             }
-            if (!FindNextFile(hList, &FileData))
+            if(!FindNextFile(hList, &FileData))
             {
-                if (GetLastError() == ERROR_NO_MORE_FILES)
+                if(GetLastError() == ERROR_NO_MORE_FILES)
                 {
                     fFinished = TRUE;
                 }
@@ -213,7 +213,7 @@ splitPathFromFilename(const std::string& pathAndName,
                       std::string& path, std::string& name)
 {
     int split = pathAndName.rfind('/');
-    if (split == -1)
+    if(split == -1)
     {
         path = ".";
         name = pathAndName;
@@ -235,7 +235,7 @@ findImageSequence(const std::string& name_base,
     splitPathFromFilename(name_base, path, base);
 
     DIR* dir = opendir(path.c_str());
-    if (!dir)
+    if(!dir)
     {
         std::string message("importVolume(): Unable to open directory '");
         message = message + path + "'.";
@@ -247,16 +247,16 @@ findImageSequence(const std::string& name_base,
     errno = 0;
     char numbuf[21], extbuf[1024];
     std::string pattern = base + "%20[0-9]%1023s";
-    while ((dp = readdir(dir)) != NULL)
+    while((dp = readdir(dir)) != NULL)
     {
-        if (sscanf(dp->d_name, pattern.c_str(), numbuf, extbuf) == 2)
+        if(sscanf(dp->d_name, pattern.c_str(), numbuf, extbuf) == 2)
         {
-            if (strcmp(name_ext.c_str(), extbuf) == 0)
+            if(strcmp(name_ext.c_str(), extbuf) == 0)
             {
                 std::string num(numbuf);
                 std::string name = name_base + num + name_ext;
                 // skip matching files names that are not images
-                if (isImage(name.c_str()))
+                if(isImage(name.c_str()))
                     result.push_back(num);
             }
         }
@@ -275,14 +275,14 @@ findImageSequence(const std::string& name_base,
 
 // build a string from a sequence.
 #if defined(_MSC_VER) && (_MSC_VER < 1300)
-template<class iterator>
+template <class iterator>
 std::string
 stringify(const iterator& start, const iterator& end)
 {
     return stringifyImpl(start, end, *start);
 }
 
-template<class iterator, class Value>
+template <class iterator, class Value>
 std::string
 stringifyImpl(const iterator& start, const iterator& end, Value const&)
 {
@@ -296,7 +296,7 @@ stringifyImpl(const iterator& start, const iterator& end, Value const&)
 
 #else
 
-template<class iterator>
+template <class iterator>
 std::string
 stringify(const iterator& start, const iterator& end)
 {
@@ -527,7 +527,7 @@ encoder(const ImageExportInfo& info)
     VIGRA_UNIQUE_PTR<Encoder> enc;
 
     std::string filetype = info.getFileType();
-    if (filetype != "")
+    if(filetype != "")
     {
         validate_filetype(filetype);
         VIGRA_UNIQUE_PTR<Encoder> enc2 = getEncoder(std::string(info.getFileName()), filetype, std::string(info.getMode()));
@@ -540,7 +540,7 @@ encoder(const ImageExportInfo& info)
     }
 
     std::string comp = info.getCompression();
-    if (comp != "")
+    if(comp != "")
     {
 
         // check for quality parameter of JPEG compression
@@ -551,7 +551,7 @@ encoder(const ImageExportInfo& info)
         std::string sq(" QUALITY="), parsed_comp;
         std::string::size_type pos = comp.rfind(sq), start = 0;
 
-        if (pos != std::string::npos)
+        if(pos != std::string::npos)
         {
             start = pos + sq.size();
             parsed_comp = comp.substr(0, pos);
@@ -559,9 +559,9 @@ encoder(const ImageExportInfo& info)
 
         std::istringstream compstream(comp.substr(start));
         compstream >> quality;
-        if (quality != 0)
+        if(quality != 0)
         {
-            if (parsed_comp == "")
+            if(parsed_comp == "")
                 parsed_comp = "JPEG";
             enc->setCompressionType(parsed_comp, quality);
         }
@@ -573,9 +573,9 @@ encoder(const ImageExportInfo& info)
     }
 
     std::string pixel_type = info.getPixelType();
-    if (pixel_type != "")
+    if(pixel_type != "")
     {
-        if (!isPixelTypeSupported(enc->getFileType(), pixel_type))
+        if(!isPixelTypeSupported(enc->getFileType(), pixel_type))
         {
             std::string msg("exportImage(): file type ");
             msg += enc->getFileType() + " does not support requested pixel type " + pixel_type + ".";
@@ -590,7 +590,7 @@ encoder(const ImageExportInfo& info)
     enc->setPosition(info.getPosition());
     enc->setCanvasSize(info.getCanvasSize());
 
-    if (info.getICCProfile().size() > 0)
+    if(info.getICCProfile().size() > 0)
     {
         enc->setICCProfile(info.getICCProfile());
     }
@@ -632,19 +632,19 @@ ImageImportInfo::PixelType
 ImageImportInfo::pixelType() const
 {
     const std::string pixeltype = ImageImportInfo::getPixelType();
-    if (pixeltype == "UINT8")
+    if(pixeltype == "UINT8")
         return UINT8;
-    if (pixeltype == "INT16")
+    if(pixeltype == "INT16")
         return INT16;
-    if (pixeltype == "UINT16")
+    if(pixeltype == "UINT16")
         return UINT16;
-    if (pixeltype == "INT32")
+    if(pixeltype == "INT32")
         return INT32;
-    if (pixeltype == "UINT32")
+    if(pixeltype == "UINT32")
         return UINT32;
-    if (pixeltype == "FLOAT")
+    if(pixeltype == "FLOAT")
         return FLOAT;
-    if (pixeltype == "DOUBLE")
+    if(pixeltype == "DOUBLE")
         return DOUBLE;
     vigra_fail("internal error: unknown pixel type");
     return ImageImportInfo::PixelType();
@@ -799,7 +799,7 @@ VolumeExportInfo::VolumeExportInfo(const char* name_base, const char* name_ext)
       m_filename_base(name_base), m_filename_ext(name_ext),
       fromMin_(0.0), fromMax_(0.0), toMin_(0.0), toMax_(0.0)
 {
-    if (m_filename_ext == "")
+    if(m_filename_ext == "")
     {
         m_filename_ext = ".tif";
         m_filetype = "MULTIPAGE";
@@ -1058,7 +1058,7 @@ VolumeImportInfo::VolumeImportInfo(const std::string& filename)
         std::string magic_string;
         {
             std::ifstream siffile(filename.c_str());
-            if (!siffile.is_open())
+            if(!siffile.is_open())
             {
                 message = std::string("VolumeImportInfo(): Unable to open file '");
                 message += filename + "'.";
@@ -1067,7 +1067,7 @@ VolumeImportInfo::VolumeImportInfo(const std::string& filename)
 
             getline(siffile, magic_string);
         }
-        if (magic_string == "Andor Technology Multi-Channel File")
+        if(magic_string == "Andor Technology Multi-Channel File")
         {
             SIFImportInfo info(filename.c_str());
             shape_[0] = info.shapeOfDimension(0);
@@ -1082,7 +1082,7 @@ VolumeImportInfo::VolumeImportInfo(const std::string& filename)
     }
 
     // try multi-page TIFF or image stack
-    if (isImage(filename.c_str()))
+    if(isImage(filename.c_str()))
     {
         ImageImportInfo info(filename.c_str());
         shape_[0] = info.width();
@@ -1091,7 +1091,7 @@ VolumeImportInfo::VolumeImportInfo(const std::string& filename)
         pixelType_ = info.getPixelType();
         numBands_ = info.numBands();
 
-        if (info.numImages() > 1)
+        if(info.numImages() > 1)
         {
             // must be a multi-page TIFF
             splitPathFromFilename(filename, path_, name_);
@@ -1112,7 +1112,7 @@ VolumeImportInfo::VolumeImportInfo(const std::string& filename)
                 numEndIt = std::find_if(numBeginIt, filename.rend(), (int (*)(int)) & isdigit);
                 numBeginIt = std::find_if(numEndIt, filename.rend(), not1(std::ptr_fun((int (*)(int)) & isdigit)));
 
-                if (numEndIt != filename.rend())
+                if(numEndIt != filename.rend())
                 {
                     std::string
                         baseName(filename.begin(),
@@ -1123,7 +1123,7 @@ VolumeImportInfo::VolumeImportInfo(const std::string& filename)
                     std::vector<std::string> numbers;
 
                     findImageSequence(baseName, extension, numbers);
-                    if (numbers.size() > 0)
+                    if(numbers.size() > 0)
                     {
                         splitPathFromFilename(baseName, path_, name_);
                         baseName_ = baseName;
@@ -1134,7 +1134,7 @@ VolumeImportInfo::VolumeImportInfo(const std::string& filename)
                         return;
                     }
                 }
-            } while (numEndIt != filename.rend());
+            } while(numEndIt != filename.rend());
         }
 
         message = std::string("VolumeImportInfo(): File '");
@@ -1157,34 +1157,34 @@ VolumeImportInfo::VolumeImportInfo(const std::string& filename)
         // try .info file loading
         std::ifstream stream(filename.c_str());
 
-        while (stream.good())
+        while(stream.good())
         {
             char rawline[1024];
             stream.getline(rawline, 1024);
 
             // split off comments starting with '#':
             std::string line, comment;
-            if (!detail::splitString(rawline, '#', line, comment))
+            if(!detail::splitString(rawline, '#', line, comment))
                 line = rawline;
 
             std::string key, value;
-            if (detail::splitString(line, '=', key, value))
+            if(detail::splitString(line, '=', key, value))
             {
                 key = detail::trimString(key);
                 value = detail::trimString(value);
 
-                if (key == "width")
+                if(key == "width")
                     shape_[0] = atoi(value.c_str());
-                else if (key == "height")
+                else if(key == "height")
                     shape_[1] = atoi(value.c_str());
-                else if (key == "depth")
+                else if(key == "depth")
                     shape_[2] = atoi(value.c_str());
-                else if (key == "datatype")
+                else if(key == "datatype")
                 {
                     std::string* type = pixelTypes;
-                    while (*type != "")
+                    while(*type != "")
                     {
-                        if (*type == value)
+                        if(*type == value)
                         {
                             pixelType_ = value;
                             break;
@@ -1193,14 +1193,14 @@ VolumeImportInfo::VolumeImportInfo(const std::string& filename)
                     }
                     vigra_precondition(*type != "",
                                        "VolumeImportInfo(): Invalid datatype '" + value + "' in .info file.");
-                    if (pixelType_ == "UNSIGNED_CHAR" || pixelType_ == "UNSIGNED_BYTE")
+                    if(pixelType_ == "UNSIGNED_CHAR" || pixelType_ == "UNSIGNED_BYTE")
                         pixelType_ = "UINT8";
                 }
-                else if (key == "description")
+                else if(key == "description")
                     description_ = value;
-                else if (key == "name")
+                else if(key == "name")
                     name_ = value;
-                else if (key == "filename")
+                else if(key == "filename")
                     rawFilename_ = value;
                 else
                 {
@@ -1210,17 +1210,17 @@ VolumeImportInfo::VolumeImportInfo(const std::string& filename)
             }
             else
             {
-                if (line[0]) // non-empty line?
+                if(line[0]) // non-empty line?
                     std::cerr << "VolumeImportInfo(): WARNING: could not parse line '" << line << "'!\n";
             }
         }
 
-        if ((shape_[0] * shape_[1] * shape_[2] > 0) && (rawFilename_.size() > 0))
+        if((shape_[0] * shape_[1] * shape_[2] > 0) && (rawFilename_.size() > 0))
         {
             numBands_ = 1;
 
             baseName_ = filename;
-            if (name_.size() > 0)
+            if(name_.size() > 0)
             {
                 std::string nameDummy;
                 splitPathFromFilename(baseName_, path_, nameDummy);
@@ -1286,19 +1286,19 @@ VolumeImportInfo::PixelType
 VolumeImportInfo::pixelType() const
 {
     const std::string pixeltype = VolumeImportInfo::getPixelType();
-    if (pixeltype == "UINT8")
+    if(pixeltype == "UINT8")
         return ImageImportInfo::UINT8;
-    if (pixeltype == "INT16")
+    if(pixeltype == "INT16")
         return ImageImportInfo::INT16;
-    if (pixeltype == "UINT16")
+    if(pixeltype == "UINT16")
         return ImageImportInfo::UINT16;
-    if (pixeltype == "INT32")
+    if(pixeltype == "INT32")
         return ImageImportInfo::INT32;
-    if (pixeltype == "UINT32")
+    if(pixeltype == "UINT32")
         return ImageImportInfo::UINT32;
-    if (pixeltype == "FLOAT")
+    if(pixeltype == "FLOAT")
         return ImageImportInfo::FLOAT;
-    if (pixeltype == "DOUBLE")
+    if(pixeltype == "DOUBLE")
         return ImageImportInfo::DOUBLE;
     vigra_fail("internal error: unknown pixel type");
     return VolumeImportInfo::PixelType();

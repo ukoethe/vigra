@@ -3,7 +3,7 @@
 
 #include "parent_test_class.hxx"
 
-template<class Policy>
+template <class Policy>
 class ImageHierarchyTest
     : public ImageTest<Policy>
 {
@@ -204,8 +204,8 @@ public:
         should(image1_ROI_clone->size() == image1_ROI_clone->actualSize());
         should(image1_ROI_clone->size() == image1_->size());
 
-        for (int x = 0; x < image1_ROI_clone->width(); x++)
-            for (int y = 0; y < image1_ROI_clone->height(); y++)
+        for(int x = 0; x < image1_ROI_clone->width(); x++)
+            for(int y = 0; y < image1_ROI_clone->height(); y++)
                 should((*image1_ROI_clone)(x, y) == (*image1_copy)(x + 1, y + 1));
 
 
@@ -216,18 +216,18 @@ public:
 
         should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[7])));
 
-        for (int x = 0; x < image1_->width(); x++)
-            for (int y = 0; y < image1_->height(); y++)
+        for(int x = 0; x < image1_->width(); x++)
+            for(int y = 0; y < image1_->height(); y++)
                 should((*image1_)(x, y) == static_cast<typename Policy::PixelType>(data[7]));
 
 
-        for (int x = 1; x < (image1_->width() + 1); x++)      //um 1 verschoben
-            for (int y = 1; y < (image1_->height() + 1); y++) //um 1 verschoben
+        for(int x = 1; x < (image1_->width() + 1); x++)      //um 1 verschoben
+            for(int y = 1; y < (image1_->height() + 1); y++) //um 1 verschoben
                 should((*image1_copy)(x, y) == static_cast<typename Policy::PixelType>(data[7]));
 
 
-        for (int x = 0; x < image1_->width(); x++) //Verhalten einer ROI
-            for (int y = 0; y < image1_->height(); y++)
+        for(int x = 0; x < image1_->width(); x++) //Verhalten einer ROI
+            for(int y = 0; y < image1_->height(); y++)
                 should((*image1_ROI_copy)(x, y) == static_cast<typename Policy::PixelType>(data[7]));
 
 
@@ -237,7 +237,7 @@ public:
         typename Image::Accessor acc;
         acc = image1_new->accessor();
         scanOrderIter1_ = image1_new->begin();
-        for (unsigned int i = 0; i < data.size(); i++)
+        for(unsigned int i = 0; i < data.size(); i++)
         {
             acc.set(data[i], scanOrderIter1_);
             ++scanOrderIter1_;
@@ -336,8 +336,8 @@ public:
         image1_->setROI(Diff2D(1, 1), Diff2D(1, 3));
 
         bool ergebnis = true;
-        for (int i = 1; i < 2; i++)
-            for (int j = 1; j < 4; j++)
+        for(int i = 1; i < 2; i++)
+            for(int j = 1; j < 4; j++)
                 ergebnis &= image1_->isInsideROI(vigra::Diff2D(i, j));
 
         ergebnis &= !image1_->isInsideROI(vigra::Diff2D(0, 0)) &&
@@ -352,7 +352,7 @@ public:
     }
 }; // end of class ImageHierarchyTest
 
-template<class POLICY>
+template <class POLICY>
 struct ImageHierarchyTestSuite
     : public ImageTestSuite<POLICY>
 {

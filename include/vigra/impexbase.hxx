@@ -62,35 +62,35 @@ namespace detail
 inline static pixel_t
 pixel_t_of_string(const std::string& pixel_type)
 {
-    if (pixel_type == "BILEVEL")
+    if(pixel_type == "BILEVEL")
     {
         return UNSIGNED_INT_8;
     }
-    else if (pixel_type == "UINT8")
+    else if(pixel_type == "UINT8")
     {
         return UNSIGNED_INT_8;
     }
-    else if (pixel_type == "UINT16")
+    else if(pixel_type == "UINT16")
     {
         return UNSIGNED_INT_16;
     }
-    else if (pixel_type == "UINT32")
+    else if(pixel_type == "UINT32")
     {
         return UNSIGNED_INT_32;
     }
-    else if (pixel_type == "INT16")
+    else if(pixel_type == "INT16")
     {
         return SIGNED_INT_16;
     }
-    else if (pixel_type == "INT32")
+    else if(pixel_type == "INT32")
     {
         return SIGNED_INT_32;
     }
-    else if (pixel_type == "FLOAT")
+    else if(pixel_type == "FLOAT")
     {
         return IEEE_FLOAT_32;
     }
-    else if (pixel_type == "DOUBLE")
+    else if(pixel_type == "DOUBLE")
     {
         return IEEE_FLOAT_64;
     }
@@ -104,7 +104,7 @@ pixel_t_of_string(const std::string& pixel_type)
 
 struct identity
 {
-    template<typename T>
+    template <typename T>
     T operator()(T x) const
     {
         return x;
@@ -124,7 +124,7 @@ public:
     {
     }
 
-    template<typename T>
+    template <typename T>
     double operator()(T x) const
     {
         return scale_ * (static_cast<double>(x) + offset_);
@@ -136,7 +136,7 @@ private:
 };
 
 
-template<class Iterator, class Accessor>
+template <class Iterator, class Accessor>
 inline static range_t
 find_value_range(Iterator upper_left, Iterator lower_right, Accessor accessor,
                  /* is_scalar? */ VigraTrueType)
@@ -151,7 +151,7 @@ find_value_range(Iterator upper_left, Iterator lower_right, Accessor accessor,
 }
 
 
-template<class Iterator, class Accessor>
+template <class Iterator, class Accessor>
 inline static range_t
 find_value_range(Iterator upper_left, Iterator lower_right, Accessor accessor,
                  /* is_scalar? */ VigraFalseType)
@@ -162,7 +162,7 @@ find_value_range(Iterator upper_left, Iterator lower_right, Accessor accessor,
     const int number_of_bands(static_cast<int>(accessor.size(upper_left)));
     FindMinMax<value_type> extrema;
 
-    for (int i = 0; i != number_of_bands; ++i)
+    for(int i = 0; i != number_of_bands; ++i)
     {
         element_accessor band(i, accessor);
 
@@ -173,12 +173,12 @@ find_value_range(Iterator upper_left, Iterator lower_right, Accessor accessor,
 }
 
 
-template<class SourceIterator, class SourceAccessor>
+template <class SourceIterator, class SourceAccessor>
 inline static range_t
 find_source_value_range(const ImageExportInfo& export_info,
                         SourceIterator upper_left, SourceIterator lower_right, SourceAccessor accessor)
 {
-    if (export_info.getFromMin() < export_info.getFromMax())
+    if(export_info.getFromMin() < export_info.getFromMax())
     {
         return range_t(export_info.getFromMin(), export_info.getFromMax());
     }
@@ -189,7 +189,7 @@ find_source_value_range(const ImageExportInfo& export_info,
 
         const range_t range(find_value_range(upper_left, lower_right, accessor, is_scalar()));
 
-        if (range.first < range.second)
+        if(range.first < range.second)
         {
             return range_t(range.first, range.second);
         }
@@ -201,11 +201,11 @@ find_source_value_range(const ImageExportInfo& export_info,
 }
 
 
-template<typename T>
+template <typename T>
 inline static range_t
 find_destination_value_range(const ImageExportInfo& export_info)
 {
-    if (export_info.getToMin() < export_info.getToMax())
+    if(export_info.getToMin() < export_info.getToMax())
     {
         return range_t(export_info.getToMin(), export_info.getToMax());
     }
@@ -220,7 +220,7 @@ find_destination_value_range(const ImageExportInfo& export_info)
 inline static range_t
 find_destination_value_range(const ImageExportInfo& export_info, pixel_t pixel_type)
 {
-    switch (pixel_type)
+    switch(pixel_type)
     {
         case UNSIGNED_INT_8:
             return find_destination_value_range<UInt8>(export_info);

@@ -58,7 +58,7 @@ using namespace matlab;
 
 //#define RN_DEBUG
 #define cP2_(a, b) cP<(int)a, b>::value
-template<class T>
+template <class T>
 void
 vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
 {
@@ -89,13 +89,13 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
     **              CODE PART                                                                         **
     ****************************************************************************************************/
     // cantorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function)
-    for (int k = 0; k < in3D.shape(2); ++k)
+    for(int k = 0; k < in3D.shape(2); ++k)
     {
 
         BasicImageView<T> ink = makeBasicImageView(in3D.bindOuter(k));
         BasicImageView<T> outk = makeBasicImageView(out3D.bindOuter(k));
 
-        switch (cantorPair(method, splineOrder))
+        switch(cantorPair(method, splineOrder))
         {
             case cP2_(BSpline, 0):
 #ifdef RN_DEBUG
@@ -159,7 +159,7 @@ void
 vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
     //Add classes as you feel
-    switch (inputs.typeOf(0))
+    switch(inputs.typeOf(0))
     {
         ALLOW_D
         default:

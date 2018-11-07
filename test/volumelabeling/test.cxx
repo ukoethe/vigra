@@ -62,7 +62,7 @@ struct VolumeLabelingTest
         IntVolume::iterator end = vol1.end();
         const int* p = in1;
 
-        for (; i != end; ++i, ++p)
+        for(; i != end; ++i, ++p)
         {
             *i = *p;
         }
@@ -76,7 +76,7 @@ struct VolumeLabelingTest
         end = vol2.end();
         p = in2;
 
-        for (; i != end; ++i, ++p)
+        for(; i != end; ++i, ++p)
         {
             *i = *p;
         }
@@ -92,7 +92,7 @@ struct VolumeLabelingTest
         end = vol3.end();
         p = in3;
 
-        for (; i != end; ++i, ++p)
+        for(; i != end; ++i, ++p)
         {
             *i = *p;
         }
@@ -107,7 +107,7 @@ struct VolumeLabelingTest
         DoubleVolume::iterator endd = vol4.end();
         const double* pd = in4;
 
-        for (; id != endd; ++id, ++pd)
+        for(; id != endd; ++id, ++pd)
         {
             *id = *pd;
         }
@@ -122,7 +122,7 @@ struct VolumeLabelingTest
         endd = vol5.end();
         pd = in5;
 
-        for (; id != endd; ++id, ++pd)
+        for(; id != endd; ++id, ++pd)
         {
             *id = *pd;
         }
@@ -162,7 +162,7 @@ struct VolumeLabelingTest
         endd = vol6.end();
         pd = in6;
 
-        for (; id != endd; ++id, ++pd)
+        for(; id != endd; ++id, ++pd)
         {
             *id = *pd;
         }
@@ -179,7 +179,7 @@ struct VolumeLabelingTest
         IntVolume::iterator i1end = vol1.end();
         IntVolume::iterator i2 = res.begin();
 
-        for (; i1 != i1end; ++i1, ++i2)
+        for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == (*i2 - 1.0));
         }
@@ -209,7 +209,7 @@ struct VolumeLabelingTest
         IntVolume::iterator i2end = res.end();
         int address = 0;
 
-        for (; i2 != i2end; ++i2, ++address)
+        for(; i2 != i2end; ++i2, ++address)
         {
             should(*i2 == address + 1);
         }
@@ -234,7 +234,7 @@ struct VolumeLabelingTest
         IntVolume::iterator i2end = res.end();
         const int* p = out3;
 
-        for (; i2 != i2end; ++i2, ++p)
+        for(; i2 != i2end; ++i2, ++p)
         {
             should(*i2 == *p);
         }
@@ -259,7 +259,7 @@ struct VolumeLabelingTest
         IntVolume::iterator i2end = res.end();
         const int* p = out4;
 
-        for (; i2 != i2end; ++i2, ++p)
+        for(; i2 != i2end; ++i2, ++p)
         {
             should(*i2 == *p);
         }
@@ -290,7 +290,7 @@ struct VolumeLabelingTest
         IntVolume::iterator i2end = res.end();
         const int* p = out5;
 
-        for (; i2 != i2end; ++i2, ++p)
+        for(; i2 != i2end; ++i2, ++p)
         {
             should(*i2 == *p);
         }
@@ -319,7 +319,7 @@ struct VolumeLabelingTest
         IntVolume::iterator i1end = vol1.end();
         IntVolume::iterator i2 = res.begin();
 
-        for (; i1 != i1end; ++i1, ++i2)
+        for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == (*i2 - 1.0));
         }
@@ -338,7 +338,7 @@ struct VolumeLabelingTest
         IntVolume::iterator i1end = vol2.end();
         IntVolume::iterator i2 = res.begin();
 
-        for (; i1 != i1end; ++i1, ++i2)
+        for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == (*i2 - 1.0));
         }
@@ -357,7 +357,7 @@ struct VolumeLabelingTest
         DoubleVolume::iterator i1end = vol4.end();
         IntVolume::iterator i2 = res.begin();
 
-        for (; i1 != i1end; ++i1, ++i2)
+        for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == 2 - *i2);
         }
@@ -376,7 +376,7 @@ struct VolumeLabelingTest
         DoubleVolume::iterator i1end = vol5.end();
         IntVolume::iterator i2 = res.begin();
 
-        for (; i1 != i1end; ++i1, ++i2)
+        for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == *i2);
         }

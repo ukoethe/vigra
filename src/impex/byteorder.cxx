@@ -48,7 +48,7 @@ byteorder::host::host()
     // we have little endian byteorder.
     UIntBiggest testint = 0x01;
     UInt8* testchar = reinterpret_cast<UInt8*>(&testint);
-    if (testchar[0] == 0x01)
+    if(testchar[0] == 0x01)
         m_string = "little endian";
     else
         m_string = "big endian";

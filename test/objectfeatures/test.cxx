@@ -45,11 +45,11 @@
 namespace std
 {
 
-template<unsigned int N, class T, class Stride>
+template <unsigned int N, class T, class Stride>
 ostream&
 operator<<(ostream& o, vigra::MultiArrayView<N, T, Stride> const& m)
 {
-    for (vigra::MultiArrayIndex k = 0; k < m.size(); ++k)
+    for(vigra::MultiArrayIndex k = 0; k < m.size(); ++k)
         o << m[k] << " ";
     return o;
 }
@@ -259,7 +259,7 @@ struct AccumulatorTest
                            RegionContour>::value));
     }
 
-    template<class SOURCE, class REFERENCE>
+    template <class SOURCE, class REFERENCE>
     void testLongFormImpl(const char* message)
     {
         using namespace vigra::acc;
@@ -363,7 +363,7 @@ struct AccumulatorTest
 
             double data[] = {1.0, 2.0, 3.0, 5.0};
 
-            for (int k = 0; k < 4; ++k)
+            for(int k = 0; k < 4; ++k)
                 a(data[k]);
 
             shouldEqual(get<Count>(a), 4.0);
@@ -389,7 +389,7 @@ struct AccumulatorTest
             shouldEqual(get<Principal<Variance>>(a), 2.1875);
             shouldEqual(get<Principal<CoordinateSystem>>(a), 1.0);
 
-            for (int k = 0; k < 4; ++k)
+            for(int k = 0; k < 4; ++k)
                 a.updatePass2(data[k]);
 
             shouldEqual(get<Count>(a), 4.0);
@@ -421,7 +421,7 @@ struct AccumulatorTest
                 get<Mean>(a);
                 failTest("get<Mean>() failed to throw exception");
             }
-            catch (ContractViolation& c)
+            catch(ContractViolation& c)
             {
                 std::string expected("\nPrecondition violation!\nget(accumulator): attempt to access inactive statistic");
                 std::string message(c.what());
@@ -493,9 +493,9 @@ struct AccumulatorTest
             static const int SIZE = 4;
             V d[SIZE] = {V(1, 2, 3), V(2, 3, 0), V(3, 4, 2), V(2, 1, 2)};
 
-            for (int k = 0; k < SIZE; ++k)
+            for(int k = 0; k < SIZE; ++k)
                 a(d[k]);
-            for (int k = 0; k < SIZE; ++k)
+            for(int k = 0; k < SIZE; ++k)
                 a.updatePass2(d[k]);
 
             shouldEqual(get<Count>(a), 4.0);
@@ -621,10 +621,10 @@ struct AccumulatorTest
 
             A a;
 
-            for (int k = 0; k < SIZE; ++k)
+            for(int k = 0; k < SIZE; ++k)
                 a(data[k]);
 
-            for (int k = 0; k < SIZE; ++k)
+            for(int k = 0; k < SIZE; ++k)
                 a.updatePass2(data[k]);
 
 
@@ -672,12 +672,12 @@ struct AccumulatorTest
                 V(-1.13427498157747753, 3.25766116941665018),
                 V(-0.78887968311061840, -0.81133800523773636)};
 
-            for (int k = 0; k < SIZE; ++k)
+            for(int k = 0; k < SIZE; ++k)
                 shouldEqualTolerance(principal[k], getAccumulator<PrincipalProjection>(a)(data[k]), V(1e-14));
 
             // check that statistics of points in principal representation have expected properties
             a.reset();
-            for (int k = 0; k < SIZE; ++k)
+            for(int k = 0; k < SIZE; ++k)
                 a(principal[k]);
 
             shouldEqual(SIZE, get<Count>(a));
@@ -706,16 +706,16 @@ struct AccumulatorTest
 
         double data[] = {1.0, 2.0, 3.0, 4.0, 6.0};
 
-        for (int k = 0; k < 3; ++k)
+        for(int k = 0; k < 3; ++k)
             a(data[k]);
 
-        for (int k = 0; k < 3; ++k)
+        for(int k = 0; k < 3; ++k)
             a.updatePass2(data[k]);
 
-        for (int k = 3; k < 5; ++k)
+        for(int k = 3; k < 5; ++k)
             b(data[k]);
 
-        for (int k = 3; k < 5; ++k)
+        for(int k = 3; k < 5; ++k)
             b.updatePass2(data[k]);
 
         a += b;
@@ -950,10 +950,10 @@ struct AccumulatorTest
             shouldEqual(HSIZE, get<AutoRangeHistogram<HSIZE>>(a).size());
             shouldEqual(HSIZE, get<IntegerHistogram<0>>(a).size());
 
-            for (int k = 0; k < SIZE; ++k)
+            for(int k = 0; k < SIZE; ++k)
                 a(data[k]);
 
-            for (int k = 0; k < SIZE; ++k)
+            for(int k = 0; k < SIZE; ++k)
                 a.updatePass2(data[k]);
 
             double h[HSIZE] = {5.0, 0.0, 6.0, 3.0, 3.0, 1.0, 2.0, 2.0, 4.0, 4.0};
@@ -992,10 +992,10 @@ struct AccumulatorTest
             getAccumulator<UserRangeHistogram<3>>(a).setMinMax(-30.0, 20.0);
             getAccumulator<IntegerHistogram<0>>(a).setBinCount(HSIZE);
 
-            for (int k = 0; k < SIZE; ++k)
+            for(int k = 0; k < SIZE; ++k)
                 a(-data[k]);
 
-            for (int k = 0; k < SIZE; ++k)
+            for(int k = 0; k < SIZE; ++k)
                 a.updatePass2(-data[k]);
 
             std::reverse(h, h + HSIZE);
@@ -1020,10 +1020,10 @@ struct AccumulatorTest
             getAccumulator<UserRangeHistogram<3>>(a).setMinMax(-20.0, 30.0); // all data in one bin
             getAccumulator<IntegerHistogram<0>>(a).setBinCount(HSIZE + 2);
 
-            for (int k = 0; k < SIZE; ++k)
+            for(int k = 0; k < SIZE; ++k)
                 a(1 + data[k]);
 
-            for (int k = 0; k < SIZE; ++k)
+            for(int k = 0; k < SIZE; ++k)
                 a.updatePass2(1 + data[k]);
 
             shouldEqualSequence(qint, qint + QSIZE, (get<StandardQuantiles<IntegerHistogram<HSIZE + 2>>>(a) - QuantileVector(1.0)).begin());
@@ -1054,7 +1054,7 @@ struct AccumulatorTest
                 extractFeatures(data, data + SIZE, b);
                 failTest("extractFeatures() failed to throw exception");
             }
-            catch (ContractViolation& c)
+            catch(ContractViolation& c)
             {
                 std::string expected("\nPrecondition violation!\nUserRangeHistogram::update(): setMinMax(...) has not been called.");
                 std::string message(c.what());
@@ -1067,7 +1067,7 @@ struct AccumulatorTest
                 getAccumulator<UserRangeHistogram<0>>(b).setMinMax(-2.5, 12.5);
                 failTest("extractFeatures() failed to throw exception");
             }
-            catch (ContractViolation& c)
+            catch(ContractViolation& c)
             {
                 std::string expected("\nPrecondition violation!\nRangeHistogramBase::setMinMax(...): setBinCount(...) has not been called.");
                 std::string message(c.what());
@@ -1082,7 +1082,7 @@ struct AccumulatorTest
                 extractFeatures(data, data + SIZE, b);
                 failTest("extractFeatures() failed to throw exception");
             }
-            catch (ContractViolation& c)
+            catch(ContractViolation& c)
             {
                 std::string expected("\nPrecondition violation!\nRangeHistogramBase::setMinMax(...): setBinCount(...) has not been called.");
                 std::string message(c.what());
@@ -1100,7 +1100,7 @@ struct AccumulatorTest
 
                 failTest("extractFeatures() failed to throw exception");
             }
-            catch (ContractViolation& c)
+            catch(ContractViolation& c)
             {
                 std::string expected("\nPrecondition violation!\nRangeHistogramBase::operator+=(): cannot merge histograms with different data mapping.");
                 std::string message(c.what());
@@ -1120,7 +1120,7 @@ struct AccumulatorTest
         }
     }
 
-    template<class TAG, class A>
+    template <class TAG, class A>
     static inline typename acc::LookupDependency<TAG, A>::reference
     getAccumulatorIndirectly(A& a)
     {
@@ -1172,7 +1172,7 @@ struct AccumulatorTest
             should((&gc == &getAccumulatorIndirectly<Global<Count>>(rc)));
             should((&gc == &getAccumulatorIndirectly<Global<Count>>(getAccumulator<Count>(a, 1))));
 
-            for (; i < end; ++i)
+            for(; i < end; ++i)
                 a(*i);
 
             shouldEqual(4, get<Count>(a, 0));
@@ -1196,7 +1196,7 @@ struct AccumulatorTest
             aa.setMaxRegionLabel(1);
             aa.setCoordinateOffset(V(2, -1));
 
-            for (i = start; i < end; ++i)
+            for(i = start; i < end; ++i)
                 aa(*i);
 
             shouldEqual(4, get<Count>(aa, 0));
@@ -1213,7 +1213,7 @@ struct AccumulatorTest
             ab.setCoordinateOffset(0, V(-1, 1));
             ab.setCoordinateOffset(1, V(1, -2));
 
-            for (i = start; i < end; ++i)
+            for(i = start; i < end; ++i)
                 ab(*i);
 
             shouldEqual(4, get<Count>(ab, 0));
@@ -1229,7 +1229,7 @@ struct AccumulatorTest
 
             i = start;
 
-            for (; i < end; ++i)
+            for(; i < end; ++i)
                 b(*i);
 
             shouldEqual(0, get<Count>(b, 0));
@@ -1265,7 +1265,7 @@ struct AccumulatorTest
             shouldEqual(a.regionCount(), 0);
             shouldEqual(2, a.passesRequired());
 
-            for (; i < end; ++i)
+            for(; i < end; ++i)
                 a(*i);
 
             shouldEqual(a.maxRegionLabel(), 1);
@@ -1282,7 +1282,7 @@ struct AccumulatorTest
             shouldEqual(5, get<Maximum>(a, 1));
             shouldEqual(5, get<Global<Maximum>>(a));
 
-            for (i = start; i < end; ++i)
+            for(i = start; i < end; ++i)
                 a.updatePass2(*i);
 
             shouldEqual(4, get<Count>(a, 0));
@@ -1384,10 +1384,10 @@ struct AccumulatorTest
                      start = i,
                      end = i.getEndIterator();
 
-            for (; i < end; ++i)
+            for(; i < end; ++i)
                 a(*i);
 
-            for (i = start; i < end; ++i)
+            for(i = start; i < end; ++i)
                 a.updatePass2(*i);
 
             shouldEqual(a.maxRegionLabel(), 1);

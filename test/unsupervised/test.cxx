@@ -119,27 +119,27 @@ public:
 
         // test if result matrices (approximately) satisfy normalization properties
         Matrix<double> colSumFZ = fz.sum(0);
-        for (int i = 0; i < columnCount(fz); ++i)
+        for(int i = 0; i < columnCount(fz); ++i)
         {
             shouldEqualTolerance(colSumFZ(0, i), 1, eps);
         }
         Matrix<double> colSumZV = zv.sum(0);
         Matrix<double> colSumFeat = features.sum(0);
-        for (int i = 0; i < columnCount(zv); ++i)
+        for(int i = 0; i < columnCount(zv); ++i)
         {
             shouldEqualTolerance(colSumZV(0, i) / colSumFeat(0, i), 1, eps);
         }
         // all entries in FZ, ZV are >= 0
-        for (int j = 0; j < columnCount(zv); ++j)
+        for(int j = 0; j < columnCount(zv); ++j)
         {
-            for (int i = 0; i < rowCount(zv); ++i)
+            for(int i = 0; i < rowCount(zv); ++i)
             {
                 should(zv(i, j) >= 0);
             }
         }
-        for (int j = 0; j < columnCount(fz); ++j)
+        for(int j = 0; j < columnCount(fz); ++j)
         {
-            for (int i = 0; i < rowCount(fz); ++i)
+            for(int i = 0; i < rowCount(fz); ++i)
             {
                 should(fz(i, j) >= 0);
             }

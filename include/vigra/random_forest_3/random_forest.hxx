@@ -61,10 +61,10 @@ namespace rf3
 
     vigra::rf3::RandomForest is typicall constructed via the factory function \ref vigra::rf3::random_forest().
 */
-template<typename FEATURES,
-         typename LABELS,
-         typename SPLITTESTS = LessEqualSplitTest<typename FEATURES::value_type>,
-         typename ACCTYPE = ArgMaxVectorAcc<double>>
+template <typename FEATURES,
+          typename LABELS,
+          typename SPLITTESTS = LessEqualSplitTest<typename FEATURES::value_type>,
+          typename ACCTYPE = ArgMaxVectorAcc<double>>
 class RandomForest
 {
 public:
@@ -86,7 +86,7 @@ public:
     // using NodeMap = PropertyMap<Node, T, container_tag>;
     // Then the verbose typename NodeMap<T>::type, which typically shows up on NodeMap usages,
     // can be replace with NodeMap<T>.
-    template<typename T>
+    template <typename T>
     struct NodeMap
     {
         typedef PropertyMap<Node, T, container_tag> type;
@@ -116,7 +116,7 @@ public:
 
     /// \brief Predict the probabilities of the given data and return the average number of split comparisons.
     /// \note probs should have the shape (features.shape()[0], num_classes).
-    template<typename PROBS>
+    template <typename PROBS>
     void predict_probabilities(
         FEATURES const& features,
         PROBS& probs,
@@ -125,7 +125,7 @@ public:
 
     /// \brief For each data point in features, compute the corresponding leaf ids and return the average number of split comparisons.
     /// \note ids should have the shape (features.shape()[0], num_trees).
-    template<typename IDS>
+    template <typename IDS>
     double leaf_ids(
         FEATURES const& features,
         IDS& ids,
@@ -173,7 +173,7 @@ public:
 
 private:
     /// \brief Compute the leaf ids of the instances in [from, to).
-    template<typename IDS, typename INDICES>
+    template <typename IDS, typename INDICES>
     double leaf_ids_impl(
         FEATURES const& features,
         IDS& ids,
@@ -181,7 +181,7 @@ private:
         size_t to,
         INDICES const& tree_indices) const;
 
-    template<typename PROBS>
+    template <typename PROBS>
     void predict_probabilities_impl(
         FEATURES const& features,
         PROBS& probs,
@@ -189,7 +189,7 @@ private:
         const std::vector<size_t>& tree_indices) const;
 };
 
-template<typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
 RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::RandomForest()
     : graph_(),
       split_tests_(),
@@ -198,7 +198,7 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::RandomForest()
 {
 }
 
-template<typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
 RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::RandomForest(
     Graph const& graph,
     typename NodeMap<SplitTests>::type const& split_tests,
@@ -211,7 +211,7 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::RandomForest(
 {
 }
 
-template<typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
 void
 RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::merge(
     RandomForest const& other)
@@ -223,11 +223,11 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::merge(
 
     size_t const offset = num_nodes();
     graph_.merge(other.graph_);
-    for (auto const& p : other.split_tests_)
+    for(auto const& p : other.split_tests_)
     {
         split_tests_.insert(Node(p.first.id() + offset), p.second);
     }
-    for (auto const& p : other.node_responses_)
+    for(auto const& p : other.node_responses_)
     {
         node_responses_.insert(Node(p.first.id() + offset), p.second);
     }
@@ -235,7 +235,7 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::merge(
 
 // FIXME TODO we don't support the selection of tree indices any more in predict_probabilities, might be a good idea
 // to re-enable this.
-template<typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
 void
 RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict(
     FEATURES const& features,
@@ -250,7 +250,7 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict(
 
     MultiArray<2, double> probs(Shape2(features.shape()[0], problem_spec_.num_classes_));
     predict_probabilities(features, probs, n_threads, tree_indices);
-    for (size_t i = 0; i < (size_t)features.shape()[0]; ++i)
+    for(size_t i = 0; i < (size_t)features.shape()[0]; ++i)
     {
         auto const sub_probs = probs.template bind<0>(i);
         auto it = std::max_element(sub_probs.begin(), sub_probs.end());
@@ -262,8 +262,8 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict(
 
 // FIXME TODO we don't support the selection of tree indices any more in predict_probabilities, might be a good idea
 // to re-enable this.
-template<typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
-template<typename PROBS>
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
+template <typename PROBS>
 void
 RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities(
     FEATURES const& features,
@@ -281,7 +281,7 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities(
     // By default, actual_tree_indices is empty. In that case we want to use all trees.
     // We need to make a copy. I really don't know how the old code did compile...
     std::vector<size_t> tree_indices_cpy(tree_indices);
-    if (tree_indices_cpy.size() == 0)
+    if(tree_indices_cpy.size() == 0)
     {
         tree_indices_cpy.resize(graph_.numRoots());
         std::iota(tree_indices_cpy.begin(), tree_indices_cpy.end(), 0);
@@ -291,15 +291,15 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities(
         // Check the tree indices.
         std::sort(tree_indices_cpy.begin(), tree_indices_cpy.end());
         tree_indices_cpy.erase(std::unique(tree_indices_cpy.begin(), tree_indices_cpy.end()), tree_indices_cpy.end());
-        for (auto i : tree_indices_cpy)
+        for(auto i : tree_indices_cpy)
             vigra_precondition(i < graph_.numRoots(), "RandomForest::leaf_ids(): Tree index out of range.");
     }
 
     size_t const num_instances = features.shape()[0];
 
-    if (n_threads == -1)
+    if(n_threads == -1)
         n_threads = std::thread::hardware_concurrency();
-    if (n_threads < 1)
+    if(n_threads < 1)
         n_threads = 1;
 
     parallel_foreach(
@@ -310,8 +310,8 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities(
         });
 }
 
-template<typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
-template<typename PROBS>
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
+template <typename PROBS>
 void
 RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities_impl(
     FEATURES const& features,
@@ -327,10 +327,10 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities_impl(
     auto const sub_features = features.template bind<0>(i);
 
     // loop over the trees
-    for (auto k : tree_indices)
+    for(auto k : tree_indices)
     {
         Node node = graph_.getRoot(k);
-        while (graph_.outDegree(node) > 0)
+        while(graph_.outDegree(node) > 0)
         {
             size_t const child_index = split_tests_.at(node)(sub_features);
             node = graph_.getChild(node, child_index);
@@ -343,8 +343,8 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities_impl(
     acc(tree_results.begin(), tree_results.end(), sub_probs.begin());
 }
 
-template<typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
-template<typename IDS>
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
+template <typename IDS>
 double
 RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::leaf_ids(
     FEATURES const& features,
@@ -362,20 +362,20 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::leaf_ids(
     // Check the tree indices.
     std::sort(tree_indices.begin(), tree_indices.end());
     tree_indices.erase(std::unique(tree_indices.begin(), tree_indices.end()), tree_indices.end());
-    for (auto i : tree_indices)
+    for(auto i : tree_indices)
         vigra_precondition(i < graph_.numRoots(), "RandomForest::leaf_ids(): Tree index out of range.");
 
     // By default, actual_tree_indices is empty. In that case we want to use all trees.
-    if (tree_indices.size() == 0)
+    if(tree_indices.size() == 0)
     {
         tree_indices.resize(graph_.numRoots());
         std::iota(tree_indices.begin(), tree_indices.end(), 0);
     }
 
     size_t const num_instances = features.shape()[0];
-    if (n_threads == -1)
+    if(n_threads == -1)
         n_threads = std::thread::hardware_concurrency();
-    if (n_threads < 1)
+    if(n_threads < 1)
         n_threads = 1;
     std::vector<double> split_comparisons(n_threads, 0.0);
     std::vector<size_t> indices(num_instances);
@@ -393,8 +393,8 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::leaf_ids(
     return sum_split_comparisons / features.shape()[0];
 }
 
-template<typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
-template<typename IDS, typename INDICES>
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
+template <typename IDS, typename INDICES>
 double
 RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::leaf_ids_impl(
     FEATURES const& features,
@@ -413,13 +413,13 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::leaf_ids_impl(
                        "RandomForest::leaf_ids_impl(): Leaf array has wrong shape.");
 
     double split_comparisons = 0.0;
-    for (size_t i = from; i < to; ++i)
+    for(size_t i = from; i < to; ++i)
     {
         auto const sub_features = features.template bind<0>(i);
-        for (auto k : tree_indices)
+        for(auto k : tree_indices)
         {
             Node node = graph_.getRoot(k);
-            while (graph_.outDegree(node) > 0)
+            while(graph_.outDegree(node) > 0)
             {
                 size_t const child_index = split_tests_.at(node)(sub_features);
                 node = graph_.getChild(node, child_index);

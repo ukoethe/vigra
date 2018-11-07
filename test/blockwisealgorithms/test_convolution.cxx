@@ -62,7 +62,7 @@ struct BlockwiseConvolutionTest
 
         NormalArray checked_out_data(shape);
         chunked_data.checkoutSubarray(Shape(0), checked_out_data);
-        for (int i = 0; i != data.size(); ++i)
+        for(int i = 0; i != data.size(); ++i)
         {
             shouldEqual(data[i], checked_out_data[i]);
         }

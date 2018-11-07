@@ -72,16 +72,16 @@ class byteorder
 
     // delegation methods
 
-    template<class T>
+    template <class T>
     void reversebytes(T& x) const
     {
         const size_t n = sizeof(T);
         UInt8 t[n];
         UInt8* c = reinterpret_cast<UInt8*>(&x);
         size_t i;
-        for (i = 0; i < n; ++i)
+        for(i = 0; i < n; ++i)
             t[i] = c[n - 1 - i];
-        for (i = 0; i < n; ++i)
+        for(i = 0; i < n; ++i)
             c[i] = t[i];
     }
 
@@ -97,33 +97,33 @@ public:
     const std::string& get() const;
     const std::string& get_host_byteorder() const;
 
-    template<class T>
+    template <class T>
     void convert_to_host(T& x) const
     {
-        if (!native)
+        if(!native)
             reversebytes(x);
     }
 
-    template<class T>
+    template <class T>
     void convert_to_host(T* x, size_t num) const
     {
-        if (!native)
-            for (size_t i = 0; i < num; ++i)
+        if(!native)
+            for(size_t i = 0; i < num; ++i)
                 reversebytes(x[i]);
     }
 
-    template<class T>
+    template <class T>
     void convert_from_host(T& x) const
     {
-        if (!native)
+        if(!native)
             reversebytes(x);
     }
 
-    template<class T>
+    template <class T>
     void convert_from_host(T* x, size_t num) const
     {
-        if (!native)
-            for (size_t i = 0; i < num; ++i)
+        if(!native)
+            for(size_t i = 0; i < num; ++i)
                 reversebytes(x[i]);
     }
 
@@ -168,7 +168,7 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 void
 read_field(std::ifstream& stream, const byteorder& bo, T& x)
 {
@@ -176,7 +176,7 @@ read_field(std::ifstream& stream, const byteorder& bo, T& x)
     bo.convert_to_host(x);
 }
 
-template<class T>
+template <class T>
 void
 read_array(std::ifstream& stream, const byteorder& bo, T* x,
            size_t num)
@@ -185,7 +185,7 @@ read_array(std::ifstream& stream, const byteorder& bo, T* x,
     bo.convert_to_host(x, num);
 }
 
-template<class T>
+template <class T>
 void
 write_field(std::ofstream& stream, const byteorder& bo, T t)
 {
@@ -193,12 +193,12 @@ write_field(std::ofstream& stream, const byteorder& bo, T t)
     stream.write(reinterpret_cast<char*>(&t), sizeof(T));
 }
 
-template<class T>
+template <class T>
 void
 write_array(std::ofstream& stream, const byteorder& bo,
             const T* x, size_t num)
 {
-    for (size_t i = 0; i < num; ++i)
+    for(size_t i = 0; i < num; ++i)
         write_field(stream, bo, x[i]);
 }
 

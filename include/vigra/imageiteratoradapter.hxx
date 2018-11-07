@@ -73,7 +73,7 @@ namespace vigra
     Namespace: vigra
 
 */
-template<class IMAGE_ITERATOR>
+template <class IMAGE_ITERATOR>
 class ColumnIterator : private IMAGE_ITERATOR
 {
 public:
@@ -282,7 +282,7 @@ public:
     Namespace: vigra
 
 */
-template<class IMAGE_ITERATOR>
+template <class IMAGE_ITERATOR>
 class RowIterator : private IMAGE_ITERATOR
 {
 public:
@@ -484,7 +484,7 @@ public:
     Namespace: vigra
 
 */
-template<class IMAGE_ITERATOR>
+template <class IMAGE_ITERATOR>
 class LineIterator : private IMAGE_ITERATOR
 {
 public:
@@ -523,12 +523,12 @@ public:
         int adx = (dx < 0) ? -dx : dx;
         int ady = (dy < 0) ? -dy : dy;
         int dd = (adx > ady) ? adx : ady;
-        if (dd == 0)
+        if(dd == 0)
             dd = 1;
 
         dx_ = (double)dx / dd;
         dy_ = (double)dy / dd;
-        if (adx > ady)
+        if(adx > ady)
             y_ += dy_ / 2.0;
         else
             x_ += dx_ / 2.0;
@@ -540,23 +540,23 @@ public:
     LineIterator& operator++()
     {
         x_ += dx_;
-        if (x_ >= 1.0)
+        if(x_ >= 1.0)
         {
             x_ -= 1.0;
             ++(this->x);
         }
-        else if (x_ <= -1.0)
+        else if(x_ <= -1.0)
         {
             x_ += 1.0;
             --(this->x);
         }
         y_ += dy_;
-        if (y_ >= 1.0)
+        if(y_ >= 1.0)
         {
             y_ -= 1.0;
             ++(this->y);
         }
-        else if (y_ <= -1.0)
+        else if(y_ <= -1.0)
         {
             y_ += 1.0;
             --(this->y);

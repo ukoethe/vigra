@@ -151,7 +151,7 @@ public:
         should(infoSIF.shape()[0] == (unsigned)infoSIF.width());
         should(infoSIF.shape()[1] == (unsigned)infoSIF.height());
         should(infoSIF.shape()[2] == (unsigned)infoSIF.stacksize());
-        for (int i = 0; i < 3; ++i)
+        for(int i = 0; i < 3; ++i)
         {
             should(infoSIF.shape()[i] == (unsigned)infoSIF.shapeOfDimension(i));
         }
@@ -172,15 +172,15 @@ public:
         readSIF(infoSIF, in_data_volume);
 
         // compare with readBlock() function
-        for (int i = 0; i < infoSIF.stacksize(); ++i)
+        for(int i = 0; i < infoSIF.stacksize(); ++i)
         {
             readSIFBlock(infoSIF, Shape3(0, 0, i), Shape3(4, 5, 1), in_data_block); // read one frame at a time
             should(in_data_block == in_data_volume.subarray(Shape3(0, 0, i), Shape3(4, 5, i + 1)));
 
             // additional check: compare values explicitly
-            for (int xx = 0; xx < infoSIF.width(); ++xx)
+            for(int xx = 0; xx < infoSIF.width(); ++xx)
             {
-                for (int yy = 0; yy < infoSIF.height(); ++yy)
+                for(int yy = 0; yy < infoSIF.height(); ++yy)
                 {
                     should(in_data_block(xx, infoSIF.height() - 1 - yy) == (float)(xx | (yy << 4) | ((i + 1) << 8)));
                 }

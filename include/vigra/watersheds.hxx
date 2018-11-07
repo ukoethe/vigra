@@ -50,9 +50,9 @@
 namespace vigra
 {
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class Neighborhood>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Neighborhood>
 unsigned int
 watershedLabeling(SrcIterator upperlefts,
                   SrcIterator lowerrights, SrcAccessor sa,
@@ -98,10 +98,10 @@ watershedLabeling(SrcIterator upperlefts,
 
     ++xs.x;
     ++xd.x;
-    for (x = 1; x != w; ++x, ++xs.x, ++xd.x)
+    for(x = 1; x != w; ++x, ++xs.x, ++xd.x)
     {
-        if ((sa(xs) & Neighborhood::directionBit(Neighborhood::West)) ||
-            (sa(xs, Neighborhood::west()) & Neighborhood::directionBit(Neighborhood::East)))
+        if((sa(xs) & Neighborhood::directionBit(Neighborhood::West)) ||
+           (sa(xs, Neighborhood::west()) & Neighborhood::directionBit(Neighborhood::East)))
         {
             da.set(da(xd, Neighborhood::west()), xd);
         }
@@ -113,12 +113,12 @@ watershedLabeling(SrcIterator upperlefts,
 
     ++ys.y;
     ++yd.y;
-    for (y = 1; y != h; ++y, ++ys.y, ++yd.y)
+    for(y = 1; y != h; ++y, ++ys.y, ++yd.y)
     {
         xs = ys;
         xd = yd;
 
-        for (x = 0; x != w; ++x, ++xs.x, ++xd.x)
+        for(x = 0; x != w; ++x, ++xs.x, ++xd.x)
         {
             NeighborOffsetCirculator<Neighborhood> nc(x == w - 1
                                                           ? ncstartBorder
@@ -127,9 +127,9 @@ watershedLabeling(SrcIterator upperlefts,
                                                            ? ncendBorder
                                                            : ncend);
             LabelType currentIndex = labels.nextFreeIndex();
-            for (; nc != nce; ++nc)
+            for(; nc != nce; ++nc)
             {
-                if ((sa(xs) & nc.directionBit()) || (sa(xs, *nc) & nc.oppositeDirectionBit()))
+                if((sa(xs) & nc.directionBit()) || (sa(xs, *nc) & nc.oppositeDirectionBit()))
                 {
                     currentIndex = labels.makeUnion(da(xd, *nc), currentIndex);
                 }
@@ -143,10 +143,10 @@ watershedLabeling(SrcIterator upperlefts,
     // pass 2: assign one label to each region (tree)
     // so that labels form a consecutive sequence 1, 2, ...
     yd = upperleftd;
-    for (y = 0; y != h; ++y, ++yd.y)
+    for(y = 0; y != h; ++y, ++yd.y)
     {
         DestIterator xd(yd);
-        for (x = 0; x != w; ++x, ++xd.x)
+        for(x = 0; x != w; ++x, ++xd.x)
         {
             da.set(labels.findLabel(da(xd)), xd);
         }
@@ -154,9 +154,9 @@ watershedLabeling(SrcIterator upperlefts,
     return count;
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class Neighborhood>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Neighborhood>
 unsigned int
 watershedLabeling(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                   pair<DestIterator, DestAccessor> dest,
@@ -167,8 +167,8 @@ watershedLabeling(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 }
 
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
                   DestIterator upperleftd, DestAccessor da,
@@ -183,12 +183,12 @@ prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor s
 
     DestIterator yd = upperleftd;
 
-    for (y = 0; y != h; ++y, ++ys.y, ++yd.y)
+    for(y = 0; y != h; ++y, ++ys.y, ++yd.y)
     {
         xs = ys;
         DestIterator xd = yd;
 
-        for (x = 0; x != w; ++x, ++xs.x, ++xd.x)
+        for(x = 0; x != w; ++x, ++xs.x, ++xd.x)
         {
             AtImageBorder atBorder = isAtImageBorder(x, y, w, h);
             typename SrcAccessor::value_type v = sa(xs);
@@ -196,37 +196,37 @@ prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor s
             // to their lowest neighbor -- would this be better???
             // typename SrcAccessor::value_type v = NumericTraits<typename SrcAccessor::value_type>::max();
             int o = 0; // means center is minimum
-            if (atBorder == NotAtBorder)
+            if(atBorder == NotAtBorder)
             {
                 NeighborhoodCirculator<SrcIterator, FourNeighborCode> c(xs), cend(c);
                 do
                 {
-                    if (sa(c) <= v)
+                    if(sa(c) <= v)
                     {
                         v = sa(c);
                         o = c.directionBit();
                     }
-                } while (++c != cend);
+                } while(++c != cend);
             }
             else
             {
                 RestrictedNeighborhoodCirculator<SrcIterator, FourNeighborCode> c(xs, atBorder), cend(c);
                 do
                 {
-                    if (sa(c) <= v)
+                    if(sa(c) <= v)
                     {
                         v = sa(c);
                         o = c.directionBit();
                     }
-                } while (++c != cend);
+                } while(++c != cend);
             }
             da.set(o, xd);
         }
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
                   DestIterator upperleftd, DestAccessor da,
@@ -241,12 +241,12 @@ prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor s
 
     DestIterator yd = upperleftd;
 
-    for (y = 0; y != h; ++y, ++ys.y, ++yd.y)
+    for(y = 0; y != h; ++y, ++ys.y, ++yd.y)
     {
         xs = ys;
         DestIterator xd = yd;
 
-        for (x = 0; x != w; ++x, ++xs.x, ++xd.x)
+        for(x = 0; x != w; ++x, ++xs.x, ++xd.x)
         {
             AtImageBorder atBorder = isAtImageBorder(x, y, w, h);
             typename SrcAccessor::value_type v = sa(xs);
@@ -254,25 +254,25 @@ prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor s
             // to their lowest neighbor -- would this be better???
             // typename SrcAccessor::value_type v = NumericTraits<typename SrcAccessor::value_type>::max();
             int o = 0; // means center is minimum
-            if (atBorder == NotAtBorder)
+            if(atBorder == NotAtBorder)
             {
                 // handle diagonal and principal neighbors separately
                 // so that principal neighbors are preferred when there are
                 // candidates with equal strength
                 NeighborhoodCirculator<SrcIterator, EightNeighborCode>
                     c(xs, EightNeighborCode::NorthEast);
-                for (int i = 0; i < 4; ++i, c += 2)
+                for(int i = 0; i < 4; ++i, c += 2)
                 {
-                    if (sa(c) <= v)
+                    if(sa(c) <= v)
                     {
                         v = sa(c);
                         o = c.directionBit();
                     }
                 }
                 --c;
-                for (int i = 0; i < 4; ++i, c += 2)
+                for(int i = 0; i < 4; ++i, c += 2)
                 {
-                    if (sa(c) <= v)
+                    if(sa(c) <= v)
                     {
                         v = sa(c);
                         o = c.directionBit();
@@ -285,24 +285,24 @@ prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor s
                     c(xs, atBorder), cend(c);
                 do
                 {
-                    if (!c.isDiagonal())
+                    if(!c.isDiagonal())
                         continue;
-                    if (sa(c) <= v)
+                    if(sa(c) <= v)
                     {
                         v = sa(c);
                         o = c.directionBit();
                     }
-                } while (++c != cend);
+                } while(++c != cend);
                 do
                 {
-                    if (c.isDiagonal())
+                    if(c.isDiagonal())
                         continue;
-                    if (sa(c) <= v)
+                    if(sa(c) <= v)
                     {
                         v = sa(c);
                         o = c.directionBit();
                     }
-                } while (++c != cend);
+                } while(++c != cend);
             }
             da.set(o, xd);
         }
@@ -409,7 +409,7 @@ public:
     }
 
     // check whether the threshold has been set for the target type T
-    template<class T>
+    template <class T>
     bool thresholdIsValid() const
     {
         return thresh < double(NumericTraits<T>::max());
@@ -497,11 +497,11 @@ public:
 
     For detailed examples see \ref watershedsMultiArray() and \ref watershedsRegionGrowing().
 */
-doxygen_overloaded_function(template<...> unsigned int generateWatershedSeeds)
+doxygen_overloaded_function(template <...> unsigned int generateWatershedSeeds)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class Neighborhood>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class Neighborhood>
     unsigned int generateWatershedSeeds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
                                         DestIterator upperleftd, DestAccessor da,
                                         Neighborhood,
@@ -517,7 +517,7 @@ doxygen_overloaded_function(template<...> unsigned int generateWatershedSeeds)
     Diff2D shape = lowerrights - upperlefts;
     BImage seeds(shape);
 
-    if (options.mini == SeedOptions::LevelSets)
+    if(options.mini == SeedOptions::LevelSets)
     {
         transformImage(srcIterRange(upperlefts, lowerrights, sa),
                        destImage(seeds),
@@ -530,7 +530,7 @@ doxygen_overloaded_function(template<...> unsigned int generateWatershedSeeds)
             .markWith(1.0)
             .allowAtBorder()
             .allowPlateaus(options.mini == SeedOptions::ExtendedMinima);
-        if (options.thresholdIsValid<SrcType>())
+        if(options.thresholdIsValid<SrcType>())
             lm_options.threshold(options.thresh);
 
         localMinima(srcIterRange(upperlefts, lowerrights, sa), destImage(seeds),
@@ -541,8 +541,8 @@ doxygen_overloaded_function(template<...> unsigned int generateWatershedSeeds)
                                     Neighborhood::DirectionCount == 8, 0);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline unsigned int
 generateWatershedSeeds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
                        DestIterator upperleftd, DestAccessor da,
@@ -552,9 +552,9 @@ generateWatershedSeeds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
                                   EightNeighborCode(), options);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class Neighborhood>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Neighborhood>
 inline unsigned int
 generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        pair<DestIterator, DestAccessor> dest,
@@ -566,8 +566,8 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                   neighborhood, options);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline unsigned int
 generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        pair<DestIterator, DestAccessor> dest,
@@ -703,11 +703,11 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> unsigned int watershedsUnionFind)
+doxygen_overloaded_function(template <...> unsigned int watershedsUnionFind)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class Neighborhood>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class Neighborhood>
     unsigned int watershedsUnionFind(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
                                      DestIterator upperleftd, DestAccessor da,
                                      Neighborhood neighborhood)
@@ -720,8 +720,8 @@ doxygen_overloaded_function(template<...> unsigned int watershedsUnionFind)
                              upperleftd, da, neighborhood);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline unsigned int
 watershedsUnionFind(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
                     DestIterator upperleftd, DestAccessor da)
@@ -729,9 +729,9 @@ watershedsUnionFind(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor
     return watershedsUnionFind(upperlefts, lowerrights, sa, upperleftd, da, EightNeighborCode());
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class Neighborhood>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Neighborhood>
 inline unsigned int
 watershedsUnionFind(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     pair<DestIterator, DestAccessor> dest, Neighborhood neighborhood)
@@ -740,8 +740,8 @@ watershedsUnionFind(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                dest.first, dest.second, neighborhood);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline unsigned int
 watershedsUnionFind(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     pair<DestIterator, DestAccessor> dest)
@@ -750,9 +750,9 @@ watershedsUnionFind(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                dest.first, dest.second);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class Neighborhood>
+template <class T1, class S1,
+          class T2, class S2,
+          class Neighborhood>
 inline unsigned int
     watershedsUnionFind(MultiArrayView<2, T1, S1> const& src,
                         MultiArrayView<2, T2, S2> dest, Neighborhood neighborhood)
@@ -761,8 +761,8 @@ inline unsigned int
                                destImage(dest), neighborhood);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline unsigned int
     watershedsUnionFind(MultiArrayView<2, T1, S1> const& src,
                         MultiArrayView<2, T2, S2> dest)
@@ -955,7 +955,7 @@ public:
 namespace detail
 {
 
-template<class CostType, class LabelType>
+template <class CostType, class LabelType>
 class WatershedStatistics
 {
 public:
@@ -981,7 +981,7 @@ public:
 
     /** update regions statistics (do nothing in the watershed algorithm)
         */
-    template<class T1, class T2>
+    template <class T1, class T2>
     void operator()(first_argument_type const&, second_argument_type const&)
     {
     }
@@ -1017,7 +1017,7 @@ public:
     value_type stats;
 };
 
-template<class Value>
+template <class Value>
 class SeedRgBiasedValueFunctor
 {
 public:
@@ -1055,7 +1055,7 @@ public:
     }
 };
 
-template<class CostType, class LabelType>
+template <class CostType, class LabelType>
 class BiasedWatershedStatistics
 {
 public:
@@ -1083,7 +1083,7 @@ public:
 
     /** update regions statistics (do nothing in the watershed algorithm)
         */
-    template<class T1, class T2>
+    template <class T1, class T2>
     void operator()(first_argument_type const&, second_argument_type const&)
     {
     }
@@ -1383,11 +1383,11 @@ public:
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> unsigned int watershedsRegionGrowing)
+doxygen_overloaded_function(template <...> unsigned int watershedsRegionGrowing)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class Neighborhood>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class Neighborhood>
     unsigned int watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
                                          DestIterator upperleftd, DestAccessor da,
                                          Neighborhood neighborhood,
@@ -1398,7 +1398,7 @@ doxygen_overloaded_function(template<...> unsigned int watershedsRegionGrowing)
 
     unsigned int max_region_label = 0;
 
-    if (options.seed_options.mini != SeedOptions::Unspecified)
+    if(options.seed_options.mini != SeedOptions::Unspecified)
     {
         // we are supposed to compute seeds
         max_region_label =
@@ -1407,14 +1407,14 @@ doxygen_overloaded_function(template<...> unsigned int watershedsRegionGrowing)
                                    neighborhood, options.seed_options);
     }
 
-    if (options.biased_label != 0)
+    if(options.biased_label != 0)
     {
         // create a statistics functor for biased region growing
         detail::BiasedWatershedStatistics<ValueType, LabelType>
             regionstats(options.biased_label, options.bias);
 
         // perform region growing, starting from the seeds computed above
-        if (options.bucket_count == 0)
+        if(options.bucket_count == 0)
         {
             max_region_label =
                 seededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),
@@ -1437,7 +1437,7 @@ doxygen_overloaded_function(template<...> unsigned int watershedsRegionGrowing)
         detail::WatershedStatistics<ValueType, LabelType> regionstats;
 
         // perform region growing, starting from the seeds computed above
-        if (options.bucket_count == 0)
+        if(options.bucket_count == 0)
         {
             max_region_label =
                 seededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),
@@ -1458,8 +1458,8 @@ doxygen_overloaded_function(template<...> unsigned int watershedsRegionGrowing)
     return max_region_label;
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline unsigned int
 watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
                         DestIterator upperleftd, DestAccessor da,
@@ -1469,9 +1469,9 @@ watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcce
                                    EightNeighborCode(), options);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class Neighborhood>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Neighborhood>
 inline unsigned int
 watershedsRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         pair<DestIterator, DestAccessor> dest,
@@ -1483,8 +1483,8 @@ watershedsRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                    neighborhood, options);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline unsigned int
 watershedsRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         pair<DestIterator, DestAccessor> dest,
@@ -1495,9 +1495,9 @@ watershedsRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                    EightNeighborCode(), options);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class Neighborhood>
+template <class T1, class S1,
+          class T2, class S2,
+          class Neighborhood>
 inline unsigned int
     watershedsRegionGrowing(MultiArrayView<2, T1, S1> const& src,
                             MultiArrayView<2, T2, S2> dest,
@@ -1511,8 +1511,8 @@ inline unsigned int
                                    neighborhood, options);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline unsigned int
     watershedsRegionGrowing(MultiArrayView<2, T1, S1> const& src,
                             MultiArrayView<2, T2, S2> dest,

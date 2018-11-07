@@ -78,7 +78,7 @@ namespace vigra
 
     \endcode
 */
-template<class ACCESSOR, class VALUETYPE>
+template <class ACCESSOR, class VALUETYPE>
 class BilinearInterpolatingAccessor
 {
 public:
@@ -98,7 +98,7 @@ public:
         (x, y) is near the image border (as long as
         0 <= x <= width-1, 0 <= y <= height-1).
     */
-    template<class ITERATOR>
+    template <class ITERATOR>
     value_type operator()(ITERATOR const& i, float x, float y) const
     {
         int ix = int(x);
@@ -109,9 +109,9 @@ public:
         value_type ret;
 
         // avoid dereferencing the iterator outside its range
-        if (dx == 0.0)
+        if(dx == 0.0)
         {
-            if (dy == 0.0)
+            if(dy == 0.0)
             {
                 ret = a_(i, Diff2D(ix, iy));
             }
@@ -124,7 +124,7 @@ public:
         }
         else
         {
-            if (dy == 0.0)
+            if(dy == 0.0)
             {
                 ret = detail::RequiresExplicitCast<value_type>::cast(
                     (1.0 - dx) * a_(i, Diff2D(ix, iy)) +
@@ -147,7 +147,7 @@ public:
         This function works as long as 0 <= x < width-1,
         0 <= y < height-1. It is slightly faster than <TT>operator()</TT>.
     */
-    template<class ITERATOR>
+    template <class ITERATOR>
     value_type unchecked(ITERATOR const& i, float x, float y) const
     {
         int ix = int(x);

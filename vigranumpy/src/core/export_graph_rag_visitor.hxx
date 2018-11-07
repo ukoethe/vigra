@@ -32,7 +32,7 @@ namespace vigra
 
 
 
-template<class GRAPH>
+template <class GRAPH>
 class LemonGraphRagVisitor
     : public boost::python::def_visitor<LemonGraphRagVisitor<GRAPH>>
 {
@@ -124,7 +124,7 @@ public:
     }
 
 
-    template<class classT>
+    template <class classT>
     void visit(classT& /*c*/) const
     {
 
@@ -275,7 +275,7 @@ public:
 
 
 
-        for (size_t e = 0; e < nEdges; ++e)
+        for(size_t e = 0; e < nEdges; ++e)
         {
             const Edge edge = vecVec[ragEdgeIndex][e];
             const Node u = graph.u(edge);
@@ -283,9 +283,9 @@ public:
             const Shape uCoord = GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(graph, u);
             const Shape vCoord = GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(graph, v);
 
-            for (size_t i = 0; i < pseudoDim; ++i)
+            for(size_t i = 0; i < pseudoDim; ++i)
                 coords(e, i) = uCoord[i];
-            for (size_t i = pseudoDim; i < 2 * pseudoDim; ++i)
+            for(size_t i = pseudoDim; i < 2 * pseudoDim; ++i)
                 coords(e, i) = vCoord[i - pseudoDim];
         }
         return coords;
@@ -309,11 +309,11 @@ public:
         typename PyNodeMapTraits<RagGraph, UInt32>::Map ragSeedsArrayMap(rag, ragSeedsArray);
 
 
-        for (NodeIt iter(graph); iter != lemon::INVALID; ++iter)
+        for(NodeIt iter(graph); iter != lemon::INVALID; ++iter)
         {
             const UInt32 label = labelsArrayMap[*iter];
             const UInt32 seed = seedsArrayMap[*iter];
-            if (seed != 0)
+            if(seed != 0)
             {
                 RagNode node = rag.nodeFromId(label);
                 ragSeedsArrayMap[node] = seed;
@@ -393,7 +393,7 @@ public:
     }
 
 
-    template<class T>
+    template <class T>
     static NumpyAnyArray pyRagEdgeFeatures(
         const RagGraph& rag,
         const Graph& graph,
@@ -419,14 +419,14 @@ public:
         typename PyEdgeMapTraits<RagGraph, T>::Map ragEdgeFeaturesArrayMap(rag, ragEdgeFeaturesArray);
 
 
-        if (accumulator == std::string("mean"))
+        if(accumulator == std::string("mean"))
         {
-            for (RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
+            for(RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
             {
                 const RagEdge ragEdge = *iter;
                 const std::vector<Edge>& affEdges = affiliatedEdges[ragEdge];
                 float weightSum = 0.0;
-                for (size_t i = 0; i < affEdges.size(); ++i)
+                for(size_t i = 0; i < affEdges.size(); ++i)
                 {
                     const float weight = edgeSizesArrayMap[affEdges[i]];
                     ragEdgeFeaturesArrayMap[ragEdge] += weight * edgeFeaturesArrayMap[affEdges[i]];
@@ -436,40 +436,40 @@ public:
                 ragEdgeFeaturesArrayMap[ragEdge] /= weightSum;
             }
         }
-        else if (accumulator == std::string("sum"))
+        else if(accumulator == std::string("sum"))
         {
-            for (RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
+            for(RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
             {
                 const RagEdge ragEdge = *iter;
                 const std::vector<Edge>& affEdges = affiliatedEdges[ragEdge];
-                for (size_t i = 0; i < affEdges.size(); ++i)
+                for(size_t i = 0; i < affEdges.size(); ++i)
                 {
                     ragEdgeFeaturesArrayMap[ragEdge] += edgeFeaturesArrayMap[affEdges[i]];
                 }
             }
         }
-        else if (accumulator == std::string("min"))
+        else if(accumulator == std::string("min"))
         {
-            for (RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
+            for(RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
             {
                 const RagEdge ragEdge = *iter;
                 const std::vector<Edge>& affEdges = affiliatedEdges[ragEdge];
                 float minVal = std::numeric_limits<float>::infinity();
-                for (size_t i = 0; i < affEdges.size(); ++i)
+                for(size_t i = 0; i < affEdges.size(); ++i)
                 {
                     minVal = std::min(minVal, edgeFeaturesArrayMap[affEdges[i]]);
                 }
                 ragEdgeFeaturesArrayMap[ragEdge] = minVal;
             }
         }
-        else if (accumulator == std::string("max"))
+        else if(accumulator == std::string("max"))
         {
-            for (RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
+            for(RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
             {
                 const RagEdge ragEdge = *iter;
                 const std::vector<Edge>& affEdges = affiliatedEdges[ragEdge];
                 float maxVal = -1.0 * std::numeric_limits<float>::infinity();
-                for (size_t i = 0; i < affEdges.size(); ++i)
+                for(size_t i = 0; i < affEdges.size(); ++i)
                 {
                     maxVal = std::max(maxVal, edgeFeaturesArrayMap[affEdges[i]]);
                 }
@@ -485,7 +485,7 @@ public:
     }
 
 
-    template<class T>
+    template <class T>
     static NumpyAnyArray pyRagEdgeFeaturesMb(
         const RagGraph& rag,
         const Graph& graph,
@@ -506,7 +506,7 @@ public:
 
         // resize out
         typename MultiArray<RagEdgeMapDim + 1, int>::difference_type outShape;
-        for (size_t d = 0; d < RagEdgeMapDim; ++d)
+        for(size_t d = 0; d < RagEdgeMapDim; ++d)
         {
             outShape[d] = IntrinsicGraphShape<RagGraph>::intrinsicEdgeMapShape(rag)[d];
         }
@@ -528,14 +528,14 @@ public:
 
         //typedef typename PyEdgeMapTraits<Graph,float >::Array::value_type ValType;
 
-        if (accumulator == std::string("mean"))
+        if(accumulator == std::string("mean"))
         {
-            for (RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
+            for(RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
             {
                 const RagEdge ragEdge = *iter;
                 const std::vector<Edge>& affEdges = affiliatedEdges[ragEdge];
                 float weightSum = 0.0;
-                for (size_t i = 0; i < affEdges.size(); ++i)
+                for(size_t i = 0; i < affEdges.size(); ++i)
                 {
                     const float weight = edgeSizesArrayMap[affEdges[i]];
                     vigra::MultiArray<1, float> val = edgeFeaturesArrayMap[affEdges[i]];
@@ -546,13 +546,13 @@ public:
                 ragEdgeFeaturesArrayMap[ragEdge] /= weightSum;
             }
         }
-        else if (accumulator == std::string("sum"))
+        else if(accumulator == std::string("sum"))
         {
-            for (RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
+            for(RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
             {
                 const RagEdge ragEdge = *iter;
                 const std::vector<Edge>& affEdges = affiliatedEdges[ragEdge];
-                for (size_t i = 0; i < affEdges.size(); ++i)
+                for(size_t i = 0; i < affEdges.size(); ++i)
                 {
                     ragEdgeFeaturesArrayMap[ragEdge] += edgeFeaturesArrayMap[affEdges[i]];
                 }
@@ -567,7 +567,7 @@ public:
     }
 
 
-    template<class T_PIXEL, class T, class OTF_EDGES>
+    template <class T_PIXEL, class T, class OTF_EDGES>
     static NumpyAnyArray pyRagEdgeMeanFromImplicit(
         const RagGraph& rag,
         const Graph& /*graph*/,
@@ -589,44 +589,44 @@ public:
         typename PyEdgeMapTraits<RagGraph, T>::Map ragEdgeFeaturesArrayMap(rag, ragEdgeFeaturesArray);
 
 
-        if (accumulator == std::string("mean") || accumulator == std::string("sum"))
+        if(accumulator == std::string("mean") || accumulator == std::string("sum"))
         {
             std::fill(ragEdgeFeaturesArray.begin(), ragEdgeFeaturesArray.end(), 0.0f);
-            for (RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
+            for(RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
             {
                 const RagEdge ragEdge = *iter;
                 const std::vector<Edge>& affEdges = affiliatedEdges[ragEdge];
-                for (size_t i = 0; i < affEdges.size(); ++i)
+                for(size_t i = 0; i < affEdges.size(); ++i)
                 {
                     ragEdgeFeaturesArrayMap[ragEdge] += otfEdgeMap[affEdges[i]];
                 }
-                if (accumulator == std::string("mean"))
+                if(accumulator == std::string("mean"))
                 {
                     ragEdgeFeaturesArrayMap[ragEdge] /= affEdges.size();
                 }
             }
         }
-        if (accumulator == std::string("min"))
+        if(accumulator == std::string("min"))
         {
             std::fill(ragEdgeFeaturesArray.begin(), ragEdgeFeaturesArray.end(), std::numeric_limits<float>::infinity());
-            for (RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
+            for(RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
             {
                 const RagEdge ragEdge = *iter;
                 const std::vector<Edge>& affEdges = affiliatedEdges[ragEdge];
-                for (size_t i = 0; i < affEdges.size(); ++i)
+                for(size_t i = 0; i < affEdges.size(); ++i)
                 {
                     ragEdgeFeaturesArrayMap[ragEdge] = std::min(otfEdgeMap[affEdges[i]], ragEdgeFeaturesArrayMap[ragEdge]);
                 }
             }
         }
-        if (accumulator == std::string("max"))
+        if(accumulator == std::string("max"))
         {
             std::fill(ragEdgeFeaturesArray.begin(), ragEdgeFeaturesArray.end(), -1.0f * std::numeric_limits<float>::infinity());
-            for (RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
+            for(RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
             {
                 const RagEdge ragEdge = *iter;
                 const std::vector<Edge>& affEdges = affiliatedEdges[ragEdge];
-                for (size_t i = 0; i < affEdges.size(); ++i)
+                for(size_t i = 0; i < affEdges.size(); ++i)
                 {
                     ragEdgeFeaturesArrayMap[ragEdge] = std::max(otfEdgeMap[affEdges[i]], ragEdgeFeaturesArrayMap[ragEdge]);
                 }
@@ -639,7 +639,7 @@ public:
     }
 
 
-    template<class T_PIXEL, class T, class OTF_EDGES>
+    template <class T_PIXEL, class T, class OTF_EDGES>
     static NumpyAnyArray pyRagEdgeFeaturesFromImplicit(
         const RagGraph& rag,
         const Graph& /*graph*/,
@@ -657,7 +657,7 @@ public:
 
         // resize out
         typename MultiArray<RagEdgeMapDim + 1, int>::difference_type outShape;
-        for (size_t d = 0; d < RagEdgeMapDim; ++d)
+        for(size_t d = 0; d < RagEdgeMapDim; ++d)
         {
             outShape[d] = IntrinsicGraphShape<RagGraph>::intrinsicEdgeMapShape(rag)[d];
         }
@@ -689,8 +689,8 @@ public:
                              a.setHistogramOptions(HistogramOptions().setBinCount(n_bins));
 
                              // accumulate the values of this edge
-                             for (unsigned int k = 1; k <= a.passesRequired(); ++k)
-                                 for (size_t i = 0; i < affEdges.size(); ++i)
+                             for(unsigned int k = 1; k <= a.passesRequired(); ++k)
+                                 for(size_t i = 0; i < affEdges.size(); ++i)
                                      a.updatePassN(otfEdgeMap[affEdges[i]], k);
 
                              feat[0] = get<Mean>(a);
@@ -714,7 +714,7 @@ public:
     }
 
 
-    template<class T>
+    template <class T>
     static NumpyAnyArray pyRagFindEdges(
         const RagGraph& rag,
         const Graph& graph,
@@ -728,7 +728,7 @@ public:
 
         // Get number of points
         UInt32 nPoints = 0;
-        for (RagOutArcIt iter(rag, node); iter != lemon::INVALID; ++iter)
+        for(RagOutArcIt iter(rag, node); iter != lemon::INVALID; ++iter)
         {
             const RagEdge ragEdge(*iter);
             const std::vector<Edge>& affEdges = affiliatedEdges[ragEdge];
@@ -738,11 +738,11 @@ public:
 
         // Find edges
         size_t nNext = 0;
-        for (RagOutArcIt iter(rag, node); iter != lemon::INVALID; ++iter)
+        for(RagOutArcIt iter(rag, node); iter != lemon::INVALID; ++iter)
         {
             const RagEdge ragEdge(*iter);
             const std::vector<Edge>& affEdges = affiliatedEdges[ragEdge];
-            for (size_t i = 0; i < affEdges.size(); ++i)
+            for(size_t i = 0; i < affEdges.size(); ++i)
             {
                 Node u = graph.u(affEdges[i]);
                 Node v = graph.v(affEdges[i]);
@@ -750,11 +750,11 @@ public:
                 UInt32 vLabel = labelsArrayMap[v];
 
                 NodeCoordinate coords;
-                if (uLabel == nodeLabel)
+                if(uLabel == nodeLabel)
                 {
                     coords = GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(graph, u);
                 }
-                else if (vLabel == nodeLabel)
+                else if(vLabel == nodeLabel)
                 {
                     coords = GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(graph, v);
                 }
@@ -762,7 +762,7 @@ public:
                 {
                     // If you get here, then there's an error. Maybe print a message?
                 }
-                for (size_t k = 0; k < coords.size(); ++k)
+                for(size_t k = 0; k < coords.size(); ++k)
                 {
                     edgePoints(nNext, k) = coords[k];
                 }
@@ -800,13 +800,13 @@ public:
         FloatNodeArrayMap nodeSizesArrayMap(graph, nodeSizesArray);
         RagFloatNodeArrayMap ragNodeFeaturesArrayMap(rag, ragNodeFeaturesArray);
 
-        if (accumulator == std::string("mean"))
+        if(accumulator == std::string("mean"))
         {
             typename RagGraph::template NodeMap<float> counting(rag, 0.0f);
-            for (NodeIt iter(graph); iter != lemon::INVALID; ++iter)
+            for(NodeIt iter(graph); iter != lemon::INVALID; ++iter)
             {
                 UInt32 l = labelsArrayMap[*iter];
-                if (ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
+                if(ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
                 {
                     const float weight = nodeSizesArrayMap[*iter];
                     const RagNode ragNode = rag.nodeFromId(l);
@@ -814,60 +814,60 @@ public:
                     counting[ragNode] += weight;
                 }
             }
-            for (RagNodeIt iter(rag); iter != lemon::INVALID; ++iter)
+            for(RagNodeIt iter(rag); iter != lemon::INVALID; ++iter)
             {
                 const RagNode ragNode = *iter;
                 ragNodeFeaturesArrayMap[ragNode] /= counting[ragNode];
             }
         }
-        else if (accumulator == std::string("sum"))
+        else if(accumulator == std::string("sum"))
         {
-            for (NodeIt iter(graph); iter != lemon::INVALID; ++iter)
+            for(NodeIt iter(graph); iter != lemon::INVALID; ++iter)
             {
                 UInt32 l = labelsArrayMap[*iter];
-                if (ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
+                if(ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
                 {
                     const RagNode ragNode = rag.nodeFromId(l);
                     ragNodeFeaturesArrayMap[ragNode] += nodeFeaturesArrayMap[*iter];
                 }
             }
         }
-        else if (accumulator == std::string("min"))
+        else if(accumulator == std::string("min"))
         {
-            for (NodeIt iter(graph); iter != lemon::INVALID; ++iter)
+            for(NodeIt iter(graph); iter != lemon::INVALID; ++iter)
             {
                 UInt32 l = labelsArrayMap[*iter];
-                if (ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
+                if(ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
                 {
                     const RagNode ragNode = rag.nodeFromId(l);
                     ragNodeFeaturesArrayMap[ragNode] = std::numeric_limits<float>::infinity();
                 }
             }
-            for (NodeIt iter(graph); iter != lemon::INVALID; ++iter)
+            for(NodeIt iter(graph); iter != lemon::INVALID; ++iter)
             {
                 UInt32 l = labelsArrayMap[*iter];
-                if (ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
+                if(ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
                 {
                     const RagNode ragNode = rag.nodeFromId(l);
                     ragNodeFeaturesArrayMap[ragNode] = std::min(nodeFeaturesArrayMap[*iter], ragNodeFeaturesArrayMap[ragNode]);
                 }
             }
         }
-        else if (accumulator == std::string("max"))
+        else if(accumulator == std::string("max"))
         {
-            for (NodeIt iter(graph); iter != lemon::INVALID; ++iter)
+            for(NodeIt iter(graph); iter != lemon::INVALID; ++iter)
             {
                 UInt32 l = labelsArrayMap[*iter];
-                if (ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
+                if(ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
                 {
                     const RagNode ragNode = rag.nodeFromId(l);
                     ragNodeFeaturesArrayMap[ragNode] = -1.0 * std::numeric_limits<float>::infinity();
                 }
             }
-            for (NodeIt iter(graph); iter != lemon::INVALID; ++iter)
+            for(NodeIt iter(graph); iter != lemon::INVALID; ++iter)
             {
                 UInt32 l = labelsArrayMap[*iter];
-                if (ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
+                if(ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
                 {
                     const RagNode ragNode = rag.nodeFromId(l);
                     ragNodeFeaturesArrayMap[ragNode] = std::max(nodeFeaturesArrayMap[*iter], ragNodeFeaturesArrayMap[ragNode]);
@@ -896,7 +896,7 @@ public:
 
         // resize out
         typename MultiArray<RagNodeMapDim + 1, int>::difference_type outShape;
-        for (size_t d = 0; d < RagNodeMapDim; ++d)
+        for(size_t d = 0; d < RagNodeMapDim; ++d)
         {
             outShape[d] = IntrinsicGraphShape<RagGraph>::intrinsicNodeMapShape(rag)[d];
         }
@@ -911,13 +911,13 @@ public:
         FloatNodeArrayMap nodeSizesArrayMap(graph, nodeSizesArray);
         RagMultiFloatNodeArrayMap ragNodeFeaturesArrayMap(rag, ragNodeFeaturesArray);
 
-        if (accumulator == std::string("mean"))
+        if(accumulator == std::string("mean"))
         {
             typename RagGraph::template NodeMap<float> counting(rag, 0.0f);
-            for (NodeIt iter(graph); iter != lemon::INVALID; ++iter)
+            for(NodeIt iter(graph); iter != lemon::INVALID; ++iter)
             {
                 UInt32 l = labelsArrayMap[*iter];
-                if (ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
+                if(ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
                 {
                     const float weight = nodeSizesArrayMap[*iter];
                     const RagNode ragNode = rag.nodeFromId(l);
@@ -927,18 +927,18 @@ public:
                     counting[ragNode] += weight;
                 }
             }
-            for (RagNodeIt iter(rag); iter != lemon::INVALID; ++iter)
+            for(RagNodeIt iter(rag); iter != lemon::INVALID; ++iter)
             {
                 const RagNode ragNode = *iter;
                 ragNodeFeaturesArrayMap[ragNode] /= counting[ragNode];
             }
         }
-        else if (accumulator == std::string("sum"))
+        else if(accumulator == std::string("sum"))
         {
-            for (NodeIt iter(graph); iter != lemon::INVALID; ++iter)
+            for(NodeIt iter(graph); iter != lemon::INVALID; ++iter)
             {
                 UInt32 l = labelsArrayMap[*iter];
-                if (ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
+                if(ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
                 {
                     const RagNode ragNode = rag.nodeFromId(l);
                     ragNodeFeaturesArrayMap[ragNode] += nodeFeaturesArrayMap[*iter];
@@ -966,10 +966,10 @@ public:
         // numpy arrays => lemon maps
         UInt32NodeArrayMap labelsArrayMap(graph, labelsArray);
         RagFloatNodeArrayMap ragNodeSizeArrayMap(rag, ragNodeSizeArray);
-        for (NodeIt iter(graph); iter != lemon::INVALID; ++iter)
+        for(NodeIt iter(graph); iter != lemon::INVALID; ++iter)
         {
             UInt32 l = labelsArrayMap[*iter];
-            if (ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
+            if(ignoreLabel == -1 || static_cast<Int32>(l) != ignoreLabel)
             {
                 const RagNode ragNode = rag.nodeFromId(l);
                 ragNodeSizeArrayMap[ragNode] += 1.0f;
@@ -989,7 +989,7 @@ public:
         // numpy arrays => lemon maps
         RagFloatEdgeArrayMap ragEdgeFeaturesArrayMap(rag, ragEdgeFeaturesArray);
 
-        for (RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
+        for(RagEdgeIt iter(rag); iter != lemon::INVALID; ++iter)
         {
             const RagEdge ragEdge = *iter;
             const std::vector<Edge>& affEdges = affiliatedEdges[ragEdge];
@@ -1000,7 +1000,7 @@ public:
 
 
 
-    template<class T>
+    template <class T>
     static void exportPyRagProjectNodeFeaturesToBaseGraph()
     {
         python::def("_ragProjectNodeFeaturesToBaseGraph",
@@ -1014,7 +1014,7 @@ public:
                         python::arg("out") = python::object()));
     }
 
-    template<class T>
+    template <class T>
     static NumpyAnyArray pyRagProjectNodeFeaturesToBaseGraph(
         const RagGraph& rag,
         const Graph& graph,
@@ -1027,7 +1027,7 @@ public:
 
         TaggedShape ragNodeFeaturesArrayShape = ragNodeFeaturesArray.taggedShape();
         TaggedShape graphNodeFeaturesArrayShape = TaggedGraphShape<Graph>::taggedNodeMapShape(graph);
-        if (ragNodeFeaturesArrayShape.hasChannelAxis())
+        if(ragNodeFeaturesArrayShape.hasChannelAxis())
         {
             graphNodeFeaturesArrayShape.setChannelCount(ragNodeFeaturesArrayShape.channelCount());
         }

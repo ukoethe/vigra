@@ -112,7 +112,7 @@ static C reference[][12] =
     (std::cerr << #v1 << " == " << #v2 << ": " << (v1) << " " << (v2) << " " << (v1 - v2) << std::endl)
 #endif
 
-template<unsigned int N, class POLYNOMIAL>
+template <unsigned int N, class POLYNOMIAL>
 struct PolynomialTest
 {
     void testPolynomial()
@@ -125,7 +125,7 @@ struct PolynomialTest
 
         should(polynomialRoots(p, roots));
         shouldEqual(roots.size(), order);
-        for (unsigned int i = 0; i < roots.size(); ++i)
+        for(unsigned int i = 0; i < roots.size(); ++i)
         {
             shouldEqualTolerance(roots[i].real(), reference[N][i + 1].real(), epsilon);
             shouldEqualTolerance(roots[i].imag(), reference[N][i + 1].imag(), epsilon);
@@ -143,7 +143,7 @@ struct PolynomialTest
 
         should(polynomialRootsEigenvalueMethod(p, roots));
         shouldEqual(roots.size(), order);
-        for (unsigned int i = 0; i < roots.size(); ++i)
+        for(unsigned int i = 0; i < roots.size(); ++i)
         {
             shouldEqualTolerance(roots[i].real(), reference[N][i + 1].real(), epsilon);
             shouldEqualTolerance(roots[i].imag(), reference[N][i + 1].imag(), epsilon);
@@ -166,7 +166,7 @@ struct HighOrderPolynomialTest
 
         should(vigra::polynomialRoots(p, roots));
         shouldEqual(roots.size(), order);
-        for (unsigned int i = 0; i < roots.size(); ++i)
+        for(unsigned int i = 0; i < roots.size(); ++i)
         {
             shouldEqualTolerance(std::abs(roots[i]), 1.0, epsilon);
             C r = p(roots[i]);
@@ -193,7 +193,7 @@ struct HighOrderPolynomialTest
 
         should(vigra::polynomialRootsEigenvalueMethod(p, roots));
         shouldEqual(roots.size(), order);
-        for (unsigned int i = 0; i < roots.size(); ++i)
+        for(unsigned int i = 0; i < roots.size(); ++i)
         {
             shouldEqualTolerance(std::abs(roots[i]), 1.0, epsilon);
             C r = p(roots[i]);
@@ -208,7 +208,7 @@ struct HighOrderPolynomialTest
     }
 };
 
-template<int ORDER>
+template <int ORDER>
 struct SplineTest
 {
     typedef vigra::BSpline<ORDER, double> BS;
@@ -221,9 +221,9 @@ struct SplineTest
         double r = spline.radius();
         shouldEqual(r, splineBase.radius());
 
-        for (int d = 0; d <= ORDER + 1; ++d)
+        for(int d = 0; d <= ORDER + 1; ++d)
         {
-            for (double x = -r - 0.5; x <= r + 0.5; x += 0.5)
+            for(double x = -r - 0.5; x <= r + 0.5; x += 0.5)
                 shouldEqualTolerance(spline(x, d), splineBase(x, d), 1e-15);
         }
     }
@@ -233,7 +233,7 @@ struct SplineTest
         double r = spline.radius();
         shouldEqual(r, splineBase.radius());
 
-        for (double x = -r - 0.5; x <= r + 0.5; x += 0.5)
+        for(double x = -r - 0.5; x <= r + 0.5; x += 0.5)
         {
             vigra::FixedPoint<11, 20> fpx20(x);
             vigra::FixedPoint<11, 15> fpx15(x);
@@ -248,7 +248,7 @@ struct SplineTest
         vigra::ArrayVector<double> const& ps = spline.prefilterCoefficients();
         vigra::ArrayVector<double> const& psb = splineBase.prefilterCoefficients();
 
-        if (n == 0)
+        if(n == 0)
         {
             shouldEqual(ps.size(), 0u);
             shouldEqual(psb.size(), 0u);
@@ -259,7 +259,7 @@ struct SplineTest
                 const_cast<vigra::ArrayVector<double>&>(psb);
             std::sort(psb1.begin(), psb1.end());
 
-            for (int i = 0; i < n; ++i)
+            for(int i = 0; i < n; ++i)
                 shouldEqualTolerance(ps[i], psb[i], 1e-14);
         }
     }
@@ -270,8 +270,8 @@ struct SplineTest
         typename BS::WeightMatrix const& ws = BS::weights();
         typename BSB::WeightMatrix const& wsb = BSB::weights();
 
-        for (int d = 0; d < n; ++d)
-            for (int i = 0; i < n; ++i)
+        for(int d = 0; d < n; ++d)
+            for(int i = 0; i < n; ++i)
                 shouldEqualTolerance(ws[d][i], wsb[d][i], 1e-14);
     }
 };
@@ -334,7 +334,7 @@ struct FunctionsTest
 
     void testSpecialIntegerFunctions()
     {
-        for (vigra::Int32 i = 0; i < 1024; ++i)
+        for(vigra::Int32 i = 0; i < 1024; ++i)
         {
             shouldEqual(vigra::sqrti(i), (vigra::Int32)vigra::floor(vigra::sqrt((double)i)));
         }
@@ -350,13 +350,13 @@ struct FunctionsTest
         vigra::UInt32 roundPower2[] = {0, 1, 2, 3, 4, 5, 7, 8, 9, 15, 16, 0xffff, 0x7fffffff, 0x80000000, 0x80000001, 0xffffffff};
         vigra::UInt32 floorResult[] = {0, 1, 2, 2, 4, 4, 4, 8, 8, 8, 16, 0x8000, 0x40000000, 0x80000000, 0x80000000, 0x80000000};
         vigra::UInt32 ceilResult[] = {0, 1, 2, 4, 4, 8, 8, 8, 16, 16, 16, 0x10000, 0x80000000, 0x80000000, 0, 0};
-        for (unsigned int i = 0; i < sizeof(roundPower2) / sizeof(vigra::UInt32); ++i)
+        for(unsigned int i = 0; i < sizeof(roundPower2) / sizeof(vigra::UInt32); ++i)
         {
             shouldEqual(vigra::floorPower2(roundPower2[i]), floorResult[i]);
             shouldEqual(vigra::ceilPower2(roundPower2[i]), ceilResult[i]);
         }
 
-        for (vigra::Int32 k = 0; k < 32; ++k)
+        for(vigra::Int32 k = 0; k < 32; ++k)
         {
             shouldEqual(vigra::log2i(1 << k), k);
             shouldEqual(vigra::log2i((1 << k) + 1), k == 0 ? 1 : k);
@@ -396,25 +396,25 @@ struct FunctionsTest
         shouldEqualTolerance(vigra::noncentralChi2CDFApprox(2, 2.0, 2.0), 0.34574583872316456, 1e-1);
         shouldEqualTolerance(vigra::noncentralChi2CDFApprox(3, 2.0, 2.0), 0.22073308707450343, 1e-1);
 
-        for (double x = -4.0; x <= 4.0; x += 1.0)
+        for(double x = -4.0; x <= 4.0; x += 1.0)
         {
             shouldEqual(vigra::sin_pi(x), 0.0);
             shouldEqual(vigra::cos_pi(x + 0.5), 0.0);
         }
 
-        for (double x = -4.5; x <= 4.5; x += 2.0)
+        for(double x = -4.5; x <= 4.5; x += 2.0)
         {
             shouldEqual(vigra::sin_pi(x), -1.0);
             shouldEqual(vigra::cos_pi(x + 0.5), 1.0);
         }
 
-        for (double x = -3.5; x <= 4.5; x += 2.0)
+        for(double x = -3.5; x <= 4.5; x += 2.0)
         {
             shouldEqual(vigra::sin_pi(x), 1.0);
             shouldEqual(vigra::cos_pi(x + 0.5), -1.0);
         }
 
-        for (double x = -4.0; x <= 4.0; x += 0.0625)
+        for(double x = -4.0; x <= 4.0; x += 0.0625)
         {
             shouldEqualTolerance(vigra::sin_pi(x), std::sin(M_PI * x), 1e-14);
             shouldEqualTolerance(vigra::cos_pi(x), std::cos(M_PI * x), 1e-14);
@@ -435,7 +435,7 @@ struct FunctionsTest
             vigra::gamma(0.0);
             failTest("No exception thrown");
         }
-        catch (vigra::PreconditionViolation&)
+        catch(vigra::PreconditionViolation&)
         {
         }
         try
@@ -443,7 +443,7 @@ struct FunctionsTest
             vigra::gamma(-1.0);
             failTest("No exception thrown");
         }
-        catch (vigra::PreconditionViolation&)
+        catch(vigra::PreconditionViolation&)
         {
         }
 
@@ -470,7 +470,7 @@ struct FunctionsTest
             vigra::loggamma(0.0);
             failTest("No exception thrown");
         }
-        catch (vigra::PreconditionViolation&)
+        catch(vigra::PreconditionViolation&)
         {
         }
         try
@@ -478,12 +478,12 @@ struct FunctionsTest
             vigra::loggamma(-1.0);
             failTest("No exception thrown");
         }
-        catch (vigra::PreconditionViolation&)
+        catch(vigra::PreconditionViolation&)
         {
         }
 
         double args[5] = {0.0, 1.0, 0.7, -0.7, -1.0};
-        for (int i = 0; i < 5; ++i)
+        for(int i = 0; i < 5; ++i)
         {
             double x = args[i], x2 = x * x;
             shouldEqualTolerance(vigra::legendre(0, x), 1.0, 1e-15);
@@ -542,15 +542,15 @@ struct FunctionsTest
             -1.9447256680104227e-01, 2.0527533641239212e-01, 1.4036965442780550e-01,
             -1.9306306446008192e-01, 1.9506914688206353e-01, 1.5121244335755843e-01};
 
-        for (int n = 0; n < 15; ++n)
+        for(int n = 0; n < 15; ++n)
         {
-            if (n == 0)
+            if(n == 0)
                 shouldEqual(vigra::besselJ(n, 0.0), 1.0);
             else
                 shouldEqual(vigra::besselJ(n, 0.0), 0.0);
             should(vigra::besselY(n, 0.0) == -std::numeric_limits<double>::infinity());
 
-            for (int k = 0; k < 3; ++k)
+            for(int k = 0; k < 3; ++k)
             {
                 double f = vigra::odd(n) ? -1.0 : 1.0;
                 double eps = 1e-14;
@@ -687,7 +687,7 @@ struct FunctionsTest
         crc = vigra::checksum(t, size);
         shouldEqual(crc, 2408722991u);
 
-        for (split = 64; split < 80; ++split) // check alignment
+        for(split = 64; split < 80; ++split) // check alignment
         {
             crc = vigra::checksum(t, split);
             crc = vigra::concatenateChecksum(crc, t + split, size - split);
@@ -817,7 +817,7 @@ struct RationalTest
             pow(R(1, 0, false), 0);
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -825,7 +825,7 @@ struct RationalTest
             pow(R(-1, 0, false), 0);
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
 
@@ -992,7 +992,7 @@ struct RationalTest
             inf + ninf;
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1000,7 +1000,7 @@ struct RationalTest
             ninf + inf;
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1008,7 +1008,7 @@ struct RationalTest
             inf - inf;
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1016,7 +1016,7 @@ struct RationalTest
             ninf - ninf;
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1024,7 +1024,7 @@ struct RationalTest
             inf* R(0);
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1032,7 +1032,7 @@ struct RationalTest
             ninf* R(0);
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1040,7 +1040,7 @@ struct RationalTest
             R(0) * inf;
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1048,7 +1048,7 @@ struct RationalTest
             R(0) * ninf;
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1056,7 +1056,7 @@ struct RationalTest
             inf * 0;
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1064,7 +1064,7 @@ struct RationalTest
             ninf * 0;
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1072,7 +1072,7 @@ struct RationalTest
             0 * inf;
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1080,7 +1080,7 @@ struct RationalTest
             0 * ninf;
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1088,7 +1088,7 @@ struct RationalTest
             inf / inf;
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1096,7 +1096,7 @@ struct RationalTest
             inf / ninf;
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1104,7 +1104,7 @@ struct RationalTest
             ninf / inf;
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1112,7 +1112,7 @@ struct RationalTest
             R(0) / R(0);
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1120,7 +1120,7 @@ struct RationalTest
             R(0) / 0;
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
         try
@@ -1128,7 +1128,7 @@ struct RationalTest
             0 / R(0);
             failTest("No exception thrown");
         }
-        catch (vigra::bad_rational&)
+        catch(vigra::bad_rational&)
         {
         }
     }
@@ -1277,7 +1277,7 @@ struct AutodiffTest
         vigra::BSpline<4, double> s4;
         vigra::BSpline<5, double> s5;
 
-        for (double x = -3.3; x < 3.5; x += 0.5)
+        for(double x = -3.3; x < 3.5; x += 0.5)
         {
             N1 r = s0(N1(x, 0));
             should(vigra::closeAtTolerance(r.value(), s0(x), 1e-15));
@@ -1477,7 +1477,7 @@ struct FixedPointTest
             vigra::FixedPoint<1, 8>(3.75);
             failTest("No exception thrown");
         }
-        catch (vigra::PreconditionViolation&)
+        catch(vigra::PreconditionViolation&)
         {
         }
 
@@ -1607,7 +1607,7 @@ struct FixedPointTest
         mul(r1, r2, r3);
         shouldEqual(r3.value >> 2, (vigra::FixedPoint<2, 24>(d1 * d2)).value >> 2);
 
-        for (int i = 0; i < 1024; ++i)
+        for(int i = 0; i < 1024; ++i)
         {
             vigra::FixedPoint<4, 5> fv1(i, vigra::FPNoShift);
             vigra::FixedPoint<5, 4> fv2(i, vigra::FPNoShift);
@@ -1647,7 +1647,7 @@ struct FixedPoint16Test
             vigra::FixedPoint16<1, vigra::FPOverflowError>(3.75);
             failTest("No exception thrown");
         }
-        catch (vigra::PreconditionViolation&)
+        catch(vigra::PreconditionViolation&)
         {
         }
         try
@@ -1655,7 +1655,7 @@ struct FixedPoint16Test
             vigra::FixedPoint16<1, vigra::FPOverflowError>(-3.75);
             failTest("No exception thrown");
         }
-        catch (vigra::PreconditionViolation&)
+        catch(vigra::PreconditionViolation&)
         {
         }
 
@@ -1781,7 +1781,7 @@ struct FixedPoint16Test
             vigra::FixedPoint16<2, vigra::FPOverflowError>(t1 * FP7(v8));
             failTest("No exception thrown");
         }
-        catch (vigra::PreconditionViolation&)
+        catch(vigra::PreconditionViolation&)
         {
         }
         try
@@ -1789,7 +1789,7 @@ struct FixedPoint16Test
             vigra::FixedPoint16<2, vigra::FPOverflowError>(t1 * FP7(-v8));
             failTest("No exception thrown");
         }
-        catch (vigra::PreconditionViolation&)
+        catch(vigra::PreconditionViolation&)
         {
         }
 
@@ -1841,7 +1841,7 @@ struct FixedPoint16Test
         shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(FP2(2.25))), 1.5);
         shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(FP8(6.25))), 2.5);
 
-        for (int i = 0; i < 1024; ++i)
+        for(int i = 0; i < 1024; ++i)
         {
             vigra::FixedPoint16<11> fv1(i, vigra::FPNoShift);
             vigra::FixedPoint16<10> fv2(i, vigra::FPNoShift);
@@ -1858,7 +1858,7 @@ struct FixedPoint16Test
         shouldEqual(vigra::atan2(FP1(1), FP1(0)), FP2(0.5 * M_PI));
         shouldEqual(vigra::atan2(FP1(-1), FP1(0)), FP2(-0.5 * M_PI));
 
-        for (int i = -179; i < 180; ++i)
+        for(int i = -179; i < 180; ++i)
         {
             double angle = M_PI * i / 180.0;
             double c = std::cos(angle), s = std::sin(angle);
@@ -1902,8 +1902,8 @@ struct LinalgTest
     Matrix random_matrix(unsigned int rows, unsigned int cols)
     {
         Matrix ret(rows, cols);
-        for (unsigned int i = 0; i < rows; ++i)
-            for (unsigned int j = 0; j < cols; ++j)
+        for(unsigned int i = 0; i < rows; ++i)
+            for(unsigned int j = 0; j < cols; ++j)
                 ret(i, j) = random_double();
         return ret;
     }
@@ -1911,8 +1911,8 @@ struct LinalgTest
     Matrix random_symmetric_matrix(unsigned int rows)
     {
         Matrix ret(rows, rows);
-        for (unsigned int i = 0; i < rows; ++i)
-            for (unsigned int j = i; j < rows; ++j)
+        for(unsigned int i = 0; i < rows; ++i)
+            for(unsigned int j = i; j < rows; ++j)
                 ret(j, i) = ret(i, j) = random_double();
         return ret;
     }
@@ -1943,20 +1943,20 @@ struct LinalgTest
         shouldEqual(rowCount(a), r);
         shouldEqual(columnCount(a), c);
 
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(zero(i, j), 0.0);
 
         Matrix one = zero + Matrix(r, c).init(1.0);
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(one(i, j), 1.0);
 
         std::stringstream s;
         s << std::setprecision(4) << a;
         shouldEqual(s.str(), sref);
 
-        for (unsigned int i = 0, k = 0; i < r; ++i)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
         {
             Matrix::view_type ar = a.rowVector(i);
             shouldEqual(rowCount(ar), 1);
@@ -1964,7 +1964,7 @@ struct LinalgTest
             Matrix::view_type ar1 = rowVector(a, i);
             shouldEqual(rowCount(ar1), 1);
             shouldEqual(columnCount(ar1), c);
-            for (unsigned int j = 0; j < c; ++j, ++k)
+            for(unsigned int j = 0; j < c; ++j, ++k)
             {
                 shouldEqual(a(i, j), data[k]);
                 shouldEqual(ar(0, j), data[k]);
@@ -1975,8 +1975,8 @@ struct LinalgTest
         Matrix aa(r, c, tref, vigra::ColumnMajor);
         shouldEqual(aa.rowCount(), r);
         shouldEqual(aa.columnCount(), c);
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(aa(i, j), a(i, j));
 
         Matrix b = a;
@@ -1993,123 +1993,123 @@ struct LinalgTest
         shouldEqualSequence(a.begin(), a.end(), b.begin());
 
         b = 4.0 + a;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), 4.0 + data[k]);
         b = a + 3.0;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), data[k] + 3.0);
         b += 4.0;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), 7.0 + data[k]);
         b += a;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), 7.0 + 2.0 * data[k]);
 
 
         b = 4.0 - a;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), 4.0 - data[k]);
         b = a - 3.0;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), data[k] - 3.0);
         b -= 4.0;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), data[k] - 7.0);
         b -= a;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), -7.0);
 
         b = 4.0 * a;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), 4.0 * data[k]);
         b = a * 3.0;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), data[k] * 3.0);
         b *= 4.0;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), data[k] * 12.0);
         b *= a;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), data[k] * data[k] * 12.0);
 
         b = 4.0 / a;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), 4.0 / data[k]);
         b = a / 3.0;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), data[k] / 3.0);
         b /= 4.0;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), data[k] / 12.0);
         b /= a;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqualTolerance(b(i, j), 1.0 / 12.0, 1e-12);
 
         b = a + a;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), 2.0 * data[k]);
 
         b = a - a;
-        for (unsigned int i = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j)
+        for(unsigned int i = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j)
                 shouldEqual(b(i, j), 0.0);
 
         b = -a;
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), -data[k]);
 
         b = a * pointWise(a);
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), data[k] * data[k]);
 
         b = a / pointWise(a);
-        for (unsigned int i = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j)
+        for(unsigned int i = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j)
                 shouldEqual(b(i, j), 1.0);
 
         b = pow(a, 2);
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), data[k] * data[k]);
 
         b = sqrt(a);
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), sqrt(data[k]));
 
         b = sq(a);
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), vigra::sq(data[k]));
 
         b = sign(a);
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(b(i, j), vigra::sign(data[k]));
 
         Matrix at = transpose(a);
         shouldEqual(at.rowCount(), c);
         shouldEqual(at.columnCount(), r);
-        for (unsigned int i = 0, k = 0; i < c; ++i)
+        for(unsigned int i = 0, k = 0; i < c; ++i)
         {
             Matrix::view_type ac = a.columnVector(i);
             shouldEqual(rowCount(ac), r);
@@ -2117,7 +2117,7 @@ struct LinalgTest
             Matrix::view_type ac1 = columnVector(a, i);
             shouldEqual(rowCount(ac1), r);
             shouldEqual(columnCount(ac1), 1);
-            for (unsigned int j = 0; j < r; ++j, ++k)
+            for(unsigned int j = 0; j < r; ++j, ++k)
             {
                 shouldEqual(at(i, j), tref[k]);
                 shouldEqual(ac(j, 0), tref[k]);
@@ -2140,8 +2140,8 @@ struct LinalgTest
 
         Matrix a2(c, c, data);
         a2 = a2.transpose();
-        for (unsigned int i = 0, k = 0; i < c; ++i)
-            for (unsigned int j = 0; j < c; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < c; ++i)
+            for(unsigned int j = 0; j < c; ++j, ++k)
                 shouldEqual(a2(i, j), tref2[k]);
 
         shouldEqual(trace(a2), 3.0);
@@ -2149,8 +2149,8 @@ struct LinalgTest
         Matrix id = vigra::identityMatrix<double>(r);
         shouldEqual(id.rowCount(), r);
         shouldEqual(id.columnCount(), r);
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < r; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < r; ++j, ++k)
                 shouldEqual(id(i, j), idref[k]);
 
         shouldEqual(trace(id), 3.0);
@@ -2158,8 +2158,8 @@ struct LinalgTest
         Matrix d = diagonalMatrix(Matrix(r, 1, data));
         shouldEqual(d.rowCount(), r);
         shouldEqual(d.columnCount(), r);
-        for (unsigned int i = 0, k = 0; i < r; ++i)
-            for (unsigned int j = 0; j < r; ++j, ++k)
+        for(unsigned int i = 0, k = 0; i < r; ++i)
+            for(unsigned int j = 0; j < r; ++j, ++k)
                 shouldEqual(d(i, j), idref[k] * data[i]);
 
         Matrix e(r * c, 1, data);
@@ -2177,29 +2177,29 @@ struct LinalgTest
         Matrix g = outer(e, f);
         shouldEqual(g.rowCount(), e.rowCount());
         shouldEqual(g.columnCount(), f.columnCount());
-        for (int i = 0; i < g.rowCount(); ++i)
-            for (int j = 0; j < g.columnCount(); ++j)
+        for(int i = 0; i < g.rowCount(); ++i)
+            for(int j = 0; j < g.columnCount(); ++j)
                 shouldEqual(g(i, j), data[i] * tref[j]);
 
         Matrix g1 = outer(e);
         shouldEqual(g1.rowCount(), e.rowCount());
         shouldEqual(g1.columnCount(), e.rowCount());
-        for (int i = 0; i < g1.rowCount(); ++i)
-            for (int j = 0; j < g1.columnCount(); ++j)
+        for(int i = 0; i < g1.rowCount(); ++i)
+            for(int j = 0; j < g1.columnCount(); ++j)
                 shouldEqual(g1(i, j), data[i] * data[j]);
 
         Matrix g2 = outer(vigra::TinyVector<double, 6>(data));
         shouldEqual(g2.rowCount(), 6);
         shouldEqual(g2.columnCount(), 6);
-        for (int i = 0; i < g2.rowCount(); ++i)
-            for (int j = 0; j < g2.columnCount(); ++j)
+        for(int i = 0; i < g2.rowCount(); ++i)
+            for(int j = 0; j < g2.columnCount(); ++j)
                 shouldEqual(g2(i, j), data[i] * data[j]);
 
         Matrix h = transpose(a) * a;
         shouldEqual(h.rowCount(), c);
         shouldEqual(h.columnCount(), c);
-        for (int i = 0; i < (int)c; ++i)
-            for (int j = 0; j < (int)c; ++j)
+        for(int i = 0; i < (int)c; ++i)
+            for(int j = 0; j < (int)c; ++j)
                 shouldEqual(h(i, j), dot(rowVector(at, i), columnVector(a, j)));
 
         should(isSymmetric(random_symmetric_matrix(10)));
@@ -2214,10 +2214,10 @@ struct LinalgTest
         shouldEqual(rowCount(rep), 2 * r);
         shouldEqual(columnCount(rep), 4 * c);
 
-        for (unsigned int l = 0; l < 4; ++l)
-            for (unsigned int k = 0; k < 2; ++k)
-                for (unsigned int j = 0; j < c; ++j)
-                    for (unsigned int i = 0; i < r; ++i)
+        for(unsigned int l = 0; l < 4; ++l)
+            for(unsigned int k = 0; k < 2; ++k)
+                for(unsigned int j = 0; j < c; ++j)
+                    for(unsigned int i = 0; i < r; ++i)
                         shouldEqual(rep(k * r + i, l * c + j), a(i, j));
 
         double columnSum[] = {8.0, 14.0};
@@ -2262,17 +2262,17 @@ struct LinalgTest
         Matrix rowNorm(size, 1), columnNorm(1, size);
         Matrix rowCovariance(size, size), columnCovariance(size, size);
 
-        for (unsigned int i = 0; i < iterations; ++i)
+        for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_matrix(size, size);
 
             rowStatistics(a, rowMean, rowStdDev, rowNorm);
             columnStatistics(a, columnMean, columnStdDev, columnNorm);
 
-            for (unsigned int k = 0; k < size; ++k)
+            for(unsigned int k = 0; k < size; ++k)
             {
                 double rm = 0.0, cm = 0.0, rn = 0.0, cn = 0.0, rs = 0.0, cs = 0.0;
-                for (unsigned int l = 0; l < size; ++l)
+                for(unsigned int l = 0; l < size; ++l)
                 {
                     rm += a(k, l);
                     cm += a(l, k);
@@ -2289,7 +2289,7 @@ struct LinalgTest
                 shouldEqualTolerance(rn, rowNorm(k, 0), epsilon);
                 shouldEqualTolerance(cn, columnNorm(0, k), epsilon);
 
-                for (unsigned int l = 0; l < size; ++l)
+                for(unsigned int l = 0; l < size; ++l)
                 {
                     rs += vigra::sq(a(k, l) - rm);
                     cs += vigra::sq(a(l, k) - cm);
@@ -2304,11 +2304,11 @@ struct LinalgTest
             covarianceMatrixOfRows(a, rowCovariance);
             covarianceMatrixOfColumns(a, columnCovariance);
             Matrix rowCovarianceRef(size, size), columnCovarianceRef(size, size);
-            for (unsigned int k = 0; k < size; ++k)
+            for(unsigned int k = 0; k < size; ++k)
             {
-                for (unsigned int l = 0; l < size; ++l)
+                for(unsigned int l = 0; l < size; ++l)
                 {
-                    for (unsigned int m = 0; m < size; ++m)
+                    for(unsigned int m = 0; m < size; ++m)
                     {
                         rowCovarianceRef(l, m) += (a(l, k) - rowMean(l, 0)) * (a(m, k) - rowMean(m, 0));
                         columnCovarianceRef(l, m) += (a(k, l) - columnMean(0, l)) * (a(k, m) - columnMean(0, m));
@@ -2480,7 +2480,7 @@ struct LinalgTest
         double epsilon = 1e-11;
         Matrix idref = vigra::identityMatrix<double>(size);
 
-        for (unsigned int i = 0; i < iterations; ++i)
+        for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_matrix(size, size);
             a = transpose(a) * a; // make a symmetric positive definite matrix
@@ -2496,7 +2496,7 @@ struct LinalgTest
         double epsilon = 1e-11;
         Matrix idref = vigra::identityMatrix<double>(size);
 
-        for (unsigned int i = 0; i < iterations; ++i)
+        for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_matrix(size, size);
             Matrix r(size, size);
@@ -2514,7 +2514,7 @@ struct LinalgTest
         double epsilon = 1e-11;
         int size = 50;
 
-        for (unsigned int i = 0; i < iterations; ++i)
+        for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_matrix(size, size);
             Matrix b = random_matrix(size, 1);
@@ -2625,7 +2625,7 @@ struct LinalgTest
 
         Matrix A(size, n), xs(n, 1), xq(n, 1), xn(n, 1), r(size, 1);
 
-        for (unsigned int iter = 0; iter < iterations; ++iter)
+        for(unsigned int iter = 0; iter < iterations; ++iter)
         {
             // set up a linear regression problem for a polynomial of degree n
             Matrix weights = random_matrix(n, 1);
@@ -2633,12 +2633,12 @@ struct LinalgTest
 
             // init rhs with Gaussian noise with zero mean and noiseStdDev
             Matrix rhs = 0.5 * noiseStdDev * random_matrix(size, 1);
-            for (unsigned int k = 1; k < 12; ++k)
+            for(unsigned int k = 1; k < 12; ++k)
                 rhs += 0.5 * noiseStdDev * random_matrix(size, 1);
 
-            for (unsigned int k = 0; k < size; ++k)
+            for(unsigned int k = 0; k < size; ++k)
             {
-                for (unsigned int l = 0; l < n; ++l)
+                for(unsigned int l = 0; l < n; ++l)
                 {
                     A(k, l) = std::pow(v(k, 0), double(l));
                     rhs(k, 0) += weights(l, 0) * A(k, l);
@@ -2666,7 +2666,7 @@ struct LinalgTest
         double epsilon = 1e-11;
         int size = 50;
 
-        for (unsigned int i = 0; i < iterations; ++i)
+        for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_matrix(size, size);
             Matrix b = random_matrix(size, 1);
@@ -2678,7 +2678,7 @@ struct LinalgTest
                 Matrix r(a), qtb(b), px(size, 1), xx(size, 1);
                 vigra::ArrayVector<unsigned int> permutation(size);
 
-                for (int k = 0; k < size; ++k)
+                for(int k = 0; k < size; ++k)
                 {
                     // use Givens steps for a change (Householder steps like
                     //    should(vigra::linalg::detail::qrColumnHouseholderStep(k, r, qtb));
@@ -2687,10 +2687,10 @@ struct LinalgTest
                     permutation[k] = k;
                 }
 
-                for (int k = 0; k < size; ++k)
+                for(int k = 0; k < size; ++k)
                 {
                     int i = random_.uniformInt(size), j = random_.uniformInt(size);
-                    if (i == j)
+                    if(i == j)
                         continue;
 
                     vigra::linalg::detail::upperTriangularCyclicShiftColumns(i, j, r, qtb, permutation);
@@ -2705,7 +2705,7 @@ struct LinalgTest
                 Matrix r(a), qtb(b), px(size, 1), xx(size, 1);
                 vigra::ArrayVector<unsigned int> permutation(size);
 
-                for (int k = 0; k < size; ++k)
+                for(int k = 0; k < size; ++k)
                 {
                     // use Givens steps for a change (Householder steps like
                     //    should(vigra::linalg::detail::qrColumnHouseholderStep(k, r, qtb));
@@ -2714,7 +2714,7 @@ struct LinalgTest
                     permutation[k] = k;
                 }
 
-                for (int k = 0; k < size; ++k)
+                for(int k = 0; k < size; ++k)
                 {
                     int i = random_.uniformInt(size), j = random_.uniformInt(size);
                     vigra::linalg::detail::upperTriangularSwapColumns(i, j, r, qtb, permutation);
@@ -2732,7 +2732,7 @@ struct LinalgTest
         double epsilon = 1e-11;
         Matrix idref = vigra::identityMatrix<double>(size);
 
-        for (unsigned int i = 0; i < iterations; ++i)
+        for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_matrix(size, size);
             Matrix id = a * inverse(a);
@@ -2750,7 +2750,7 @@ struct LinalgTest
             inverse(singular);
             failTest("inverse(singular) didn't throw an exception.");
         }
-        catch (vigra::PreconditionViolation& c)
+        catch(vigra::PreconditionViolation& c)
         {
             std::string expected("\nPrecondition violation!\ninverse(): matrix is not invertible.");
             std::string message(c.what());
@@ -2782,7 +2782,7 @@ struct LinalgTest
         double epsilon = 1e-8;
         Matrix idref = vigra::identityMatrix<double>(size);
 
-        for (unsigned int i = 0; i < iterations; ++i)
+        for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_symmetric_matrix(size);
             Matrix ew(size, 1);
@@ -2800,7 +2800,7 @@ struct LinalgTest
         double epsilon = 1e-8;
 
         int size = 2;
-        for (unsigned int i = 0; i < iterations; ++i)
+        for(unsigned int i = 0; i < iterations; ++i)
         {
             using namespace vigra::linalg;
             Matrix a = random_symmetric_matrix(size);
@@ -2820,7 +2820,7 @@ struct LinalgTest
         }
 
         size = 3;
-        for (unsigned int i = 0; i < iterations; ++i)
+        for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_symmetric_matrix(size);
             Matrix ew(size, 1), ewref(size, 1);
@@ -2846,7 +2846,7 @@ struct LinalgTest
         double epsilon = 1e-8;
         Matrix idref = vigra::identityMatrix<double>(size);
 
-        for (unsigned int i = 0; i < iterations; ++i)
+        for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_matrix(size, size);
             vigra::Matrix<std::complex<double>> ew(size, 1);
@@ -2854,14 +2854,14 @@ struct LinalgTest
             should(nonsymmetricEigensystem(a, ew, ev));
 
             Matrix ewm(size, size);
-            for (unsigned int k = 0; k < size; k++)
+            for(unsigned int k = 0; k < size; k++)
             {
                 ewm(k, k) = ew(k, 0).real();
-                if (ew(k, 0).imag() > 0.0)
+                if(ew(k, 0).imag() > 0.0)
                 {
                     ewm(k, k + 1) = ew(k, 0).imag();
                 }
-                else if (ew(k, 0).imag() < 0.0)
+                else if(ew(k, 0).imag() < 0.0)
                 {
                     ewm(k, k - 1) = ew(k, 0).imag();
                 }
@@ -2935,8 +2935,8 @@ struct LinalgTest
     {
         unsigned int m = 6, n = 4;
         Matrix a(m, n);
-        for (unsigned int i1 = 0; i1 < m; i1++)
-            for (unsigned int i2 = 0; i2 < n; i2++)
+        for(unsigned int i1 = 0; i1 < m; i1++)
+            for(unsigned int i2 = 0; i2 < n; i2++)
                 a(i1, i2) = random_double();
         Matrix u(m, n);
         Matrix v(n, n);
@@ -2972,7 +2972,7 @@ struct RandomTest
             2950632840U, 2706386845U, 3294066568U, 3819538748U, 1902519841U};
 
         vigra::RandomTT800 random;
-        for (unsigned int k = 0; k < n; ++k)
+        for(unsigned int k = 0; k < n; ++k)
             shouldEqual(random(), iref[k]);
 
         double fref[n] = {
@@ -2987,7 +2987,7 @@ struct RandomTest
             0.438333, 0.380831, 0.208966, 0.752806, 0.087025,
             0.686998, 0.630130, 0.766960, 0.889306, 0.442965};
         vigra::RandomTT800 randomf;
-        for (unsigned int k = 0; k < n; ++k)
+        for(unsigned int k = 0; k < n; ++k)
             should(vigra::abs(randomf.uniform() - fref[k]) < 2e-6);
 
         vigra::RandomTT800 randomr(vigra::RandomSeed);
@@ -3008,22 +3008,22 @@ struct RandomTest
             2055641408U, 3695291669U, 2040276077U, 4118847636U, 3528766079U};
 
         vigra::RandomMT19937 random(0xDEADBEEF);
-        for (unsigned int k = 0; k < n; ++k)
+        for(unsigned int k = 0; k < n; ++k)
             shouldEqual(random(), first[k]);
-        for (unsigned int k = 0; k < skip; ++k)
+        for(unsigned int k = 0; k < skip; ++k)
             random();
-        for (unsigned int k = 0; k < n; ++k)
+        for(unsigned int k = 0; k < n; ++k)
             shouldEqual(random(), last[k]);
 
-        for (unsigned int k = 0; k < skip; ++k)
+        for(unsigned int k = 0; k < skip; ++k)
             should(random.uniformInt(31) < 31);
 
         random.seed(0xDEADBEEF);
-        for (unsigned int k = 0; k < n; ++k)
+        for(unsigned int k = 0; k < n; ++k)
             shouldEqual(random(), first[k]);
-        for (unsigned int k = 0; k < skip; ++k)
+        for(unsigned int k = 0; k < skip; ++k)
             random();
-        for (unsigned int k = 0; k < n; ++k)
+        for(unsigned int k = 0; k < n; ++k)
             shouldEqual(random(), last[k]);
 
         unsigned int firsta[n] = {
@@ -3039,11 +3039,11 @@ struct RandomTest
 
         unsigned int init[ilen] = {0x123, 0x234, 0x345, 0x456};
         vigra::RandomMT19937 randoma(init, ilen);
-        for (unsigned int k = 0; k < n; ++k)
+        for(unsigned int k = 0; k < n; ++k)
             shouldEqual(randoma(), firsta[k]);
-        for (unsigned int k = 0; k < skip; ++k)
+        for(unsigned int k = 0; k < skip; ++k)
             randoma();
-        for (unsigned int k = 0; k < n; ++k)
+        for(unsigned int k = 0; k < n; ++k)
             shouldEqual(randoma(), lasta[k]);
 
         double ref53[n] = {
@@ -3051,15 +3051,15 @@ struct RandomTest
             0.92179002, 0.54534773, 0.38107717, 0.65286910, 0.22765212,
             0.74557914, 0.54708246, 0.42043117, 0.19189126, 0.70259889,
             0.77408120, 0.04605807, 0.69398269, 0.61711170, 0.10133577};
-        for (unsigned int k = 0; k < n; ++k)
+        for(unsigned int k = 0; k < n; ++k)
             should(vigra::abs(randoma.uniform53() - ref53[k]) < 2e-8);
 
         randoma.seed(init, ilen);
-        for (unsigned int k = 0; k < n; ++k)
+        for(unsigned int k = 0; k < n; ++k)
             shouldEqual(randoma(), firsta[k]);
-        for (unsigned int k = 0; k < skip; ++k)
+        for(unsigned int k = 0; k < skip; ++k)
             randoma();
-        for (unsigned int k = 0; k < n; ++k)
+        for(unsigned int k = 0; k < n; ++k)
             shouldEqual(randoma(), lasta[k]);
     }
 
@@ -3102,22 +3102,22 @@ struct RandomTest
 
         vigra::RandomTT800 random1;
         vigra::UniformRandomFunctor<vigra::RandomTT800> f1(random1);
-        for (unsigned int k = 0; k < n; ++k)
+        for(unsigned int k = 0; k < n; ++k)
             should(vigra::abs(f1() - fref[k]) < 2e-6);
 
         vigra::RandomTT800 random2;
         vigra::UniformIntRandomFunctor<vigra::RandomTT800> f2(4, 34, random2, true);
-        for (unsigned int k = 0; k < n; ++k)
+        for(unsigned int k = 0; k < n; ++k)
             shouldEqual(f2(), iref[k] % 31 + 4);
 
         vigra::RandomTT800 random3;
         vigra::UniformIntRandomFunctor<vigra::RandomTT800> f3(random3);
-        for (unsigned int k = 0; k < n; ++k)
+        for(unsigned int k = 0; k < n; ++k)
             shouldEqual(f3(32), iref[k] % 32);
 
         vigra::RandomTT800 random4;
         vigra::NormalRandomFunctor<vigra::RandomTT800> f4(random4);
-        for (unsigned int k = 0; k < n; ++k)
+        for(unsigned int k = 0; k < n; ++k)
             shouldEqualTolerance(f4(), nref[k], 1e-5);
     }
 };
@@ -3247,7 +3247,7 @@ main(int argc, char** argv)
 
         return (failed != 0);
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         std::cerr << "Unexpected exception: " << e.what() << "\n";
         return 1;

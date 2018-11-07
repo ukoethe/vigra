@@ -72,7 +72,7 @@ public:
 
     // reimplement setter functions to allow chaining
 
-    template<class T>
+    template <class T>
     BlockwiseLabelOptions& ignoreBackgroundValue(const T& value)
     {
         LabelOptions::ignoreBackgroundValue(value);
@@ -91,7 +91,7 @@ public:
         return *this;
     }
 
-    template<class T, int N>
+    template <class T, int N>
     BlockwiseLabelOptions& blockShape(const TinyVector<T, N>& shape)
     {
         BlockwiseOptions::blockShape(shape);
@@ -108,7 +108,7 @@ public:
 namespace blockwise_labeling_detail
 {
 
-template<class Equal, class Label>
+template <class Equal, class Label>
 struct BorderVisitor
 {
     Label u_label_offset;
@@ -116,10 +116,10 @@ struct BorderVisitor
     UnionFindArray<Label>* global_unions;
     Equal* equal;
 
-    template<class Data, class Shape>
+    template <class Data, class Shape>
     void operator()(const Data& u_data, Label& u_label, const Data& v_data, Label& v_label, const Shape& diff)
     {
-        if (labeling_equality::callEqual(*equal, u_data, v_data, diff))
+        if(labeling_equality::callEqual(*equal, u_data, v_data, diff))
         {
             global_unions->makeUnion(u_label + u_label_offset, v_label + v_label_offset);
         }
@@ -127,14 +127,14 @@ struct BorderVisitor
 };
 
 // needed by MSVC
-template<class LabelBlocksIterator>
+template <class LabelBlocksIterator>
 struct BlockwiseLabelingResult
 {
     typedef typename LabelBlocksIterator::value_type::value_type type;
 };
 
-template<class DataBlocksIterator, class LabelBlocksIterator,
-         class Equal, class Mapping>
+template <class DataBlocksIterator, class LabelBlocksIterator,
+          class Equal, class Mapping>
 typename BlockwiseLabelingResult<LabelBlocksIterator>::type
 blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_blocks_end,
                   LabelBlocksIterator label_blocks_begin, LabelBlocksIterator label_blocks_end,
@@ -177,12 +177,12 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
                          [&](const int /*threadId*/, const uint64_t i) {
                              Label resVal = labelMultiArray(data_blocks_it[i], label_blocks_it[i],
                                                             options, equal);
-                             if (has_background) // FIXME: reversed condition?
+                             if(has_background) // FIXME: reversed condition?
                                  ++resVal;
                              nSeg[i] = resVal;
                          });
 
-        for (int i = 0; i < d; ++i)
+        for(int i = 0; i < d; ++i)
         {
             offsets_it[i] = current_offset;
             current_offset += nSeg[i];
@@ -190,18 +190,18 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
 
 
         unmerged_label_number = current_offset;
-        if (!has_background)
+        if(!has_background)
             ++unmerged_label_number;
     }
 
     // reduce stage: merge adjacent labels if the region overlaps
     UnionFindArray<Label> global_unions(unmerged_label_number);
-    if (has_background)
+    if(has_background)
     {
         // merge all labels that refer to background
-        for (typename MultiArray<Dimensions, Label>::iterator offsets_it = label_offsets.begin();
-             offsets_it != label_offsets.end();
-             ++offsets_it)
+        for(typename MultiArray<Dimensions, Label>::iterator offsets_it = label_offsets.begin();
+            offsets_it != label_offsets.end();
+            ++offsets_it)
         {
             global_unions.makeUnion(0, *offsets_it);
         }
@@ -210,7 +210,7 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
     typedef GridGraph<Dimensions, undirected_tag> Graph;
     typedef typename Graph::edge_iterator EdgeIterator;
     Graph blocks_graph(blocks_shape, options.getNeighborhood());
-    for (EdgeIterator it = blocks_graph.get_edge_iterator(); it != blocks_graph.get_edge_end_iterator(); ++it)
+    for(EdgeIterator it = blocks_graph.get_edge_iterator(); it != blocks_graph.get_edge_end_iterator(); ++it)
     {
         Shape u = blocks_graph.u(*it);
         Shape v = blocks_graph.v(*it);
@@ -233,13 +233,13 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
         Label offset = *offsets_it;
         ++offsets_it;
         typename Mapping::iterator mapping_it = mapping.begin();
-        for (; offsets_it != label_offsets.end(); ++offsets_it, ++mapping_it)
+        for(; offsets_it != label_offsets.end(); ++offsets_it, ++mapping_it)
         {
             mapping_it->clear();
             Label next_offset = *offsets_it;
-            if (has_background)
+            if(has_background)
             {
-                for (Label current_label = offset; current_label != next_offset; ++current_label)
+                for(Label current_label = offset; current_label != next_offset; ++current_label)
                 {
                     mapping_it->push_back(global_unions.findLabel(current_label));
                 }
@@ -247,7 +247,7 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
             else
             {
                 mapping_it->push_back(0); // local labels start at 1
-                for (Label current_label = offset + 1; current_label != next_offset + 1; ++current_label)
+                for(Label current_label = offset + 1; current_label != next_offset + 1; ++current_label)
                 {
                     mapping_it->push_back(global_unions.findLabel(current_label));
                 }
@@ -258,9 +258,9 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
         // last block:
         // instead of next_offset, use last_label+1
         mapping_it->clear();
-        if (has_background)
+        if(has_background)
         {
-            for (Label current_label = offset; current_label != unmerged_label_number; ++current_label)
+            for(Label current_label = offset; current_label != unmerged_label_number; ++current_label)
             {
                 mapping_it->push_back(global_unions.findLabel(current_label));
             }
@@ -268,7 +268,7 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
         else
         {
             mapping_it->push_back(0);
-            for (Label current_label = offset + 1; current_label != unmerged_label_number; ++current_label)
+            for(Label current_label = offset + 1; current_label != unmerged_label_number; ++current_label)
             {
                 mapping_it->push_back(global_unions.findLabel(current_label));
             }
@@ -278,18 +278,18 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
 }
 
 
-template<class LabelBlocksIterator, class MappingIterator>
+template <class LabelBlocksIterator, class MappingIterator>
 void
 toGlobalLabels(LabelBlocksIterator label_blocks_begin, LabelBlocksIterator label_blocks_end,
                MappingIterator mapping_begin, MappingIterator mapping_end)
 {
     typedef typename LabelBlocksIterator::value_type LabelBlock;
-    for (; label_blocks_begin != label_blocks_end; ++label_blocks_begin, ++mapping_begin)
+    for(; label_blocks_begin != label_blocks_end; ++label_blocks_begin, ++mapping_begin)
     {
         vigra_assert(mapping_begin != mapping_end, "");
-        for (typename LabelBlock::iterator labels_it = label_blocks_begin->begin();
-             labels_it != label_blocks_begin->end();
-             ++labels_it)
+        for(typename LabelBlock::iterator labels_it = label_blocks_begin->begin();
+            labels_it != label_blocks_begin->end();
+            ++labels_it)
         {
             vigra_assert(*labels_it < mapping_begin->size(), "");
             *labels_it = (*mapping_begin)[*labels_it];
@@ -396,11 +396,11 @@ toGlobalLabels(LabelBlocksIterator label_blocks_begin, LabelBlocksIterator label
     size_t global_label = mapping[Shape3(1)][local_label
     \endcode
     */
-doxygen_overloaded_function(template<...> unsigned int labelMultiArrayBlockwise)
+doxygen_overloaded_function(template <...> unsigned int labelMultiArrayBlockwise)
 
-    template<unsigned int N, class Data, class S1,
-             class Label, class S2,
-             class Equal, class S3>
+    template <unsigned int N, class Data, class S1,
+              class Label, class S2,
+              class Equal, class S3>
     Label labelMultiArrayBlockwise(const MultiArrayView<N, Data, S1>& data,
                                    MultiArrayView<N, Label, S2> labels,
                                    const BlockwiseLabelOptions& options,
@@ -419,9 +419,9 @@ doxygen_overloaded_function(template<...> unsigned int labelMultiArrayBlockwise)
                              options, equal, mapping);
 }
 
-template<unsigned int N, class Data, class S1,
-         class Label, class S2,
-         class Equal>
+template <unsigned int N, class Data, class S1,
+          class Label, class S2,
+          class Equal>
 Label
 labelMultiArrayBlockwise(const MultiArrayView<N, Data, S1>& data,
                          MultiArrayView<N, Label, S2> labels,
@@ -445,8 +445,8 @@ labelMultiArrayBlockwise(const MultiArrayView<N, Data, S1>& data,
     return last_label;
 }
 
-template<unsigned int N, class Data, class S1,
-         class Label, class S2>
+template <unsigned int N, class Data, class S1,
+          class Label, class S2>
 Label
 labelMultiArrayBlockwise(const MultiArrayView<N, Data, S1>& data,
                          MultiArrayView<N, Label, S2> labels,
@@ -456,7 +456,7 @@ labelMultiArrayBlockwise(const MultiArrayView<N, Data, S1>& data,
 }
 
 
-template<unsigned int N, class Data, class Label, class Equal, class S3>
+template <unsigned int N, class Data, class Label, class Equal, class S3>
 Label
 labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
                          ChunkedArray<N, Label>& labels,
@@ -483,7 +483,7 @@ labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
                              options, equal, mapping);
 }
 
-template<unsigned int N, class Data, class Label, class Equal>
+template <unsigned int N, class Data, class Label, class Equal>
 Label
 labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
                          ChunkedArray<N, Label>& labels,
@@ -498,7 +498,7 @@ labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
     return result;
 }
 
-template<unsigned int N, class Data, class Label>
+template <unsigned int N, class Data, class Label>
 Label
 labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
                          ChunkedArray<N, Label>& labels,

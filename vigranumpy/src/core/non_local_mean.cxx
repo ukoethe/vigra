@@ -47,7 +47,7 @@ namespace vigra
 
 
 
-template<int DIM, class PIXEL_TYPE, class SMOOTH_POLICY>
+template <int DIM, class PIXEL_TYPE, class SMOOTH_POLICY>
 NumpyAnyArray
 pyNonLocalMean(
     NumpyArray<DIM, PIXEL_TYPE> image,
@@ -118,7 +118,7 @@ exportNonLocalMeanPolicyParameterObjects()
 
 
 
-template<int DIM, class PIXEL_TYPE, class POLICY>
+template <int DIM, class PIXEL_TYPE, class POLICY>
 void
 exportNonLocalMean(const std::string name)
 {

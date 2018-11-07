@@ -45,19 +45,19 @@ namespace vigra
 
 namespace detail
 {
-template<typename T>
+template <typename T>
 struct is_const_pointer
 {
     static bool const value = false;
 };
 
-template<typename T>
+template <typename T>
 struct is_const_pointer<T const*>
 {
     static bool const value = true;
 };
 
-template<typename ITER>
+template <typename ITER>
 struct is_const_iterator
 {
     typedef typename std::iterator_traits<ITER>::pointer pointer;
@@ -80,7 +80,7 @@ struct is_const_iterator
  *
  * @note The equality comparison only checks, whether the iterators point to the same place. The predicate is not checked.
  */
-template<typename PREDICATE, typename ITER>
+template <typename PREDICATE, typename ITER>
 class FilterIterator
     : public ForwardIteratorFacade<FilterIterator<PREDICATE, ITER>,
                                    typename std::iterator_traits<ITER>::value_type,
@@ -112,7 +112,7 @@ public:
 private:
     void satisfy_predicate()
     {
-        while (iter_ != end_ && !pred_(*iter_))
+        while(iter_ != end_ && !pred_(*iter_))
             ++iter_;
     }
 
@@ -139,7 +139,7 @@ private:
     friend class vigra::IteratorFacadeCoreAccess;
 };
 
-template<typename PREDICATE, typename ITER>
+template <typename PREDICATE, typename ITER>
 FilterIterator<PREDICATE, ITER>
 make_filter_iterator(PREDICATE pred, ITER iter, ITER end = ITER())
 {

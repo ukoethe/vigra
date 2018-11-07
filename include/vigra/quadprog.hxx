@@ -49,7 +49,7 @@ namespace vigra
 namespace detail
 {
 
-template<class T, class C1, class C2, class C3>
+template <class T, class C1, class C2, class C3>
 bool quadprogAddConstraint(MultiArrayView<2, T, C1>& R, MultiArrayView<2, T, C2>& J, MultiArrayView<2, T, C3>& d,
                            int activeConstraintCount, double& R_norm)
 {
@@ -57,7 +57,7 @@ bool quadprogAddConstraint(MultiArrayView<2, T, C1>& R, MultiArrayView<2, T, C2>
     int n = columnCount(J);
     linalg::detail::qrGivensStepImpl(0, subVector(d, activeConstraintCount, n),
                                      J.subarray(Shape(activeConstraintCount, 0), Shape(n, n)));
-    if (abs(d(activeConstraintCount, 0)) <= NumericTraits<T>::epsilon() * R_norm) // problem degenerate
+    if(abs(d(activeConstraintCount, 0)) <= NumericTraits<T>::epsilon() * R_norm) // problem degenerate
         return false;
     R_norm = std::max<T>(R_norm, abs(d(activeConstraintCount, 0)));
 
@@ -67,7 +67,7 @@ bool quadprogAddConstraint(MultiArrayView<2, T, C1>& R, MultiArrayView<2, T, C2>
     return true;
 }
 
-template<class T, class C1, class C2, class C3>
+template <class T, class C1, class C2, class C3>
 void quadprogDeleteConstraint(MultiArrayView<2, T, C1>& R, MultiArrayView<2, T, C2>& J, MultiArrayView<2, T, C3>& u,
                               int activeConstraintCount, int constraintToBeRemoved)
 {
@@ -75,7 +75,7 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1>& R, MultiArrayView<2, T, 
 
     int newActiveConstraintCount = activeConstraintCount - 1;
 
-    if (constraintToBeRemoved == newActiveConstraintCount)
+    if(constraintToBeRemoved == newActiveConstraintCount)
         return;
 
     std::swap(u(constraintToBeRemoved, 0), u(newActiveConstraintCount, 0));
@@ -200,9 +200,9 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1>& R, MultiArrayView<2, T, 
         quadraticProgramming(G, g, CE, ce, CI, ci, x);
      \endcode
    */
-doxygen_overloaded_function(template<...> unsigned int quadraticProgramming)
+doxygen_overloaded_function(template <...> unsigned int quadraticProgramming)
 
-    template<class T, class C1, class C2, class C3, class C4, class C5, class C6, class C7>
+    template <class T, class C1, class C2, class C3, class C4, class C5, class C6, class C7>
     T
     quadraticProgramming(MultiArrayView<2, T, C1> const& G, MultiArrayView<2, T, C2> const& g,
                          MultiArrayView<2, T, C3> const& CE, MultiArrayView<2, T, C4> const& ce,
@@ -247,7 +247,7 @@ doxygen_overloaded_function(template<...> unsigned int quadraticProgramming)
     T R_norm = NumericTraits<T>::one();
 
     // incorporate equality constraints
-    for (int i = 0; i < me; ++i)
+    for(int i = 0; i < me; ++i)
     {
         MultiArrayView<2, T, C3> np = rowVector(CE, i);
         Matrix<T> d = J * transpose(np);
@@ -273,15 +273,15 @@ doxygen_overloaded_function(template<...> unsigned int quadraticProgramming)
 
     // determine optimum solution and corresponding active inequality constraints
     ArrayVector<int> activeSet(mi);
-    for (int i = 0; i < mi; ++i)
+    for(int i = 0; i < mi; ++i)
         activeSet[i] = i;
 
     int constraintToBeAdded = 0;
     T ss = 0.0;
-    for (int i = activeConstraintCount - me; i < mi; ++i)
+    for(int i = activeConstraintCount - me; i < mi; ++i)
     {
         T s = dot(rowVector(CI, activeSet[i]), x) - ci(activeSet[i], 0);
-        if (s < ss)
+        if(s < ss)
         {
             ss = s;
             constraintToBeAdded = i;
@@ -289,9 +289,9 @@ doxygen_overloaded_function(template<...> unsigned int quadraticProgramming)
     }
 
     int iter = 0, maxIter = 10 * mi;
-    while (iter++ < maxIter)
+    while(iter++ < maxIter)
     {
-        if (ss >= 0.0)      // all constraints are satisfied
+        if(ss >= 0.0)       // all constraints are satisfied
             return f_value; // => solved!
 
         // determine step direction in the primal space (through J, see the paper)
@@ -313,11 +313,11 @@ doxygen_overloaded_function(template<...> unsigned int quadraticProgramming)
         // and the corresponding index
         T dualStep = inf;
         int constraintToBeRemoved = 0;
-        for (int k = me; k < activeConstraintCount; ++k)
+        for(int k = me; k < activeConstraintCount; ++k)
         {
-            if (r(k, 0) > 0.0)
+            if(r(k, 0) > 0.0)
             {
-                if (u(k, 0) / r(k, 0) < dualStep)
+                if(u(k, 0) / r(k, 0) < dualStep)
                 {
                     dualStep = u(k, 0) / r(k, 0);
                     constraintToBeRemoved = k;
@@ -330,12 +330,12 @@ doxygen_overloaded_function(template<...> unsigned int quadraticProgramming)
 
         // take step and update matrices
 
-        if (step == inf)
+        if(step == inf)
         {
             // case (i): no step in primal or dual space possible
             return inf; // QPP is infeasible
         }
-        if (primalStep == inf)
+        if(primalStep == inf)
         {
             // case (ii): step in dual space
             subVector(u, 0, activeConstraintCount) -= step * subVector(r, 0, activeConstraintCount);
@@ -353,7 +353,7 @@ doxygen_overloaded_function(template<...> unsigned int quadraticProgramming)
         subVector(u, 0, activeConstraintCount) -= step * subVector(r, 0, activeConstraintCount);
         u(activeConstraintCount, 0) = step;
 
-        if (step == primalStep)
+        if(step == primalStep)
         {
             // add constraintToBeAdded to the active set
             vigra::detail::quadprogAddConstraint(R, J, d, activeConstraintCount, R_norm);
@@ -370,11 +370,11 @@ doxygen_overloaded_function(template<...> unsigned int quadraticProgramming)
 
         // update values of inactive inequality constraints
         ss = 0.0;
-        for (int i = activeConstraintCount - me; i < mi; ++i)
+        for(int i = activeConstraintCount - me; i < mi; ++i)
         {
             // compute CI*x - ci with appropriate row permutation
             T s = dot(rowVector(CI, activeSet[i]), x) - ci(activeSet[i], 0);
-            if (s < ss)
+            if(s < ss)
             {
                 ss = s;
                 constraintToBeAdded = i;

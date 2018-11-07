@@ -45,7 +45,7 @@ using namespace vigra;
 int
 main(int argc, char** argv)
 {
-    if (argc != 2)
+    if(argc != 2)
     {
         std::cout << "Usage: " << argv[0] << " infile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
@@ -67,21 +67,21 @@ main(int argc, char** argv)
         std::cout << "Operator scale ? ";
         std::cin >> scale;
 
-        if (info.isGrayscale())
+        if(info.isGrayscale())
         {
             MultiArray<2, float> in(w, h);
             importImage(info, in);
 
             boundaryTensor(in, boundarytensor, scale);
         }
-        else if (info.isColor())
+        else if(info.isColor())
         {
             MultiArray<2, RGBValue<float>> in(w, h);
             importImage(info, in);
 
             // calculate the boundary tensor for every channel and add the results
             MultiArray<2, TinyVector<float, 3>> bandtensor(w, h);
-            for (int b = 0; b < 3; ++b)
+            for(int b = 0; b < 3; ++b)
             {
                 boundaryTensor(in.bindElementChannel(b), bandtensor, scale);
 
@@ -106,7 +106,7 @@ main(int argc, char** argv)
         exportImage(boundarystrength, ImageExportInfo("boundarystrength.tif").setPixelType("UINT8"));
         exportImage(cornerness, ImageExportInfo("cornerstrength.tif").setPixelType("UINT8"));
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         std::cout << e.what() << std::endl;
         return 1;

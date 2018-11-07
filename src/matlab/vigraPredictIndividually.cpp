@@ -48,7 +48,7 @@ void
 vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
 {
     /* INPUT */
-    if (inputs.size() != 2)
+    if(inputs.size() != 2)
         mexErrMsgTxt("Two inputs required.");
 
     // get RF object
@@ -57,7 +57,7 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
 
     // get feature matrix
     MultiArrayView<2, double> features = inputs.getMultiArray<2, double>(1, v_required());
-    if (rf.ext_param_.column_count_ != columnCount(features))
+    if(rf.ext_param_.column_count_ != columnCount(features))
         mexErrMsgTxt("Feature array has wrong number of columns.");
 
     /* OUTPUT */
@@ -67,12 +67,12 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
     ArrayVector<double>::const_iterator weights;
 
     double totalWeight = 0.0;
-    for (int k = 0; k < rf.tree_count(); ++k)
-        for (int ii = 0; ii < features.shape(0); ++ii)
+    for(int k = 0; k < rf.tree_count(); ++k)
+        for(int ii = 0; ii < features.shape(0); ++ii)
         {
             //get weights predicted by single tree
             weights = rf.trees_[k].predict(rowVector(features, ii));
-            for (int jj = 0; jj < rf.ext_param_.class_count_; ++jj)
+            for(int jj = 0; jj < rf.ext_param_.class_count_; ++jj)
                 probs(ii, jj, k) = weights[jj] * (*(weights - 1));
         }
 }

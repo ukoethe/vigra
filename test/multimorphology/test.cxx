@@ -63,13 +63,13 @@ struct MultiMorphologyTest
             0, 1, 1, 1, 1, 1, 0};
 
         const unsigned char* i = in;
-        for (IntImage::iterator iter = img.begin(); iter != img.end(); ++iter, ++i)
+        for(IntImage::iterator iter = img.begin(); iter != img.end(); ++iter, ++i)
         {
             *iter = *i;
         }
         static const unsigned char in1d[] = {0, 1, 1, 1, 1, 1, 0};
         i = in1d;
-        for (IntImage::iterator iter = lin.begin(); iter != lin.end(); ++iter, ++i)
+        for(IntImage::iterator iter = lin.begin(); iter != lin.end(); ++iter, ++i)
         {
             *iter = *i;
         }
@@ -84,7 +84,7 @@ struct MultiMorphologyTest
             0, 1, 2, 3, 4, 5, 6};
 
         i = in1;
-        for (IntImage::iterator iter = img2.begin(); iter != img2.end(); ++iter, ++i)
+        for(IntImage::iterator iter = img2.begin(); iter != img2.end(); ++iter, ++i)
         {
             *iter = *i;
         }
@@ -120,7 +120,7 @@ struct MultiMorphologyTest
                                             0, 0, 0, 0, 0};
 
         i = in2;
-        for (IntVolume::iterator iter = vol.begin(); iter != vol.end(); ++iter, ++i)
+        for(IntVolume::iterator iter = vol.begin(); iter != vol.end(); ++iter, ++i)
         {
             *iter = *i;
         }
@@ -262,13 +262,13 @@ struct MultiMorphologyTest
         multiGrayscaleErosion(srcMultiArrayRange(in), destMultiArray(res), 1);
 
         //create comparable result = result+2 for every pixel
-        for (FloatImage::iterator iter = res.begin(); iter != res.end(); ++iter)
+        for(FloatImage::iterator iter = res.begin(); iter != res.end(); ++iter)
         {
             *iter += 2.9f;
         }
 
         //create compare image = img+2 for every pixel
-        for (FloatImage::iterator iter = in.begin(); iter != in.end(); ++iter)
+        for(FloatImage::iterator iter = in.begin(); iter != in.end(); ++iter)
         {
             *iter += 2.9f;
         }
@@ -287,13 +287,13 @@ struct MultiMorphologyTest
         multiGrayscaleDilation(srcMultiArrayRange(in), destMultiArray(res), 1);
 
         //create comparable result = result+2 for every pixel
-        for (FloatImage::iterator iter = res.begin(); iter != res.end(); ++iter)
+        for(FloatImage::iterator iter = res.begin(); iter != res.end(); ++iter)
         {
             *iter += 2.9f;
         }
 
         //create compare image = img+2 for every pixel
-        for (FloatImage::iterator iter = in.begin(); iter != in.end(); ++iter)
+        for(FloatImage::iterator iter = in.begin(); iter != in.end(); ++iter)
         {
             *iter += 2.9f;
         }
@@ -311,13 +311,13 @@ struct MultiMorphologyTest
         //erosion on original image
         multiGrayscaleErosion(in, er_res, 1);
         //dilation on original inverted image
-        for (FloatImage::iterator iter = in.begin(); iter != in.end(); ++iter)
+        for(FloatImage::iterator iter = in.begin(); iter != in.end(); ++iter)
         {
             *iter *= -1.0f;
         }
         multiGrayscaleDilation(in, di_res, 1);
         //Invert dilation res
-        for (FloatImage::iterator iter = di_res.begin(); iter != di_res.end(); ++iter)
+        for(FloatImage::iterator iter = di_res.begin(); iter != di_res.end(); ++iter)
         {
             *iter *= -1.0f;
         }

@@ -228,7 +228,7 @@ public:
     }
     \endcode
 */
-template<class Random = MersenneTwister>
+template <class Random = MersenneTwister>
 class Sampler
 {
 public:
@@ -271,10 +271,10 @@ private:
         int strata_sample_size = static_cast<int>(std::ceil(double(sample_size_) / strataCount()));
         int strata_total_count = strata_sample_size * strataCount();
 
-        for (StrataIndicesType::iterator i = strata_indices_.begin();
-             i != strata_indices_.end(); ++i)
+        for(StrataIndicesType::iterator i = strata_indices_.begin();
+            i != strata_indices_.end(); ++i)
         {
-            if (strata_total_count > sample_size_)
+            if(strata_total_count > sample_size_)
             {
                 strata_sample_size_[i->first] = strata_sample_size - 1;
                 --strata_total_count;
@@ -315,7 +315,7 @@ public:
 
         // initialize a single stratum containing all data
         strata_indices_[0].resize(total_count_);
-        for (int i = 0; i < total_count_; ++i)
+        for(int i = 0; i < total_count_; ++i)
             strata_indices_[0][i] = i;
 
         initStrataCount();
@@ -332,7 +332,7 @@ public:
             unless the option object explicitly requests unstratified sampling,
             in which case the strata are ignored.
         */
-    template<class Iterator>
+    template <class Iterator>
     Sampler(Iterator strataBegin, Iterator strataEnd, SamplerOptions const& opt = SamplerOptions(),
             Random const* rnd = 0)
         : total_count_(strataEnd - strataBegin),
@@ -351,9 +351,9 @@ public:
                            "Sampler(): Cannot draw without replacement when data size is smaller than sample count.");
 
         // copy the strata indices
-        if (opt.stratified_sampling)
+        if(opt.stratified_sampling)
         {
-            for (int i = 0; strataBegin != strataEnd; ++i, ++strataBegin)
+            for(int i = 0; strataBegin != strataEnd; ++i, ++strataBegin)
             {
                 strata_indices_[*strataBegin].push_back(i);
             }
@@ -361,7 +361,7 @@ public:
         else
         {
             strata_indices_[0].resize(total_count_);
-            for (int i = 0; i < total_count_; ++i)
+            for(int i = 0; i < total_count_; ++i)
                 strata_indices_[0][i] = i;
         }
 
@@ -441,12 +441,12 @@ public:
          */
     IndexArrayViewType oobIndices() const
     {
-        if (current_oob_count_ == oobInvalid)
+        if(current_oob_count_ == oobInvalid)
         {
             current_oob_count_ = 0;
-            for (int i = 0; i < total_count_; ++i)
+            for(int i = 0; i < total_count_; ++i)
             {
-                if (!is_used_[i])
+                if(!is_used_[i])
                 {
                     current_oob_sample_[current_oob_count_] = i;
                     ++current_oob_count_;
@@ -462,23 +462,23 @@ public:
 };
 
 
-template<class Random>
+template <class Random>
 void
 Sampler<Random>::sample()
 {
     current_oob_count_ = oobInvalid;
     is_used_.init(false);
 
-    if (options_.sample_with_replacement)
+    if(options_.sample_with_replacement)
     {
         //Go thru all strata
         int j = 0;
         StrataIndicesType::iterator iter;
-        for (iter = strata_indices_.begin(); iter != strata_indices_.end(); ++iter)
+        for(iter = strata_indices_.begin(); iter != strata_indices_.end(); ++iter)
         {
             // do sampling with replacement in each strata and copy data.
             int stratum_size = iter->second.size();
-            for (int i = 0; i < static_cast<int>(strata_sample_size_[iter->first]); ++i, ++j)
+            for(int i = 0; i < static_cast<int>(strata_sample_size_[iter->first]); ++i, ++j)
             {
                 current_sample_[j] = iter->second[random_.uniformInt(stratum_size)];
                 is_used_[current_sample_[j]] = true;
@@ -490,11 +490,11 @@ Sampler<Random>::sample()
         //Go thru all strata
         int j = 0;
         StrataIndicesType::iterator iter;
-        for (iter = strata_indices_.begin(); iter != strata_indices_.end(); ++iter)
+        for(iter = strata_indices_.begin(); iter != strata_indices_.end(); ++iter)
         {
             // do sampling without replacement in each strata and copy data.
             int stratum_size = iter->second.size();
-            for (int i = 0; i < static_cast<int>(strata_sample_size_[iter->first]); ++i, ++j)
+            for(int i = 0; i < static_cast<int>(strata_sample_size_[iter->first]); ++i, ++j)
             {
                 std::swap(iter->second[i], iter->second[i + random_.uniformInt(stratum_size - i)]);
                 current_sample_[j] = iter->second[i];
@@ -504,7 +504,7 @@ Sampler<Random>::sample()
     }
 }
 
-template<class Random = RandomTT800>
+template <class Random = RandomTT800>
 class PoissonSampler
 {
 public:
@@ -527,7 +527,7 @@ public:
     {
         used_indices_.clear();
         IndexType i;
-        for (i = minIndex; i < maxIndex; ++i)
+        for(i = minIndex; i < maxIndex; ++i)
         {
             //from http://en.wikipedia.org/wiki/Poisson_distribution
             int k = 0;
@@ -538,10 +538,10 @@ public:
                 ++k;
                 p *= randfloat.uniform53();
 
-            } while (p > L);
+            } while(p > L);
             --k;
             //Insert i this many time
-            while (k > 0)
+            while(k > 0)
             {
                 used_indices_.push_back(i);
                 --k;

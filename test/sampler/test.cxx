@@ -49,11 +49,11 @@ struct wierdOrderingFunctor
     bool operator()(vigra::ArrayVectorView<unsigned int> a, vigra::ArrayVectorView<unsigned int> b)
     {
         size_t ii = 0;
-        while (ii < a.size() && a[ii] == b[ii])
+        while(ii < a.size() && a[ii] == b[ii])
         {
             ++ii;
         }
-        if (ii == a.size())
+        if(ii == a.size())
             return false;
         else
             return a[ii] < b[ii];
@@ -96,7 +96,7 @@ SamplerTests::testSamplingImpl(bool withReplacement)
     int totalDataCount = 20;
     int numOfSamples = int(totalDataCount / 2);
 
-    for (int ii = 0; ii < 300; ++ii)
+    for(int ii = 0; ii < 300; ++ii)
     {
         // check basic attributes
         Sampler<> sampler(totalDataCount,
@@ -123,22 +123,22 @@ SamplerTests::testSamplingImpl(bool withReplacement)
             Sampler<>::IndexArrayType unusedIndices(sampler.oobIndices());
 
             shouldEqual((int)usedIndices.size(), numOfSamples);
-            if (withReplacement)
+            if(withReplacement)
                 should(usedIndices.size() + unusedIndices.size() >= (unsigned int)totalDataCount);
             else
                 shouldEqual(usedIndices.size() + unusedIndices.size(), (unsigned int)totalDataCount);
 
-            for (unsigned int ii = 0; ii < usedIndices.size(); ++ii)
+            for(unsigned int ii = 0; ii < usedIndices.size(); ++ii)
             {
                 should(usedIndices[ii] >= 0 && usedIndices[ii] < int(totalDataCount));
                 wasPicked[usedIndices[ii]] = true;
             }
-            for (unsigned int ii = 0; ii < unusedIndices.size(); ++ii)
+            for(unsigned int ii = 0; ii < unusedIndices.size(); ++ii)
             {
                 should(unusedIndices[ii] >= 0 && unusedIndices[ii] < int(totalDataCount));
                 wasPicked[unusedIndices[ii]] = true;
             }
-            for (int ii = 0; ii < totalDataCount; ++ii)
+            for(int ii = 0; ii < totalDataCount; ++ii)
             {
                 should(wasPicked[ii]);
             }
@@ -153,7 +153,7 @@ SamplerTests::testSamplingImpl(bool withReplacement)
         }
     }
 
-    if (!withReplacement)
+    if(!withReplacement)
     {
         // check exception when more samples than data
         try
@@ -162,7 +162,7 @@ SamplerTests::testSamplingImpl(bool withReplacement)
                               SamplerOptions().withoutReplacement().sampleSize(9));
             failTest("No exception thrown when there are too few data for sampling.");
         }
-        catch (PreconditionViolation&)
+        catch(PreconditionViolation&)
         {
         }
     }
@@ -186,7 +186,7 @@ void
 SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
 {
     vigra::ArrayVector<int> strata;
-    for (int ii = 0; ii < 10; ++ii)
+    for(int ii = 0; ii < 10; ++ii)
     {
         strata.push_back(1);
         strata.push_back(2);
@@ -202,34 +202,34 @@ SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
         shouldEqual(sampler.stratifiedSampling(), true);
         shouldEqual(sampler.withReplacement(), withReplacement);
         sampler.sample();
-        if (withReplacement)
+        if(withReplacement)
             should(int(sampler.sampledIndices().size() + sampler.oobIndices().size()) >= totalDataCount);
         else
             shouldEqual(int(sampler.sampledIndices().size() + sampler.oobIndices().size()), totalDataCount);
 
         ArrayVector<bool> wasPicked(totalDataCount, false);
 
-        for (int ii = 0; ii < 5; ++ii)
+        for(int ii = 0; ii < 5; ++ii)
         {
             int index = sampler.sampledIndices()[ii];
             should(index >= 0 && index < int(totalDataCount));
             shouldEqual(strata[index], 1);
             wasPicked[index] = true;
         }
-        for (int ii = 5; ii < 10; ++ii)
+        for(int ii = 5; ii < 10; ++ii)
         {
             int index = sampler.sampledIndices()[ii];
             should(index >= 0 && index < totalDataCount);
             shouldEqual(strata[index], 2);
             wasPicked[index] = true;
         }
-        for (int ii = 0; ii < (int)sampler.oobIndices().size(); ++ii)
+        for(int ii = 0; ii < (int)sampler.oobIndices().size(); ++ii)
         {
             int index = sampler.oobIndices()[ii];
             should(index >= 0 && index < totalDataCount);
             wasPicked[index] = true;
         }
-        for (int ii = 0; ii < totalDataCount; ++ii)
+        for(int ii = 0; ii < totalDataCount; ++ii)
         {
             should(wasPicked[ii]);
         }
@@ -246,33 +246,33 @@ SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
         shouldEqual(sampler.sampleSize(), 9);
 
         ArrayVector<bool> wasPicked(totalDataCount, false);
-        for (int ii = 0; ii < 4; ++ii)
+        for(int ii = 0; ii < 4; ++ii)
         {
             int index = sampler.sampledIndices()[ii];
             should(index >= 0 && index < totalDataCount);
             shouldEqual(strata[index], 1);
             wasPicked[index] = true;
         }
-        for (int ii = 4; ii < 9; ++ii)
+        for(int ii = 4; ii < 9; ++ii)
         {
             int index = sampler.sampledIndices()[ii];
             should(index >= 0 && index < totalDataCount);
             shouldEqual(strata[index], 2);
             wasPicked[index] = true;
         }
-        for (int ii = 0; ii < (int)sampler.oobIndices().size(); ++ii)
+        for(int ii = 0; ii < (int)sampler.oobIndices().size(); ++ii)
         {
             int index = sampler.oobIndices()[ii];
             should(index >= 0 && index < int(totalDataCount));
             wasPicked[index] = true;
         }
-        for (int ii = 0; ii < totalDataCount; ++ii)
+        for(int ii = 0; ii < totalDataCount; ++ii)
         {
             should(wasPicked[ii]);
         }
     }
 
-    for (int ii = 0; ii < 10; ++ii)
+    for(int ii = 0; ii < 10; ++ii)
     {
         strata.push_back(1);
     }
@@ -282,17 +282,17 @@ SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
                           SamplerOptions().withReplacement(withReplacement).sampleSize(10).stratified());
         sampler.sample();
 
-        for (int ii = 0; ii < 5; ++ii)
+        for(int ii = 0; ii < 5; ++ii)
         {
             shouldEqual(strata[sampler.sampledIndices()[ii]], 1);
         }
-        for (int ii = 5; ii < 10; ++ii)
+        for(int ii = 5; ii < 10; ++ii)
         {
             shouldEqual(strata[sampler.sampledIndices()[ii]], 2);
         }
     }
 
-    for (int ii = 0; ii < 10; ++ii)
+    for(int ii = 0; ii < 10; ++ii)
     {
         strata.push_back(3);
     }
@@ -304,7 +304,7 @@ SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
                           SamplerOptions().withReplacement(withReplacement).sampleSize(2).stratified());
         failTest("No exception thrown when there are too few data for stratified sampling.");
     }
-    catch (PreconditionViolation&)
+    catch(PreconditionViolation&)
     {
     }
 }
@@ -325,12 +325,12 @@ SamplerTests::testSamplingWithoutReplacementChi2()
                       &randomGenerator);
     std::map<unsigned int, int> wierdmap;
     std::map<unsigned int, int>::iterator iter;
-    for (int ii = 0; ii < 1000; ++ii)
+    for(int ii = 0; ii < 1000; ++ii)
     {
         sampler.sample();
         int dec = 1;
         unsigned int hash = 0;
-        for (size_t ii = 0; ii < sampler.sampledIndices().size(); ++ii)
+        for(size_t ii = 0; ii < sampler.sampledIndices().size(); ++ii)
         {
             hash += dec * sampler.sampledIndices()[ii];
             dec = dec * 10;
@@ -341,12 +341,12 @@ SamplerTests::testSamplingWithoutReplacementChi2()
     // check that all 120 permutations occured after 1000 trials
     shouldEqual((int)wierdmap.size(), nclasses);
 
-    for (int ii = 0; ii < nsamples; ++ii)
+    for(int ii = 0; ii < nsamples; ++ii)
     {
         sampler.sample();
         int dec = 1;
         unsigned int hash = 0;
-        for (size_t ii = 0; ii < sampler.sampledIndices().size(); ++ii)
+        for(size_t ii = 0; ii < sampler.sampledIndices().size(); ++ii)
         {
             hash += dec * sampler.sampledIndices()[ii];
             dec = dec * 10;
@@ -355,7 +355,7 @@ SamplerTests::testSamplingWithoutReplacementChi2()
     }
     double chi_squared = 0;
     double ratio = nsamples / nclasses;
-    for (iter = wierdmap.begin(); iter != wierdmap.end(); ++iter)
+    for(iter = wierdmap.begin(); iter != wierdmap.end(); ++iter)
     {
         chi_squared += sq(iter->second - ratio) / ratio;
     }
@@ -386,11 +386,11 @@ SamplerTests::testSamplingWithReplacementChi2()
                           &randomGenerator);
 
         sampler.sample();
-        for (int ii = 0; ii < numOfSamples; ++ii)
+        for(int ii = 0; ii < numOfSamples; ++ii)
         {
             observed[sampler.sampledIndices()[ii]]++;
         }
-        for (int ii = 0; ii < totalDataCount; ++ii)
+        for(int ii = 0; ii < totalDataCount; ++ii)
         {
             chi_squared += sq(observed[ii] - ratio) / ratio;
         }

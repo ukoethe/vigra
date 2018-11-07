@@ -44,7 +44,7 @@
 using namespace vigra;
 
 // Gaussian reduction to next pyramid level
-template<class Image>
+template <class Image>
 void
 reduceToNextLevel(Image& in, Image& out)
 {
@@ -79,7 +79,7 @@ reduceToNextLevel(Image& in, Image& out)
 int
 main(int argc, char** argv)
 {
-    if (argc != 3)
+    if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
@@ -91,7 +91,7 @@ main(int argc, char** argv)
     {
         vigra::ImageImportInfo info(argv[1]);
 
-        if (info.isGrayscale())
+        if(info.isGrayscale())
         {
             vigra::BImage levels[4];
 
@@ -99,7 +99,7 @@ main(int argc, char** argv)
 
             importImage(info, destImage(levels[0]));
 
-            for (int i = 1; i < 4; ++i)
+            for(int i = 1; i < 4; ++i)
             {
                 // reduce gray image 3 times
                 reduceToNextLevel(levels[i - 1], levels[i]);
@@ -115,7 +115,7 @@ main(int argc, char** argv)
 
             importImage(info, destImage(levels[0]));
 
-            for (int i = 1; i < 4; ++i)
+            for(int i = 1; i < 4; ++i)
             {
                 // reduce color image 3 times
                 reduceToNextLevel(levels[i - 1], levels[i]);
@@ -124,7 +124,7 @@ main(int argc, char** argv)
             exportImage(srcImageRange(levels[3]), vigra::ImageExportInfo(argv[2]));
         }
     }
-    catch (vigra::StdException& e)
+    catch(vigra::StdException& e)
     {
         std::cout << e.what() << std::endl;
         return 1;

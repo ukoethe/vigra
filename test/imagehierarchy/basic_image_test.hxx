@@ -3,7 +3,7 @@
 
 #include "parent_test_class.hxx"
 
-template<class Policy>
+template <class Policy>
 class BasicImageTest
     : public ImageTest<Policy>
 {
@@ -87,7 +87,7 @@ public:
     }
 }; // end of class BasicImageTest
 
-template<class POLICY>
+template <class POLICY>
 struct BasicImageTestSuite
     : public ImageTestSuite<POLICY>
 {

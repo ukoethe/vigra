@@ -50,7 +50,7 @@ namespace vigra
 namespace detail
 {
 
-template<class T, bool is_float = false>
+template <class T, bool is_float = false>
 struct CountingIteratorCompare
 {
     // use exact comparison for integer counting
@@ -99,7 +99,7 @@ struct CountingIteratorCompare
     }
 };
 
-template<class T>
+template <class T>
 struct CountingIteratorCompare<T, true>
 {
     typedef std::numeric_limits<T> limit;
@@ -241,7 +241,7 @@ struct CountingIteratorCompare<T, true>
             std::cout << *iter << " ";  // prints '1.6 1.5 1.4 1.3 1.2 1.1 1'
         \endcode
     */
-template<class T = std::ptrdiff_t>
+template <class T = std::ptrdiff_t>
 class CountingIterator
     : public std::iterator<std::random_access_iterator_tag,
                            T, std::ptrdiff_t, T const*, T>
@@ -394,21 +394,21 @@ private:
 };
 
 
-template<class T1, class T2, class T3>
+template <class T1, class T2, class T3>
 inline CountingIterator<T1>
 range(T1 begin, T2 end, T3 step)
 {
     return CountingIterator<T1>(begin, end, step);
 }
 
-template<class T1, class T2>
+template <class T1, class T2>
 inline CountingIterator<T1>
 range(T1 begin, T2 end)
 {
     return CountingIterator<T1>(begin, end, 1);
 }
 
-template<class T>
+template <class T>
 inline CountingIterator<T>
 range(T end)
 {

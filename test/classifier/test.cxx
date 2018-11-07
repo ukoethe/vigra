@@ -98,14 +98,14 @@ struct ClassifierTest
     void diffOnfiles(std::string oldName, std::string newName)
     {
         std::ifstream oldRF(oldName.c_str());
-        if (oldRF.fail())
+        if(oldRF.fail())
             vigra_fail("files with old values not found");
         std::ifstream newRF(newName.c_str());
-        if (newRF.fail())
+        if(newRF.fail())
             vigra_fail("files with new values not found");
         std::string oldS, newS;
         int k = 0;
-        while (std::getline(newRF, newS) && std::getline(oldRF, oldS))
+        while(std::getline(newRF, newS) && std::getline(oldRF, oldS))
         {
 
             std::ostringstream s1;
@@ -130,9 +130,9 @@ struct ClassifierTest
             MultiArray<2, double> dfeatures(Shp_t(10, 5));
             MultiArray<2, float> ffeatures(Shp_t(10, 5));
 
-            for (int ii = 0; ii < 10; ++ii)
+            for(int ii = 0; ii < 10; ++ii)
             {
-                for (int jj = 0; jj < 5; ++jj)
+                for(int jj = 0; jj < 5; ++jj)
                 {
                     dfeatures(ii, jj) = (ii * jj + jj) % 97;
                     ffeatures(ii, jj) = (ii * jj + jj) % 97;
@@ -147,9 +147,9 @@ struct ClassifierTest
             shouldEqual(detail::contains_inf(dfeatures), true);
             shouldEqual(detail::contains_inf(ffeatures), true);
 
-            for (int ii = 0; ii < 10; ++ii)
+            for(int ii = 0; ii < 10; ++ii)
             {
-                for (int jj = 0; jj < 5; ++jj)
+                for(int jj = 0; jj < 5; ++jj)
                 {
                     dfeatures(ii, jj) = std::numeric_limits<double>::infinity();
                     ffeatures(ii, jj) = std::numeric_limits<double>::infinity();
@@ -161,9 +161,9 @@ struct ClassifierTest
         }
         MultiArray<2, double> dfeatures(Shp_t(10, 5));
         MultiArray<2, double> dlabels(Shp_t(10, 1));
-        for (int ii = 0; ii < 10; ++ii)
+        for(int ii = 0; ii < 10; ++ii)
         {
-            for (int jj = 0; jj < 5; ++jj)
+            for(int jj = 0; jj < 5; ++jj)
             {
                 dfeatures(ii, jj) = (ii * jj + jj) % 97;
             }
@@ -176,7 +176,7 @@ struct ClassifierTest
             rf.learn(dfeatures, dlabels);
             shouldEqual(0, 1);
         }
-        catch (...)
+        catch(...)
         {
         }
         dfeatures(9, 0) = dlabels(9, 0);
@@ -186,7 +186,7 @@ struct ClassifierTest
             rf.learn(dfeatures, dlabels);
             shouldEqual(0, 1);
         }
-        catch (...)
+        catch(...)
         {
         }
     }
@@ -228,9 +228,9 @@ struct ClassifierTest
         std::cerr << "RF_SpliceTest()....";
 
         MultiArray<2, double> a(MultiArrayShape<2>::type(20, 10), 1);
-        for (int ii = 0; ii < 20; ii += 2)
+        for(int ii = 0; ii < 20; ii += 2)
         {
-            for (int jj = 0; jj < 10; jj += 2)
+            for(int jj = 0; jj < 10; jj += 2)
             {
                 a(ii, jj) = 3;
             }
@@ -268,9 +268,9 @@ struct ClassifierTest
             std::cerr << "RF_NanCheck(): checking contains_nan() and RF precondition on NaN\n";
             MultiArray<2, double> dfeatures(Shp_t(10, 5));
             MultiArray<2, float> ffeatures(Shp_t(10, 5));
-            for (int ii = 0; ii < 10; ++ii)
+            for(int ii = 0; ii < 10; ++ii)
             {
-                for (int jj = 0; jj < 5; ++jj)
+                for(int jj = 0; jj < 5; ++jj)
                 {
                     dfeatures(ii, jj) = (ii * jj + jj) % 97;
                     ffeatures(ii, jj) = (ii * jj + jj) % 97;
@@ -285,9 +285,9 @@ struct ClassifierTest
             shouldEqual(detail::contains_nan(dfeatures), true);
             shouldEqual(detail::contains_nan(ffeatures), true);
 
-            for (int ii = 0; ii < 10; ++ii)
+            for(int ii = 0; ii < 10; ++ii)
             {
-                for (int jj = 0; jj < 5; ++jj)
+                for(int jj = 0; jj < 5; ++jj)
                 {
                     dfeatures(ii, jj) = std::numeric_limits<double>::quiet_NaN();
                     ffeatures(ii, jj) = std::numeric_limits<double>::quiet_NaN();
@@ -297,9 +297,9 @@ struct ClassifierTest
             shouldEqual(detail::contains_nan(dfeatures), true);
             shouldEqual(detail::contains_nan(ffeatures), true);
 
-            for (int ii = 0; ii < 10; ++ii)
+            for(int ii = 0; ii < 10; ++ii)
             {
-                for (int jj = 0; jj < 5; ++jj)
+                for(int jj = 0; jj < 5; ++jj)
                 {
                     dfeatures(ii, jj) = (ii * jj + jj) % 97;
                     ffeatures(ii, jj) = (ii * jj + jj) % 97;
@@ -314,9 +314,9 @@ struct ClassifierTest
             shouldEqual(detail::contains_nan(dfeatures), true);
             shouldEqual(detail::contains_nan(ffeatures), true);
 
-            for (int ii = 0; ii < 10; ++ii)
+            for(int ii = 0; ii < 10; ++ii)
             {
-                for (int jj = 0; jj < 5; ++jj)
+                for(int jj = 0; jj < 5; ++jj)
                 {
                     dfeatures(ii, jj) = std::numeric_limits<double>::signaling_NaN();
                     ffeatures(ii, jj) = std::numeric_limits<double>::signaling_NaN();
@@ -328,9 +328,9 @@ struct ClassifierTest
         }
         MultiArray<2, double> dfeatures(Shp_t(10, 5));
         MultiArray<2, double> dlabels(Shp_t(10, 1));
-        for (int ii = 0; ii < 10; ++ii)
+        for(int ii = 0; ii < 10; ++ii)
         {
-            for (int jj = 0; jj < 5; ++jj)
+            for(int jj = 0; jj < 5; ++jj)
             {
                 dfeatures(ii, jj) = (ii * jj + jj) % 97;
             }
@@ -348,7 +348,7 @@ struct ClassifierTest
             rf.learn(dfeatures, dlabels);
             failTest("RandomForest::learn() didn't throw on NaN inputs.");
         }
-        catch (PreconditionViolation const& p)
+        catch(PreconditionViolation const& p)
         {
             std::string expected("\nPrecondition violation!\nRandomForest(): Response contains NaNs");
             std::string message(p.what());
@@ -362,7 +362,7 @@ struct ClassifierTest
             rf.learn(dfeatures, dlabels);
             failTest("RandomForest::learn() didn't throw on NaN inputs.");
         }
-        catch (PreconditionViolation const& p)
+        catch(PreconditionViolation const& p)
         {
             std::string expected("\nPrecondition violation!\nRandomForest(): Feature matrix contains NaNs");
             std::string message(p.what());
@@ -384,7 +384,7 @@ struct ClassifierTest
             rf_good.predictLabels(dfeatures, rlabels);
             failTest("RandomForest::predictLabels() didn't throw on NaN inputs.");
         }
-        catch (PreconditionViolation const& p)
+        catch(PreconditionViolation const& p)
         {
             std::string expected("\nPrecondition violation!\nRandomForest::predictLabels(): NaN in feature matrix");
             std::string message(p.what());
@@ -403,7 +403,7 @@ struct ClassifierTest
             vigra::TestVisitor testVisitor;
             std::cerr << "RFSplitFunctorTest(): Learning on Datasets (Warning this checks whether Median and RandomSplit functors compile and run"
                          "if you plan to use it, please improve the test\n";
-            for (int ii = 0; ii < data.size(); ii++)
+            for(int ii = 0; ii < data.size(); ii++)
             {
                 vigra::RandomForest<>
                     RF2(vigra::RandomForestOptions().tree_count(32));
@@ -442,7 +442,7 @@ struct ClassifierTest
         {
             vigra::TestVisitor testVisitor;
             std::cerr << "RFdefaultTest(): Learning on Datasets\n";
-            for (int ii = 0; ii < data.size(); ii++)
+            for(int ii = 0; ii < data.size(); ii++)
             {
                 vigra::RandomForest<>
                     RF2(vigra::RandomForestOptions().tree_count(32));
@@ -465,9 +465,9 @@ struct ClassifierTest
 
                 testVisitor.fout << data.names(ii) << std::endl;
                 std::cerr << "[";
-                for (int ss = 0; ss < ii + 1; ++ss)
+                for(int ss = 0; ss < ii + 1; ++ss)
                     std::cerr << "#";
-                for (int ss = ii + 1; ss < data.size(); ++ss)
+                for(int ss = ii + 1; ss < data.size(); ++ss)
                     std::cerr << " ";
                 std::cerr << "] " << data.names(ii);
                 std::cerr << "\n";
@@ -517,7 +517,7 @@ struct ClassifierTest
         MultiArray<2, double> response(Shp(data.features(ii).shape(0),
                                            data.ClassIter(ii).size()));
         RF.predictProbabilities(data.features(ii), response);
-        for (int jj = 0; jj < response.shape(0); ++jj)
+        for(int jj = 0; jj < response.shape(0); ++jj)
         {
             typedef ArrayVector<double>::iterator Iter;
             ArrayVector<double> tmp(data.ClassIter(ii).size(), 0.0);
@@ -568,7 +568,7 @@ struct ClassifierTest
         RF2.predictLabels(data.features(ii), dble_labels);
         RF2.predictLabels(data.features(ii), int_labels);
 
-        for (int jj = 0; jj < data.features(ii).shape(0); ++jj)
+        for(int jj = 0; jj < data.features(ii).shape(0); ++jj)
         {
             shouldEqualTolerance(dble_labels[jj], data.labels(ii)[jj], 0.01);
             shouldEqualTolerance(int_labels[jj], data.labels(ii)[jj], 0.01);
@@ -611,10 +611,10 @@ struct ClassifierTest
     {
 
         std::cerr << "RFoobTest(): Learning each Datasets 10 times\n";
-        for (int ii = 0; ii < data.size(); ii++)
+        for(int ii = 0; ii < data.size(); ii++)
         {
             double oob = 0.0;
-            for (int jj = 0; jj < 10; ++jj)
+            for(int jj = 0; jj < 10; ++jj)
             {
                 rf::visitors::OOB_PerTreeError oob_v;
                 vigra::RandomForest<> RF2(vigra::RandomForestOptions()
@@ -636,9 +636,9 @@ struct ClassifierTest
                                        __FILE__,
                                        __LINE__);
             std::cerr << "[";
-            for (int ss = 0; ss < ii + 1; ++ss)
+            for(int ss = 0; ss < ii + 1; ++ss)
                 std::cerr << "#";
-            for (int ss = ii + 1; ss < data.size(); ++ss)
+            for(int ss = ii + 1; ss < data.size(); ++ss)
                 std::cerr << " ";
             std::cerr << "] " << data.names(ii);
             std::cerr << "\n";
@@ -751,14 +751,14 @@ struct ClassifierTest
                           rf_default(),
                           vigra::RandomMT19937(1));
 
-                for (int jj = 0; jj < p_imp.shape(0); ++jj)
-                    for (int gg = 0; gg < p_imp.shape(1); ++gg)
+                for(int jj = 0; jj < p_imp.shape(0); ++jj)
+                    for(int gg = 0; gg < p_imp.shape(1); ++gg)
                         shouldEqualTolerance(var_imp.variable_importance_(jj, gg), p_imp(jj, gg), 0.01);
                 std::cerr << std::endl;
                 std::cerr << "[";
-                for (int ss = 0; ss < ii + 1; ++ss)
+                for(int ss = 0; ss < ii + 1; ++ss)
                     std::cerr << "#";
-                for (int ss = ii + 1; ss < data.size(); ++ss)
+                for(int ss = ii + 1; ss < data.size(); ++ss)
                     std::cerr << " ";
                 std::cerr << "] " << data.names(ii);
                 std::cerr << "\n";
@@ -805,7 +805,7 @@ struct ClassifierTest
         should(RF.ext_param_ == R2.ext_param_);
         should(RF.options_ == R2.options_);
         should(RF.trees_.size() == R2.trees_.size());
-        for (int jj = 0; jj < int(RF.trees_.size()); ++jj)
+        for(int jj = 0; jj < int(RF.trees_.size()); ++jj)
         {
             should(RF.trees_[jj].topology_ == R2.trees_[jj].topology_);
 
@@ -818,7 +818,7 @@ struct ClassifierTest
     void HDF5ImpexTest()
     {
 
-        for (int ii = 0; ii < data.size(); ii++)
+        for(int ii = 0; ii < data.size(); ii++)
         {
             std::cerr << "Running HDF5 Impex Test\n";
             std::string filename = data.names(ii) + "_rf.hdf5";
@@ -882,9 +882,9 @@ struct ClassifierTest
             should_all(RF, RF6);
 
             std::cerr << "[";
-            for (int ss = 0; ss < ii + 1; ++ss)
+            for(int ss = 0; ss < ii + 1; ++ss)
                 std::cerr << "#";
-            for (int ss = ii + 1; ss < data.size(); ++ss)
+            for(int ss = ii + 1; ss < data.size(); ++ss)
                 std::cerr << " ";
             std::cerr << "] " << data.names(ii);
             std::cerr << "\n";
@@ -903,7 +903,7 @@ struct ClassifierTest
             shouldNot(emptyLoaded);
             failTest("rf_import_HDF5() didn't throw on 0-byte file.");
         }
-        catch (std::runtime_error const&)
+        catch(std::runtime_error const&)
         {
         }
 
@@ -913,7 +913,7 @@ struct ClassifierTest
             shouldNot(bareHDF5Loaded);
             failTest("rf_import_HDF5() didn't throw on empty, but valid HDF5 file.");
         }
-        catch (PreconditionViolation const&)
+        catch(PreconditionViolation const&)
         {
         }
     }
@@ -936,7 +936,7 @@ struct ClassifierTest
         //Populate the matrix with one coordinate
         double x0 = -50;
         double dx = 1;
-        for (int i = 0; i < features.shape(0); ++i)
+        for(int i = 0; i < features.shape(0); ++i)
         {
             features(i, 0) = x0;
             x0 = x0 + dx;
@@ -948,7 +948,7 @@ struct ClassifierTest
         double a = 1;
         double q = 0.0;
 
-        for (int i = 0; i < response.shape(0); ++i)
+        for(int i = 0; i < response.shape(0); ++i)
         {
             response(i, 0) = features(i, 0) * a + q;
             x0 = x0 + dx;
@@ -972,7 +972,7 @@ struct ClassifierTest
         //std::cerr << "DONE\n";
 
 
-        for (int i = 0; i < predicted.shape(0); ++i)
+        for(int i = 0; i < predicted.shape(0); ++i)
         {
             shouldEqualTolerance(response(i, 0), predicted(i, 0), 1.0);
         }
@@ -992,8 +992,8 @@ struct ClassifierTest
         //Populate the matrix with one coordinate
         double x0 = -50;
         double dx = 1;
-        for (int j = 0; j < 5; ++j)
-            for (int i = 0; i < features.shape(0); ++i)
+        for(int j = 0; j < 5; ++j)
+            for(int i = 0; i < features.shape(0); ++i)
             {
                 features(i, j) = x0;
                 x0 = x0 + dx;
@@ -1005,8 +1005,8 @@ struct ClassifierTest
         double a = 1;
         double q = 0.0;
 
-        for (int j = 0; j < 5; ++j)
-            for (int i = 0; i < response.shape(0); ++i)
+        for(int j = 0; j < 5; ++j)
+            for(int i = 0; i < response.shape(0); ++i)
             {
                 response(i, j) = features(i, j) * a + q;
                 x0 = x0 + dx;
@@ -1029,8 +1029,8 @@ struct ClassifierTest
         rf.predictRaw(features, predicted);
         //std::cerr << "DONE\n";
         //
-        for (int j = 0; j < 5; ++j)
-            for (int i = 0; i < predicted.shape(0); ++i)
+        for(int j = 0; j < 5; ++j)
+            for(int i = 0; i < predicted.shape(0); ++i)
             {
                 //std::cout << predicted(i, j) << std::endl;
                 shouldEqualTolerance(response(i, j), predicted(i, j), 1.0);
@@ -1095,20 +1095,20 @@ main(int argc, char** argv)
     RF_Test_Training_Data data;
 
     std::vector<size_t> indices;
-    for (int ii = 1; ii < argc; ++ii)
+    for(int ii = 1; ii < argc; ++ii)
     {
         indices.push_back(atoi(argv[ii]));
     }
     //int ii = 1;
-    for (int ii = 0; ii < data.size(); ii++)
+    for(int ii = 0; ii < data.size(); ii++)
     {
-        if (indices.size() != 0)
-            if (find(indices.begin(), indices.end(), ii) == indices.end())
+        if(indices.size() != 0)
+            if(find(indices.begin(), indices.end(), ii) == indices.end())
                 continue;
         MultiArray<3, double> err(MultiArrayShape<3>::type(51, 4, 5));
-        for (int ss = 0; ss <= 50; ++ss)
+        for(int ss = 0; ss <= 50; ++ss)
         {
-            for (int jj = 0; jj < 5; ++jj)
+            for(int jj = 0; jj < 5; ++jj)
             {
                 vigra::RandomForest<int> RF2(vigra::RandomForestOptions().setTreeCount(255).trainingSetSizeProportional(double(ss) * 0.02));
                 vigra::RandomForest<int> RF(vigra::RandomForestOptions().setTreeCount(255).trainingSetSizeProportional(double(ss) * 0.02).sampleWithReplacement(false));
@@ -1137,14 +1137,14 @@ main(int argc, char** argv)
 {
     RF_Test_Training_Data data;
 
-    for (int ii = 0; ii < data.size(); ii++)
+    for(int ii = 0; ii < data.size(); ii++)
     {
         H5_dataset set_t(data.names(ii) + std::string(".h5"));
         set_t.set_source("1", "features", data.features(ii));
         set_t.set_source("1", "labels", data.labels(ii));
     }
 
-    for (int ii = 0; ii < data.size(); ++ii)
+    for(int ii = 0; ii < data.size(); ++ii)
     {
         H5_dataset set_t(data.names(ii) + std::string(".h5"));
         std::set<std::string> grpses = set_t.get_groups();

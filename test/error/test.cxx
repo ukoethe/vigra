@@ -51,7 +51,7 @@ struct ErrorTest
             vigra_precondition(0, "Intentional error");
             failTest("no exception thrown");
         }
-        catch (vigra::ContractViolation& c)
+        catch(vigra::ContractViolation& c)
         {
             std::string expected("\nPrecondition violation!\nIntentional error");
             std::string message(c.what());
@@ -62,7 +62,7 @@ struct ErrorTest
             vigra_assert(0, "Intentional error");
             failTest("no exception thrown");
         }
-        catch (vigra::ContractViolation& c)
+        catch(vigra::ContractViolation& c)
         {
             std::string expected("\nPrecondition violation!\nIntentional error");
             std::string message(c.what());
@@ -77,7 +77,7 @@ struct ErrorTest
             vigra_postcondition(0, "Intentional error");
             failTest("no exception thrown");
         }
-        catch (vigra::ContractViolation& c)
+        catch(vigra::ContractViolation& c)
         {
             std::string expected("\nPostcondition violation!\nIntentional error");
             std::string message(c.what());
@@ -92,7 +92,7 @@ struct ErrorTest
             vigra_invariant(0, "Intentional error");
             failTest("no exception thrown");
         }
-        catch (vigra::ContractViolation& c)
+        catch(vigra::ContractViolation& c)
         {
             std::string expected("\nInvariant violation!\nIntentional error");
             std::string message(c.what());

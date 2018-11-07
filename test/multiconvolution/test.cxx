@@ -81,16 +81,16 @@ struct MultiArraySeparableConvolutionTest
 
     // - - - - - - - - - - - - - - - - - - - - - - - -
 
-    template<class Image>
+    template <class Image>
     void makeRandom(Image& image)
     {
         typedef typename Image::value_type T;
 
         int size = image.size();
-        for (int k = 0; k < size; ++k)
+        for(int k = 0; k < size; ++k)
         {
             typedef typename NumericTraits<typename Image::value_type>::isIntegral isIntegral;
-            if (isIntegral::value)
+            if(isIntegral::value)
                 image[k] = (T)randomMT19937().uniformInt(256);
             else
                 image[k] = (T)randomMT19937().uniform();
@@ -103,11 +103,11 @@ struct MultiArraySeparableConvolutionTest
         const int width = shape[0];
         const int height = shape[1];
         const int depth = shape[2];
-        for (int z = 0; z < depth; ++z)
+        for(int z = 0; z < depth; ++z)
         {
-            for (int y = 0; y < height; ++y)
+            for(int y = 0; y < height; ++y)
             {
-                for (int x = 0; x < width; ++x)
+                for(int x = 0; x < width; ++x)
                 {
                     const Image3D::value_type val = Image3D::value_type(x + y + z);
                     image(x, y, z) = val;
@@ -124,18 +124,18 @@ struct MultiArraySeparableConvolutionTest
         const int width = shape[0];
         const int height = shape[1];
         const int depth = shape[2];
-        for (int z = 0; z < depth; ++z)
+        for(int z = 0; z < depth; ++z)
         {
-            for (int y = 0; y < height; ++y)
+            for(int y = 0; y < height; ++y)
             {
-                for (int x = 0; x < width; ++x)
+                for(int x = 0; x < width; ++x)
                 {
 
                     Image3D::value_type val = 80;
 
-                    if ((x > b) && x < (width - b) &&
-                        (y > b) && y < (height - b) &&
-                        (z > b) && z < (depth - b))
+                    if((x > b) && x < (width - b) &&
+                       (y > b) && y < (height - b) &&
+                       (z > b) && z < (depth - b))
                     {
                         val = 220;
                     }
@@ -153,7 +153,7 @@ struct MultiArraySeparableConvolutionTest
         Image3D dn(src.shape());
         Image3D dest3(src.shape());
 
-        for (int d = 0; d < 3; ++d)
+        for(int d = 0; d < 3; ++d)
         {
             std::vector<vigra::Kernel1D<float>> kernels(3);
             kernels[d].initGaussianDerivative(ksize, 1);
@@ -170,7 +170,7 @@ struct MultiArraySeparableConvolutionTest
             shouldEqualSequence(dn.begin(), dn.end(), d1.begin());
         }
 
-        for (int d = 0; d < 3; ++d)
+        for(int d = 0; d < 3; ++d)
         {
             std::vector<vigra::Kernel1D<float>> kernels(3);
             kernels[d].initGaussianDerivative(ksize, 1);
@@ -204,7 +204,7 @@ struct MultiArraySeparableConvolutionTest
                                        destMultiArray(dst1),
                                        0, kernx);
 
-        for (z = 0; z < depth; ++z)
+        for(z = 0; z < depth; ++z)
         {
             BasicImageView<Image3D::value_type> sslice =
                 makeBasicImageView(src.bindOuter(z));
@@ -223,7 +223,7 @@ struct MultiArraySeparableConvolutionTest
                                        destMultiArray(dst1),
                                        1, kerny);
 
-        for (z = 0; z < depth; ++z)
+        for(z = 0; z < depth; ++z)
         {
             BasicImageView<Image3D::value_type> sslice =
                 makeBasicImageView(src.bindOuter(z));
@@ -248,7 +248,7 @@ struct MultiArraySeparableConvolutionTest
         kernels[0].initGaussian(ksize);
         kernels[1].initGaussianDerivative(ksize, 1);
 
-        for (int z = 0; z < depth; ++z)
+        for(int z = 0; z < depth; ++z)
         {
             BasicImageView<Image3D::value_type> sslice =
                 makeBasicImageView(src.bindOuter(z));
@@ -319,7 +319,7 @@ struct MultiArraySeparableConvolutionTest
         S stop[] = {S(w, h, 26), S(31, h, d), S(w, 31, d),
                     S(w - 2, h, 30), S(28, h - 1, d), S(w - 2, 44, d - 1),
                     S(w, h, d), S(w, 1, 39), S(w - 1, 26, 1)};
-        for (int k = 0; k < 9; ++k)
+        for(int k = 0; k < 9; ++k)
         {
             Image3D subarray(stop[k] - start[k]);
             separableConvolveMultiArray(srcImage, subarray,
@@ -336,13 +336,13 @@ struct MultiArraySeparableConvolutionTest
         Image3D db(src.shape());
 
         Kernel1D<float> kernel;
-        if (!useDerivative)
+        if(!useDerivative)
             kernel.initGaussian(ksize);
         else
             kernel.initGaussianDerivative(ksize, 1);
 
 
-        for (int i = 0; i < 3; ++i)
+        for(int i = 0; i < 3; ++i)
         {
             const int d = 2 - i;
 
@@ -367,7 +367,7 @@ struct MultiArraySeparableConvolutionTest
         Image3x3 grad(src.shape());
         makeWedge(src);
 
-        if (!useGaussian)
+        if(!useGaussian)
             symmetricGradientMultiArray(src, grad);
         else
             gaussianGradientMultiArray(src, grad, sigma);
@@ -382,11 +382,11 @@ struct MultiArraySeparableConvolutionTest
         const int width = shape[0];
         const int height = shape[1];
         const int depth = shape[2];
-        for (int z = b; z < depth - b; ++z)
+        for(int z = b; z < depth - b; ++z)
         {
-            for (int y = b; y < height - b; ++y)
+            for(int y = b; y < height - b; ++y)
             {
-                for (int x = b; x < width - b; ++x)
+                for(int x = b; x < width - b; ++x)
                 {
                     shouldEqualTolerance(dot(grad(x, y, z), v), v2, 1e-5);
                 }
@@ -621,11 +621,11 @@ struct delta_dist
         : scale(std::abs(s)), offset(of)
     {
     }
-    template<class V>
+    template <class V>
     double operator()(V a, V b) const
     {
         double delta = std::abs(double(a) - double(b));
-        if (offset == 0)
+        if(offset == 0)
             return delta;
         else
             return offset - delta;
@@ -640,11 +640,11 @@ struct rel_dist
         : scale(std::abs(s)), offset(of)
     {
     }
-    template<class V>
+    template <class V>
     double operator()(V a, V b) const
     {
         double delta = std::abs((double(a) - double(b)) / double(a));
-        if (offset == 0)
+        if(offset == 0)
             return delta;
         else
             return offset - delta;
@@ -668,7 +668,7 @@ struct logger
 
     void next()
     {
-        if (os.str().size())
+        if(os.str().size())
             os << ", ";
     }
 
@@ -677,7 +677,7 @@ struct logger
         next();
         os << msg;
     }
-    template<class X>
+    template <class X>
     void operator()(const std::string& name, const X& value)
     {
         next();
@@ -690,7 +690,7 @@ struct logger
     }
 };
 
-template<class IM>
+template <class IM>
 double
 min_max_delta(const IM& image)
 {
@@ -699,7 +699,7 @@ min_max_delta(const IM& image)
     return minmax.max - minmax.min;
 }
 
-template<class IM>
+template <class IM>
 double
 max(const IM& image)
 {
@@ -708,7 +708,7 @@ max(const IM& image)
     return minmax.max;
 }
 
-template<class IM>
+template <class IM>
 double
 min(const IM& image)
 {
@@ -717,18 +717,18 @@ min(const IM& image)
     return minmax.min;
 }
 
-template<class IM>
+template <class IM>
 void
 write_out(const IM& image, const char* const name, bool do_it = true)
 {
-    if (do_it)
+    if(do_it)
     {
         vigra::exportImage(srcImageRange(image),
                            vigra::ImageExportInfo(name));
     }
 }
 
-template<class F>
+template <class F>
 double
 compare(F func, const char* const func_name,
         const array_2d& image_a, const array_2d& image_b,
@@ -756,7 +756,7 @@ compare(F func, const char* const func_name,
                   image_view_delta.lowerRight() - vigra::Diff2D(crop, 0)),
               destImage(delta_cropped));
 
-    if (!name)
+    if(!name)
         name = func_name;
     write_out(delta_cropped, name, do_it);
 
@@ -768,13 +768,13 @@ resize_0(const array_2d& a, array_2d& b)
 {
     vigra::resizeImageNoInterpolation(srcImageRange(a), destImageRange(b));
 }
-template<unsigned order>
+template <unsigned order>
 void
 resize_n(const array_2d& a, array_2d& b)
 {
     typedef typename vigra::BSpline<order, double> my_spline;
 
-    if (order <= 3) // arbitrarily use the different APIs for small and large orders
+    if(order <= 3) // arbitrarily use the different APIs for small and large orders
         vigra::resizeMultiArraySplineInterpolation(srcMultiArrayRange(a),
                                                    destMultiArrayRange(b),
                                                    my_spline());
@@ -982,7 +982,7 @@ struct stma_f : public t_func
 const t_func*
 new_test_alloc(double sigma, double outer, int test_nr)
 {
-    switch (test_nr)
+    switch(test_nr)
     {
         case 0:
             return new gsmaa_f(sigma);
@@ -1017,7 +1017,7 @@ new_test(double sigma, double outer, int test_nr,
          logger& log_name)
 {
     const t_func* const test = new_test_alloc(sigma, outer, test_nr);
-    if (test)
+    if(test)
         test->log(log_name);
     else
         log_name("[no test operator found in new_test_alloc()]");
@@ -1100,7 +1100,7 @@ test_upscaled(void (*resize)(const array_2d&, array_2d&),
 {
 
     log_name("upscaled test");
-    if (log_name)
+    if(log_name)
         return;
     // image inflated by im_scale in x direction:
     array_2d x_scaled_image(resized_shape(size_info, im_scale, 1));
@@ -1134,7 +1134,7 @@ test_downscaled(void (*resize)(const array_2d&, array_2d&),
     const double y_scale = 3;
     const double x_scale = im_scale * y_scale;
     log_name("downscaled test (factor " + asString(y_scale) + ")");
-    if (log_name)
+    if(log_name)
         return;
 
     int w = (int(size_info.width() - 1) / int(x_scale)) * int(x_scale) + 1;
@@ -1188,12 +1188,12 @@ test_any(void (*resize)(const array_2d&, array_2d&),
          logger& log_name,
          int test_type)
 {
-    if (test_type == 0)
+    if(test_type == 0)
     {
         test_upscaled(resize, size_info, test_image, test_f, im_scale,
                       cmp, log_write, log_name);
     }
-    else if (test_type == 1)
+    else if(test_type == 1)
     {
         test_downscaled(resize, size_info, test_image, test_f, im_scale,
                         cmp, log_write, log_name);
@@ -1211,7 +1211,7 @@ struct args
         : argc(a_c), argv(a_v), pos(-1)
     {
     }
-    template<class X>
+    template <class X>
     X operator()(X default_value)
     {
         ++pos;
@@ -1242,7 +1242,7 @@ perform_test(int argc, test_data& argv,
     const cmp_data cmp(write_im, global_tol, local_tol);
 
     const t_func* const test = new_test(sigma, outer, test_nr, log_name);
-    if (!test)
+    if(!test)
     {
         shouldMsg(!run_test, ("unknown test number " + asString(test_nr) + " for new_test_alloc()").c_str());
         return "(unknown test number)";
@@ -1253,25 +1253,25 @@ perform_test(int argc, test_data& argv,
     log_name("global_tol", global_tol);
     log_name("local_tol", local_tol);
 
-    if (intp_type == 0)
+    if(intp_type == 0)
     {
         log_name("resizing without interpolation");
         test_any(&resize_0, import_info, test_image, *test, im_scale,
                  cmp, log_write, log_name, test_type);
     }
-    else if (intp_type == 3)
+    else if(intp_type == 3)
     {
         log_name("resizing with spline3");
         test_any(&resize_n<3>, import_info, test_image, *test, im_scale,
                  cmp, log_write, log_name, test_type);
     }
-    else if (intp_type == 5)
+    else if(intp_type == 5)
     {
         log_name("resizing with spline5");
         test_any(&resize_n<5>, import_info, test_image, *test, im_scale,
                  cmp, log_write, log_name, test_type);
     }
-    if (log_name)
+    if(log_name)
         return log_name.str();
     else
         return log_name.str() + ":\n" + log_write.str();
@@ -1350,7 +1350,7 @@ struct MultiArraySeparableConvolutionScaledTestSuite : public vigra::test_suite
     {
         vigra::importImage(import_info, destImage(test_image));
 
-        for (test_data* p = tests; (*p)[0]; ++p)
+        for(test_data* p = tests; (*p)[0]; ++p)
         {
             scaled_test* test = new scaled_test(*p, import_info, test_image);
             add(vigra::create_test_case(*test, test->str().c_str()));

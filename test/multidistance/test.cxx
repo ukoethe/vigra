@@ -128,7 +128,7 @@ struct MultiDistanceTest
             Image::Accessor acc = images[0].accessor();
             const double* p = in;
 
-            for (; i != end; ++i, ++p)
+            for(; i != end; ++i, ++p)
             {
                 acc.set(*p, i);
             }
@@ -149,7 +149,7 @@ struct MultiDistanceTest
             Image::Accessor acc = images[1].accessor();
             const unsigned char* p = in2;
 
-            for (; i != end; ++i, ++p)
+            for(; i != end; ++i, ++p)
             {
                 acc.set(*p, i);
             }
@@ -170,7 +170,7 @@ struct MultiDistanceTest
             Image::Accessor acc = images[2].accessor();
             const unsigned char* p = in3;
 
-            for (; i != end; ++i, ++p)
+            for(; i != end; ++i, ++p)
             {
                 acc.set(*p, i);
             }
@@ -178,7 +178,7 @@ struct MultiDistanceTest
 
         static const double in2d[] = {0, 0, 0, 1, 0, 0, 0};
         const double* p = in2d;
-        for (Double2DArray::iterator iter = img2.begin(); iter != img2.end(); ++iter, ++p)
+        for(Double2DArray::iterator iter = img2.begin(); iter != img2.end(); ++iter, ++p)
         {
             *iter = *p;
         }
@@ -188,17 +188,17 @@ struct MultiDistanceTest
     {
         DoubleVolume dt(volume.shape()), desired(volume.shape());
         DoubleVecVolume vecDesired(volume.shape());
-        for (unsigned k = 0; k < pointslists.size(); ++k)
+        for(unsigned k = 0; k < pointslists.size(); ++k)
         {
             DoubleVolume::iterator i = desired.begin();
-            for (; i.isValid(); ++i)
+            for(; i.isValid(); ++i)
             {
                 UInt64 minDist = NumericTraits<UInt64>::max();
                 int nearest = -1;
-                for (unsigned j = 0; j < pointslists[k].size(); ++j)
+                for(unsigned j = 0; j < pointslists[k].size(); ++j)
                 {
                     UInt64 dist = squaredNorm(pointslists[k][j] - i.point());
-                    if (dist < minDist)
+                    if(dist < minDist)
                     {
                         minDist = dist;
                         nearest = j;
@@ -209,7 +209,7 @@ struct MultiDistanceTest
             }
 
             volume = 0.0;
-            for (unsigned j = 0; j < pointslists[k].size(); ++j)
+            for(unsigned j = 0; j < pointslists[k].size(); ++j)
                 volume[pointslists[k][j]] = 1;
 
             separableMultiDistSquared(volume, dt, true);
@@ -286,7 +286,7 @@ struct MultiDistanceTest
 
         int ref[] = {5, 4, 3, 2, 1, 0, 0, -1, -2, -3};
 
-        for (MultiCoordinateIterator<3> it(data.shape()); it.isValid(); ++it)
+        for(MultiCoordinateIterator<3> it(data.shape()); it.isValid(); ++it)
         {
             shouldEqual(res[*it][0], ref[(*it)[0]]);
             shouldEqual(res[*it][1], ref[(*it)[1]]);
@@ -300,17 +300,17 @@ struct MultiDistanceTest
         TinyVector<double, 3> pixelPitch(1.2, 1.0, 2.4);
 
         DoubleVolume res(volume.shape()), desired(volume.shape());
-        for (unsigned k = 0; k < pointslists.size(); ++k)
+        for(unsigned k = 0; k < pointslists.size(); ++k)
         {
             DoubleVolume::iterator i = desired.begin();
-            for (; i.isValid(); ++i)
+            for(; i.isValid(); ++i)
             {
                 double minDist = NumericTraits<double>::max();
                 //int nearest = -1;
-                for (unsigned j = 0; j < pointslists[k].size(); ++j)
+                for(unsigned j = 0; j < pointslists[k].size(); ++j)
                 {
                     double dist = squaredNorm(pixelPitch * (pointslists[k][j] - i.point()));
-                    if (dist < minDist)
+                    if(dist < minDist)
                     {
                         minDist = dist;
                         //nearest = j;
@@ -321,7 +321,7 @@ struct MultiDistanceTest
             }
 
             volume = 0.0;
-            for (unsigned j = 0; j < pointslists[k].size(); ++j)
+            for(unsigned j = 0; j < pointslists[k].size(); ++j)
                 volume[pointslists[k][j]] = 1;
 
             separableMultiDistSquared(volume, res, true, pixelPitch);
@@ -341,7 +341,7 @@ struct MultiDistanceTest
 
     void distanceTransform2DCompare()
     {
-        for (unsigned int k = 0; k < images.size(); ++k)
+        for(unsigned int k = 0; k < images.size(); ++k)
         {
             Image res_old(images[k]);
             ImageView img_array(Shape2(images[k].width(), images[k].height()), &images[k](0, 0));
@@ -444,7 +444,7 @@ struct BoundaryMultiDistanceTest
             Image::Accessor acc = images[0].accessor();
             const double* p = in;
 
-            for (; i != end; ++i, ++p)
+            for(; i != end; ++i, ++p)
             {
                 acc.set(*p, i);
             }
@@ -465,7 +465,7 @@ struct BoundaryMultiDistanceTest
             Image::Accessor acc = images[1].accessor();
             const unsigned char* p = in2;
 
-            for (; i != end; ++i, ++p)
+            for(; i != end; ++i, ++p)
             {
                 acc.set(*p, i);
             }
@@ -486,7 +486,7 @@ struct BoundaryMultiDistanceTest
             Image::Accessor acc = images[2].accessor();
             const unsigned char* p = in3;
 
-            for (; i != end; ++i, ++p)
+            for(; i != end; ++i, ++p)
             {
                 acc.set(*p, i);
             }
@@ -494,7 +494,7 @@ struct BoundaryMultiDistanceTest
 
         static const double in2d[] = {0, 0, 0, 1, 0, 0, 0};
         const double* p = in2d;
-        for (Double1DArray::iterator iter = img2.begin(); iter != img2.end(); ++iter, ++p)
+        for(Double1DArray::iterator iter = img2.begin(); iter != img2.end(); ++iter, ++p)
         {
             *iter = *p;
         }
@@ -823,7 +823,7 @@ struct EccentricityTest
             shouldEqual(centers.size(), 98);
 
             Point centers_ref[98];
-            for (int i = 0; i < 98; ++i)
+            for(int i = 0; i < 98; ++i)
             {
                 centers_ref[i] = Point(eccTrafo_centers[2 * i], eccTrafo_centers[2 * i + 1]);
             }
@@ -841,7 +841,7 @@ struct EccentricityTest
             shouldEqual(centers.size(), 221);
 
             Point3 centers_ref[221];
-            for (int i = 0; i < 221; ++i)
+            for(int i = 0; i < 221; ++i)
             {
                 centers_ref[i] = Point3(eccTrafo_volume_centers[3 * i], eccTrafo_volume_centers[3 * i + 1], eccTrafo_volume_centers[3 * i + 2]);
             }

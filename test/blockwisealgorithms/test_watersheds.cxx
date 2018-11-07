@@ -62,12 +62,12 @@ struct BlockwiseWatershedTest
         data_sets.push_back(Array(Shape(5)));
         data_sets.push_back(Array(Shape(997)));
         data_sets.push_back(Array(Shape(10000)));
-        for (decltype(data_sets.size()) i = 0; i != data_sets.size(); ++i)
+        for(decltype(data_sets.size()) i = 0; i != data_sets.size(); ++i)
         {
             fillRandom(data_sets[i].begin(), data_sets[i].end(), 3);
         }
 
-        for (decltype(data_sets.size()) i = 0; i != data_sets.size(); ++i)
+        for(decltype(data_sets.size()) i = 0; i != data_sets.size(); ++i)
         {
             const Array& data = data_sets[i];
 
@@ -84,9 +84,9 @@ struct BlockwiseWatershedTest
             LabelArray correct_labels(data.shape());
             size_t correct_label_number = watershedsMultiArray(data, correct_labels, neighborhood,
                                                                WatershedOptions().unionFind());
-            if (tested_label_number != correct_label_number ||
-                !equivalentLabels(tested_labels.begin(), tested_labels.end(),
-                                  correct_labels.begin(), correct_labels.end()))
+            if(tested_label_number != correct_label_number ||
+               !equivalentLabels(tested_labels.begin(), tested_labels.end(),
+                                 correct_labels.begin(), correct_labels.end()))
             {
                 ostringstream oss;
                 oss << "labeling not equivalent" << endl;
@@ -109,7 +109,7 @@ struct BlockwiseWatershedTest
         data_sets.push_back(Array(Shape(6)));
         data_sets.push_back(Array(Shape(1, 10, 100, 1)));
 
-        for (decltype(data_sets.size()) i = 0; i != data_sets.size(); ++i)
+        for(decltype(data_sets.size()) i = 0; i != data_sets.size(); ++i)
         {
             fillRandom(data_sets[i].begin(), data_sets[i].end(), 3);
         }
@@ -125,13 +125,13 @@ struct BlockwiseWatershedTest
         neighborhoods.push_back(DirectNeighborhood);
         neighborhoods.push_back(IndirectNeighborhood);
 
-        for (decltype(data_sets.size()) i = 0; i != data_sets.size(); ++i)
+        for(decltype(data_sets.size()) i = 0; i != data_sets.size(); ++i)
         {
             const Array& data = data_sets[i];
-            for (decltype(block_shapes.size()) j = 0; j != block_shapes.size(); ++j)
+            for(decltype(block_shapes.size()) j = 0; j != block_shapes.size(); ++j)
             {
                 const Shape& block_shape = block_shapes[j];
-                for (decltype(neighborhoods.size()) k = 0; k != neighborhoods.size(); ++k)
+                for(decltype(neighborhoods.size()) k = 0; k != neighborhoods.size(); ++k)
                 {
                     NeighborhoodType neighborhood = neighborhoods[k];
 
@@ -142,9 +142,9 @@ struct BlockwiseWatershedTest
                     LabelArray correct_labels(data.shape());
                     size_t correct_label_number = watershedsMultiArray(data, correct_labels, neighborhood,
                                                                        WatershedOptions().unionFind());
-                    if (tested_label_number != correct_label_number ||
-                        !equivalentLabels(tested_labels.begin(), tested_labels.end(),
-                                          correct_labels.begin(), correct_labels.end()))
+                    if(tested_label_number != correct_label_number ||
+                       !equivalentLabels(tested_labels.begin(), tested_labels.end(),
+                                         correct_labels.begin(), correct_labels.end()))
                     {
                         ostringstream oss;
                         oss << "labeling not equivalent" << endl;
@@ -152,15 +152,15 @@ struct BlockwiseWatershedTest
                         oss << "block shape: " << block_shape << endl;
                         oss << "neighborhood: " << neighborhood << endl;
                         oss << "data:" << endl;
-                        for (int i = 0; i != data.size(); ++i)
+                        for(int i = 0; i != data.size(); ++i)
                             oss << data[i] << " ";
                         oss << endl;
                         oss << "expected labels:" << endl;
-                        for (int i = 0; i != correct_labels.size(); ++i)
+                        for(int i = 0; i != correct_labels.size(); ++i)
                             oss << correct_labels[i] << " ";
                         oss << endl;
                         oss << "got" << endl;
-                        for (int i = 0; i != tested_labels.size(); ++i)
+                        for(int i = 0; i != tested_labels.size(); ++i)
                             oss << tested_labels[i] << " ";
                         oss << endl;
                         failTest(oss.str().c_str());

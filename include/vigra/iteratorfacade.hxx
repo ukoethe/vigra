@@ -49,19 +49,19 @@ namespace vigra
 class IteratorFacadeCoreAccess
 {
 public:
-    template<class F>
+    template <class F>
     static bool equal(const F& fa, const F& fb)
     {
         return fa.equal(fb);
     }
 
-    template<class F, class REFERENCE>
+    template <class F, class REFERENCE>
     static REFERENCE dereference(const F& f)
     {
         return f.dereference();
     }
 
-    template<class F>
+    template <class F>
     static void increment(F& f)
     {
         f.increment();
@@ -70,7 +70,7 @@ public:
 
 
 // see boost iterator facade
-template<class FACADE, class VALUE_TYPE, bool IS_CONST = true>
+template <class FACADE, class VALUE_TYPE, bool IS_CONST = true>
 class ForwardIteratorFacade
 {
 private:
@@ -125,7 +125,7 @@ private:
     }
 };
 
-template<class MAP>
+template <class MAP>
 class MapKeyIterator
     : public ForwardIteratorFacade<MapKeyIterator<MAP>, typename MAP::key_type, true>
 {
@@ -163,14 +163,14 @@ private:
     InternalIterator iter_;
 };
 
-template<class MAP>
+template <class MAP>
 inline MapKeyIterator<MAP>
 key_begin(MAP const& m)
 {
     return MapKeyIterator<MAP>(m.begin());
 }
 
-template<class MAP>
+template <class MAP>
 inline MapKeyIterator<MAP>
 key_end(MAP const& m)
 {

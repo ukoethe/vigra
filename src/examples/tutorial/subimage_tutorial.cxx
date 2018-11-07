@@ -9,7 +9,7 @@ using namespace vigra;
 int
 main(int argc, char** argv)
 {
-    if (argc != 3)
+    if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
@@ -23,7 +23,7 @@ main(int argc, char** argv)
         // file type is determined automatically
         ImageImportInfo info(argv[1]);
 
-        if (info.isGrayscale())
+        if(info.isGrayscale())
         {
             // read image from file
             MultiArray<2, UInt8> imageArray(info.shape());
@@ -60,7 +60,7 @@ main(int argc, char** argv)
             exportImage(subimage, ImageExportInfo(argv[2]));
         }
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         // catch any errors that might have occurred and print their reason
         std::cout << e.what() << std::endl;

@@ -151,30 +151,30 @@ public:
     {
         std::string res("AxisInfo: '");
         res += key_ + "' (type:";
-        if (isUnknown())
+        if(isUnknown())
         {
             res += " none";
         }
         else
         {
-            if (isChannel())
+            if(isChannel())
                 res += " Channels";
-            if (isSpatial())
+            if(isSpatial())
                 res += " Space";
-            if (isTemporal())
+            if(isTemporal())
                 res += " Time";
-            if (isAngular())
+            if(isAngular())
                 res += " Angle";
-            if (isFrequency())
+            if(isFrequency())
                 res += " Frequency";
         }
-        if (resolution_ > 0.0)
+        if(resolution_ > 0.0)
         {
             res += ", resolution=";
             res += asString(resolution_);
         }
         res += ")";
-        if (description_ != "")
+        if(description_ != "")
         {
             res += " ";
             res += description_;
@@ -185,7 +185,7 @@ public:
     AxisInfo toFrequencyDomain(unsigned int size = 0, int sign = 1) const
     {
         AxisType type;
-        if (sign == 1)
+        if(sign == 1)
         {
             vigra_precondition(!isFrequency(),
                                "AxisInfo::toFrequencyDomain(): axis is already in the Fourier domain.");
@@ -198,7 +198,7 @@ public:
             type = AxisType(~Frequency & flags_);
         }
         AxisInfo res(key(), type, 0.0, description_);
-        if (resolution_ > 0.0 && size > 0u)
+        if(resolution_ > 0.0 && size > 0u)
             res.resolution_ = 1.0 / (resolution_ * size);
         return res;
     }
@@ -362,9 +362,9 @@ public:
 
     AxisTags(std::string const& tags)
     {
-        for (std::string::size_type k = 0; k < tags.size(); ++k)
+        for(std::string::size_type k = 0; k < tags.size(); ++k)
         {
-            switch (tags[k])
+            switch(tags[k])
             {
                 case 'x':
                     push_back(AxisInfo::x());
@@ -385,7 +385,7 @@ public:
                     ++k;
                     vigra_precondition(k < tags.size(),
                                        "AxisTags(string): invalid input");
-                    switch (tags[k])
+                    switch(tags[k])
                     {
                         case 'x':
                             push_back(AxisInfo::fx());
@@ -417,9 +417,9 @@ public:
     {
         std::stringstream s;
         s << "{\n  \"axes\": [";
-        for (unsigned int k = 0; k < size(); ++k)
+        for(unsigned int k = 0; k < size(); ++k)
         {
-            if (k > 0)
+            if(k > 0)
                 s << ",";
             s << "\n";
             s << "    {\n";
@@ -441,8 +441,8 @@ public:
     int axisTypeCount(AxisInfo::AxisType type) const
     {
         int res = 0;
-        for (unsigned int k = 0; k < size(); ++k)
-            if (axes_[k].isType(type))
+        for(unsigned int k = 0; k < size(); ++k)
+            if(axes_[k].isType(type))
                 ++res;
         return res;
     }
@@ -450,9 +450,9 @@ public:
     std::string repr() const
     {
         std::string res;
-        if (size() > 0)
+        if(size() > 0)
             res += axes_[0].key();
-        for (unsigned int k = 1; k < size(); ++k)
+        for(unsigned int k = 1; k < size(); ++k)
         {
             res += " ";
             res += axes_[k].key();
@@ -468,7 +468,7 @@ public:
     AxisInfo& get(int k)
     {
         checkIndex(k);
-        if (k < 0)
+        if(k < 0)
             k += size();
         return axes_[k];
     }
@@ -481,7 +481,7 @@ public:
     AxisInfo const& get(int k) const
     {
         checkIndex(k);
-        if (k < 0)
+        if(k < 0)
             k += size();
         return axes_[k];
     }
@@ -494,7 +494,7 @@ public:
     void set(int k, AxisInfo const& info)
     {
         checkIndex(k);
-        if (k < 0)
+        if(k < 0)
             k += size();
         checkDuplicates(k, info);
         axes_[k] = info;
@@ -507,14 +507,14 @@ public:
 
     void insert(int k, AxisInfo const& i)
     {
-        if (k == (int)size())
+        if(k == (int)size())
         {
             push_back(i);
         }
         else
         {
             checkIndex(k);
-            if (k < 0)
+            if(k < 0)
                 k += size();
             checkDuplicates(size(), i);
             axes_.insert(axes_.begin() + k, i);
@@ -544,14 +544,14 @@ public:
     void dropChannelAxis()
     {
         int k = channelIndex();
-        if (k < (int)size())
+        if(k < (int)size())
             axes_.erase(axes_.begin() + k, axes_.begin() + k + 1);
     }
 
     int index(std::string const& key) const
     {
-        for (unsigned int k = 0; k < size(); ++k)
-            if (axes_[k].key() == key)
+        for(unsigned int k = 0; k < size(); ++k)
+            if(axes_[k].key() == key)
                 return k;
         return (int)size();
     }
@@ -609,7 +609,7 @@ public:
     void setChannelDescription(std::string const& description)
     {
         int k = channelIndex();
-        if (k < (int)size())
+        if(k < (int)size())
             axes_[k].setDescription(description);
     }
 
@@ -641,8 +641,8 @@ public:
     // FIXME: cache the results of these functions?
     int channelIndex() const
     {
-        for (unsigned int k = 0; k < size(); ++k)
-            if (axes_[k].isChannel())
+        for(unsigned int k = 0; k < size(); ++k)
+            if(axes_[k].isChannel())
                 return k;
         return (int)size();
     }
@@ -650,14 +650,14 @@ public:
     int innerNonchannelIndex() const
     {
         int k = 0;
-        for (; k < (int)size(); ++k)
-            if (!axes_[k].isChannel())
+        for(; k < (int)size(); ++k)
+            if(!axes_[k].isChannel())
                 break;
-        for (int i = k + 1; i < (int)size(); ++i)
+        for(int i = k + 1; i < (int)size(); ++i)
         {
-            if (axes_[i].isChannel())
+            if(axes_[i].isChannel())
                 continue;
-            if (axes_[i] < axes_[k])
+            if(axes_[i] < axes_[k])
                 k = i;
         }
         return k;
@@ -667,17 +667,17 @@ public:
     {
         checkIndex(i1);
         checkIndex(i2);
-        if (i1 < 0)
+        if(i1 < 0)
             i1 += size();
-        if (i2 < 0)
+        if(i2 < 0)
             i2 += size();
         std::swap(axes_[i1], axes_[i2]);
     }
 
-    template<class T>
+    template <class T>
     void transpose(ArrayVector<T> const& permutation)
     {
-        if (permutation.size() == 0)
+        if(permutation.size() == 0)
         {
             transpose();
         }
@@ -696,7 +696,7 @@ public:
         std::reverse(axes_.begin(), axes_.end());
     }
 
-    template<class T>
+    template <class T>
     void
     permutationToNormalOrder(ArrayVector<T>& permutation) const
     {
@@ -704,19 +704,19 @@ public:
         indexSort(axes_.begin(), axes_.end(), permutation.begin());
     }
 
-    template<class T>
+    template <class T>
     void
     permutationToNormalOrder(ArrayVector<T>& permutation, AxisInfo::AxisType types) const
     {
         ArrayVector<AxisInfo> matchingAxes;
-        for (int k = 0; k < (int)size(); ++k)
-            if (axes_[k].isType(types))
+        for(int k = 0; k < (int)size(); ++k)
+            if(axes_[k].isType(types))
                 matchingAxes.push_back(axes_[k]);
         permutation.resize(matchingAxes.size());
         indexSort(matchingAxes.begin(), matchingAxes.end(), permutation.begin());
     }
 
-    template<class T>
+    template <class T>
     void
     permutationFromNormalOrder(ArrayVector<T>& inverse_permutation) const
     {
@@ -726,7 +726,7 @@ public:
         indexSort(permutation.begin(), permutation.end(), inverse_permutation.begin());
     }
 
-    template<class T>
+    template <class T>
     void
     permutationFromNormalOrder(ArrayVector<T>& inverse_permutation, AxisInfo::AxisType types) const
     {
@@ -736,14 +736,14 @@ public:
         indexSort(permutation.begin(), permutation.end(), inverse_permutation.begin());
     }
 
-    template<class T>
+    template <class T>
     void permutationToNumpyOrder(ArrayVector<T>& permutation) const
     {
         permutationToNormalOrder(permutation);
         std::reverse(permutation.begin(), permutation.end());
     }
 
-    template<class T>
+    template <class T>
     void permutationFromNumpyOrder(ArrayVector<T>& inverse_permutation) const
     {
         ArrayVector<T> permutation;
@@ -752,21 +752,21 @@ public:
         indexSort(permutation.begin(), permutation.end(), inverse_permutation.begin());
     }
 
-    template<class T>
+    template <class T>
     void permutationToVigraOrder(ArrayVector<T>& permutation) const
     {
         permutation.resize(size());
         indexSort(axes_.begin(), axes_.end(), permutation.begin());
         int channel = channelIndex();
-        if (channel < (int)size())
+        if(channel < (int)size())
         {
-            for (int k = 1; k < (int)size(); ++k)
+            for(int k = 1; k < (int)size(); ++k)
                 permutation[k - 1] = permutation[k];
             permutation.back() = channel;
         }
     }
 
-    template<class T>
+    template <class T>
     void permutationFromVigraOrder(ArrayVector<T>& inverse_permutation) const
     {
         ArrayVector<T> permutation;
@@ -775,23 +775,23 @@ public:
         indexSort(permutation.begin(), permutation.end(), inverse_permutation.begin());
     }
 
-    template<class T>
+    template <class T>
     void permutationToOrder(ArrayVector<T>& permutation, std::string const& order) const
     {
-        if (order == "A")
+        if(order == "A")
         {
             permutation.resize(size());
             linearSequence(permutation.begin(), permutation.end());
         }
-        else if (order == "C")
+        else if(order == "C")
         {
             permutationToNumpyOrder(permutation);
         }
-        else if (order == "F")
+        else if(order == "F")
         {
             permutationToNormalOrder(permutation);
         }
-        else if (order == "V")
+        else if(order == "V")
         {
             permutationToVigraOrder(permutation);
         }
@@ -828,19 +828,19 @@ public:
 
     bool compatible(AxisTags const& other) const
     {
-        if (size() == 0 || other.size() == 0)
+        if(size() == 0 || other.size() == 0)
             return true;
-        if (size() != other.size())
+        if(size() != other.size())
             return false;
-        for (unsigned int k = 0; k < size(); ++k)
-            if (!axes_[k].compatible(other.axes_[k]))
+        for(unsigned int k = 0; k < size(); ++k)
+            if(!axes_[k].compatible(other.axes_[k]))
                 return false;
         return true;
     }
 
     bool operator==(AxisTags const& other) const
     {
-        if (size() != other.size())
+        if(size() != other.size())
             return false;
         return std::equal(axes_.begin(), axes_.end(), other.axes_.begin());
     }
@@ -859,17 +859,17 @@ protected:
 
     void checkDuplicates(int i, AxisInfo const& info)
     {
-        if (info.isChannel())
+        if(info.isChannel())
         {
-            for (int k = 0; k < (int)size(); ++k)
+            for(int k = 0; k < (int)size(); ++k)
             {
                 vigra_precondition(k == i || !axes_[k].isChannel(),
                                    "AxisTags::checkDuplicates(): can only have one channel axis.");
             }
         }
-        else if (!info.isUnknown())
+        else if(!info.isUnknown())
         {
-            for (int k = 0; k < (int)size(); ++k)
+            for(int k = 0; k < (int)size(); ++k)
             {
                 vigra_precondition(k == i || axes_[k].key() != info.key(),
                                    std::string("AxisTags::checkDuplicates(): axis key '" +

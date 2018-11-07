@@ -50,11 +50,11 @@
 // make sure that we use vigra/windows.h so that incompatibilities are fixed
 #include "windows.h"
 
-#if (_MSC_VER < 1100) // before VisualC++ 5.0
+#if(_MSC_VER < 1100) // before VisualC++ 5.0
 #error "Need VisualC++ 5.0, Service Pack 2, or later"
 #endif // _MSC_VER < 1100
 
-#if (_MSC_VER < 1300)
+#if(_MSC_VER < 1300)
 #define NO_TYPENAME // no 'typename' keyword
 #define TEMPLATE_COPY_CONSTRUCTOR_BUG
 #define NO_STL_MEMBER_TEMPLATES
@@ -66,7 +66,7 @@
 namespace std
 {
 
-template<class T>
+template <class T>
 const T&
 min(const T& x, const T& y)
 {
@@ -75,7 +75,7 @@ min(const T& x, const T& y)
                : x;
 }
 
-template<class T>
+template <class T>
 const T&
 max(const T& x, const T& y)
 {
@@ -136,18 +136,18 @@ abs(float v)
 //
 #define VIGRA_SAFE_STATIC(p, v) \
     0;                          \
-    while (p == 0)              \
+    while(p == 0)               \
     ::vigra::detail::safeStaticInit(&p, v)
 
 namespace vigra
 {
 namespace detail
 {
-template<class T>
+template <class T>
 inline void
 safeStaticInit(T** p, T* v)
 {
-    if (InterlockedCompareExchangePointer((PVOID*)p, v, 0) != 0)
+    if(InterlockedCompareExchangePointer((PVOID*)p, v, 0) != 0)
         delete v;
 }
 } // namespace detail
@@ -228,7 +228,7 @@ safeStaticInit(T** p, T* v)
 // Full C++11 support was achieved in clang-3.3,
 // but most support was available in 3.1 and 3.2
 #if __cplusplus >= 201103L
-#if (__clang_major__ < 3) || ((__clang_major__ == 3) && (__clang_minor__ < 3))
+#if(__clang_major__ < 3) || ((__clang_major__ == 3) && (__clang_minor__ < 3))
 #define VIGRA_SHARED_PTR_IN_TR1
 #define VIGRA_NO_UNIQUE_PTR
 #endif
@@ -268,7 +268,7 @@ safeStaticInit(T** p, T* v)
 #if _COMPILER_VERSION < 720
 #error "Need SGI C++ 7.2 or later"
 #endif
-#if (_COMPILER_VERSION == 720) || (_COMPILER_VERSION == 721)
+#if(_COMPILER_VERSION == 720) || (_COMPILER_VERSION == 721)
 #define SPECIAL_STDEXCEPTION_DEFINITION_NEEDED
 
 namespace vigra

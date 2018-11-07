@@ -53,15 +53,15 @@ namespace vigra
 {
 
 
-template<class Graph, class WeightType,
-         class EdgeMap, class Shape>
+template <class Graph, class WeightType,
+          class EdgeMap, class Shape>
 TinyVector<MultiArrayIndex, Shape::static_size>
 eccentricityCentersOneRegionImpl(ShortestPathDijkstra<Graph, WeightType>& pathFinder,
                                  const EdgeMap& weights, WeightType maxWeight,
                                  Shape anchor, Shape const& start, Shape const& stop)
 {
     int maxIterations = 4;
-    for (int k = 0; k < maxIterations; ++k)
+    for(int k = 0; k < maxIterations; ++k)
     {
         pathFinder.run(start, stop, weights, anchor, lemon::INVALID, maxWeight);
         anchor = pathFinder.target();
@@ -70,13 +70,13 @@ eccentricityCentersOneRegionImpl(ShortestPathDijkstra<Graph, WeightType>& pathFi
 
     Polygon<TinyVector<float, Shape::static_size>> path;
     path.push_back_unsafe(anchor);
-    while (pathFinder.predecessors()[path.back()] != path.back())
+    while(pathFinder.predecessors()[path.back()] != path.back())
         path.push_back_unsafe(pathFinder.predecessors()[path.back()]);
     return path[roundi(path.arcLengthQuantile(0.5))];
 }
 
-template<unsigned int N, class T, class S, class Graph,
-         class ACCUMULATOR, class DIJKSTRA, class Array>
+template <unsigned int N, class T, class S, class Graph,
+          class ACCUMULATOR, class DIJKSTRA, class Array>
 void
 eccentricityCentersImpl(const MultiArrayView<N, T, S>& src,
                         Graph const& g,
@@ -101,11 +101,11 @@ eccentricityCentersImpl(const MultiArrayView<N, T, S>& src,
         MultiArray<N, WeightType> distances(src.shape());
         boundaryMultiDistance(src, distances, true);
         extractFeatures(distances, src, a);
-        for (EdgeIt edge(g); edge != lemon::INVALID; ++edge)
+        for(EdgeIt edge(g); edge != lemon::INVALID; ++edge)
         {
             const Node u(g.u(*edge)), v(g.v(*edge));
             const T label = src[u];
-            if (label != src[v])
+            if(label != src[v])
             {
                 weights[*edge] = NumericTraits<WeightType>::max();
             }
@@ -123,9 +123,9 @@ eccentricityCentersImpl(const MultiArrayView<N, T, S>& src,
     T maxLabel = r.maxRegionLabel();
     centers.resize(maxLabel + 1);
 
-    for (T i = 0; i <= maxLabel; ++i)
+    for(T i = 0; i <= maxLabel; ++i)
     {
-        if (get<Count>(r, i) == 0)
+        if(get<Count>(r, i) == 0)
             continue;
         centers[i] = eccentricityCentersOneRegionImpl(pathFinder, weights, maxWeight,
                                                       get<RegionAnchor>(r, i),
@@ -170,7 +170,7 @@ eccentricityCentersImpl(const MultiArrayView<N, T, S>& src,
         eccentricityCenters(labels, centers);
         \endcode
     */
-template<unsigned int N, class T, class S, class Array>
+template <unsigned int N, class T, class S, class Array>
 void
 eccentricityCenters(const MultiArrayView<N, T, S>& src,
                     Array& centers)
@@ -233,7 +233,7 @@ eccentricityCenters(const MultiArrayView<N, T, S>& src,
         eccentricityTransformOnLabels(labels, dest, centers);
         \endcode
     */
-template<unsigned int N, class T, class S, class Array>
+template <unsigned int N, class T, class S, class Array>
 void
 eccentricityTransformOnLabels(MultiArrayView<N, T> const& src,
                               MultiArrayView<N, S> dest,
@@ -262,24 +262,24 @@ eccentricityTransformOnLabels(MultiArrayView<N, T> const& src,
     eccentricityCentersImpl(src, g, a, pathFinder, centers);
 
     typename Graph::template EdgeMap<WeightType> weights(g);
-    for (EdgeIt edge(g); edge != lemon::INVALID; ++edge)
+    for(EdgeIt edge(g); edge != lemon::INVALID; ++edge)
     {
         const Node u(g.u(*edge)), v(g.v(*edge));
         const T label = src[u];
-        if (label != src[v])
+        if(label != src[v])
             weights[*edge] = NumericTraits<WeightType>::max();
         else
             weights[*edge] = norm(u - v);
     }
     ArrayVector<Shape> filtered_centers;
-    for (T i = 0; i <= a.maxRegionLabel(); ++i)
-        if (get<Count>(a, i) > 0)
+    for(T i = 0; i <= a.maxRegionLabel(); ++i)
+        if(get<Count>(a, i) > 0)
             filtered_centers.push_back(centers[i]);
     pathFinder.runMultiSource(weights, filtered_centers.begin(), filtered_centers.end());
     dest = pathFinder.distances();
 }
 
-template<unsigned int N, class T, class S>
+template <unsigned int N, class T, class S>
 inline void
 eccentricityTransformOnLabels(MultiArrayView<N, T> const& src,
                               MultiArrayView<N, S> dest)

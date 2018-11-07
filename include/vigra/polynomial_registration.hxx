@@ -73,9 +73,9 @@ polynomialWarpWeights(double x, double y, unsigned int polynom_order)
 
     unsigned int weight_idx = 0;
 
-    for (unsigned int order = 0; order <= polynom_order; order++)
+    for(unsigned int order = 0; order <= polynom_order; order++)
     {
-        for (unsigned int i = 0; i <= order; i++, weight_idx++)
+        for(unsigned int i = 0; i <= order; i++, weight_idx++)
         {
             weights[weight_idx] = pow(x, (double)order - i) * pow(y, (double)i);
         }
@@ -109,9 +109,9 @@ polynomialWarpWeights(double x, double y, unsigned int polynom_order)
     Note that the order of the polynom's factors is directly influenced by the
     \ref polynomialWarpWeights() function and follows the intuitive scheme.
 */
-template<int PolynomOrder,
-         class SrcPointIterator,
-         class DestPointIterator>
+template <int PolynomOrder,
+          class SrcPointIterator,
+          class DestPointIterator>
 linalg::TemporaryMatrix<double>
 polynomialMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s_end,
                                           DestPointIterator d)
@@ -122,11 +122,11 @@ polynomialMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
     vigra::Matrix<double> A(point_count, poly_count), b1(point_count, 1), res1(poly_count, 1), b2(point_count, 1), res2(poly_count, 1);
     std::vector<double> weights;
 
-    for (int i = 0; i < point_count; ++i, ++s, ++d)
+    for(int i = 0; i < point_count; ++i, ++s, ++d)
     {
         weights = polynomialWarpWeights((*d)[0], (*d)[1], PolynomOrder);
 
-        for (int c = 0; c < poly_count; c++)
+        for(int c = 0; c < poly_count; c++)
         {
             A(i, c) = weights[c];
         }
@@ -135,12 +135,12 @@ polynomialMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
         b2(i, 0) = (*s)[1];
     }
 
-    if (!vigra::linearSolve(A, b1, res1) || !vigra::linearSolve(A, b2, res2))
+    if(!vigra::linearSolve(A, b1, res1) || !vigra::linearSolve(A, b2, res2))
         vigra_fail("polynomialMatrix2DFromCorrespondingPoints(): singular solution matrix.");
 
     vigra::Matrix<double> res(poly_count, 2);
 
-    for (int c = 0; c < poly_count; c++)
+    for(int c = 0; c < poly_count; c++)
     {
         res(c, 0) = res1(c, 0);
         res(c, 1) = res2(c, 0);
@@ -204,12 +204,12 @@ polynomialMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
     \endcode
     \deprecatedEnd
  */
-doxygen_overloaded_function(template<...> void polynomialWarpImage)
+doxygen_overloaded_function(template <...> void polynomialWarpImage)
 
-    template<int PolynomOrder,
-             int ORDER, class T,
-             class DestIterator, class DestAccessor,
-             class C>
+    template <int PolynomOrder,
+              int ORDER, class T,
+              class DestIterator, class DestAccessor,
+              class C>
     void polynomialWarpImage(SplineImageView<ORDER, T> const& src,
                              DestIterator dul, DestIterator dlr, DestAccessor dest,
                              MultiArrayView<2, double, C> const& polynomialMatrix)
@@ -224,32 +224,32 @@ doxygen_overloaded_function(template<...> void polynomialWarpImage)
 
     std::vector<double> weights(poly_count);
 
-    for (double y = 0.0; y < h; ++y, ++dul.y)
+    for(double y = 0.0; y < h; ++y, ++dul.y)
     {
         typename DestIterator::row_iterator rd = dul.rowIterator();
-        for (double x = 0.0; x < w; ++x, ++rd)
+        for(double x = 0.0; x < w; ++x, ++rd)
         {
             weights = polynomialWarpWeights(x, y, PolynomOrder);
 
             double sx = 0;
             double sy = 0;
 
-            for (int c = 0; c < poly_count; c++)
+            for(int c = 0; c < poly_count; c++)
             {
                 sx += weights[c] * polynomialMatrix(c, 0);
                 sy += weights[c] * polynomialMatrix(c, 1);
             }
 
-            if (src.isInside(sx, sy))
+            if(src.isInside(sx, sy))
                 dest.set(src(sx, sy), rd);
         }
     }
 }
 
-template<int PolynomOrder,
-         int ORDER, class T,
-         class DestIterator, class DestAccessor,
-         class C>
+template <int PolynomOrder,
+          int ORDER, class T,
+          class DestIterator, class DestAccessor,
+          class C>
 inline void
 polynomialWarpImage(SplineImageView<ORDER, T> const& src,
                     triple<DestIterator, DestIterator, DestAccessor> dest,
@@ -259,10 +259,10 @@ polynomialWarpImage(SplineImageView<ORDER, T> const& src,
 }
 
 
-template<int PolynomOrder,
-         int ORDER, class T,
-         class T2, class S2,
-         class C>
+template <int PolynomOrder,
+          int ORDER, class T,
+          class T2, class S2,
+          class C>
 inline void
 polynomialWarpImage(SplineImageView<ORDER, T> const& src,
                     MultiArrayView<2, T2, S2> dest,

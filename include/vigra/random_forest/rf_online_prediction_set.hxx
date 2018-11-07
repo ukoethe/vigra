@@ -5,7 +5,7 @@
 namespace vigra
 {
 
-template<class T>
+template <class T>
 struct SampleRange
 {
     SampleRange(int start, int end, int num_features)
@@ -27,16 +27,16 @@ struct SampleRange
     }
 };
 
-template<class T>
+template <class T>
 class OnlinePredictionSet
 {
 public:
-    template<class U>
+    template <class U>
     OnlinePredictionSet(MultiArrayView<2, T, U>& features, int num_sets)
     {
         this->features = features;
         std::vector<int> init(features.shape(0));
-        for (unsigned int i = 0; i < init.size(); ++i)
+        for(unsigned int i = 0; i < init.size(); ++i)
             init[i] = i;
         indices.resize(num_sets, init);
         std::set<SampleRange<T>> set_init;
@@ -48,9 +48,9 @@ public:
     int get_worsed_tree()
     {
         int result = 0;
-        for (unsigned int i = 0; i < cumulativePredTime.size(); ++i)
+        for(unsigned int i = 0; i < cumulativePredTime.size(); ++i)
         {
-            if (cumulativePredTime[i] > cumulativePredTime[result])
+            if(cumulativePredTime[i] > cumulativePredTime[result])
             {
                 result = i;
             }

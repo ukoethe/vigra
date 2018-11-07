@@ -59,7 +59,7 @@ namespace vigra
  * to care.... - or need some sort of vague new preprocessor.  
  * new preprocessor ( Soft labels or whatever)
  */
-template<class Tag, class LabelType, class T1, class C1, class T2, class C2>
+template <class Tag, class LabelType, class T1, class C1, class T2, class C2>
 class Processor;
 
 namespace detail
@@ -69,13 +69,13 @@ namespace detail
      * This function analyses the options struct and calculates the real 
      * values needed for the current problem (data)
      */
-template<class T>
+template <class T>
 void
 fill_external_parameters(RandomForestOptions const& options,
                          ProblemSpec<T>& ext_param)
 {
     // set correct value for mtry
-    switch (options.mtry_switch_)
+    switch(options.mtry_switch_)
     {
         case RF_SQRT:
             ext_param.actual_mtry_ =
@@ -99,7 +99,7 @@ fill_external_parameters(RandomForestOptions const& options,
                 options.mtry_;
     }
     // set correct value for msample
-    switch (options.training_set_calc_switch_)
+    switch(options.training_set_calc_switch_)
     {
         case RF_CONST:
             ext_param.actual_msample_ =
@@ -121,30 +121,30 @@ fill_external_parameters(RandomForestOptions const& options,
 
 /* Returns true if MultiArray contains NaNs
      */
-template<unsigned int N, class T, class C>
+template <unsigned int N, class T, class C>
 bool
 contains_nan(MultiArrayView<N, T, C> const& in)
 {
     typedef typename MultiArrayView<N, T, C>::const_iterator Iter;
     Iter i = in.begin(), end = in.end();
-    for (; i != end; ++i)
-        if (isnan(NumericTraits<T>::toRealPromote(*i)))
+    for(; i != end; ++i)
+        if(isnan(NumericTraits<T>::toRealPromote(*i)))
             return true;
     return false;
 }
 
 /* Returns true if MultiArray contains Infs
      */
-template<unsigned int N, class T, class C>
+template <unsigned int N, class T, class C>
 bool
 contains_inf(MultiArrayView<N, T, C> const& in)
 {
-    if (!std::numeric_limits<T>::has_infinity)
+    if(!std::numeric_limits<T>::has_infinity)
         return false;
     typedef typename MultiArrayView<N, T, C>::const_iterator Iter;
     Iter i = in.begin(), end = in.end();
-    for (; i != end; ++i)
-        if (abs(*i) == std::numeric_limits<T>::infinity())
+    for(; i != end; ++i)
+        if(abs(*i) == std::numeric_limits<T>::infinity())
             return true;
     return false;
 }
@@ -157,7 +157,7 @@ contains_inf(MultiArrayView<N, T, C> const& in)
  * This class converts the labels int Integral labels which are used by the 
  * standard split functor to address memory in the node objects.
  */
-template<class LabelType, class T1, class C1, class T2, class C2>
+template <class LabelType, class T1, class C1, class T2, class C2>
 class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
 {
 public:
@@ -169,7 +169,7 @@ public:
     MultiArray<2, LabelInt> intLabels_;
     MultiArrayView<2, LabelInt> strata_;
 
-    template<class T>
+    template <class T>
     Processor(MultiArrayView<2, T1, C1> const& features,
               MultiArrayView<2, T2, C2> const& response,
               RandomForestOptions& options,
@@ -192,19 +192,19 @@ public:
         intLabels_.reshape(response.shape());
 
         //get the class labels
-        if (ext_param.class_count_ == 0)
+        if(ext_param.class_count_ == 0)
         {
             // fill up a map with the current labels and then create the
             // integral labels.
             std::set<T2> labelToInt;
-            for (MultiArrayIndex k = 0; k < features.shape(0); ++k)
+            for(MultiArrayIndex k = 0; k < features.shape(0); ++k)
                 labelToInt.insert(response(k, 0));
             std::vector<T2> tmp_(labelToInt.begin(), labelToInt.end());
             ext_param.classes_(tmp_.begin(), tmp_.end());
         }
-        for (MultiArrayIndex k = 0; k < features.shape(0); ++k)
+        for(MultiArrayIndex k = 0; k < features.shape(0); ++k)
         {
-            if (std::find(ext_param.classes.begin(), ext_param.classes.end(), response(k, 0)) == ext_param.classes.end())
+            if(std::find(ext_param.classes.begin(), ext_param.classes.end(), response(k, 0)) == ext_param.classes.end())
             {
                 throw std::runtime_error("RandomForest(): invalid label in training data.");
             }
@@ -212,7 +212,7 @@ public:
                 intLabels_(k, 0) = std::find(ext_param.classes.begin(), ext_param.classes.end(), response(k, 0)) - ext_param.classes.begin();
         }
         // set class weights
-        if (ext_param.class_weights_.size() == 0)
+        if(ext_param.class_weights_.size() == 0)
         {
             ArrayVector<T2>
                 tmp(static_cast<std::size_t>(ext_param.class_count_),
@@ -261,7 +261,7 @@ public:
 /** Regression Preprocessor - This basically does not do anything with the
  * data.
  */
-template<class LabelType, class T1, class C1, class T2, class C2>
+template <class LabelType, class T1, class C1, class T2, class C2>
 class Processor<RegressionTag, LabelType, T1, C1, T2, C2>
 {
 public:
@@ -276,7 +276,7 @@ public:
     bool strata_filled;
 
     // copy the views.
-    template<class T>
+    template <class T>
     Processor(MultiArrayView<2, T1, C1> features,
               MultiArrayView<2, T2, C2> response,
               RandomForestOptions const& options,

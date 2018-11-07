@@ -41,8 +41,12 @@ AlignOperands: true
 #AlwaysBreakTemplateDeclarations: MultiLine
 # Put the return type on a new line for top-level definitions:
 AlwaysBreakAfterReturnType: TopLevelDefinitions
-# Remove spaces after the "template" keyword:
-SpaceAfterTemplateKeyword: false
+# Add a space after the "template" keyword:
+SpaceAfterTemplateKeyword: true
+# Remove spaces before all opening parentheses (i.e. after if, for, etc)
+SpaceBeforeParens: Never
+# This will be added with clang-format 8.0:
+#SpaceBeforeRangeBasedForLoopColon: false
 # Break constructor initializers before colon and after commas. Example:
 #     Constructor()
 #         : initializer1(),

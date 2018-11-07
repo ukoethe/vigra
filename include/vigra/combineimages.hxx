@@ -42,7 +42,6 @@
 #include "numerictraits.hxx"
 #include "rgbvalue.hxx"
 #include "utilities.hxx"
-#include "rgbvalue.hxx"
 
 #include <cmath>
 
@@ -62,9 +61,9 @@ namespace vigra
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator1, class SrcAccessor1,
-         class SrcIterator2, class SrcAccessor2,
-         class DestIterator, class DestAccessor, class Functor>
+template <class SrcIterator1, class SrcAccessor1,
+          class SrcIterator2, class SrcAccessor2,
+          class DestIterator, class DestAccessor, class Functor>
 void
 combineTwoLines(SrcIterator1 s1,
                 SrcIterator1 s1end, SrcAccessor1 src1,
@@ -72,14 +71,14 @@ combineTwoLines(SrcIterator1 s1,
                 DestIterator d, DestAccessor dest,
                 Functor const& f)
 {
-    for (; s1 != s1end; ++s1, ++s2, ++d)
+    for(; s1 != s1end; ++s1, ++s2, ++d)
         dest.set(f(src1(s1), src2(s2)), d);
 }
 
-template<class SrcIterator1, class SrcAccessor1,
-         class SrcIterator2, class SrcAccessor2,
-         class MaskIterator, class MaskAccessor,
-         class DestIterator, class DestAccessor, class Functor>
+template <class SrcIterator1, class SrcAccessor1,
+          class SrcIterator2, class SrcAccessor2,
+          class MaskIterator, class MaskAccessor,
+          class DestIterator, class DestAccessor, class Functor>
 void
 combineTwoLinesIf(SrcIterator1 s1,
                   SrcIterator1 s1end, SrcAccessor1 src1,
@@ -88,15 +87,15 @@ combineTwoLinesIf(SrcIterator1 s1,
                   DestIterator d, DestAccessor dest,
                   Functor const& f)
 {
-    for (; s1 != s1end; ++s1, ++s2, ++m, ++d)
-        if (mask(m))
+    for(; s1 != s1end; ++s1, ++s2, ++m, ++d)
+        if(mask(m))
             dest.set(f(src1(s1), src2(s2)), d);
 }
 
-template<class SrcIterator1, class SrcAccessor1,
-         class SrcIterator2, class SrcAccessor2,
-         class SrcIterator3, class SrcAccessor3,
-         class DestIterator, class DestAccessor, class Functor>
+template <class SrcIterator1, class SrcAccessor1,
+          class SrcIterator2, class SrcAccessor2,
+          class SrcIterator3, class SrcAccessor3,
+          class DestIterator, class DestAccessor, class Functor>
 void
 combineThreeLines(SrcIterator1 s1,
                   SrcIterator1 s1end, SrcAccessor1 src1,
@@ -105,7 +104,7 @@ combineThreeLines(SrcIterator1 s1,
                   DestIterator d, DestAccessor dest,
                   Functor const& f)
 {
-    for (; s1 != s1end; ++s1, ++s2, ++s3, ++d)
+    for(; s1 != s1end; ++s1, ++s2, ++s3, ++d)
         dest.set(f(src1(s1), src2(s2), src3(s3)), d);
 }
 
@@ -229,12 +228,12 @@ combineThreeLines(SrcIterator1 s1,
     
     \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
-doxygen_overloaded_function(template<...> void combineTwoImages)
+doxygen_overloaded_function(template <...> void combineTwoImages)
 
-    template<class SrcImageIterator1, class SrcAccessor1,
-             class SrcImageIterator2, class SrcAccessor2,
-             class DestImageIterator, class DestAccessor,
-             class Functor>
+    template <class SrcImageIterator1, class SrcAccessor1,
+              class SrcImageIterator2, class SrcAccessor2,
+              class DestImageIterator, class DestAccessor,
+              class Functor>
     void combineTwoImages(SrcImageIterator1 src1_upperleft,
                           SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
                           SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
@@ -243,8 +242,8 @@ doxygen_overloaded_function(template<...> void combineTwoImages)
 {
     int w = src1_lowerright.x - src1_upperleft.x;
 
-    for (; src1_upperleft.y < src1_lowerright.y;
-         ++src1_upperleft.y, ++src2_upperleft.y, ++dest_upperleft.y)
+    for(; src1_upperleft.y < src1_lowerright.y;
+        ++src1_upperleft.y, ++src2_upperleft.y, ++dest_upperleft.y)
     {
         combineTwoLines(src1_upperleft.rowIterator(),
                         src1_upperleft.rowIterator() + w, sa1,
@@ -253,10 +252,10 @@ doxygen_overloaded_function(template<...> void combineTwoImages)
     }
 }
 
-template<class SrcImageIterator1, class SrcAccessor1,
-         class SrcImageIterator2, class SrcAccessor2,
-         class DestImageIterator, class DestAccessor,
-         class Functor>
+template <class SrcImageIterator1, class SrcAccessor1,
+          class SrcImageIterator2, class SrcAccessor2,
+          class DestImageIterator, class DestAccessor,
+          class Functor>
 inline void
 combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
                  pair<SrcImageIterator2, SrcAccessor2> src2,
@@ -268,10 +267,10 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
                      dest.first, dest.second, f);
 }
 
-template<class T11, class S11,
-         class T12, class S12,
-         class T2, class S2,
-         class Functor>
+template <class T11, class S11,
+          class T12, class S12,
+          class T2, class S2,
+          class Functor>
 inline void
     combineTwoImages(MultiArrayView<2, T11, S11> const& src1,
                      MultiArrayView<2, T12, S12> const& src2,
@@ -416,13 +415,13 @@ inline void
     
     \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
-doxygen_overloaded_function(template<...> void combineTwoImagesIf)
+doxygen_overloaded_function(template <...> void combineTwoImagesIf)
 
-    template<class SrcImageIterator1, class SrcAccessor1,
-             class SrcImageIterator2, class SrcAccessor2,
-             class MaskImageIterator, class MaskAccessor,
-             class DestImageIterator, class DestAccessor,
-             class Functor>
+    template <class SrcImageIterator1, class SrcAccessor1,
+              class SrcImageIterator2, class SrcAccessor2,
+              class MaskImageIterator, class MaskAccessor,
+              class DestImageIterator, class DestAccessor,
+              class Functor>
     void combineTwoImagesIf(SrcImageIterator1 src1_upperleft,
                             SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
                             SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
@@ -432,9 +431,9 @@ doxygen_overloaded_function(template<...> void combineTwoImagesIf)
 {
     int w = src1_lowerright.x - src1_upperleft.x;
 
-    for (; src1_upperleft.y < src1_lowerright.y;
-         ++src1_upperleft.y, ++src2_upperleft.y,
-         ++dest_upperleft.y, ++mask_upperleft.y)
+    for(; src1_upperleft.y < src1_lowerright.y;
+        ++src1_upperleft.y, ++src2_upperleft.y,
+        ++dest_upperleft.y, ++mask_upperleft.y)
     {
         combineTwoLinesIf(src1_upperleft.rowIterator(),
                           src1_upperleft.rowIterator() + w, sa1,
@@ -444,11 +443,11 @@ doxygen_overloaded_function(template<...> void combineTwoImagesIf)
     }
 }
 
-template<class SrcImageIterator1, class SrcAccessor1,
-         class SrcImageIterator2, class SrcAccessor2,
-         class MaskImageIterator, class MaskAccessor,
-         class DestImageIterator, class DestAccessor,
-         class Functor>
+template <class SrcImageIterator1, class SrcAccessor1,
+          class SrcImageIterator2, class SrcAccessor2,
+          class MaskImageIterator, class MaskAccessor,
+          class DestImageIterator, class DestAccessor,
+          class Functor>
 inline void
 combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
                    pair<SrcImageIterator2, SrcAccessor2> src2,
@@ -462,11 +461,11 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
                        dest.first, dest.second, f);
 }
 
-template<class T11, class S11,
-         class T12, class S12,
-         class TM, class SM,
-         class T2, class S2,
-         class Functor>
+template <class T11, class S11,
+          class T12, class S12,
+          class TM, class SM,
+          class T2, class S2,
+          class Functor>
 inline void
     combineTwoImagesIf(MultiArrayView<2, T11, S11> const& src1,
                        MultiArrayView<2, T12, S12> const& src2,
@@ -614,13 +613,13 @@ inline void
     
     \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
-doxygen_overloaded_function(template<...> void combineThreeImages)
+doxygen_overloaded_function(template <...> void combineThreeImages)
 
-    template<class SrcImageIterator1, class SrcAccessor1,
-             class SrcImageIterator2, class SrcAccessor2,
-             class SrcImageIterator3, class SrcAccessor3,
-             class DestImageIterator, class DestAccessor,
-             class Functor>
+    template <class SrcImageIterator1, class SrcAccessor1,
+              class SrcImageIterator2, class SrcAccessor2,
+              class SrcImageIterator3, class SrcAccessor3,
+              class DestImageIterator, class DestAccessor,
+              class Functor>
     void combineThreeImages(SrcImageIterator1 src1_upperleft,
                             SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
                             SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
@@ -630,9 +629,9 @@ doxygen_overloaded_function(template<...> void combineThreeImages)
 {
     int w = src1_lowerright.x - src1_upperleft.x;
 
-    for (; src1_upperleft.y < src1_lowerright.y;
-         ++src1_upperleft.y, ++src2_upperleft.y, ++src3_upperleft.y,
-         ++dest_upperleft.y)
+    for(; src1_upperleft.y < src1_lowerright.y;
+        ++src1_upperleft.y, ++src2_upperleft.y, ++src3_upperleft.y,
+        ++dest_upperleft.y)
     {
         combineThreeLines(src1_upperleft.rowIterator(),
                           src1_upperleft.rowIterator() + w, sa1,
@@ -642,11 +641,11 @@ doxygen_overloaded_function(template<...> void combineThreeImages)
     }
 }
 
-template<class SrcImageIterator1, class SrcAccessor1,
-         class SrcImageIterator2, class SrcAccessor2,
-         class SrcImageIterator3, class SrcAccessor3,
-         class DestImageIterator, class DestAccessor,
-         class Functor>
+template <class SrcImageIterator1, class SrcAccessor1,
+          class SrcImageIterator2, class SrcAccessor2,
+          class SrcImageIterator3, class SrcAccessor3,
+          class DestImageIterator, class DestAccessor,
+          class Functor>
 inline void
 combineThreeImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
                    pair<SrcImageIterator2, SrcAccessor2> src2,
@@ -660,11 +659,11 @@ combineThreeImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
                        dest.first, dest.second, f);
 }
 
-template<class T11, class S11,
-         class T12, class S12,
-         class T13, class S13,
-         class T2, class S2,
-         class Functor>
+template <class T11, class S11,
+          class T12, class S12,
+          class T13, class S13,
+          class T2, class S2,
+          class Functor>
 inline void
     combineThreeImages(MultiArrayView<2, T11, S11> const& src1,
                        MultiArrayView<2, T12, S12> const& src2,
@@ -705,7 +704,7 @@ inline void
     
     <tt>FunctorTraits::isBinaryFunctor</tt> are true (<tt>VigraTrueType</tt>)    
 */
-template<class ValueType>
+template <class ValueType>
 class MagnitudeFunctor
 {
 public:
@@ -734,7 +733,7 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<MagnitudeFunctor<T>>
     : public FunctorTraitsBase<MagnitudeFunctor<T>>
 {
@@ -756,7 +755,7 @@ public:
     
     <tt>FunctorTraits::isBinaryFunctor</tt> are true (<tt>VigraTrueType</tt>)    
 */
-template<class ValueType>
+template <class ValueType>
 class RGBGradientMagnitudeFunctor
 {
 public:
@@ -796,7 +795,7 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<RGBGradientMagnitudeFunctor<T>>
     : public FunctorTraitsBase<RGBGradientMagnitudeFunctor<T>>
 {

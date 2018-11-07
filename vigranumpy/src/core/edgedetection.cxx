@@ -50,7 +50,7 @@ namespace vigra
 double
 Edgel__getitem__(Edgel const& e, unsigned int i)
 {
-    if (i > 1)
+    if(i > 1)
     {
         PyErr_SetString(PyExc_IndexError,
                         "Edgel.__getitem__(): index out of bounds.");
@@ -62,13 +62,13 @@ Edgel__getitem__(Edgel const& e, unsigned int i)
 void
 Edgel__setitem__(Edgel& e, unsigned int i, double v)
 {
-    if (i > 1)
+    if(i > 1)
     {
         PyErr_SetString(PyExc_IndexError,
                         "Edgel.__setitem__(): index out of bounds.");
         python::throw_error_already_set();
     }
-    if (i == 0)
+    if(i == 0)
         e.x = Edgel::value_type(v);
     else
         e.y = Edgel::value_type(v);
@@ -89,7 +89,7 @@ Edgel__repr__(Edgel const& e)
     return pythonFromData(s.str().c_str());
 }
 
-template<class PixelType>
+template <class PixelType>
 python::list
     pythonFindEdgelsFromGrad(NumpyArray<2, TinyVector<PixelType, 2>> grad,
                              double threshold)
@@ -101,15 +101,15 @@ python::list
     }
 
     python::list pyEdgels;
-    for (unsigned int i = 0; i < edgels.size(); ++i)
+    for(unsigned int i = 0; i < edgels.size(); ++i)
     {
-        if (edgels[i].strength >= threshold)
+        if(edgels[i].strength >= threshold)
             pyEdgels.append(edgels[i]);
     }
     return pyEdgels;
 }
 
-template<class PixelType>
+template <class PixelType>
 python::list
     pythonFindEdgels(NumpyArray<2, Singleband<PixelType>> image,
                      double scale, double threshold)
@@ -121,15 +121,15 @@ python::list
     }
 
     python::list pyEdgels;
-    for (unsigned int i = 0; i < edgels.size(); ++i)
+    for(unsigned int i = 0; i < edgels.size(); ++i)
     {
-        if (edgels[i].strength >= threshold)
+        if(edgels[i].strength >= threshold)
             pyEdgels.append(edgels[i]);
     }
     return pyEdgels;
 }
 
-template<class PixelType>
+template <class PixelType>
 python::list
     pythonFindEdgels3x3FromGrad(NumpyArray<2, TinyVector<PixelType, 2>> grad,
                                 double threshold)
@@ -141,15 +141,15 @@ python::list
     }
 
     python::list pyEdgels;
-    for (unsigned int i = 0; i < edgels.size(); ++i)
+    for(unsigned int i = 0; i < edgels.size(); ++i)
     {
-        if (edgels[i].strength >= threshold)
+        if(edgels[i].strength >= threshold)
             pyEdgels.append(edgels[i]);
     }
     return pyEdgels;
 }
 
-template<class PixelType>
+template <class PixelType>
 python::list
     pythonFindEdgels3x3(NumpyArray<2, Singleband<PixelType>> image,
                         double scale, double threshold)
@@ -160,15 +160,15 @@ python::list
         cannyEdgelList3x3(srcImageRange(image), edgels, scale);
     }
     python::list pyEdgels;
-    for (unsigned int i = 0; i < edgels.size(); ++i)
+    for(unsigned int i = 0; i < edgels.size(); ++i)
     {
-        if (edgels[i].strength >= threshold)
+        if(edgels[i].strength >= threshold)
             pyEdgels.append(edgels[i]);
     }
     return pyEdgels;
 }
 
-template<class SrcPixelType, typename DestPixelType>
+template <class SrcPixelType, typename DestPixelType>
 NumpyAnyArray
     pythonCannyEdgeImage(NumpyArray<2, Singleband<SrcPixelType>> image,
                          double scale, double threshold, DestPixelType edgeMarker,
@@ -189,7 +189,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class SrcPixelType, typename DestPixelType>
+template <class SrcPixelType, typename DestPixelType>
 NumpyAnyArray
     pythonCannyEdgeImageColor(NumpyArray<2, RGBValue<SrcPixelType>> image,
                               double scale, double threshold, DestPixelType edgeMarker,
@@ -206,7 +206,7 @@ NumpyAnyArray
         MultiArray<2, TinyVector<float, 2>> gradient(image.shape());
         MultiArray<2, TinyVector<float, 3>> tmp(image.shape()),
             gradient_tensor(image.shape());
-        for (int k = 0; k < 3; ++k)
+        for(int k = 0; k < 3; ++k)
         {
             gaussianGradientMultiArray(image.bindElementChannel(k), gradient, scale);
             vectorToTensor(gradient, tmp);
@@ -223,7 +223,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class SrcPixelType, typename DestPixelType>
+template <class SrcPixelType, typename DestPixelType>
 NumpyAnyArray
     pythonCannyEdgeImageWithThinning(NumpyArray<2, Singleband<SrcPixelType>> image,
                                      double scale, double threshold,
@@ -245,7 +245,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class SrcPixelType, typename DestPixelType>
+template <class SrcPixelType, typename DestPixelType>
 NumpyAnyArray
     pythonShenCastanEdgeImage(NumpyArray<2, Singleband<SrcPixelType>> image,
                               double scale, double threshold, DestPixelType edgeMarker,
@@ -266,7 +266,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class SrcPixelType, typename DestPixelType>
+template <class SrcPixelType, typename DestPixelType>
 NumpyAnyArray
     pythonShenCastanCrackEdgeImage(NumpyArray<2, Singleband<SrcPixelType>> image,
                                    double scale, double threshold, DestPixelType edgeMarker,
@@ -288,7 +288,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonRemoveShortEdges(NumpyArray<2, Singleband<PixelType>> image,
                            int minEdgeLength, PixelType nonEdgeMarker,
@@ -306,7 +306,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonBeautifyCrackEdgeImage(NumpyArray<2, Singleband<PixelType>> image,
                                  PixelType edgeMarker,
@@ -325,7 +325,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonCloseGapsInCrackEdgeImage(NumpyArray<2, Singleband<PixelType>> image,
                                     PixelType edgeMarker,
@@ -343,7 +343,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonRegionImageToCrackEdgeImage(NumpyArray<2, Singleband<PixelType>> image,
                                       PixelType edgeLabel = 0,
@@ -360,7 +360,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonRegionImageToEdgeImage(NumpyArray<2, Singleband<PixelType>> image,
                                  PixelType edgeLabel = 1,

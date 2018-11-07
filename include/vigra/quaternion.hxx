@@ -58,7 +58,7 @@ namespace vigra
     
     See also: \ref QuaternionOperations
 */
-template<class ValueType>
+template <class ValueType>
 class Quaternion
 {
 public:
@@ -137,7 +137,7 @@ public:
     {
         // the natural range would be -pi..pi, but the reflective
         // behavior around pi is too unexpected:
-        if (angle > M_PI)
+        if(angle > M_PI)
             angle -= 2.0 * M_PI;
         double t = VIGRA_CSTD::sin(angle / 2.0);
         double norm = rotationAxis.magnitude();
@@ -369,7 +369,7 @@ public:
          * be pre-multiplied with the vectors to be rotated, i.e.
          * matrix[0][0-3] will be the rotated X axis.
          */
-    template<class MatrixType>
+    template <class MatrixType>
     void fillRotationMatrix(MatrixType& matrix) const
     {
         // scale by 2 / norm
@@ -431,7 +431,7 @@ protected:
     Vector v_;
 };
 
-template<class T>
+template <class T>
 struct NormTraits<Quaternion<T>>
 {
     typedef Quaternion<T> Type;
@@ -445,7 +445,7 @@ struct NormTraits<Quaternion<T>>
 //@{
 
 /// Create conjugate quaternion.
-template<class ValueType>
+template <class ValueType>
 Quaternion<ValueType>
 conj(Quaternion<ValueType> const& q)
 {
@@ -453,7 +453,7 @@ conj(Quaternion<ValueType> const& q)
 }
 
 /// Addition.
-template<typename Type>
+template <typename Type>
 inline Quaternion<Type>
 operator+(const Quaternion<Type>& t1,
           const Quaternion<Type>& t2)
@@ -462,7 +462,7 @@ operator+(const Quaternion<Type>& t1,
 }
 
 /// Addition of a scalar on the right.
-template<typename Type>
+template <typename Type>
 inline Quaternion<Type>
 operator+(const Quaternion<Type>& t1,
           const Type& t2)
@@ -471,7 +471,7 @@ operator+(const Quaternion<Type>& t1,
 }
 
 /// Addition of a scalar on the left.
-template<typename Type>
+template <typename Type>
 inline Quaternion<Type>
 operator+(const Type& t1,
           const Quaternion<Type>& t2)
@@ -480,7 +480,7 @@ operator+(const Type& t1,
 }
 
 /// Subtraction.
-template<typename Type>
+template <typename Type>
 inline Quaternion<Type>
 operator-(const Quaternion<Type>& t1,
           const Quaternion<Type>& t2)
@@ -489,7 +489,7 @@ operator-(const Quaternion<Type>& t1,
 }
 
 /// Subtraction of a scalar on the right.
-template<typename Type>
+template <typename Type>
 inline Quaternion<Type>
 operator-(const Quaternion<Type>& t1,
           const Type& t2)
@@ -498,7 +498,7 @@ operator-(const Quaternion<Type>& t1,
 }
 
 /// Subtraction of a scalar on the left.
-template<typename Type>
+template <typename Type>
 inline Quaternion<Type>
 operator-(const Type& t1,
           const Quaternion<Type>& t2)
@@ -507,7 +507,7 @@ operator-(const Type& t1,
 }
 
 /// Multiplication.
-template<typename Type>
+template <typename Type>
 inline Quaternion<Type>
 operator*(const Quaternion<Type>& t1,
           const Quaternion<Type>& t2)
@@ -516,7 +516,7 @@ operator*(const Quaternion<Type>& t1,
 }
 
 /// Multiplication with a scalar on the right.
-template<typename Type>
+template <typename Type>
 inline Quaternion<Type>
 operator*(const Quaternion<Type>& t1,
           double t2)
@@ -525,7 +525,7 @@ operator*(const Quaternion<Type>& t1,
 }
 
 /// Multiplication with a scalar on the left.
-template<typename Type>
+template <typename Type>
 inline Quaternion<Type>
 operator*(double t1,
           const Quaternion<Type>& t2)
@@ -534,7 +534,7 @@ operator*(double t1,
 }
 
 /// Division
-template<typename Type>
+template <typename Type>
 inline Quaternion<Type>
 operator/(const Quaternion<Type>& t1,
           const Quaternion<Type>& t2)
@@ -543,7 +543,7 @@ operator/(const Quaternion<Type>& t1,
 }
 
 /// Division by a scalar.
-template<typename Type>
+template <typename Type>
 inline Quaternion<Type>
 operator/(const Quaternion<Type>& t1,
           double t2)
@@ -552,7 +552,7 @@ operator/(const Quaternion<Type>& t1,
 }
 
 /// Division of a scalar by a Quaternion.
-template<typename Type>
+template <typename Type>
 inline Quaternion<Type>
 operator/(double t1,
           const Quaternion<Type>& t2)
@@ -561,7 +561,7 @@ operator/(double t1,
 }
 
 /// squared norm
-template<typename Type>
+template <typename Type>
 inline
     typename Quaternion<Type>::SquaredNormType
     squaredNorm(Quaternion<Type> const& q)
@@ -570,7 +570,7 @@ inline
 }
 
 /// norm
-template<typename Type>
+template <typename Type>
 inline
     typename Quaternion<Type>::NormType
     abs(Quaternion<Type> const& q)
@@ -585,7 +585,7 @@ inline
 namespace std
 {
 
-template<class ValueType>
+template <class ValueType>
 inline ostream&
 operator<<(ostream& os, vigra::Quaternion<ValueType> const& q)
 {
@@ -593,7 +593,7 @@ operator<<(ostream& os, vigra::Quaternion<ValueType> const& q)
     return os;
 }
 
-template<class ValueType>
+template <class ValueType>
 inline istream&
 operator>>(istream& is, vigra::Quaternion<ValueType>& q)
 {

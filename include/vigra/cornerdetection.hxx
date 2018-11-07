@@ -48,7 +48,7 @@
 namespace vigra
 {
 
-template<class SrcType>
+template <class SrcType>
 struct CornerResponseFunctor
 {
     typedef typename NumericTraits<SrcType>::RealPromote argument_type;
@@ -61,7 +61,7 @@ struct CornerResponseFunctor
     }
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<CornerResponseFunctor<T>>
     : public FunctorTraitsBase<CornerResponseFunctor<T>>
 {
@@ -69,7 +69,7 @@ public:
     typedef VigraTrueType isTernaryFunctor;
 };
 
-template<class SrcType>
+template <class SrcType>
 struct FoerstnerCornerFunctor
 {
     typedef typename NumericTraits<SrcType>::RealPromote argument_type;
@@ -82,7 +82,7 @@ struct FoerstnerCornerFunctor
     }
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<FoerstnerCornerFunctor<T>>
     : public FunctorTraitsBase<FoerstnerCornerFunctor<T>>
 {
@@ -90,7 +90,7 @@ public:
     typedef VigraTrueType isTernaryFunctor;
 };
 
-template<class SrcType>
+template <class SrcType>
 struct RohrCornerFunctor
 {
     typedef typename NumericTraits<SrcType>::RealPromote argument_type;
@@ -103,7 +103,7 @@ struct RohrCornerFunctor
     }
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<RohrCornerFunctor<T>>
     : public FunctorTraitsBase<RohrCornerFunctor<T>>
 {
@@ -111,7 +111,7 @@ public:
     typedef VigraTrueType isTernaryFunctor;
 };
 
-template<class SrcType>
+template <class SrcType>
 struct BeaudetCornerFunctor
 {
     typedef typename NumericTraits<SrcType>::RealPromote argument_type;
@@ -124,7 +124,7 @@ struct BeaudetCornerFunctor
     }
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<BeaudetCornerFunctor<T>>
     : public FunctorTraitsBase<BeaudetCornerFunctor<T>>
 {
@@ -279,10 +279,10 @@ public:
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void cornerResponseFunction)
+doxygen_overloaded_function(template <...> void cornerResponseFunction)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void cornerResponseFunction(SrcIterator sul, SrcIterator slr, SrcAccessor as,
                                 DestIterator dul, DestAccessor ad,
                                 double scale)
@@ -293,7 +293,7 @@ doxygen_overloaded_function(template<...> void cornerResponseFunction)
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
-    if (w <= 0 || h <= 0)
+    if(w <= 0 || h <= 0)
         return;
 
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
@@ -313,8 +313,8 @@ doxygen_overloaded_function(template<...> void cornerResponseFunction)
                        destIter(dul, ad), cf);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 cornerResponseFunction(
     triple<SrcIterator, SrcIterator, SrcAccessor> src,
@@ -326,8 +326,8 @@ cornerResponseFunction(
                            scale);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     cornerResponseFunction(MultiArrayView<2, T1, S1> const& src,
                            MultiArrayView<2, T2, S2> dest,
@@ -465,10 +465,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void foerstnerCornerDetector)
+doxygen_overloaded_function(template <...> void foerstnerCornerDetector)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void foerstnerCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
                                  DestIterator dul, DestAccessor ad,
                                  double scale)
@@ -479,7 +479,7 @@ doxygen_overloaded_function(template<...> void foerstnerCornerDetector)
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
-    if (w <= 0 || h <= 0)
+    if(w <= 0 || h <= 0)
         return;
 
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
@@ -499,8 +499,8 @@ doxygen_overloaded_function(template<...> void foerstnerCornerDetector)
                        destIter(dul, ad), cf);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 foerstnerCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         pair<DestIterator, DestAccessor> dest,
@@ -511,8 +511,8 @@ foerstnerCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             scale);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     foerstnerCornerDetector(MultiArrayView<2, T1, S1> const& src,
                             MultiArrayView<2, T2, S2> dest,
@@ -648,10 +648,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void rohrCornerDetector)
+doxygen_overloaded_function(template <...> void rohrCornerDetector)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void rohrCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
                             DestIterator dul, DestAccessor ad,
                             double scale)
@@ -662,7 +662,7 @@ doxygen_overloaded_function(template<...> void rohrCornerDetector)
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
-    if (w <= 0 || h <= 0)
+    if(w <= 0 || h <= 0)
         return;
 
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
@@ -682,8 +682,8 @@ doxygen_overloaded_function(template<...> void rohrCornerDetector)
                        destIter(dul, ad), cf);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 rohrCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
@@ -694,8 +694,8 @@ rohrCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        scale);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     rohrCornerDetector(MultiArrayView<2, T1, S1> const& src,
                        MultiArrayView<2, T2, S2> dest,
@@ -822,10 +822,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void beaudetCornerDetector)
+doxygen_overloaded_function(template <...> void beaudetCornerDetector)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void beaudetCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
                                DestIterator dul, DestAccessor ad,
                                double scale)
@@ -836,7 +836,7 @@ doxygen_overloaded_function(template<...> void beaudetCornerDetector)
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
-    if (w <= 0 || h <= 0)
+    if(w <= 0 || h <= 0)
         return;
 
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
@@ -856,8 +856,8 @@ doxygen_overloaded_function(template<...> void beaudetCornerDetector)
                        destIter(dul, ad), cf);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 beaudetCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                       pair<DestIterator, DestAccessor> dest,
@@ -868,8 +868,8 @@ beaudetCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                           scale);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     beaudetCornerDetector(MultiArrayView<2, T1, S1> const& src,
                           MultiArrayView<2, T2, S2> dest,

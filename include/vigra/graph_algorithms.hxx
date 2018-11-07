@@ -72,7 +72,7 @@ namespace vigra
 
 namespace detail_graph_algorithms
 {
-template<class GRAPH_MAP, class COMPERATOR>
+template <class GRAPH_MAP, class COMPERATOR>
 struct GraphItemCompare
 {
 
@@ -82,7 +82,7 @@ struct GraphItemCompare
     {
     }
 
-    template<class KEY>
+    template <class KEY>
     bool operator()(const KEY& a, const KEY& b) const
     {
         return comperator_(map_[a], map_[b]);
@@ -97,7 +97,7 @@ struct GraphItemCompare
 ///
 /// Sort the Edge descriptors given weights
 /// and a comperator
-template<class GRAPH, class WEIGHTS, class COMPERATOR>
+template <class GRAPH, class WEIGHTS, class COMPERATOR>
 void
 edgeSort(
     const GRAPH& g,
@@ -107,7 +107,7 @@ edgeSort(
 {
     sortedEdges.resize(g.edgeNum());
     size_t c = 0;
-    for (typename GRAPH::EdgeIt e(g); e != lemon::INVALID; ++e)
+    for(typename GRAPH::EdgeIt e(g); e != lemon::INVALID; ++e)
     {
         sortedEdges[c] = *e;
         ++c;
@@ -118,48 +118,48 @@ edgeSort(
 
 
 /// \brief copy a lemon node map
-template<class G, class A, class B>
+template <class G, class A, class B>
 void
 copyNodeMap(const G& g, const A& a, B& b)
 {
     typename G::NodeIt iter(g);
-    while (iter != lemon::INVALID)
+    while(iter != lemon::INVALID)
     {
         b[*iter] = a[*iter];
         ++iter;
     }
 }
 /// \brief copy a lemon edge map
-template<class G, class A, class B>
+template <class G, class A, class B>
 void
 copyEdgeMap(const G& g, const A& a, B& b)
 {
     typename G::EdgeIt iter(g);
-    while (iter != lemon::INVALID)
+    while(iter != lemon::INVALID)
     {
         b[*iter] = a[*iter];
         ++iter;
     }
 }
 /// \brief fill a lemon node map
-template<class G, class A, class T>
+template <class G, class A, class T>
 void
 fillNodeMap(const G& g, A& a, const T& value)
 {
     typename G::NodeIt iter(g);
-    while (iter != lemon::INVALID)
+    while(iter != lemon::INVALID)
     {
         a[*iter] = value;
         ++iter;
     }
 }
 /// \brief fill a lemon edge map
-template<class G, class A, class T>
+template <class G, class A, class T>
 void
 fillEdgeMap(const G& g, A& a, const T& value)
 {
     typename G::EdgeIt iter(g);
-    while (iter != lemon::INVALID)
+    while(iter != lemon::INVALID)
     {
         a[*iter] = value;
         ++iter;
@@ -174,7 +174,7 @@ fillEdgeMap(const G& g, A& a, const T& value)
 /// \param[out] affiliatedEdges : a vector of edges of graphIn for each edge in rag
 /// \param      ignoreLabel : optional label to ignore (default: -1 means no label will be ignored)
 ///
-template<
+template <
     class GRAPH_IN,
     class GRAPH_IN_NODE_LABEL_MAP>
 void
@@ -196,19 +196,19 @@ makeRegionAdjacencyGraph(
     typedef typename GraphOut::Edge EdgeGraphOut;
 
 
-    for (NodeItGraphIn iter(graphIn); iter != lemon::INVALID; ++iter)
+    for(NodeItGraphIn iter(graphIn); iter != lemon::INVALID; ++iter)
     {
         const LabelType l = labels[*iter];
-        if (ignoreLabel == -1 || static_cast<Int64>(l) != ignoreLabel)
+        if(ignoreLabel == -1 || static_cast<Int64>(l) != ignoreLabel)
             rag.addNode(l);
     }
 
-    for (EdgeItGraphIn e(graphIn); e != lemon::INVALID; ++e)
+    for(EdgeItGraphIn e(graphIn); e != lemon::INVALID; ++e)
     {
         const EdgeGraphIn edge(*e);
         const LabelType lu = labels[graphIn.u(edge)];
         const LabelType lv = labels[graphIn.v(edge)];
-        if (lu != lv && (ignoreLabel == -1 || (static_cast<Int64>(lu) != ignoreLabel && static_cast<Int64>(lv) != ignoreLabel)))
+        if(lu != lv && (ignoreLabel == -1 || (static_cast<Int64>(lu) != ignoreLabel && static_cast<Int64>(lv) != ignoreLabel)))
         {
             // if there is an edge between lu and lv no new edge will be added
             rag.addEdge(rag.nodeFromId(lu), rag.nodeFromId(lv));
@@ -217,13 +217,13 @@ makeRegionAdjacencyGraph(
 
     //SET UP HYPEREDGES
     affiliatedEdges.assign(rag);
-    for (EdgeItGraphIn e(graphIn); e != lemon::INVALID; ++e)
+    for(EdgeItGraphIn e(graphIn); e != lemon::INVALID; ++e)
     {
         const EdgeGraphIn edge(*e);
         const LabelType lu = labels[graphIn.u(edge)];
         const LabelType lv = labels[graphIn.v(edge)];
         //std::cout<<"edge between ?? "<<lu<<" "<<lv<<"\n";
-        if (lu != lv && (ignoreLabel == -1 || (static_cast<Int64>(lu) != ignoreLabel && static_cast<Int64>(lv) != ignoreLabel)))
+        if(lu != lv && (ignoreLabel == -1 || (static_cast<Int64>(lu) != ignoreLabel && static_cast<Int64>(lv) != ignoreLabel)))
         {
             //std::cout<<"find edge between "<<lu<<" "<<lv<<"\n";
             EdgeGraphOut ragEdge = rag.findEdge(rag.nodeFromId(lu), rag.nodeFromId(lv));
@@ -234,7 +234,7 @@ makeRegionAdjacencyGraph(
     }
 }
 
-template<unsigned int DIM, class DTAG, class AFF_EDGES>
+template <unsigned int DIM, class DTAG, class AFF_EDGES>
 size_t
 affiliatedEdgesSerializationSize(
     const GridGraph<DIM, DTAG>&,
@@ -246,7 +246,7 @@ affiliatedEdgesSerializationSize(
     typedef typename AdjacencyListGraph::EdgeIt EdgeIt;
     typedef typename AdjacencyListGraph::Edge Edge;
 
-    for (EdgeIt iter(rag); iter != lemon::INVALID; ++iter)
+    for(EdgeIt iter(rag); iter != lemon::INVALID; ++iter)
     {
         const Edge e(*iter);
         size += 1;
@@ -255,7 +255,7 @@ affiliatedEdgesSerializationSize(
     return size;
 }
 
-template<class OUT_ITER, unsigned int DIM, class DTAG, class AFF_EDGES>
+template <class OUT_ITER, unsigned int DIM, class DTAG, class AFF_EDGES>
 void
 serializeAffiliatedEdges(
     const GridGraph<DIM, DTAG>&,
@@ -268,7 +268,7 @@ serializeAffiliatedEdges(
     typedef typename AdjacencyListGraph::Edge Edge;
     typedef typename GridGraph<DIM, DTAG>::Edge GEdge;
 
-    for (EdgeIt iter(rag); iter != lemon::INVALID; ++iter)
+    for(EdgeIt iter(rag); iter != lemon::INVALID; ++iter)
     {
 
         const Edge edge = *iter;
@@ -276,10 +276,10 @@ serializeAffiliatedEdges(
         *outIter = numAffEdge;
         ++outIter;
 
-        for (size_t i = 0; i < numAffEdge; ++i)
+        for(size_t i = 0; i < numAffEdge; ++i)
         {
             const GEdge gEdge = affEdges[edge][i];
-            for (size_t d = 0; d < DIM + 1; ++d)
+            for(size_t d = 0; d < DIM + 1; ++d)
             {
                 *outIter = gEdge[d];
                 ++outIter;
@@ -288,7 +288,7 @@ serializeAffiliatedEdges(
     }
 }
 
-template<class IN_ITER, unsigned int DIM, class DTAG, class AFF_EDGES>
+template <class IN_ITER, unsigned int DIM, class DTAG, class AFF_EDGES>
 void
 deserializeAffiliatedEdges(
     const GridGraph<DIM, DTAG>&,
@@ -304,17 +304,17 @@ deserializeAffiliatedEdges(
 
     affEdges.assign(rag);
 
-    for (EdgeIt iter(rag); iter != lemon::INVALID; ++iter)
+    for(EdgeIt iter(rag); iter != lemon::INVALID; ++iter)
     {
 
         const Edge edge = *iter;
         const size_t numAffEdge = *begin;
         ++begin;
 
-        for (size_t i = 0; i < numAffEdge; ++i)
+        for(size_t i = 0; i < numAffEdge; ++i)
         {
             GEdge gEdge;
-            for (size_t d = 0; d < DIM + 1; ++d)
+            for(size_t d = 0; d < DIM + 1; ++d)
             {
                 gEdge[d] = *begin;
                 ++begin;
@@ -327,7 +327,7 @@ deserializeAffiliatedEdges(
 
 
 /// \brief shortest path computer
-template<class GRAPH, class WEIGHT_TYPE>
+template <class GRAPH, class WEIGHT_TYPE>
 class ShortestPathDijkstra
 {
 public:
@@ -365,7 +365,7 @@ public:
     /// or \a maxDistance is exceeded), it is set to <tt>lemon::INVALID</tt>. In contrast, if \a target
     /// was <tt>lemon::INVALID</tt> at the beginning, it will always be set to the last node
     /// visited in the search.
-    template<class WEIGHTS>
+    template <class WEIGHTS>
     void run(const WEIGHTS& weights, const Node& source,
              const Node& target = lemon::INVALID,
              WeightType maxDistance = NumericTraits<WeightType>::max())
@@ -387,7 +387,7 @@ public:
     /// This version of <tt>run()</tt> restricts the path search to the ROI <tt>[start, stop)</tt> and only
     /// works for instances of \ref GridGraph. Otherwise, it is identical to the standard <tt>run()</tt>
     /// function.
-    template<class WEIGHTS>
+    template <class WEIGHTS>
     void run(Node const& start, Node const& stop,
              const WEIGHTS& weights, const Node& source,
              const Node& target = lemon::INVALID,
@@ -408,7 +408,7 @@ public:
     /// the entire graph, this only resets the nodes that have been visited in the
     /// previous run, i.e. the contents of the array <tt>discoveryOrder()</tt>.
     /// This will be much faster if only a small fraction of the nodes has to be reset.
-    template<class WEIGHTS>
+    template <class WEIGHTS>
     void reRun(const WEIGHTS& weights, const Node& source,
                const Node& target = lemon::INVALID,
                WeightType maxDistance = NumericTraits<WeightType>::max())
@@ -421,7 +421,7 @@ public:
     ///
     /// This is otherwise identical to standard <tt>run()</tt>, except that
     /// <tt>source()</tt> returns <tt>lemon::INVALID</tt> after path search finishes.
-    template<class WEIGHTS, class ITER>
+    template <class WEIGHTS, class ITER>
     void
     runMultiSource(const WEIGHTS& weights, ITER source_begin, ITER source_end,
                    const Node& target = lemon::INVALID,
@@ -436,7 +436,7 @@ public:
     ///
     /// This is otherwise identical to standard <tt>run()</tt>, except that
     /// <tt>source()</tt> returns <tt>lemon::INVALID</tt> after path search finishes.
-    template<class EFGE_WEIGHTS, class NODE_WEIGHTS, class ITER>
+    template <class EFGE_WEIGHTS, class NODE_WEIGHTS, class ITER>
     void
     runMultiSource(
         const EFGE_WEIGHTS& edgeWeights,
@@ -498,7 +498,7 @@ public:
 
 
 private:
-    template<class WEIGHTS>
+    template <class WEIGHTS>
     void runImpl(const WEIGHTS& weights,
                  const Node& target = lemon::INVALID,
                  WeightType maxDistance = NumericTraits<WeightType>::max())
@@ -508,7 +508,7 @@ private:
     }
 
 
-    template<class EDGE_WEIGHTS, class NODE_WEIGHTS>
+    template <class EDGE_WEIGHTS, class NODE_WEIGHTS>
     void runImplWithNodeWeights(
         const EDGE_WEIGHTS& edgeWeights,
         const NODE_WEIGHTS& nodeWeights,
@@ -516,38 +516,38 @@ private:
         WeightType maxDistance = NumericTraits<WeightType>::max())
     {
         target_ = lemon::INVALID;
-        while (!pq_.empty())
+        while(!pq_.empty())
         { //&& !finished){
             const Node topNode(graph_.nodeFromId(pq_.top()));
-            if (distMap_[topNode] > maxDistance)
+            if(distMap_[topNode] > maxDistance)
                 break; // distance threshold exceeded
             pq_.pop();
             discoveryOrder_.push_back(topNode);
-            if (topNode == target)
+            if(topNode == target)
                 break;
             // loop over all neigbours
-            for (OutArcIt outArcIt(graph_, topNode); outArcIt != lemon::INVALID; ++outArcIt)
+            for(OutArcIt outArcIt(graph_, topNode); outArcIt != lemon::INVALID; ++outArcIt)
             {
                 const Node otherNode = graph_.target(*outArcIt);
                 const size_t otherNodeId = graph_.id(otherNode);
                 const WeightType otherNodeWeight = nodeWeights[otherNode];
-                if (pq_.contains(otherNodeId))
+                if(pq_.contains(otherNodeId))
                 {
                     const Edge edge(*outArcIt);
                     const WeightType currentDist = distMap_[otherNode];
                     const WeightType alternativeDist = distMap_[topNode] + edgeWeights[edge] + otherNodeWeight;
-                    if (alternativeDist < currentDist)
+                    if(alternativeDist < currentDist)
                     {
                         pq_.push(otherNodeId, alternativeDist);
                         distMap_[otherNode] = alternativeDist;
                         predMap_[otherNode] = topNode;
                     }
                 }
-                else if (predMap_[otherNode] == lemon::INVALID)
+                else if(predMap_[otherNode] == lemon::INVALID)
                 {
                     const Edge edge(*outArcIt);
                     const WeightType initialDist = distMap_[topNode] + edgeWeights[edge] + otherNodeWeight;
-                    if (initialDist <= maxDistance)
+                    if(initialDist <= maxDistance)
                     {
                         pq_.push(otherNodeId, initialDist);
                         distMap_[otherNode] = initialDist;
@@ -556,20 +556,20 @@ private:
                 }
             }
         }
-        while (!pq_.empty())
+        while(!pq_.empty())
         {
             const Node topNode(graph_.nodeFromId(pq_.top()));
             predMap_[topNode] = lemon::INVALID;
             pq_.pop();
         }
-        if (target == lemon::INVALID || discoveryOrder_.back() == target)
+        if(target == lemon::INVALID || discoveryOrder_.back() == target)
             target_ = discoveryOrder_.back(); // Means that target was reached. If, to the contrary, target
                                               // was unreachable within maxDistance, target_ remains INVALID.
     }
 
     void initializeMaps(Node const& source)
     {
-        for (NodeIt n(graph_); n != lemon::INVALID; ++n)
+        for(NodeIt n(graph_); n != lemon::INVALID; ++n)
         {
             const Node node(*n);
             predMap_[node] = lemon::INVALID;
@@ -599,16 +599,16 @@ private:
         source_ = source;
     }
 
-    template<class ITER>
+    template <class ITER>
     void initializeMapsMultiSource(ITER source, ITER source_end)
     {
-        for (NodeIt n(graph_); n != lemon::INVALID; ++n)
+        for(NodeIt n(graph_); n != lemon::INVALID; ++n)
         {
             const Node node(*n);
             predMap_[node] = lemon::INVALID;
         }
         discoveryOrder_.clear();
-        for (; source != source_end; ++source)
+        for(; source != source_end; ++source)
         {
             distMap_[*source] = static_cast<WeightType>(0.0);
             predMap_[*source] = *source;
@@ -619,7 +619,7 @@ private:
 
     void reInitializeMaps(Node const& source)
     {
-        for (unsigned int n = 0; n < discoveryOrder_.size(); ++n)
+        for(unsigned int n = 0; n < discoveryOrder_.size(); ++n)
         {
             predMap_[discoveryOrder_[n]] = lemon::INVALID;
         }
@@ -641,20 +641,20 @@ private:
 };
 
 /// \brief get the length in node units of a path
-template<class NODE, class PREDECESSORS>
+template <class NODE, class PREDECESSORS>
 size_t
 pathLength(
     const NODE source,
     const NODE target,
     const PREDECESSORS& predecessors)
 {
-    if (predecessors[target] == lemon::INVALID)
+    if(predecessors[target] == lemon::INVALID)
         return 0;
     else
     {
         NODE currentNode = target;
         size_t length = 1;
-        while (currentNode != source)
+        while(currentNode != source)
         {
             currentNode = predecessors[currentNode];
             length += 1;
@@ -664,7 +664,7 @@ pathLength(
 }
 
 /// \brief Astar Shortest path search
-template<class GRAPH, class WEIGHTS, class PREDECESSORS, class DISTANCE, class HEURSTIC>
+template <class GRAPH, class WEIGHTS, class PREDECESSORS, class DISTANCE, class HEURSTIC>
 void
 shortestPathAStar(
     const GRAPH& graph,
@@ -686,7 +686,7 @@ shortestPathAStar(
     typename GRAPH::template NodeMap<bool> closedSet(graph);
     vigra::ChangeablePriorityQueue<typename WEIGHTS::value_type> estimatedDistanceOpenSet(graph.maxNodeId() + 1);
     // initialize
-    for (NodeIt n(graph); n != lemon::INVALID; ++n)
+    for(NodeIt n(graph); n != lemon::INVALID; ++n)
     {
         const Node node(*n);
         closedSet[node] = false;
@@ -698,14 +698,14 @@ shortestPathAStar(
     estimatedDistanceOpenSet.push(graph.id(source), heuristic(source, target));
 
     // while any nodes left in openSet
-    while (!estimatedDistanceOpenSet.empty())
+    while(!estimatedDistanceOpenSet.empty())
     {
 
         // get the node with the lpwest estimated distance in the open set
         const Node current = graph.nodeFromId(estimatedDistanceOpenSet.top());
 
         // reached target?
-        if (current == target)
+        if(current == target)
             break;
 
         // remove current from openSet
@@ -714,7 +714,7 @@ shortestPathAStar(
         closedSet[current] = true;
 
         // iterate over neigbours of current
-        for (OutArcIt outArcIt(graph, current); outArcIt != lemon::INVALID; ++outArcIt)
+        for(OutArcIt outArcIt(graph, current); outArcIt != lemon::INVALID; ++outArcIt)
         {
 
             // get neigbour node and id
@@ -722,7 +722,7 @@ shortestPathAStar(
             const size_t neighbourId = graph.id(neighbour);
 
             // if neighbour is not yet in closedSet
-            if (!closedSet[neighbour])
+            if(!closedSet[neighbour])
             {
 
                 // get edge between current and neigbour
@@ -732,7 +732,7 @@ shortestPathAStar(
                 const DistanceType tenativeScore = distance[current] + weights[edge];
 
                 // neighbour NOT in openSet OR tentative score better than the current distance
-                if (!estimatedDistanceOpenSet.contains(neighbourId) || tenativeScore < distance[neighbour])
+                if(!estimatedDistanceOpenSet.contains(neighbourId) || tenativeScore < distance[neighbour])
                 {
                     // set predecessors and distance
                     predecessors[neighbour] = current;
@@ -748,7 +748,7 @@ shortestPathAStar(
 }
 
 
-template<
+template <
     class GRAPH,
     class EDGE_WEIGHTS,
     class NODE_WEIGHTS,
@@ -769,11 +769,11 @@ shortestPathSegmentation(
 
     // find seeds
     std::vector<Node> seededNodes;
-    for (NodeIt n(graph); n != lemon::INVALID; ++n)
+    for(NodeIt n(graph); n != lemon::INVALID; ++n)
     {
         const Node node(*n);
         // not a seed
-        if (seeds[node] != 0)
+        if(seeds[node] != 0)
         {
             seededNodes.push_back(node);
         }
@@ -786,13 +786,13 @@ shortestPathSegmentation(
     sp.runMultiSource(edgeWeights, nodeWeights, seededNodes.begin(), seededNodes.end());
     const PredecessorsMap& predMap = sp.predecessors();
     // do the labeling
-    for (NodeIt n(graph); n != lemon::INVALID; ++n)
+    for(NodeIt n(graph); n != lemon::INVALID; ++n)
     {
         Node node(*n);
-        if (seeds[node] == 0)
+        if(seeds[node] == 0)
         {
             Node pred = predMap[node];
-            while (seeds[pred] == 0)
+            while(seeds[pred] == 0)
             {
                 pred = predMap[pred];
             }
@@ -806,7 +806,7 @@ namespace detail_watersheds_segmentation
 
 struct RawPriorityFunctor
 {
-    template<class LabelType, class T>
+    template <class LabelType, class T>
     T operator()(const LabelType /*label*/, const T priority) const
     {
         return priority;
@@ -815,7 +815,7 @@ struct RawPriorityFunctor
 
 
 
-template<class PRIORITY_TYPE, class LABEL_TYPE>
+template <class PRIORITY_TYPE, class LABEL_TYPE>
 struct CarvingFunctor
 {
     CarvingFunctor(const LABEL_TYPE backgroundLabel,
@@ -828,7 +828,7 @@ struct CarvingFunctor
     }
     PRIORITY_TYPE operator()(const LABEL_TYPE label, const PRIORITY_TYPE priority) const
     {
-        if (priority >= noPriorBelow_)
+        if(priority >= noPriorBelow_)
             return (label == backgroundLabel_ ? priority * factor_ : priority);
         else
         {
@@ -841,7 +841,7 @@ struct CarvingFunctor
 };
 
 
-template<
+template <
     class GRAPH,
     class EDGE_WEIGHTS,
     class SEEDS,
@@ -873,17 +873,17 @@ edgeWeightedWatershedsSegmentationImpl(
 
 
     // put edges from nodes with seed on pq
-    for (NodeIt n(g); n != lemon::INVALID; ++n)
+    for(NodeIt n(g); n != lemon::INVALID; ++n)
     {
         const Node node(*n);
-        if (labels[node] != static_cast<LabelType>(0))
+        if(labels[node] != static_cast<LabelType>(0))
         {
-            for (OutArcIt a(g, node); a != lemon::INVALID; ++a)
+            for(OutArcIt a(g, node); a != lemon::INVALID; ++a)
             {
                 const Edge edge(*a);
                 const Node neigbour = g.target(*a);
                 //std::cout<<"n- node "<<g.id(neigbour)<<"\n";
-                if (labels[neigbour] == static_cast<LabelType>(0))
+                if(labels[neigbour] == static_cast<LabelType>(0))
                 {
                     const WeightType priority = priorManipFunctor(labels[node], edgeWeights[edge]);
                     pq.push(edge, priority);
@@ -894,7 +894,7 @@ edgeWeightedWatershedsSegmentationImpl(
     }
 
 
-    while (!pq.empty())
+    while(!pq.empty())
     {
 
         const Edge edge = pq.top();
@@ -906,11 +906,11 @@ edgeWeightedWatershedsSegmentationImpl(
         const LabelType lV = labels[v];
 
 
-        if (lU == 0 && lV == 0)
+        if(lU == 0 && lV == 0)
         {
             throw std::runtime_error("both have no labels");
         }
-        else if (lU != 0 && lV != 0)
+        else if(lU != 0 && lV != 0)
         {
             // nothing to do
         }
@@ -924,11 +924,11 @@ edgeWeightedWatershedsSegmentationImpl(
             labels[unlabeledNode] = label;
 
             // iterate over the nodes edges
-            for (OutArcIt a(g, unlabeledNode); a != lemon::INVALID; ++a)
+            for(OutArcIt a(g, unlabeledNode); a != lemon::INVALID; ++a)
             {
                 const Edge otherEdge(*a);
                 const Node targetNode = g.target(*a);
-                if (labels[targetNode] == 0)
+                if(labels[targetNode] == 0)
                 {
                     //if(inPQ[otherEdge] == false && labels[targetNode] == 0){
                     const WeightType priority = priorManipFunctor(label, edgeWeights[otherEdge]);
@@ -949,7 +949,7 @@ edgeWeightedWatershedsSegmentationImpl(
 /// \param edgeWeights : edge weights / edge indicator
 /// \param seeds : seed must be non empty!
 /// \param[out] labels : resulting  nodeLabeling (not necessarily dense)
-template<class GRAPH, class EDGE_WEIGHTS, class SEEDS, class LABELS>
+template <class GRAPH, class EDGE_WEIGHTS, class SEEDS, class LABELS>
 void
 edgeWeightedWatershedsSegmentation(
     const GRAPH& g,
@@ -971,7 +971,7 @@ edgeWeightedWatershedsSegmentation(
 /// \param backgroundBias  : bias for background
 /// \param noPriorBelow  : don't bias the background if edge indicator is below this value
 /// \param[out] labels : resulting  nodeLabeling (not necessarily dense)
-template<class GRAPH, class EDGE_WEIGHTS, class SEEDS, class LABELS>
+template <class GRAPH, class EDGE_WEIGHTS, class SEEDS, class LABELS>
 void
 carvingSegmentation(
     const GRAPH& g,
@@ -996,7 +996,7 @@ carvingSegmentation(
 /// \param k : free parameter of felzenszwalb algorithm
 /// \param[out] nodeLabeling :  nodeLabeling (not necessarily dense)
 /// \param nodeNumStopCond      : optional stopping condition
-template<class GRAPH, class EDGE_WEIGHTS, class NODE_SIZE, class NODE_LABEL_MAP>
+template <class GRAPH, class EDGE_WEIGHTS, class NODE_SIZE, class NODE_LABEL_MAP>
 void
 felzenszwalbSegmentation(
     const GRAPH& graph,
@@ -1037,17 +1037,17 @@ felzenszwalbSegmentation(
     size_t nodeNum = graph.nodeNum();
 
 
-    while (true)
+    while(true)
     {
         // iterate over edges is the sorted order
-        for (size_t i = 0; i < sortedEdges.size(); ++i)
+        for(size_t i = 0; i < sortedEdges.size(); ++i)
         {
             const Edge e = sortedEdges[i];
             const size_t rui = ufdArray.findIndex(graph.id(graph.u(e)));
             const size_t rvi = ufdArray.findIndex(graph.id(graph.v(e)));
             const Node ru = graph.nodeFromId(rui);
             const Node rv = graph.nodeFromId(rvi);
-            if (rui != rvi)
+            if(rui != rvi)
             {
 
                 //check if to merge or not ?
@@ -1057,7 +1057,7 @@ felzenszwalbSegmentation(
                 const WeightType tauRu = static_cast<WeightType>(k) / static_cast<WeightType>(sizeRu);
                 const WeightType tauRv = static_cast<WeightType>(k) / static_cast<WeightType>(sizeRv);
                 const WeightType minIntDiff = std::min(internalDiff[ru] + tauRu, internalDiff[rv] + tauRv);
-                if (w <= minIntDiff)
+                if(w <= minIntDiff)
                 {
                     // do merge
                     ufdArray.makeUnion(rui, rvi);
@@ -1069,18 +1069,18 @@ felzenszwalbSegmentation(
                     nodeSizeAcc[newRepNode] = sizeRu + sizeRv;
                 }
             }
-            if (nodeNumStopCond >= 0 && nodeNum == static_cast<size_t>(nodeNumStopCond))
+            if(nodeNumStopCond >= 0 && nodeNum == static_cast<size_t>(nodeNumStopCond))
             {
                 break;
             }
         }
-        if (nodeNumStopCond == -1)
+        if(nodeNumStopCond == -1)
         {
             break;
         }
         else
         {
-            if (nodeNumStopCond >= 0 && nodeNum > static_cast<size_t>(nodeNumStopCond))
+            if(nodeNumStopCond >= 0 && nodeNum > static_cast<size_t>(nodeNumStopCond))
             {
                 k *= 1.2f;
             }
@@ -1091,7 +1091,7 @@ felzenszwalbSegmentation(
         }
     }
     ufdArray.makeContiguous();
-    for (typename GRAPH::NodeIt n(graph); n != lemon::INVALID; ++n)
+    for(typename GRAPH::NodeIt n(graph); n != lemon::INVALID; ++n)
     {
         const Node node(*n);
         nodeLabeling[node] = ufdArray.findLabel(graph.id(node));
@@ -1103,7 +1103,7 @@ felzenszwalbSegmentation(
 namespace detail_graph_smoothing
 {
 
-template<
+template <
     class GRAPH,
     class NODE_FEATURES_IN,
     class EDGE_WEIGHTS,
@@ -1132,7 +1132,7 @@ graphSmoothingImpl(
 
     //fillNodeMap(g, nodeFeaturesOut, typename NODE_FEATURES_OUT::value_type(0.0));
 
-    for (NodeIt n(g); n != lemon::INVALID; ++n)
+    for(NodeIt n(g); n != lemon::INVALID; ++n)
     {
 
         const Node node(*n);
@@ -1143,7 +1143,7 @@ graphSmoothingImpl(
         featOut = 0;
         float weightSum = 0.0;
         size_t degree = 0;
-        for (OutArcIt a(g, node); a != lemon::INVALID; ++a)
+        for(OutArcIt a(g, node); a != lemon::INVALID; ++a)
         {
             const Edge edge(*a);
             const Node neigbour(g.target(*a));
@@ -1151,7 +1151,7 @@ graphSmoothingImpl(
 
             NodeFeatureInValue neighbourFeat = nodeFeaturesIn[neigbour];
             neighbourFeat *= smoothFactor;
-            if (degree == 0)
+            if(degree == 0)
                 featOut = neighbourFeat;
             else
                 featOut += neighbourFeat;
@@ -1166,7 +1166,7 @@ graphSmoothingImpl(
     }
 }
 
-template<class T>
+template <class T>
 struct ExpSmoothFactor
 {
     ExpSmoothFactor(const T lambda, const T edgeThreshold, const T scale)
@@ -1196,7 +1196,7 @@ struct ExpSmoothFactor
 /// \param edgeThreshold   : edge threshold
 /// \param scale           : how much smoothing should be applied
 /// \param[out] nodeFeaturesOut : smoothed node features
-template<class GRAPH, class NODE_FEATURES_IN, class EDGE_INDICATOR, class NODE_FEATURES_OUT>
+template <class GRAPH, class NODE_FEATURES_IN, class EDGE_INDICATOR, class NODE_FEATURES_OUT>
 void
 graphSmoothing(
     const GRAPH& g,
@@ -1222,7 +1222,7 @@ graphSmoothing(
 /// \param iterations      : how often should this algorithm be called recursively
 /// \param[out] nodeFeaturesBuffer : preallocated(!) buffer to store node features temp.
 /// \param[out] nodeFeaturesOut : smoothed node features
-template<class GRAPH, class NODE_FEATURES_IN, class EDGE_INDICATOR, class NODE_FEATURES_OUT>
+template <class GRAPH, class NODE_FEATURES_IN, class EDGE_INDICATOR, class NODE_FEATURES_OUT>
 void
 recursiveGraphSmoothing(
     const GRAPH& g,
@@ -1242,9 +1242,9 @@ recursiveGraphSmoothing(
     iterations -= 1;
 
     bool outAsIn = true;
-    for (size_t i = 0; i < iterations; ++i)
+    for(size_t i = 0; i < iterations; ++i)
     {
-        if (outAsIn)
+        if(outAsIn)
         {
             graphSmoothing(g, nodeFeaturesOut, edgeIndicator, lambda, edgeThreshold, scale, nodeFeaturesBuffer);
             outAsIn = false;
@@ -1255,14 +1255,14 @@ recursiveGraphSmoothing(
             outAsIn = true;
         }
     }
-    if (!outAsIn)
+    if(!outAsIn)
     {
         copyNodeMap(g, nodeFeaturesBuffer, nodeFeaturesOut);
     }
 }
 
 
-template<class GRAPH, class NODE_MAP, class EDGE_MAP>
+template <class GRAPH, class NODE_MAP, class EDGE_MAP>
 void
 nodeGtToEdgeGt(
     const GRAPH& g,
@@ -1274,7 +1274,7 @@ nodeGtToEdgeGt(
     typedef typename GRAPH::EdgeIt EdgeIt;
     typedef typename GRAPH::Edge Edge;
 
-    for (EdgeIt edgeIt(g); edgeIt != lemon::INVALID; ++edgeIt)
+    for(EdgeIt edgeIt(g); edgeIt != lemon::INVALID; ++edgeIt)
     {
         const Edge edge(*edgeIt);
         const Node u = g.u(edge);
@@ -1283,7 +1283,7 @@ nodeGtToEdgeGt(
         const Int64 lU = static_cast<Int64>(nodeGt[u]);
         const Int64 lV = static_cast<Int64>(nodeGt[v]);
 
-        if (ignoreLabel == -1 || (lU != ignoreLabel || lV != ignoreLabel))
+        if(ignoreLabel == -1 || (lU != ignoreLabel || lV != ignoreLabel))
         {
             edgeGt[edge] = lU == lV ? 0 : 1;
         }
@@ -1301,8 +1301,8 @@ nodeGtToEdgeGt(
 ///
 ///
 ///
-template<class RAG, class BASE_GRAPH, class BASE_GRAPH_RAG_LABELS,
-         class BASE_GRAPH_GT, class RAG_GT, class RAG_GT_QT>
+template <class RAG, class BASE_GRAPH, class BASE_GRAPH_RAG_LABELS,
+          class BASE_GRAPH_GT, class RAG_GT, class RAG_GT_QT>
 void
 projectGroundTruth(
     const RAG& rag,
@@ -1328,7 +1328,7 @@ projectGroundTruth(
 
     size_t i = 0;
     //::cout<<"\n";
-    for (BaseGraphNodeIt baseNodeIter(baseGraph); baseNodeIter != lemon::INVALID; ++baseNodeIter, ++i)
+    for(BaseGraphNodeIt baseNodeIter(baseGraph); baseNodeIter != lemon::INVALID; ++baseNodeIter, ++i)
     {
 
         //if (i%2000 == 0){
@@ -1350,15 +1350,15 @@ projectGroundTruth(
     }
     //std::cout<<"\n";
     // select label with max overlap
-    for (RagNodeIt ragNodeIter(rag); ragNodeIter != lemon::INVALID; ++ragNodeIter)
+    for(RagNodeIt ragNodeIter(rag); ragNodeIter != lemon::INVALID; ++ragNodeIter)
     {
         const RagNode ragNode = *ragNodeIter;
         const MapType olMap = overlap[ragNode];
         UInt32 olSize = 0;
         RagGtLabelType bestLabel = 0;
-        for (MapIter olIter = olMap.begin(); olIter != olMap.end(); ++olIter)
+        for(MapIter olIter = olMap.begin(); olIter != olMap.end(); ++olIter)
         {
-            if (olIter->second > olSize)
+            if(olIter->second > olSize)
             {
                 olSize = olIter->second;
                 bestLabel = olIter->first;
@@ -1377,7 +1377,7 @@ projectGroundTruth(
 /// \param affiliatedEdges : The affiliated edges of the region adjacency graph
 /// \param labelsArray : The label image
 /// \param node : The node (of the region adjacency graph), whose edges shall be found
-template<class RAGGRAPH, class GRAPH, class RAGEDGES, unsigned int N, class T>
+template <class RAGGRAPH, class GRAPH, class RAGEDGES, unsigned int N, class T>
 MultiArray<2, MultiArrayIndex>
 ragFindEdges(
     const RAGGRAPH& rag,
@@ -1396,11 +1396,11 @@ ragFindEdges(
 
     // Find edges and write them into a set.
     std::set<NodeCoordinate> edgeCoordinates;
-    for (RagOutArcIt iter(rag, node); iter != lemon::INVALID; ++iter)
+    for(RagOutArcIt iter(rag, node); iter != lemon::INVALID; ++iter)
     {
         const RagEdge ragEdge(*iter);
         const std::vector<Edge>& affEdges = affiliatedEdges[ragEdge];
-        for (int i = 0; i < affEdges.size(); ++i)
+        for(int i = 0; i < affEdges.size(); ++i)
         {
             Node u = graph.u(affEdges[i]);
             Node v = graph.v(affEdges[i]);
@@ -1408,11 +1408,11 @@ ragFindEdges(
             T vLabel = labelsArray[v];
 
             NodeCoordinate coords;
-            if (uLabel == nodeLabel)
+            if(uLabel == nodeLabel)
             {
                 coords = GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicNodeCoordinate(graph, u);
             }
-            else if (vLabel == nodeLabel)
+            else if(vLabel == nodeLabel)
             {
                 coords = GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicNodeCoordinate(graph, v);
             }
@@ -1429,10 +1429,10 @@ ragFindEdges(
     edgePoints.init(0);
     int next = 0;
     typedef typename std::set<NodeCoordinate>::iterator setIter;
-    for (setIter iter = edgeCoordinates.begin(); iter != edgeCoordinates.end(); ++iter)
+    for(setIter iter = edgeCoordinates.begin(); iter != edgeCoordinates.end(); ++iter)
     {
         NodeCoordinate coords = *iter;
-        for (int k = 0; k < coords.size(); ++k)
+        for(int k = 0; k < coords.size(); ++k)
         {
             edgePoints(next, k) = coords[k];
         }
@@ -1449,8 +1449,8 @@ ragFindEdges(
 ///                    distance between the edge's end nodes (default: 'false')
 /// \param func : binary function that computes the edge weight from the
 ///               weights of the edge's end nodes (default: take the average)
-template<unsigned int N, class DirectedTag,
-         class NODEMAP, class EDGEMAP, class FUNCTOR>
+template <unsigned int N, class DirectedTag,
+          class NODEMAP, class EDGEMAP, class FUNCTOR>
 void
 edgeWeightsFromNodeWeights(
     const GridGraph<N, DirectedTag>& g,
@@ -1467,12 +1467,12 @@ edgeWeightsFromNodeWeights(
     vigra_precondition(nodeWeights.shape() == g.shape(),
                        "edgeWeightsFromNodeWeights(): shape mismatch between graph and nodeWeights.");
 
-    for (EdgeIt iter(g); iter != lemon::INVALID; ++iter)
+    for(EdgeIt iter(g); iter != lemon::INVALID; ++iter)
     {
         const Edge edge(*iter);
         const CoordType uCoord(g.u(edge));
         const CoordType vCoord(g.v(edge));
-        if (euclidean)
+        if(euclidean)
         {
             edgeWeights[edge] = norm(uCoord - vCoord) * func(nodeWeights[uCoord], nodeWeights[vCoord]);
         }
@@ -1483,8 +1483,8 @@ edgeWeightsFromNodeWeights(
     }
 }
 
-template<unsigned int N, class DirectedTag,
-         class NODEMAP, class EDGEMAP>
+template <unsigned int N, class DirectedTag,
+          class NODEMAP, class EDGEMAP>
 inline void
 edgeWeightsFromNodeWeights(
     const GridGraph<N, DirectedTag>& g,
@@ -1507,8 +1507,8 @@ edgeWeightsFromNodeWeights(
 ///
 /// For each edge, the function reads the weight from <tt>interpolatedImage[u+v]</tt>,
 /// where <tt>u</tt> and <tt>v</tt> are the coordinates of the edge's end points.
-template<unsigned int N, class DirectedTag,
-         class T, class EDGEMAP>
+template <unsigned int N, class DirectedTag,
+          class T, class EDGEMAP>
 void
 edgeWeightsFromInterpolatedImage(
     const GridGraph<N, DirectedTag>& g,
@@ -1524,12 +1524,12 @@ edgeWeightsFromInterpolatedImage(
     vigra_precondition(interpolatedImage.shape() == 2 * g.shape() - CoordType(1),
                        "edgeWeightsFromInterpolatedImage(): interpolated shape must be shape*2-1");
 
-    for (EdgeIt iter(g); iter != lemon::INVALID; ++iter)
+    for(EdgeIt iter(g); iter != lemon::INVALID; ++iter)
     {
         const Edge edge(*iter);
         const CoordType uCoord(g.u(edge));
         const CoordType vCoord(g.v(edge));
-        if (euclidean)
+        if(euclidean)
         {
             edgeWeights[edge] = norm(uCoord - vCoord) * interpolatedImage[uCoord + vCoord];
         }
@@ -1540,7 +1540,7 @@ edgeWeightsFromInterpolatedImage(
     }
 }
 
-template<class GRAPH>
+template <class GRAPH>
 struct ThreeCycle
 {
 
@@ -1555,19 +1555,19 @@ struct ThreeCycle
     }
     bool operator<(const ThreeCycle& other) const
     {
-        if (nodes_[0] < other.nodes_[0])
+        if(nodes_[0] < other.nodes_[0])
         {
             return true;
         }
-        else if (nodes_[0] == other.nodes_[0])
+        else if(nodes_[0] == other.nodes_[0])
         {
-            if (nodes_[1] < other.nodes_[1])
+            if(nodes_[1] < other.nodes_[1])
             {
                 return true;
             }
-            else if (nodes_[1] == other.nodes_[1])
+            else if(nodes_[1] == other.nodes_[1])
             {
-                if (nodes_[2] < other.nodes_[2])
+                if(nodes_[2] < other.nodes_[2])
                 {
                     return true;
                 }
@@ -1591,7 +1591,7 @@ struct ThreeCycle
 };
 
 
-template<class GRAPH>
+template <class GRAPH>
 void
 find3Cycles(
     const GRAPH& g,
@@ -1606,20 +1606,20 @@ find3Cycles(
 
     std::set<Cycle> cycles;
     typedef typename std::set<Cycle>::const_iterator SetIter;
-    for (EdgeIt iter(g); iter != lemon::INVALID; ++iter)
+    for(EdgeIt iter(g); iter != lemon::INVALID; ++iter)
     {
         const Edge edge(*iter);
         const Node u = g.u(edge);
         const Node v = g.v(edge);
 
         // find a node n which is connected to u and v
-        for (OutArcIt outArcIt(g, u); outArcIt != lemon::INVALID; ++outArcIt)
+        for(OutArcIt outArcIt(g, u); outArcIt != lemon::INVALID; ++outArcIt)
         {
             const Node w = g.target(*outArcIt);
-            if (w != v)
+            if(w != v)
             {
                 const Edge e = g.findEdge(w, v);
-                if (e != lemon::INVALID)
+                if(e != lemon::INVALID)
                 {
                     // found cycle
                     cycles.insert(Cycle(u, v, w));
@@ -1629,11 +1629,11 @@ find3Cycles(
     }
     cyclesArray.reshape(TinyVector<UInt32, 1>(cycles.size()));
     UInt32 i = 0;
-    for (SetIter iter = cycles.begin(); iter != cycles.end(); ++iter)
+    for(SetIter iter = cycles.begin(); iter != cycles.end(); ++iter)
     {
 
         const Cycle& c = *iter;
-        for (size_t j = 0; j < 3; ++j)
+        for(size_t j = 0; j < 3; ++j)
         {
             cyclesArray(i)[j] = g.id(c.nodes_[j]);
         }
@@ -1641,7 +1641,7 @@ find3Cycles(
     }
 }
 
-template<class GRAPH>
+template <class GRAPH>
 void
 find3CyclesEdges(
     const GRAPH& g,
@@ -1656,20 +1656,20 @@ find3CyclesEdges(
 
     std::set<Cycle> cycles;
     typedef typename std::set<Cycle>::const_iterator SetIter;
-    for (EdgeIt iter(g); iter != lemon::INVALID; ++iter)
+    for(EdgeIt iter(g); iter != lemon::INVALID; ++iter)
     {
         const Edge edge(*iter);
         const Node u = g.u(edge);
         const Node v = g.v(edge);
 
         // find a node n which is connected to u and v
-        for (OutArcIt outArcIt(g, u); outArcIt != lemon::INVALID; ++outArcIt)
+        for(OutArcIt outArcIt(g, u); outArcIt != lemon::INVALID; ++outArcIt)
         {
             const Node w = g.target(*outArcIt);
-            if (w != v)
+            if(w != v)
             {
                 const Edge e = g.findEdge(w, v);
-                if (e != lemon::INVALID)
+                if(e != lemon::INVALID)
                 {
                     // found cycle
                     cycles.insert(Cycle(u, v, w));
@@ -1679,7 +1679,7 @@ find3CyclesEdges(
     }
     cyclesArray.reshape(TinyVector<UInt32, 1>(cycles.size()));
     UInt32 i = 0;
-    for (SetIter iter = cycles.begin(); iter != cycles.end(); ++iter)
+    for(SetIter iter = cycles.begin(); iter != cycles.end(); ++iter)
     {
 
         const Cycle& c = *iter;

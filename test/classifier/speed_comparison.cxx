@@ -23,10 +23,10 @@ main(int /*argc*/, char** /*argv*/)
     RandomMT19937 random_old(1);
 
 
-    for (int ii = 0; ii < features.shape(0); ++ii)
+    for(int ii = 0; ii < features.shape(0); ++ii)
     {
         labels(ii, 0) = random.uniform53() > 0.5;
-        for (int jj = 0; jj < features.shape(1); ++jj)
+        for(int jj = 0; jj < features.shape(1); ++jj)
         {
             features(ii, jj) = random.uniform53();
         }

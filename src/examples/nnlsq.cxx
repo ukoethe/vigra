@@ -27,7 +27,7 @@ main()
     nonnegativeLeastSquares(A, b, x);
 
     std::cout << "solution LARS: ";
-    for (int k = 0; k < 3; ++k)
+    for(int k = 0; k < 3; ++k)
         std::cout << x(k, 0) << ", ";
     std::cout << "\n";
 
@@ -45,7 +45,7 @@ main()
     quadraticProgramming(U, v, empty, empty, eye, zeros, x);
 
     std::cout << "solution Goldfarb-Idnani: ";
-    for (int k = 0; k < 3; ++k)
+    for(int k = 0; k < 3; ++k)
         std::cout << x(k, 0) << ", ";
     std::cout << "\n";
 

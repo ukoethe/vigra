@@ -67,13 +67,13 @@ namespace merge_graph_detail
 
 // ufd  data structure structure for merge graph
 // only useful for merge graphs internal usage
-template<class T>
+template <class T>
 class IterablePartition;
 
 // representative element iterator
 // for IterablePartition
 // only useful for merge graphs internal usage
-template<class T>
+template <class T>
 struct ConstRepIter
     : public ForwardIteratorFacade<
           ConstRepIter<T>, T, true>
@@ -113,7 +113,7 @@ private:
 
     void increment()
     {
-        if (partition_->jumpVec_[currentRep_].second == 0)
+        if(partition_->jumpVec_[currentRep_].second == 0)
         {
             currentRep_ += 1;
         }
@@ -125,7 +125,7 @@ private:
 
     void decrement()
     {
-        if (partition_->jumpVec_[currentRep_].first == 0)
+        if(partition_->jumpVec_[currentRep_].first == 0)
         {
             //VIGRA_ASSERT_OP(currentRep_,==,partition_->firstRep());
             //currentRep_+=1;
@@ -153,7 +153,7 @@ private:
 // only useful for merge graphs internal usage
 /// Disjoint set data structure with path compression.
 /// \ingroup datastructures
-template<class T>
+template <class T>
 class IterablePartition
 {
 public:
@@ -168,9 +168,9 @@ public:
     value_type find(value_type);              // with path compression
     value_type numberOfElements() const;
     value_type numberOfSets() const;
-    template<class Iterator>
+    template <class Iterator>
     void elementLabeling(Iterator) const;
-    template<class Iterator>
+    template <class Iterator>
     void representatives(Iterator) const;
     void representativeLabeling(std::map<value_type, value_type>&) const;
 
@@ -190,7 +190,7 @@ public:
 
     const_iterator begin() const
     {
-        if (numberOfSets_ != 0)
+        if(numberOfSets_ != 0)
             return ConstRepIter<T>(*this, firstRep_);
         else
             return ConstRepIter<T>(*this, lastRep_ + 1);
@@ -203,7 +203,7 @@ public:
 
     const_iterator iteratorAt(const value_type& rep) const
     {
-        if (numberOfSets_ != 0)
+        if(numberOfSets_ != 0)
             return ConstRepIter<T>(*this, rep);
         else
             return ConstRepIter<T>(*this, lastRep_ + 1);
@@ -220,13 +220,13 @@ public:
         const T jumpMinus = jumpVec_[notRep].first;
         const T jumpPlus = jumpVec_[notRep].second;
 
-        if (jumpMinus == 0)
+        if(jumpMinus == 0)
         {
             const T nextRep = notRep + jumpPlus;
             firstRep_ = nextRep;
             jumpVec_[nextRep].first = 0;
         }
-        else if (jumpPlus == 0)
+        else if(jumpPlus == 0)
         {
             //VIGRA_ASSERT_OP(lastRep_,==,notRep);
             const T prevRep = notRep - jumpMinus;
@@ -240,7 +240,7 @@ public:
             jumpVec_[nextRep].first += jumpVec_[notRep].first;
             jumpVec_[prevRep].second += jumpVec_[notRep].second;
         }
-        if (reduceSize)
+        if(reduceSize)
         {
             --numberOfSets_;
         }
@@ -266,10 +266,10 @@ private:
 // helper classes to generalize
 // some functionality for
 // nodes,edges and arcs
-template<class GRAPH, class ITEM>
+template <class GRAPH, class ITEM>
 struct MergeGraphItemHelper;
 
-template<class MG>
+template <class MG>
 struct MergeGraphItemHelper<MG, typename MG::Edge>
 {
     typedef typename MG::Graph Graph;
@@ -295,7 +295,7 @@ struct MergeGraphItemHelper<MG, typename MG::Edge>
     }
 };
 
-template<class MG>
+template <class MG>
 struct MergeGraphItemHelper<MG, typename MG::Node>
 {
     typedef typename MG::Graph Graph;
@@ -321,7 +321,7 @@ struct MergeGraphItemHelper<MG, typename MG::Node>
 };
 
 // merge graphs LEMON compatible iterator
-template<class MERGE_GRAPH>
+template <class MERGE_GRAPH>
 class MergeGraphNodeIt
     : public ForwardIteratorFacade<MergeGraphNodeIt<MERGE_GRAPH>, typename MERGE_GRAPH::Node, true>
 {
@@ -380,7 +380,7 @@ private:
 };
 
 // merge graphs LEMON compatible iterator
-template<class MERGE_GRAPH>
+template <class MERGE_GRAPH>
 class MergeGraphEdgeIt
     : public ForwardIteratorFacade<MergeGraphEdgeIt<MERGE_GRAPH>, typename MERGE_GRAPH::Edge, true>
 {
@@ -439,7 +439,7 @@ private:
 };
 
 // merge graphs LEMON compatible iterator
-template<class GRAPH>
+template <class GRAPH>
 class MergeGraphArcIt
     : public ForwardIteratorFacade<
           MergeGraphArcIt<GRAPH>, typename GRAPH::Arc, true>
@@ -489,10 +489,10 @@ private:
 
     void increment()
     {
-        if (inFirstHalf_)
+        if(inFirstHalf_)
         {
             ++pos_;
-            if (pos_ == lemon::INVALID)
+            if(pos_ == lemon::INVALID)
             {
                 pos_ = EdgeIt(*graph_);
                 inFirstHalf_ = false;
@@ -502,7 +502,7 @@ private:
         else
         {
             ++pos_;
-            if (pos_ == lemon::INVALID)
+            if(pos_ == lemon::INVALID)
             {
                 veryEnd_ = true;
             }
@@ -536,7 +536,7 @@ private:
 
 // callbacks of merge graph
 // to update node and edge maps w.r.t. edge contractions
-template<class NODE, class EDGE>
+template <class NODE, class EDGE>
 class MergeGraphCallbacks
 {
 public:
@@ -564,17 +564,17 @@ public:
 protected:
     void callMergeNodeCallbacks(const NODE& a, const NODE& b)
     {
-        for (size_t i = 0; i < mergeNodeCallbacks_.size(); ++i)
+        for(size_t i = 0; i < mergeNodeCallbacks_.size(); ++i)
             mergeNodeCallbacks_[i](a, b);
     }
     void callMergeEdgeCallbacks(const EDGE& a, const EDGE& b)
     {
-        for (size_t i = 0; i < mergeEdgeCallbacks_.size(); ++i)
+        for(size_t i = 0; i < mergeEdgeCallbacks_.size(); ++i)
             mergeEdgeCallbacks_[i](a, b);
     }
     void callEraseEdgeCallbacks(const EDGE& a)
     {
-        for (size_t i = 0; i < eraseEdgeCallbacks_.size(); ++i)
+        for(size_t i = 0; i < eraseEdgeCallbacks_.size(); ++i)
             eraseEdgeCallbacks_[i](a);
     }
     void clearCallbacks()
@@ -595,7 +595,7 @@ private:
 /** \brief undirected graph adaptor 
       for edge contraction and feature merging
     */
-template<class GRAPH>
+template <class GRAPH>
 class MergeGraphAdaptor
     : public MergeGraphCallbacks<
           detail::GenericNode<vigra::Int64>,
@@ -648,7 +648,7 @@ public:
 
 
 
-    template<class T>
+    template <class T>
     struct EdgeMap : DenseEdgeReferenceMap<MergeGraphType, T>
     {
         EdgeMap()
@@ -665,7 +665,7 @@ public:
         }
     };
 
-    template<class T>
+    template <class T>
     struct NodeMap : DenseNodeReferenceMap<MergeGraphType, T>
     {
         NodeMap()
@@ -682,7 +682,7 @@ public:
         }
     };
 
-    template<class T>
+    template <class T>
     struct ArcMap : DenseArcReferenceMap<MergeGraphType, T>
     {
         ArcMap()
@@ -761,14 +761,14 @@ public:
 
     Node source(const Arc& arc) const
     {
-        if (arc != lemon::INVALID)
+        if(arc != lemon::INVALID)
             return direction(arc) ? u(Edge(arc)) : v(Edge(arc));
         else
             return Node(lemon::INVALID);
     }
     Node target(const Arc& arc) const
     {
-        if (arc != lemon::INVALID)
+        if(arc != lemon::INVALID)
             return direction(arc) ? v(Edge(arc)) : u(Edge(arc));
         else
             return Node(lemon::INVALID);
@@ -787,11 +787,11 @@ public:
     {
         const Node uNode = u(e);
         const Node vNode = v(e);
-        if (id(uNode) == id(n))
+        if(id(uNode) == id(n))
         {
             return vNode;
         }
-        else if (id(vNode) == id(n))
+        else if(id(vNode) == id(n))
         {
             return uNode;
         }
@@ -804,9 +804,9 @@ public:
 
     Arc direct(const Edge& edge, const bool forward) const
     {
-        if (edge != lemon::INVALID)
+        if(edge != lemon::INVALID)
         {
-            if (forward)
+            if(forward)
                 return Arc(id(edge), id(edge));
             else
                 return Arc(id(edge) + (maxEdgeId() + 1), id(edge));
@@ -818,9 +818,9 @@ public:
     }
     Arc direct(const Edge& edge, const Node& node) const
     {
-        if (u(edge) == node)
+        if(u(edge) == node)
             return direct(edge, true);
-        else if (v(edge) == node)
+        else if(v(edge) == node)
             return direct(edge, false);
         else
             return Arc(lemon::INVALID);
@@ -869,7 +869,7 @@ public:
     size_t maxDegree() const
     {
         size_t md = 0;
-        for (NodeIt it(*this); it != lemon::INVALID; ++it)
+        for(NodeIt it(*this); it != lemon::INVALID; ++it)
         {
             std::max(md, size_t(degree(*it)));
         }
@@ -880,18 +880,18 @@ public:
 
 private:
     // needs acces to const nodeImpl
-    template<class G, class NIMPL, class FILT>
+    template <class G, class NIMPL, class FILT>
     friend class detail::GenericIncEdgeIt;
 
-    template<class G>
+    template <class G>
     friend struct detail::NeighborNodeFilter;
-    template<class G>
+    template <class G>
     friend struct detail::IncEdgeFilter;
-    template<class G>
+    template <class G>
     friend struct detail::BackEdgeFilter;
-    template<class G>
+    template <class G>
     friend struct detail::IsOutFilter;
-    template<class G>
+    template <class G>
     friend struct detail::IsInFilter;
     friend class MergeGraphNodeIt<MergeGraphType>;
     friend class MergeGraphArcIt<MergeGraphType>;
@@ -926,7 +926,7 @@ private:
 };
 
 
-template<class GRAPH>
+template <class GRAPH>
 MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH& graph)
     : MergeGraphCallbacks<Node, Edge>(),
       graph_(graph),
@@ -936,9 +936,9 @@ MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH& graph)
       nDoubleEdges_(0),
       doubleEdges_(graph_.edgeNum() / 2 + 1)
 {
-    for (index_type possibleNodeId = 0; possibleNodeId <= graph_.maxNodeId(); ++possibleNodeId)
+    for(index_type possibleNodeId = 0; possibleNodeId <= graph_.maxNodeId(); ++possibleNodeId)
     {
-        if (graph_.nodeFromId(possibleNodeId) == lemon::INVALID)
+        if(graph_.nodeFromId(possibleNodeId) == lemon::INVALID)
         {
             nodeUfd_.eraseElement(possibleNodeId);
         }
@@ -947,10 +947,10 @@ MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH& graph)
             nodeVector_[possibleNodeId].id_ = possibleNodeId;
         }
     }
-    for (index_type possibleEdgeId = 0; possibleEdgeId <= graph_.maxEdgeId(); ++possibleEdgeId)
+    for(index_type possibleEdgeId = 0; possibleEdgeId <= graph_.maxEdgeId(); ++possibleEdgeId)
     {
         const GraphEdge possibleEdge(graph_.edgeFromId(possibleEdgeId));
-        if (possibleEdge == lemon::INVALID)
+        if(possibleEdge == lemon::INVALID)
         {
             edgeUfd_.eraseElement(possibleEdgeId);
         }
@@ -965,7 +965,7 @@ MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH& graph)
 }
 
 
-template<class GRAPH>
+template <class GRAPH>
 void
 MergeGraphAdaptor<GRAPH>::reset()
 {
@@ -976,11 +976,11 @@ MergeGraphAdaptor<GRAPH>::reset()
         this->clearCallbacks();
 
     // clean nodes_
-    for (index_type possibleNodeId = 0; possibleNodeId <= graph_.maxNodeId(); ++possibleNodeId)
+    for(index_type possibleNodeId = 0; possibleNodeId <= graph_.maxNodeId(); ++possibleNodeId)
     {
 
         nodeVector_[possibleNodeId].clear();
-        if (graph_.nodeFromId(possibleNodeId) == lemon::INVALID)
+        if(graph_.nodeFromId(possibleNodeId) == lemon::INVALID)
         {
             nodeUfd_.eraseElement(possibleNodeId);
         }
@@ -990,10 +990,10 @@ MergeGraphAdaptor<GRAPH>::reset()
         }
     }
 
-    for (index_type possibleEdgeId = 0; possibleEdgeId <= graph_.maxEdgeId(); ++possibleEdgeId)
+    for(index_type possibleEdgeId = 0; possibleEdgeId <= graph_.maxEdgeId(); ++possibleEdgeId)
     {
         const GraphEdge possibleEdge(graph_.edgeFromId(possibleEdgeId));
-        if (possibleEdge == lemon::INVALID)
+        if(possibleEdge == lemon::INVALID)
         {
             edgeUfd_.eraseElement(possibleEdgeId);
         }
@@ -1008,17 +1008,17 @@ MergeGraphAdaptor<GRAPH>::reset()
 }
 
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::Edge
 MergeGraphAdaptor<GRAPH>::findEdge(
     const typename MergeGraphAdaptor<GRAPH>::Node& a,
     const typename MergeGraphAdaptor<GRAPH>::Node& b) const
 {
 
-    if (a != b)
+    if(a != b)
     {
         std::pair<index_type, bool> res = nodeVector_[id(a)].findEdge(id(b));
-        if (res.second)
+        if(res.second)
         {
             return Edge(res.first);
         }
@@ -1026,42 +1026,42 @@ MergeGraphAdaptor<GRAPH>::findEdge(
     return Edge(lemon::INVALID);
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::Arc
 MergeGraphAdaptor<GRAPH>::findArc(
     const typename MergeGraphAdaptor<GRAPH>::Node& uNode,
     const typename MergeGraphAdaptor<GRAPH>::Node& vNode) const
 {
     const Edge edge = findEdge(uNode, vNode);
-    if (edge == lemon::INVALID)
+    if(edge == lemon::INVALID)
         return Arc(lemon::INVALID);
     else
         return direct(edge, u(edge) == uNode);
 }
 
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::Node
 MergeGraphAdaptor<GRAPH>::u(const Edge& edge) const
 {
     return nodeFromId(uId(id(edge)));
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::Node
 MergeGraphAdaptor<GRAPH>::v(const Edge& edge) const
 {
     return nodeFromId(vId(id(edge)));
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::index_type
 MergeGraphAdaptor<GRAPH>::uId(const index_type edgeId) const
 {
     return reprNodeId(graphUId(edgeId));
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::index_type
 MergeGraphAdaptor<GRAPH>::vId(const index_type edgeId) const
 {
@@ -1070,14 +1070,14 @@ MergeGraphAdaptor<GRAPH>::vId(const index_type edgeId) const
 
 
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::index_type
 MergeGraphAdaptor<GRAPH>::graphUId(const index_type edgeId) const
 {
     return graph_.id(graph_.u(graph_.edgeFromId(edgeId)));
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::index_type
 MergeGraphAdaptor<GRAPH>::graphVId(const index_type edgeId) const
 {
@@ -1085,20 +1085,20 @@ MergeGraphAdaptor<GRAPH>::graphVId(const index_type edgeId) const
 }
 
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::IdType
 MergeGraphAdaptor<GRAPH>::maxEdgeId() const
 {
     return static_cast<index_type>(edgeUfd_.lastRep());
 }
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::IdType
 MergeGraphAdaptor<GRAPH>::maxNodeId() const
 {
     return static_cast<index_type>(nodeUfd_.lastRep());
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::IdType
 MergeGraphAdaptor<GRAPH>::maxArcId() const
 {
@@ -1108,7 +1108,7 @@ MergeGraphAdaptor<GRAPH>::maxArcId() const
 
 #ifndef DOXYGEN // doxygen doesn't understand this
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::IdType
 MergeGraphAdaptor<GRAPH>::id(
     const typename MergeGraphAdaptor<GRAPH>::Edge& edge) const
@@ -1116,7 +1116,7 @@ MergeGraphAdaptor<GRAPH>::id(
     return edge.id();
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::IdType
 MergeGraphAdaptor<GRAPH>::id(
     const typename MergeGraphAdaptor<GRAPH>::Node& node) const
@@ -1124,7 +1124,7 @@ MergeGraphAdaptor<GRAPH>::id(
     return node.id();
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::IdType
 MergeGraphAdaptor<GRAPH>::id(
     const typename MergeGraphAdaptor<GRAPH>::Arc& arc) const
@@ -1135,7 +1135,7 @@ MergeGraphAdaptor<GRAPH>::id(
 #endif //DOXYGEN
 
 
-template<class GRAPH>
+template <class GRAPH>
 inline size_t
 MergeGraphAdaptor<GRAPH>::degree(
     typename MergeGraphAdaptor<GRAPH>::Node const& node) const
@@ -1145,14 +1145,14 @@ MergeGraphAdaptor<GRAPH>::degree(
 
 
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::EdgeIdIt
 MergeGraphAdaptor<GRAPH>::edgeIdsBegin() const
 {
     return edgeUfd_.begin();
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::EdgeIdIt
 MergeGraphAdaptor<GRAPH>::edgeIdsEnd() const
 {
@@ -1160,14 +1160,14 @@ MergeGraphAdaptor<GRAPH>::edgeIdsEnd() const
 }
 
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::NodeIdIt
 MergeGraphAdaptor<GRAPH>::nodeIdsBegin() const
 {
     return nodeUfd_.begin();
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::NodeIdIt
 MergeGraphAdaptor<GRAPH>::nodeIdsEnd() const
 {
@@ -1175,7 +1175,7 @@ MergeGraphAdaptor<GRAPH>::nodeIdsEnd() const
 }
 
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::Edge
 MergeGraphAdaptor<GRAPH>::edgeFromIdUnsave(
     const typename MergeGraphAdaptor<GRAPH>::IdType index) const
@@ -1183,48 +1183,48 @@ MergeGraphAdaptor<GRAPH>::edgeFromIdUnsave(
     return Edge(index);
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::Edge
 MergeGraphAdaptor<GRAPH>::edgeFromId(
     const typename MergeGraphAdaptor<GRAPH>::IdType index) const
 {
-    if (hasEdgeId(index))
+    if(hasEdgeId(index))
         return Edge(index);
     else
         return Edge(lemon::INVALID);
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::Node
 MergeGraphAdaptor<GRAPH>::nodeFromId(
     const typename MergeGraphAdaptor<GRAPH>::IdType index) const
 {
-    if (hasNodeId(index))
+    if(hasNodeId(index))
         return Node(index);
     else
         return Node(lemon::INVALID);
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::Arc
 MergeGraphAdaptor<GRAPH>::arcFromId(
     const typename MergeGraphAdaptor<GRAPH>::IdType index) const
 {
-    if (index <= maxEdgeId())
+    if(index <= maxEdgeId())
         return Arc(index, index);
     else
         return Arc(index, index - maxEdgeId() - 1);
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline bool
 MergeGraphAdaptor<GRAPH>::hasEdgeId(
     const typename MergeGraphAdaptor<GRAPH>::IdType edgeIndex) const
 {
-    if (edgeIndex <= maxEdgeId() && !edgeUfd_.isErased(edgeIndex))
+    if(edgeIndex <= maxEdgeId() && !edgeUfd_.isErased(edgeIndex))
     {
         const IdType reprEdgeIndex = reprEdgeId(edgeIndex);
-        if (reprEdgeIndex != edgeIndex)
+        if(reprEdgeIndex != edgeIndex)
         {
             return false;
         }
@@ -1241,7 +1241,7 @@ MergeGraphAdaptor<GRAPH>::hasEdgeId(
     }
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline bool
 MergeGraphAdaptor<GRAPH>::hasNodeId(
     const typename MergeGraphAdaptor<GRAPH>::IdType nodeIndex) const
@@ -1250,7 +1250,7 @@ MergeGraphAdaptor<GRAPH>::hasNodeId(
     return nodeIndex <= maxNodeId() && !nodeUfd_.isErased(nodeIndex) && nodeUfd_.find(nodeIndex) == nodeIndex;
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::IdType
 MergeGraphAdaptor<GRAPH>::reprEdgeId(
     const typename MergeGraphAdaptor<GRAPH>::IdType edgeIndex) const
@@ -1258,7 +1258,7 @@ MergeGraphAdaptor<GRAPH>::reprEdgeId(
     return edgeUfd_.find(edgeIndex);
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::IdType
 MergeGraphAdaptor<GRAPH>::reprNodeId(
     const typename MergeGraphAdaptor<GRAPH>::IdType nodeIndex) const
@@ -1266,7 +1266,7 @@ MergeGraphAdaptor<GRAPH>::reprNodeId(
     return nodeUfd_.find(nodeIndex);
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline bool
 MergeGraphAdaptor<GRAPH>::stateOfInitalEdge(
     const typename MergeGraphAdaptor<GRAPH>::IdType initalEdge) const
@@ -1277,28 +1277,28 @@ MergeGraphAdaptor<GRAPH>::stateOfInitalEdge(
     return rnid0 != rnid1;
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline size_t
 MergeGraphAdaptor<GRAPH>::nodeNum() const
 {
     return nodeUfd_.numberOfSets();
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline size_t
 MergeGraphAdaptor<GRAPH>::arcNum() const
 {
     return edgeNum() * 2;
 }
 
-template<class GRAPH>
+template <class GRAPH>
 inline size_t
 MergeGraphAdaptor<GRAPH>::edgeNum() const
 {
     return edgeUfd_.numberOfSets();
 }
 
-template<class GRAPH>
+template <class GRAPH>
 void
 MergeGraphAdaptor<GRAPH>::contractEdge(
     const typename MergeGraphAdaptor<GRAPH>::Edge& toDeleteEdge)
@@ -1316,10 +1316,10 @@ MergeGraphAdaptor<GRAPH>::contractEdge(
     typename NodeStorage::AdjIt end = nodeVector_[notNewNodeRep].adjacencyEnd();
 
     nDoubleEdges_ = 0;
-    for (; iter != end; ++iter)
+    for(; iter != end; ++iter)
     {
         const size_t adjToDeadNodeId = iter->nodeId();
-        if (newNodeRep < 0 || adjToDeadNodeId != static_cast<unsigned long long>(newNodeRep))
+        if(newNodeRep < 0 || adjToDeadNodeId != static_cast<unsigned long long>(newNodeRep))
         {
 
             // REFACTOR ME,  we can make that faster if
@@ -1327,7 +1327,7 @@ MergeGraphAdaptor<GRAPH>::contractEdge(
             std::pair<index_type, bool> found = nodeVector_[adjToDeadNodeId].findEdge(newNodeRep);
 
 
-            if (found.second)
+            if(found.second)
             {
                 edgeUfd_.merge(iter->edgeId(), found.first);
 
@@ -1374,7 +1374,7 @@ MergeGraphAdaptor<GRAPH>::contractEdge(
     this->callMergeNodeCallbacks(Node(newNodeRep), Node(notNewNodeRep));
 
     //std::cout<<"merge double edge callbacks\n";
-    for (size_t de = 0; de < nDoubleEdges_; ++de)
+    for(size_t de = 0; de < nDoubleEdges_; ++de)
     {
         this->callMergeEdgeCallbacks(Edge(doubleEdges_[de].first), Edge(doubleEdges_[de].second));
     }
@@ -1389,7 +1389,7 @@ MergeGraphAdaptor<GRAPH>::contractEdge(
 namespace merge_graph_detail
 {
 /// Construct a partition.
-template<class T>
+template <class T>
 IterablePartition<T>::IterablePartition()
     : parents_(),
       ranks_(),
@@ -1405,7 +1405,7 @@ IterablePartition<T>::IterablePartition()
 ///
 /// \param size Number of distinct sets.
 ///
-template<class T>
+template <class T>
 inline IterablePartition<T>::IterablePartition(
     const value_type& size)
     : parents_(static_cast<SizeTType>(size)),
@@ -1416,14 +1416,14 @@ inline IterablePartition<T>::IterablePartition(
       numberOfElements_(size),
       numberOfSets_(size)
 {
-    for (T j = 0; j < size; ++j)
+    for(T j = 0; j < size; ++j)
     {
         parents_[static_cast<SizeTType>(j)] = j;
     }
 
     jumpVec_.front().first = 0;
     jumpVec_.front().second = 1;
-    for (T j = 1; j < size - 1; ++j)
+    for(T j = 1; j < size - 1; ++j)
     {
         jumpVec_[j].first = 1;
         jumpVec_[j].second = 1;
@@ -1436,7 +1436,7 @@ inline IterablePartition<T>::IterablePartition(
 ///
 /// \param size Number of distinct sets.
 ///
-template<class T>
+template <class T>
 inline void
 IterablePartition<T>::reset(
     const value_type& size)
@@ -1448,7 +1448,7 @@ IterablePartition<T>::reset(
     jumpVec_.resize(static_cast<SizeTType>(size));
     firstRep_ = 0;
     lastRep_ = static_cast<SizeTType>(size) - 1;
-    for (T j = 0; j < size; ++j)
+    for(T j = 0; j < size; ++j)
     {
         ranks_[static_cast<SizeTType>(j)] = 0;
         parents_[static_cast<SizeTType>(j)] = j;
@@ -1456,7 +1456,7 @@ IterablePartition<T>::reset(
 
     jumpVec_.front().first = 0;
     jumpVec_.front().second = 1;
-    for (T j = 1; j < size - 1; ++j)
+    for(T j = 1; j < size - 1; ++j)
     {
         jumpVec_[j].first = 1;
         jumpVec_[j].second = 1;
@@ -1471,14 +1471,14 @@ IterablePartition<T>::reset(
 ///
 /// \param element Element.
 ///
-template<class T>
+template <class T>
 inline typename IterablePartition<T>::value_type
 IterablePartition<T>::find(
     const value_type& element) const
 {
     // find the root
     value_type root = element;
-    while (parents_[static_cast<SizeTType>(root)] != root)
+    while(parents_[static_cast<SizeTType>(root)] != root)
     {
         root = parents_[static_cast<SizeTType>(root)];
     }
@@ -1491,7 +1491,7 @@ IterablePartition<T>::find(
 ///
 /// \param element Element.
 ///
-template<class T>
+template <class T>
 inline typename IterablePartition<T>::value_type
 IterablePartition<T>::find(
     value_type element // copy to work with
@@ -1499,12 +1499,12 @@ IterablePartition<T>::find(
 {
     // find the root
     value_type root = element;
-    while (parents_[static_cast<SizeTType>(root)] != root)
+    while(parents_[static_cast<SizeTType>(root)] != root)
     {
         root = parents_[static_cast<SizeTType>(root)];
     }
     // path compression
-    while (element != root)
+    while(element != root)
     {
         value_type tmp = parents_[static_cast<SizeTType>(element)];
         parents_[static_cast<SizeTType>(element)] = root;
@@ -1518,7 +1518,7 @@ IterablePartition<T>::find(
 /// \param element1 Element in the first set.
 /// \param element2 Element in the second set.
 ///
-template<class T>
+template <class T>
 inline void
 IterablePartition<T>::merge(
     value_type element1,
@@ -1527,24 +1527,24 @@ IterablePartition<T>::merge(
     // merge by rank
     element1 = find(element1);
     element2 = find(element2);
-    if (element1 != element2)
+    if(element1 != element2)
     {
         T notRep;
-        if (ranks_[static_cast<SizeTType>(element1)] < ranks_[static_cast<SizeTType>(element2)])
+        if(ranks_[static_cast<SizeTType>(element1)] < ranks_[static_cast<SizeTType>(element2)])
         {
             parents_[static_cast<SizeTType>(element1)] = element2;
             --numberOfSets_;
             //rep=element2;
             notRep = element1;
         }
-        else if (ranks_[static_cast<SizeTType>(element1)] > ranks_[static_cast<SizeTType>(element2)])
+        else if(ranks_[static_cast<SizeTType>(element1)] > ranks_[static_cast<SizeTType>(element2)])
         {
             parents_[static_cast<SizeTType>(element2)] = element1;
             --numberOfSets_;
             //rep=element1;
             notRep = element2;
         }
-        else if (element1 != element2)
+        else if(element1 != element2)
         {
             parents_[static_cast<SizeTType>(element2)] = element1;
             ++ranks_[static_cast<SizeTType>(element1)];
@@ -1556,40 +1556,40 @@ IterablePartition<T>::merge(
     }
 }
 
-template<class T>
+template <class T>
 inline typename IterablePartition<T>::value_type
 IterablePartition<T>::numberOfElements() const
 {
     return numberOfElements_;
 }
 
-template<class T>
+template <class T>
 inline typename IterablePartition<T>::value_type
 IterablePartition<T>::numberOfSets() const
 {
     return numberOfSets_;
 }
 
-template<class T>
+template <class T>
 inline bool
 operator==(const ConstRepIter<T>& iter, const lemon::Invalid& /*iv*/)
 {
     return iter.isEnd();
 }
-template<class T>
+template <class T>
 inline bool
 operator==(const lemon::Invalid& /*iv*/, const ConstRepIter<T>& iter)
 {
     return iter.isEnd();
 }
 
-template<class T>
+template <class T>
 inline bool
 operator!=(const ConstRepIter<T>& iter, const lemon::Invalid& /*iv*/)
 {
     return !iter.isEnd();
 }
-template<class T>
+template <class T>
 inline bool
 operator!=(const lemon::Invalid& /*iv*/, const ConstRepIter<T>& iter)
 {

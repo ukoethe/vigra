@@ -59,7 +59,7 @@ realSH(double l, double m)
     return std::sqrt((2.0 * l + 1.0) / (4.0 * M_PI * facLM(l, m)));
 }
 
-template<int N, class T, class C>
+template <int N, class T, class C>
 TinyVector<float, N>
 centerOfBB(MultiArrayView<N, T, C> const& A)
 {

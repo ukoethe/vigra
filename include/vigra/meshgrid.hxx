@@ -64,7 +64,7 @@ struct MeshGridAccessor
 
     /** read the current data item
         */
-    template<class ITERATOR>
+    template <class ITERATOR>
     value_type operator()(ITERATOR const& i) const
     {
         return value_type(i->x, i->y);
@@ -72,7 +72,7 @@ struct MeshGridAccessor
 
     /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
-    template<class ITERATOR, class DIFFERENCE>
+    template <class ITERATOR, class DIFFERENCE>
     value_type operator()(ITERATOR const& i, DIFFERENCE const& diff) const
     {
         return value_type(i->x + diff.x, i->y + diff.y);

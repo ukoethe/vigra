@@ -172,7 +172,7 @@ public:
      */
     int columns_size() const
     {
-        if (*column_data() == AllColumns)
+        if(*column_data() == AllColumns)
             return featureCount_;
         else
             return *column_data();
@@ -324,7 +324,7 @@ public:
             xrange.push_back(xrange.size());*/
 
         size_t n = topology.size();
-        for (int ii = 0; ii < tLen; ++ii)
+        for(int ii = 0; ii < tLen; ++ii)
             topology.push_back(0);
         //topology.resize (n  + tLen);
 
@@ -334,7 +334,7 @@ public:
         parameter_addr() = static_cast<int>(parameter.size());
 
         //parameter.resize(parameter.size() + pLen);
-        for (int ii = 0; ii < pLen; ++ii)
+        for(int ii = 0; ii < pLen; ++ii)
             parameter.push_back(0);
 
         parameters_ = parameter.begin() + parameter_addr();
@@ -362,12 +362,12 @@ public:
             xrange.push_back(xrange.size());*/
 
         size_t n = topology.size();
-        for (int ii = 0; ii < toCopy.topology_size(); ++ii)
+        for(int ii = 0; ii < toCopy.topology_size(); ++ii)
             topology.push_back(toCopy.topology_begin()[ii]);
         //        topology.insert(topology.end(), toCopy.topology_begin(), toCopy.topology_end());
         topology_ = topology.begin() + n;
         parameter_addr() = static_cast<int>(parameter.size());
-        for (int ii = 0; ii < toCopy.parameters_size(); ++ii)
+        for(int ii = 0; ii < toCopy.parameters_size(); ++ii)
             parameter.push_back(toCopy.parameters_begin()[ii]);
         //        parameter.insert(parameter.end(), toCopy.parameters_begin(), toCopy.parameters_end());
         parameters_ = parameter.begin() + parameter_addr();
@@ -375,10 +375,10 @@ public:
 };
 
 
-template<NodeTags NodeType>
+template <NodeTags NodeType>
 class Node;
 
-template<>
+template <>
 class Node<i_ThresholdNode>
     : public NodeBase
 {
@@ -427,7 +427,7 @@ public:
         return BT::column_data()[0];
     }
 
-    template<class U, class C>
+    template <class U, class C>
     BT::INT next(MultiArrayView<2, U, C> const& feature) const
     {
         return (feature(0, column()) < threshold()) ? child(0) : child(1);
@@ -435,7 +435,7 @@ public:
 };
 
 
-template<>
+template <>
 class Node<i_HyperplaneNode>
     : public NodeBase
 {
@@ -493,20 +493,20 @@ public:
     }
 
 
-    template<class U, class C>
+    template <class U, class C>
     BT::INT next(MultiArrayView<2, U, C> const& feature) const
     {
         double result = -1 * intercept();
-        if (*(BT::column_data()) == AllColumns)
+        if(*(BT::column_data()) == AllColumns)
         {
-            for (int ii = 0; ii < BT::columns_size(); ++ii)
+            for(int ii = 0; ii < BT::columns_size(); ++ii)
             {
                 result += feature[ii] * weights()[ii];
             }
         }
         else
         {
-            for (int ii = 0; ii < BT::columns_size(); ++ii)
+            for(int ii = 0; ii < BT::columns_size(); ++ii)
             {
                 result += feature[BT::columns_begin()[ii]] * weights()[ii];
             }
@@ -518,7 +518,7 @@ public:
 
 
 
-template<>
+template <>
 class Node<i_HypersphereNode>
     : public NodeBase
 {
@@ -573,13 +573,13 @@ public:
         return BT::parameters_begin() + 2;
     }
 
-    template<class U, class C>
+    template <class U, class C>
     BT::INT next(MultiArrayView<2, U, C> const& feature) const
     {
         double result = -1 * squaredRadius();
-        if (*(BT::column_data()) == AllColumns)
+        if(*(BT::column_data()) == AllColumns)
         {
-            for (int ii = 0; ii < BT::columns_size(); ++ii)
+            for(int ii = 0; ii < BT::columns_size(); ++ii)
             {
                 result += (feature[ii] - center()[ii]) *
                           (feature[ii] - center()[ii]);
@@ -587,7 +587,7 @@ public:
         }
         else
         {
-            for (int ii = 0; ii < BT::columns_size(); ++ii)
+            for(int ii = 0; ii < BT::columns_size(); ++ii)
             {
                 result += (feature[BT::columns_begin()[ii]] - center()[ii]) *
                           (feature[BT::columns_begin()[ii]] - center()[ii]);
@@ -609,7 +609,7 @@ public:
 
 
 
-template<>
+template <>
 class Node<e_ConstProbNode>
     : public NodeBase
 {
@@ -651,7 +651,7 @@ public:
     }
 };
 
-template<>
+template <>
 class Node<e_LogRegProbNode>;
 
 } // namespace vigra

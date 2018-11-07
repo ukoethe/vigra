@@ -187,7 +187,7 @@ public:
 
 //@}
 
-template<class ArgumentType, class ResultType>
+template <class ArgumentType, class ResultType>
 class NonparametricNoiseNormalizationFunctor
 {
     struct Segment
@@ -197,10 +197,10 @@ class NonparametricNoiseNormalizationFunctor
 
     ArrayVector<Segment> segments_;
 
-    template<class T>
+    template <class T>
     double exec(unsigned int k, T t) const
     {
-        if (segments_[k].a == 0.0)
+        if(segments_[k].a == 0.0)
         {
             return t / VIGRA_CSTD::sqrt(segments_[k].b);
         }
@@ -214,11 +214,11 @@ public:
     typedef ArgumentType argument_type;
     typedef ResultType result_type;
 
-    template<class Vector>
+    template <class Vector>
     NonparametricNoiseNormalizationFunctor(Vector const& clusters)
         : segments_(clusters.size() - 1)
     {
-        for (unsigned int k = 0; k < segments_.size(); ++k)
+        for(unsigned int k = 0; k < segments_.size(); ++k)
         {
             segments_[k].lower = clusters[k][0];
             segments_[k].a = (clusters[k + 1][1] - clusters[k][1]) / (clusters[k + 1][0] - clusters[k][0]);
@@ -227,7 +227,7 @@ public:
             //          - determine what 'very small' means
             //          - shouldn't the two formulas (for a == 0, a != 0) be equal in the limit a -> 0 ?
 
-            if (k == 0)
+            if(k == 0)
             {
                 segments_[k].shift = segments_[k].lower - exec(k, segments_[k].lower);
             }
@@ -242,16 +242,16 @@ public:
     {
         // find the segment
         unsigned int k = 0;
-        for (; k < segments_.size(); ++k)
-            if (t < segments_[k].lower)
+        for(; k < segments_.size(); ++k)
+            if(t < segments_[k].lower)
                 break;
-        if (k > 0)
+        if(k > 0)
             --k;
         return detail::RequiresExplicitCast<ResultType>::cast(exec(k, t) + segments_[k].shift);
     }
 };
 
-template<class ArgumentType, class ResultType>
+template <class ArgumentType, class ResultType>
 class QuadraticNoiseNormalizationFunctor
 {
     double a, b, c, d, f, o;
@@ -262,7 +262,7 @@ class QuadraticNoiseNormalizationFunctor
         b = ib;
         c = ic;
         d = VIGRA_CSTD::sqrt(VIGRA_CSTD::fabs(c));
-        if (c > 0.0)
+        if(c > 0.0)
         {
             o = VIGRA_CSTD::log(VIGRA_CSTD::fabs((2.0 * c * xmin + b) / d + 2 * VIGRA_CSTD::sqrt(c * sq(xmin) + b * xmin + a))) / d;
             f = 0.0;
@@ -278,19 +278,19 @@ public:
     typedef ArgumentType argument_type;
     typedef ResultType result_type;
 
-    template<class Vector>
+    template <class Vector>
     QuadraticNoiseNormalizationFunctor(Vector const& clusters)
     {
         double xmin = NumericTraits<double>::max();
         Matrix<double> m(3, 3), r(3, 1), l(3, 1);
-        for (unsigned int k = 0; k < clusters.size(); ++k)
+        for(unsigned int k = 0; k < clusters.size(); ++k)
         {
             l(0, 0) = 1.0;
             l(1, 0) = clusters[k][0];
             l(2, 0) = sq(clusters[k][0]);
             m += outer(l);
             r += clusters[k][1] * l;
-            if (clusters[k][0] < xmin)
+            if(clusters[k][0] < xmin)
                 xmin = clusters[k][0];
         }
 
@@ -301,7 +301,7 @@ public:
     result_type operator()(argument_type t) const
     {
         double r;
-        if (c > 0.0)
+        if(c > 0.0)
             r = VIGRA_CSTD::log(VIGRA_CSTD::fabs((2.0 * c * t + b) / d + 2.0 * VIGRA_CSTD::sqrt(c * t * t + b * t + a))) / d - o;
         else
             r = -VIGRA_CSTD::asin((2.0 * c * t + b) / f) / d - o;
@@ -309,7 +309,7 @@ public:
     }
 };
 
-template<class ArgumentType, class ResultType>
+template <class ArgumentType, class ResultType>
 class LinearNoiseNormalizationFunctor
 {
     double a, b, o;
@@ -318,7 +318,7 @@ class LinearNoiseNormalizationFunctor
     {
         a = ia;
         b = ib;
-        if (b != 0.0)
+        if(b != 0.0)
         {
             o = xmin - 2.0 / b * VIGRA_CSTD::sqrt(a + b * xmin);
         }
@@ -332,18 +332,18 @@ public:
     typedef ArgumentType argument_type;
     typedef ResultType result_type;
 
-    template<class Vector>
+    template <class Vector>
     LinearNoiseNormalizationFunctor(Vector const& clusters)
     {
         double xmin = NumericTraits<double>::max();
         Matrix<double> m(2, 2), r(2, 1), l(2, 1);
-        for (unsigned int k = 0; k < clusters.size(); ++k)
+        for(unsigned int k = 0; k < clusters.size(); ++k)
         {
             l(0, 0) = 1.0;
             l(1, 0) = clusters[k][0];
             m += outer(l);
             r += clusters[k][1] * l;
-            if (clusters[k][0] < xmin)
+            if(clusters[k][0] < xmin)
                 xmin = clusters[k][0];
         }
 
@@ -354,7 +354,7 @@ public:
     result_type operator()(argument_type t) const
     {
         double r;
-        if (b != 0.0)
+        if(b != 0.0)
             r = 2.0 / b * VIGRA_CSTD::sqrt(a + b * t) + o;
         else
             r = t / VIGRA_CSTD::sqrt(a) + o;
@@ -363,7 +363,7 @@ public:
 };
 
 #define VIGRA_NoiseNormalizationFunctor(name, type, size) \
-    template<class ResultType>                            \
+    template <class ResultType>                           \
     class name<type, ResultType>                          \
     {                                                     \
         ResultType lut_[size];                            \
@@ -372,12 +372,12 @@ public:
         typedef type argument_type;                       \
         typedef ResultType result_type;                   \
                                                           \
-        template<class Vector>                            \
+        template <class Vector>                           \
         name(Vector const& clusters)                      \
         {                                                 \
             name<double, ResultType> f(clusters);         \
                                                           \
-            for (unsigned int k = 0; k < size; ++k)       \
+            for(unsigned int k = 0; k < size; ++k)        \
             {                                             \
                 lut_[k] = f(k);                           \
             }                                             \
@@ -401,8 +401,8 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
                         namespace detail
 {
 
-    template<class SrcIterator, class SrcAcessor,
-             class GradIterator>
+    template <class SrcIterator, class SrcAcessor,
+              class GradIterator>
     bool
     iterativeNoiseEstimationChi2(SrcIterator s, SrcAcessor src, GradIterator g,
                                  double& mean, double& variance,
@@ -415,8 +415,8 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
         Diff2D ul(-windowRadius, -windowRadius);
         int r2 = sq(windowRadius);
 
-        for (int iter = 0; iter < 100; ++iter) // maximum iteration 100 only for terminating
-                                               // if something is wrong
+        for(int iter = 0; iter < 100; ++iter) // maximum iteration 100 only for terminating
+                                              // if something is wrong
         {
             double sum = 0.0;
             double gsum = 0.0;
@@ -425,17 +425,17 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
 
             SrcIterator siy = s + ul;
             GradIterator giy = g + ul;
-            for (int y = -windowRadius; y <= windowRadius; y++, ++siy.y, ++giy.y)
+            for(int y = -windowRadius; y <= windowRadius; y++, ++siy.y, ++giy.y)
             {
                 typename SrcIterator::row_iterator six = siy.rowIterator();
                 typename GradIterator::row_iterator gix = giy.rowIterator();
-                for (int x = -windowRadius; x <= windowRadius; x++, ++six, ++gix)
+                for(int x = -windowRadius; x <= windowRadius; x++, ++six, ++gix)
                 {
-                    if (sq(x) + sq(y) > r2)
+                    if(sq(x) + sq(y) > r2)
                         continue;
 
                     ++tcount;
-                    if (*gix < l2 * variance)
+                    if(*gix < l2 * variance)
                     {
                         sum += src(six);
                         gsum += *gix;
@@ -443,21 +443,21 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
                     }
                 }
             }
-            if (count == 0) // not homogeneous enough
+            if(count == 0) // not homogeneous enough
                 return false;
 
             double oldvariance = variance;
             variance = f * gsum / count;
             mean = sum / count;
 
-            if (closeAtTolerance(oldvariance - variance, 0.0, 1e-10))
+            if(closeAtTolerance(oldvariance - variance, 0.0, 1e-10))
                 return (count >= tcount * countThreshold / 2.0); // sufficiently many valid points
         }
         return false; // no convergence
     }
 
-    template<class SrcIterator, class SrcAcessor,
-             class GradIterator>
+    template <class SrcIterator, class SrcAcessor,
+              class GradIterator>
     bool
     iterativeNoiseEstimationGauss(SrcIterator s, SrcAcessor src, GradIterator,
                                   double& mean, double& variance,
@@ -472,8 +472,8 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
         Diff2D ul(-windowRadius, -windowRadius);
         int r2 = sq(windowRadius);
 
-        for (int iter = 0; iter < 100; ++iter) // maximum iteration 100 only for terminating
-                                               // if something is wrong
+        for(int iter = 0; iter < 100; ++iter) // maximum iteration 100 only for terminating
+                                              // if something is wrong
         {
             double sum = 0.0;
             double sum2 = 0.0;
@@ -481,16 +481,16 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
             unsigned int tcount = 0;
 
             SrcIterator siy = s + ul;
-            for (int y = -windowRadius; y <= windowRadius; y++, ++siy.y)
+            for(int y = -windowRadius; y <= windowRadius; y++, ++siy.y)
             {
                 typename SrcIterator::row_iterator six = siy.rowIterator();
-                for (int x = -windowRadius; x <= windowRadius; x++, ++six)
+                for(int x = -windowRadius; x <= windowRadius; x++, ++six)
                 {
-                    if (sq(x) + sq(y) > r2)
+                    if(sq(x) + sq(y) > r2)
                         continue;
 
                     ++tcount;
-                    if (sq(src(six) - mean) < l2 * variance)
+                    if(sq(src(six) - mean) < l2 * variance)
                     {
                         sum += src(six);
                         sum2 += sq(src(six));
@@ -498,7 +498,7 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
                     }
                 }
             }
-            if (count == 0) // not homogeneous enough
+            if(count == 0) // not homogeneous enough
                 return false;
 
             double oldmean = mean;
@@ -506,16 +506,16 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
             mean = sum / count;
             variance = f * (sum2 / count - sq(mean));
 
-            if (closeAtTolerance(oldmean - mean, 0.0, 1e-10) &&
-                closeAtTolerance(oldvariance - variance, 0.0, 1e-10))
+            if(closeAtTolerance(oldmean - mean, 0.0, 1e-10) &&
+               closeAtTolerance(oldvariance - variance, 0.0, 1e-10))
                 return (count >= tcount * countThreshold / 2.0); // sufficiently many valid points
         }
         return false; // no convergence
     }
 
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void
     symmetricDifferenceSquaredMagnitude(
         SrcIterator sul, SrcIterator slr, SrcAccessor src,
@@ -538,8 +538,8 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
         combineTwoImages(srcImageRange(dx), srcImage(dy), destIter(dul, dest), Arg1() * Arg1() + Arg2() * Arg2());
     }
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void
     findHomogeneousRegionsFoerstner(
         SrcIterator sul, SrcIterator slr, SrcAccessor src,
@@ -558,8 +558,8 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
         discErosion(srcImageRange(btmp), destIter(dul, dest), windowRadius);
     }
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void
     findHomogeneousRegions(
         SrcIterator sul, SrcIterator slr, SrcAccessor src,
@@ -568,7 +568,7 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
         localMinima(sul, slr, src, dul, dest);
     }
 
-    template<class Vector1, class Vector2>
+    template <class Vector1, class Vector2>
     void noiseVarianceListMedianCut(Vector1 const& noise, Vector2& clusters,
                                     unsigned int maxClusterCount)
     {
@@ -576,12 +576,12 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
 
         clusters.push_back(Result(0, noise.size()));
 
-        while (clusters.size() <= maxClusterCount)
+        while(clusters.size() <= maxClusterCount)
         {
             // find biggest cluster
             unsigned int kMax = 0;
             double diffMax = 0.0;
-            for (unsigned int k = 0; k < clusters.size(); ++k)
+            for(unsigned int k = 0; k < clusters.size(); ++k)
             {
                 int k1 = clusters[k][0], k2 = clusters[k][1] - 1;
 
@@ -601,14 +601,14 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
                                     "noiseVarianceClustering(): Unable to find homogeneous regions.");
 
                 double diff = noise[k2][0] - noise[k1][0];
-                if (diff > diffMax)
+                if(diff > diffMax)
                 {
                     diffMax = diff;
                     kMax = k;
                 }
             }
 
-            if (diffMax == 0.0)
+            if(diffMax == 0.0)
                 return; // all clusters have only one value
 
             unsigned int k1 = clusters[kMax][0],
@@ -621,7 +621,7 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
 
     struct SortNoiseByMean
     {
-        template<class T>
+        template <class T>
         bool operator()(T const& l, T const& r) const
         {
             return l[0] < r[0];
@@ -630,21 +630,21 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
 
     struct SortNoiseByVariance
     {
-        template<class T>
+        template <class T>
         bool operator()(T const& l, T const& r) const
         {
             return l[1] < r[1];
         }
     };
 
-    template<class Vector1, class Vector2, class Vector3>
+    template <class Vector1, class Vector2, class Vector3>
     void noiseVarianceClusterAveraging(Vector1 & noise, Vector2 & clusters,
                                        Vector3 & result, double quantile)
     {
         typedef typename Vector1::iterator Iter;
         typedef typename Vector3::value_type Result;
 
-        for (unsigned int k = 0; k < clusters.size(); ++k)
+        for(unsigned int k = 0; k < clusters.size(); ++k)
         {
             Iter i1 = noise.begin() + clusters[k][0];
             Iter i2 = noise.begin() + clusters[k][1];
@@ -652,15 +652,15 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
             std::sort(i1, i2, SortNoiseByVariance());
 
             std::size_t size = static_cast<std::size_t>(VIGRA_CSTD::ceil(quantile * (i2 - i1)));
-            if (static_cast<std::size_t>(i2 - i1) < size)
+            if(static_cast<std::size_t>(i2 - i1) < size)
                 size = i2 - i1;
-            if (size < 1)
+            if(size < 1)
                 size = 1;
             i2 = i1 + size;
 
             double mean = 0.0,
                    variance = 0.0;
-            for (; i1 < i2; ++i1)
+            for(; i1 < i2; ++i1)
             {
                 mean += (*i1)[0];
                 variance += (*i1)[1];
@@ -670,7 +670,7 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
         }
     }
 
-    template<class SrcIterator, class SrcAccessor, class BackInsertable>
+    template <class SrcIterator, class SrcAccessor, class BackInsertable>
     void noiseVarianceEstimationImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                      BackInsertable & result,
                                      NoiseNormalizationOptions const& options)
@@ -692,11 +692,11 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
 
         // Generate noise of each of the remaining pixels == centers of homogeneous areas (border is not used)
         unsigned int windowRadius = options.window_radius;
-        for (unsigned int y = windowRadius; y < h - windowRadius; ++y)
+        for(unsigned int y = windowRadius; y < h - windowRadius; ++y)
         {
-            for (unsigned int x = windowRadius; x < w - windowRadius; ++x)
+            for(unsigned int x = windowRadius; x < w - windowRadius; ++x)
             {
-                if (!homogeneous(x, y))
+                if(!homogeneous(x, y))
                     continue;
 
                 Diff2D center(x, y);
@@ -704,7 +704,7 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
 
                 bool success;
 
-                if (options.use_gradient)
+                if(options.use_gradient)
                 {
                     success = iterativeNoiseEstimationChi2(sul + center, src,
                                                            gradient.upperLeft() + center, mean, variance,
@@ -716,7 +716,7 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
                                                             gradient.upperLeft() + center, mean, variance,
                                                             options.noise_estimation_quantile, windowRadius);
                 }
-                if (success)
+                if(success)
                 {
                     result.push_back(ResultType(mean, variance));
                 }
@@ -724,7 +724,7 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
         }
     }
 
-    template<class Vector, class BackInsertable>
+    template <class Vector, class BackInsertable>
     void noiseVarianceClusteringImpl(Vector & noise, BackInsertable & result,
                                      unsigned int clusterCount, double quantile)
     {
@@ -738,9 +738,9 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
         detail::noiseVarianceClusterAveraging(noise, clusters, result, quantile);
     }
 
-    template<class Functor,
-             class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class Functor,
+              class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     bool
     noiseNormalizationImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                            DestIterator dul, DestAccessor dest,
@@ -749,7 +749,7 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
         ArrayVector<TinyVector<double, 2>> noiseData;
         noiseVarianceEstimationImpl(sul, slr, src, noiseData, options);
 
-        if (noiseData.size() < 10)
+        if(noiseData.size() < 10)
             return false;
 
         ArrayVector<TinyVector<double, 2>> noiseClusters;
@@ -762,8 +762,8 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
         return true;
     }
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     bool
     nonparametricNoiseNormalizationImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                         DestIterator dul, DestAccessor dest,
@@ -775,8 +775,8 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
         return noiseNormalizationImpl<NonparametricNoiseNormalizationFunctor<SrcType, DestType>>(sul, slr, src, dul, dest, options);
     }
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     bool
     nonparametricNoiseNormalizationImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                         DestIterator dul, DestAccessor dest,
@@ -784,21 +784,21 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
                                         VigraFalseType /* isScalar */)
     {
         int bands = src.size(sul);
-        for (int b = 0; b < bands; ++b)
+        for(int b = 0; b < bands; ++b)
         {
             VectorElementAccessor<SrcAccessor> sband(b, src);
             VectorElementAccessor<DestAccessor> dband(b, dest);
             typedef typename VectorElementAccessor<SrcAccessor>::value_type SrcType;
             typedef typename VectorElementAccessor<DestAccessor>::value_type DestType;
 
-            if (!noiseNormalizationImpl<NonparametricNoiseNormalizationFunctor<SrcType, DestType>>(sul, slr, sband, dul, dband, options))
+            if(!noiseNormalizationImpl<NonparametricNoiseNormalizationFunctor<SrcType, DestType>>(sul, slr, sband, dul, dband, options))
                 return false;
         }
         return true;
     }
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     bool
     quadraticNoiseNormalizationImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                     DestIterator dul, DestAccessor dest,
@@ -810,8 +810,8 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
         return noiseNormalizationImpl<QuadraticNoiseNormalizationFunctor<SrcType, DestType>>(sul, slr, src, dul, dest, options);
     }
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     bool
     quadraticNoiseNormalizationImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                     DestIterator dul, DestAccessor dest,
@@ -819,21 +819,21 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
                                     VigraFalseType /* isScalar */)
     {
         int bands = src.size(sul);
-        for (int b = 0; b < bands; ++b)
+        for(int b = 0; b < bands; ++b)
         {
             VectorElementAccessor<SrcAccessor> sband(b, src);
             VectorElementAccessor<DestAccessor> dband(b, dest);
             typedef typename VectorElementAccessor<SrcAccessor>::value_type SrcType;
             typedef typename VectorElementAccessor<DestAccessor>::value_type DestType;
 
-            if (!noiseNormalizationImpl<QuadraticNoiseNormalizationFunctor<SrcType, DestType>>(sul, slr, sband, dul, dband, options))
+            if(!noiseNormalizationImpl<QuadraticNoiseNormalizationFunctor<SrcType, DestType>>(sul, slr, sband, dul, dband, options))
                 return false;
         }
         return true;
     }
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void
     quadraticNoiseNormalizationImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                     DestIterator dul, DestAccessor dest,
@@ -849,8 +849,8 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
                                                           typename DestAccessor::value_type>(noiseClusters));
     }
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void
     quadraticNoiseNormalizationImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                     DestIterator dul, DestAccessor dest,
@@ -858,7 +858,7 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
                                     VigraFalseType /* isScalar */)
     {
         int bands = src.size(sul);
-        for (int b = 0; b < bands; ++b)
+        for(int b = 0; b < bands; ++b)
         {
             VectorElementAccessor<SrcAccessor> sband(b, src);
             VectorElementAccessor<DestAccessor> dband(b, dest);
@@ -866,8 +866,8 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
         }
     }
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     bool
     linearNoiseNormalizationImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                  DestIterator dul, DestAccessor dest,
@@ -879,8 +879,8 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
         return noiseNormalizationImpl<LinearNoiseNormalizationFunctor<SrcType, DestType>>(sul, slr, src, dul, dest, options);
     }
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     bool
     linearNoiseNormalizationImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                  DestIterator dul, DestAccessor dest,
@@ -888,21 +888,21 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
                                  VigraFalseType /* isScalar */)
     {
         int bands = src.size(sul);
-        for (int b = 0; b < bands; ++b)
+        for(int b = 0; b < bands; ++b)
         {
             VectorElementAccessor<SrcAccessor> sband(b, src);
             VectorElementAccessor<DestAccessor> dband(b, dest);
             typedef typename VectorElementAccessor<SrcAccessor>::value_type SrcType;
             typedef typename VectorElementAccessor<DestAccessor>::value_type DestType;
 
-            if (!noiseNormalizationImpl<LinearNoiseNormalizationFunctor<SrcType, DestType>>(sul, slr, sband, dul, dband, options))
+            if(!noiseNormalizationImpl<LinearNoiseNormalizationFunctor<SrcType, DestType>>(sul, slr, sband, dul, dband, options))
                 return false;
         }
         return true;
     }
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void
     linearNoiseNormalizationImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                  DestIterator dul, DestAccessor dest,
@@ -917,8 +917,8 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
                                                        typename DestAccessor::value_type>(noiseClusters));
     }
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void
     linearNoiseNormalizationImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                  DestIterator dul, DestAccessor dest,
@@ -926,7 +926,7 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
                                  VigraFalseType /* isScalar */)
     {
         int bands = src.size(sul);
-        for (int b = 0; b < bands; ++b)
+        for(int b = 0; b < bands; ++b)
         {
             VectorElementAccessor<SrcAccessor> sband(b, src);
             VectorElementAccessor<DestAccessor> dband(b, dest);
@@ -936,7 +936,7 @@ VIGRA_NoiseNormalizationFunctor(NonparametricNoiseNormalizationFunctor, UInt8, 2
 
 } // namespace detail
 
-template<bool P>
+template <bool P>
 struct noiseVarianceEstimation_can_only_work_on_scalar_images
     : vigra::staticAssert::AssertBool<P>
 {
@@ -1053,9 +1053,9 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void noiseVarianceEstimation)
+doxygen_overloaded_function(template <...> void noiseVarianceEstimation)
 
-    template<class SrcIterator, class SrcAccessor, class BackInsertable>
+    template <class SrcIterator, class SrcAccessor, class BackInsertable>
     inline void noiseVarianceEstimation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                         BackInsertable& result,
                                         NoiseNormalizationOptions const& options = NoiseNormalizationOptions())
@@ -1069,7 +1069,7 @@ doxygen_overloaded_function(template<...> void noiseVarianceEstimation)
     detail::noiseVarianceEstimationImpl(sul, slr, src, result, options);
 }
 
-template<class SrcIterator, class SrcAccessor, class BackInsertable>
+template <class SrcIterator, class SrcAccessor, class BackInsertable>
 inline void
 noiseVarianceEstimation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         BackInsertable& result,
@@ -1078,7 +1078,7 @@ noiseVarianceEstimation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     noiseVarianceEstimation(src.first, src.second, src.third, result, options);
 }
 
-template<class T1, class S1, class BackInsertable>
+template <class T1, class S1, class BackInsertable>
 inline void
     noiseVarianceEstimation(MultiArrayView<2, T1, S1> const& src,
                             BackInsertable& result,
@@ -1175,9 +1175,9 @@ inline void
     same as \ref noiseVarianceEstimation()
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void noiseVarianceClustering)
+doxygen_overloaded_function(template <...> void noiseVarianceClustering)
 
-    template<class SrcIterator, class SrcAccessor, class BackInsertable>
+    template <class SrcIterator, class SrcAccessor, class BackInsertable>
     inline void noiseVarianceClustering(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                         BackInsertable& result,
                                         NoiseNormalizationOptions const& options = NoiseNormalizationOptions())
@@ -1187,7 +1187,7 @@ doxygen_overloaded_function(template<...> void noiseVarianceClustering)
     detail::noiseVarianceClusteringImpl(variance, result, options.cluster_count, options.averaging_quantile);
 }
 
-template<class SrcIterator, class SrcAccessor, class BackInsertable>
+template <class SrcIterator, class SrcAccessor, class BackInsertable>
 inline void
 noiseVarianceClustering(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         BackInsertable& result,
@@ -1196,7 +1196,7 @@ noiseVarianceClustering(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     noiseVarianceClustering(src.first, src.second, src.third, result, options);
 }
 
-template<class T1, class S1, class BackInsertable>
+template <class T1, class S1, class BackInsertable>
 inline void
     noiseVarianceClustering(MultiArrayView<2, T1, S1> const& src,
                             BackInsertable& result,
@@ -1298,10 +1298,10 @@ inline void
     same as \ref noiseVarianceEstimation()
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> bool nonparametricNoiseNormalization)
+doxygen_overloaded_function(template <...> bool nonparametricNoiseNormalization)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     inline bool nonparametricNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                                 DestIterator dul, DestAccessor dest,
                                                 NoiseNormalizationOptions const& options = NoiseNormalizationOptions())
@@ -1312,8 +1312,8 @@ doxygen_overloaded_function(template<...> bool nonparametricNoiseNormalization)
                                                        typename NumericTraits<SrcType>::isScalar());
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline bool
 nonparametricNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 pair<DestIterator, DestAccessor> dest,
@@ -1322,8 +1322,8 @@ nonparametricNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> sr
     return nonparametricNoiseNormalization(src.first, src.second, src.third, dest.first, dest.second, options);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline bool
     nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const& src,
                                     MultiArrayView<2, T2, S2> dest,
@@ -1457,10 +1457,10 @@ inline bool
     are convertible to <tt>double</tt>. Likewise, the destination type must be assignable from <tt>double</tt>
     or a vector whose elements are assignable from <tt>double</tt>.
 */
-doxygen_overloaded_function(template<...> bool quadraticNoiseNormalization)
+doxygen_overloaded_function(template <...> bool quadraticNoiseNormalization)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     inline bool quadraticNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                             DestIterator dul, DestAccessor dest,
                                             NoiseNormalizationOptions const& options)
@@ -1471,8 +1471,8 @@ doxygen_overloaded_function(template<...> bool quadraticNoiseNormalization)
                                                    typename NumericTraits<SrcType>::isScalar());
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline bool
 quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<DestIterator, DestAccessor> dest,
@@ -1481,8 +1481,8 @@ quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     return quadraticNoiseNormalization(src.first, src.second, src.third, dest.first, dest.second, options);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline bool
     quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const& src,
                                 MultiArrayView<2, T2, S2> dest,
@@ -1500,8 +1500,8 @@ inline bool
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 quadraticNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                             DestIterator dul, DestAccessor dest,
@@ -1513,8 +1513,8 @@ quadraticNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                             typename NumericTraits<SrcType>::isScalar());
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<DestIterator, DestAccessor> dest,
@@ -1523,8 +1523,8 @@ quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     quadraticNoiseNormalization(src.first, src.second, src.third, dest.first, dest.second, a0, a1, a2);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const& src,
                                 MultiArrayView<2, T2, S2> dest,
@@ -1659,10 +1659,10 @@ inline void
     are convertible to <tt>double</tt>. Likewise, the destination type must be assignable from <tt>double</tt>
     or a vector whose elements are assignable from <tt>double</tt>.
 */
-doxygen_overloaded_function(template<...> bool linearNoiseNormalization)
+doxygen_overloaded_function(template <...> bool linearNoiseNormalization)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     inline bool linearNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                          DestIterator dul, DestAccessor dest,
                                          NoiseNormalizationOptions const& options = NoiseNormalizationOptions())
@@ -1673,8 +1673,8 @@ doxygen_overloaded_function(template<...> bool linearNoiseNormalization)
                                                 typename NumericTraits<SrcType>::isScalar());
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline bool
 linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                          pair<DestIterator, DestAccessor> dest,
@@ -1683,8 +1683,8 @@ linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     return linearNoiseNormalization(src.first, src.second, src.third, dest.first, dest.second, options);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline bool
     linearNoiseNormalization(MultiArrayView<2, T1, S1> const& src,
                              MultiArrayView<2, T2, S2> dest,
@@ -1702,8 +1702,8 @@ inline bool
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 linearNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                          DestIterator dul, DestAccessor dest,
@@ -1715,8 +1715,8 @@ linearNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                          typename NumericTraits<SrcType>::isScalar());
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                          pair<DestIterator, DestAccessor> dest,
@@ -1725,8 +1725,8 @@ linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     linearNoiseNormalization(src.first, src.second, src.third, dest.first, dest.second, a0, a1);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     linearNoiseNormalization(MultiArrayView<2, T1, S1> const& src,
                              MultiArrayView<2, T2, S2> dest,

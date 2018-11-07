@@ -43,7 +43,7 @@
 
 using namespace vigra;
 
-template<class InImage, class OutImage>
+template <class InImage, class OutImage>
 void
 watershedSegmentation(InImage& in, OutImage& out, double scale)
 {
@@ -82,7 +82,7 @@ watershedSegmentation(InImage& in, OutImage& out, double scale)
 int
 main(int argc, char** argv)
 {
-    if (argc != 3)
+    if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
@@ -99,7 +99,7 @@ main(int argc, char** argv)
         std::cout << "Scale for gradient calculation ? ";
         std::cin >> scale;
 
-        if (info.isGrayscale())
+        if(info.isGrayscale())
         {
             int w = info.width();
             int h = info.height();
@@ -135,7 +135,7 @@ main(int argc, char** argv)
             exportImage(out, ImageExportInfo(argv[2]));
         }
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         std::cout << e.what() << std::endl;
         return 1;

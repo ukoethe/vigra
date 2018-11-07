@@ -54,7 +54,7 @@ namespace vigra
 namespace detail
 {
 
-template<class COST, class Diff_type>
+template <class COST, class Diff_type>
 class SeedRgVoxel
 {
 public:
@@ -106,9 +106,9 @@ public:
         bool operator()(SeedRgVoxel const& l,
                         SeedRgVoxel const& r) const
         {
-            if (r.cost_ == l.cost_)
+            if(r.cost_ == l.cost_)
             {
-                if (r.dist_ == l.dist_)
+                if(r.dist_ == l.dist_)
                     return r.count_ < l.count_;
 
                 return r.dist_ < l.dist_;
@@ -119,9 +119,9 @@ public:
         bool operator()(SeedRgVoxel const* l,
                         SeedRgVoxel const* r) const
         {
-            if (r->cost_ == l->cost_)
+            if(r->cost_ == l->cost_)
             {
-                if (r->dist_ == l->dist_)
+                if(r->dist_ == l->dist_)
                     return r->count_ < l->count_;
 
                 return r->dist_ < l->dist_;
@@ -135,7 +135,7 @@ public:
     {
         ~Allocator()
         {
-            while (!freelist_.empty())
+            while(!freelist_.empty())
             {
                 delete freelist_.top();
                 freelist_.pop();
@@ -145,7 +145,7 @@ public:
         SeedRgVoxel* create(Diff_type const& location, Diff_type const& nearest,
                             COST const& cost, int const& count, int const& label)
         {
-            if (!freelist_.empty())
+            if(!freelist_.empty())
             {
                 SeedRgVoxel* res = freelist_.top();
                 freelist_.pop();
@@ -317,12 +317,12 @@ public:
 
     See \ref seededRegionGrowing() for an example
 */
-doxygen_overloaded_function(template<...> void seededRegionGrowing3D)
+doxygen_overloaded_function(template <...> void seededRegionGrowing3D)
 
-    template<class SrcImageIterator, class Diff_type, class SrcAccessor,
-             class SeedImageIterator, class SeedAccessor,
-             class DestImageIterator, class DestAccessor,
-             class RegionStatisticsArray, class Neighborhood>
+    template <class SrcImageIterator, class Diff_type, class SrcAccessor,
+              class SeedImageIterator, class SeedAccessor,
+              class DestImageIterator, class DestAccessor,
+              class RegionStatisticsArray, class Neighborhood>
     void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
                                SeedImageIterator seedsul, SeedAccessor aseeds,
                                DestImageIterator destul, DestAccessor ad,
@@ -379,28 +379,28 @@ doxygen_overloaded_function(template<...> void seededRegionGrowing3D)
 
     Diff_type pos(0, 0, 0);
 
-    for (isz = srcul, irz = ir, pos[2] = 0; pos[2] < d;
-         pos[2]++, isz.dim2()++, irz.dim2()++)
+    for(isz = srcul, irz = ir, pos[2] = 0; pos[2] < d;
+        pos[2]++, isz.dim2()++, irz.dim2()++)
     {
         //std::cerr << "Z = " << pos[2] << std::endl;
 
-        for (isy = isz, iry = irz, pos[1] = 0; pos[1] < h;
-             pos[1]++, isy.dim1()++, iry.dim1()++)
+        for(isy = isz, iry = irz, pos[1] = 0; pos[1] < h;
+            pos[1]++, isy.dim1()++, iry.dim1()++)
         {
             //std::cerr << "Y = " << pos[1] << std::endl;
 
-            for (isx = isy, irx = iry, pos[0] = 0; pos[0] < w;
-                 pos[0]++, isx.dim0()++, irx.dim0()++)
+            for(isx = isy, irx = iry, pos[0] = 0; pos[0] < w;
+                pos[0]++, isx.dim0()++, irx.dim0()++)
             {
                 //std::cerr << "X = " << pos[0] << std::endl;
 
-                if (*irx == 0)
+                if(*irx == 0)
                 {
                     // find candidate pixels for growing and fill heap
-                    for (int i = 0; i < directionCount; i++)
+                    for(int i = 0; i < directionCount; i++)
                     {
                         cneighbor = *(irx + Neighborhood::diff((Direction)i));
-                        if (cneighbor > 0)
+                        if(cneighbor > 0)
                         {
                             CostType cost = stats[cneighbor].cost(as(isx));
 
@@ -415,7 +415,7 @@ doxygen_overloaded_function(template<...> void seededRegionGrowing3D)
     }
 
     // perform region growing
-    while (pheap.size() != 0)
+    while(pheap.size() != 0)
     {
         Voxel* voxel = pheap.top();
         pheap.pop();
@@ -427,21 +427,21 @@ doxygen_overloaded_function(template<...> void seededRegionGrowing3D)
 
         allocator.dismiss(voxel);
 
-        if ((srgType & StopAtThreshold) != 0 && cost > max_cost)
+        if((srgType & StopAtThreshold) != 0 && cost > max_cost)
             break;
 
         irx = ir + pos;
         isx = srcul + pos;
 
-        if (*irx) // already labelled region / watershed?
+        if(*irx) // already labelled region / watershed?
             continue;
 
-        if ((srgType & KeepContours) != 0)
+        if((srgType & KeepContours) != 0)
         {
-            for (int i = 0; i < directionCount; i++)
+            for(int i = 0; i < directionCount; i++)
             {
                 cneighbor = *(irx + Neighborhood::diff((Direction)i));
-                if ((cneighbor > 0) && (cneighbor != lab))
+                if((cneighbor > 0) && (cneighbor != lab))
                 {
                     lab = SRGWatershedLabel;
                     break;
@@ -451,16 +451,16 @@ doxygen_overloaded_function(template<...> void seededRegionGrowing3D)
 
         *irx = lab;
 
-        if ((srgType & KeepContours) == 0 || lab > 0)
+        if((srgType & KeepContours) == 0 || lab > 0)
         {
             // update statistics
             stats[*irx](as(isx));
 
             // search neighborhood
             // second pass: find new candidate pixels
-            for (int i = 0; i < directionCount; i++)
+            for(int i = 0; i < directionCount; i++)
             {
-                if (*(irx + Neighborhood::diff((Direction)i)) == 0)
+                if(*(irx + Neighborhood::diff((Direction)i)) == 0)
                 {
                     CostType cost = stats[lab].cost(as(isx, Neighborhood::diff((Direction)i)));
 
@@ -473,7 +473,7 @@ doxygen_overloaded_function(template<...> void seededRegionGrowing3D)
     }
 
     // free temporary memory
-    while (pheap.size() != 0)
+    while(pheap.size() != 0)
     {
         allocator.dismiss(pheap.top());
         pheap.pop();
@@ -484,10 +484,10 @@ doxygen_overloaded_function(template<...> void seededRegionGrowing3D)
                         destul, ad, detail::UnlabelWatersheds());
 }
 
-template<class SrcImageIterator, class Diff_type, class SrcAccessor,
-         class SeedImageIterator, class SeedAccessor,
-         class DestImageIterator, class DestAccessor,
-         class RegionStatisticsArray, class Neighborhood>
+template <class SrcImageIterator, class Diff_type, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestImageIterator, class DestAccessor,
+          class RegionStatisticsArray, class Neighborhood>
 inline void
 seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
                       SeedImageIterator seedsul, SeedAccessor aseeds,
@@ -498,10 +498,10 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
                           destul, ad, stats, srgType, n, NumericTraits<double>::max());
 }
 
-template<class SrcImageIterator, class Diff_type, class SrcAccessor,
-         class SeedImageIterator, class SeedAccessor,
-         class DestImageIterator, class DestAccessor,
-         class RegionStatisticsArray>
+template <class SrcImageIterator, class Diff_type, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestImageIterator, class DestAccessor,
+          class RegionStatisticsArray>
 inline void
 seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
                       SeedImageIterator seedsul, SeedAccessor aseeds,
@@ -512,10 +512,10 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
                           destul, ad, stats, srgType, NeighborCode3DSix());
 }
 
-template<class SrcImageIterator, class Diff_type, class SrcAccessor,
-         class SeedImageIterator, class SeedAccessor,
-         class DestImageIterator, class DestAccessor,
-         class RegionStatisticsArray>
+template <class SrcImageIterator, class Diff_type, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestImageIterator, class DestAccessor,
+          class RegionStatisticsArray>
 inline void
 seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
                       SeedImageIterator seedsul, SeedAccessor aseeds,
@@ -526,10 +526,10 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
                           stats, CompleteGrow);
 }
 
-template<class SrcImageIterator, class Shape, class SrcAccessor,
-         class SeedImageIterator, class SeedAccessor,
-         class DestImageIterator, class DestAccessor,
-         class RegionStatisticsArray, class Neighborhood>
+template <class SrcImageIterator, class Shape, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestImageIterator, class DestAccessor,
+          class RegionStatisticsArray, class Neighborhood>
 inline void
 seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                       pair<SeedImageIterator, SeedAccessor> img3,
@@ -543,10 +543,10 @@ seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                           stats, srgType, n, max_cost);
 }
 
-template<class SrcImageIterator, class Shape, class SrcAccessor,
-         class SeedImageIterator, class SeedAccessor,
-         class DestImageIterator, class DestAccessor,
-         class RegionStatisticsArray, class Neighborhood>
+template <class SrcImageIterator, class Shape, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestImageIterator, class DestAccessor,
+          class RegionStatisticsArray, class Neighborhood>
 inline void
 seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                       pair<SeedImageIterator, SeedAccessor> img3,
@@ -560,10 +560,10 @@ seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                           stats, srgType, n, NumericTraits<double>::max());
 }
 
-template<class SrcImageIterator, class Shape, class SrcAccessor,
-         class SeedImageIterator, class SeedAccessor,
-         class DestImageIterator, class DestAccessor,
-         class RegionStatisticsArray>
+template <class SrcImageIterator, class Shape, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestImageIterator, class DestAccessor,
+          class RegionStatisticsArray>
 inline void
 seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                       pair<SeedImageIterator, SeedAccessor> img3,
@@ -576,10 +576,10 @@ seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                           stats, srgType, NeighborCode3DSix());
 }
 
-template<class SrcImageIterator, class Shape, class SrcAccessor,
-         class SeedImageIterator, class SeedAccessor,
-         class DestImageIterator, class DestAccessor,
-         class RegionStatisticsArray>
+template <class SrcImageIterator, class Shape, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestImageIterator, class DestAccessor,
+          class RegionStatisticsArray>
 inline void
 seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                       pair<SeedImageIterator, SeedAccessor> img3,
@@ -592,10 +592,10 @@ seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                           stats);
 }
 
-template<class T1, class S1,
-         class TS, class AS,
-         class T2, class S2,
-         class RegionStatisticsArray, class Neighborhood>
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray, class Neighborhood>
 inline void
     seededRegionGrowing3D(MultiArrayView<3, T1, S1> const& img1,
                           MultiArrayView<3, TS, AS> const& img3,
@@ -611,10 +611,10 @@ inline void
                           stats, srgType, n, max_cost);
 }
 
-template<class T1, class S1,
-         class TS, class AS,
-         class T2, class S2,
-         class RegionStatisticsArray, class Neighborhood>
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray, class Neighborhood>
 inline void
     seededRegionGrowing3D(MultiArrayView<3, T1, S1> const& img1,
                           MultiArrayView<3, TS, AS> const& img3,
@@ -630,10 +630,10 @@ inline void
                           stats, srgType, n, NumericTraits<double>::max());
 }
 
-template<class T1, class S1,
-         class TS, class AS,
-         class T2, class S2,
-         class RegionStatisticsArray>
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray>
 inline void
     seededRegionGrowing3D(MultiArrayView<3, T1, S1> const& img1,
                           MultiArrayView<3, TS, AS> const& img3,
@@ -648,10 +648,10 @@ inline void
                           stats, srgType, NeighborCode3DSix());
 }
 
-template<class T1, class S1,
-         class TS, class AS,
-         class T2, class S2,
-         class RegionStatisticsArray>
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray>
 inline void
     seededRegionGrowing3D(MultiArrayView<3, T1, S1> const& img1,
                           MultiArrayView<3, TS, AS> const& img3,

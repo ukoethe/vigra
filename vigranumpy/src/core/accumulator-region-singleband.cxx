@@ -61,7 +61,7 @@ get_pointer(PythonRegionFeatureAccumulator const volatile* p)
 
 #ifdef WITH_LEMON
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 python::object
 extractConvexHullFeatures(NumpyArray<N, Singleband<T>> const& labels,
                           python::object ignore_label,
@@ -83,7 +83,7 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T>> const& labels,
 #define VIGRA_CONVEX_HULL_VECTOR_FEATURE_HULL_CENTER "HullCenter"
 #define VIGRA_CONVEX_HULL_VECTOR_FEATURE_DEFECT_CENTER "DefectCenter"
 
-    if (list_features_only)
+    if(list_features_only)
     {
         python::list res;
         res.append(XSTR(VIGRA_CONVEX_HULL_FEATURE_INPUT_VOLUME));
@@ -111,7 +111,7 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T>> const& labels,
         acc;
 
     MultiArrayIndex ignored_label = -1;
-    if (ignore_label != python::object())
+    if(ignore_label != python::object())
     {
         ignored_label = python::extract<MultiArrayIndex>(ignore_label)();
         acc.ignoreLabel(ignored_label);
@@ -125,9 +125,9 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T>> const& labels,
     int size = acc.maxRegionLabel() + 1;
 
     // finalize the calculations
-    for (int k = 0; k < size; ++k)
+    for(int k = 0; k < size; ++k)
     {
-        if (k != ignored_label && get<Count>(acc, k) != 0)
+        if(k != ignored_label && get<Count>(acc, k) != 0)
         {
             getAccumulator<ConvexHullFeatures>(acc, k).finalize();
         }
@@ -139,9 +139,9 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T>> const& labels,
 #define VIGRA_CONVEX_HULL_FEATURE(TYPE, NAME, FUNCTION)            \
     {                                                              \
         NumpyArray<1, TYPE> array((Shape1(size)));                 \
-        for (int k = 0; k < size; ++k)                             \
+        for(int k = 0; k < size; ++k)                              \
         {                                                          \
-            if (k == ignored_label || get<Count>(acc, k) == 0)     \
+            if(k == ignored_label || get<Count>(acc, k) == 0)      \
                 continue;                                          \
             array(k) = get<ConvexHullFeatures>(acc, k).FUNCTION(); \
         }                                                          \
@@ -163,11 +163,11 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T>> const& labels,
 #define VIGRA_CONVEX_HULL_VECTOR_FEATURE(NAME, FUNCTION)                                  \
     {                                                                                     \
         NumpyArray<2, double> array(Shape2(size, N));                                     \
-        for (int k = 0; k < size; ++k)                                                    \
+        for(int k = 0; k < size; ++k)                                                     \
         {                                                                                 \
-            if (k == ignored_label || get<Count>(acc, k) == 0)                            \
+            if(k == ignored_label || get<Count>(acc, k) == 0)                             \
                 continue;                                                                 \
-            for (unsigned j = 0; j < N; ++j)                                              \
+            for(unsigned j = 0; j < N; ++j)                                               \
                 array(k, permutation[j]) = get<ConvexHullFeatures>(acc, k).FUNCTION()[j]; \
         }                                                                                 \
         res[XSTR(NAME)] = array;                                                          \
@@ -184,7 +184,7 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T>> const& labels,
 
 #endif // WITH_LEMON
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 python::object
 pyExtractSkeletonFeatures(NumpyArray<N, Singleband<T>> const& labels,
                           double pruning_threshold,
@@ -202,7 +202,7 @@ pyExtractSkeletonFeatures(NumpyArray<N, Singleband<T>> const& labels,
 #define VIGRA_SKELETON_VECTOR_FEATURE_TERMINAL_1 "Terminal 1"
 #define VIGRA_SKELETON_VECTOR_FEATURE_TERMINAL_2 "Terminal 2"
 
-    if (list_features_only)
+    if(list_features_only)
     {
 
         python::list res;
@@ -235,7 +235,7 @@ pyExtractSkeletonFeatures(NumpyArray<N, Singleband<T>> const& labels,
 #define VIGRA_SKELETON_FEATURE(TYPE, NAME, ATTRIBUTE) \
     {                                                 \
         NumpyArray<1, TYPE> array((Shape1(size)));    \
-        for (int k = 0; k < size; ++k)                \
+        for(int k = 0; k < size; ++k)                 \
         {                                             \
             array(k) = features[k].ATTRIBUTE;         \
         }                                             \
@@ -254,9 +254,9 @@ pyExtractSkeletonFeatures(NumpyArray<N, Singleband<T>> const& labels,
 #define VIGRA_SKELETON_VECTOR_FEATURE(NAME, ATTRIBUTE)               \
     {                                                                \
         NumpyArray<2, double> array(Shape2(size, N));                \
-        for (int k = 0; k < size; ++k)                               \
+        for(int k = 0; k < size; ++k)                                \
         {                                                            \
-            for (unsigned j = 0; j < N; ++j)                         \
+            for(unsigned j = 0; j < N; ++j)                          \
                 array(k, permutation[j]) = features[k].ATTRIBUTE[j]; \
         }                                                            \
         res[XSTR(NAME)] = array;                                     \

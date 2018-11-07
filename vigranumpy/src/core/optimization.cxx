@@ -45,7 +45,7 @@ namespace python = boost::python;
 namespace vigra
 {
 
-template<class T>
+template <class T>
 NumpyAnyArray
     pythonLeastSquares(NumpyArray<2, T> A, NumpyArray<2, T> b)
 {
@@ -59,7 +59,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class T>
+template <class T>
 NumpyAnyArray
     pythonNonnegativeLeastSquares(NumpyArray<2, T> A, NumpyArray<2, T> b)
 {
@@ -73,7 +73,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class T>
+template <class T>
 NumpyAnyArray
     pythonRidgeRegression(NumpyArray<2, T> A, NumpyArray<2, T> b, double lambda)
 {
@@ -87,7 +87,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class T>
+template <class T>
 python::tuple
     pythonlassoRegression(NumpyArray<2, T> A, NumpyArray<2, T> b,
                           bool nonNegative,
@@ -113,7 +113,7 @@ python::tuple
                     : 0;
 
         LeastAngleRegressionOptions options;
-        if (nonNegative)
+        if(nonNegative)
             options.nnlasso();
         else
             options.lasso();
@@ -124,15 +124,15 @@ python::tuple
     }
 
     python::list pyActiveSets;
-    for (unsigned int k = 0; k < numSolutions; ++k)
+    for(unsigned int k = 0; k < numSolutions; ++k)
         pyActiveSets.append(python::object(activeSets[k]));
     python::list pyLassoSolutions;
-    if (lassoSolutions)
+    if(lassoSolutions)
     {
-        for (unsigned int k = 0; k < numSolutions; ++k)
+        for(unsigned int k = 0; k < numSolutions; ++k)
         {
             NumpyArray<2, double, UnstridedArrayTag> sol(Shape2(A.shape(1), 1));
-            for (unsigned int m = 0; m < activeSets[k].size(); ++m)
+            for(unsigned int m = 0; m < activeSets[k].size(); ++m)
             {
                 sol(activeSets[k][m], 0) = lasso_solutions[k](m, 0);
             }
@@ -140,12 +140,12 @@ python::tuple
         }
     }
     python::list pyLsqSolutions;
-    if (lsqSolutions)
+    if(lsqSolutions)
     {
-        for (unsigned int k = 0; k < numSolutions; ++k)
+        for(unsigned int k = 0; k < numSolutions; ++k)
         {
             NumpyArray<2, double, UnstridedArrayTag> sol(Shape2(A.shape(1), 1));
-            for (unsigned int m = 0; m < activeSets[k].size(); ++m)
+            for(unsigned int m = 0; m < activeSets[k].size(); ++m)
             {
                 sol(activeSets[k][m], 0) = lsq_solutions[k](m, 0);
             }
@@ -153,9 +153,9 @@ python::tuple
         }
     }
 
-    if (lsqSolutions)
+    if(lsqSolutions)
     {
-        if (lassoSolutions)
+        if(lassoSolutions)
             return python::make_tuple(numSolutions, pyActiveSets, pyLsqSolutions, pyLassoSolutions);
         else
             return python::make_tuple(numSolutions, pyActiveSets, pyLsqSolutions, python::object());

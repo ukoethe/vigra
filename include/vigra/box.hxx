@@ -47,7 +47,7 @@ namespace detail
 {
 
 // RangePolicy used for floating point coordinate types
-template<class VALUETYPE>
+template <class VALUETYPE>
 struct EndInsidePolicy
 {
     static inline bool isEmptyRange(VALUETYPE b, VALUETYPE e)
@@ -62,7 +62,7 @@ struct EndInsidePolicy
 };
 
 // RangePolicy used for integer coordinate types
-template<class VALUETYPE>
+template <class VALUETYPE>
 struct EndOutsidePolicy
 {
     static inline bool isEmptyRange(VALUETYPE b, VALUETYPE e)
@@ -86,7 +86,7 @@ struct EndOutsidePolicy
      * inside (for floating point types).  size() will always be
      * end() - begin().
      */
-template<class VALUETYPE, unsigned int DIMENSION>
+template <class VALUETYPE, unsigned int DIMENSION>
 class Box
 {
 public:
@@ -224,11 +224,11 @@ public:
          */
     VolumeType volume() const
     {
-        if (isEmpty())
+        if(isEmpty())
             return 0;
 
         VolumeType result(end_[0] - begin_[0]);
-        for (unsigned int i = 1; i < DIMENSION; ++i)
+        for(unsigned int i = 1; i < DIMENSION; ++i)
             result *= end_[i] - begin_[i];
         return result;
     }
@@ -267,7 +267,7 @@ public:
          */
     void addBorder(VALUETYPE borderWidth)
     {
-        for (unsigned int i = 0; i < DIMENSION; ++i)
+        for(unsigned int i = 0; i < DIMENSION; ++i)
         {
             begin_[i] -= borderWidth;
             end_[i] += borderWidth;
@@ -309,8 +309,8 @@ public:
          */
     bool isEmpty() const
     {
-        for (unsigned int i = 0; i < DIMENSION; ++i)
-            if (RangePolicy::isEmptyRange(begin_[i], end_[i]))
+        for(unsigned int i = 0; i < DIMENSION; ++i)
+            if(RangePolicy::isEmptyRange(begin_[i], end_[i]))
                 return true;
         return false;
     }
@@ -321,9 +321,9 @@ public:
          */
     bool contains(Vector const& p) const
     {
-        for (unsigned int i = 0; i < DIMENSION; ++i)
-            if ((p[i] < begin_[i]) ||
-                RangePolicy::isEmptyRange(p[i], end_[i]))
+        for(unsigned int i = 0; i < DIMENSION; ++i)
+            if((p[i] < begin_[i]) ||
+               RangePolicy::isEmptyRange(p[i], end_[i]))
                 return false;
         return true;
     }
@@ -336,12 +336,12 @@ public:
          */
     bool contains(Box const& r) const
     {
-        if (r.isEmpty())
+        if(r.isEmpty())
             return true;
-        if (!contains(r.begin_))
+        if(!contains(r.begin_))
             return false;
-        for (unsigned int i = 0; i < DIMENSION; ++i)
-            if (r.end_[i] > end_[i])
+        for(unsigned int i = 0; i < DIMENSION; ++i)
+            if(r.end_[i] > end_[i])
                 return false;
         return true;
     }
@@ -353,11 +353,11 @@ public:
          */
     bool intersects(Box const& r) const
     {
-        if (r.isEmpty() || isEmpty())
+        if(r.isEmpty() || isEmpty())
             return false;
-        for (unsigned int i = 0; i < DIMENSION; ++i)
-            if (RangePolicy::isEmptyRange(r.begin_[i], end_[i]) ||
-                RangePolicy::isEmptyRange(begin_[i], r.end_[i]))
+        for(unsigned int i = 0; i < DIMENSION; ++i)
+            if(RangePolicy::isEmptyRange(r.begin_[i], end_[i]) ||
+               RangePolicy::isEmptyRange(begin_[i], r.end_[i]))
                 return false;
         return true;
     }
@@ -369,19 +369,19 @@ public:
          */
     Box& operator|=(Vector const& p)
     {
-        if (isEmpty())
+        if(isEmpty())
         {
             begin_ = p;
-            for (unsigned int i = 0; i < DIMENSION; ++i)
+            for(unsigned int i = 0; i < DIMENSION; ++i)
                 end_[i] = RangePolicy::pointEnd(p[i]);
         }
         else
         {
-            for (unsigned int i = 0; i < DIMENSION; ++i)
+            for(unsigned int i = 0; i < DIMENSION; ++i)
             {
-                if (p[i] < begin_[i])
+                if(p[i] < begin_[i])
                     begin_[i] = p[i];
-                if (RangePolicy::isEmptyRange(p[i], end_[i]))
+                if(RangePolicy::isEmptyRange(p[i], end_[i]))
                     end_[i] = RangePolicy::pointEnd(p[i]);
             }
         }
@@ -406,16 +406,16 @@ public:
          */
     Box& operator|=(Box const& r)
     {
-        if (r.isEmpty())
+        if(r.isEmpty())
             return *this;
-        if (isEmpty())
+        if(isEmpty())
             return this->operator=(r);
 
-        for (unsigned int i = 0; i < DIMENSION; ++i)
+        for(unsigned int i = 0; i < DIMENSION; ++i)
         {
-            if (r.begin_[i] < begin_[i])
+            if(r.begin_[i] < begin_[i])
                 begin_[i] = r.begin_[i];
-            if (end_[i] < r.end_[i])
+            if(end_[i] < r.end_[i])
                 end_[i] = r.end_[i];
         }
         return *this;
@@ -439,16 +439,16 @@ public:
          */
     Box& operator&=(Box const& r)
     {
-        if (isEmpty())
+        if(isEmpty())
             return *this;
-        if (r.isEmpty())
+        if(r.isEmpty())
             return this->operator=(r);
 
-        for (unsigned int i = 0; i < DIMENSION; ++i)
+        for(unsigned int i = 0; i < DIMENSION; ++i)
         {
-            if (begin_[i] < r.begin_[i])
+            if(begin_[i] < r.begin_[i])
                 begin_[i] = r.begin_[i];
-            if (r.end_[i] < end_[i])
+            if(r.end_[i] < end_[i])
                 end_[i] = r.end_[i];
         }
         return *this;
@@ -559,7 +559,7 @@ public:
     }
 };
 
-template<class VALUETYPE, unsigned int DIMENSION>
+template <class VALUETYPE, unsigned int DIMENSION>
 std::ostream&
 operator<<(std::ostream& stream, const Box<VALUETYPE, DIMENSION>& box)
 {

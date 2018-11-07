@@ -31,7 +31,7 @@ namespace vigra
  * ok.. what we actually need is a decent iota iterator
  * or something like xrange but for now it should suffice.
  */
-template<class T>
+template <class T>
 class Splice
 {
     int size_;
@@ -59,7 +59,7 @@ public:
     }
 };
 
-template<>
+template <>
 class Splice<int>
 {
     int begin_;
@@ -96,13 +96,13 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 Splice<T>
 _spl(T b, T e)
 {
     return Splice<T>(b, e);
 }
-template<class T>
+template <class T>
 Splice<T>
 _spl(T b, int size, T e)
 {
@@ -117,7 +117,7 @@ _spl(int size)
 
 
 
-template<class T, class G>
+template <class T, class G>
 inline MultiArrayShape<2>::type
 _spl_shp(Splice<T> f,
          Splice<G> h)
@@ -127,18 +127,18 @@ _spl_shp(Splice<T> f,
 
 
 
-template<class R, class F,
-         class T, class C,
-         class T2, class C2>
+template <class R, class F,
+          class T, class C,
+          class T2, class C2>
 void
 copy_splice(Splice<R> _first,
             Splice<F> _second,
             MultiArrayView<2, T, C> src,
             MultiArrayView<2, T2, C2> dest)
 {
-    for (int jj = 0; jj < _second.size(); ++jj)
+    for(int jj = 0; jj < _second.size(); ++jj)
     {
-        for (int ii = 0; ii < _first.size(); ++ii)
+        for(int ii = 0; ii < _first.size(); ++ii)
         {
             dest(ii, jj) = src(_first[ii], _second[jj]);
         }

@@ -65,8 +65,8 @@ namespace vigra
     <b>\#include</b> \<vigra/bucket_queue.hxx\><br>
     Namespace: vigra
 */
-template<class ValueType,
-         bool Ascending = false> // std::priority_queue is descending
+template <class ValueType,
+          bool Ascending = false> // std::priority_queue is descending
 class BucketQueue
 {
     ArrayVector<std::queue<ValueType>> buckets_;
@@ -134,7 +134,7 @@ public:
         --size_;
         buckets_[top_].pop();
 
-        while (top_ > 0 && buckets_[top_].size() == 0)
+        while(top_ > 0 && buckets_[top_].size() == 0)
             --top_;
     }
 
@@ -145,12 +145,12 @@ public:
         ++size_;
         buckets_[priority].push(v);
 
-        if (priority > top_)
+        if(priority > top_)
             top_ = priority;
     }
 };
 
-template<class ValueType>
+template <class ValueType>
 class BucketQueue<ValueType, true> // ascending queue
 {
     ArrayVector<std::queue<ValueType>> buckets_;
@@ -201,7 +201,7 @@ public:
         --size_;
         buckets_[top_].pop();
 
-        while (top_ < (priority_type)buckets_.size() && buckets_[top_].size() == 0)
+        while(top_ < (priority_type)buckets_.size() && buckets_[top_].size() == 0)
             ++top_;
     }
 
@@ -210,7 +210,7 @@ public:
         ++size_;
         buckets_[priority].push(v);
 
-        if (priority < top_)
+        if(priority < top_)
             top_ = priority;
     }
 };
@@ -227,9 +227,9 @@ public:
     <b>\#include</b> \<vigra/priority_queue.hxx\><br>
     Namespace: vigra
 */
-template<class ValueType,
-         class PriorityFunctor,
-         bool Ascending = false>
+template <class ValueType,
+          class PriorityFunctor,
+          bool Ascending = false>
 class MappedBucketQueue
     : public BucketQueue<ValueType, Ascending>
 {
@@ -267,9 +267,9 @@ public:
         priority_type index = get_priority_(v);
 
         // clamp index to the allowed range
-        if (index > BaseType::maxIndex())
+        if(index > BaseType::maxIndex())
             index = BaseType::maxIndex();
-        else if (index < 0)
+        else if(index < 0)
             index = 0;
 
         BaseType::push(v, index);
@@ -285,9 +285,9 @@ public:
     <b>\#include</b> \<vigra/priority_queue.hxx\><br>
     Namespace: vigra
 */
-template<class ValueType,
-         class PriorityType,
-         bool Ascending = false> // std::priority_queue is descending
+template <class ValueType,
+          class PriorityType,
+          bool Ascending = false> // std::priority_queue is descending
 class PriorityQueue
 {
     typedef std::pair<ValueType, PriorityType> ElementType;
@@ -374,8 +374,8 @@ public:
     }
 };
 
-template<class ValueType,
-         bool Ascending>
+template <class ValueType,
+          bool Ascending>
 class PriorityQueue<ValueType, unsigned char, Ascending>
     : public BucketQueue<ValueType, Ascending>
 {
@@ -388,8 +388,8 @@ public:
     }
 };
 
-template<class ValueType,
-         bool Ascending>
+template <class ValueType,
+          bool Ascending>
 class PriorityQueue<ValueType, unsigned short, Ascending>
     : public BucketQueue<ValueType, Ascending>
 {
@@ -412,7 +412,7 @@ public:
     
     Namespace: vigra
 */
-template<class T, class COMPARE = std::less<T>>
+template <class T, class COMPARE = std::less<T>>
 class ChangeablePriorityQueue
 {
 
@@ -433,7 +433,7 @@ public:
           indices_(maxSize_ + 1, -1),
           priorities_(maxSize_ + 1)
     {
-        for (unsigned i = 0; i <= maxSize_; i++)
+        for(unsigned i = 0; i <= maxSize_; i++)
             indices_[i] = -1;
     }
 
@@ -441,7 +441,7 @@ public:
     void reset()
     {
         currentSize_ = 0;
-        for (int i = 0; i <= maxSize_; i++)
+        for(int i = 0; i <= maxSize_; i++)
             indices_[i] = -1;
     }
     /// check if the PQ is empty
@@ -453,7 +453,7 @@ public:
     /// check if the PQ is empty
     void clear()
     {
-        for (int i = 0; i < currentSize_; i++)
+        for(int i = 0; i < currentSize_; i++)
         {
             indices_[heap_[i + 1]] = -1;
             heap_[i + 1] = -1;
@@ -482,7 +482,7 @@ public:
     */
     void push(const value_type i, const priority_type p)
     {
-        if (!contains(i))
+        if(!contains(i))
         {
             currentSize_++;
             indices_[i] = currentSize_;
@@ -542,12 +542,12 @@ public:
     */
     void changePriority(const value_type i, const priority_type p)
     {
-        if (_gt(p, priorities_[i]))
+        if(_gt(p, priorities_[i]))
         {
             priorities_[i] = p;
             bubbleDown(indices_[i]);
         }
-        else if (_lt(p, priorities_[i]))
+        else if(_lt(p, priorities_[i]))
         {
             priorities_[i] = p;
             bubbleUp(indices_[i]);
@@ -564,7 +564,7 @@ private:
 
     void bubbleUp(int k)
     {
-        while (k > 1 && _gt(priorities_[heap_[k / 2]], priorities_[heap_[k]]))
+        while(k > 1 && _gt(priorities_[heap_[k / 2]], priorities_[heap_[k]]))
         {
             swapItems(k, k / 2);
             k = k / 2;
@@ -574,12 +574,12 @@ private:
     void bubbleDown(int k)
     {
         int j;
-        while (static_cast<unsigned>(2 * k) <= currentSize_)
+        while(static_cast<unsigned>(2 * k) <= currentSize_)
         {
             j = 2 * k;
-            if (static_cast<unsigned>(j) < currentSize_ && _gt(priorities_[heap_[j]], priorities_[heap_[j + 1]]))
+            if(static_cast<unsigned>(j) < currentSize_ && _gt(priorities_[heap_[j]], priorities_[heap_[j + 1]]))
                 j++;
-            if (_leqt(priorities_[heap_[k]], priorities_[heap_[j]]))
+            if(_leqt(priorities_[heap_[k]], priorities_[heap_[j]]))
                 break;
             swapItems(k, j);
             k = j;

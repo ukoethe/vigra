@@ -53,7 +53,7 @@
 using namespace vigra;
 using namespace vigra::functor;
 
-template<class T>
+template <class T>
 class MultiArrayDataTest
 {
 public:
@@ -77,7 +77,7 @@ public:
         : shape3(10, 10, 10), array3(shape3, 1)
     {
         // initialize the array to the test data
-        for (int i = 0; i < 1000; ++i)
+        for(int i = 0; i < 1000; ++i)
             array3[i] = i;
     }
 
@@ -101,7 +101,7 @@ public:
         linearSequence(a.begin(), a.end());
         should(a == array3);
 
-        for (unsigned int k = 0; k < 10; ++k)
+        for(unsigned int k = 0; k < 10; ++k)
             array3(k, 0, 0) += 10;
         should(array3.subarray(Shape(0, 0, 0), Shape(10, 1, 1)) == array3.subarray(Shape(0, 1, 0), Shape(10, 2, 1)));
 
@@ -221,9 +221,9 @@ public:
 
         // test swap
         array3.subarray(Shape(0, 0, 0), Shape(10, 10, 1)).swapData(array3.subarray(Shape(0, 0, 1), Shape(10, 10, 2)));
-        for (int k = 0; k < 100; ++k)
+        for(int k = 0; k < 100; ++k)
             shouldEqual(array3[k], k + 100);
-        for (int k = 100; k < 200; ++k)
+        for(int k = 100; k < 200; ++k)
             shouldEqual(array3[k], k - 100);
 
         MultiArrayView<3, scalar_type> varray1 = array;
@@ -291,13 +291,13 @@ public:
     {
         typedef MultiArrayView<3, scalar_type, StridedArrayTag> transposed_view;
         array3.reshape(difference3_type(3, 5, 7));
-        for (int k = 0; k < array3.size(); ++k)
+        for(int k = 0; k < array3.size(); ++k)
             array3[k] = k;
 
         array3_type ref(difference3_type(array3.shape(2), array3.shape(0), array3.shape(1)));
-        for (int k = 0; k < array3.shape(0); ++k)
-            for (int l = 0; l < array3.shape(1); ++l)
-                for (int m = 0; m < array3.shape(2); ++m)
+        for(int k = 0; k < array3.shape(0); ++k)
+            for(int l = 0; l < array3.shape(1); ++l)
+                for(int m = 0; m < array3.shape(2); ++m)
                     ref(m, k, l) = array3(k, l, m);
 
         MultiArrayView<3, scalar_type, StridedArrayTag>
@@ -305,14 +305,14 @@ public:
         shouldEqual(ref.shape(), parray.shape());
         should(ref == parray);
 
-        if (vigra::detail::ResolveMultiband<T>::value) // array is Multiband<T>
+        if(vigra::detail::ResolveMultiband<T>::value) // array is Multiband<T>
         {
             shouldEqual(array3.strideOrdering(), Shape3(1, 2, 0));
 
             array3_type ref_ascending(difference3_type(array3.shape(2), array3.shape(0), array3.shape(1)));
-            for (int k = 0; k < array3.shape(0); ++k)
-                for (int l = 0; l < array3.shape(1); ++l)
-                    for (int m = 0; m < array3.shape(2); ++m)
+            for(int k = 0; k < array3.shape(0); ++k)
+                for(int l = 0; l < array3.shape(1); ++l)
+                    for(int m = 0; m < array3.shape(2); ++m)
                         ref_ascending(m, k, l) = array3(k, l, m);
 
             transposed_view parray_ascending = array3.permuteStridesAscending();
@@ -320,9 +320,9 @@ public:
             should(ref_ascending == parray_ascending);
 
             array3_type ref_descending(difference3_type(array3.shape(1), array3.shape(0), array3.shape(2)));
-            for (int k = 0; k < array3.shape(0); ++k)
-                for (int l = 0; l < array3.shape(1); ++l)
-                    for (int m = 0; m < array3.shape(2); ++m)
+            for(int k = 0; k < array3.shape(0); ++k)
+                for(int l = 0; l < array3.shape(1); ++l)
+                    for(int m = 0; m < array3.shape(2); ++m)
                         ref_descending(l, k, m) = array3(k, l, m);
 
             transposed_view parray_descending = array3.permuteStridesDescending();
@@ -337,9 +337,9 @@ public:
             should(array3 == parray_ascending);
 
             array3_type ref_descending(difference3_type(array3.shape(2), array3.shape(1), array3.shape(0)));
-            for (int k = 0; k < array3.shape(0); ++k)
-                for (int l = 0; l < array3.shape(1); ++l)
-                    for (int m = 0; m < array3.shape(2); ++m)
+            for(int k = 0; k < array3.shape(0); ++k)
+                for(int l = 0; l < array3.shape(1); ++l)
+                    for(int m = 0; m < array3.shape(2); ++m)
                         ref_descending(m, l, k) = array3(k, l, m);
 
             MultiArrayView<3, scalar_type, StridedArrayTag>
@@ -349,8 +349,8 @@ public:
         }
 
         array2_type ref2(difference2_type(array3.shape(1), array3.shape(0)));
-        for (int k = 0; k < array3.shape(0); ++k)
-            for (int l = 0; l < array3.shape(1); ++l)
+        for(int k = 0; k < array3.shape(0); ++k)
+            for(int l = 0; l < array3.shape(1); ++l)
                 ref2(l, k) = array3(k, l, 0);
 
         MultiArrayView<2, scalar_type, StridedArrayTag>
@@ -363,7 +363,7 @@ public:
             array3.transpose(difference3_type(2, 0, 0));
             failTest("no exception thrown");
         }
-        catch (vigra::ContractViolation& c)
+        catch(vigra::ContractViolation& c)
         {
             std::string expected("\nPrecondition violation!\nMultiArrayView::transpose(): every dimension must occur exactly once");
             std::string message(c.what());
@@ -401,7 +401,7 @@ public:
         array3_type reducedSums(reducedShape);
         array3.sum(reducedSums);
         int res = 4950;
-        for (int k = 0; k < reducedShape[2]; ++k, res += 10000)
+        for(int k = 0; k < reducedShape[2]; ++k, res += 10000)
             shouldEqual(reducedSums(0, 0, k), res);
 
         scalar_type minimum, maximum;
@@ -418,7 +418,7 @@ public:
     void testScanOrderAccess()
     {
         shouldEqual(array3.size(), 1000);
-        for (int k = 0; k < array3.size(); ++k)
+        for(int k = 0; k < array3.size(); ++k)
         {
             shouldEqual(array3[k], k);
             shouldEqual(array3[array3.scanOrderIndexToCoordinate(k)], k);
@@ -427,15 +427,15 @@ public:
 
         MultiArrayView<2, scalar_type, StridedArrayTag> array = array3.bindInner(2);
         shouldEqual(array.size(), 100);
-        for (int k = 0; k < array.size(); ++k)
+        for(int k = 0; k < array.size(); ++k)
             shouldEqual(array[k], 10 * k + 2);
 
         MultiArrayView<2, scalar_type, array3_stride>
             subarray = array3.bindOuter(2).subarray(Shape2(1, 0), Shape2(10, 9));
         shouldEqual(subarray.size(), 81);
-        for (int k = 0, l = 200; k < subarray.size(); ++k, ++l)
+        for(int k = 0, l = 200; k < subarray.size(); ++k, ++l)
         {
-            if (k % 9 == 0)
+            if(k % 9 == 0)
                 ++l;
             shouldEqual(subarray[k], l);
         }
@@ -452,7 +452,7 @@ public:
             array = array3.subarray(Shape(0, 0, 0), Shape(10, 1, 1));
             failTest("no exception thrown");
         }
-        catch (vigra::ContractViolation& c)
+        catch(vigra::ContractViolation& c)
         {
             std::string expected("\nPrecondition violation!\nMultiArrayView::operator=(MultiArrayView const &): shape mismatch");
             std::string message(c.what());
@@ -463,32 +463,32 @@ public:
         MultiArrayView<3, scalar_type, array3_stride> subarray = array3.subarray(Shape(0, 0, 0), Shape(10, 1, 1));
         should(subarray == array);
         subarray = array3.subarray(Shape(0, 1, 0), Shape(10, 2, 1)); // should overwrite the data
-        for (unsigned int k = 0; k < 10; ++k)
+        for(unsigned int k = 0; k < 10; ++k)
             shouldEqual(array3(k, 0, 0), array3(k, 1, 0));
         subarray += array3.subarray(Shape(0, 1, 0), Shape(10, 2, 1)); // should overwrite the data
-        for (unsigned int k = 0; k < 10; ++k)
+        for(unsigned int k = 0; k < 10; ++k)
             shouldEqual(array3(k, 0, 0), 2.0 * array3(k, 1, 0));
         subarray -= array3.subarray(Shape(0, 1, 0), Shape(10, 2, 1)); // should overwrite the data
-        for (unsigned int k = 0; k < 10; ++k)
+        for(unsigned int k = 0; k < 10; ++k)
             shouldEqual(array3(k, 0, 0), array3(k, 1, 0));
         subarray *= array3.subarray(Shape(0, 1, 0), Shape(10, 2, 1)); // should overwrite the data
-        for (unsigned int k = 0; k < 10; ++k)
+        for(unsigned int k = 0; k < 10; ++k)
             shouldEqual(array3(k, 0, 0), sq(array3(k, 1, 0)));
         subarray /= array3.subarray(Shape(0, 1, 0), Shape(10, 2, 1)); // should overwrite the data
-        for (unsigned int k = 0; k < 10; ++k)
+        for(unsigned int k = 0; k < 10; ++k)
             shouldEqual(array3(k, 0, 0), array3(k, 1, 0));
 
         subarray += 1; // should overwrite the data
-        for (unsigned int k = 0; k < 10; ++k)
+        for(unsigned int k = 0; k < 10; ++k)
             shouldEqual(array3(k, 0, 0), array3(k, 1, 0) + 1);
         subarray -= 2; // should overwrite the data
-        for (unsigned int k = 0; k < 10; ++k)
+        for(unsigned int k = 0; k < 10; ++k)
             shouldEqual(array3(k, 0, 0), array3(k, 1, 0) - 1);
         subarray *= 2; // should overwrite the data
-        for (unsigned int k = 0; k < 10; ++k)
+        for(unsigned int k = 0; k < 10; ++k)
             shouldEqual(array3(k, 0, 0), 2 * (array3(k, 1, 0) - 1));
         subarray /= 2; // should overwrite the data
-        for (unsigned int k = 0; k < 10; ++k)
+        for(unsigned int k = 0; k < 10; ++k)
             shouldEqual(array3(k, 0, 0), array3(k, 1, 0) - 1);
 
         // test assignment from UInt8 => double (reproduces compiler crash in VisualStudio 2010)
@@ -748,17 +748,17 @@ public:
         iterator3_t i6(av.begin());
 
         // iterate over the third dimension
-        for (p[2] = 0, i3.resetDim(2), i4.setDim(2, 0), i5.dim<2>() = 0, i6.resetDim(2);
-             i3.point(2) != s[2];
-             i3.incDim(2), i4.addDim(2, 1), ++i5.dim<2>(), i6.dim<2>() += 1, ++p[2])
+        for(p[2] = 0, i3.resetDim(2), i4.setDim(2, 0), i5.dim<2>() = 0, i6.resetDim(2);
+            i3.point(2) != s[2];
+            i3.incDim(2), i4.addDim(2, 1), ++i5.dim<2>(), i6.dim<2>() += 1, ++p[2])
         {
-            for (p[1] = 0, i3.resetDim(1), i4.setDim(1, 0), i5.dim<1>() = 0, i6.resetDim(1);
-                 i3.point(1) != s[1];
-                 i3.incDim(1), i4.addDim(1, 1), ++i5.dim<1>(), i6.dim<1>() += 1, ++p[1])
+            for(p[1] = 0, i3.resetDim(1), i4.setDim(1, 0), i5.dim<1>() = 0, i6.resetDim(1);
+                i3.point(1) != s[1];
+                i3.incDim(1), i4.addDim(1, 1), ++i5.dim<1>(), i6.dim<1>() += 1, ++p[1])
             {
-                for (p[0] = 0, i3.resetDim(0), i4.setDim(0, 0), i5.dim<0>() = 0, i6.resetDim(0);
-                     i3.point(0) != s[0];
-                     i3.incDim(0), i4.addDim(0, 1), ++i5.dim<0>(), i6.dim<0>() += 1, ++p[0], ++i1, ++c, i2 += 1, ++count)
+                for(p[0] = 0, i3.resetDim(0), i4.setDim(0, 0), i5.dim<0>() = 0, i6.resetDim(0);
+                    i3.point(0) != s[0];
+                    i3.incDim(0), i4.addDim(0, 1), ++i5.dim<0>(), i6.dim<0>() += 1, ++p[0], ++i1, ++c, i2 += 1, ++count)
                 {
                     shouldEqual(&*i1, &a3[p]);
                     shouldEqual(&*i2, &a3[p]);
@@ -814,7 +814,7 @@ public:
 
                     bool atBorder = p[0] == 0 || p[0] == s[0] - 1 || p[1] == 0 || p[1] == s[1] - 1 ||
                                     p[2] == 0 || p[2] == s[2] - 1;
-                    if (!atBorder)
+                    if(!atBorder)
                     {
                         should(!i1.atBorder());
                         should(!i2.atBorder());
@@ -897,11 +897,11 @@ public:
         shape3_t p;
 
         // iterate over the third dimension
-        for (p[2] = 0; p[2] != s[2]; ++p[2])
+        for(p[2] = 0; p[2] != s[2]; ++p[2])
         {
-            for (p[1] = 0; p[1] != s[1]; ++p[1])
+            for(p[1] = 0; p[1] != s[1]; ++p[1])
             {
-                for (p[0] = 0; p[0] != s[0]; ++p[0], ++i1, i2 += 1, ++count)
+                for(p[0] = 0; p[0] != s[0]; ++p[0], ++i1, i2 += 1, ++count)
                 {
                     shouldEqual(&*i1, &a3[p]);
                     shouldEqual(&*i2, &a3[p]);
@@ -923,7 +923,7 @@ public:
 
                     bool atBorder = p[0] == 0 || p[0] == s[0] - 1 || p[1] == 0 || p[1] == s[1] - 1 ||
                                     p[2] == 0 || p[2] == s[2] - 1;
-                    if (!atBorder)
+                    if(!atBorder)
                     {
                         should(!i1.atBorder());
                         should(!i2.atBorder());
@@ -1041,11 +1041,11 @@ public:
         shape3_t p;
 
         // iterate over the third dimension
-        for (p[2] = 0; p[2] != s[2]; ++p[2])
+        for(p[2] = 0; p[2] != s[2]; ++p[2])
         {
-            for (p[1] = 0; p[1] != s[1]; ++p[1])
+            for(p[1] = 0; p[1] != s[1]; ++p[1])
             {
-                for (p[0] = 0; p[0] != s[0]; ++p[0], ++i1, i2 += 1, ++count)
+                for(p[0] = 0; p[0] != s[0]; ++p[0], ++i1, i2 += 1, ++count)
                 {
                     shouldEqual(&get<1>(*i1), &a3[p]);
                     shouldEqual(&get<1>(*i2), &a3[p]);
@@ -1077,7 +1077,7 @@ public:
 
                     bool atBorder = p[0] == 0 || p[0] == s[0] - 1 || p[1] == 0 || p[1] == s[1] - 1 ||
                                     p[2] == 0 || p[2] == s[2] - 1;
-                    if (!atBorder)
+                    if(!atBorder)
                     {
                         should(!i1.atBorder());
                         should(!i2.atBorder());
@@ -1128,7 +1128,7 @@ public:
         Iterator1 iz = zip(vi.begin(), vd.begin());
 
         count = 0;
-        for (; count < 4; ++iz, ++it, ++i0, ++count)
+        for(; count < 4; ++iz, ++it, ++i0, ++count)
         {
             shouldEqual(i0.get<0>(), Shape1(count));
             shouldEqual(it.get<0>(), Shape1(count));
@@ -1149,7 +1149,7 @@ public:
                                                      at.bindOuter(0), at.bindOuter(1));
         MultibandIterator imend = im.getEndIterator();
         count = 0;
-        for (; im < imend; ++im, ++count)
+        for(; im < imend; ++im, ++count)
         {
             shouldEqual(im.get<1>().shape(), Shape1(2));
             shouldEqual(&(im.get<1>()[0]), &(im.get<2>()));
@@ -1169,17 +1169,17 @@ public:
         int countx = 0, county = 0, countz = 0;
 
         // iterate over the third dimension
-        for (int z = 0; i3_f != i3_l; ++i3_f, ++z)
+        for(int z = 0; i3_f != i3_l; ++i3_f, ++z)
         {
             traverser2_t i2_f = i3_f.begin();
             traverser2_t i2_l = i3_f.end();
             // iterate over the second dimension
-            for (int y = 0; i2_f != i2_l; ++i2_f, ++y)
+            for(int y = 0; i2_f != i2_l; ++i2_f, ++y)
             {
                 traverser1_t i1_f = i2_f.begin();
                 traverser1_t i1_l = i2_f.end();
                 // iterate over the first dimension
-                for (int x = 0; i1_f != i1_l; ++i1_f, ++x, ++seqi)
+                for(int x = 0; i1_f != i1_l; ++i1_f, ++x, ++seqi)
                 {
                     ++countx;
                     shouldEqual(&*i1_f, &a3(x, y, z));
@@ -1236,17 +1236,17 @@ public:
         unsigned int countx = 0, county = 0, countz = 0;
 
         // iterate over the third dimension
-        for (; i3_f != i3_l; ++i3_f)
+        for(; i3_f != i3_l; ++i3_f)
         {
             traverser::next_type i2_f = i3_f.begin();
             traverser::next_type i2_l = i3_f.end();
             // iterate over the second dimension
-            for (; i2_f != i2_l; ++i2_f)
+            for(; i2_f != i2_l; ++i2_f)
             {
                 traverser::next_type::next_type i1_f = i2_f.begin();
                 traverser::next_type::next_type i1_l = i2_f.end();
                 // iterate over the first dimension
-                for (; i1_f != i1_l; ++i1_f)
+                for(; i1_f != i1_l; ++i1_f)
                     ++countx;
                 ++county;
             }
@@ -1298,19 +1298,19 @@ public:
         int countx = 0, county = 0, countz = 0;
 
         // iterate over the third dimension
-        for (int z = 0; i3_f != i3_l; ++i3_f, ++i3_c, ++z)
+        for(int z = 0; i3_f != i3_l; ++i3_f, ++i3_c, ++z)
         {
             auto i2_f = i3_f.begin();
             auto i2_c = i3_c.begin();
             auto i2_l = i3_f.end();
             // iterate over the second dimension
-            for (int y = 0; i2_f != i2_l; ++i2_f, ++i2_c, ++y)
+            for(int y = 0; i2_f != i2_l; ++i2_f, ++i2_c, ++y)
             {
                 auto i1_f = i2_f.begin();
                 auto i1_c = i2_c.begin();
                 auto i1_l = i2_f.end();
                 // iterate over the first dimension
-                for (int x = 0; i1_f != i1_l; ++i1_f, ++i1_c, ++x, ++seqi)
+                for(int x = 0; i1_f != i1_l; ++i1_f, ++i1_c, ++x, ++seqi)
                 {
                     ++countx;
                     shouldEqual(&*seqi, &a3(x, y, z));
@@ -1462,19 +1462,19 @@ public:
         unsigned int countx = 0, county = 0, countz = 0;
 
         // iterate over the third dimension
-        for (; i3_f != i3_l; ++i3_f)
+        for(; i3_f != i3_l; ++i3_f)
         {
             typedef Traverser3::next_type Traverser2;
             Traverser2 i2_f = i3_f.begin();
             Traverser2 i2_l = i3_f.end();
             // iterate over the second dimension
-            for (; i2_f != i2_l; ++i2_f)
+            for(; i2_f != i2_l; ++i2_f)
             {
                 typedef Traverser2::next_type Traverser1;
                 Traverser1 i1_f = i2_f.begin();
                 Traverser1 i1_l = i2_f.end();
                 // iterate over the first dimension
-                for (; i1_f != i1_l; ++i1_f)
+                for(; i1_f != i1_l; ++i1_f)
                     ++countx;
                 ++county;
             }
@@ -1528,7 +1528,7 @@ public:
 
         MultiArrayView<4, int, StridedArrayTag> ex = a.expandElements(0);
         MultiArrayView<4, int, StridedArrayTag>::iterator i = ex.begin();
-        while (i != ex.end())
+        while(i != ex.end())
         {
             shouldEqual(*i, 1);
             ++i;
@@ -1540,11 +1540,11 @@ public:
 
         MultiArrayView<4, int, StridedArrayTag> ex2 = a.expandElements(3);
         i = ex2.begin();
-        for (int k = 0; k < a.size(); ++i, ++k)
+        for(int k = 0; k < a.size(); ++i, ++k)
             shouldEqual(*i, 1);
-        for (int k = 0; k < a.size(); ++i, ++k)
+        for(int k = 0; k < a.size(); ++i, ++k)
             shouldEqual(*i, 2);
-        for (int k = 0; k < a.size(); ++i, ++k)
+        for(int k = 0; k < a.size(); ++i, ++k)
             shouldEqual(*i, 3);
 
         MultiArray<3, bool> b = (a.bindElementChannel(0) == 1);
@@ -1571,7 +1571,7 @@ public:
         : shape3(4, 3, 2), array3(shape3)
     {
         // initialize the array to the test data
-        for (unsigned int i = 0; i < 24; ++i)
+        for(unsigned int i = 0; i < 24; ++i)
             array3.data()[i] = i;
     }
 
@@ -1582,14 +1582,14 @@ public:
              {0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12, 16, 20, 13, 17, 21, 14, 18, 22, 15, 19, 23},
              {0, 12, 1, 13, 2, 14, 3, 15, 4, 16, 5, 17, 6, 18, 7, 19, 8, 20, 9, 21, 10, 22, 11, 23}};
         typedef MultiArrayNavigator<array3_type::traverser, 3> Navigator;
-        for (int d = 0; d < 3; ++d)
+        for(int d = 0; d < 3; ++d)
         {
             Navigator nav(array3.traverser_begin(), array3.shape(), d);
             int k = 0;
-            for (; nav.hasMore(); ++nav)
+            for(; nav.hasMore(); ++nav)
             {
                 Navigator::iterator i = nav.begin(), end = nav.end();
-                for (; i != end; ++i, ++k)
+                for(; i != end; ++i, ++k)
                     shouldEqual(*i, expected[d][k]);
             }
         }
@@ -1599,14 +1599,14 @@ public:
             {{5, 6, 9, 10, 17, 18, 21, 22},
              {5, 9, 6, 10, 17, 21, 18, 22},
              {5, 17, 6, 18, 9, 21, 10, 22}};
-        for (int d = 0; d < 3; ++d)
+        for(int d = 0; d < 3; ++d)
         {
             Navigator nav(array3.traverser_begin(), start, stop, d);
             int k = 0;
-            for (; nav.hasMore(); ++nav)
+            for(; nav.hasMore(); ++nav)
             {
                 Navigator::iterator i = nav.begin(), end = nav.end();
-                for (; i != end; ++i, ++k)
+                for(; i != end; ++i, ++k)
                     shouldEqual(*i, sexpected[d][k]);
             }
         }
@@ -1619,14 +1619,14 @@ public:
              {0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12, 16, 20, 13, 17, 21, 14, 18, 22, 15, 19, 23},
              {0, 12, 1, 13, 2, 14, 3, 15, 4, 16, 5, 17, 6, 18, 7, 19, 8, 20, 9, 21, 10, 22, 11, 23}};
         typedef MultiCoordinateNavigator<3> Navigator;
-        for (int d = 0; d < 3; ++d)
+        for(int d = 0; d < 3; ++d)
         {
             Navigator nav(array3.shape(), d);
             int k = 0;
-            for (; nav.hasMore(); ++nav)
+            for(; nav.hasMore(); ++nav)
             {
                 Navigator::value_type i = nav.begin(), end = nav.end();
-                for (; i[d] != end[d]; ++i[d], ++k)
+                for(; i[d] != end[d]; ++i[d], ++k)
                     shouldEqual(array3[i], expected[d][k]);
             }
         }
@@ -1648,15 +1648,15 @@ struct MultiImpexTest
 
         Traverser i3 = array.traverser_begin();
 
-        for (; i3 != array.traverser_end(); ++i3, ++value)
+        for(; i3 != array.traverser_end(); ++i3, ++value)
         {
             typedef Traverser::next_type Traverser2;
             Traverser2 i2 = i3.begin();
-            for (; i2 != i3.end(); ++i2)
+            for(; i2 != i3.end(); ++i2)
             {
                 typedef Traverser2::next_type Traverser1;
                 Traverser1 i1 = i2.begin();
-                for (; i1 != i2.end(); ++i1)
+                for(; i1 != i2.end(); ++i1)
                 {
                     *i1 = value;
                 }
@@ -1732,7 +1732,7 @@ struct MultiImpexTest
 #endif
 };
 
-template<class IMAGE>
+template <class IMAGE>
 struct ImageViewTest
 {
     typedef typename IMAGE::value_type value_type;
@@ -1768,7 +1768,7 @@ struct ImageViewTest
         should(i == img.end());
     }
 
-    template<class Iterator>
+    template <class Iterator>
     void scanImage(Iterator ul, Iterator lr)
     {
         Iterator y = ul;
@@ -1804,7 +1804,7 @@ struct ImageViewTest
         should(acc(y, vigra::Diff2D(1, 1)) == data[4]);
     }
 
-    template<class Iterator>
+    template <class Iterator>
     void scanRows(Iterator r1, Iterator r2, Iterator r3, int w)
     {
         Iterator end = r1 + w;
@@ -1837,7 +1837,7 @@ struct ImageViewTest
         should(r3 == end);
     }
 
-    template<class Iterator>
+    template <class Iterator>
     void scanColumns(Iterator c1, Iterator c2, Iterator c3, int h)
     {
         Iterator end = c1 + h;
@@ -1922,13 +1922,13 @@ struct ImageViewTest
         typename Image::iterator i1 = img1.begin();
         typename Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
         {
             should(acc(i) == acc(i1));
         }
 
         img.init(NumericTraits<Value>::zero());
-        for (; i != img.end(); ++i)
+        for(; i != img.end(); ++i)
         {
             should(acc(i) == Value(NumericTraits<Value>::zero()));
         }
@@ -1937,7 +1937,7 @@ struct ImageViewTest
         i = img.begin();
         i1 = img1.begin();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
         {
             should(acc(i) == acc(i1));
         }
@@ -1949,17 +1949,17 @@ struct ImageViewTest
 
 typedef ImageViewTest<vigra::BImage> BImageViewTest;
 
-template<>
+template <>
 unsigned char BImageViewTest::data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
 typedef ImageViewTest<vigra::DImage> DImageViewTest;
 
-template<>
+template <>
 double DImageViewTest::data[] = {1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9};
 
 typedef ImageViewTest<vigra::BRGBImage> BRGBImageViewTest;
 typedef vigra::RGBValue<unsigned char> BRGB;
-template<>
+template <>
 BRGB BRGBImageViewTest::data[] = {
     BRGB(1, 1, 1),
     BRGB(2, 2, 2),
@@ -1973,7 +1973,7 @@ BRGB BRGBImageViewTest::data[] = {
 
 typedef ImageViewTest<vigra::FRGBImage> FRGBImageViewTest;
 typedef vigra::RGBValue<float> FRGB;
-template<>
+template <>
 FRGB FRGBImageViewTest::data[] = {
     FRGB(1.1f, 1.1f, 1.1f),
     FRGB(2.2f, 2.2f, 2.2f),
@@ -2002,7 +2002,7 @@ struct MultiArrayPointoperatorsTest
     {
         int i;
         PixelType c = 0.1f;
-        for (i = 0; i < img.elementCount(); ++i, ++c)
+        for(i = 0; i < img.elementCount(); ++i, ++c)
             img.data()[i] = c;
     }
 
@@ -2015,9 +2015,9 @@ struct MultiArrayPointoperatorsTest
         initMultiArray(destMultiArrayRange(res), ini);
 
         int x, y, z;
-        for (z = 0; z < img.shape(2); ++z)
-            for (y = 0; y < img.shape(1); ++y)
-                for (x = 0; x < img.shape(0); ++x)
+        for(z = 0; z < img.shape(2); ++z)
+            for(y = 0; y < img.shape(1); ++y)
+                for(x = 0; x < img.shape(0); ++x)
                     shouldEqual(res(x, y, z), ini);
 
         using namespace multi_math;
@@ -2051,9 +2051,9 @@ struct MultiArrayPointoperatorsTest
         copyMultiArray(img.subarray(Size3(0, 0, 0), Size3(5, 1, 1)), res);
 
         int x, y, z;
-        for (z = 0; z < img.shape(2); ++z)
-            for (y = 0; y < img.shape(1); ++y)
-                for (x = 0; x < img.shape(0); ++x)
+        for(z = 0; z < img.shape(2); ++z)
+            for(y = 0; y < img.shape(1); ++y)
+                for(x = 0; x < img.shape(0); ++x)
                     shouldEqual(res(x, y, z), img(x, 0, 0));
     }
 
@@ -2064,9 +2064,9 @@ struct MultiArrayPointoperatorsTest
         copyMultiArray(img.subarray(Size3(0, 0, 0), Size3(1, 1, 3)), res);
 
         int x, y, z;
-        for (z = 0; z < img.shape(2); ++z)
-            for (y = 0; y < img.shape(1); ++y)
-                for (x = 0; x < img.shape(0); ++x)
+        for(z = 0; z < img.shape(2); ++z)
+            for(y = 0; y < img.shape(1); ++y)
+                for(x = 0; x < img.shape(0); ++x)
                     shouldEqual(res(x, y, z), img(0, 0, z));
     }
 
@@ -2089,9 +2089,9 @@ struct MultiArrayPointoperatorsTest
                             Arg1() + Arg1());
 
         int x, y, z;
-        for (z = 0; z < img.shape(2); ++z)
-            for (y = 0; y < img.shape(1); ++y)
-                for (x = 0; x < img.shape(0); ++x)
+        for(z = 0; z < img.shape(2); ++z)
+            for(y = 0; y < img.shape(1); ++y)
+                for(x = 0; x < img.shape(0); ++x)
                     shouldEqual(res(x, y, z), 2.0 * img(x, 0, 0));
     }
 
@@ -2103,9 +2103,9 @@ struct MultiArrayPointoperatorsTest
                             Arg1() + Arg1());
 
         int x, y, z;
-        for (z = 0; z < img.shape(2); ++z)
-            for (y = 0; y < img.shape(1); ++y)
-                for (x = 0; x < img.shape(0); ++x)
+        for(z = 0; z < img.shape(2); ++z)
+            for(y = 0; y < img.shape(1); ++y)
+                for(x = 0; x < img.shape(0); ++x)
                     shouldEqual(res(x, y, z), 2.0 * img(0, 0, z));
     }
 
@@ -2116,11 +2116,11 @@ struct MultiArrayPointoperatorsTest
         transformMultiArray(img, res, reduceFunctor(Arg1() + Arg2(), 0.0));
 
         int x, y, z;
-        for (x = 0; x < img.shape(0); ++x)
+        for(x = 0; x < img.shape(0); ++x)
         {
             double sum = 0.0;
-            for (y = 0; y < img.shape(1); ++y)
-                for (z = 0; z < img.shape(2); ++z)
+            for(y = 0; y < img.shape(1); ++y)
+                for(z = 0; z < img.shape(2); ++z)
                     sum += img(x, y, z);
             shouldEqual(res(x, 0, 0), sum);
         }
@@ -2138,11 +2138,11 @@ struct MultiArrayPointoperatorsTest
         transformMultiArray(img, res, reduceFunctor(Arg1() + Arg2(), 0.0));
 
         int x, y, z;
-        for (z = 0; z < img.shape(2); ++z)
+        for(z = 0; z < img.shape(2); ++z)
         {
             double sum = 0.0;
-            for (y = 0; y < img.shape(1); ++y)
-                for (x = 0; x < img.shape(0); ++x)
+            for(y = 0; y < img.shape(1); ++y)
+                for(x = 0; x < img.shape(0); ++x)
                     sum += img(x, y, z);
             shouldEqual(res(0, 0, z), sum);
         }
@@ -2174,25 +2174,25 @@ struct MultiArrayPointoperatorsTest
         combineTwoMultiArrays(img.subarray(Size3(0, 0, 0), Size3(5, 1, 1)), img, res,
                               Arg1() + Param(2.0) * Arg2());
         int x, y, z;
-        for (z = 0; z < img.shape(2); ++z)
-            for (y = 0; y < img.shape(1); ++y)
-                for (x = 0; x < img.shape(0); ++x)
+        for(z = 0; z < img.shape(2); ++z)
+            for(y = 0; y < img.shape(1); ++y)
+                for(x = 0; x < img.shape(0); ++x)
                     shouldEqual(res(x, y, z), 2.0 * img(x, y, z) + img(x, 0, 0));
 
         combineTwoMultiArrays(img, img.subarray(Size3(0, 0, 0), Size3(5, 1, 1)), res,
                               Arg1() + Param(2.0) * Arg2());
-        for (z = 0; z < img.shape(2); ++z)
-            for (y = 0; y < img.shape(1); ++y)
-                for (x = 0; x < img.shape(0); ++x)
+        for(z = 0; z < img.shape(2); ++z)
+            for(y = 0; y < img.shape(1); ++y)
+                for(x = 0; x < img.shape(0); ++x)
                     shouldEqual(res(x, y, z), img(x, y, z) + 2.0 * img(x, 0, 0));
 
         View3D view = img.subarray(Size3(0, 0, 0), Size3(5, 1, 1));
         combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(view),
                               destMultiArrayRange(res),
                               Arg1() + Param(2.0) * Arg2());
-        for (z = 0; z < img.shape(2); ++z)
-            for (y = 0; y < img.shape(1); ++y)
-                for (x = 0; x < img.shape(0); ++x)
+        for(z = 0; z < img.shape(2); ++z)
+            for(y = 0; y < img.shape(1); ++y)
+                for(x = 0; x < img.shape(0); ++x)
                     shouldEqual(res(x, y, z), 3.0 * img(x, 0, 0));
     }
 
@@ -2204,24 +2204,24 @@ struct MultiArrayPointoperatorsTest
         combineTwoMultiArrays(view, img, res,
                               Arg1() + Param(2.0) * Arg2());
         int x, y, z;
-        for (z = 0; z < img.shape(2); ++z)
-            for (y = 0; y < img.shape(1); ++y)
-                for (x = 0; x < img.shape(0); ++x)
+        for(z = 0; z < img.shape(2); ++z)
+            for(y = 0; y < img.shape(1); ++y)
+                for(x = 0; x < img.shape(0); ++x)
                     shouldEqual(res(x, y, z), 2.0 * img(x, y, z) + img(0, 0, z));
 
         combineTwoMultiArrays(img, view, res,
                               Arg1() + Param(2.0) * Arg2());
-        for (z = 0; z < img.shape(2); ++z)
-            for (y = 0; y < img.shape(1); ++y)
-                for (x = 0; x < img.shape(0); ++x)
+        for(z = 0; z < img.shape(2); ++z)
+            for(y = 0; y < img.shape(1); ++y)
+                for(x = 0; x < img.shape(0); ++x)
                     shouldEqual(res(x, y, z), img(x, y, z) + 2.0 * img(0, 0, z));
 
         combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(view),
                               destMultiArrayRange(res),
                               Arg1() + Param(2.0) * Arg2());
-        for (z = 0; z < img.shape(2); ++z)
-            for (y = 0; y < img.shape(1); ++y)
-                for (x = 0; x < img.shape(0); ++x)
+        for(z = 0; z < img.shape(2); ++z)
+            for(y = 0; y < img.shape(1); ++y)
+                for(x = 0; x < img.shape(0); ++x)
                     shouldEqual(res(x, y, z), 3.0 * img(0, 0, z));
     }
 
@@ -2233,11 +2233,11 @@ struct MultiArrayPointoperatorsTest
                               reduceFunctor(Arg1() + Arg2() + Arg3(), 0.0));
 
         int x, y, z;
-        for (x = 0; x < img.shape(0); ++x)
+        for(x = 0; x < img.shape(0); ++x)
         {
             double sum = 0.0;
-            for (y = 0; y < img.shape(1); ++y)
-                for (z = 0; z < img.shape(2); ++z)
+            for(y = 0; y < img.shape(1); ++y)
+                for(z = 0; z < img.shape(2); ++z)
                     sum += img(x, y, z);
             shouldEqual(res(x, 0, 0), 2.0 * sum);
         }
@@ -2251,11 +2251,11 @@ struct MultiArrayPointoperatorsTest
                               reduceFunctor(Arg1() + Arg2() + Arg3(), 0.0));
 
         int x, y, z;
-        for (z = 0; z < img.shape(2); ++z)
+        for(z = 0; z < img.shape(2); ++z)
         {
             double sum = 0.0;
-            for (y = 0; y < img.shape(1); ++y)
-                for (x = 0; x < img.shape(0); ++x)
+            for(y = 0; y < img.shape(1); ++y)
+                for(x = 0; x < img.shape(0); ++x)
                     sum += img(x, y, z);
             shouldEqual(res(0, 0, z), 2.0 * sum);
         }
@@ -2273,9 +2273,9 @@ struct MultiArrayPointoperatorsTest
                                 Arg1() + Arg2() + Arg3());
 
         int x, y, z;
-        for (z = 0; z < img.shape(2); ++z)
-            for (y = 0; y < img.shape(1); ++y)
-                for (x = 0; x < img.shape(0); ++x)
+        for(z = 0; z < img.shape(2); ++z)
+            for(y = 0; y < img.shape(1); ++y)
+                for(x = 0; x < img.shape(0); ++x)
                 {
                     shouldEqual(res(x, y, z), 3.0 * img(x, y, z));
                     shouldEqual(res1(x, y, z), 3.0 * img(x, y, z));
@@ -2347,28 +2347,28 @@ struct MultiArrayPointoperatorsTest
 
         IntVolume vol(IntVolume::difference_type(6, 6, 6));
 
-        for (IntVolume::iterator iter = vol.begin(); iter != vol.end(); ++iter)
+        for(IntVolume::iterator iter = vol.begin(); iter != vol.end(); ++iter)
             *iter = 5;
         initMultiArrayBorder(destMultiArrayRange(vol), 2, 0);
         shouldEqualSequence(vol.begin(), vol.end(), desired_vol);
 
         IntImage img(IntImage::difference_type(6, 6));
 
-        for (IntImage::iterator iter = img.begin(); iter != img.end(); ++iter)
+        for(IntImage::iterator iter = img.begin(); iter != img.end(); ++iter)
             *iter = 5;
         initMultiArrayBorder(destMultiArrayRange(img), 1, 0);
         shouldEqualSequence(img.begin(), img.end(), desired_img);
 
         IntLine lin(IntLine::difference_type(7));
 
-        for (IntLine::iterator iter = lin.begin(); iter != lin.end(); ++iter)
+        for(IntLine::iterator iter = lin.begin(); iter != lin.end(); ++iter)
             *iter = 5;
         initMultiArrayBorder(destMultiArrayRange(lin), 3, 0);
         shouldEqualSequence(lin.begin(), lin.end(), desired_lin);
 
         IntVolume vol2(IntVolume::difference_type(2, 2, 2));
 
-        for (IntVolume::iterator iter = vol2.begin(); iter != vol2.end(); ++iter)
+        for(IntVolume::iterator iter = vol2.begin(); iter != vol2.end(); ++iter)
             *iter = 5;
         initMultiArrayBorder(vol2, 9, 0);
         shouldEqualSequence(vol2.begin(), vol2.end(), desired_vol2);
@@ -2419,11 +2419,11 @@ struct MultiArrayPointoperatorsTest
         MultiArray<2, double> trace(shape), rtrace(shape);
         MultiArray<2, double> determinant(shape), rdet(shape);
 
-        for (int k = 0; k < size; ++k)
+        for(int k = 0; k < size; ++k)
         {
-            for (int l = 0; l < 2; ++l)
+            for(int l = 0; l < 2; ++l)
                 vector[k][l] = randomMT19937().uniform();
-            for (int l = 0; l < 3; ++l)
+            for(int l = 0; l < 3; ++l)
                 tensor1[k][l] = randomMT19937().uniform();
             rdet[k] = tensor1[k][0] * tensor1[k][2] - sq(tensor1[k][1]);
         }
@@ -2490,7 +2490,7 @@ public:
           dv(d)
     {
         // initialize the array to the test data
-        for (unsigned int i = 0; i < 24; ++i)
+        for(unsigned int i = 0; i < 24; ++i)
         {
             a[i] = std::exp(-0.2 * i);
             b[i] = 0.5 + i;
@@ -2539,7 +2539,7 @@ public:
         TIC;
         typedef CoupledIteratorType<3, scalar_type, scalar_type, scalar_type>::type CI;
         CI i = createCoupledIterator(w, u, v), end = i.getEndIterator();
-        for (; i != end; ++i)
+        for(; i != end; ++i)
             i.get<1>() = i.get<2>() * i.get<3>();
         t = TOCS;
         std::cerr << "    CoupledScanOrderIterator: " << t << "\n";
@@ -2570,17 +2570,17 @@ public:
         //std::cerr << "    explicit loops: " << t << "\n";
         i = createCoupledIterator(w, u, v);
         TIC;
-        for (i.dim<2>() = 0; i.dim<2>() < size; ++i.dim<2>())
-            for (i.dim<1>() = 0; i.dim<1>() < size; ++i.dim<1>())
-                for (i.dim<0>() = 0; i.dim<0>() < size; ++i.dim<0>())
+        for(i.dim<2>() = 0; i.dim<2>() < size; ++i.dim<2>())
+            for(i.dim<1>() = 0; i.dim<1>() < size; ++i.dim<1>())
+                for(i.dim<0>() = 0; i.dim<0>() < size; ++i.dim<0>())
                     i.get<1>() = i.get<2>() * i.get<3>();
         t = TOCS;
         std::cerr << "    coupled iterator explicit template loops: " << t << "\n";
         i = createCoupledIterator(w, u, v);
         TIC;
-        for (i.resetDim(2); i.coord(2) < size; i.incDim(2))
-            for (i.resetDim(1); i.coord(1) < size; i.incDim(1))
-                for (i.resetDim(0); i.coord(0) < size; i.incDim(0))
+        for(i.resetDim(2); i.coord(2) < size; i.incDim(2))
+            for(i.resetDim(1); i.coord(1) < size; i.incDim(1))
+                for(i.resetDim(0); i.coord(0) < size; i.incDim(0))
                     i.get<1>() = i.get<2>() * i.get<3>();
         t = TOCS;
         std::cerr << "    coupled iterator explicit runtime loops: " << t << "\n";
@@ -2759,7 +2759,7 @@ public:
             r1 = b * fails;
             failTest("shape mismatch exception not thrown");
         }
-        catch (PreconditionViolation& e)
+        catch(PreconditionViolation& e)
         {
             std::string expected("\nPrecondition violation!\nmulti_math: shape mismatch in expression.\n"),
                 actual(e.what());
@@ -2769,19 +2769,19 @@ public:
 
 #define VIGRA_TEST_UNARY_FUNCTION(FCT, RHS) \
     r1 = FCT(RHS);                          \
-    for (int k = 0; k < r2.size(); ++k)     \
+    for(int k = 0; k < r2.size(); ++k)      \
         r2[k] = FCT(RHS[k]);                \
     shouldEqualSequence(r2.begin(), r2.end(), r1.begin());
 
 #define VIGRA_TEST_BINARY_FUNCTION(FCT, MFCT, V1, V2) \
     r1 = MFCT(V1, V2);                                \
-    for (int k = 0; k < r2.size(); ++k)               \
+    for(int k = 0; k < r2.size(); ++k)                \
         r2[k] = FCT(V1[k], V2[k]);                    \
     shouldEqualSequence(r2.begin(), r2.end(), r1.begin());
 
 #define VIGRA_TEST_BINARY_OPERATOR(OP, V1, V2) \
     r1 = V1 OP V2;                             \
-    for (int k = 0; k < r2.size(); ++k)        \
+    for(int k = 0; k < r2.size(); ++k)         \
         r2[k] = V1[k] OP V2[k];                \
     shouldEqualSequence(r2.begin(), r2.end(), r1.begin());
 
@@ -2973,9 +2973,9 @@ public:
 
         r1 = ss.insertSingletonDimension(0).insertSingletonDimension(2) + d;
 
-        for (int z = 0; z < d.shape(2); ++z)
-            for (int y = 0; y < d.shape(1); ++y)
-                for (int x = 0; x < d.shape(0); ++x)
+        for(int z = 0; z < d.shape(2); ++z)
+            for(int y = 0; y < d.shape(1); ++y)
+                for(int x = 0; x < d.shape(0); ++x)
                     shouldEqual(d(x, y, z) + ss(y), r1(x, y, z));
     }
 
@@ -2986,39 +2986,39 @@ public:
         ac.init(std::complex<double>(3.0, 4.0));
 
         MultiArray<3, std::complex<double>> bc = conj(ac);
-        for (int z = 0; z < bc.shape(2); ++z)
-            for (int y = 0; y < bc.shape(1); ++y)
-                for (int x = 0; x < bc.shape(0); ++x)
+        for(int z = 0; z < bc.shape(2); ++z)
+            for(int y = 0; y < bc.shape(1); ++y)
+                for(int x = 0; x < bc.shape(0); ++x)
                     shouldEqual(bc(x, y, z), std::complex<double>(3.0, -4.0));
 
         bc = ac + ac;
-        for (int z = 0; z < bc.shape(2); ++z)
-            for (int y = 0; y < bc.shape(1); ++y)
-                for (int x = 0; x < bc.shape(0); ++x)
+        for(int z = 0; z < bc.shape(2); ++z)
+            for(int y = 0; y < bc.shape(1); ++y)
+                for(int x = 0; x < bc.shape(0); ++x)
                     shouldEqual(bc(x, y, z), std::complex<double>(6.0, 8.0));
 
         a = real(ac);
-        for (int z = 0; z < a.shape(2); ++z)
-            for (int y = 0; y < a.shape(1); ++y)
-                for (int x = 0; x < a.shape(0); ++x)
+        for(int z = 0; z < a.shape(2); ++z)
+            for(int y = 0; y < a.shape(1); ++y)
+                for(int x = 0; x < a.shape(0); ++x)
                     shouldEqual(a(x, y, z), 3.0);
 
         a = imag(ac);
-        for (int z = 0; z < a.shape(2); ++z)
-            for (int y = 0; y < a.shape(1); ++y)
-                for (int x = 0; x < a.shape(0); ++x)
+        for(int z = 0; z < a.shape(2); ++z)
+            for(int y = 0; y < a.shape(1); ++y)
+                for(int x = 0; x < a.shape(0); ++x)
                     shouldEqual(a(x, y, z), 4.0);
 
         a = abs(ac);
-        for (int z = 0; z < a.shape(2); ++z)
-            for (int y = 0; y < a.shape(1); ++y)
-                for (int x = 0; x < a.shape(0); ++x)
+        for(int z = 0; z < a.shape(2); ++z)
+            for(int y = 0; y < a.shape(1); ++y)
+                for(int x = 0; x < a.shape(0); ++x)
                     shouldEqual(a(x, y, z), 5.0);
 
         a = arg(ac);
-        for (int z = 0; z < a.shape(2); ++z)
-            for (int y = 0; y < a.shape(1); ++y)
-                for (int x = 0; x < a.shape(0); ++x)
+        for(int z = 0; z < a.shape(2); ++z)
+            for(int y = 0; y < a.shape(1); ++y)
+                for(int x = 0; x < a.shape(0); ++x)
                     shouldEqualTolerance(a(x, y, z), std::atan2(4.0, 3.0), 1e-16);
     }
 };

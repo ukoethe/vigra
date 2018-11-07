@@ -85,11 +85,11 @@ namespace vigra
 */
 
 
-doxygen_overloaded_function(template<...> void upwindImage)
+doxygen_overloaded_function(template <...> void upwindImage)
 
-    template<class SrcIterator, class SrcAccessor,
-             class Src2Iterator, class Src2Accessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class Src2Iterator, class Src2Accessor,
+              class DestIterator, class DestAccessor>
     void upwindImage(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
                      Src2Iterator s2_ul, Src2Accessor s2_acc,
                      DestIterator d_ul, DestAccessor d_acc,
@@ -108,9 +108,9 @@ doxygen_overloaded_function(template<...> void upwindImage)
     ResultType fx, fy;
 
 
-    for (int y = 0; y < shape[1]; ++y)
+    for(int y = 0; y < shape[1]; ++y)
     {
-        for (int x = 0; x < shape[0]; ++x)
+        for(int x = 0; x < shape[0]; ++x)
         {
             upper = s_acc(s_ul + Diff2D(x, max(0, y - 1)));
             lower = s_acc(s_ul + Diff2D(x, min(shape[1] - 1, y + 1)));
@@ -118,7 +118,7 @@ doxygen_overloaded_function(template<...> void upwindImage)
             right = s_acc(s_ul + Diff2D(min(shape[0] - 1, x + 1), y));
             center = s_acc(s_ul + Diff2D(x, y));
 
-            if (s2_acc(s2_ul + Diff2D(x, y)) < 0)
+            if(s2_acc(s2_ul + Diff2D(x, y)) < 0)
             {
                 fx = max(max(right - center, left - center), 0.0f);
                 fy = max(max(lower - center, upper - center), 0.0f);
@@ -134,9 +134,9 @@ doxygen_overloaded_function(template<...> void upwindImage)
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class Src2Iterator, class Src2Accessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class Src2Iterator, class Src2Accessor,
+          class DestIterator, class DestAccessor>
 inline void
 upwindImage(triple<SrcIterator, SrcIterator, SrcAccessor> s,
             pair<Src2Iterator, Src2Accessor> s2,
@@ -146,9 +146,9 @@ upwindImage(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     upwindImage(s.first, s.second, s.third, s2.first, s2.second, d.first, d.second, upwind_factor_h);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class T3, class S3>
+template <class T1, class S1,
+          class T2, class S2,
+          class T3, class S3>
 inline void upwindImage(MultiArrayView<2, T1, S1> const& src,
                         MultiArrayView<2, T2, S2> const& src2,
                         MultiArrayView<2, T3, S3> dest,
@@ -229,10 +229,10 @@ inline void upwindImage(MultiArrayView<2, T1, S1> const& src,
     The image must be larger than the window size of the filter.
 */
 
-doxygen_overloaded_function(template<...> void upwindImage)
+doxygen_overloaded_function(template <...> void upwindImage)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void shockFilter(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
                      DestIterator d_ul, DestAccessor d_acc,
                      float sigma, float rho, float upwind_factor_h,
@@ -253,7 +253,7 @@ doxygen_overloaded_function(template<...> void upwindImage)
 
     copyImage(srcIterRange(s_ul, s_lr, s_acc), destImage(result));
 
-    for (unsigned int i = 0; i < iterations; ++i)
+    for(unsigned int i = 0; i < iterations; ++i)
     {
 
         structureTensor(srcImageRange(result), destImage(tensor), sigma, rho);
@@ -261,9 +261,9 @@ doxygen_overloaded_function(template<...> void upwindImage)
         hessianMatrixOfGaussian(srcImageRange(result),
                                 destImage(hxx), destImage(hxy), destImage(hyy), sigma);
 
-        for (int y = 0; y < shape[1]; ++y)
+        for(int y = 0; y < shape[1]; ++y)
         {
-            for (int x = 0; x < shape[0]; ++x)
+            for(int x = 0; x < shape[0]; ++x)
             {
                 c = cos(eigen(x, y)[2]);
                 s = sin(eigen(x, y)[2]);
@@ -280,8 +280,8 @@ doxygen_overloaded_function(template<...> void upwindImage)
     copyImage(srcImageRange(result), destIter(d_ul, d_acc));
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 shockFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
             pair<DestIterator, DestAccessor> d,
@@ -294,8 +294,8 @@ shockFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                 iterations);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void shockFilter(MultiArrayView<2, T1, S1> const& src,
                         MultiArrayView<2, T2, S2> dest,
                         float sigma, float rho, float upwind_factor_h,

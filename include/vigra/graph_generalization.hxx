@@ -50,7 +50,7 @@ namespace vigra
 
 
 
-template<class MAP>
+template <class MAP>
 struct GraphMapTypeTraits
 {
     typedef typename MAP::value_type Value;
@@ -61,7 +61,7 @@ struct GraphMapTypeTraits
 // generalizes the iterator begin end accessed
 // since grid graph has no constructor
 // for INVALID
-template<class GRAPH>
+template <class GRAPH>
 struct GraphIteratorAccessor
 {
     typedef GRAPH Graph;
@@ -119,7 +119,7 @@ struct GraphIteratorAccessor
 // generalizes the iterator begin end accessed
 // since grid graph has no constructor
 // for INVALID
-template<unsigned int DIM, class DIRECTED_TAG>
+template <unsigned int DIM, class DIRECTED_TAG>
 struct GraphIteratorAccessor<GridGraph<DIM, DIRECTED_TAG>>
 {
     typedef GridGraph<DIM, DIRECTED_TAG> Graph;
@@ -175,7 +175,7 @@ struct GraphIteratorAccessor<GridGraph<DIM, DIRECTED_TAG>>
 
 
 // shape of graphs node,edge,arc-maps
-template<class GRAPH>
+template <class GRAPH>
 class IntrinsicGraphShape
 {
 private:
@@ -211,7 +211,7 @@ public:
     static const unsigned int IntrinsicArcMapDimension = 1;
 };
 // shape of graphs node,edge,arc-maps
-template<unsigned int DIM, class DIRECTED_TAG>
+template <unsigned int DIM, class DIRECTED_TAG>
 class IntrinsicGraphShape<GridGraph<DIM, DIRECTED_TAG>>
 {
 private:
@@ -246,7 +246,7 @@ public:
 
 // convert a descriptor to an multi_array index w.r.t.
 // an node/edge/arc map
-template<class GRAPH>
+template <class GRAPH>
 class GraphDescriptorToMultiArrayIndex
 {
 private:
@@ -278,7 +278,7 @@ public:
 
 // convert a descriptor to an multi_array index w.r.t.
 // an node/edge/arc map
-template<unsigned int DIM, class DIRECTED_TAG>
+template <unsigned int DIM, class DIRECTED_TAG>
 class GraphDescriptorToMultiArrayIndex<GridGraph<DIM, DIRECTED_TAG>>
 {
 private:

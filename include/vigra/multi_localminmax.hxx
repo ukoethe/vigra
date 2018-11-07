@@ -51,20 +51,20 @@ namespace vigra
 
 namespace detail_local_minima
 {
-template<class G>
+template <class G>
 struct NodeAtBorder
 {
-    template<class NODE_ITER>
+    template <class NODE_ITER>
     static bool atBorder(const NODE_ITER&)
     {
         return false;
     }
 };
 
-template<unsigned int DIM, class DTAG>
+template <unsigned int DIM, class DTAG>
 struct NodeAtBorder<GridGraph<DIM, DTAG>>
 {
-    template<class NODE_ITER>
+    template <class NODE_ITER>
     static bool atBorder(const NODE_ITER& node)
     {
         return node.atBorder();
@@ -79,7 +79,7 @@ namespace boost_graph
 
 // Attempt without LValue propmaps, using only the free functions
 // to access ReadablePropertyMap (input) and WritablePropertyMap (label)
-template<class Graph, class T1Map, class T2Map, class Compare>
+template <class Graph, class T1Map, class T2Map, class Compare>
 unsigned int
 localMinMaxGraph(Graph const& g,
                  T1Map const& src,
@@ -99,22 +99,22 @@ localMinMaxGraph(Graph const& g,
 
     unsigned int count = 0;
     tie(node, srcend) = vertices(g);
-    for (; node != srcend; ++node)
+    for(; node != srcend; ++node)
     {
         const T1 current = get(src, *node);
 
-        if (!compare(current, threshold))
+        if(!compare(current, threshold))
             continue;
 
-        if (!allowAtBorder && node.atBorder())
+        if(!allowAtBorder && node.atBorder())
             continue;
 
         tie(arc, nbend) = adjacent_vertices(*node, g);
-        for (; arc != nbend; ++arc)
-            if (!compare(current, get(src, *arc)))
+        for(; arc != nbend; ++arc)
+            if(!compare(current, get(src, *arc)))
                 break;
 
-        if (arc == nbend)
+        if(arc == nbend)
         {
             put(dest, *node, marker);
             ++count;
@@ -128,7 +128,7 @@ localMinMaxGraph(Graph const& g,
 namespace lemon_graph
 {
 
-template<class Graph, class T1Map, class T2Map, class Compare>
+template <class Graph, class T1Map, class T2Map, class Compare>
 unsigned int
 localMinMaxGraph(Graph const& g,
                  T1Map const& src,
@@ -142,22 +142,22 @@ localMinMaxGraph(Graph const& g,
     typedef typename Graph::OutArcIt neighbor_iterator;
 
     unsigned int count = 0;
-    for (graph_scanner node(g); node != INVALID; ++node)
+    for(graph_scanner node(g); node != INVALID; ++node)
     {
         typename T1Map::value_type current = src[*node];
 
-        if (!compare(current, threshold))
+        if(!compare(current, threshold))
             continue;
 
-        if (!allowAtBorder && vigra::detail_local_minima::NodeAtBorder<Graph>::atBorder(node))
+        if(!allowAtBorder && vigra::detail_local_minima::NodeAtBorder<Graph>::atBorder(node))
             continue;
 
         neighbor_iterator arc(g, *node);
-        for (; arc != INVALID; ++arc)
-            if (!compare(current, src[g.target(*arc)]))
+        for(; arc != INVALID; ++arc)
+            if(!compare(current, src[g.target(*arc)]))
                 break;
 
-        if (arc == INVALID)
+        if(arc == INVALID)
         {
             dest[*node] = marker;
             ++count;
@@ -167,7 +167,7 @@ localMinMaxGraph(Graph const& g,
 }
 
 
-template<class Graph, class T1Map, class T2Map, class Compare, class Equal>
+template <class Graph, class T1Map, class T2Map, class Compare, class Equal>
 unsigned int
 extendedLocalMinMaxGraph(Graph const& g,
                          T1Map const& src,
@@ -189,26 +189,26 @@ extendedLocalMinMaxGraph(Graph const& g,
     typedef typename Graph::OutArcIt neighbor_iterator;
 
     unsigned int count = max_region_label;
-    for (graph_scanner node(g); node != INVALID; ++node)
+    for(graph_scanner node(g); node != INVALID; ++node)
     {
         unsigned int label = regions[*node];
 
-        if (!isExtremum[label])
+        if(!isExtremum[label])
             continue;
 
         typename T1Map::value_type current = src[*node];
 
-        if (!compare(current, threshold) ||
-            (!allowAtBorder && vigra::detail_local_minima::NodeAtBorder<Graph>::atBorder(node)))
+        if(!compare(current, threshold) ||
+           (!allowAtBorder && vigra::detail_local_minima::NodeAtBorder<Graph>::atBorder(node)))
         {
             isExtremum[label] = 0;
             --count;
             continue;
         }
 
-        for (neighbor_iterator arc(g, *node); arc != INVALID; ++arc)
+        for(neighbor_iterator arc(g, *node); arc != INVALID; ++arc)
         {
-            if (label != regions[g.target(*arc)] && compare(src[g.target(*arc)], current))
+            if(label != regions[g.target(*arc)] && compare(src[g.target(*arc)], current))
             {
                 isExtremum[label] = 0;
                 --count;
@@ -216,9 +216,9 @@ extendedLocalMinMaxGraph(Graph const& g,
             }
         }
     }
-    for (graph_scanner node(g); node != INVALID; ++node)
+    for(graph_scanner node(g); node != INVALID; ++node)
     {
-        if (isExtremum[regions[*node]])
+        if(isExtremum[regions[*node]])
             dest[*node] = marker;
     }
     return count;
@@ -226,10 +226,10 @@ extendedLocalMinMaxGraph(Graph const& g,
 
 } // namespace lemon_graph
 
-template<unsigned int N, class T1, class C1,
-         class T2, class C2,
-         class Compare,
-         class EqualityFunctor>
+template <unsigned int N, class T1, class C1,
+          class T2, class C2,
+          class Compare,
+          class EqualityFunctor>
 unsigned int
 localMinMax(MultiArrayView<N, T1, C1> const& src,
             MultiArrayView<N, T2, C2> dest,
@@ -243,9 +243,9 @@ localMinMax(MultiArrayView<N, T1, C1> const& src,
 
     NeighborhoodType neighborhood = DirectNeighborhood;
 
-    if (options.neigh == 0 || options.neigh == 2 * N)
+    if(options.neigh == 0 || options.neigh == 2 * N)
         neighborhood = DirectNeighborhood;
-    else if (options.neigh == 1 || options.neigh == MetaPow<3, N>::value - 1)
+    else if(options.neigh == 1 || options.neigh == MetaPow<3, N>::value - 1)
         neighborhood = IndirectNeighborhood;
     else
         vigra_precondition(false,
@@ -254,7 +254,7 @@ localMinMax(MultiArrayView<N, T1, C1> const& src,
     T2 marker = (T2)options.marker;
 
     GridGraph<N, undirected_tag> graph(src.shape(), neighborhood);
-    if (options.allow_plateaus)
+    if(options.allow_plateaus)
         return lemon_graph::extendedLocalMinMaxGraph(graph, src, dest, marker, threshold,
                                                      compare, equal, options.allow_at_border);
     else
@@ -269,7 +269,7 @@ localMinMax(MultiArrayView<N, T1, C1> const& src,
 /********************************************************/
 
 // documentation is in localminmax.hxx
-template<unsigned int N, class T1, class C1, class T2, class C2>
+template <unsigned int N, class T1, class C1, class T2, class C2>
 inline unsigned int
 localMinima(MultiArrayView<N, T1, C1> const& src,
             MultiArrayView<N, T2, C2> dest,
@@ -282,9 +282,9 @@ localMinima(MultiArrayView<N, T1, C1> const& src,
 }
 
 
-template<unsigned int N, class T1, class S1,
-         class T2, class S2,
-         class EqualityFunctor>
+template <unsigned int N, class T1, class S1,
+          class T2, class S2,
+          class EqualityFunctor>
 inline unsigned int
 extendedLocalMinima(MultiArrayView<N, T1, S1> const& src,
                     MultiArrayView<N, T2, S2> dest,
@@ -304,7 +304,7 @@ extendedLocalMinima(MultiArrayView<N, T1, S1> const& src,
 /********************************************************/
 
 // documentation is in localminmax.hxx
-template<unsigned int N, class T1, class C1, class T2, class C2>
+template <unsigned int N, class T1, class C1, class T2, class C2>
 inline unsigned int
 localMaxima(MultiArrayView<N, T1, C1> const& src,
             MultiArrayView<N, T2, C2> dest,
@@ -317,9 +317,9 @@ localMaxima(MultiArrayView<N, T1, C1> const& src,
 }
 
 
-template<unsigned int N, class T1, class S1,
-         class T2, class S2,
-         class EqualityFunctor>
+template <unsigned int N, class T1, class S1,
+          class T2, class S2,
+          class EqualityFunctor>
 inline unsigned int
 extendedLocalMaxima(MultiArrayView<N, T1, S1> const& src,
                     MultiArrayView<N, T2, S2> dest,

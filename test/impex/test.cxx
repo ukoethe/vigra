@@ -48,7 +48,7 @@
 
 using namespace vigra;
 
-template<class Image>
+template <class Image>
 void
 failCodec(Image const& img, ImageExportInfo const& info)
 {
@@ -57,7 +57,7 @@ failCodec(Image const& img, ImageExportInfo const& info)
         exportImage(srcImageRange(img), info);
         failTest("Failed to throw exception.");
     }
-    catch (vigra::PreconditionViolation& e)
+    catch(vigra::PreconditionViolation& e)
     {
         std::string expected = "\nPrecondition violation!\n";
         expected += "did not find a matching codec for the given file extension";
@@ -156,7 +156,7 @@ public:
         Image::Accessor acc = img.accessor();
 
         float sum = 0;
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
             sum += std::abs(acc(i) - acc(i1));
 
         should(sum / (info.width() * info.height()) < 0.1);
@@ -204,7 +204,7 @@ public:
         Image::Accessor acc = img.accessor();
 
         float sum = 0;
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
             sum += std::abs(acc(i) - acc(i1));
 
         should(sum / (info.width() * info.height()) < 0.1);
@@ -235,7 +235,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin();
         Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
             should(acc(i) == acc(i1));
 
         TiffImage* tiff = TIFFOpen("res2.tif", "w");
@@ -271,7 +271,7 @@ public:
     void testTIFFSequence()
     {
 #if defined(HasTIFF)
-        for (int i = 0; i < 3; ++i)
+        for(int i = 0; i < 3; ++i)
         {
             std::string fileName = std::string("lenna_") + vigra::asString(i) + ".tif";
             vigra::ImageImportInfo ininfo(fileName.c_str());
@@ -281,7 +281,7 @@ public:
             exportImage(srcImageRange(inimg), outinfo);
         }
 
-        for (int j = 0; j < 3; ++j)
+        for(int j = 0; j < 3; ++j)
         {
             vigra::ImageImportInfo ininfo("resseq.tif", j);
             Image inimg(ininfo.width(), ininfo.height());
@@ -294,7 +294,7 @@ public:
             Image::ScanOrderIterator it = inimg.begin();
             Image::ScanOrderIterator it1 = origimg.begin();
             Image::Accessor acc = inimg.accessor();
-            for (; it != inimg.end(); ++it, ++it1)
+            for(; it != inimg.end(); ++it, ++it1)
                 should(acc(it) == acc(it1));
         }
 #endif
@@ -337,7 +337,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin();
         Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
             should(acc(i) == acc(i1));
     }
 
@@ -382,7 +382,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin();
         Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
             should(acc(i) == acc(i1));
     }
 
@@ -409,7 +409,7 @@ ByteImageExportImportTest::testFile(const char* filename)
     Image::ScanOrderIterator i1 = res.begin();
     Image::Accessor acc = img.accessor();
 
-    for (; i != img.end(); ++i, ++i1)
+    for(; i != img.end(); ++i, ++i1)
         should(acc(i) == acc(i1));
 }
 
@@ -455,7 +455,7 @@ public:
         Image::Accessor acc = ref.accessor();
 
         double sum = 0.0;
-        for (; i != ref.end(); ++i, ++i1)
+        for(; i != ref.end(); ++i, ++i1)
             sum += (acc(i) - acc(i1)).magnitude();
 
         should(sum / (info.width() * info.height()) < 4.0); // use rather large tolerance to make the
@@ -486,7 +486,7 @@ public:
         Image::Accessor acc = img.accessor();
 
         double sum = 0.0;
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
         {
             sum += (acc(i) - acc(i1)).magnitude();
         }
@@ -517,7 +517,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin();
         Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
         {
             should(acc(i) == acc(i1));
         }
@@ -578,7 +578,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin();
         Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
             should(acc(i) == acc(i1));
     }
 
@@ -622,7 +622,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin();
         Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
             should(acc(i) == acc(i1));
     }
 
@@ -649,7 +649,7 @@ ByteRGBImageExportImportTest::testFile(const char* fileName)
     Image::ScanOrderIterator i1 = res.begin();
     Image::Accessor acc = img.accessor();
 
-    for (; i != img.end(); ++i, ++i1)
+    for(; i != img.end(); ++i, ++i1)
         should(acc(i) == acc(i1));
 }
 
@@ -812,7 +812,7 @@ public:
         Image::Accessor acc = reread.accessor();
 
         double sum = 0.0;
-        for (; i != reread.end(); ++i, ++i1)
+        for(; i != reread.end(); ++i, ++i1)
             sum += std::abs(acc(i) - acc(i1));
         should(sum / (info.width() * info.height()) < 0.1);
     }
@@ -841,7 +841,7 @@ public:
         Image::Accessor acc = reread.accessor();
 
         double sum = 0.0;
-        for (; i != reread.end(); ++i, ++i1)
+        for(; i != reread.end(); ++i, ++i1)
             sum += std::abs(acc(i) - acc(i1));
         should(sum / (info.width() * info.height()) < 0.1);
 #endif
@@ -871,7 +871,7 @@ public:
         Image::Accessor acc = reread.accessor();
 
         double sum = 0.0;
-        for (; i != reread.end(); ++i, ++i1)
+        for(; i != reread.end(); ++i, ++i1)
             sum += std::abs(acc(i) - acc(i1));
         should(sum / (info.width() * info.height()) < 0.1);
 #endif
@@ -927,7 +927,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin();
         Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
             shouldEqualTolerance(acc(i) / 255.0, acc(i1) - 1.0, 1e-12);
 #endif
     }
@@ -951,7 +951,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin();
         Image::Accessor acc = reread.accessor();
 
-        for (; i != reread.end(); ++i, ++i1)
+        for(; i != reread.end(); ++i, ++i1)
             should(acc(i) == acc(i1));
     }
 
@@ -974,7 +974,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin();
         Image::Accessor acc = reread.accessor();
 
-        for (; i != reread.end(); ++i, ++i1)
+        for(; i != reread.end(); ++i, ++i1)
         {
             should(acc(i) == acc(i1));
         }
@@ -999,7 +999,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin();
         Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
         {
             should(acc(i) == acc(i1));
         }
@@ -1056,7 +1056,7 @@ public:
         Image::Accessor acc = reread.accessor();
 
         float sum = 0.0f;
-        for (; i != reread.end(); ++i, ++i1)
+        for(; i != reread.end(); ++i, ++i1)
             sum += (acc(i) - acc(i1)).magnitude();
         should(sum / (info.width() * info.height()) < 2.0f);
 #endif
@@ -1085,7 +1085,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin();
         Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
             shouldEqual(acc(i), acc(i1));
 #endif
     }
@@ -1113,7 +1113,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin();
         Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
         {
             shouldEqualTolerance(acc.red(i) / 255.0f, acc.red(i1) - 1.0f, 1e-4);
             shouldEqualTolerance(acc.green(i) / 255.0f, acc.green(i1) - 1.0f, 1e-4);
@@ -1142,7 +1142,7 @@ public:
         Image::Accessor acc = reread.accessor();
 
         float sum = 0.0f;
-        for (; i != reread.end(); ++i, ++i1)
+        for(; i != reread.end(); ++i, ++i1)
             sum += (acc(i) - acc(i1)).magnitude();
         should(sum / (info.width() * info.height()) < 2.0f);
     }
@@ -1167,7 +1167,7 @@ public:
         Image::Accessor acc = reread.accessor();
 
         float sum = 0.0f;
-        for (; i != reread.end(); ++i, ++i1)
+        for(; i != reread.end(); ++i, ++i1)
             sum += (acc(i) - acc(i1)).magnitude();
         should(sum / (info.width() * info.height()) < 2.0f);
     }
@@ -1191,7 +1191,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin();
         Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
             should(acc(i) == acc(i1));
     }
 
@@ -1216,7 +1216,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin();
         Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
             shouldEqual(acc(i), acc(i1));
     }
 };
@@ -1238,15 +1238,15 @@ public:
     {
         double scale = 255.0 / 11.0;
         double offset = 5.5;
-        for (int y = 0; y < 3; ++y)
+        for(int y = 0; y < 3; ++y)
         {
-            for (int x = 0; x < 2; ++x)
+            for(int x = 0; x < 2; ++x)
             {
                 img(x, y)[0] = 2 * y + x + 0.5f;
                 img(x, y)[1] = -img(x, y)[0];
                 img(x, y)[2] = 0.0;
                 img(x, y)[3] = 0.5;
-                for (int b = 0; b < 4; ++b)
+                for(int b = 0; b < 4; ++b)
                 {
                     breference(x, y)[b] =
                         NumericTraits<UInt8>::fromRealPromote(scale * (img(x, y)[b] + offset));
@@ -1263,7 +1263,7 @@ public:
             exportImage(srcImageRange(img), vigra::ImageExportInfo(filename));
             failTest("Failed to throw exception.");
         }
-        catch (vigra::PreconditionViolation& e)
+        catch(vigra::PreconditionViolation& e)
         {
             std::string expected = "\nPrecondition violation!\n";
             expected += message;
@@ -1319,7 +1319,7 @@ public:
         Image::ScanOrderIterator i1 = reread.begin();
         Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
             shouldEqual(acc(i), acc(i1));
     }
 
@@ -1344,7 +1344,7 @@ public:
         Image::ScanOrderIterator i1 = reread.begin();
         Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
             shouldEqual(acc(i), acc(i1));
 #endif
     }
@@ -1372,7 +1372,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin();
         Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
             shouldEqual(acc(i), acc(i1));
 #endif
     }
@@ -1398,7 +1398,7 @@ public:
         BImage::ScanOrderIterator i1 = breread.begin();
         BImage::Accessor acc = breference.accessor();
 
-        for (; i != breference.end(); ++i, ++i1)
+        for(; i != breference.end(); ++i, ++i1)
         {
             should((acc(i) - acc(i1)).magnitude() <= 1.0);
         }
@@ -1547,7 +1547,7 @@ public:
             vigra::ImageImportInfo info(fname.c_str());
             failTest("Failed to throw exception.");
         }
-        catch (vigra::PreconditionViolation& e)
+        catch(vigra::PreconditionViolation& e)
         {
             std::string expected = "\nPrecondition violation!\n";
             expected += "Unable to open file '";
@@ -1568,10 +1568,10 @@ public:
             exportImage(srcImageRange(img), vigra::ImageExportInfo(fname.c_str()));
             failTest("Failed to throw exception.");
         }
-        catch (vigra::PreconditionViolation& e)
+        catch(vigra::PreconditionViolation& e)
         {
             std::string expected = "\nPrecondition violation!\n";
-            if (message)
+            if(message)
             {
                 expected += message;
             }
@@ -1595,7 +1595,7 @@ public:
             importImage(ImageImportInfo("lennargb.xv"), rgb);
             failTest("Failed to throw exception.");
         }
-        catch (vigra::PreconditionViolation& e)
+        catch(vigra::PreconditionViolation& e)
         {
             std::string expected = "\nPrecondition violation!\nimportImage(): shape mismatch between input and output.";
             const bool rc = std::strncmp(expected.c_str(), e.what(), expected.length()) == 0;
@@ -1609,7 +1609,7 @@ public:
             importImage("lennargb.xv", vec4);
             failTest("Failed to throw exception.");
         }
-        catch (vigra::PreconditionViolation& e)
+        catch(vigra::PreconditionViolation& e)
         {
             std::string expected = "\nPrecondition violation!\nimportImage(): Number of channels in input and destination image don't match.";
             const bool rc = std::strncmp(expected.c_str(), e.what(), expected.length()) == 0;
@@ -1692,13 +1692,13 @@ GrayscaleImportExportAlphaTest::testFile(const char* filename)
 
     importImageAlpha(info, destImage(image), destImage(alpha));
 
-    for (BImage::const_iterator x = alpha_.begin(), xx = alpha_.begin(); x != alpha_.end(); ++x, ++xx)
+    for(BImage::const_iterator x = alpha_.begin(), xx = alpha_.begin(); x != alpha_.end(); ++x, ++xx)
     {
         should(*x == 255);
         should(*x == *xx);
     }
 
-    for (BImage::const_iterator x = image_.begin(), xx = image.begin(); x != image_.end(); ++x, ++xx)
+    for(BImage::const_iterator x = image_.begin(), xx = image.begin(); x != image_.end(); ++x, ++xx)
     {
         should(*x == *xx);
     }
@@ -1718,14 +1718,14 @@ GrayscaleImportExportAlphaTest::testFileMultiArray(const char* filename)
     importImageAlpha(info, image, alpha);
 
     MultiArray<2, unsigned char>::iterator xx = alpha.begin();
-    for (BImage::const_iterator x = alpha_.begin(); x != alpha_.end(); ++x, ++xx)
+    for(BImage::const_iterator x = alpha_.begin(); x != alpha_.end(); ++x, ++xx)
     {
         should(*x == 255);
         should(*x == *xx);
     }
 
     xx = image.begin();
-    for (BImage::const_iterator x = image_.begin(); x != image_.end(); ++x, ++xx)
+    for(BImage::const_iterator x = image_.begin(); x != image_.end(); ++x, ++xx)
     {
         should(*x == *xx);
     }
@@ -1802,13 +1802,13 @@ RGBImportExportAlphaTest::testFile(const char* filename)
 
     importImageAlpha(info, destImage(image), destImage(alpha));
 
-    for (BImage::const_iterator x = alpha_.begin(), xx = alpha_.begin(); x != alpha_.end(); ++x, ++xx)
+    for(BImage::const_iterator x = alpha_.begin(), xx = alpha_.begin(); x != alpha_.end(); ++x, ++xx)
     {
         should(*x == 255);
         should(*x == *xx);
     }
 
-    for (BRGBImage::const_iterator x = image_.begin(), xx = image.begin(); x != image_.end(); ++x, ++xx)
+    for(BRGBImage::const_iterator x = image_.begin(), xx = image.begin(); x != image_.end(); ++x, ++xx)
     {
         should(*x == *xx);
     }

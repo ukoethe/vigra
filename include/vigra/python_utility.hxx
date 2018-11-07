@@ -53,15 +53,15 @@ namespace vigra
 
 inline std::string dataFromPython(PyObject* data, const char* defaultVal);
 
-template<class PYOBJECT_PTR>
+template <class PYOBJECT_PTR>
 void
 pythonToCppException(PYOBJECT_PTR obj)
 {
-    if (obj != 0)
+    if(obj != 0)
         return;
     PyObject *type, *value, *trace;
     PyErr_Fetch(&type, &value, &trace);
-    if (type == 0)
+    if(type == 0)
         return;
     std::string message(((PyTypeObject*)type)->tp_name);
     message += ": " + dataFromPython(value, "<no error message>");
@@ -100,11 +100,11 @@ public:
     explicit python_ptr(pointer p = 0, refcount_policy rp = increment_count)
         : ptr_(p)
     {
-        if (rp == increment_count)
+        if(rp == increment_count)
         {
             Py_XINCREF(ptr_);
         }
-        else if (rp == new_nonzero_reference)
+        else if(rp == new_nonzero_reference)
         {
             pythonToCppException(p);
         }
@@ -135,13 +135,13 @@ public:
 
     void reset(pointer p = 0, refcount_policy rp = increment_count)
     {
-        if (p == ptr_)
+        if(p == ptr_)
             return;
-        if (rp == increment_count)
+        if(rp == increment_count)
         {
             Py_XINCREF(p);
         }
-        else if (rp == new_nonzero_reference)
+        else if(rp == new_nonzero_reference)
         {
             pythonToCppException(p);
         }
@@ -153,7 +153,7 @@ public:
     {
         pointer p = ptr_;
         ptr_ = 0;
-        if (return_borrowed_reference)
+        if(return_borrowed_reference)
         {
             Py_XDECREF(p);
         }
@@ -291,7 +291,7 @@ VIGRA_PYTHON_FROM_DATA(double, PyFloat_FromDouble, double)
 inline python_ptr
 pythonFromData(long long t)
 {
-    if (t > (long long)NumericTraits<long>::max() || t < (long long)NumericTraits<long>::min())
+    if(t > (long long)NumericTraits<long>::max() || t < (long long)NumericTraits<long>::min())
         return python_ptr(PyLong_FromLongLong(t), python_ptr::new_nonzero_reference);
     else
         return pythonFromData((long)t);
@@ -300,7 +300,7 @@ pythonFromData(long long t)
 inline python_ptr
 pythonFromData(unsigned long long t)
 {
-    if (t > (unsigned long long)NumericTraits<long>::max())
+    if(t > (unsigned long long)NumericTraits<long>::max())
         return python_ptr(PyLong_FromUnsignedLongLong(t), python_ptr::new_nonzero_reference);
     else
         return pythonFromData((long)t);
@@ -390,16 +390,16 @@ dataFromPython(PyObject* data, python_ptr defaultVal)
 /*                                                              */
 /****************************************************************/
 
-template<class T>
+template <class T>
 T
 pythonGetAttr(PyObject* obj, const char* key, T defaultValue)
 {
-    if (!obj)
+    if(!obj)
         return defaultValue;
     python_ptr k(pythonFromData(key));
     pythonToCppException(k);
     python_ptr pres(PyObject_GetAttr(obj, k), python_ptr::keep_count);
-    if (!pres)
+    if(!pres)
         PyErr_Clear();
     return dataFromPython(pres, defaultValue);
 }
@@ -407,12 +407,12 @@ pythonGetAttr(PyObject* obj, const char* key, T defaultValue)
 inline std::string
 pythonGetAttr(PyObject* obj, const char* key, const char* defaultValue)
 {
-    if (!obj)
+    if(!obj)
         return std::string(defaultValue);
     python_ptr k(pythonFromData(key));
     pythonToCppException(k);
     python_ptr pres(PyObject_GetAttr(obj, k), python_ptr::keep_count);
-    if (!pres)
+    if(!pres)
         PyErr_Clear();
     return dataFromPython(pres, defaultValue);
 }
@@ -425,37 +425,37 @@ makePythonDictionary(char const* k1 = 0, PyObject* a1 = 0,
                      char const* k3 = 0, PyObject* a3 = 0)
 {
     python_ptr dict(PyDict_New(), python_ptr::new_nonzero_reference);
-    if (k1 && a1)
+    if(k1 && a1)
         PyDict_SetItemString(dict, k1, a1);
-    if (k2 && a2)
+    if(k2 && a2)
         PyDict_SetItemString(dict, k2, a2);
-    if (k3 && a3)
+    if(k3 && a3)
         PyDict_SetItemString(dict, k3, a3);
     return dict;
 }
 
 /****************************************************************/
 
-template<class T, int N>
+template <class T, int N>
 python_ptr
 shapeToPythonTuple(TinyVector<T, N> const& shape)
 {
     python_ptr tuple(PyTuple_New(N), python_ptr::keep_count);
     pythonToCppException(tuple);
-    for (unsigned int k = 0; k < N; ++k)
+    for(unsigned int k = 0; k < N; ++k)
     {
         PyTuple_SET_ITEM((PyTupleObject*)tuple.get(), k, pythonFromData(shape[k]).release());
     }
     return tuple;
 }
 
-template<class T>
+template <class T>
 python_ptr
 shapeToPythonTuple(ArrayVectorView<T> const& shape)
 {
     python_ptr tuple(PyTuple_New(shape.size()), python_ptr::keep_count);
     pythonToCppException(tuple);
-    for (unsigned int k = 0; k < shape.size(); ++k)
+    for(unsigned int k = 0; k < shape.size(); ++k)
     {
         PyTuple_SET_ITEM((PyTupleObject*)tuple.get(), k, pythonFromData(shape[k]).release());
     }

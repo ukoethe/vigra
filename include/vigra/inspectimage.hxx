@@ -62,47 +62,47 @@ namespace vigra
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor, class Functor>
+template <class SrcIterator, class SrcAccessor, class Functor>
 void
 inspectLine(SrcIterator s,
             SrcIterator send, SrcAccessor src,
             Functor& f)
 {
-    for (; s != send; ++s)
+    for(; s != send; ++s)
         f(src(s));
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class MaskIterator, class MaskAccessor,
-         class Functor>
+template <class SrcIterator, class SrcAccessor,
+          class MaskIterator, class MaskAccessor,
+          class Functor>
 void
 inspectLineIf(SrcIterator s,
               SrcIterator send, SrcAccessor src,
               MaskIterator m, MaskAccessor mask,
               Functor& f)
 {
-    for (; s != send; ++s, ++m)
-        if (mask(m))
+    for(; s != send; ++s, ++m)
+        if(mask(m))
             f(src(s));
 }
 
-template<class SrcIterator1, class SrcAccessor1,
-         class SrcIterator2, class SrcAccessor2,
-         class Functor>
+template <class SrcIterator1, class SrcAccessor1,
+          class SrcIterator2, class SrcAccessor2,
+          class Functor>
 void
 inspectTwoLines(SrcIterator1 s1,
                 SrcIterator1 s1end, SrcAccessor1 src1,
                 SrcIterator2 s2, SrcAccessor2 src2,
                 Functor& f)
 {
-    for (; s1 != s1end; ++s1, ++s2)
+    for(; s1 != s1end; ++s1, ++s2)
         f(src1(s1), src2(s2));
 }
 
-template<class SrcIterator1, class SrcAccessor1,
-         class SrcIterator2, class SrcAccessor2,
-         class MaskIterator, class MaskAccessor,
-         class Functor>
+template <class SrcIterator1, class SrcAccessor1,
+          class SrcIterator2, class SrcAccessor2,
+          class MaskIterator, class MaskAccessor,
+          class Functor>
 void
 inspectTwoLinesIf(SrcIterator1 s1,
                   SrcIterator1 s1end, SrcAccessor1 src1,
@@ -110,8 +110,8 @@ inspectTwoLinesIf(SrcIterator1 s1,
                   MaskIterator m, MaskAccessor mask,
                   Functor& f)
 {
-    for (; s1 != s1end; ++s1, ++s2, ++m)
-        if (mask(m))
+    for(; s1 != s1end; ++s1, ++s2, ++m)
+        if(mask(m))
             f(src1(s1), src2(s2));
 }
 
@@ -205,9 +205,9 @@ inspectTwoLinesIf(SrcIterator1 s1,
     
     \see InspectFunctor, FeatureAccumulators
 */
-doxygen_overloaded_function(template<...> void inspectImage)
+doxygen_overloaded_function(template <...> void inspectImage)
 
-    template<class ImageIterator, class Accessor>
+    template <class ImageIterator, class Accessor>
     struct inspectImage_binder
 {
     ImageIterator upperleft;
@@ -218,19 +218,19 @@ doxygen_overloaded_function(template<...> void inspectImage)
         : upperleft(ul), lowerright(lr), a(ac)
     {
     }
-    template<class Functor>
+    template <class Functor>
     void operator()(Functor& f)
     {
         int w = lowerright.x - upperleft.x;
 
-        for (ImageIterator t = upperleft; t.y < lowerright.y; ++t.y)
+        for(ImageIterator t = upperleft; t.y < lowerright.y; ++t.y)
         {
             inspectLine(t.rowIterator(), t.rowIterator() + w, a, f);
         }
     }
 };
 
-template<class ImageIterator, class Accessor, class Functor>
+template <class ImageIterator, class Accessor, class Functor>
 void
 inspectImage(ImageIterator upperleft, ImageIterator lowerright,
              Accessor a, Functor& f)
@@ -239,7 +239,7 @@ inspectImage(ImageIterator upperleft, ImageIterator lowerright,
     detail::extra_passes_select(g, f);
 }
 
-template<class ImageIterator, class Accessor, class Functor>
+template <class ImageIterator, class Accessor, class Functor>
 inline void
 inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
              Functor& f)
@@ -247,7 +247,7 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
     inspectImage(img.first, img.second, img.third, f);
 }
 
-template<class T, class S, class Functor>
+template <class T, class S, class Functor>
 inline void
     inspectImage(MultiArrayView<2, T, S> const& img,
                  Functor& f)
@@ -257,11 +257,11 @@ inline void
 
 namespace functor
 {
-template<class T>
+template <class T>
 class UnaryAnalyser;
 }
 
-template<class ImageIterator, class Accessor, class Functor>
+template <class ImageIterator, class Accessor, class Functor>
 inline void
 inspectImage(ImageIterator upperleft, ImageIterator lowerright,
              Accessor a, functor::UnaryAnalyser<Functor> const& f)
@@ -270,7 +270,7 @@ inspectImage(ImageIterator upperleft, ImageIterator lowerright,
                  const_cast<functor::UnaryAnalyser<Functor>&>(f));
 }
 
-template<class ImageIterator, class Accessor, class Functor>
+template <class ImageIterator, class Accessor, class Functor>
 inline void
 inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
              functor::UnaryAnalyser<Functor> const& f)
@@ -279,7 +279,7 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
                  const_cast<functor::UnaryAnalyser<Functor>&>(f));
 }
 
-template<class T, class S, class Functor>
+template <class T, class S, class Functor>
 inline void
     inspectImage(MultiArrayView<2, T, S> const& img,
                  functor::UnaryAnalyser<Functor> const& f)
@@ -390,10 +390,10 @@ inline void
     
     \see InspectFunctor, FeatureAccumulators
 */
-doxygen_overloaded_function(template<...> void inspectImageIf)
+doxygen_overloaded_function(template <...> void inspectImageIf)
 
-    template<class ImageIterator, class Accessor,
-             class MaskImageIterator, class MaskAccessor>
+    template <class ImageIterator, class Accessor,
+              class MaskImageIterator, class MaskAccessor>
     struct inspectImageIf_binder
 {
     ImageIterator upperleft;
@@ -407,13 +407,13 @@ doxygen_overloaded_function(template<...> void inspectImageIf)
         : upperleft(ul), lowerright(lr), a(ac), mask_upperleft(m_ul), ma(m_ac)
     {
     }
-    template<class Functor>
+    template <class Functor>
     void operator()(Functor& f)
     {
         int w = lowerright.x - upperleft.x;
 
         MaskImageIterator mt = mask_upperleft;
-        for (ImageIterator t = upperleft; t.y < lowerright.y; ++t.y, ++mt.y)
+        for(ImageIterator t = upperleft; t.y < lowerright.y; ++t.y, ++mt.y)
         {
             inspectLineIf(t.rowIterator(),
                           t.rowIterator() + w, a,
@@ -422,8 +422,8 @@ doxygen_overloaded_function(template<...> void inspectImageIf)
     }
 };
 
-template<class ImageIterator, class Accessor,
-         class MaskImageIterator, class MaskAccessor, class Functor>
+template <class ImageIterator, class Accessor,
+          class MaskImageIterator, class MaskAccessor, class Functor>
 void
 inspectImageIf(ImageIterator upperleft,
                ImageIterator lowerright, Accessor a,
@@ -436,8 +436,8 @@ inspectImageIf(ImageIterator upperleft,
     detail::extra_passes_select(g, f);
 }
 
-template<class ImageIterator, class Accessor,
-         class MaskImageIterator, class MaskAccessor, class Functor>
+template <class ImageIterator, class Accessor,
+          class MaskImageIterator, class MaskAccessor, class Functor>
 inline void
 inspectImageIf(ImageIterator upperleft,
                ImageIterator lowerright, Accessor a,
@@ -448,8 +448,8 @@ inspectImageIf(ImageIterator upperleft,
                    mask_upperleft, ma, const_cast<functor::UnaryAnalyser<Functor>&>(f));
 }
 
-template<class ImageIterator, class Accessor,
-         class MaskImageIterator, class MaskAccessor, class Functor>
+template <class ImageIterator, class Accessor,
+          class MaskImageIterator, class MaskAccessor, class Functor>
 inline void
 inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
                pair<MaskImageIterator, MaskAccessor> mask,
@@ -459,8 +459,8 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
                    mask.first, mask.second, f);
 }
 
-template<class ImageIterator, class Accessor,
-         class MaskImageIterator, class MaskAccessor, class Functor>
+template <class ImageIterator, class Accessor,
+          class MaskImageIterator, class MaskAccessor, class Functor>
 inline void
 inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
                pair<MaskImageIterator, MaskAccessor> mask,
@@ -470,8 +470,8 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
                    mask.first, mask.second, const_cast<functor::UnaryAnalyser<Functor>&>(f));
 }
 
-template<class T, class S,
-         class TM, class SM, class Functor>
+template <class T, class S,
+          class TM, class SM, class Functor>
 inline void
     inspectImageIf(MultiArrayView<2, T, S> const& img,
                    MultiArrayView<2, TM, SM> const& mask,
@@ -483,8 +483,8 @@ inline void
                    maskImage(mask), f);
 }
 
-template<class T, class S,
-         class TM, class SM, class Functor>
+template <class T, class S,
+          class TM, class SM, class Functor>
 inline void
     inspectImageIf(MultiArrayView<2, T, S> const& img,
                    MultiArrayView<2, TM, SM> const& mask,
@@ -592,10 +592,10 @@ inline void
     
     \see InspectFunctor, FeatureAccumulators
 */
-doxygen_overloaded_function(template<...> void inspectTwoImages)
+doxygen_overloaded_function(template <...> void inspectTwoImages)
 
-    template<class ImageIterator1, class Accessor1,
-             class ImageIterator2, class Accessor2>
+    template <class ImageIterator1, class Accessor1,
+              class ImageIterator2, class Accessor2>
     struct inspectTwoImages_binder
 {
     ImageIterator1 upperleft1;
@@ -608,14 +608,14 @@ doxygen_overloaded_function(template<...> void inspectTwoImages)
         : upperleft1(u1), lowerright1(l1), a1(a1_), upperleft2(u2), a2(a2_)
     {
     }
-    template<class Functor>
+    template <class Functor>
     void operator()(Functor& f)
     {
         int w = lowerright1.x - upperleft1.x;
 
         ImageIterator1 t1 = upperleft1;
         ImageIterator2 t2 = upperleft2;
-        for (; t1.y < lowerright1.y; ++t1.y, ++t2.y)
+        for(; t1.y < lowerright1.y; ++t1.y, ++t2.y)
         {
             inspectTwoLines(t1.rowIterator(),
                             t1.rowIterator() + w, a1,
@@ -624,9 +624,9 @@ doxygen_overloaded_function(template<...> void inspectTwoImages)
     }
 };
 
-template<class ImageIterator1, class Accessor1,
-         class ImageIterator2, class Accessor2,
-         class Functor>
+template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2,
+          class Functor>
 void
 inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1,
                  Accessor1 a1,
@@ -639,9 +639,9 @@ inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1,
     detail::extra_passes_select(g, f);
 }
 
-template<class ImageIterator1, class Accessor1,
-         class ImageIterator2, class Accessor2,
-         class Functor>
+template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2,
+          class Functor>
 inline void
 inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
                  ImageIterator2 upperleft2, Accessor2 a2,
@@ -651,9 +651,9 @@ inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor
                      upperleft2, a2, const_cast<functor::UnaryAnalyser<Functor>&>(f));
 }
 
-template<class ImageIterator1, class Accessor1,
-         class ImageIterator2, class Accessor2,
-         class Functor>
+template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2,
+          class Functor>
 inline void
 inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
                  pair<ImageIterator2, Accessor2> img2,
@@ -663,9 +663,9 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
                      img2.first, img2.second, f);
 }
 
-template<class ImageIterator1, class Accessor1,
-         class ImageIterator2, class Accessor2,
-         class Functor>
+template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2,
+          class Functor>
 inline void
 inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
                  pair<ImageIterator2, Accessor2> img2,
@@ -675,9 +675,9 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
                      img2.first, img2.second, const_cast<functor::UnaryAnalyser<Functor>&>(f));
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class Functor>
+template <class T1, class S1,
+          class T2, class S2,
+          class Functor>
 inline void
     inspectTwoImages(MultiArrayView<2, T1, S1> const& img1,
                      MultiArrayView<2, T2, S2> const& img2,
@@ -691,9 +691,9 @@ inline void
 }
 
 
-template<class T1, class S1,
-         class T2, class S2,
-         class Functor>
+template <class T1, class S1,
+          class T2, class S2,
+          class Functor>
 inline void
     inspectTwoImages(MultiArrayView<2, T1, S1> const& img1,
                      MultiArrayView<2, T2, S2> const& img2,
@@ -814,11 +814,11 @@ inline void
     
     \see InspectFunctor, FeatureAccumulators
 */
-doxygen_overloaded_function(template<...> void inspectTwoImagesIf)
+doxygen_overloaded_function(template <...> void inspectTwoImagesIf)
 
-    template<class ImageIterator1, class Accessor1,
-             class ImageIterator2, class Accessor2,
-             class MaskImageIterator, class MaskAccessor>
+    template <class ImageIterator1, class Accessor1,
+              class ImageIterator2, class Accessor2,
+              class MaskImageIterator, class MaskAccessor>
     struct inspectTwoImagesIf_binder
 {
     ImageIterator1 upperleft1;
@@ -835,7 +835,7 @@ doxygen_overloaded_function(template<...> void inspectTwoImagesIf)
           mupperleft(mu), mask(ma)
     {
     }
-    template<class Functor>
+    template <class Functor>
     void operator()(Functor& f)
     {
         int w = lowerright1.x - upperleft1.x;
@@ -843,7 +843,7 @@ doxygen_overloaded_function(template<...> void inspectTwoImagesIf)
         ImageIterator1 t1 = upperleft1;
         ImageIterator2 t2 = upperleft2;
         MaskImageIterator mu = mupperleft;
-        for (; t1.y < lowerright1.y; ++t1.y, ++t2.y, ++mu.y)
+        for(; t1.y < lowerright1.y; ++t1.y, ++t2.y, ++mu.y)
         {
             inspectTwoLinesIf(t1.rowIterator(),
                               t1.rowIterator() + w, a1,
@@ -853,10 +853,10 @@ doxygen_overloaded_function(template<...> void inspectTwoImagesIf)
     }
 };
 
-template<class ImageIterator1, class Accessor1,
-         class ImageIterator2, class Accessor2,
-         class MaskImageIterator, class MaskAccessor,
-         class Functor>
+template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2,
+          class MaskImageIterator, class MaskAccessor,
+          class Functor>
 void
 inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1,
                    Accessor1 a1,
@@ -871,10 +871,10 @@ inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1,
     detail::extra_passes_select(g, f);
 }
 
-template<class ImageIterator1, class Accessor1,
-         class ImageIterator2, class Accessor2,
-         class MaskImageIterator, class MaskAccessor,
-         class Functor>
+template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2,
+          class MaskImageIterator, class MaskAccessor,
+          class Functor>
 inline void
 inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
                    ImageIterator2 upperleft2, Accessor2 a2,
@@ -887,10 +887,10 @@ inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Access
                        const_cast<functor::UnaryAnalyser<Functor>&>(f));
 }
 
-template<class ImageIterator1, class Accessor1,
-         class ImageIterator2, class Accessor2,
-         class MaskImageIterator, class MaskAccessor,
-         class Functor>
+template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2,
+          class MaskImageIterator, class MaskAccessor,
+          class Functor>
 inline void
 inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
                    pair<ImageIterator2, Accessor2> img2,
@@ -903,10 +903,10 @@ inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
                        f);
 }
 
-template<class ImageIterator1, class Accessor1,
-         class ImageIterator2, class Accessor2,
-         class MaskImageIterator, class MaskAccessor,
-         class Functor>
+template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2,
+          class MaskImageIterator, class MaskAccessor,
+          class Functor>
 inline void
 inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
                    pair<ImageIterator2, Accessor2> img2,
@@ -919,10 +919,10 @@ inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
                        const_cast<functor::UnaryAnalyser<Functor>&>(f));
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class TM, class SM,
-         class Functor>
+template <class T1, class S1,
+          class T2, class S2,
+          class TM, class SM,
+          class Functor>
 inline void
     inspectTwoImagesIf(MultiArrayView<2, T1, S1> const& img1,
                        MultiArrayView<2, T2, S2> const& img2,
@@ -937,10 +937,10 @@ inline void
                        f);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class TM, class SM,
-         class Functor>
+template <class T1, class S1,
+          class T2, class S2,
+          class TM, class SM,
+          class Functor>
 inline void
     inspectTwoImagesIf(MultiArrayView<2, T1, S1> const& img1,
                        MultiArrayView<2, T2, S2> const& img2,
@@ -1005,7 +1005,7 @@ inline void
     \endcode
 
 */
-template<class VALUETYPE>
+template <class VALUETYPE>
 class FindMinMax
 {
 public:
@@ -1041,11 +1041,11 @@ public:
         */
     void operator()(argument_type const& v)
     {
-        if (count)
+        if(count)
         {
-            if (v < min)
+            if(v < min)
                 min = v;
-            if (max < v)
+            if(max < v)
                 max = v;
         }
         else
@@ -1069,13 +1069,13 @@ public:
         */
     void operator()(FindMinMax const& v)
     {
-        if (v.count)
+        if(v.count)
         {
-            if (count)
+            if(count)
             {
-                if (v.min < min)
+                if(v.min < min)
                     min = v.min;
-                if ((this->max) < v.max)
+                if((this->max) < v.max)
                     max = v.max;
             }
             else
@@ -1100,7 +1100,7 @@ public:
     unsigned int count;
 };
 
-template<class VALUETYPE>
+template <class VALUETYPE>
 class FunctorTraits<FindMinMax<VALUETYPE>>
     : public FunctorTraitsBase<FindMinMax<VALUETYPE>>
 {
@@ -1150,7 +1150,7 @@ public:
     \endcode
 
 */
-template<class VALUETYPE>
+template <class VALUETYPE>
 class FindSum
     : public UnaryReduceFunctorTag
 {
@@ -1255,7 +1255,7 @@ public:
     \endcode
 
 */
-template<class VALUETYPE>
+template <class VALUETYPE>
 class FindAverage
 {
 public:
@@ -1346,7 +1346,7 @@ public:
     double count_;
 };
 
-template<class VALUETYPE>
+template <class VALUETYPE>
 class FunctorTraits<FindAverage<VALUETYPE>>
     : public FunctorTraitsBase<FindAverage<VALUETYPE>>
 {
@@ -1408,7 +1408,7 @@ public:
     \endcode
 
 */
-template<class VALUETYPE>
+template <class VALUETYPE>
 class FindAverageAndVariance
 {
 public:
@@ -1475,7 +1475,7 @@ public:
 
         //sumOfSquaredDifferences_ += (count_ - weight)*t1*t2;
 
-        if (count_ > weight)
+        if(count_ > weight)
             sumOfSquaredDifferences_ +=
                 (t1 * t1 * weight / count_) * (count_ - weight);
     }
@@ -1527,7 +1527,7 @@ public:
     double count_;
 };
 
-template<class VALUETYPE>
+template <class VALUETYPE>
 class FunctorTraits<FindAverageAndVariance<VALUETYPE>>
     : public FunctorTraitsBase<FindAverageAndVariance<VALUETYPE>>
 {
@@ -1570,7 +1570,7 @@ public:
     \endcode
 
 */
-template<class VALUETYPE>
+template <class VALUETYPE>
 class FindROISize
 {
 public:
@@ -1633,7 +1633,7 @@ public:
     result_type count;
 };
 
-template<class VALUETYPE>
+template <class VALUETYPE>
 class FunctorTraits<FindROISize<VALUETYPE>>
     : public FunctorTraitsBase<FindROISize<VALUETYPE>>
 {
@@ -1731,7 +1731,7 @@ public:
         */
     void operator()(argument_type const& coord)
     {
-        if (!valid)
+        if(!valid)
         {
             upperLeft = Point2D(coord);
             lowerRight = Point2D(coord + Diff2D(1, 1));
@@ -1750,13 +1750,13 @@ public:
         */
     void operator()(FindBoundingRectangle const& otherRegion)
     {
-        if (!valid)
+        if(!valid)
         {
             upperLeft = otherRegion.upperLeft;
             lowerRight = otherRegion.lowerRight;
             valid = otherRegion.valid;
         }
-        else if (otherRegion.valid)
+        else if(otherRegion.valid)
         {
             upperLeft.x = std::min(upperLeft.x, otherRegion.upperLeft.x);
             upperLeft.y = std::min(upperLeft.y, otherRegion.upperLeft.y);
@@ -1782,7 +1782,7 @@ public:
     }
 };
 
-template<>
+template <>
 class FunctorTraits<FindBoundingRectangle>
     : public FunctorTraitsBase<FindBoundingRectangle>
 {
@@ -1827,7 +1827,7 @@ public:
     \endcode
 
 */
-template<class VALUETYPE>
+template <class VALUETYPE>
 class LastValueFunctor
 {
 public:
@@ -1883,7 +1883,7 @@ public:
     VALUETYPE value;
 };
 
-template<class VALUETYPE>
+template <class VALUETYPE>
 class FunctorTraits<LastValueFunctor<VALUETYPE>>
     : public FunctorTraitsBase<LastValueFunctor<VALUETYPE>>
 {
@@ -1942,7 +1942,7 @@ public:
     f(accumulator, current1, current2); // for inspectTwoImages()
     \endcode
 */
-template<class FUNCTOR, class VALUETYPE>
+template <class FUNCTOR, class VALUETYPE>
 class ReduceFunctor
 {
     FUNCTOR f_;
@@ -1995,7 +1995,7 @@ public:
             The accumulator is used as the first argument, the value \a v
             as the second.
         */
-    template<class T>
+    template <class T>
     void operator()(T const& v)
     {
         accumulator_ = f_(accumulator_, v);
@@ -2005,7 +2005,7 @@ public:
             The accumulator is used as the first argument, the values \a v1
             ans \a v2 as the second and third.
         */
-    template<class T1, class T2>
+    template <class T1, class T2>
     void operator()(T1 const& v1, T2 const& v2)
     {
         accumulator_ = f_(accumulator_, v1, v2);
@@ -2019,14 +2019,14 @@ public:
     }
 };
 
-template<class FUNCTOR, class VALUETYPE>
+template <class FUNCTOR, class VALUETYPE>
 ReduceFunctor<FUNCTOR, VALUETYPE>
 reduceFunctor(FUNCTOR const& f, VALUETYPE const& initial)
 {
     return ReduceFunctor<FUNCTOR, VALUETYPE>(f, initial);
 }
 
-template<class FUNCTOR, class VALUETYPE>
+template <class FUNCTOR, class VALUETYPE>
 class FunctorTraits<ReduceFunctor<FUNCTOR, VALUETYPE>>
     : public FunctorTraitsBase<ReduceFunctor<FUNCTOR, VALUETYPE>>
 {
@@ -2099,7 +2099,7 @@ public:
 
     \endcode
 */
-template<class RegionStatistics, class LabelType = int>
+template <class RegionStatistics, class LabelType = int>
 class ArrayOfRegionStatistics
     : public detail::get_extra_passes<RegionStatistics>
 {
@@ -2261,7 +2261,7 @@ public:
         */
     void calc_sync()
     {
-        for (iterator j = begin(); j != end(); ++j)
+        for(iterator j = begin(); j != end(); ++j)
             this->sync(*j);
     }
     // update: passes >= 2
@@ -2273,16 +2273,16 @@ public:
             : x(a), pass_number(n)
         {
         }
-        template<class S> // instantiate only when used.
+        template <class S> // instantiate only when used.
         void operator()(const first_argument_type& v, S label)
         {
             x.regions[static_cast<unsigned>(label)].updatePassN(v, pass_number);
         }
     };
-    template<class N> // instantiate only when used.
+    template <class N> // instantiate only when used.
     pass_n_dispatch pass_n(N n)
     {
-        if (n < 2 || static_cast<unsigned>(n) > this->max_passes)
+        if(n < 2 || static_cast<unsigned>(n) > this->max_passes)
             vigra_fail("ArrayOfRegionStatistics::pass_n(): inconsistent use.");
         return pass_n_dispatch(*this, n);
     }
@@ -2290,7 +2290,7 @@ public:
     std::vector<RegionStatistics> regions;
 };
 
-template<class RegionStatistics, class LabelType>
+template <class RegionStatistics, class LabelType>
 class FunctorTraits<ArrayOfRegionStatistics<RegionStatistics, LabelType>>
     : public FunctorTraitsBase<ArrayOfRegionStatistics<RegionStatistics, LabelType>>
 {

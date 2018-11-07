@@ -174,10 +174,10 @@ namespace vigra
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void radialSymmetryTransform)
+doxygen_overloaded_function(template <...> void radialSymmetryTransform)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void radialSymmetryTransform(SrcIterator sul, SrcIterator slr, SrcAccessor as,
                                  DestIterator dul, DestAccessor ad,
                                  double scale)
@@ -188,7 +188,7 @@ doxygen_overloaded_function(template<...> void radialSymmetryTransform)
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
-    if (w <= 0 || h <= 0)
+    if(w <= 0 || h <= 0)
         return;
 
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
@@ -211,17 +211,17 @@ doxygen_overloaded_function(template<...> void radialSymmetryTransform)
     TmpIterator gxi = gx.upperLeft();
     TmpIterator gyi = gy.upperLeft();
     int y;
-    for (y = 0; y < h; ++y, ++gxi.y, ++gyi.y)
+    for(y = 0; y < h; ++y, ++gxi.y, ++gyi.y)
     {
         typename TmpIterator::row_iterator gxr = gxi.rowIterator();
         typename TmpIterator::row_iterator gyr = gyi.rowIterator();
 
-        for (int x = 0; x < w; ++x, ++gxr, ++gyr)
+        for(int x = 0; x < w; ++x, ++gxr, ++gyr)
         {
             double angle = VIGRA_CSTD::atan2(-*gyr, *gxr);
             double magnitude = VIGRA_CSTD::sqrt(*gxr * *gxr + *gyr * *gyr);
 
-            if (magnitude < NumericTraits<TmpType>::epsilon() * 10.0)
+            if(magnitude < NumericTraits<TmpType>::epsilon() * 10.0)
                 continue;
 
             int dx = NumericTraits<int>::fromRealPromote(scale * VIGRA_CSTD::cos(angle));
@@ -230,7 +230,7 @@ doxygen_overloaded_function(template<...> void radialSymmetryTransform)
             int xx = x + dx;
             int yy = y - dy;
 
-            if (xx >= 0 && xx < w && yy >= 0 && yy < h)
+            if(xx >= 0 && xx < w && yy >= 0 && yy < h)
             {
                 orientationCounter(xx, yy) += 1;
                 magnitudeAccumulator(xx, yy) += detail::RequiresExplicitCast<TmpType>::cast(magnitude);
@@ -239,7 +239,7 @@ doxygen_overloaded_function(template<...> void radialSymmetryTransform)
             xx = x - dx;
             yy = y + dy;
 
-            if (xx >= 0 && xx < w && yy >= 0 && yy < h)
+            if(xx >= 0 && xx < w && yy >= 0 && yy < h)
             {
                 orientationCounter(xx, yy) -= 1;
                 magnitudeAccumulator(xx, yy) -= detail::RequiresExplicitCast<TmpType>::cast(magnitude);
@@ -250,25 +250,25 @@ doxygen_overloaded_function(template<...> void radialSymmetryTransform)
     int maxOrientation = 0;
     TmpType maxMagnitude = NumericTraits<TmpType>::zero();
 
-    for (y = 0; y < h; ++y)
+    for(y = 0; y < h; ++y)
     {
-        for (int x = 0; x < w; ++x)
+        for(int x = 0; x < w; ++x)
         {
             int o = VIGRA_CSTD::abs(orientationCounter(x, y));
 
-            if (o > maxOrientation)
+            if(o > maxOrientation)
                 maxOrientation = o;
 
             TmpType m = VIGRA_CSTD::abs(magnitudeAccumulator(x, y));
 
-            if (m > maxMagnitude)
+            if(m > maxMagnitude)
                 maxMagnitude = m;
         }
     }
 
-    for (y = 0; y < h; ++y)
+    for(y = 0; y < h; ++y)
     {
-        for (int x = 0; x < w; ++x)
+        for(int x = 0; x < w; ++x)
         {
             double o = (double)orientationCounter(x, y) / maxOrientation;
             magnitudeAccumulator(x, y) = detail::RequiresExplicitCast<TmpType>::cast(o * o * magnitudeAccumulator(x, y) / maxMagnitude);
@@ -278,8 +278,8 @@ doxygen_overloaded_function(template<...> void radialSymmetryTransform)
     gaussianSmoothing(srcImageRange(magnitudeAccumulator), destIter(dul, ad), 0.25 * scale);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 radialSymmetryTransform(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         pair<DestIterator, DestAccessor> dest,
@@ -290,8 +290,8 @@ radialSymmetryTransform(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             scale);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     radialSymmetryTransform(MultiArrayView<2, T1, S1> const& src,
                             MultiArrayView<2, T2, S2> dest,

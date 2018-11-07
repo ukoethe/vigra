@@ -54,7 +54,7 @@
 namespace vigra
 {
 
-template<class T, class Alloc = std::allocator<T>>
+template <class T, class Alloc = std::allocator<T>>
 class ArrayVector;
 
 /** Provide STL conforming interface for C-arrays.
@@ -72,7 +72,7 @@ class ArrayVector;
     <b>\#include</b> \<vigra/array_vector.hxx\><br>
     Namespace: vigra
 */
-template<class T>
+template <class T>
 class ArrayVectorView
 {
     typedef ArrayVectorView<T> this_type;
@@ -136,7 +136,7 @@ public:
             (not the pointers) are copied. Otherwise, a <tt>PreconditionViolation</tt>
             exception is thrown.
         */
-    template<class U>
+    template <class U>
     this_type& operator=(ArrayVectorView<U> const& rhs)
     {
         copyImpl(rhs);
@@ -145,7 +145,7 @@ public:
 
     /** Overwrite all array elements with the value \a initial.
         */
-    template<class U>
+    template <class U>
     void init(U const& initial)
     {
         std::fill(begin(), end(), initial);
@@ -158,7 +158,7 @@ public:
         */
     void copy(this_type const& rhs)
     {
-        if (data_ != rhs.data_)
+        if(data_ != rhs.data_)
             copyImpl(rhs);
     }
 
@@ -167,7 +167,7 @@ public:
             (not the pointers) are copied. Otherwise, a <tt>PreconditionViolation</tt>
             exception is thrown.
         */
-    template<class U>
+    template <class U>
     void copy(ArrayVectorView<U> const& rhs)
     {
         copyImpl(rhs);
@@ -180,7 +180,7 @@ public:
         */
     void swapData(this_type rhs)
     {
-        if (data_ != rhs.data_)
+        if(data_ != rhs.data_)
             swapDataImpl(rhs);
     }
 
@@ -189,7 +189,7 @@ public:
             (not the pointers) are swapped. Otherwise, a <tt>PreconditionViolation</tt>
             exception is thrown.
         */
-    template<class U>
+    template <class U>
     void swapData(ArrayVectorView<U> rhs)
     {
         swapDataImpl(rhs);
@@ -366,13 +366,13 @@ public:
     /** Check for element-wise equality of two array.
             Also returns <tt>false</tt> if the two arrays have different sizes.
         */
-    template<class U>
+    template <class U>
     bool operator==(ArrayVectorView<U> const& rhs) const;
 
     /** check whether two arrays are not elementwise equal.
             Also returns <tt>true</tt> if the two arrays have different sizes.
          */
-    template<class U>
+    template <class U>
     bool operator!=(ArrayVectorView<U> const& rhs) const
     {
         return !operator==(rhs);
@@ -386,55 +386,55 @@ public:
     }
 
 protected:
-    template<class U>
+    template <class U>
     void copyImpl(const ArrayVectorView<U>& rhs);
 
     void copyImpl(const ArrayVectorView& rhs);
 
-    template<class U>
+    template <class U>
     void swapDataImpl(const ArrayVectorView<U>& rhs);
 
     size_type size_;
     pointer data_;
 };
 
-template<class T>
+template <class T>
 ArrayVectorView<T>&
 ArrayVectorView<T>::operator=(ArrayVectorView<T> const& rhs)
 {
-    if (data_ == 0)
+    if(data_ == 0)
     {
         size_ = rhs.size_;
         data_ = rhs.data_;
     }
-    else if (data_ != rhs.data_)
+    else if(data_ != rhs.data_)
         copyImpl(rhs);
     return *this;
 }
 
-template<class T>
-template<class U>
+template <class T>
+template <class U>
 bool
 ArrayVectorView<T>::operator==(ArrayVectorView<U> const& rhs) const
 {
-    if (size() != rhs.size())
+    if(size() != rhs.size())
         return false;
-    for (size_type k = 0; k < size(); ++k)
-        if (data_[k] != rhs[k])
+    for(size_type k = 0; k < size(); ++k)
+        if(data_[k] != rhs[k])
             return false;
     return true;
 }
 
-template<class T>
+template <class T>
 void
 ArrayVectorView<T>::copyImpl(const ArrayVectorView& rhs)
 {
     vigra_precondition(size() == rhs.size(),
                        "ArrayVectorView::copy(): shape mismatch.");
-    if (size() == 0) // needed because MSVC debug assertions in std::copy() may fire
-        return;      // "invalid address: data_ == NULL" even when nothing is to be copied
+    if(size() == 0) // needed because MSVC debug assertions in std::copy() may fire
+        return;     // "invalid address: data_ == NULL" even when nothing is to be copied
     // use copy() or copy_backward() according to possible overlap of this and rhs
-    if (data_ <= rhs.data())
+    if(data_ <= rhs.data())
     {
         std::copy(rhs.begin(), rhs.end(), begin());
     }
@@ -444,8 +444,8 @@ ArrayVectorView<T>::copyImpl(const ArrayVectorView& rhs)
     }
 }
 
-template<class T>
-template<class U>
+template <class T>
+template <class U>
 void
 ArrayVectorView<T>::copyImpl(const ArrayVectorView<U>& rhs)
 {
@@ -454,8 +454,8 @@ ArrayVectorView<T>::copyImpl(const ArrayVectorView<U>& rhs)
     std::copy(rhs.begin(), rhs.end(), begin());
 }
 
-template<class T>
-template<class U>
+template <class T>
+template <class U>
 void
 ArrayVectorView<T>::swapDataImpl(const ArrayVectorView<U>& rhs)
 {
@@ -463,9 +463,9 @@ ArrayVectorView<T>::swapDataImpl(const ArrayVectorView<U>& rhs)
                        "ArrayVectorView::swapData(): size mismatch.");
 
     // check for overlap
-    if (data_ + size_ <= rhs.data_ || rhs.data_ + size_ <= data_)
+    if(data_ + size_ <= rhs.data_ || rhs.data_ + size_ <= data_)
     {
-        for (size_type k = 0; k < size_; ++k)
+        for(size_type k = 0; k < size_; ++k)
             std::swap(data_[k], rhs.data_[k]);
     }
     else
@@ -512,7 +512,7 @@ ArrayVectorView<T>::swapDataImpl(const ArrayVectorView<U>& rhs)
     <b>\#include</b> \<vigra/array_vector.hxx\><br>
     Namespace: vigra
 */
-template<class T, class Alloc /* = std::allocator<T> */>
+template <class T, class Alloc /* = std::allocator<T> */>
 class ArrayVector
     : public ArrayVectorView<T>
 {
@@ -577,7 +577,7 @@ public:
         initImpl(rhs.begin(), rhs.end(), VigraFalseType());
     }
 
-    template<class U>
+    template <class U>
     explicit ArrayVector(ArrayVectorView<U> const& rhs, Alloc const& alloc = Alloc())
         : view_type(),
           alloc_(alloc)
@@ -585,13 +585,13 @@ public:
         initImpl(rhs.begin(), rhs.end(), VigraFalseType());
     }
 
-    template<class InputIterator>
+    template <class InputIterator>
     ArrayVector(InputIterator i, InputIterator end)
     {
         initImpl(i, end, typename NumericTraits<InputIterator>::isIntegral());
     }
 
-    template<class InputIterator>
+    template <class InputIterator>
     ArrayVector(InputIterator i, InputIterator end, Alloc const& alloc)
         : alloc_(alloc)
     {
@@ -600,9 +600,9 @@ public:
 
     this_type& operator=(this_type const& rhs)
     {
-        if (this == &rhs)
+        if(this == &rhs)
             return *this;
-        if (this->size_ == rhs.size_)
+        if(this->size_ == rhs.size_)
             this->copyImpl(rhs);
         else
         {
@@ -612,7 +612,7 @@ public:
         return *this;
     }
 
-    template<class U>
+    template <class U>
     this_type& operator=(ArrayVectorView<U> const& rhs);
 
     ~ArrayVector()
@@ -628,7 +628,7 @@ public:
 
     iterator insert(iterator p, size_type n, value_type const& v);
 
-    template<class InputIterator>
+    template <class InputIterator>
     iterator insert(iterator p, InputIterator i, InputIterator iend);
 
     iterator erase(iterator p);
@@ -672,10 +672,10 @@ private:
 
     void initImpl(size_type size, value_type const& initial, VigraTrueType /*isIntegral*/);
 
-    template<class Iter>
+    template <class Iter>
     void initImpl(Iter i, Iter end, VigraFalseType /*isIntegral*/);
 
-    template<class Iter>
+    template <class Iter>
     void initImpl(Iter i, Iter end, Error_NumericTraits_not_specialized_for_this_case)
     {
         initImpl(i, end, VigraFalseType());
@@ -685,12 +685,12 @@ private:
     Alloc alloc_;
 };
 
-template<class T, class Alloc>
-template<class U>
+template <class T, class Alloc>
+template <class U>
 ArrayVector<T, Alloc>&
 ArrayVector<T, Alloc>::operator=(ArrayVectorView<U> const& rhs)
 {
-    if (this->size_ == rhs.size())
+    if(this->size_ == rhs.size())
         this->copyImpl(rhs);
     else
     {
@@ -700,7 +700,7 @@ ArrayVector<T, Alloc>::operator=(ArrayVectorView<U> const& rhs)
     return *this;
 }
 
-template<class T, class Alloc>
+template <class T, class Alloc>
 inline void
 ArrayVector<T, Alloc>::pop_back()
 {
@@ -708,7 +708,7 @@ ArrayVector<T, Alloc>::pop_back()
     alloc_.destroy(this->data_ + this->size_);
 }
 
-template<class T, class Alloc>
+template <class T, class Alloc>
 inline void
 ArrayVector<T, Alloc>::push_back(value_type const& t)
 {
@@ -721,7 +721,7 @@ ArrayVector<T, Alloc>::push_back(value_type const& t)
     ++this->size_;
 }
 
-template<class T, class Alloc>
+template <class T, class Alloc>
 inline void
 ArrayVector<T, Alloc>::clear()
 {
@@ -729,12 +729,12 @@ ArrayVector<T, Alloc>::clear()
     this->size_ = 0;
 }
 
-template<class T, class Alloc>
+template <class T, class Alloc>
 typename ArrayVector<T, Alloc>::iterator
 ArrayVector<T, Alloc>::insert(iterator p, value_type const& v)
 {
     difference_type pos = p - this->begin();
-    if (p == this->end())
+    if(p == this->end())
     {
         push_back(v);
         p = this->begin() + pos;
@@ -750,13 +750,13 @@ ArrayVector<T, Alloc>::insert(iterator p, value_type const& v)
     return p;
 }
 
-template<class T, class Alloc>
+template <class T, class Alloc>
 typename ArrayVector<T, Alloc>::iterator
 ArrayVector<T, Alloc>::insert(iterator p, size_type n, value_type const& v)
 {
     difference_type pos = p - this->begin();
     size_type new_size = this->size() + n;
-    if (new_size > capacity_)
+    if(new_size > capacity_)
     {
         size_type new_capacity = std::max(new_size, resizeFactor * capacity_);
         pointer new_data = reserve_raw(new_capacity);
@@ -766,7 +766,7 @@ ArrayVector<T, Alloc>::insert(iterator p, size_type n, value_type const& v)
             std::uninitialized_fill(new_data + pos, new_data + pos + n, v);
             std::uninitialized_copy(p, this->end(), new_data + pos + n);
         }
-        catch (...)
+        catch(...)
         {
             alloc_.deallocate(new_data, new_capacity);
             throw;
@@ -775,7 +775,7 @@ ArrayVector<T, Alloc>::insert(iterator p, size_type n, value_type const& v)
         capacity_ = new_capacity;
         this->data_ = new_data;
     }
-    else if (pos + n > this->size_)
+    else if(pos + n > this->size_)
     {
         size_type diff = pos + n - this->size_;
         std::uninitialized_copy(p, this->end(), this->end() + diff);
@@ -793,15 +793,15 @@ ArrayVector<T, Alloc>::insert(iterator p, size_type n, value_type const& v)
     return this->begin() + pos;
 }
 
-template<class T, class Alloc>
-template<class InputIterator>
+template <class T, class Alloc>
+template <class InputIterator>
 typename ArrayVector<T, Alloc>::iterator
 ArrayVector<T, Alloc>::insert(iterator p, InputIterator i, InputIterator iend)
 {
     size_type n = std::distance(i, iend);
     size_type pos = p - this->begin();
     size_type new_size = this->size() + n;
-    if (new_size > capacity_)
+    if(new_size > capacity_)
     {
         size_type new_capacity = std::max(new_size, resizeFactor * capacity_);
         pointer new_data = reserve_raw(new_capacity);
@@ -811,7 +811,7 @@ ArrayVector<T, Alloc>::insert(iterator p, InputIterator i, InputIterator iend)
             std::uninitialized_copy(i, iend, new_data + pos);
             std::uninitialized_copy(p, this->end(), new_data + pos + n);
         }
-        catch (...)
+        catch(...)
         {
             alloc_.deallocate(new_data, new_capacity);
             throw;
@@ -820,7 +820,7 @@ ArrayVector<T, Alloc>::insert(iterator p, InputIterator i, InputIterator iend)
         capacity_ = new_capacity;
         this->data_ = new_data;
     }
-    else if (pos + n > this->size_)
+    else if(pos + n > this->size_)
     {
         size_type diff = pos + n - this->size_;
         std::uninitialized_copy(p, this->end(), this->end() + diff);
@@ -840,7 +840,7 @@ ArrayVector<T, Alloc>::insert(iterator p, InputIterator i, InputIterator iend)
     return this->begin() + pos;
 }
 
-template<class T, class Alloc>
+template <class T, class Alloc>
 typename ArrayVector<T, Alloc>::iterator
 ArrayVector<T, Alloc>::erase(iterator p)
 {
@@ -849,7 +849,7 @@ ArrayVector<T, Alloc>::erase(iterator p)
     return p;
 }
 
-template<class T, class Alloc>
+template <class T, class Alloc>
 typename ArrayVector<T, Alloc>::iterator
 ArrayVector<T, Alloc>::erase(iterator p, iterator q)
 {
@@ -860,18 +860,18 @@ ArrayVector<T, Alloc>::erase(iterator p, iterator q)
     return p;
 }
 
-template<class T, class Alloc>
+template <class T, class Alloc>
 typename ArrayVector<T, Alloc>::pointer
 ArrayVector<T, Alloc>::reserveImpl(bool dealloc, size_type new_capacity)
 {
-    if (new_capacity <= capacity_)
+    if(new_capacity <= capacity_)
         return 0;
     pointer new_data = reserve_raw(new_capacity),
             old_data = this->data_;
-    if (this->size_ > 0)
+    if(this->size_ > 0)
         std::uninitialized_copy(old_data, old_data + this->size_, new_data);
     this->data_ = new_data;
-    if (!dealloc)
+    if(!dealloc)
     {
         this->capacity_ = new_capacity;
         return old_data;
@@ -881,54 +881,54 @@ ArrayVector<T, Alloc>::reserveImpl(bool dealloc, size_type new_capacity)
     return 0;
 }
 
-template<class T, class Alloc>
+template <class T, class Alloc>
 inline typename ArrayVector<T, Alloc>::pointer
 ArrayVector<T, Alloc>::reserveImpl(bool dealloc)
 {
-    if (capacity_ == 0)
+    if(capacity_ == 0)
         return reserveImpl(dealloc, minimumCapacity);
-    else if (this->size_ == capacity_)
+    else if(this->size_ == capacity_)
         return reserveImpl(dealloc, resizeFactor * capacity_);
     else
         return 0;
 }
 
-template<class T, class Alloc>
+template <class T, class Alloc>
 inline void
 ArrayVector<T, Alloc>::resize(size_type new_size, value_type const& initial)
 {
-    if (new_size < this->size_)
+    if(new_size < this->size_)
         erase(this->begin() + new_size, this->end());
-    else if (this->size_ < new_size)
+    else if(this->size_ < new_size)
     {
         insert(this->end(), new_size - this->size(), initial);
     }
 }
 
-template<class T, class Alloc>
+template <class T, class Alloc>
 inline void
 ArrayVector<T, Alloc>::initImpl(size_type size, value_type const& initial, VigraTrueType /*isIntegral*/)
 {
     this->size_ = size;
     capacity_ = size;
     this->data_ = reserve_raw(capacity_);
-    if (this->size_ > 0)
+    if(this->size_ > 0)
         std::uninitialized_fill(this->data_, this->data_ + this->size_, initial);
 }
 
-template<class T, class Alloc>
-template<class Iter>
+template <class T, class Alloc>
+template <class Iter>
 inline void
 ArrayVector<T, Alloc>::initImpl(Iter i, Iter end, VigraFalseType /*isIntegral*/)
 {
     this->size_ = std::distance(i, end);
     capacity_ = this->size_;
     this->data_ = reserve_raw(capacity_);
-    if (this->size_ > 0)
+    if(this->size_ > 0)
         detail::uninitializedCopy(i, end, this->data_);
 }
 
-template<class T, class Alloc>
+template <class T, class Alloc>
 inline void
 ArrayVector<T, Alloc>::swap(this_type& rhs)
 {
@@ -937,23 +937,23 @@ ArrayVector<T, Alloc>::swap(this_type& rhs)
     std::swap(this->data_, rhs.data_);
 }
 
-template<class T, class Alloc>
+template <class T, class Alloc>
 inline void
 ArrayVector<T, Alloc>::deallocate(pointer data, size_type size, size_type capacity)
 {
-    if (data)
+    if(data)
     {
         detail::destroy_n(data, size);
         alloc_.deallocate(data, capacity);
     }
 }
 
-template<class T, class Alloc>
+template <class T, class Alloc>
 inline typename ArrayVector<T, Alloc>::pointer
 ArrayVector<T, Alloc>::reserve_raw(size_type capacity)
 {
     pointer data = 0;
-    if (capacity)
+    if(capacity)
     {
         data = alloc_.allocate(capacity);
     }
@@ -965,13 +965,13 @@ ArrayVector<T, Alloc>::reserve_raw(size_type capacity)
 namespace std
 {
 
-template<class T>
+template <class T>
 ostream&
 operator<<(ostream& s, vigra::ArrayVectorView<T> const& a)
 {
-    for (std::ptrdiff_t k = 0; k < (std::ptrdiff_t)a.size() - 1; ++k)
+    for(std::ptrdiff_t k = 0; k < (std::ptrdiff_t)a.size() - 1; ++k)
         s << a[k] << ", ";
-    if (a.size())
+    if(a.size())
         s << a.back();
     return s;
 }

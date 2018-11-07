@@ -46,14 +46,14 @@ namespace vigra
 {
 
 // forward declaration
-template<unsigned int DIM, class C>
+template <unsigned int DIM, class C>
 class MultiBlocking;
 
 /// \cond
 namespace detail_multi_blocking
 {
 
-template<unsigned int DIM, class C>
+template <unsigned int DIM, class C>
 class BlockWithBorder
 {
 public:
@@ -100,7 +100,7 @@ private:
     Block border_;
 };
 
-template<class VALUETYPE, unsigned int DIMENSION>
+template <class VALUETYPE, unsigned int DIMENSION>
 std::ostream&
 operator<<(std::ostream& stream, const BlockWithBorder<DIMENSION, VALUETYPE>& bwb)
 {
@@ -109,7 +109,7 @@ operator<<(std::ostream& stream, const BlockWithBorder<DIMENSION, VALUETYPE>& bw
 }
 
 
-template<class MB>
+template <class MB>
 class MultiCoordToBlockWithBoarder
 {
 public:
@@ -137,7 +137,7 @@ private:
     Shape width_;
 };
 
-template<class MB>
+template <class MB>
 class MultiCoordToBlock
 {
 public:
@@ -174,7 +174,7 @@ private:
         The core block within the coordinate system 
         of the border block is called local core.
     */
-template<unsigned int DIM, class C = MultiArrayIndex>
+template <unsigned int DIM, class C = MultiArrayIndex>
 class MultiBlocking
 {
 public:
@@ -212,9 +212,9 @@ public:
 
 
         // blocking
-        for (size_t d = 0; d < DIM; ++d)
+        for(size_t d = 0; d < DIM; ++d)
         {
-            if (blocksPerAxis_[d] * blockShape_[d] < roiShape[d])
+            if(blocksPerAxis_[d] * blockShape_[d] < roiShape[d])
             {
                 ++blocksPerAxis_[d];
             }
@@ -223,7 +223,7 @@ public:
 
         // total image border blocks
         Shape beginCA(0), endCB(shape);
-        for (size_t d = 0; d < DIM; ++d)
+        for(size_t d = 0; d < DIM; ++d)
         {
             {
                 // fix coordinate d to zero
@@ -336,9 +336,9 @@ public:
         size_t i = 0;
         std::vector<UInt32> iBlocks;
         const Block testBlock(roiBegin, roiEnd);
-        for (BlockIter iter = blockBegin(); iter != blockEnd(); ++iter)
+        for(BlockIter iter = blockBegin(); iter != blockEnd(); ++iter)
         {
-            if (testBlock.intersects(*iter))
+            if(testBlock.intersects(*iter))
             {
                 iBlocks.push_back(i);
             }

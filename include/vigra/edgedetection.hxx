@@ -203,11 +203,11 @@ namespace vigra
     gradient_threshold > 0
     \endcode
 */
-doxygen_overloaded_function(template<...> void differenceOfExponentialEdgeImage)
+doxygen_overloaded_function(template <...> void differenceOfExponentialEdgeImage)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class GradValue, class DestValue>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class GradValue, class DestValue>
     void differenceOfExponentialEdgeImage(
         SrcIterator sul, SrcIterator slr, SrcAccessor sa,
         DestIterator dul, DestAccessor da,
@@ -249,22 +249,22 @@ doxygen_overloaded_function(template<...> void differenceOfExponentialEdgeImage)
                                                                  NumericTraits<TMPTYPE>::one());
     TMPTYPE zero = NumericTraits<TMPTYPE>::zero();
 
-    for (y = 0; y < h - 1; ++y, ++iy.y, ++ty.y, ++dy.y)
+    for(y = 0; y < h - 1; ++y, ++iy.y, ++ty.y, ++dy.y)
     {
         typename TMPIMG::Iterator ix = iy;
         typename TMPIMG::Iterator tx = ty;
         DestIterator dx = dy;
 
-        for (x = 0; x < w - 1; ++x, ++ix.x, ++tx.x, ++dx.x)
+        for(x = 0; x < w - 1; ++x, ++ix.x, ++tx.x, ++dx.x)
         {
             TMPTYPE diff = *tx - *ix;
             TMPTYPE gx = tx[right] - *tx;
             TMPTYPE gy = tx[bottom] - *tx;
 
-            if ((gx * gx > thresh) &&
-                (diff * (tx[right] - ix[right]) < zero))
+            if((gx * gx > thresh) &&
+               (diff * (tx[right] - ix[right]) < zero))
             {
-                if (gx < zero)
+                if(gx < zero)
                 {
                     da.set(edge_marker, dx, right);
                 }
@@ -273,10 +273,10 @@ doxygen_overloaded_function(template<...> void differenceOfExponentialEdgeImage)
                     da.set(edge_marker, dx);
                 }
             }
-            if (((gy * gy > thresh) &&
-                 (diff * (tx[bottom] - ix[bottom]) < zero)))
+            if(((gy * gy > thresh) &&
+                (diff * (tx[bottom] - ix[bottom]) < zero)))
             {
-                if (gy < zero)
+                if(gy < zero)
                 {
                     da.set(edge_marker, dx, bottom);
                 }
@@ -292,15 +292,15 @@ doxygen_overloaded_function(template<...> void differenceOfExponentialEdgeImage)
     typename TMPIMG::Iterator tx = ty;
     DestIterator dx = dy;
 
-    for (x = 0; x < w - 1; ++x, ++ix.x, ++tx.x, ++dx.x)
+    for(x = 0; x < w - 1; ++x, ++ix.x, ++tx.x, ++dx.x)
     {
         TMPTYPE diff = *tx - *ix;
         TMPTYPE gx = tx[right] - *tx;
 
-        if ((gx * gx > thresh) &&
-            (diff * (tx[right] - ix[right]) < zero))
+        if((gx * gx > thresh) &&
+           (diff * (tx[right] - ix[right]) < zero))
         {
-            if (gx < zero)
+            if(gx < zero)
             {
                 da.set(edge_marker, dx, right);
             }
@@ -312,9 +312,9 @@ doxygen_overloaded_function(template<...> void differenceOfExponentialEdgeImage)
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class GradValue>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class GradValue>
 inline void
 differenceOfExponentialEdgeImage(
     SrcIterator sul, SrcIterator slr, SrcAccessor sa,
@@ -325,9 +325,9 @@ differenceOfExponentialEdgeImage(
                                      scale, gradient_threshold, 1);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class GradValue, class DestValue>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class GradValue, class DestValue>
 inline void
 differenceOfExponentialEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                  pair<DestIterator, DestAccessor> dest,
@@ -339,9 +339,9 @@ differenceOfExponentialEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> s
                                      scale, gradient_threshold, edge_marker);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class GradValue>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class GradValue>
 inline void
 differenceOfExponentialEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                  pair<DestIterator, DestAccessor> dest,
@@ -352,9 +352,9 @@ differenceOfExponentialEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> s
                                      scale, gradient_threshold, 1);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class GradValue, class DestValue>
+template <class T1, class S1,
+          class T2, class S2,
+          class GradValue, class DestValue>
 inline void
     differenceOfExponentialEdgeImage(MultiArrayView<2, T1, S1> const& src,
                                      MultiArrayView<2, T2, S2> dest,
@@ -369,9 +369,9 @@ inline void
                                      scale, gradient_threshold, edge_marker);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class GradValue>
+template <class T1, class S1,
+          class T2, class S2,
+          class GradValue>
 inline void
     differenceOfExponentialEdgeImage(MultiArrayView<2, T1, S1> const& src,
                                      MultiArrayView<2, T2, S2> dest,
@@ -541,11 +541,11 @@ inline void
     h_dest = 2 * h_src - 1
     \endcode
 */
-doxygen_overloaded_function(template<...> void differenceOfExponentialCrackEdgeImage)
+doxygen_overloaded_function(template <...> void differenceOfExponentialCrackEdgeImage)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class GradValue, class DestValue>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class GradValue, class DestValue>
     void differenceOfExponentialCrackEdgeImage(
         SrcIterator sul, SrcIterator slr, SrcAccessor sa,
         DestIterator dul, DestAccessor da,
@@ -591,25 +591,25 @@ doxygen_overloaded_function(template<...> void differenceOfExponentialCrackEdgeI
                                                                  NumericTraits<TMPTYPE>::one());
 
     // find zero crossings above threshold
-    for (y = 0; y < h - 1; ++y, ++iy.y, ++ty.y, dy.y += 2)
+    for(y = 0; y < h - 1; ++y, ++iy.y, ++ty.y, dy.y += 2)
     {
         typename TMPIMG::Iterator ix = iy;
         typename TMPIMG::Iterator tx = ty;
         DestIterator dx = dy;
 
-        for (int x = 0; x < w - 1; ++x, ++ix.x, ++tx.x, dx.x += 2)
+        for(int x = 0; x < w - 1; ++x, ++ix.x, ++tx.x, dx.x += 2)
         {
             TMPTYPE diff = *tx - *ix;
             TMPTYPE gx = tx[right] - *tx;
             TMPTYPE gy = tx[bottom] - *tx;
 
-            if ((gx * gx > thresh) &&
-                (diff * (tx[right] - ix[right]) < zero))
+            if((gx * gx > thresh) &&
+               (diff * (tx[right] - ix[right]) < zero))
             {
                 da.set(edge_marker, dx, right);
             }
-            if ((gy * gy > thresh) &&
-                (diff * (tx[bottom] - ix[bottom]) < zero))
+            if((gy * gy > thresh) &&
+               (diff * (tx[bottom] - ix[bottom]) < zero))
             {
                 da.set(edge_marker, dx, bottom);
             }
@@ -618,8 +618,8 @@ doxygen_overloaded_function(template<...> void differenceOfExponentialCrackEdgeI
         TMPTYPE diff = *tx - *ix;
         TMPTYPE gy = tx[bottom] - *tx;
 
-        if ((gy * gy > thresh) &&
-            (diff * (tx[bottom] - ix[bottom]) < zero))
+        if((gy * gy > thresh) &&
+           (diff * (tx[bottom] - ix[bottom]) < zero))
         {
             da.set(edge_marker, dx, bottom);
         }
@@ -630,13 +630,13 @@ doxygen_overloaded_function(template<...> void differenceOfExponentialCrackEdgeI
         typename TMPIMG::Iterator tx = ty;
         DestIterator dx = dy;
 
-        for (x = 0; x < w - 1; ++x, ++ix.x, ++tx.x, dx.x += 2)
+        for(x = 0; x < w - 1; ++x, ++ix.x, ++tx.x, dx.x += 2)
         {
             TMPTYPE diff = *tx - *ix;
             TMPTYPE gx = tx[right] - *tx;
 
-            if ((gx * gx > thresh) &&
-                (diff * (tx[right] - ix[right]) < zero))
+            if((gx * gx > thresh) &&
+               (diff * (tx[right] - ix[right]) < zero))
             {
                 da.set(edge_marker, dx, right);
             }
@@ -653,24 +653,24 @@ doxygen_overloaded_function(template<...> void differenceOfExponentialCrackEdgeI
     const Diff2D bottomright(1, 1);
 
     // find missing 1-cells below threshold (x-direction)
-    for (y = 0; y < h - 2; ++y, ++iy.y, ++ty.y, dy.y += 2)
+    for(y = 0; y < h - 2; ++y, ++iy.y, ++ty.y, dy.y += 2)
     {
         typename TMPIMG::Iterator ix = iy;
         typename TMPIMG::Iterator tx = ty;
         DestIterator dx = dy;
 
-        for (int x = 0; x < w - 2; ++x, ++ix.x, ++tx.x, dx.x += 2)
+        for(int x = 0; x < w - 2; ++x, ++ix.x, ++tx.x, dx.x += 2)
         {
-            if (da(dx) == edge_marker)
+            if(da(dx) == edge_marker)
                 continue;
 
             TMPTYPE diff = *tx - *ix;
 
-            if ((diff * (tx[right] - ix[right]) < zero) &&
-                (((da(dx, bottomright) == edge_marker) &&
-                  (da(dx, topleft) == edge_marker)) ||
-                 ((da(dx, bottomleft) == edge_marker) &&
-                  (da(dx, topright) == edge_marker))))
+            if((diff * (tx[right] - ix[right]) < zero) &&
+               (((da(dx, bottomright) == edge_marker) &&
+                 (da(dx, topleft) == edge_marker)) ||
+                ((da(dx, bottomleft) == edge_marker) &&
+                 (da(dx, topright) == edge_marker))))
 
             {
                 da.set(edge_marker, dx);
@@ -683,24 +683,24 @@ doxygen_overloaded_function(template<...> void differenceOfExponentialCrackEdgeI
     dy = dul + Diff2D(2, 1);
 
     // find missing 1-cells below threshold (y-direction)
-    for (y = 0; y < h - 2; ++y, ++iy.y, ++ty.y, dy.y += 2)
+    for(y = 0; y < h - 2; ++y, ++iy.y, ++ty.y, dy.y += 2)
     {
         typename TMPIMG::Iterator ix = iy;
         typename TMPIMG::Iterator tx = ty;
         DestIterator dx = dy;
 
-        for (int x = 0; x < w - 2; ++x, ++ix.x, ++tx.x, dx.x += 2)
+        for(int x = 0; x < w - 2; ++x, ++ix.x, ++tx.x, dx.x += 2)
         {
-            if (da(dx) == edge_marker)
+            if(da(dx) == edge_marker)
                 continue;
 
             TMPTYPE diff = *tx - *ix;
 
-            if ((diff * (tx[bottom] - ix[bottom]) < zero) &&
-                (((da(dx, bottomright) == edge_marker) &&
-                  (da(dx, topleft) == edge_marker)) ||
-                 ((da(dx, bottomleft) == edge_marker) &&
-                  (da(dx, topright) == edge_marker))))
+            if((diff * (tx[bottom] - ix[bottom]) < zero) &&
+               (((da(dx, bottomright) == edge_marker) &&
+                 (da(dx, topleft) == edge_marker)) ||
+                ((da(dx, bottomleft) == edge_marker) &&
+                 (da(dx, topright) == edge_marker))))
 
             {
                 da.set(edge_marker, dx);
@@ -711,30 +711,30 @@ doxygen_overloaded_function(template<...> void differenceOfExponentialCrackEdgeI
     dy = dul + Diff2D(1, 1);
 
     // find missing 0-cells
-    for (y = 0; y < h - 1; ++y, dy.y += 2)
+    for(y = 0; y < h - 1; ++y, dy.y += 2)
     {
         DestIterator dx = dy;
 
-        for (int x = 0; x < w - 1; ++x, dx.x += 2)
+        for(int x = 0; x < w - 1; ++x, dx.x += 2)
         {
             const Diff2D dist[] = {right, top, left, bottom};
 
             int i;
-            for (i = 0; i < 4; ++i)
+            for(i = 0; i < 4; ++i)
             {
-                if (da(dx, dist[i]) == edge_marker)
+                if(da(dx, dist[i]) == edge_marker)
                     break;
             }
 
-            if (i < 4)
+            if(i < 4)
                 da.set(edge_marker, dx);
         }
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class GradValue, class DestValue>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class GradValue, class DestValue>
 inline void
 differenceOfExponentialCrackEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                       pair<DestIterator, DestAccessor> dest,
@@ -746,9 +746,9 @@ differenceOfExponentialCrackEdgeImage(triple<SrcIterator, SrcIterator, SrcAccess
                                           scale, gradient_threshold, edge_marker);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class GradValue, class DestValue>
+template <class T1, class S1,
+          class T2, class S2,
+          class GradValue, class DestValue>
 inline void
     differenceOfExponentialCrackEdgeImage(MultiArrayView<2, T1, S1> const& src,
                                           MultiArrayView<2, T2, S2> dest,
@@ -868,9 +868,9 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void removeShortEdges)
+doxygen_overloaded_function(template <...> void removeShortEdges)
 
-    template<class Iterator, class Accessor, class Value>
+    template <class Iterator, class Accessor, class Value>
     void removeShortEdges(
         Iterator sul, Iterator slr, Accessor sa,
         unsigned int min_edge_length, Value non_edge_marker)
@@ -894,16 +894,16 @@ doxygen_overloaded_function(template<...> void removeShortEdges)
     IImage::Iterator ly = labels.upperLeft();
     Iterator oy = sul;
 
-    for (y = 0; y < h; ++y, ++oy.y, ++ly.y)
+    for(y = 0; y < h; ++y, ++oy.y, ++ly.y)
     {
         Iterator ox(oy);
         IImage::Iterator lx(ly);
 
-        for (x = 0; x < w; ++x, ++ox.x, ++lx.x)
+        for(x = 0; x < w; ++x, ++ox.x, ++lx.x)
         {
-            if (sa(ox) == non_edge_marker)
+            if(sa(ox) == non_edge_marker)
                 continue;
-            if ((region_stats[*lx].count) < min_edge_length)
+            if((region_stats[*lx].count) < min_edge_length)
             {
                 sa.set(non_edge_marker, ox);
             }
@@ -911,7 +911,7 @@ doxygen_overloaded_function(template<...> void removeShortEdges)
     }
 }
 
-template<class Iterator, class Accessor, class Value>
+template <class Iterator, class Accessor, class Value>
 inline void
 removeShortEdges(triple<Iterator, Iterator, Accessor> src,
                  unsigned int min_edge_length, Value non_edge_marker)
@@ -920,7 +920,7 @@ removeShortEdges(triple<Iterator, Iterator, Accessor> src,
                      min_edge_length, non_edge_marker);
 }
 
-template<class T, class S, class Value>
+template <class T, class S, class Value>
 inline void
     removeShortEdges(MultiArrayView<2, T, S> image,
                      unsigned int min_edge_length, Value non_edge_marker)
@@ -1038,9 +1038,9 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void closeGapsInCrackEdgeImage)
+doxygen_overloaded_function(template <...> void closeGapsInCrackEdgeImage)
 
-    template<class SrcIterator, class SrcAccessor, class SrcValue>
+    template <class SrcIterator, class SrcAccessor, class SrcValue>
     void closeGapsInCrackEdgeImage(
         SrcIterator sul, SrcIterator slr, SrcAccessor sa,
         SrcValue edge_marker)
@@ -1071,39 +1071,39 @@ doxygen_overloaded_function(template<...> void closeGapsInCrackEdgeImage)
     SrcIterator sx;
 
     // close 1-pixel wide gaps (x-direction)
-    for (y = 0; y < h2; ++y, sy.y += 2)
+    for(y = 0; y < h2; ++y, sy.y += 2)
     {
         sx = sy + Diff2D(2, 0);
 
-        for (x = 2; x < w2; ++x, sx.x += 2)
+        for(x = 2; x < w2; ++x, sx.x += 2)
         {
-            if (sa(sx) == edge_marker)
+            if(sa(sx) == edge_marker)
                 continue;
 
-            if (sa(sx, left) != edge_marker)
+            if(sa(sx, left) != edge_marker)
                 continue;
-            if (sa(sx, right) != edge_marker)
+            if(sa(sx, right) != edge_marker)
                 continue;
 
             count1 = 0;
             count2 = 0;
             count3 = 0;
 
-            for (i = 0; i < 4; ++i)
+            for(i = 0; i < 4; ++i)
             {
-                if (sa(sx, leftdist[i]) == edge_marker)
+                if(sa(sx, leftdist[i]) == edge_marker)
                 {
                     ++count1;
                     count3 ^= 1 << i;
                 }
-                if (sa(sx, rightdist[i]) == edge_marker)
+                if(sa(sx, rightdist[i]) == edge_marker)
                 {
                     ++count2;
                     count3 ^= 1 << i;
                 }
             }
 
-            if (count1 <= 1 || count2 <= 1 || count3 == 15)
+            if(count1 <= 1 || count2 <= 1 || count3 == 15)
             {
                 sa.set(edge_marker, sx);
             }
@@ -1113,39 +1113,39 @@ doxygen_overloaded_function(template<...> void closeGapsInCrackEdgeImage)
     sy = sul + Diff2D(1, 2);
 
     // close 1-pixel wide gaps (y-direction)
-    for (y = 2; y < h2; ++y, sy.y += 2)
+    for(y = 2; y < h2; ++y, sy.y += 2)
     {
         sx = sy;
 
-        for (x = 0; x < w2; ++x, sx.x += 2)
+        for(x = 0; x < w2; ++x, sx.x += 2)
         {
-            if (sa(sx) == edge_marker)
+            if(sa(sx) == edge_marker)
                 continue;
 
-            if (sa(sx, top) != edge_marker)
+            if(sa(sx, top) != edge_marker)
                 continue;
-            if (sa(sx, bottom) != edge_marker)
+            if(sa(sx, bottom) != edge_marker)
                 continue;
 
             count1 = 0;
             count2 = 0;
             count3 = 0;
 
-            for (i = 0; i < 4; ++i)
+            for(i = 0; i < 4; ++i)
             {
-                if (sa(sx, topdist[i]) == edge_marker)
+                if(sa(sx, topdist[i]) == edge_marker)
                 {
                     ++count1;
                     count3 ^= 1 << i;
                 }
-                if (sa(sx, bottomdist[i]) == edge_marker)
+                if(sa(sx, bottomdist[i]) == edge_marker)
                 {
                     ++count2;
                     count3 ^= 1 << i;
                 }
             }
 
-            if (count1 <= 1 || count2 <= 1 || count3 == 15)
+            if(count1 <= 1 || count2 <= 1 || count3 == 15)
             {
                 sa.set(edge_marker, sx);
             }
@@ -1153,7 +1153,7 @@ doxygen_overloaded_function(template<...> void closeGapsInCrackEdgeImage)
     }
 }
 
-template<class SrcIterator, class SrcAccessor, class SrcValue>
+template <class SrcIterator, class SrcAccessor, class SrcValue>
 inline void
 closeGapsInCrackEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                           SrcValue edge_marker)
@@ -1162,7 +1162,7 @@ closeGapsInCrackEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                               edge_marker);
 }
 
-template<class T, class S, class Value>
+template <class T, class S, class Value>
 inline void
     closeGapsInCrackEdgeImage(MultiArrayView<2, T, S> image, Value edge_marker)
 {
@@ -1289,9 +1289,9 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void beautifyCrackEdgeImage)
+doxygen_overloaded_function(template <...> void beautifyCrackEdgeImage)
 
-    template<class SrcIterator, class SrcAccessor, class SrcValue>
+    template <class SrcIterator, class SrcAccessor, class SrcValue>
     void beautifyCrackEdgeImage(
         SrcIterator sul, SrcIterator slr, SrcAccessor sa,
         SrcValue edge_marker, SrcValue background_marker)
@@ -1313,18 +1313,18 @@ doxygen_overloaded_function(template<...> void beautifyCrackEdgeImage)
     const Diff2D top(0, -1);
 
     //  delete 0-cells at corners
-    for (y = 0; y < h2; ++y, sy.y += 2)
+    for(y = 0; y < h2; ++y, sy.y += 2)
     {
         sx = sy;
 
-        for (x = 0; x < w2; ++x, sx.x += 2)
+        for(x = 0; x < w2; ++x, sx.x += 2)
         {
-            if (sa(sx) != edge_marker)
+            if(sa(sx) != edge_marker)
                 continue;
 
-            if (sa(sx, right) == edge_marker && sa(sx, left) == edge_marker)
+            if(sa(sx, right) == edge_marker && sa(sx, left) == edge_marker)
                 continue;
-            if (sa(sx, bottom) == edge_marker && sa(sx, top) == edge_marker)
+            if(sa(sx, bottom) == edge_marker && sa(sx, top) == edge_marker)
                 continue;
 
             sa.set(background_marker, sx);
@@ -1332,7 +1332,7 @@ doxygen_overloaded_function(template<...> void beautifyCrackEdgeImage)
     }
 }
 
-template<class SrcIterator, class SrcAccessor, class SrcValue>
+template <class SrcIterator, class SrcAccessor, class SrcValue>
 inline void
 beautifyCrackEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        SrcValue edge_marker, SrcValue background_marker)
@@ -1341,7 +1341,7 @@ beautifyCrackEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                            edge_marker, background_marker);
 }
 
-template<class T, class S, class Value>
+template <class T, class S, class Value>
 inline void
     beautifyCrackEdgeImage(MultiArrayView<2, T, S> image,
                            Value edge_marker, Value background_marker)
@@ -1417,8 +1417,8 @@ public:
     }
 };
 
-template<class SrcIterator, class SrcAccessor,
-         class MagnitudeImage, class BackInsertable, class GradValue>
+template <class SrcIterator, class SrcAccessor,
+          class MagnitudeImage, class BackInsertable, class GradValue>
 void
 internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
                         MagnitudeImage const& magnitude,
@@ -1433,13 +1433,13 @@ internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
     double t = 0.5 / VIGRA_CSTD::sin(M_PI / 8.0);
 
     ul += Diff2D(1, 1);
-    for (int y = 1; y < magnitude.height() - 1; ++y, ++ul.y)
+    for(int y = 1; y < magnitude.height() - 1; ++y, ++ul.y)
     {
         SrcIterator ix = ul;
-        for (int x = 1; x < magnitude.width() - 1; ++x, ++ix.x)
+        for(int x = 1; x < magnitude.width() - 1; ++x, ++ix.x)
         {
             double mag = magnitude(x, y);
-            if (mag <= grad_thresh)
+            if(mag <= grad_thresh)
                 continue;
             ValueType gradx = grad.getComponent(ix, 0);
             ValueType grady = grad.getComponent(ix, 1);
@@ -1455,7 +1455,7 @@ internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
             double m1 = magnitude(x1, y1);
             double m3 = magnitude(x2, y2);
 
-            if (m1 < mag && m3 <= mag)
+            if(m1 < mag && m3 <= mag)
             {
                 Edgel edgel;
 
@@ -1465,7 +1465,7 @@ internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
                 edgel.y = Edgel::value_type(y + dy * del);
                 edgel.strength = Edgel::value_type(mag);
                 double orientation = VIGRA_CSTD::atan2(grady, gradx) + 0.5 * M_PI;
-                if (orientation < 0.0)
+                if(orientation < 0.0)
                     orientation += 2.0 * M_PI;
                 edgel.orientation = Edgel::value_type(orientation);
                 edgels.push_back(edgel);
@@ -1599,9 +1599,9 @@ internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
     scale > 0
     \endcode
 */
-doxygen_overloaded_function(template<...> void cannyEdgelList)
+doxygen_overloaded_function(template <...> void cannyEdgelList)
 
-    template<class SrcIterator, class SrcAccessor, class BackInsertable>
+    template <class SrcIterator, class SrcAccessor, class BackInsertable>
     void cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                         BackInsertable& edgels, double scale)
 {
@@ -1612,7 +1612,7 @@ doxygen_overloaded_function(template<...> void cannyEdgelList)
     cannyEdgelList(srcImageRange(grad), edgels);
 }
 
-template<class SrcIterator, class SrcAccessor, class BackInsertable>
+template <class SrcIterator, class SrcAccessor, class BackInsertable>
 void
 cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                BackInsertable& edgels)
@@ -1628,7 +1628,7 @@ cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
     internalCannyFindEdgels(ul, src, magnitude, edgels, NumericTraits<TmpType>::zero());
 }
 
-template<class SrcIterator, class SrcAccessor, class BackInsertable>
+template <class SrcIterator, class SrcAccessor, class BackInsertable>
 inline void
 cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                BackInsertable& edgels, double scale)
@@ -1636,7 +1636,7 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     cannyEdgelList(src.first, src.second, src.third, edgels, scale);
 }
 
-template<class SrcIterator, class SrcAccessor, class BackInsertable>
+template <class SrcIterator, class SrcAccessor, class BackInsertable>
 inline void
 cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                BackInsertable& edgels)
@@ -1644,7 +1644,7 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     cannyEdgelList(src.first, src.second, src.third, edgels);
 }
 
-template<class T, class S, class BackInsertable>
+template <class T, class S, class BackInsertable>
 inline void
     cannyEdgelList(MultiArrayView<2, T, S> const& src,
                    BackInsertable& edgels, double scale)
@@ -1652,7 +1652,7 @@ inline void
     cannyEdgelList(srcImageRange(src), edgels, scale);
 }
 
-template<class T, class S, class BackInsertable>
+template <class T, class S, class BackInsertable>
 inline void
     cannyEdgelList(MultiArrayView<2, TinyVector<T, 2>, S> const& src,
                    BackInsertable& edgels)
@@ -1782,10 +1782,10 @@ inline void
     scale > 0
     \endcode
 */
-doxygen_overloaded_function(template<...> void cannyEdgelListThreshold)
+doxygen_overloaded_function(template <...> void cannyEdgelListThreshold)
 
-    template<class SrcIterator, class SrcAccessor,
-             class BackInsertable, class GradValue>
+    template <class SrcIterator, class SrcAccessor,
+              class BackInsertable, class GradValue>
     void cannyEdgelListThreshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                                  BackInsertable& edgels, double scale, GradValue grad_threshold)
 {
@@ -1796,8 +1796,8 @@ doxygen_overloaded_function(template<...> void cannyEdgelListThreshold)
     cannyEdgelListThreshold(srcImageRange(grad), edgels, grad_threshold);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class BackInsertable, class GradValue>
+template <class SrcIterator, class SrcAccessor,
+          class BackInsertable, class GradValue>
 void
 cannyEdgelListThreshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                         BackInsertable& edgels, GradValue grad_threshold)
@@ -1813,8 +1813,8 @@ cannyEdgelListThreshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
     internalCannyFindEdgels(ul, src, magnitude, edgels, grad_threshold);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class BackInsertable, class GradValue>
+template <class SrcIterator, class SrcAccessor,
+          class BackInsertable, class GradValue>
 inline void
 cannyEdgelListThreshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         BackInsertable& edgels, double scale, GradValue grad_threshold)
@@ -1822,8 +1822,8 @@ cannyEdgelListThreshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     cannyEdgelListThreshold(src.first, src.second, src.third, edgels, scale, grad_threshold);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class BackInsertable, class GradValue>
+template <class SrcIterator, class SrcAccessor,
+          class BackInsertable, class GradValue>
 inline void
 cannyEdgelListThreshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         BackInsertable& edgels, GradValue grad_threshold)
@@ -1831,8 +1831,8 @@ cannyEdgelListThreshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     cannyEdgelListThreshold(src.first, src.second, src.third, edgels, grad_threshold);
 }
 
-template<class T, class S,
-         class BackInsertable, class GradValue>
+template <class T, class S,
+          class BackInsertable, class GradValue>
 inline void
     cannyEdgelListThreshold(MultiArrayView<2, T, S> const& src,
                             BackInsertable& edgels,
@@ -1842,8 +1842,8 @@ inline void
     cannyEdgelListThreshold(srcImageRange(src), edgels, scale, grad_threshold);
 }
 
-template<class T, class S,
-         class BackInsertable, class GradValue>
+template <class T, class S,
+          class BackInsertable, class GradValue>
 inline void
     cannyEdgelListThreshold(MultiArrayView<2, TinyVector<T, 2>, S> const& src,
                             BackInsertable& edgels,
@@ -1954,11 +1954,11 @@ inline void
     gradient_threshold > 0
     \endcode
 */
-doxygen_overloaded_function(template<...> void cannyEdgeImage)
+doxygen_overloaded_function(template <...> void cannyEdgeImage)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class GradValue, class DestValue>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class GradValue, class DestValue>
     void cannyEdgeImage(
         SrcIterator sul, SrcIterator slr, SrcAccessor sa,
         DestIterator dul, DestAccessor da,
@@ -1971,20 +1971,20 @@ doxygen_overloaded_function(template<...> void cannyEdgeImage)
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
-    for (unsigned int i = 0; i < edgels.size(); ++i)
+    for(unsigned int i = 0; i < edgels.size(); ++i)
     {
         Diff2D pix((int)(edgels[i].x + 0.5), (int)(edgels[i].y + 0.5));
 
-        if (pix.x < 0 || pix.x >= w || pix.y < 0 || pix.y >= h)
+        if(pix.x < 0 || pix.x >= w || pix.y < 0 || pix.y >= h)
             continue;
 
         da.set(edge_marker, dul, pix);
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class GradValue, class DestValue>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class GradValue, class DestValue>
 inline void
 cannyEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                pair<DestIterator, DestAccessor> dest,
@@ -1995,9 +1995,9 @@ cannyEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    scale, gradient_threshold, edge_marker);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class GradValue, class DestValue>
+template <class T1, class S1,
+          class T2, class S2,
+          class GradValue, class DestValue>
 inline void
     cannyEdgeImage(MultiArrayView<2, T1, S1> const& src,
                    MultiArrayView<2, T2, S2> dest,
@@ -2015,13 +2015,13 @@ inline void
 namespace detail
 {
 
-template<class DestIterator>
+template <class DestIterator>
 int
 neighborhoodConfiguration(DestIterator dul)
 {
     int v = 0;
     NeighborhoodCirculator<DestIterator, EightNeighborCode> c(dul, EightNeighborCode::SouthEast);
-    for (int i = 0; i < 8; ++i, --c)
+    for(int i = 0; i < 8; ++i, --c)
     {
         v = (v << 1) | ((*c != 0) ? 1 : 0);
     }
@@ -2029,7 +2029,7 @@ neighborhoodConfiguration(DestIterator dul)
     return v;
 }
 
-template<class GradValue>
+template <class GradValue>
 struct SimplePoint
 {
     Diff2D point;
@@ -2051,9 +2051,9 @@ struct SimplePoint
     }
 };
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class GradValue, class DestValue>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class GradValue, class DestValue>
 void
 cannyEdgeImageFromGrad(
     SrcIterator sul, SrcIterator slr, SrcAccessor grad,
@@ -2074,32 +2074,32 @@ cannyEdgeImageFromGrad(
     dul += Diff2D(1, 1);
     Diff2D p(0, 0);
 
-    for (int y = 1; y < h - 1; ++y, ++sul.y, ++dul.y)
+    for(int y = 1; y < h - 1; ++y, ++sul.y, ++dul.y)
     {
         SrcIterator sx = sul;
         DestIterator dx = dul;
-        for (int x = 1; x < w - 1; ++x, ++sx.x, ++dx.x)
+        for(int x = 1; x < w - 1; ++x, ++sx.x, ++dx.x)
         {
             PixelType g = grad(sx);
             NormType g2n = squaredNorm(g);
-            if (g2n < g2thresh)
+            if(g2n < g2thresh)
                 continue;
 
             NormType g2n1, g2n3;
             // find out quadrant
-            if (abs(g[1]) < tan22_5 * abs(g[0]))
+            if(abs(g[1]) < tan22_5 * abs(g[0]))
             {
                 // north-south edge
                 g2n1 = squaredNorm(grad(sx, Diff2D(-1, 0)));
                 g2n3 = squaredNorm(grad(sx, Diff2D(1, 0)));
             }
-            else if (abs(g[0]) < tan22_5 * abs(g[1]))
+            else if(abs(g[0]) < tan22_5 * abs(g[1]))
             {
                 // west-east edge
                 g2n1 = squaredNorm(grad(sx, Diff2D(0, -1)));
                 g2n3 = squaredNorm(grad(sx, Diff2D(0, 1)));
             }
-            else if (g[0] * g[1] < zero)
+            else if(g[0] * g[1] < zero)
             {
                 // north-west-south-east edge
                 g2n1 = squaredNorm(grad(sx, Diff2D(1, -1)));
@@ -2112,7 +2112,7 @@ cannyEdgeImageFromGrad(
                 g2n3 = squaredNorm(grad(sx, Diff2D(1, 1)));
             }
 
-            if (g2n1 < g2n && g2n3 <= g2n)
+            if(g2n1 < g2n && g2n3 <= g2n)
             {
                 da.set(edge_marker, dx);
             }
@@ -2244,11 +2244,11 @@ cannyEdgeImageFromGrad(
     gradient_threshold > 0
     \endcode
 */
-doxygen_overloaded_function(template<...> void cannyEdgeImageFromGradWithThinning)
+doxygen_overloaded_function(template <...> void cannyEdgeImageFromGradWithThinning)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class GradValue, class DestValue>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class GradValue, class DestValue>
     void cannyEdgeImageFromGradWithThinning(
         SrcIterator sul, SrcIterator slr, SrcAccessor sa,
         DestIterator dul, DestAccessor da,
@@ -2264,7 +2264,7 @@ doxygen_overloaded_function(template<...> void cannyEdgeImageFromGradWithThinnin
     BImage edgeImage(w, h, BImage::value_type(0));
     BImage::traverser eul = edgeImage.upperLeft();
     BImage::Accessor ea = edgeImage.accessor();
-    if (addBorder)
+    if(addBorder)
         initImageBorder(destImageRange(edgeImage), 1, 1);
     detail::cannyEdgeImageFromGrad(sul, slr, sa, eul, ea, gradient_threshold, 1);
 
@@ -2295,15 +2295,15 @@ doxygen_overloaded_function(template<...> void cannyEdgeImageFromGradWithThinnin
     std::priority_queue<SP, std::vector<SP>, std::greater<SP>> pqueue;
 
     Diff2D p(0, 0);
-    for (; p.y < h2; ++p.y)
+    for(; p.y < h2; ++p.y)
     {
-        for (p.x = 0; p.x < w2; ++p.x)
+        for(p.x = 0; p.x < w2; ++p.x)
         {
             BImage::traverser e = eul + p;
-            if (*e == 0)
+            if(*e == 0)
                 continue;
             int v = detail::neighborhoodConfiguration(e);
-            if (isSimplePoint[v])
+            if(isSimplePoint[v])
             {
                 pqueue.push(SP(p, norm(sa(sul + p))));
                 *e = 2; // remember that it is already in queue
@@ -2313,29 +2313,29 @@ doxygen_overloaded_function(template<...> void cannyEdgeImageFromGradWithThinnin
 
     const Diff2D dist[] = {Diff2D(-1, 0), Diff2D(0, -1), Diff2D(1, 0), Diff2D(0, 1)};
 
-    while (pqueue.size())
+    while(pqueue.size())
     {
         p = pqueue.top().point;
         pqueue.pop();
 
         BImage::traverser e = eul + p;
         int v = detail::neighborhoodConfiguration(e);
-        if (!isSimplePoint[v])
+        if(!isSimplePoint[v])
             continue; // point may no longer be simple because its neighbors changed
 
         *e = 0; // delete simple point
 
-        for (int i = 0; i < 4; ++i)
+        for(int i = 0; i < 4; ++i)
         {
             Diff2D pneu = p + dist[i];
-            if (pneu.x == -1 || pneu.y == -1 || pneu.x == w2 || pneu.y == h2)
+            if(pneu.x == -1 || pneu.y == -1 || pneu.x == w2 || pneu.y == h2)
                 continue; // do not remove points at the border
 
             BImage::traverser eneu = eul + pneu;
-            if (*eneu == 1) // point is boundary and not yet in the queue
+            if(*eneu == 1) // point is boundary and not yet in the queue
             {
                 v = detail::neighborhoodConfiguration(eneu);
-                if (isSimplePoint[v])
+                if(isSimplePoint[v])
                 {
                     pqueue.push(SP(pneu, norm(sa(sul + pneu))));
                     *eneu = 2; // remember that it is already in queue
@@ -2348,9 +2348,9 @@ doxygen_overloaded_function(template<...> void cannyEdgeImageFromGradWithThinnin
                 maskImage(edgeImage), edge_marker);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class GradValue, class DestValue>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class GradValue, class DestValue>
 inline void
 cannyEdgeImageFromGradWithThinning(
     triple<SrcIterator, SrcIterator, SrcAccessor> src,
@@ -2363,9 +2363,9 @@ cannyEdgeImageFromGradWithThinning(
                                        gradient_threshold, edge_marker, addBorder);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class GradValue, class DestValue>
+template <class T1, class S1,
+          class T2, class S2,
+          class GradValue, class DestValue>
 inline void
     cannyEdgeImageFromGradWithThinning(MultiArrayView<2, TinyVector<T1, 2>, S1> const& src,
                                        MultiArrayView<2, T2, S2> dest,
@@ -2481,11 +2481,11 @@ inline void
     gradient_threshold > 0
     \endcode
 */
-doxygen_overloaded_function(template<...> void cannyEdgeImageWithThinning)
+doxygen_overloaded_function(template <...> void cannyEdgeImageWithThinning)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class GradValue, class DestValue>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class GradValue, class DestValue>
     void cannyEdgeImageWithThinning(
         SrcIterator sul, SrcIterator slr, SrcAccessor sa,
         DestIterator dul, DestAccessor da,
@@ -2500,9 +2500,9 @@ doxygen_overloaded_function(template<...> void cannyEdgeImageWithThinning)
                                        gradient_threshold, edge_marker, addBorder);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class GradValue, class DestValue>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class GradValue, class DestValue>
 inline void
 cannyEdgeImageWithThinning(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                            pair<DestIterator, DestAccessor> dest,
@@ -2514,9 +2514,9 @@ cannyEdgeImageWithThinning(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                scale, gradient_threshold, edge_marker, addBorder);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class GradValue, class DestValue>
+template <class T1, class S1,
+          class T2, class S2,
+          class GradValue, class DestValue>
 inline void
     cannyEdgeImageWithThinning(MultiArrayView<2, T1, S1> const& src,
                                MultiArrayView<2, T2, S2> dest,
@@ -2532,8 +2532,8 @@ inline void
 
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor,
-         class MaskImage, class BackInsertable, class GradValue>
+template <class SrcIterator, class SrcAccessor,
+          class MaskImage, class BackInsertable, class GradValue>
 void
 internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
                            MaskImage const& mask,
@@ -2547,18 +2547,18 @@ internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
                        "cannyFindEdgels3x3(): gradient threshold must not be negative.");
 
     ul += Diff2D(1, 1);
-    for (int y = 1; y < mask.height() - 1; ++y, ++ul.y)
+    for(int y = 1; y < mask.height() - 1; ++y, ++ul.y)
     {
         SrcIterator ix = ul;
-        for (int x = 1; x < mask.width() - 1; ++x, ++ix.x)
+        for(int x = 1; x < mask.width() - 1; ++x, ++ix.x)
         {
-            if (!mask(x, y))
+            if(!mask(x, y))
                 continue;
 
             ValueType gradx = grad.getComponent(ix, 0);
             ValueType grady = grad.getComponent(ix, 1);
             double mag = hypot(gradx, grady);
-            if (mag <= grad_thresh)
+            if(mag <= grad_thresh)
                 continue;
             double c = gradx / mag,
                    s = grady / mag;
@@ -2566,9 +2566,9 @@ internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
             Matrix<double> ml(3, 3), mr(3, 1), l(3, 1), r(3, 1);
             l(0, 0) = 1.0;
 
-            for (int yy = -1; yy <= 1; ++yy)
+            for(int yy = -1; yy <= 1; ++yy)
             {
-                for (int xx = -1; xx <= 1; ++xx)
+                for(int xx = -1; xx <= 1; ++xx)
                 {
                     double u = c * xx + s * yy;
                     double v = norm(grad(ix, Diff2D(xx, yy)));
@@ -2585,13 +2585,13 @@ internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
 
             // local maximum => quadratic interpolation of sub-pixel location
             double del = -r(1, 0) / 2.0 / r(2, 0);
-            if (std::fabs(del) > 1.5) // don't move by more than about a pixel diameter
+            if(std::fabs(del) > 1.5) // don't move by more than about a pixel diameter
                 del = 0.0;
             edgel.x = Edgel::value_type(x + c * del);
             edgel.y = Edgel::value_type(y + s * del);
             edgel.strength = Edgel::value_type(mag);
             double orientation = VIGRA_CSTD::atan2(grady, gradx) + 0.5 * M_PI;
-            if (orientation < 0.0)
+            if(orientation < 0.0)
                 orientation += 2.0 * M_PI;
             edgel.orientation = Edgel::value_type(orientation);
             edgels.push_back(edgel);
@@ -2720,9 +2720,9 @@ internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
     scale > 0
     \endcode
 */
-doxygen_overloaded_function(template<...> void cannyEdgelList3x3)
+doxygen_overloaded_function(template <...> void cannyEdgelList3x3)
 
-    template<class SrcIterator, class SrcAccessor, class BackInsertable>
+    template <class SrcIterator, class SrcAccessor, class BackInsertable>
     void cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                            BackInsertable& edgels, double scale)
 {
@@ -2733,7 +2733,7 @@ doxygen_overloaded_function(template<...> void cannyEdgelList3x3)
     cannyEdgelList3x3(srcImageRange(grad), edgels);
 }
 
-template<class SrcIterator, class SrcAccessor, class BackInsertable>
+template <class SrcIterator, class SrcAccessor, class BackInsertable>
 void
 cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                   BackInsertable& edgels)
@@ -2748,7 +2748,7 @@ cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
     internalCannyFindEdgels3x3(ul, src, edges, edgels, NumericTraits<NormType>::zero());
 }
 
-template<class SrcIterator, class SrcAccessor, class BackInsertable>
+template <class SrcIterator, class SrcAccessor, class BackInsertable>
 inline void
 cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                   BackInsertable& edgels, double scale)
@@ -2756,7 +2756,7 @@ cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     cannyEdgelList3x3(src.first, src.second, src.third, edgels, scale);
 }
 
-template<class SrcIterator, class SrcAccessor, class BackInsertable>
+template <class SrcIterator, class SrcAccessor, class BackInsertable>
 inline void
 cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                   BackInsertable& edgels)
@@ -2764,7 +2764,7 @@ cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     cannyEdgelList3x3(src.first, src.second, src.third, edgels);
 }
 
-template<class T, class S, class BackInsertable>
+template <class T, class S, class BackInsertable>
 inline void
     cannyEdgelList3x3(MultiArrayView<2, T, S> const& src,
                       BackInsertable& edgels, double scale)
@@ -2772,7 +2772,7 @@ inline void
     cannyEdgelList3x3(srcImageRange(src), edgels, scale);
 }
 
-template<class T, class S, class BackInsertable>
+template <class T, class S, class BackInsertable>
 inline void
     cannyEdgelList3x3(MultiArrayView<2, TinyVector<T, 2>, S> const& src,
                       BackInsertable& edgels)
@@ -2899,10 +2899,10 @@ inline void
     scale > 0
     \endcode
 */
-doxygen_overloaded_function(template<...> void cannyEdgelList3x3Threshold)
+doxygen_overloaded_function(template <...> void cannyEdgelList3x3Threshold)
 
-    template<class SrcIterator, class SrcAccessor,
-             class BackInsertable, class GradValue>
+    template <class SrcIterator, class SrcAccessor,
+              class BackInsertable, class GradValue>
     void cannyEdgelList3x3Threshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                                     BackInsertable& edgels, double scale, GradValue grad_thresh)
 {
@@ -2913,8 +2913,8 @@ doxygen_overloaded_function(template<...> void cannyEdgelList3x3Threshold)
     cannyEdgelList3x3Threshold(srcImageRange(grad), edgels, grad_thresh);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class BackInsertable, class GradValue>
+template <class SrcIterator, class SrcAccessor,
+          class BackInsertable, class GradValue>
 void
 cannyEdgelList3x3Threshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                            BackInsertable& edgels, GradValue grad_thresh)
@@ -2927,8 +2927,8 @@ cannyEdgelList3x3Threshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
     internalCannyFindEdgels3x3(ul, src, edges, edgels, grad_thresh);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class BackInsertable, class GradValue>
+template <class SrcIterator, class SrcAccessor,
+          class BackInsertable, class GradValue>
 inline void
 cannyEdgelList3x3Threshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                            BackInsertable& edgels, double scale, GradValue grad_thresh)
@@ -2936,8 +2936,8 @@ cannyEdgelList3x3Threshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     cannyEdgelList3x3Threshold(src.first, src.second, src.third, edgels, scale, grad_thresh);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class BackInsertable, class GradValue>
+template <class SrcIterator, class SrcAccessor,
+          class BackInsertable, class GradValue>
 inline void
 cannyEdgelList3x3Threshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                            BackInsertable& edgels, GradValue grad_thresh)
@@ -2945,8 +2945,8 @@ cannyEdgelList3x3Threshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     cannyEdgelList3x3Threshold(src.first, src.second, src.third, edgels, grad_thresh);
 }
 
-template<class T, class S,
-         class BackInsertable, class GradValue>
+template <class T, class S,
+          class BackInsertable, class GradValue>
 inline void
     cannyEdgelList3x3Threshold(MultiArrayView<2, T, S> const& src,
                                BackInsertable& edgels, double scale, GradValue grad_thresh)
@@ -2954,8 +2954,8 @@ inline void
     cannyEdgelList3x3Threshold(srcImageRange(src), edgels, scale, grad_thresh);
 }
 
-template<class T, class S,
-         class BackInsertable, class GradValue>
+template <class T, class S,
+          class BackInsertable, class GradValue>
 inline void
     cannyEdgelList3x3Threshold(MultiArrayView<2, TinyVector<T, 2>, S> const& src,
                                BackInsertable& edgels,

@@ -25,12 +25,12 @@ using vigra::Diff2D;
 /** Vergleicht zwei Bilder auf aequivalenz der Pixel. Die Pixel muessen die GLEICHE 
 * ANZAHL der Baender haben
 */
-template<class _InputIter1, class _InputIter2>
+template <class _InputIter1, class _InputIter2>
 inline bool
 equalPixels(_InputIter1 __first1, _InputIter1 __last1, _InputIter2 __first2)
 {
-    for (; __first1 != __last1; ++__first1, ++__first2)
-        if (!(*__first1 == *__first2))
+    for(; __first1 != __last1; ++__first1, ++__first2)
+        if(!(*__first1 == *__first2))
             return false;
     return true;
 }
@@ -38,16 +38,16 @@ equalPixels(_InputIter1 __first1, _InputIter1 __last1, _InputIter2 __first2)
 /** Vergleicht den gleichen Durchlauf von Iterator und ScanOrderIterator. Die Pixel muessen die GLEICHE 
 * ANZAHL der Baender haben
 */
-template<class Iterator, class ScanOrderIterator>
+template <class Iterator, class ScanOrderIterator>
 inline bool
 equalIteratorRun(Iterator ul, Iterator lr, ScanOrderIterator f)
 {
-    for (; ul.y < lr.y; ++ul.y)
+    for(; ul.y < lr.y; ++ul.y)
     {
         Iterator c = ul;
-        for (; c.x < lr.x; ++c.x, ++f)
+        for(; c.x < lr.x; ++c.x, ++f)
         {
-            if (*c != *f)
+            if(*c != *f)
                 return false;
         }
     }
@@ -59,11 +59,11 @@ equalIteratorRun(Iterator ul, Iterator lr, ScanOrderIterator f)
 *  der gleichen Klasse vergleichbar und Bilder mit gleichen Anzahl der Baender !!!
 */
 
-template<class Image, class ComparableImage>
+template <class Image, class ComparableImage>
 bool
 equal(Image const& image1, ComparableImage const& image2)
 {
-    if (image1.size() == image2.size())
+    if(image1.size() == image2.size())
         return image1.height() == image2.height() &&
                image1.width() == image2.width() &&
                equalPixels(image1.begin(), image1.end(), image2.begin());
@@ -74,7 +74,7 @@ equal(Image const& image1, ComparableImage const& image2)
 /** Entspricht der "normalen" binary_function aus std, wurde aber aus Kompatibilitaetsgruenden
 * umbenannt und hier mitaufgenommen.
 */
-template<class _Arg1, class _Arg2, class _Result>
+template <class _Arg1, class _Arg2, class _Result>
 struct Pixels_binary_function
 {
     typedef _Arg1 first_argument_type;
@@ -85,7 +85,7 @@ struct Pixels_binary_function
 /** Vergleicht zwei Pixel auf Gleichheit.Entspricht der "normalen" not_equal_to aus std, 
 * wurde aber aus Kompatibilitaetsgruenden umbenannt und hier mitaufgenommen.
 */
-template<class _Tp>
+template <class _Tp>
 struct Pixels_not_equal_to : public Pixels_binary_function<_Tp, _Tp, bool>
 {
     bool operator()(const _Tp& __x, const _Tp& __y) const
@@ -97,7 +97,7 @@ struct Pixels_not_equal_to : public Pixels_binary_function<_Tp, _Tp, bool>
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////                                    TESTKLASSE                                 ///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-template<class Policy>
+template <class Policy>
 class ImageTest
 {
 public:
@@ -304,8 +304,8 @@ public:
     void testIsInside()
     {
         bool ergebnis = true;
-        for (int i = 0; i < 3; i++)
-            for (int j = 0; j < 5; j++)
+        for(int i = 0; i < 3; i++)
+            for(int j = 0; j < 5; j++)
                 ergebnis &= image1_->isInside(vigra::Diff2D(i, j));
 
         ergebnis &= !image1_->isInside(vigra::Diff2D(-1, -1)) &&
@@ -337,8 +337,8 @@ public:
     void testOperatorIndex2D()
     {
         typename Image::ScanOrderIterator k = image1_->begin();
-        for (int y = 0; y < 5; y++)
-            for (int x = 0; x < 3; x++, k++)
+        for(int y = 0; y < 5; y++)
+            for(int x = 0; x < 3; x++, k++)
                 should((*image1_)[Diff2D(x, y)] == *k);
     }
 
@@ -348,8 +348,8 @@ public:
     {
         std::auto_ptr<Image> const& cimage = image1_;
         typename Image::ScanOrderIterator k = cimage->begin();
-        for (int y = 0; y < 5; y++)
-            for (int x = 0; x < 3; x++, k++)
+        for(int y = 0; y < 5; y++)
+            for(int x = 0; x < 3; x++, k++)
                 should((*cimage)[Diff2D(x, y)] == *k);
     }
 
@@ -357,8 +357,8 @@ public:
     */
     void testOperatorFunctionCallInt()
     {
-        for (int y = 0; y < 5; y++)
-            for (int x = 0; x < 3; x++)
+        for(int y = 0; y < 5; y++)
+            for(int x = 0; x < 3; x++)
                 should((*image1_)(x, y) == (*image1_)[Diff2D(x, y)]);
     }
 
@@ -367,8 +367,8 @@ public:
     void testOperatorFunctionCallIntConst()
     {
         std::auto_ptr<Image> const& cimage = image1_;
-        for (int y = 0; y < 5; y++)
-            for (int x = 0; x < 3; x++)
+        for(int y = 0; y < 5; y++)
+            for(int x = 0; x < 3; x++)
                 should((*cimage)(x, y) == (*cimage)[Diff2D(x, y)]);
     }
 
@@ -376,8 +376,8 @@ public:
     */
     void testOperatorDoubleIndex()
     {
-        for (int x = 0; x < 3; x++)
-            for (int y = 0; y < 5; y++)
+        for(int x = 0; x < 3; x++)
+            for(int y = 0; y < 5; y++)
                 should((*image1_)[y][x] == (*image1_)(x, y));
     }
 
@@ -386,8 +386,8 @@ public:
     void testOperatorDoubleIndexConst()
     {
         std::auto_ptr<Image> const& cimage = image1_;
-        for (int x = 0; x < 3; x++)
-            for (int y = 0; y < 5; y++)
+        for(int x = 0; x < 3; x++)
+            for(int y = 0; y < 5; y++)
                 should((*cimage)[y][x] == (*image1_)(x, y));
     }
 
@@ -497,9 +497,9 @@ public:
         traverserIter1_ = image1_->upperLeft();
         rowIter1_ = traverserIter1_.rowIterator();
 
-        for (int i = 0; i < 5; i++)
+        for(int i = 0; i < 5; i++)
         {
-            for (int j = 0; j < 3; j++)
+            for(int j = 0; j < 3; j++)
             {
                 should((*image1_)(j, i) == (*image1_)[vigra::Diff2D(j, i)]);
                 should((*image1_)(j, i) == (*image1_)[i][j]);
@@ -568,9 +568,9 @@ public:
         /** tests columnIterator */
         traverserIter1_ = image1_->upperLeft();
         columnIter1_ = traverserIter1_.columnIterator();
-        for (int i = 0; i < 3; i++)
+        for(int i = 0; i < 3; i++)
         {
-            for (int j = 0; j < 5; j++)
+            for(int j = 0; j < 5; j++)
             {
                 should((*image1_)(i, j) == acc1_(columnIter1_));
                 acc1_.set(data[3], columnIter1_);
@@ -586,7 +586,7 @@ public:
 
 }; // end of class ImageTest
 
-template<class POLICY>
+template <class POLICY>
 struct ImageTestSuite
     : public vigra::test_suite
 {

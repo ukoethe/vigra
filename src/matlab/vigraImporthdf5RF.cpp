@@ -52,7 +52,7 @@ void
 vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
 {
     /* INPUT */
-    if (inputs.size() != 1)
+    if(inputs.size() != 1)
         mexErrMsgTxt("One inputs required.");
 
     // get RF object

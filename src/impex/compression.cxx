@@ -49,7 +49,7 @@ compressImpl(char const* source, std::size_t srcSize,
              ArrayVector<char>& buffer,
              CompressionMethod method)
 {
-    switch (method)
+    switch(method)
     {
         case NO_COMPRESSION:
         {
@@ -141,7 +141,7 @@ void
 uncompress(char const* source, std::size_t srcSize,
            char* dest, std::size_t destSize, CompressionMethod method)
 {
-    switch (method)
+    switch(method)
     {
         case NO_COMPRESSION:
         {

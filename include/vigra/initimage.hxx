@@ -57,25 +57,25 @@ namespace vigra
 /*                                                      */
 /********************************************************/
 
-template<class DestIterator, class DestAccessor, class VALUETYPE>
+template <class DestIterator, class DestAccessor, class VALUETYPE>
 inline void
 initLineImpl(DestIterator d, DestIterator dend, DestAccessor dest,
              VALUETYPE const& v, VigraFalseType)
 {
-    for (; d != dend; ++d)
+    for(; d != dend; ++d)
         dest.set(v, d);
 }
 
-template<class DestIterator, class DestAccessor, class FUNCTOR>
+template <class DestIterator, class DestAccessor, class FUNCTOR>
 inline void
 initLineImpl(DestIterator d, DestIterator dend, DestAccessor dest,
              FUNCTOR const& f, VigraTrueType)
 {
-    for (; d != dend; ++d)
+    for(; d != dend; ++d)
         dest.set(f(), d);
 }
 
-template<class DestIterator, class DestAccessor, class VALUETYPE>
+template <class DestIterator, class DestAccessor, class VALUETYPE>
 inline void
 initLine(DestIterator d, DestIterator dend, DestAccessor dest,
          VALUETYPE const& v)
@@ -83,44 +83,44 @@ initLine(DestIterator d, DestIterator dend, DestAccessor dest,
     initLineImpl(d, dend, dest, v, typename FunctorTraits<VALUETYPE>::isInitializer());
 }
 
-template<class DestIterator, class DestAccessor, class FUNCTOR>
+template <class DestIterator, class DestAccessor, class FUNCTOR>
 inline void
 initLineFunctor(DestIterator d, DestIterator dend, DestAccessor dest,
                 FUNCTOR& f)
 {
-    for (; d != dend; ++d)
+    for(; d != dend; ++d)
         dest.set(f(), d);
 }
 
-template<class DestIterator, class DestAccessor,
-         class MaskIterator, class MaskAccessor,
-         class VALUETYPE>
+template <class DestIterator, class DestAccessor,
+          class MaskIterator, class MaskAccessor,
+          class VALUETYPE>
 inline void
 initLineIfImpl(DestIterator d, DestIterator dend, DestAccessor dest,
                MaskIterator m, MaskAccessor mask,
                VALUETYPE const& v, VigraFalseType)
 {
-    for (; d != dend; ++d, ++m)
-        if (mask(m))
+    for(; d != dend; ++d, ++m)
+        if(mask(m))
             dest.set(v, d);
 }
 
-template<class DestIterator, class DestAccessor,
-         class MaskIterator, class MaskAccessor,
-         class FUNCTOR>
+template <class DestIterator, class DestAccessor,
+          class MaskIterator, class MaskAccessor,
+          class FUNCTOR>
 inline void
 initLineIfImpl(DestIterator d, DestIterator dend, DestAccessor dest,
                MaskIterator m, MaskAccessor mask,
                FUNCTOR const& f, VigraTrueType)
 {
-    for (; d != dend; ++d, ++m)
-        if (mask(m))
+    for(; d != dend; ++d, ++m)
+        if(mask(m))
             dest.set(f(), d);
 }
 
-template<class DestIterator, class DestAccessor,
-         class MaskIterator, class MaskAccessor,
-         class VALUETYPE>
+template <class DestIterator, class DestAccessor,
+          class MaskIterator, class MaskAccessor,
+          class VALUETYPE>
 inline void
 initLineIf(DestIterator d, DestIterator dend, DestAccessor dest,
            MaskIterator m, MaskAccessor mask,
@@ -129,16 +129,16 @@ initLineIf(DestIterator d, DestIterator dend, DestAccessor dest,
     initLineIfImpl(d, dend, dest, m, mask, v, typename FunctorTraits<VALUETYPE>::isInitializer());
 }
 
-template<class DestIterator, class DestAccessor,
-         class MaskIterator, class MaskAccessor,
-         class FUNCTOR>
+template <class DestIterator, class DestAccessor,
+          class MaskIterator, class MaskAccessor,
+          class FUNCTOR>
 inline void
 initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
                   MaskIterator m, MaskAccessor mask,
                   FUNCTOR& f)
 {
-    for (; d != dend; ++d, ++m)
-        if (mask(m))
+    for(; d != dend; ++d, ++m)
+        if(mask(m))
             dest.set(f(), d);
 }
 
@@ -275,29 +275,29 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void initImage)
+doxygen_overloaded_function(template <...> void initImage)
 
-    template<class ImageIterator, class Accessor, class VALUETYPE>
+    template <class ImageIterator, class Accessor, class VALUETYPE>
     void initImage(ImageIterator upperleft, ImageIterator lowerright,
                    Accessor a, VALUETYPE const& v)
 {
     int w = lowerright.x - upperleft.x;
 
-    for (; upperleft.y < lowerright.y; ++upperleft.y)
+    for(; upperleft.y < lowerright.y; ++upperleft.y)
     {
         initLineImpl(upperleft.rowIterator(), upperleft.rowIterator() + w, a,
                      v, typename FunctorTraits<VALUETYPE>::isInitializer());
     }
 }
 
-template<class ImageIterator, class Accessor, class VALUETYPE>
+template <class ImageIterator, class Accessor, class VALUETYPE>
 inline void
 initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE const& v)
 {
     initImage(img.first, img.second, img.third, v);
 }
 
-template<class T, class S, class VALUETYPE>
+template <class T, class S, class VALUETYPE>
 inline void
     initImage(MultiArrayView<2, T, S> img, VALUETYPE const& v)
 {
@@ -401,28 +401,28 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void initImageWithFunctor)
+doxygen_overloaded_function(template <...> void initImageWithFunctor)
 
-    template<class ImageIterator, class Accessor, class FUNCTOR>
+    template <class ImageIterator, class Accessor, class FUNCTOR>
     void initImageWithFunctor(ImageIterator upperleft, ImageIterator lowerright,
                               Accessor a, FUNCTOR& f)
 {
     int w = lowerright.x - upperleft.x;
 
-    for (; upperleft.y < lowerright.y; ++upperleft.y)
+    for(; upperleft.y < lowerright.y; ++upperleft.y)
     {
         initLineFunctor(upperleft.rowIterator(), upperleft.rowIterator() + w, a, f);
     }
 }
 
-template<class ImageIterator, class Accessor, class FUNCTOR>
+template <class ImageIterator, class Accessor, class FUNCTOR>
 inline void
 initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR& f)
 {
     initImageWithFunctor(img.first, img.second, img.third, f);
 }
 
-template<class T, class S, class FUNCTOR>
+template <class T, class S, class FUNCTOR>
 inline void
     initImageWithFunctor(MultiArrayView<2, T, S> img, FUNCTOR& f)
 {
@@ -546,18 +546,18 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void initImageIf)
+doxygen_overloaded_function(template <...> void initImageIf)
 
-    template<class ImageIterator, class Accessor,
-             class MaskImageIterator, class MaskAccessor,
-             class VALUETYPE>
+    template <class ImageIterator, class Accessor,
+              class MaskImageIterator, class MaskAccessor,
+              class VALUETYPE>
     void initImageIf(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
                      MaskImageIterator mask_upperleft, MaskAccessor ma,
                      VALUETYPE const& v)
 {
     int w = lowerright.x - upperleft.x;
 
-    for (; upperleft.y < lowerright.y; ++upperleft.y, ++mask_upperleft.y)
+    for(; upperleft.y < lowerright.y; ++upperleft.y, ++mask_upperleft.y)
     {
         initLineIfImpl(upperleft.rowIterator(),
                        upperleft.rowIterator() + w, a,
@@ -566,9 +566,9 @@ doxygen_overloaded_function(template<...> void initImageIf)
     }
 }
 
-template<class ImageIterator, class Accessor,
-         class MaskImageIterator, class MaskAccessor,
-         class VALUETYPE>
+template <class ImageIterator, class Accessor,
+          class MaskImageIterator, class MaskAccessor,
+          class VALUETYPE>
 inline void
 initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
             pair<MaskImageIterator, MaskAccessor> mask,
@@ -577,9 +577,9 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     initImageIf(img.first, img.second, img.third, mask.first, mask.second, v);
 }
 
-template<class T, class S,
-         class TM, class SM,
-         class VALUETYPE>
+template <class T, class S,
+          class TM, class SM,
+          class VALUETYPE>
 inline void
     initImageIf(MultiArrayView<2, T, S> img,
                 MultiArrayView<2, TM, SM> const& mask,
@@ -677,9 +677,9 @@ inline void
     <br/>see \ref initImage()
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void initImageBorder)
+doxygen_overloaded_function(template <...> void initImageBorder)
 
-    template<class ImageIterator, class Accessor, class VALUETYPE>
+    template <class ImageIterator, class Accessor, class VALUETYPE>
     inline void initImageBorder(ImageIterator upperleft, ImageIterator lowerright,
                                 Accessor a, int border_width, VALUETYPE const& v)
 {
@@ -695,7 +695,7 @@ doxygen_overloaded_function(template<...> void initImageBorder)
     initImage(upperleft + Diff2D(w - wb, 0), lowerright, a, v);
 }
 
-template<class ImageIterator, class Accessor, class VALUETYPE>
+template <class ImageIterator, class Accessor, class VALUETYPE>
 inline void
 initImageBorder(triple<ImageIterator, ImageIterator, Accessor> img,
                 int border_width, VALUETYPE const& v)
@@ -703,7 +703,7 @@ initImageBorder(triple<ImageIterator, ImageIterator, Accessor> img,
     initImageBorder(img.first, img.second, img.third, border_width, v);
 }
 
-template<class T, class S, class VALUETYPE>
+template <class T, class S, class VALUETYPE>
 inline void
     initImageBorder(MultiArrayView<2, T, S> img,
                     int border_width, VALUETYPE const& v)

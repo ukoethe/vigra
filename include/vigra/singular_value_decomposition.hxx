@@ -70,7 +70,7 @@ namespace linalg
     <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
     Namespaces: vigra and vigra::linalg
    */
-template<class T, class C1, class C2, class C3, class C4>
+template <class T, class C1, class C2, class C3, class C4>
 unsigned int
     singularValueDecomposition(MultiArrayView<2, T, C1> const& A,
                                MultiArrayView<2, T, C2>& U, MultiArrayView<2, T, C3>& S, MultiArrayView<2, T, C4>& V)
@@ -107,25 +107,25 @@ unsigned int
     // in s and the super-diagonal elements in e.
     MultiArrayIndex nct = std::min(m - 1, n);
     MultiArrayIndex nrt = std::max(static_cast<MultiArrayIndex>(0), n - 2);
-    for (k = 0; k < std::max(nct, nrt); ++k)
+    for(k = 0; k < std::max(nct, nrt); ++k)
     {
-        if (k < nct)
+        if(k < nct)
         {
             // Compute the transformation for the k-th column and
             // place the k-th diagonal in s(k).
             // Compute 2-norm of k-th column without under/overflow.
             s(k) = 0.0;
-            for (i = k; i < m; ++i)
+            for(i = k; i < m; ++i)
             {
                 s(k) = hypot(s(k), a(i, k));
             }
-            if (s(k) != 0.0)
+            if(s(k) != 0.0)
             {
-                if (a(k, k) < 0.0)
+                if(a(k, k) < 0.0)
                 {
                     s(k) = -s(k);
                 }
-                for (i = k; i < m; ++i)
+                for(i = k; i < m; ++i)
                 {
                     a(i, k) /= s(k);
                 }
@@ -133,18 +133,18 @@ unsigned int
             }
             s(k) = -s(k);
         }
-        for (j = k + 1; j < n; ++j)
+        for(j = k + 1; j < n; ++j)
         {
-            if ((k < nct) && (s(k) != 0.0))
+            if((k < nct) && (s(k) != 0.0))
             {
                 // Apply the transformation.
                 Real t(0.0);
-                for (i = k; i < m; ++i)
+                for(i = k; i < m; ++i)
                 {
                     t += a(i, k) * a(i, j);
                 }
                 t = -t / a(k, k);
-                for (i = k; i < m; ++i)
+                for(i = k; i < m; ++i)
                 {
                     a(i, j) += t * a(i, k);
                 }
@@ -155,57 +155,57 @@ unsigned int
 
             e[j] = a(k, j);
         }
-        if (k < nct)
+        if(k < nct)
         {
             // Place the transformation in U for subsequent back
             // multiplication.
 
-            for (i = k; i < m; ++i)
+            for(i = k; i < m; ++i)
             {
                 U(i, k) = a(i, k);
             }
         }
-        if (k < nrt)
+        if(k < nrt)
         {
             // Compute the k-th row transformation and place the
             // k-th super-diagonal in e[k].
             // Compute 2-norm without under/overflow.
             e[k] = 0;
-            for (i = k + 1; i < n; ++i)
+            for(i = k + 1; i < n; ++i)
             {
                 e[k] = hypot(e[k], e[i]);
             }
-            if (e[k] != 0.0)
+            if(e[k] != 0.0)
             {
-                if (e[k + 1] < 0.0)
+                if(e[k + 1] < 0.0)
                 {
                     e[k] = -e[k];
                 }
-                for (i = k + 1; i < n; ++i)
+                for(i = k + 1; i < n; ++i)
                 {
                     e[i] /= e[k];
                 }
                 e[k + 1] += 1.0;
             }
             e[k] = -e[k];
-            if ((k + 1 < m) & (e[k] != 0.0))
+            if((k + 1 < m) & (e[k] != 0.0))
             {
                 // Apply the transformation.
-                for (i = k + 1; i < m; ++i)
+                for(i = k + 1; i < m; ++i)
                 {
                     work[i] = 0.0;
                 }
-                for (j = k + 1; j < n; ++j)
+                for(j = k + 1; j < n; ++j)
                 {
-                    for (i = k + 1; i < m; ++i)
+                    for(i = k + 1; i < m; ++i)
                     {
                         work[i] += e[j] * a(i, j);
                     }
                 }
-                for (j = k + 1; j < n; ++j)
+                for(j = k + 1; j < n; ++j)
                 {
                     Real t(-e[j] / e[k + 1]);
-                    for (i = k + 1; i < m; ++i)
+                    for(i = k + 1; i < m; ++i)
                     {
                         a(i, j) += t * work[i];
                     }
@@ -213,7 +213,7 @@ unsigned int
             }
             // Place the transformation in V for subsequent
             // back multiplication.
-            for (i = k + 1; i < n; ++i)
+            for(i = k + 1; i < n; ++i)
             {
                 V(i, k) = e[i];
             }
@@ -223,59 +223,59 @@ unsigned int
     // Set up the final bidiagonal matrix of order p.
 
     MultiArrayIndex p = n;
-    if (nct < n)
+    if(nct < n)
     {
         s(nct) = a(nct, nct);
     }
-    if (m < p)
+    if(m < p)
     {
         s(p - 1) = 0.0;
     }
-    if (nrt + 1 < p)
+    if(nrt + 1 < p)
     {
         e[nrt] = a(nrt, p - 1);
     }
     e[p - 1] = 0.0;
 
     // Generate U.
-    for (j = nct; j < nu; ++j)
+    for(j = nct; j < nu; ++j)
     {
-        for (i = 0; i < m; ++i)
+        for(i = 0; i < m; ++i)
         {
             U(i, j) = 0.0;
         }
         U(j, j) = 1.0;
     }
-    for (k = nct - 1; k >= 0; --k)
+    for(k = nct - 1; k >= 0; --k)
     {
-        if (s(k) != 0.0)
+        if(s(k) != 0.0)
         {
-            for (j = k + 1; j < nu; ++j)
+            for(j = k + 1; j < nu; ++j)
             {
                 Real t(0.0);
-                for (i = k; i < m; ++i)
+                for(i = k; i < m; ++i)
                 {
                     t += U(i, k) * U(i, j);
                 }
                 t = -t / U(k, k);
-                for (i = k; i < m; ++i)
+                for(i = k; i < m; ++i)
                 {
                     U(i, j) += t * U(i, k);
                 }
             }
-            for (i = k; i < m; ++i)
+            for(i = k; i < m; ++i)
             {
                 U(i, k) = -U(i, k);
             }
             U(k, k) = 1.0 + U(k, k);
-            for (i = 0; i < k - 1; ++i)
+            for(i = 0; i < k - 1; ++i)
             {
                 U(i, k) = 0.0;
             }
         }
         else
         {
-            for (i = 0; i < m; ++i)
+            for(i = 0; i < m; ++i)
             {
                 U(i, k) = 0.0;
             }
@@ -284,25 +284,25 @@ unsigned int
     }
 
     // Generate V.
-    for (k = n - 1; k >= 0; --k)
+    for(k = n - 1; k >= 0; --k)
     {
-        if ((k < nrt) & (e[k] != 0.0))
+        if((k < nrt) & (e[k] != 0.0))
         {
-            for (j = k + 1; j < nu; ++j)
+            for(j = k + 1; j < nu; ++j)
             {
                 Real t(0.0);
-                for (i = k + 1; i < n; ++i)
+                for(i = k + 1; i < n; ++i)
                 {
                     t += V(i, k) * V(i, j);
                 }
                 t = -t / V(k + 1, k);
-                for (i = k + 1; i < n; ++i)
+                for(i = k + 1; i < n; ++i)
                 {
                     V(i, j) += t * V(i, k);
                 }
             }
         }
-        for (i = 0; i < n; ++i)
+        for(i = 0; i < n; ++i)
         {
             V(i, k) = 0.0;
         }
@@ -314,7 +314,7 @@ unsigned int
     MultiArrayIndex pp = p - 1;
     int iter = 0;
     Real eps = NumericTraits<Real>::epsilon() * 2.0;
-    while (p > 0)
+    while(p > 0)
     {
         k = 0;
         int kase = 0;
@@ -331,44 +331,44 @@ unsigned int
         //              s(k), ..., s(p) are not negligible (qr step).
         // kase = 4     if e(p-1) is negligible (convergence).
 
-        for (k = p - 2; k >= -1; --k)
+        for(k = p - 2; k >= -1; --k)
         {
-            if (k == -1)
+            if(k == -1)
             {
                 break;
             }
-            if (abs(e[k]) <= eps * (abs(s(k)) + abs(s(k + 1))))
+            if(abs(e[k]) <= eps * (abs(s(k)) + abs(s(k + 1))))
             {
                 e[k] = 0.0;
                 break;
             }
         }
-        if (k == p - 2)
+        if(k == p - 2)
         {
             kase = 4;
         }
         else
         {
             MultiArrayIndex ks;
-            for (ks = p - 1; ks >= k; --ks)
+            for(ks = p - 1; ks >= k; --ks)
             {
-                if (ks == k)
+                if(ks == k)
                 {
                     break;
                 }
                 Real t((ks != p ? abs(e[ks]) : 0.) +
                        (ks != k + 1 ? abs(e[ks - 1]) : 0.));
-                if (abs(s(ks)) <= eps * t)
+                if(abs(s(ks)) <= eps * t)
                 {
                     s(ks) = 0.0;
                     break;
                 }
             }
-            if (ks == k)
+            if(ks == k)
             {
                 kase = 3;
             }
-            else if (ks == p - 1)
+            else if(ks == p - 1)
             {
                 kase = 1;
             }
@@ -382,24 +382,24 @@ unsigned int
 
         // Perform the task indicated by kase.
 
-        switch (kase)
+        switch(kase)
         {
             case 1: // Deflate negligible s(p).
             {
                 Real f(e[p - 2]);
                 e[p - 2] = 0.0;
-                for (j = p - 2; j >= k; --j)
+                for(j = p - 2; j >= k; --j)
                 {
                     Real t(hypot(s(j), f));
                     Real cs(s(j) / t);
                     Real sn(f / t);
                     s(j) = t;
-                    if (j != k)
+                    if(j != k)
                     {
                         f = -sn * e[j - 1];
                         e[j - 1] = cs * e[j - 1];
                     }
-                    for (i = 0; i < n; ++i)
+                    for(i = 0; i < n; ++i)
                     {
                         t = cs * V(i, j) + sn * V(i, p - 1);
                         V(i, p - 1) = -sn * V(i, j) + cs * V(i, p - 1);
@@ -412,7 +412,7 @@ unsigned int
             {
                 Real f(e[k - 1]);
                 e[k - 1] = 0.0;
-                for (j = k; j < p; ++j)
+                for(j = k; j < p; ++j)
                 {
                     Real t(hypot(s(j), f));
                     Real cs(s(j) / t);
@@ -420,7 +420,7 @@ unsigned int
                     s(j) = t;
                     f = -sn * e[j];
                     e[j] = cs * e[j];
-                    for (i = 0; i < m; ++i)
+                    for(i = 0; i < m; ++i)
                     {
                         t = cs * U(i, j) + sn * U(i, k - 1);
                         U(i, k - 1) = -sn * U(i, j) + cs * U(i, k - 1);
@@ -445,10 +445,10 @@ unsigned int
                 Real b = ((spm1 + sp) * (spm1 - sp) + epm1 * epm1) / 2.0;
                 Real c = (sp * epm1) * (sp * epm1);
                 Real shift = 0.0;
-                if ((b != 0.0) || (c != 0.0))
+                if((b != 0.0) || (c != 0.0))
                 {
                     shift = VIGRA_CSTD::sqrt(b * b + c);
-                    if (b < 0.0)
+                    if(b < 0.0)
                     {
                         shift = -shift;
                     }
@@ -458,12 +458,12 @@ unsigned int
                 Real g = sk * ek;
 
                 // Chase zeros.
-                for (j = k; j < p - 1; ++j)
+                for(j = k; j < p - 1; ++j)
                 {
                     Real t = hypot(f, g);
                     Real cs = f / t;
                     Real sn = g / t;
-                    if (j != k)
+                    if(j != k)
                     {
                         e[j - 1] = t;
                     }
@@ -471,7 +471,7 @@ unsigned int
                     e[j] = cs * e[j] - sn * s(j);
                     g = sn * s(j + 1);
                     s(j + 1) = cs * s(j + 1);
-                    for (i = 0; i < n; ++i)
+                    for(i = 0; i < n; ++i)
                     {
                         t = cs * V(i, j) + sn * V(i, j + 1);
                         V(i, j + 1) = -sn * V(i, j) + cs * V(i, j + 1);
@@ -485,9 +485,9 @@ unsigned int
                     s(j + 1) = -sn * e[j] + cs * s(j + 1);
                     g = sn * e[j + 1];
                     e[j + 1] = cs * e[j + 1];
-                    if (j < m - 1)
+                    if(j < m - 1)
                     {
-                        for (i = 0; i < m; ++i)
+                        for(i = 0; i < m; ++i)
                         {
                             t = cs * U(i, j) + sn * U(i, j + 1);
                             U(i, j + 1) = -sn * U(i, j) + cs * U(i, j + 1);
@@ -502,10 +502,10 @@ unsigned int
             case 4: // Convergence.
             {
                 // Make the singular values positive.
-                if (s(k) <= 0.0)
+                if(s(k) <= 0.0)
                 {
                     s(k) = (s(k) < 0.0 ? -s(k) : 0.0);
-                    for (i = 0; i <= pp; ++i)
+                    for(i = 0; i <= pp; ++i)
                     {
                         V(i, k) = -V(i, k);
                     }
@@ -513,27 +513,27 @@ unsigned int
 
                 // Order the singular values.
 
-                while (k < pp)
+                while(k < pp)
                 {
-                    if (s(k) >= s(k + 1))
+                    if(s(k) >= s(k + 1))
                     {
                         break;
                     }
                     Real t = s(k);
                     s(k) = s(k + 1);
                     s(k + 1) = t;
-                    if (k < n - 1)
+                    if(k < n - 1)
                     {
-                        for (i = 0; i < n; ++i)
+                        for(i = 0; i < n; ++i)
                         {
                             t = V(i, k + 1);
                             V(i, k + 1) = V(i, k);
                             V(i, k) = t;
                         }
                     }
-                    if (k < m - 1)
+                    if(k < m - 1)
                     {
-                        for (i = 0; i < m; ++i)
+                        for(i = 0; i < m; ++i)
                         {
                             t = U(i, k + 1);
                             U(i, k + 1) = U(i, k);
@@ -552,9 +552,9 @@ unsigned int
     }
     Real tol = std::max(m, n) * s(0) * eps;
     unsigned int rank = 0;
-    for (i = 0; i < n; ++i)
+    for(i = 0; i < n; ++i)
     {
-        if (s(i) > tol)
+        if(s(i) > tol)
         {
             ++rank;
         }

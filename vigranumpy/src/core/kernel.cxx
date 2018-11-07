@@ -49,7 +49,7 @@ namespace python = boost::python;
 namespace vigra
 {
 
-template<class T>
+template <class T>
 void
 pythonInitExplicitlyKernel1D(Kernel1D<T>& k, int left, int right, NumpyArray<1, T> contents)
 {
@@ -57,7 +57,7 @@ pythonInitExplicitlyKernel1D(Kernel1D<T>& k, int left, int right, NumpyArray<1, 
                        "Kernel1D::initExplicitly(): 'contents' must contain as many elements as the kernel (or just one element).");
 
     k.initExplicitly(left, right);
-    for (int i = left; i <= right; ++i)
+    for(int i = left; i <= right; ++i)
     {
         k[i] = (contents.size() == 1)
                    ? contents(0)
@@ -102,11 +102,11 @@ void pythonInitExplicitlyKernel1D(Kernel1D<KernelValueType> & self, int left, in
 }
 #endif // #if 0
 
-template<class T>
+template <class T>
 T
 pythonGetItemKernel1D(Kernel1D<T> const& self, int position)
 {
-    if (self.left() <= position && self.right() >= position)
+    if(self.left() <= position && self.right() >= position)
     {
         return self[position];
     }
@@ -121,11 +121,11 @@ pythonGetItemKernel1D(Kernel1D<T> const& self, int position)
     }
 }
 
-template<class T>
+template <class T>
 void
 pythonSetItemKernel1D(Kernel1D<T>& self, int position, T value)
 {
-    if (self.left() <= position && self.right() >= position)
+    if(self.left() <= position && self.right() >= position)
     {
         self[position] = value;
     }
@@ -139,7 +139,7 @@ pythonSetItemKernel1D(Kernel1D<T>& self, int position, T value)
     }
 }
 
-template<class T>
+template <class T>
 void
 pythonInitExplicitlyKernel2D(Kernel2D<T>& k,
                              MultiArrayShape<2>::type upperleft, MultiArrayShape<2>::type lowerright,
@@ -153,9 +153,9 @@ pythonInitExplicitlyKernel2D(Kernel2D<T>& k,
 
     k.initExplicitly(ul, lr);
 
-    for (int y = ul.y; y <= lr.y; ++y)
+    for(int y = ul.y; y <= lr.y; ++y)
     {
-        for (int x = ul.x; x <= lr.x; ++x)
+        for(int x = ul.x; x <= lr.x; ++x)
         {
             k(x, y) = (contents.size() == 1)
                           ? contents(0)
@@ -209,12 +209,12 @@ void py2DKernel_initExplicitly(TwoDKernel & self, int upperleftX,
 }
 #endif
 
-template<class T>
+template <class T>
 T
 pythonGetItemKernel2D(Kernel2D<T> const& self, MultiArrayShape<2>::type position)
 {
-    if (self.upperLeft().x <= position[0] && self.lowerRight().x >= position[0] &&
-        self.upperLeft().y <= position[1] && self.lowerRight().y >= position[1])
+    if(self.upperLeft().x <= position[0] && self.lowerRight().x >= position[0] &&
+       self.upperLeft().y <= position[1] && self.lowerRight().y >= position[1])
     {
         return self(position[0], position[1]);
     }
@@ -229,12 +229,12 @@ pythonGetItemKernel2D(Kernel2D<T> const& self, MultiArrayShape<2>::type position
     }
 }
 
-template<class T>
+template <class T>
 void
 pythonSetItemKernel2D(Kernel2D<T>& self, MultiArrayShape<2>::type position, T value)
 {
-    if (self.upperLeft().x <= position[0] && self.lowerRight().x >= position[0] &&
-        self.upperLeft().y <= position[1] && self.lowerRight().y >= position[1])
+    if(self.upperLeft().x <= position[0] && self.lowerRight().x >= position[0] &&
+       self.upperLeft().y <= position[1] && self.lowerRight().y >= position[1])
     {
         self(position[0], position[1]) = value;
     }
@@ -248,7 +248,7 @@ pythonSetItemKernel2D(Kernel2D<T>& self, MultiArrayShape<2>::type position, T va
     }
 }
 
-template<class T>
+template <class T>
 void
 defineKernels()
 {

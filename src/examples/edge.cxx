@@ -45,7 +45,7 @@ using namespace vigra;
 int
 main(int argc, char** argv)
 {
-    if (argc != 3)
+    if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
@@ -84,7 +84,7 @@ main(int argc, char** argv)
         // paint output image white
         out = 255;
 
-        if (which == 2)
+        if(which == 2)
         {
             // call Shen-Castan edge detection algorithm
             // edges will be marked black
@@ -99,7 +99,7 @@ main(int argc, char** argv)
 
         exportImage(out, ImageExportInfo(argv[2]));
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         std::cout << e.what() << std::endl;
         return 1;

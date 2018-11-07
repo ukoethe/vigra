@@ -7,7 +7,7 @@ using namespace vigra;
 int
 main(int argc, char** argv)
 {
-    if (argc != 3)
+    if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
@@ -19,7 +19,7 @@ main(int argc, char** argv)
         // Read the header information of the input image.
         ImageImportInfo info(argv[1]);
 
-        if (info.isGrayscale()) // Process grayscale image.
+        if(info.isGrayscale()) // Process grayscale image.
         {
             // Instantiate arrays of appropriate size for the original and smoothed image.
             MultiArray<2, float> inputImage(info.shape()),
@@ -30,9 +30,9 @@ main(int argc, char** argv)
 
             // Smooth image by calculating the mean of a 5x5 window around each pixel.
             Shape2 current; // the coordinate of the current pixel
-            for (current[1] = 0; current[1] < inputImage.shape(1); ++current[1])
+            for(current[1] = 0; current[1] < inputImage.shape(1); ++current[1])
             {
-                for (current[0] = 0; current[0] < inputImage.shape(0); ++current[0])
+                for(current[0] = 0; current[0] < inputImage.shape(0); ++current[0])
                 {
                     // Compute the corners of the current smoothing window.
                     // Note:
@@ -67,9 +67,9 @@ main(int argc, char** argv)
             importImage(info, inputImage);
 
             Shape2 current;
-            for (current[1] = 0; current[1] < inputImage.shape(1); ++current[1])
+            for(current[1] = 0; current[1] < inputImage.shape(1); ++current[1])
             {
-                for (current[0] = 0; current[0] < inputImage.shape(0); ++current[0])
+                for(current[0] = 0; current[0] < inputImage.shape(0); ++current[0])
                 {
                     Shape2 windowStart = max(Shape2(0), current - Shape2(2));
                     Shape2 windowStop = min(inputImage.shape(), current + Shape2(3));
@@ -84,7 +84,7 @@ main(int argc, char** argv)
         }
         return 0;
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         // Catch any errors that might have occurred and print their reason.
         std::cout << e.what() << std::endl;

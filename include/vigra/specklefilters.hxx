@@ -32,9 +32,9 @@ distanceLUT(vigra::Diff2D const& window_shape)
            h_half = window_shape.y / 2.0,
            x_diff, y_diff;
 
-    for (y = 0; y != window_shape.y; y++)
+    for(y = 0; y != window_shape.y; y++)
     {
-        for (x = 0; x != window_shape.x; x++)
+        for(x = 0; x != window_shape.x; x++)
         {
             x_diff = x - w_half;
             y_diff = y - h_half;
@@ -134,9 +134,9 @@ distanceLUT(vigra::Diff2D const& window_shape)
     \endcode
 */
 
-doxygen_overloaded_function(template<...> void frostFilter)
+doxygen_overloaded_function(template <...> void frostFilter)
 
-    template<typename VALUETYPE>
+    template <typename VALUETYPE>
     class FrostFunctor
 {
 public:
@@ -149,7 +149,7 @@ public:
         vigra_precondition(k > 0 && k <= 1, "vigra::FrostFunctor(): Damping factor k has to be: 0 < k <= 1!");
     }
 
-    template<class SrcIterator, class SrcAccessor, class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor, class DestIterator, class DestAccessor>
     void operator()(SrcIterator s, SrcAccessor s_acc, DestIterator d, DestAccessor d_acc)
     {
         using namespace vigra;
@@ -178,9 +178,9 @@ public:
 
         //convolve mask with each impulse response to compute the result of the frost filter
         int y, x;
-        for (y = 0; ys.y != s_lr.y; ys.y++, ydist.y++, y++)
+        for(y = 0; ys.y != s_lr.y; ys.y++, ydist.y++, y++)
         {
-            for (xs = ys, xdist = ydist, x = 0; xs.x != s_lr.x; xs.x++, xdist.x++, x++)
+            for(xs = ys, xdist = ydist, x = 0; xs.x != s_lr.x; xs.x++, xdist.x++, x++)
             {
                 p = s_acc(xs);
 
@@ -207,8 +207,8 @@ private:
     FImage m_dist;
 };
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 frostFilter(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
             DestIterator d_ul, DestAccessor d_acc,
@@ -219,8 +219,8 @@ frostFilter(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
     applyWindowFunction(s_ul, s_lr, s_acc, d_ul, d_acc, func, border);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 frostFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
             pair<DestIterator, DestAccessor> d,
@@ -234,8 +234,8 @@ frostFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
 }
 
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void frostFilter(MultiArrayView<2, T1, S1> const& src,
                         MultiArrayView<2, T2, S2> dest,
                         Diff2D window_shape, float k,
@@ -340,7 +340,7 @@ inline void frostFilter(MultiArrayView<2, T1, S1> const& src,
     \endcode
 */
 
-template<typename VALUETYPE>
+template <typename VALUETYPE>
 class EnhancedFrostFunctor
 {
 public:
@@ -356,7 +356,7 @@ public:
         vigra_precondition(enl > 0, "vigra::EnhancedFrostFunctor(): Equivalent number of looks (enl) must be larger than zero!");
     }
 
-    template<class SrcIterator, class SrcAccessor, class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor, class DestIterator, class DestAccessor>
     void operator()(SrcIterator s, SrcAccessor s_acc, DestIterator d, DestAccessor d_acc)
     {
         using namespace vigra;
@@ -388,9 +388,9 @@ public:
 
         //convolve mask with each impulse response to compute the result of the frost filter
         int y, x;
-        for (y = 0; ys.y != s_lr.y; ys.y++, ydist.y++, y++)
+        for(y = 0; ys.y != s_lr.y; ys.y++, ydist.y++, y++)
         {
-            for (xs = ys, xdist = ydist, x = 0; xs.x != s_lr.x; xs.x++, xdist.x++, x++)
+            for(xs = ys, xdist = ydist, x = 0; xs.x != s_lr.x; xs.x++, xdist.x++, x++)
             {
                 p = s_acc(xs);
 
@@ -416,11 +416,11 @@ private:
     //As defined in: Shi & Fung: A comparison of Digital Speckle Filters
     inline double func(double C_I, double C_max, double C_u) const
     {
-        if (C_I < C_u)
+        if(C_I < C_u)
         {
             return 0;
         }
-        else if (C_I <= C_max)
+        else if(C_I <= C_max)
         {
             return (C_I - C_u) / (C_max - C_I);
         }
@@ -436,8 +436,8 @@ private:
     FImage m_dist;
 };
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 enhancedFrostFilter(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
                     DestIterator d_ul, DestAccessor d_acc,
@@ -448,8 +448,8 @@ enhancedFrostFilter(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
     applyWindowFunction(s_ul, s_lr, s_acc, d_ul, d_acc, func, border);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 enhancedFrostFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                     pair<DestIterator, DestAccessor> d,
@@ -463,8 +463,8 @@ enhancedFrostFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
 }
 
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void enhancedFrostFilter(MultiArrayView<2, T1, S1> const& src,
                                 MultiArrayView<2, T2, S2> dest,
                                 Diff2D window_shape, float k, int enl,
@@ -568,7 +568,7 @@ inline void enhancedFrostFilter(MultiArrayView<2, T1, S1> const& src,
     \endcode
 */
 
-template<typename VALUETYPE>
+template <typename VALUETYPE>
 class GammaMAPFunctor
 {
 public:
@@ -580,7 +580,7 @@ public:
         vigra_precondition(enl > 0, "vigra::GamaMAPFunctor(): Equivalent number of looks (enl) must be larger than zero!");
     }
 
-    template<class SrcIterator, class SrcAccessor, class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor, class DestIterator, class DestAccessor>
     void operator()(SrcIterator s, SrcAccessor s_acc, DestIterator d, DestAccessor d_acc)
     {
         using namespace vigra;
@@ -598,11 +598,11 @@ public:
                   I_mean = averageAndVariance.average(),
                   C_I = sqrt(averageAndVariance.variance()) / I_mean;
 
-        if (C_I <= C_u)
+        if(C_I <= C_u)
         {
             d_acc.set(averageAndVariance.average(), d);
         }
-        else if (C_I < C_max)
+        else if(C_I < C_max)
         {
             double alpha = (1 + C_u * C_u) / (C_I * C_I - C_u * C_u),
                    aL1 = alpha - m_enl - 1,
@@ -626,8 +626,8 @@ private:
 };
 
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 gammaMAPFilter(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
                DestIterator d_ul, DestAccessor d_acc,
@@ -638,8 +638,8 @@ gammaMAPFilter(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
     applyWindowFunction(s_ul, s_lr, s_acc, d_ul, d_acc, func, border);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 gammaMAPFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                pair<DestIterator, DestAccessor> d,
@@ -652,8 +652,8 @@ gammaMAPFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                    border);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void gammaMAPFilter(MultiArrayView<2, T1, S1> const& src,
                            MultiArrayView<2, T2, S2> dest,
                            Diff2D window_shape, int enl,
@@ -755,7 +755,7 @@ inline void gammaMAPFilter(MultiArrayView<2, T1, S1> const& src,
     kuanFilter(src, dest, Diff2D(5,5), 3);
     \endcode
 */
-template<typename VALUETYPE>
+template <typename VALUETYPE>
 class KuanFunctor
 {
 public:
@@ -767,7 +767,7 @@ public:
         vigra_precondition(enl > 0, "vigra::KuanFunctor(): Equivalent number of looks (enl) must be larger than zero!");
     }
 
-    template<class SrcIterator, class SrcAccessor, class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor, class DestIterator, class DestAccessor>
     void operator()(SrcIterator s, SrcAccessor s_acc, DestIterator d, DestAccessor d_acc)
     {
         using namespace vigra;
@@ -799,8 +799,8 @@ private:
     int m_enl;
 };
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 kuanFilter(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
            DestIterator d_ul, DestAccessor d_acc,
@@ -811,8 +811,8 @@ kuanFilter(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
     applyWindowFunction(s_ul, s_lr, s_acc, d_ul, d_acc, func, border);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 kuanFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
            pair<DestIterator, DestAccessor> d,
@@ -825,8 +825,8 @@ kuanFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                border);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void kuanFilter(MultiArrayView<2, T1, S1> const& src,
                        MultiArrayView<2, T2, S2> dest,
                        Diff2D window_shape, int enl,
@@ -927,7 +927,7 @@ inline void kuanFilter(MultiArrayView<2, T1, S1> const& src,
     leeFilter(src, dest, Diff2D(5,5), 3);
     \endcode
 */
-template<typename VALUETYPE = float>
+template <typename VALUETYPE = float>
 class LeeFunctor
 {
 public:
@@ -940,7 +940,7 @@ public:
     }
 
 
-    template<class SrcIterator, class SrcAccessor, class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor, class DestIterator, class DestAccessor>
     void operator()(SrcIterator s, SrcAccessor s_acc, DestIterator d, DestAccessor d_acc)
     {
         using namespace vigra;
@@ -971,8 +971,8 @@ private:
     int m_enl;
 };
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 leeFilter(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
           DestIterator d_ul, DestAccessor d_acc,
@@ -983,8 +983,8 @@ leeFilter(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
     applyWindowFunction(s_ul, s_lr, s_acc, d_ul, d_acc, func, border);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 leeFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
           pair<DestIterator, DestAccessor> d,
@@ -997,8 +997,8 @@ leeFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
               border);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void leeFilter(MultiArrayView<2, T1, S1> const& src,
                       MultiArrayView<2, T2, S2> dest,
                       Diff2D window_shape, int enl,
@@ -1103,7 +1103,7 @@ inline void leeFilter(MultiArrayView<2, T1, S1> const& src,
     \endcode
 */
 
-template<typename VALUETYPE>
+template <typename VALUETYPE>
 class EnhancedLeeFunctor
 {
 public:
@@ -1117,7 +1117,7 @@ public:
         vigra_precondition(enl > 0, "vigra::EnhancedLeeFunctor(): Equivalent number of looks (enl) must be larger than zero!");
     }
 
-    template<class SrcIterator, class SrcAccessor, class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor, class DestIterator, class DestAccessor>
     void operator()(SrcIterator s, SrcAccessor s_acc, DestIterator d, DestAccessor d_acc)
     {
         using namespace vigra;
@@ -1137,11 +1137,11 @@ public:
                   W = exp(-m_k * (C_A - C_u) / (C_max - C_A)),
                   I = s_acc(s);
 
-        if (C_A <= C_u)
+        if(C_A <= C_u)
         {
             d_acc.set(averageAndVariance.average(), d);
         }
-        else if (C_A < C_max)
+        else if(C_A < C_max)
         {
             d_acc.set(I * W + averageAndVariance.average() * (1 - W), d);
         }
@@ -1162,8 +1162,8 @@ private:
     int m_enl;
 };
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 enhancedLeeFilter(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
                   DestIterator d_ul, DestAccessor d_acc,
@@ -1174,8 +1174,8 @@ enhancedLeeFilter(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
     applyWindowFunction(s_ul, s_lr, s_acc, d_ul, d_acc, func, border);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 enhancedLeeFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                   pair<DestIterator, DestAccessor> d,
@@ -1188,8 +1188,8 @@ enhancedLeeFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                       border);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void enhancedLeeFilter(MultiArrayView<2, T1, S1> const& src,
                               MultiArrayView<2, T2, S2> dest,
                               Diff2D window_shape, float k, int enl,

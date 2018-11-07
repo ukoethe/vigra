@@ -54,16 +54,16 @@ namespace vigra
 namespace detail
 {
 
-template<class T>
+template <class T>
 NumpyAnyArray
 readImageImpl(ImageImportInfo const& info, std::string order = "")
 {
     typedef UnstridedArrayTag Stride;
 
-    if (order == "")
+    if(order == "")
         order = detail::defaultOrder();
 
-    switch (info.numBands())
+    switch(info.numBands())
     {
         case 1:
         {
@@ -101,7 +101,7 @@ readImageImpl(ImageImportInfo const& info, std::string order = "")
 std::string
 numpyTypeIdToImpexString(NPY_TYPES typeID)
 {
-    switch (typeID)
+    switch(typeID)
     {
         case NPY_BOOL:
             return std::string("UINT8");
@@ -138,33 +138,33 @@ readImage(const char* filename, python::object import_type, unsigned int index, 
     ImageImportInfo info(filename, index);
     std::string importType(info.getPixelType());
 
-    if (python::extract<std::string>(import_type).check())
+    if(python::extract<std::string>(import_type).check())
     {
         std::string type = python::extract<std::string>(import_type)();
-        if (type != "" && type != "NATIVE")
+        if(type != "" && type != "NATIVE")
             importType = type;
     }
-    else if (python::extract<NPY_TYPES>(import_type).check())
+    else if(python::extract<NPY_TYPES>(import_type).check())
     {
         importType = detail::numpyTypeIdToImpexString(python::extract<NPY_TYPES>(import_type)());
     }
-    else if (import_type)
+    else if(import_type)
         vigra_precondition(false, "readImage(filename, import_type, order): import_type must be a string or a numpy dtype.");
 
     // FIXME: support all types, at least via a type cast at the end?
-    if (importType == "FLOAT")
+    if(importType == "FLOAT")
         return detail::readImageImpl<float>(info, order);
-    if (importType == "UINT8")
+    if(importType == "UINT8")
         return detail::readImageImpl<UInt8>(info, order);
-    if (importType == "INT16")
+    if(importType == "INT16")
         return detail::readImageImpl<Int16>(info, order);
-    if (importType == "UINT16")
+    if(importType == "UINT16")
         return detail::readImageImpl<UInt16>(info, order);
-    if (importType == "INT32")
+    if(importType == "INT32")
         return detail::readImageImpl<Int32>(info, order);
-    if (importType == "UINT32")
+    if(importType == "UINT32")
         return detail::readImageImpl<UInt32>(info, order);
-    if (importType == "DOUBLE")
+    if(importType == "DOUBLE")
         return detail::readImageImpl<double>(info, order);
     vigra_fail("readImage(filename, import_type, order): import_type specifies an unknown pixel type.");
     return NumpyAnyArray();
@@ -173,7 +173,7 @@ readImage(const char* filename, python::object import_type, unsigned int index, 
 // when export_type == "", writeImage() will figure out the best compromise
 // between the input pixel type and the capabilities of the given file format
 // (see negotiatePixelType())
-template<class T>
+template <class T>
 void writeImage(NumpyArray<3, Multiband<T>> const& image,
                 const char* filename,
                 python::object export_type,
@@ -182,29 +182,29 @@ void writeImage(NumpyArray<3, Multiband<T>> const& image,
 {
     ImageExportInfo info(filename, mode);
 
-    if (python::extract<std::string>(export_type).check())
+    if(python::extract<std::string>(export_type).check())
     {
         std::string type = python::extract<std::string>(export_type)();
-        if (type == "NBYTE")
+        if(type == "NBYTE")
         {
             info.setForcedRangeMapping(0.0, 0.0, 0.0, 255.0);
             info.setPixelType("UINT8");
         }
-        else if (type != "" && type != "NATIVE")
+        else if(type != "" && type != "NATIVE")
         {
             info.setPixelType(type.c_str());
         }
     }
-    else if (python::extract<NPY_TYPES>(export_type).check())
+    else if(python::extract<NPY_TYPES>(export_type).check())
     {
         info.setPixelType(detail::numpyTypeIdToImpexString(python::extract<NPY_TYPES>(export_type)()).c_str());
     }
-    else if (export_type)
+    else if(export_type)
         vigra_precondition(false, "writeImage(filename, export_type): export_type must be a string or a numpy dtype.");
 
-    if (std::string(compression) == "RunLength")
+    if(std::string(compression) == "RunLength")
         info.setCompression("RLE");
-    else if (std::string(compression) != "")
+    else if(std::string(compression) != "")
         info.setCompression(compression);
     exportImage(srcImageRange(image), info);
 }
@@ -221,14 +221,14 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywriteImage, writeImage)
 namespace detail
 {
 
-template<class T>
+template <class T>
 NumpyAnyArray
 readVolumeImpl(VolumeImportInfo const& info, std::string order = "")
 {
-    if (order == "")
+    if(order == "")
         order = detail::defaultOrder();
 
-    switch (info.numBands())
+    switch(info.numBands())
     {
         case 1:
         {
@@ -278,38 +278,38 @@ readVolume(const char* filename, python::object import_type, std::string order =
     VolumeImportInfo info(filename);
     std::string importType(info.getPixelType());
 
-    if (python::extract<std::string>(import_type).check())
+    if(python::extract<std::string>(import_type).check())
     {
         std::string type = python::extract<std::string>(import_type)();
-        if (type != "" && type != "NATIVE")
+        if(type != "" && type != "NATIVE")
             importType = type;
     }
-    else if (python::extract<NPY_TYPES>(import_type).check())
+    else if(python::extract<NPY_TYPES>(import_type).check())
     {
         importType = detail::numpyTypeIdToImpexString(python::extract<NPY_TYPES>(import_type)());
     }
-    else if (import_type)
+    else if(import_type)
         vigra_precondition(false, "readVolume(filename, import_type, order): import_type must be a string or a numpy dtype.");
 
-    if (importType == "FLOAT")
+    if(importType == "FLOAT")
         return detail::readVolumeImpl<float>(info, order);
-    if (importType == "UINT8")
+    if(importType == "UINT8")
         return detail::readVolumeImpl<UInt8>(info, order);
-    if (importType == "INT16")
+    if(importType == "INT16")
         return detail::readVolumeImpl<Int16>(info, order);
-    if (importType == "UINT16")
+    if(importType == "UINT16")
         return detail::readVolumeImpl<UInt16>(info, order);
-    if (importType == "INT32")
+    if(importType == "INT32")
         return detail::readVolumeImpl<Int32>(info, order);
-    if (importType == "UINT32")
+    if(importType == "UINT32")
         return detail::readVolumeImpl<UInt32>(info, order);
-    if (importType == "DOUBLE")
+    if(importType == "DOUBLE")
         return detail::readVolumeImpl<double>(info, order);
     vigra_fail("readVolume(filename, import_type, order): import_type specifies an unknown pixel type.");
     return NumpyAnyArray();
 }
 
-template<class T>
+template <class T>
 void writeVolume(NumpyArray<3, T> const& volume,
                  const char* filename_base,
                  const char* filename_ext,
@@ -318,29 +318,29 @@ void writeVolume(NumpyArray<3, T> const& volume,
 {
     VolumeExportInfo info(filename_base, filename_ext);
 
-    if (python::extract<std::string>(export_type).check())
+    if(python::extract<std::string>(export_type).check())
     {
         std::string type = python::extract<std::string>(export_type)();
-        if (type == "NBYTE")
+        if(type == "NBYTE")
         {
             info.setForcedRangeMapping(0.0, 0.0, 0.0, 255.0);
             info.setPixelType("UINT8");
         }
-        else if (type != "" && type != "NATIVE")
+        else if(type != "" && type != "NATIVE")
         {
             info.setPixelType(type.c_str());
         }
     }
-    else if (python::extract<NPY_TYPES>(export_type).check())
+    else if(python::extract<NPY_TYPES>(export_type).check())
     {
         info.setPixelType(detail::numpyTypeIdToImpexString(python::extract<NPY_TYPES>(export_type)()).c_str());
     }
-    else if (export_type)
+    else if(export_type)
         vigra_precondition(false, "writeVolume(filename, export_type): export_type must be a string or a numpy dtype.");
 
-    if (std::string(compression) == "RunLength")
+    if(std::string(compression) == "RunLength")
         info.setCompression("RLE");
-    else if (std::string(compression) != "")
+    else if(std::string(compression) != "")
         info.setCompression(compression);
     exportVolume(volume, info);
 }
@@ -350,21 +350,21 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywriteVolume, writeVolume)
 NPY_TYPES
 impexTypeNameToNumpyTypeId(const std::string& typeName)
 {
-    if (typeName == "UINT8")
+    if(typeName == "UINT8")
         return NPY_UINT8;
-    else if (typeName == "INT8")
+    else if(typeName == "INT8")
         return NPY_INT8;
-    else if (typeName == "INT16")
+    else if(typeName == "INT16")
         return NPY_INT16;
-    else if (typeName == "UINT16")
+    else if(typeName == "UINT16")
         return NPY_UINT16;
-    else if (typeName == "INT32")
+    else if(typeName == "INT32")
         return NPY_INT32;
-    else if (typeName == "UINT32")
+    else if(typeName == "UINT32")
         return NPY_UINT32;
-    else if (typeName == "DOUBLE")
+    else if(typeName == "DOUBLE")
         return NPY_FLOAT64;
-    else if (typeName == "FLOAT")
+    else if(typeName == "FLOAT")
         return NPY_FLOAT32;
     else
         throw std::runtime_error("ImageInfo::getDtype(): unknown pixel type.");

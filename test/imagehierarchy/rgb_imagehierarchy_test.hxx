@@ -3,7 +3,7 @@
 
 #include "imagehierarchy_test.hxx"
 
-template<class Policy>
+template <class Policy>
 class RGBImageHierarchyTest
     : public ImageHierarchyTest<Policy>
 {
@@ -38,7 +38,7 @@ public:
     }
 };
 
-template<class Policy>
+template <class Policy>
 class RGBImgHierarchyTestSuite
     : public ImageHierarchyTestSuite<Policy>
 {

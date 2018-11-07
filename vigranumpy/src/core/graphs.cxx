@@ -58,7 +58,7 @@ void defineAdjacencyListGraph();
 void defineGridGraph2d();
 void defineGridGraph3d();
 void defineGridGraphImplicitEdgeMap();
-template<unsigned int DIM>
+template <unsigned int DIM>
 void defineGridRag();
 
 

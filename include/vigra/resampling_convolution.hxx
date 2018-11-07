@@ -96,7 +96,7 @@ struct MapTargetToSourceCoordinate
 
 } // namespace resampling_detail
 
-template<>
+template <>
 class FunctorTraits<resampling_detail::MapTargetToSourceCoordinate>
     : public FunctorTraitsBase<resampling_detail::MapTargetToSourceCoordinate>
 {
@@ -104,9 +104,9 @@ public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
-template<class SrcIter, class SrcAcc,
-         class DestIter, class DestAcc,
-         class KernelArray>
+template <class SrcIter, class SrcAcc,
+          class DestIter, class DestAcc,
+          class KernelArray>
 void
 resamplingExpandLine2(SrcIter s, SrcIter send, SrcAcc src,
                       DestIter d, DestIter dend, DestAcc dest,
@@ -125,15 +125,15 @@ resamplingExpandLine2(SrcIter s, SrcIter send, SrcAcc src,
 
     int ileft = std::max(kernels[0].right(), kernels[1].right());
     int iright = wo + std::min(kernels[0].left(), kernels[1].left()) - 1;
-    for (int i = 0; i < wn; ++i, ++d)
+    for(int i = 0; i < wn; ++i, ++d)
     {
         int is = i / 2;
         KernelRef kernel = kernels[i & 1];
         KernelIter k = kernel.center() + kernel.right();
         TmpType sum = NumericTraits<TmpType>::zero();
-        if (is < ileft)
+        if(is < ileft)
         {
-            for (int m = is - kernel.right(); m <= is - kernel.left(); ++m, --k)
+            for(int m = is - kernel.right(); m <= is - kernel.left(); ++m, --k)
             {
                 int mm = (m < 0)
                              ? -m
@@ -141,9 +141,9 @@ resamplingExpandLine2(SrcIter s, SrcIter send, SrcAcc src,
                 sum += *k * src(s, mm);
             }
         }
-        else if (is > iright)
+        else if(is > iright)
         {
-            for (int m = is - kernel.right(); m <= is - kernel.left(); ++m, --k)
+            for(int m = is - kernel.right(); m <= is - kernel.left(); ++m, --k)
             {
                 int mm = (m >= wo)
                              ? wo2 - m
@@ -154,7 +154,7 @@ resamplingExpandLine2(SrcIter s, SrcIter send, SrcAcc src,
         else
         {
             SrcIter ss = s + is - kernel.right();
-            for (int m = 0; m < kernel.size(); ++m, --k, ++ss)
+            for(int m = 0; m < kernel.size(); ++m, --k, ++ss)
             {
                 sum += *k * src(ss);
             }
@@ -163,9 +163,9 @@ resamplingExpandLine2(SrcIter s, SrcIter send, SrcAcc src,
     }
 }
 
-template<class SrcIter, class SrcAcc,
-         class DestIter, class DestAcc,
-         class KernelArray>
+template <class SrcIter, class SrcAcc,
+          class DestIter, class DestAcc,
+          class KernelArray>
 void
 resamplingReduceLine2(SrcIter s, SrcIter send, SrcAcc src,
                       DestIter d, DestIter dend, DestAcc dest,
@@ -187,14 +187,14 @@ resamplingReduceLine2(SrcIter s, SrcIter send, SrcAcc src,
 
     int ileft = kernel.right();
     int iright = wo + kernel.left() - 1;
-    for (int i = 0; i < wn; ++i, ++d)
+    for(int i = 0; i < wn; ++i, ++d)
     {
         int is = 2 * i;
         KernelIter k = kbegin;
         TmpType sum = NumericTraits<TmpType>::zero();
-        if (is < ileft)
+        if(is < ileft)
         {
-            for (int m = is - kernel.right(); m <= is - kernel.left(); ++m, --k)
+            for(int m = is - kernel.right(); m <= is - kernel.left(); ++m, --k)
             {
                 int mm = (m < 0)
                              ? -m
@@ -202,9 +202,9 @@ resamplingReduceLine2(SrcIter s, SrcIter send, SrcAcc src,
                 sum += *k * src(s, mm);
             }
         }
-        else if (is > iright)
+        else if(is > iright)
         {
-            for (int m = is - kernel.right(); m <= is - kernel.left(); ++m, --k)
+            for(int m = is - kernel.right(); m <= is - kernel.left(); ++m, --k)
             {
                 int mm = (m >= wo)
                              ? wo2 - m
@@ -215,7 +215,7 @@ resamplingReduceLine2(SrcIter s, SrcIter send, SrcAcc src,
         else
         {
             SrcIter ss = s + is - kernel.right();
-            for (int m = 0; m < kernel.size(); ++m, --k, ++ss)
+            for(int m = 0; m < kernel.size(); ++m, --k, ++ss)
             {
                 sum += *k * src(ss);
             }
@@ -266,23 +266,23 @@ resamplingReduceLine2(SrcIter s, SrcIter send, SrcAcc src,
     \endcode
 
 */
-doxygen_overloaded_function(template<...> void resamplingConvolveLine)
+doxygen_overloaded_function(template <...> void resamplingConvolveLine)
 
-    template<class SrcIter, class SrcAcc,
-             class DestIter, class DestAcc,
-             class KernelArray,
-             class Functor>
+    template <class SrcIter, class SrcAcc,
+              class DestIter, class DestAcc,
+              class KernelArray,
+              class Functor>
     void resamplingConvolveLine(SrcIter s, SrcIter send, SrcAcc src,
                                 DestIter d, DestIter dend, DestAcc dest,
                                 KernelArray const& kernels,
                                 Functor mapTargetToSourceCoordinate)
 {
-    if (mapTargetToSourceCoordinate.isExpand2())
+    if(mapTargetToSourceCoordinate.isExpand2())
     {
         resamplingExpandLine2(s, send, src, d, dend, dest, kernels);
         return;
     }
-    if (mapTargetToSourceCoordinate.isReduce2())
+    if(mapTargetToSourceCoordinate.isReduce2())
     {
         resamplingReduceLine2(s, send, src, d, dend, dest, kernels);
         return;
@@ -299,10 +299,10 @@ doxygen_overloaded_function(template<...> void resamplingConvolveLine)
 
     int i;
     typename KernelArray::const_iterator kernel = kernels.begin();
-    for (i = 0; i < wn; ++i, ++d, ++kernel)
+    for(i = 0; i < wn; ++i, ++d, ++kernel)
     {
         // use the kernels periodically
-        if (kernel == kernels.end())
+        if(kernel == kernels.end())
             kernel = kernels.begin();
 
         // calculate current target point into source location
@@ -314,11 +314,11 @@ doxygen_overloaded_function(template<...> void resamplingConvolveLine)
             hbound = is - kernel->left();
 
         KernelIter k = kernel->center() + kernel->right();
-        if (lbound < 0 || hbound >= wo)
+        if(lbound < 0 || hbound >= wo)
         {
             vigra_precondition(-lbound < wo && wo2 - hbound >= 0,
                                "resamplingConvolveLine(): kernel or offset larger than image.");
-            for (int m = lbound; m <= hbound; ++m, --k)
+            for(int m = lbound; m <= hbound; ++m, --k)
             {
                 int mm = (m < 0) ? -m : (m >= wo) ? wo2 - m : m;
                 sum = TmpType(sum + *k * src(s, mm));
@@ -329,7 +329,7 @@ doxygen_overloaded_function(template<...> void resamplingConvolveLine)
             SrcIter ss = s + lbound;
             SrcIter ssend = s + hbound;
 
-            for (; ss <= ssend; ++ss, --k)
+            for(; ss <= ssend; ++ss, --k)
             {
                 sum = TmpType(sum + *k * src(ss));
             }
@@ -339,12 +339,12 @@ doxygen_overloaded_function(template<...> void resamplingConvolveLine)
     }
 }
 
-template<class Kernel, class MapCoordinate, class KernelArray>
+template <class Kernel, class MapCoordinate, class KernelArray>
 void
 createResamplingKernels(Kernel const& kernel,
                         MapCoordinate const& mapCoordinate, KernelArray& kernels)
 {
-    for (unsigned int idest = 0; idest < kernels.size(); ++idest)
+    for(unsigned int idest = 0; idest < kernels.size(); ++idest)
     {
         int isrc = mapCoordinate(idest);
         double idsrc = mapCoordinate.toDouble(idest);
@@ -355,7 +355,7 @@ createResamplingKernels(Kernel const& kernel,
         kernels[idest].initExplicitly(left, right);
 
         double x = left + offset;
-        for (int i = left; i <= right; ++i, ++x)
+        for(int i = left; i <= right; ++i, ++x)
             kernels[idest][i] = kernel(x);
         kernels[idest].normalize(1.0, kernel.derivativeOrder(), offset);
     }
@@ -474,11 +474,11 @@ createResamplingKernels(Kernel const& kernel,
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void resamplingConvolveX)
+doxygen_overloaded_function(template <...> void resamplingConvolveX)
 
-    template<class SrcIter, class SrcAcc,
-             class DestIter, class DestAcc,
-             class Kernel>
+    template <class SrcIter, class SrcAcc,
+              class DestIter, class DestAcc,
+              class Kernel>
     void resamplingConvolveX(SrcIter sul, SrcIter slr, SrcAcc src,
                              DestIter dul, DestIter dlr, DestAcc dest,
                              Kernel const& kernel,
@@ -499,7 +499,7 @@ doxygen_overloaded_function(template<...> void resamplingConvolveX)
 
     createResamplingKernels(kernel, mapCoordinate, kernels);
 
-    for (; sul.y < slr.y; ++sul.y, ++dul.y)
+    for(; sul.y < slr.y; ++sul.y, ++dul.y)
     {
         typename SrcIter::row_iterator sr = sul.rowIterator();
         typename DestIter::row_iterator dr = dul.rowIterator();
@@ -508,9 +508,9 @@ doxygen_overloaded_function(template<...> void resamplingConvolveX)
     }
 }
 
-template<class SrcIter, class SrcAcc,
-         class DestIter, class DestAcc,
-         class Kernel>
+template <class SrcIter, class SrcAcc,
+          class DestIter, class DestAcc,
+          class Kernel>
 inline void
 resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
                     triple<DestIter, DestIter, DestAcc> dest,
@@ -522,9 +522,9 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
                         kernel, samplingRatio, offset);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class Kernel>
+template <class T1, class S1,
+          class T2, class S2,
+          class Kernel>
 inline void
     resamplingConvolveX(MultiArrayView<2, T1, S1> const& src,
                         MultiArrayView<2, T2, S2> dest,
@@ -655,11 +655,11 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void resamplingConvolveY)
+doxygen_overloaded_function(template <...> void resamplingConvolveY)
 
-    template<class SrcIter, class SrcAcc,
-             class DestIter, class DestAcc,
-             class Kernel>
+    template <class SrcIter, class SrcAcc,
+              class DestIter, class DestAcc,
+              class Kernel>
     void resamplingConvolveY(SrcIter sul, SrcIter slr, SrcAcc src,
                              DestIter dul, DestIter dlr, DestAcc dest,
                              Kernel const& kernel,
@@ -681,7 +681,7 @@ doxygen_overloaded_function(template<...> void resamplingConvolveY)
 
     createResamplingKernels(kernel, mapCoordinate, kernels);
 
-    for (; sul.x < slr.x; ++sul.x, ++dul.x)
+    for(; sul.x < slr.x; ++sul.x, ++dul.x)
     {
         typename SrcIter::column_iterator sc = sul.columnIterator();
         typename DestIter::column_iterator dc = dul.columnIterator();
@@ -690,9 +690,9 @@ doxygen_overloaded_function(template<...> void resamplingConvolveY)
     }
 }
 
-template<class SrcIter, class SrcAccessor,
-         class DestIter, class DestAccessor,
-         class Kernel>
+template <class SrcIter, class SrcAccessor,
+          class DestIter, class DestAccessor,
+          class Kernel>
 inline void
 resamplingConvolveY(triple<SrcIter, SrcIter, SrcAccessor> src,
                     triple<DestIter, DestIter, DestAccessor> dest,
@@ -704,9 +704,9 @@ resamplingConvolveY(triple<SrcIter, SrcIter, SrcAccessor> src,
                         kernel, samplingRatio, offset);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class Kernel>
+template <class T1, class S1,
+          class T2, class S2,
+          class Kernel>
 inline void
     resamplingConvolveY(MultiArrayView<2, T1, S1> const& src,
                         MultiArrayView<2, T2, S2> dest,
@@ -802,11 +802,11 @@ inline void
                             smooth, yratio, offset);
     \endcode
 */
-doxygen_overloaded_function(template<...> void resamplingConvolveImage)
+doxygen_overloaded_function(template <...> void resamplingConvolveImage)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class KernelX, class KernelY>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class KernelX, class KernelY>
     void resamplingConvolveImage(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                  DestIterator dul, DestIterator dlr, DestAccessor dest,
                                  KernelX const& kx,
@@ -827,9 +827,9 @@ doxygen_overloaded_function(template<...> void resamplingConvolveImage)
                         ky, samplingRatioY, offsetY);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class KernelX, class KernelY>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class KernelX, class KernelY>
 inline void
 resamplingConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         triple<DestIterator, DestIterator, DestAccessor> dest,
@@ -844,9 +844,9 @@ resamplingConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             ky, samplingRatioY, offsetY);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class KernelX, class KernelY>
+template <class T1, class S1,
+          class T2, class S2,
+          class KernelX, class KernelY>
 inline void
     resamplingConvolveImage(MultiArrayView<2, T1, S1> const& src,
                             MultiArrayView<2, T2, S2> dest,
@@ -931,10 +931,10 @@ inline void
     }
     \endcode
 */
-doxygen_overloaded_function(template<...> void pyramidReduceBurtFilter)
+doxygen_overloaded_function(template <...> void pyramidReduceBurtFilter)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void pyramidReduceBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                  DestIterator dul, DestIterator dlr, DestAccessor dest,
                                  double centerValue = 0.4)
@@ -965,7 +965,7 @@ doxygen_overloaded_function(template<...> void pyramidReduceBurtFilter)
 
     TmpIterator tul = tmp.upperLeft();
 
-    for (; sul.y < slr.y; ++sul.y, ++tul.y)
+    for(; sul.y < slr.y; ++sul.y, ++tul.y)
     {
         typename SrcIterator::row_iterator sr = sul.rowIterator();
         typename TmpIterator::row_iterator tr = tul.rowIterator();
@@ -976,7 +976,7 @@ doxygen_overloaded_function(template<...> void pyramidReduceBurtFilter)
 
     tul = tmp.upperLeft();
 
-    for (; dul.x < dlr.x; ++dul.x, ++tul.x)
+    for(; dul.x < dlr.x; ++dul.x, ++tul.x)
     {
         typename DestIterator::column_iterator dc = dul.columnIterator();
         typename TmpIterator::column_iterator tc = tul.columnIterator();
@@ -985,8 +985,8 @@ doxygen_overloaded_function(template<...> void pyramidReduceBurtFilter)
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 pyramidReduceBurtFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         triple<DestIterator, DestIterator, DestAccessor> dest,
@@ -996,7 +996,7 @@ pyramidReduceBurtFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             dest.first, dest.second, dest.third, centerValue);
 }
 
-template<class Image, class Alloc>
+template <class Image, class Alloc>
 inline void
 pyramidReduceBurtFilter(ImagePyramid<Image, Alloc>& pyramid,
                         int fromLevel, int toLevel,
@@ -1007,7 +1007,7 @@ pyramidReduceBurtFilter(ImagePyramid<Image, Alloc>& pyramid,
     vigra_precondition(pyramid.lowestLevel() <= fromLevel && toLevel <= pyramid.highestLevel(),
                        "pyramidReduceBurtFilter(): fromLevel and toLevel must be between the lowest and highest pyramid levels (inclusive).");
 
-    for (int i = fromLevel + 1; i <= toLevel; ++i)
+    for(int i = fromLevel + 1; i <= toLevel; ++i)
         pyramidReduceBurtFilter(srcImageRange(pyramid[i - 1]), destImageRange(pyramid[i]), centerValue);
 }
 
@@ -1084,10 +1084,10 @@ pyramidReduceBurtFilter(ImagePyramid<Image, Alloc>& pyramid,
     }
     \endcode
 */
-doxygen_overloaded_function(template<...> void pyramidExpandBurtFilter)
+doxygen_overloaded_function(template <...> void pyramidExpandBurtFilter)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void pyramidExpandBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                  DestIterator dul, DestIterator dlr, DestAccessor dest,
                                  double centerValue = 0.4)
@@ -1119,7 +1119,7 @@ doxygen_overloaded_function(template<...> void pyramidExpandBurtFilter)
 
     TmpIterator tul = tmp.upperLeft();
 
-    for (; sul.y < slr.y; ++sul.y, ++tul.y)
+    for(; sul.y < slr.y; ++sul.y, ++tul.y)
     {
         typename SrcIterator::row_iterator sr = sul.rowIterator();
         typename TmpIterator::row_iterator tr = tul.rowIterator();
@@ -1130,7 +1130,7 @@ doxygen_overloaded_function(template<...> void pyramidExpandBurtFilter)
 
     tul = tmp.upperLeft();
 
-    for (; dul.x < dlr.x; ++dul.x, ++tul.x)
+    for(; dul.x < dlr.x; ++dul.x, ++tul.x)
     {
         typename DestIterator::column_iterator dc = dul.columnIterator();
         typename TmpIterator::column_iterator tc = tul.columnIterator();
@@ -1139,8 +1139,8 @@ doxygen_overloaded_function(template<...> void pyramidExpandBurtFilter)
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 pyramidExpandBurtFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         triple<DestIterator, DestIterator, DestAccessor> dest,
@@ -1151,7 +1151,7 @@ pyramidExpandBurtFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 }
 
 
-template<class Image, class Alloc>
+template <class Image, class Alloc>
 inline void
 pyramidExpandBurtFilter(ImagePyramid<Image, Alloc>& pyramid, int fromLevel, int toLevel,
                         double centerValue = 0.4)
@@ -1161,7 +1161,7 @@ pyramidExpandBurtFilter(ImagePyramid<Image, Alloc>& pyramid, int fromLevel, int 
     vigra_precondition(pyramid.lowestLevel() <= toLevel && fromLevel <= pyramid.highestLevel(),
                        "pyramidExpandBurtFilter(): fromLevel and toLevel must be between the lowest and highest pyramid levels (inclusive).");
 
-    for (int i = fromLevel - 1; i >= toLevel; --i)
+    for(int i = fromLevel - 1; i >= toLevel; --i)
         pyramidExpandBurtFilter(srcImageRange(pyramid[i + 1]), destImageRange(pyramid[i]), centerValue);
 }
 
@@ -1181,7 +1181,7 @@ pyramidExpandBurtFilter(ImagePyramid<Image, Alloc>& pyramid, int fromLevel, int 
     <b>\#include</b> \<vigra/resampling_convolution.hxx\><br>
     Namespace: vigra
 */
-template<class Image, class Alloc>
+template <class Image, class Alloc>
 inline void
 pyramidReduceBurtLaplacian(ImagePyramid<Image, Alloc>& pyramid,
                            int fromLevel, int toLevel,
@@ -1190,7 +1190,7 @@ pyramidReduceBurtLaplacian(ImagePyramid<Image, Alloc>& pyramid,
     using namespace functor;
 
     pyramidReduceBurtFilter(pyramid, fromLevel, toLevel, centerValue);
-    for (int i = fromLevel; i < toLevel; ++i)
+    for(int i = fromLevel; i < toLevel; ++i)
     {
         typename ImagePyramid<Image, Alloc>::value_type tmpImage(pyramid[i].size());
         pyramidExpandBurtFilter(srcImageRange(pyramid[i + 1]), destImageRange(tmpImage), centerValue);
@@ -1214,7 +1214,7 @@ pyramidReduceBurtLaplacian(ImagePyramid<Image, Alloc>& pyramid,
     <b>\#include</b> \<vigra/resampling_convolution.hxx\><br>
     Namespace: vigra
 */
-template<class Image, class Alloc>
+template <class Image, class Alloc>
 inline void
 pyramidExpandBurtLaplacian(ImagePyramid<Image, Alloc>& pyramid,
                            int fromLevel, int toLevel,
@@ -1227,7 +1227,7 @@ pyramidExpandBurtLaplacian(ImagePyramid<Image, Alloc>& pyramid,
     vigra_precondition(pyramid.lowestLevel() <= toLevel && fromLevel <= pyramid.highestLevel(),
                        "pyramidExpandBurtLaplacian(): fromLevel and toLevel must be between the lowest and highest pyramid levels (inclusive).");
 
-    for (int i = fromLevel - 1; i >= toLevel; --i)
+    for(int i = fromLevel - 1; i >= toLevel; --i)
     {
         typename ImagePyramid<Image, Alloc>::value_type tmpImage(pyramid[i].size());
         pyramidExpandBurtFilter(srcImageRange(pyramid[i + 1]), destImageRange(tmpImage), centerValue);

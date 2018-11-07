@@ -138,9 +138,9 @@ typedef TIFF TiffImage;
     see \ref tiffToScalarImage() and \ref tiffToRGBImage()
     
 */
-doxygen_overloaded_function(template<...> void importTiffImage)
+doxygen_overloaded_function(template <...> void importTiffImage)
 
-    template<class ImageIterator, class Accessor>
+    template <class ImageIterator, class Accessor>
     inline void importTiffImage(TiffImage* tiff, ImageIterator iter, Accessor a)
 {
     typedef typename NumericTraits<typename Accessor::value_type>::isScalar
@@ -148,28 +148,28 @@ doxygen_overloaded_function(template<...> void importTiffImage)
     importTiffImage(tiff, iter, a, isScalar());
 }
 
-template<class ImageIterator, class Accessor>
+template <class ImageIterator, class Accessor>
 inline void
 importTiffImage(TiffImage* tiff, pair<ImageIterator, Accessor> dest)
 {
     importTiffImage(tiff, dest.first, dest.second);
 }
 
-template<class T, class S>
+template <class T, class S>
 inline void
 importTiffImage(TiffImage* tiff, MultiArrayView<2, T, S> dest)
 {
     importTiffImage(tiff, destImage(dest));
 }
 
-template<class ImageIterator, class Accessor>
+template <class ImageIterator, class Accessor>
 inline void
 importTiffImage(TiffImage* tiff, ImageIterator iter, Accessor a, VigraTrueType)
 {
     tiffToScalarImage(tiff, iter, a);
 }
 
-template<class ImageIterator, class Accessor>
+template <class ImageIterator, class Accessor>
 inline void
 importTiffImage(TiffImage* tiff, ImageIterator iter, Accessor a, VigraFalseType)
 {
@@ -298,9 +298,9 @@ importTiffImage(TiffImage* tiff, ImageIterator iter, Accessor a, VigraFalseType)
        bitsPerSample == 64
     \endcode
 */
-doxygen_overloaded_function(template<...> void tiffToScalarImage)
+doxygen_overloaded_function(template <...> void tiffToScalarImage)
 
-    template<class ImageIterator, class Accessor>
+    template <class ImageIterator, class Accessor>
     void tiffToScalarImage(TiffImage* tiff, ImageIterator iter, Accessor a)
 {
     vigra_precondition(tiff != 0,
@@ -338,7 +338,7 @@ doxygen_overloaded_function(template<...> void tiffToScalarImage)
     tdata_t* buf = new tdata_t[bufsize];
 
     int offset, scale, max, min;
-    if (photometric == PHOTOMETRIC_MINISWHITE)
+    if(photometric == PHOTOMETRIC_MINISWHITE)
     {
         min = 255;
         max = 0;
@@ -355,22 +355,22 @@ doxygen_overloaded_function(template<...> void tiffToScalarImage)
 
     try
     {
-        switch (sampleFormat)
+        switch(sampleFormat)
         {
             case SAMPLEFORMAT_UINT:
             {
-                switch (bitsPerSample)
+                switch(bitsPerSample)
                 {
                     case 1:
                     {
-                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                        for(unsigned int y = 0; y < h; ++y, ++yd.y)
                         {
                             TIFFReadScanline(tiff, buf, y);
                             ImageIterator xd(yd);
 
-                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            for(unsigned int x = 0; x < w; ++x, ++xd.x)
                             {
-                                if (fillorder == FILLORDER_MSB2LSB)
+                                if(fillorder == FILLORDER_MSB2LSB)
                                 {
                                     a.set(((((uint8*)buf)[x / 8] >> (7 - x % 8)) & 1) ? max : min, xd);
                                 }
@@ -384,12 +384,12 @@ doxygen_overloaded_function(template<...> void tiffToScalarImage)
                     }
                     case 8:
                     {
-                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                        for(unsigned int y = 0; y < h; ++y, ++yd.y)
                         {
                             TIFFReadScanline(tiff, buf, y);
                             ImageIterator xd(yd);
 
-                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            for(unsigned int x = 0; x < w; ++x, ++xd.x)
                             {
                                 a.set(offset + scale * ((uint8*)buf)[x], xd);
                             }
@@ -398,12 +398,12 @@ doxygen_overloaded_function(template<...> void tiffToScalarImage)
                     }
                     case 16:
                     {
-                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                        for(unsigned int y = 0; y < h; ++y, ++yd.y)
                         {
                             TIFFReadScanline(tiff, buf, y);
                             ImageIterator xd(yd);
 
-                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            for(unsigned int x = 0; x < w; ++x, ++xd.x)
                             {
                                 a.set(((uint16*)buf)[x], xd);
                             }
@@ -412,12 +412,12 @@ doxygen_overloaded_function(template<...> void tiffToScalarImage)
                     }
                     case 32:
                     {
-                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                        for(unsigned int y = 0; y < h; ++y, ++yd.y)
                         {
                             TIFFReadScanline(tiff, buf, y);
                             ImageIterator xd(yd);
 
-                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            for(unsigned int x = 0; x < w; ++x, ++xd.x)
                             {
                                 a.set(((uint32*)buf)[x], xd);
                             }
@@ -432,18 +432,18 @@ doxygen_overloaded_function(template<...> void tiffToScalarImage)
             }
             case SAMPLEFORMAT_INT:
             {
-                switch (bitsPerSample)
+                switch(bitsPerSample)
                 {
                     case 1:
                     {
-                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                        for(unsigned int y = 0; y < h; ++y, ++yd.y)
                         {
                             TIFFReadScanline(tiff, buf, y);
                             ImageIterator xd(yd);
 
-                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            for(unsigned int x = 0; x < w; ++x, ++xd.x)
                             {
-                                if (fillorder == FILLORDER_MSB2LSB)
+                                if(fillorder == FILLORDER_MSB2LSB)
                                 {
                                     a.set(((((int8*)buf)[x / 8] >> (7 - x % 8)) & 1) ? max : min, xd);
                                 }
@@ -457,12 +457,12 @@ doxygen_overloaded_function(template<...> void tiffToScalarImage)
                     }
                     case 8:
                     {
-                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                        for(unsigned int y = 0; y < h; ++y, ++yd.y)
                         {
                             TIFFReadScanline(tiff, buf, y);
                             ImageIterator xd(yd);
 
-                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            for(unsigned int x = 0; x < w; ++x, ++xd.x)
                             {
                                 a.set(offset + scale * ((uint8*)buf)[x], xd);
                             }
@@ -471,12 +471,12 @@ doxygen_overloaded_function(template<...> void tiffToScalarImage)
                     }
                     case 16:
                     {
-                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                        for(unsigned int y = 0; y < h; ++y, ++yd.y)
                         {
                             TIFFReadScanline(tiff, buf, y);
                             ImageIterator xd(yd);
 
-                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            for(unsigned int x = 0; x < w; ++x, ++xd.x)
                             {
                                 a.set(((int16*)buf)[x], xd);
                             }
@@ -485,12 +485,12 @@ doxygen_overloaded_function(template<...> void tiffToScalarImage)
                     }
                     case 32:
                     {
-                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                        for(unsigned int y = 0; y < h; ++y, ++yd.y)
                         {
                             TIFFReadScanline(tiff, buf, y);
                             ImageIterator xd(yd);
 
-                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            for(unsigned int x = 0; x < w; ++x, ++xd.x)
                             {
                                 a.set(((int32*)buf)[x], xd);
                             }
@@ -505,16 +505,16 @@ doxygen_overloaded_function(template<...> void tiffToScalarImage)
             }
             case SAMPLEFORMAT_IEEEFP:
             {
-                switch (bitsPerSample)
+                switch(bitsPerSample)
                 {
                     case sizeof(float) * 8:
                     {
-                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                        for(unsigned int y = 0; y < h; ++y, ++yd.y)
                         {
                             TIFFReadScanline(tiff, buf, y);
                             ImageIterator xd(yd);
 
-                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            for(unsigned int x = 0; x < w; ++x, ++xd.x)
                             {
                                 a.set(((float*)buf)[x], xd);
                             }
@@ -523,12 +523,12 @@ doxygen_overloaded_function(template<...> void tiffToScalarImage)
                     }
                     case sizeof(double) * 8:
                     {
-                        for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                        for(unsigned int y = 0; y < h; ++y, ++yd.y)
                         {
                             TIFFReadScanline(tiff, buf, y);
                             ImageIterator xd(yd);
 
-                            for (unsigned int x = 0; x < w; ++x, ++xd.x)
+                            for(unsigned int x = 0; x < w; ++x, ++xd.x)
                             {
                                 a.set(((double*)buf)[x], xd);
                             }
@@ -549,7 +549,7 @@ doxygen_overloaded_function(template<...> void tiffToScalarImage)
             }
         }
     }
-    catch (...)
+    catch(...)
     {
         delete[] buf;
         throw;
@@ -557,7 +557,7 @@ doxygen_overloaded_function(template<...> void tiffToScalarImage)
     delete[] buf;
 }
 
-template<class ImageIterator, class Accessor>
+template <class ImageIterator, class Accessor>
 void
 tiffToScalarImage(TiffImage* tiff, pair<ImageIterator, Accessor> dest)
 {
@@ -689,9 +689,9 @@ tiffToScalarImage(TiffImage* tiff, pair<ImageIterator, Accessor> dest)
        bitsPerSample == 64
     \endcode
 */
-doxygen_overloaded_function(template<...> void tiffToRGBImage)
+doxygen_overloaded_function(template <...> void tiffToRGBImage)
 
-    template<class RGBImageIterator, class RGBAccessor>
+    template <class RGBImageIterator, class RGBAccessor>
     void tiffToRGBImage(TiffImage* tiff, RGBImageIterator iter, RGBAccessor a)
 {
     vigra_precondition(tiff != 0,
@@ -721,32 +721,32 @@ doxygen_overloaded_function(template<...> void tiffToRGBImage)
 
     RGBImageIterator yd(iter);
 
-    switch (photometric)
+    switch(photometric)
     {
         case PHOTOMETRIC_PALETTE:
         {
             uint32* raster = new uint32[w * h];
             try
             {
-                if (!TIFFReadRGBAImage(tiff, w, h, raster, 0))
+                if(!TIFFReadRGBAImage(tiff, w, h, raster, 0))
                 {
                     vigra_fail(
                         "tiffToRGBImage(TiffImage *, RGBImageIterator): "
                         "unable to read image data.");
                 }
 
-                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                for(unsigned int y = 0; y < h; ++y, ++yd.y)
                 {
                     typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
                     typename RGBImageIterator::row_iterator rowend = rowit + w;
-                    for (int x = 0; rowit < rowend; ++rowit, ++x)
+                    for(int x = 0; rowit < rowend; ++rowit, ++x)
                     {
                         uint32 rast = raster[x + y * w];
                         a.setRGB(TIFFGetR(rast), TIFFGetG(rast), TIFFGetB(rast), rowit);
                     }
                 }
             }
-            catch (...)
+            catch(...)
             {
                 delete[] raster;
                 throw;
@@ -769,19 +769,19 @@ doxygen_overloaded_function(template<...> void tiffToRGBImage)
 
             try
             {
-                switch (sampleFormat)
+                switch(sampleFormat)
                 {
                     case SAMPLEFORMAT_UINT:
                     {
-                        switch (bitsPerSample)
+                        switch(bitsPerSample)
                         {
                             case 8:
                             {
-                                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                                for(unsigned int y = 0; y < h; ++y, ++yd.y)
                                 {
                                     uint8 *pr, *pg, *pb;
 
-                                    if (planarConfig == PLANARCONFIG_CONTIG)
+                                    if(planarConfig == PLANARCONFIG_CONTIG)
                                     {
                                         TIFFReadScanline(tiff, bufr, y);
                                         pr = (uint8*)bufr;
@@ -800,18 +800,18 @@ doxygen_overloaded_function(template<...> void tiffToRGBImage)
 
                                     typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
                                     typename RGBImageIterator::row_iterator rowend = rowit + w;
-                                    for (; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
+                                    for(; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
                                         a.setRGB(*pr, *pg, *pb, rowit);
                                 }
                                 break;
                             }
                             case 16:
                             {
-                                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                                for(unsigned int y = 0; y < h; ++y, ++yd.y)
                                 {
                                     uint16 *pr, *pg, *pb;
 
-                                    if (planarConfig == PLANARCONFIG_CONTIG)
+                                    if(planarConfig == PLANARCONFIG_CONTIG)
                                     {
                                         TIFFReadScanline(tiff, bufr, y);
                                         pr = (uint16*)bufr;
@@ -830,18 +830,18 @@ doxygen_overloaded_function(template<...> void tiffToRGBImage)
 
                                     typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
                                     typename RGBImageIterator::row_iterator rowend = rowit + w;
-                                    for (; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
+                                    for(; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
                                         a.setRGB(*pr, *pg, *pb, rowit);
                                 }
                                 break;
                             }
                             case 32:
                             {
-                                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                                for(unsigned int y = 0; y < h; ++y, ++yd.y)
                                 {
                                     uint32 *pr, *pg, *pb;
 
-                                    if (planarConfig == PLANARCONFIG_CONTIG)
+                                    if(planarConfig == PLANARCONFIG_CONTIG)
                                     {
                                         TIFFReadScanline(tiff, bufr, y);
                                         pr = (uint32*)bufr;
@@ -860,7 +860,7 @@ doxygen_overloaded_function(template<...> void tiffToRGBImage)
 
                                     typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
                                     typename RGBImageIterator::row_iterator rowend = rowit + w;
-                                    for (; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
+                                    for(; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
                                         a.setRGB(*pr, *pg, *pb, rowit);
                                 }
                                 break;
@@ -875,15 +875,15 @@ doxygen_overloaded_function(template<...> void tiffToRGBImage)
                     }
                     case SAMPLEFORMAT_INT:
                     {
-                        switch (bitsPerSample)
+                        switch(bitsPerSample)
                         {
                             case 8:
                             {
-                                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                                for(unsigned int y = 0; y < h; ++y, ++yd.y)
                                 {
                                     int8 *pr, *pg, *pb;
 
-                                    if (planarConfig == PLANARCONFIG_CONTIG)
+                                    if(planarConfig == PLANARCONFIG_CONTIG)
                                     {
                                         TIFFReadScanline(tiff, bufr, y);
                                         pr = (int8*)bufr;
@@ -902,18 +902,18 @@ doxygen_overloaded_function(template<...> void tiffToRGBImage)
 
                                     typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
                                     typename RGBImageIterator::row_iterator rowend = rowit + w;
-                                    for (; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
+                                    for(; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
                                         a.setRGB(*pr, *pg, *pb, rowit);
                                 }
                                 break;
                             }
                             case 16:
                             {
-                                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                                for(unsigned int y = 0; y < h; ++y, ++yd.y)
                                 {
                                     int16 *pr, *pg, *pb;
 
-                                    if (planarConfig == PLANARCONFIG_CONTIG)
+                                    if(planarConfig == PLANARCONFIG_CONTIG)
                                     {
                                         TIFFReadScanline(tiff, bufr, y);
                                         pr = (int16*)bufr;
@@ -931,18 +931,18 @@ doxygen_overloaded_function(template<...> void tiffToRGBImage)
                                     }
                                     typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
                                     typename RGBImageIterator::row_iterator rowend = rowit + w;
-                                    for (; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
+                                    for(; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
                                         a.setRGB(*pr, *pg, *pb, rowit);
                                 }
                                 break;
                             }
                             case 32:
                             {
-                                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                                for(unsigned int y = 0; y < h; ++y, ++yd.y)
                                 {
                                     int32 *pr, *pg, *pb;
 
-                                    if (planarConfig == PLANARCONFIG_CONTIG)
+                                    if(planarConfig == PLANARCONFIG_CONTIG)
                                     {
                                         TIFFReadScanline(tiff, bufr, y);
                                         pr = (int32*)bufr;
@@ -961,7 +961,7 @@ doxygen_overloaded_function(template<...> void tiffToRGBImage)
 
                                     typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
                                     typename RGBImageIterator::row_iterator rowend = rowit + w;
-                                    for (; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
+                                    for(; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
                                         a.setRGB(*pr, *pg, *pb, rowit);
                                 }
                                 break;
@@ -974,15 +974,15 @@ doxygen_overloaded_function(template<...> void tiffToRGBImage)
                     }
                     case SAMPLEFORMAT_IEEEFP:
                     {
-                        switch (bitsPerSample)
+                        switch(bitsPerSample)
                         {
                             case sizeof(float) * 8:
                             {
-                                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                                for(unsigned int y = 0; y < h; ++y, ++yd.y)
                                 {
                                     float *pr, *pg, *pb;
 
-                                    if (planarConfig == PLANARCONFIG_CONTIG)
+                                    if(planarConfig == PLANARCONFIG_CONTIG)
                                     {
                                         TIFFReadScanline(tiff, bufr, y);
                                         pr = (float*)bufr;
@@ -1001,18 +1001,18 @@ doxygen_overloaded_function(template<...> void tiffToRGBImage)
 
                                     typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
                                     typename RGBImageIterator::row_iterator rowend = rowit + w;
-                                    for (; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
+                                    for(; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
                                         a.setRGB(*pr, *pg, *pb, rowit);
                                 }
                                 break;
                             }
                             case sizeof(double) * 8:
                             {
-                                for (unsigned int y = 0; y < h; ++y, ++yd.y)
+                                for(unsigned int y = 0; y < h; ++y, ++yd.y)
                                 {
                                     double *pr, *pg, *pb;
 
-                                    if (planarConfig == PLANARCONFIG_CONTIG)
+                                    if(planarConfig == PLANARCONFIG_CONTIG)
                                     {
                                         TIFFReadScanline(tiff, bufr, y);
                                         pr = (double*)bufr;
@@ -1031,7 +1031,7 @@ doxygen_overloaded_function(template<...> void tiffToRGBImage)
 
                                     typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
                                     typename RGBImageIterator::row_iterator rowend = rowit + w;
-                                    for (; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
+                                    for(; rowit < rowend; ++rowit, pr += offset, pg += offset, pb += offset)
                                         a.setRGB(*pr, *pg, *pb, rowit);
                                 }
                                 break;
@@ -1050,7 +1050,7 @@ doxygen_overloaded_function(template<...> void tiffToRGBImage)
                     }
                 }
             }
-            catch (...)
+            catch(...)
             {
                 delete[] bufr;
                 delete[] bufg;
@@ -1073,14 +1073,14 @@ doxygen_overloaded_function(template<...> void tiffToRGBImage)
     }
 }
 
-template<class ImageIterator, class VectorComponentAccessor>
+template <class ImageIterator, class VectorComponentAccessor>
 void
 tiffToRGBImage(TiffImage* tiff, pair<ImageIterator, VectorComponentAccessor> dest)
 {
     tiffToRGBImage(tiff, dest.first, dest.second);
 }
 
-template<class T>
+template <class T>
 struct CreateTiffImage;
 
 /********************************************************/
@@ -1167,9 +1167,9 @@ struct CreateTiffImage;
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void createTiffImage)
+doxygen_overloaded_function(template <...> void createTiffImage)
 
-    template<class ImageIterator, class Accessor>
+    template <class ImageIterator, class Accessor>
     inline void createTiffImage(ImageIterator upperleft, ImageIterator lowerright,
                                 Accessor a, TiffImage* tiff)
 {
@@ -1177,14 +1177,14 @@ doxygen_overloaded_function(template<...> void createTiffImage)
         exec(upperleft, lowerright, a, tiff);
 }
 
-template<class ImageIterator, class Accessor>
+template <class ImageIterator, class Accessor>
 inline void
 createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage* tiff)
 {
     createTiffImage(src.first, src.second, src.third, tiff);
 }
 
-template<class T, class S>
+template <class T, class S>
 inline void
     createTiffImage(MultiArrayView<2, T, S> const& src, TiffImage* tiff)
 {
@@ -1270,9 +1270,9 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void createScalarTiffImage)
+doxygen_overloaded_function(template <...> void createScalarTiffImage)
 
-    template<class ImageIterator, class Accessor>
+    template <class ImageIterator, class Accessor>
     inline void createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
                                       Accessor a, TiffImage* tiff)
 {
@@ -1280,14 +1280,14 @@ doxygen_overloaded_function(template<...> void createScalarTiffImage)
         exec(upperleft, lowerright, a, tiff);
 }
 
-template<class ImageIterator, class Accessor>
+template <class ImageIterator, class Accessor>
 inline void
 createScalarTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage* tiff)
 {
     createScalarTiffImage(src.first, src.second, src.third, tiff);
 }
 
-template<class ImageIterator, class Accessor>
+template <class ImageIterator, class Accessor>
 void
 createBScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
                        Accessor a, TiffImage* tiff)
@@ -1310,19 +1310,19 @@ createBScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
 
     try
     {
-        for (int y = 0; y < h; ++y, ++ys.y)
+        for(int y = 0; y < h; ++y, ++ys.y)
         {
             uint8* p = (uint8*)buf;
             ImageIterator xs(ys);
 
-            for (int x = 0; x < w; ++x, ++xs.x)
+            for(int x = 0; x < w; ++x, ++xs.x)
             {
                 p[x] = a(xs);
             }
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch (...)
+    catch(...)
     {
         delete[] buf;
         throw;
@@ -1330,7 +1330,7 @@ createBScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     delete[] buf;
 }
 
-template<class ImageIterator, class Accessor>
+template <class ImageIterator, class Accessor>
 void
 createShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
                            Accessor a, TiffImage* tiff)
@@ -1353,19 +1353,19 @@ createShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
 
     try
     {
-        for (int y = 0; y < h; ++y, ++ys.y)
+        for(int y = 0; y < h; ++y, ++ys.y)
         {
             int16* p = (int16*)buf;
             ImageIterator xs(ys);
 
-            for (int x = 0; x < w; ++x, ++xs.x)
+            for(int x = 0; x < w; ++x, ++xs.x)
             {
                 p[x] = a(xs);
             }
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch (...)
+    catch(...)
     {
         delete[] buf;
         throw;
@@ -1373,7 +1373,7 @@ createShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     delete[] buf;
 }
 
-template<class ImageIterator, class Accessor>
+template <class ImageIterator, class Accessor>
 void
 createUShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
                             Accessor a, TiffImage* tiff)
@@ -1396,19 +1396,19 @@ createUShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
 
     try
     {
-        for (int y = 0; y < h; ++y, ++ys.y)
+        for(int y = 0; y < h; ++y, ++ys.y)
         {
             uint16* p = (uint16*)buf;
             ImageIterator xs(ys);
 
-            for (int x = 0; x < w; ++x, ++xs.x)
+            for(int x = 0; x < w; ++x, ++xs.x)
             {
                 p[x] = a(xs);
             }
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch (...)
+    catch(...)
     {
         delete[] buf;
         throw;
@@ -1416,7 +1416,7 @@ createUShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     delete[] buf;
 }
 
-template<class ImageIterator, class Accessor>
+template <class ImageIterator, class Accessor>
 void
 createIScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
                        Accessor a, TiffImage* tiff)
@@ -1439,19 +1439,19 @@ createIScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
 
     try
     {
-        for (int y = 0; y < h; ++y, ++ys.y)
+        for(int y = 0; y < h; ++y, ++ys.y)
         {
             int32* p = (int32*)buf;
             ImageIterator xs(ys);
 
-            for (int x = 0; x < w; ++x, ++xs.x)
+            for(int x = 0; x < w; ++x, ++xs.x)
             {
                 p[x] = a(xs);
             }
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch (...)
+    catch(...)
     {
         delete[] buf;
         throw;
@@ -1459,7 +1459,7 @@ createIScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     delete[] buf;
 }
 
-template<class ImageIterator, class Accessor>
+template <class ImageIterator, class Accessor>
 void
 createFScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
                        Accessor a, TiffImage* tiff)
@@ -1482,19 +1482,19 @@ createFScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
 
     try
     {
-        for (int y = 0; y < h; ++y, ++ys.y)
+        for(int y = 0; y < h; ++y, ++ys.y)
         {
             float* p = (float*)buf;
             ImageIterator xs(ys);
 
-            for (int x = 0; x < w; ++x, ++xs.x)
+            for(int x = 0; x < w; ++x, ++xs.x)
             {
                 p[x] = a(xs);
             }
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch (...)
+    catch(...)
     {
         delete[] buf;
         throw;
@@ -1502,7 +1502,7 @@ createFScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     delete[] buf;
 }
 
-template<class ImageIterator, class Accessor>
+template <class ImageIterator, class Accessor>
 void
 createDScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
                        Accessor a, TiffImage* tiff)
@@ -1525,19 +1525,19 @@ createDScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
 
     try
     {
-        for (int y = 0; y < h; ++y, ++ys.y)
+        for(int y = 0; y < h; ++y, ++ys.y)
         {
             double* p = (double*)buf;
             ImageIterator xs(ys);
 
-            for (int x = 0; x < w; ++x, ++xs.x)
+            for(int x = 0; x < w; ++x, ++xs.x)
             {
                 p[x] = a(xs);
             }
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch (...)
+    catch(...)
     {
         delete[] buf;
         throw;
@@ -1545,10 +1545,10 @@ createDScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     delete[] buf;
 }
 
-template<>
+template <>
 struct CreateTiffImage<unsigned char>
 {
-    template<class ImageIterator, class Accessor>
+    template <class ImageIterator, class Accessor>
     static void
     exec(ImageIterator upperleft, ImageIterator lowerright,
          Accessor a, TiffImage* tiff)
@@ -1557,10 +1557,10 @@ struct CreateTiffImage<unsigned char>
     }
 };
 
-template<>
+template <>
 struct CreateTiffImage<short>
 {
-    template<class ImageIterator, class Accessor>
+    template <class ImageIterator, class Accessor>
     static void
     exec(ImageIterator upperleft, ImageIterator lowerright,
          Accessor a, TiffImage* tiff)
@@ -1569,10 +1569,10 @@ struct CreateTiffImage<short>
     }
 };
 
-template<>
+template <>
 struct CreateTiffImage<unsigned short>
 {
-    template<class ImageIterator, class Accessor>
+    template <class ImageIterator, class Accessor>
     static void
     exec(ImageIterator upperleft, ImageIterator lowerright,
          Accessor a, TiffImage* tiff)
@@ -1581,10 +1581,10 @@ struct CreateTiffImage<unsigned short>
     }
 };
 
-template<>
+template <>
 struct CreateTiffImage<int>
 {
-    template<class ImageIterator, class Accessor>
+    template <class ImageIterator, class Accessor>
     static void
     exec(ImageIterator upperleft, ImageIterator lowerright,
          Accessor a, TiffImage* tiff)
@@ -1593,10 +1593,10 @@ struct CreateTiffImage<int>
     }
 };
 
-template<>
+template <>
 struct CreateTiffImage<float>
 {
-    template<class ImageIterator, class Accessor>
+    template <class ImageIterator, class Accessor>
     static void
     exec(ImageIterator upperleft, ImageIterator lowerright,
          Accessor a, TiffImage* tiff)
@@ -1605,10 +1605,10 @@ struct CreateTiffImage<float>
     }
 };
 
-template<>
+template <>
 struct CreateTiffImage<double>
 {
-    template<class ImageIterator, class Accessor>
+    template <class ImageIterator, class Accessor>
     static void
     exec(ImageIterator upperleft, ImageIterator lowerright,
          Accessor a, TiffImage* tiff)
@@ -1698,9 +1698,9 @@ struct CreateTiffImage<double>
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void createRGBTiffImage)
+doxygen_overloaded_function(template <...> void createRGBTiffImage)
 
-    template<class RGBImageIterator, class RGBAccessor>
+    template <class RGBImageIterator, class RGBAccessor>
     inline void createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
                                    RGBAccessor a, TiffImage* tiff)
 {
@@ -1708,14 +1708,14 @@ doxygen_overloaded_function(template<...> void createRGBTiffImage)
         exec(upperleft, lowerright, a, tiff);
 }
 
-template<class RGBImageIterator, class RGBAccessor>
+template <class RGBImageIterator, class RGBAccessor>
 inline void
 createRGBTiffImage(triple<RGBImageIterator, RGBImageIterator, RGBAccessor> src, TiffImage* tiff)
 {
     createRGBTiffImage(src.first, src.second, src.third, tiff);
 }
 
-template<class RGBImageIterator, class RGBAccessor>
+template <class RGBImageIterator, class RGBAccessor>
 void
 createBRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
                     RGBAccessor a, TiffImage* tiff)
@@ -1738,7 +1738,7 @@ createBRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 
     try
     {
-        for (int y = 0; y < h; ++y, ++ys.y)
+        for(int y = 0; y < h; ++y, ++ys.y)
         {
             uint8* pr = (uint8*)buf;
             uint8* pg = pr + 1;
@@ -1746,7 +1746,7 @@ createBRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 
             RGBImageIterator xs(ys);
 
-            for (int x = 0; x < w; ++x, ++xs.x, pr += 3, pg += 3, pb += 3)
+            for(int x = 0; x < w; ++x, ++xs.x, pr += 3, pg += 3, pb += 3)
             {
                 *pr = a.red(xs);
                 *pg = a.green(xs);
@@ -1755,7 +1755,7 @@ createBRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch (...)
+    catch(...)
     {
         delete[] buf;
         throw;
@@ -1763,7 +1763,7 @@ createBRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     delete[] buf;
 }
 
-template<class RGBImageIterator, class RGBAccessor>
+template <class RGBImageIterator, class RGBAccessor>
 void
 createShortRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
                         RGBAccessor a, TiffImage* tiff)
@@ -1786,7 +1786,7 @@ createShortRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 
     try
     {
-        for (int y = 0; y < h; ++y, ++ys.y)
+        for(int y = 0; y < h; ++y, ++ys.y)
         {
             uint16* pr = (uint16*)buf;
             uint16* pg = pr + 1;
@@ -1794,7 +1794,7 @@ createShortRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 
             RGBImageIterator xs(ys);
 
-            for (int x = 0; x < w; ++x, ++xs.x, pr += 3, pg += 3, pb += 3)
+            for(int x = 0; x < w; ++x, ++xs.x, pr += 3, pg += 3, pb += 3)
             {
                 *pr = a.red(xs);
                 *pg = a.green(xs);
@@ -1803,7 +1803,7 @@ createShortRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch (...)
+    catch(...)
     {
         delete[] buf;
         throw;
@@ -1811,7 +1811,7 @@ createShortRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     delete[] buf;
 }
 
-template<class RGBImageIterator, class RGBAccessor>
+template <class RGBImageIterator, class RGBAccessor>
 void
 createIRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
                     RGBAccessor a, TiffImage* tiff)
@@ -1834,7 +1834,7 @@ createIRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 
     try
     {
-        for (int y = 0; y < h; ++y, ++ys.y)
+        for(int y = 0; y < h; ++y, ++ys.y)
         {
             uint32* pr = (uint32*)buf;
             uint32* pg = pr + 1;
@@ -1842,7 +1842,7 @@ createIRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 
             RGBImageIterator xs(ys);
 
-            for (int x = 0; x < w; ++x, ++xs.x, pr += 3, pg += 3, pb += 3)
+            for(int x = 0; x < w; ++x, ++xs.x, pr += 3, pg += 3, pb += 3)
             {
                 *pr = a.red(xs);
                 *pg = a.green(xs);
@@ -1851,7 +1851,7 @@ createIRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch (...)
+    catch(...)
     {
         delete[] buf;
         throw;
@@ -1859,7 +1859,7 @@ createIRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     delete[] buf;
 }
 
-template<class RGBImageIterator, class RGBAccessor>
+template <class RGBImageIterator, class RGBAccessor>
 void
 createFRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
                     RGBAccessor a, TiffImage* tiff)
@@ -1882,7 +1882,7 @@ createFRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 
     try
     {
-        for (int y = 0; y < h; ++y, ++ys.y)
+        for(int y = 0; y < h; ++y, ++ys.y)
         {
             float* pr = (float*)buf;
             float* pg = pr + 1;
@@ -1890,7 +1890,7 @@ createFRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 
             RGBImageIterator xs(ys);
 
-            for (int x = 0; x < w; ++x, ++xs.x, pr += 3, pg += 3, pb += 3)
+            for(int x = 0; x < w; ++x, ++xs.x, pr += 3, pg += 3, pb += 3)
             {
                 *pr = a.red(xs);
                 *pg = a.green(xs);
@@ -1899,7 +1899,7 @@ createFRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch (...)
+    catch(...)
     {
         delete[] buf;
         throw;
@@ -1907,7 +1907,7 @@ createFRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     delete[] buf;
 }
 
-template<class RGBImageIterator, class RGBAccessor>
+template <class RGBImageIterator, class RGBAccessor>
 void
 createDRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
                     RGBAccessor a, TiffImage* tiff)
@@ -1930,7 +1930,7 @@ createDRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 
     try
     {
-        for (int y = 0; y < h; ++y, ++ys.y)
+        for(int y = 0; y < h; ++y, ++ys.y)
         {
             double* pr = (double*)buf;
             double* pg = pr + 1;
@@ -1938,7 +1938,7 @@ createDRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 
             RGBImageIterator xs(ys);
 
-            for (int x = 0; x < w; ++x, ++xs.x, pr += 3, pg += 3, pb += 3)
+            for(int x = 0; x < w; ++x, ++xs.x, pr += 3, pg += 3, pb += 3)
             {
                 *pr = a.red(xs);
                 *pg = a.green(xs);
@@ -1947,7 +1947,7 @@ createDRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
             TIFFWriteScanline(tiff, buf, y);
         }
     }
-    catch (...)
+    catch(...)
     {
         delete[] buf;
         throw;
@@ -1955,10 +1955,10 @@ createDRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     delete[] buf;
 }
 
-template<>
+template <>
 struct CreateTiffImage<RGBValue<unsigned char>>
 {
-    template<class ImageIterator, class Accessor>
+    template <class ImageIterator, class Accessor>
     static void
     exec(ImageIterator upperleft, ImageIterator lowerright,
          Accessor a, TiffImage* tiff)
@@ -1967,10 +1967,10 @@ struct CreateTiffImage<RGBValue<unsigned char>>
     }
 };
 
-template<>
+template <>
 struct CreateTiffImage<RGBValue<short>>
 {
-    template<class ImageIterator, class Accessor>
+    template <class ImageIterator, class Accessor>
     static void
     exec(ImageIterator upperleft, ImageIterator lowerright,
          Accessor a, TiffImage* tiff)
@@ -1979,10 +1979,10 @@ struct CreateTiffImage<RGBValue<short>>
     }
 };
 
-template<>
+template <>
 struct CreateTiffImage<RGBValue<int>>
 {
-    template<class ImageIterator, class Accessor>
+    template <class ImageIterator, class Accessor>
     static void
     exec(ImageIterator upperleft, ImageIterator lowerright,
          Accessor a, TiffImage* tiff)
@@ -1991,10 +1991,10 @@ struct CreateTiffImage<RGBValue<int>>
     }
 };
 
-template<>
+template <>
 struct CreateTiffImage<RGBValue<float>>
 {
-    template<class ImageIterator, class Accessor>
+    template <class ImageIterator, class Accessor>
     static void
     exec(ImageIterator upperleft, ImageIterator lowerright,
          Accessor a, TiffImage* tiff)
@@ -2003,10 +2003,10 @@ struct CreateTiffImage<RGBValue<float>>
     }
 };
 
-template<>
+template <>
 struct CreateTiffImage<RGBValue<double>>
 {
-    template<class ImageIterator, class Accessor>
+    template <class ImageIterator, class Accessor>
     static void
     exec(ImageIterator upperleft, ImageIterator lowerright,
          Accessor a, TiffImage* tiff)

@@ -145,10 +145,10 @@ namespace vigra
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void gradientEnergyTensor)
+doxygen_overloaded_function(template <...> void gradientEnergyTensor)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void gradientEnergyTensor(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
                               DestIterator dupperleft, DestAccessor dest,
                               Kernel1D<double> const& derivKernel, Kernel1D<double> const& smoothKernel)
@@ -188,10 +188,10 @@ doxygen_overloaded_function(template<...> void gradientEnergyTensor)
                                 gyyi = gyy.begin(),
                                 gx3i = gx3.begin(),
                                 gy3i = gy3.begin();
-    for (int y = 0; y < h; ++y, ++dupperleft.y)
+    for(int y = 0; y < h; ++y, ++dupperleft.y)
     {
         typename DestIterator::row_iterator d = dupperleft.rowIterator();
-        for (int x = 0; x < w; ++x, ++d, ++gxi, ++gyi, ++gxxi, ++gxyi, ++gyyi, ++gx3i, ++gy3i)
+        for(int x = 0; x < w; ++x, ++d, ++gxi, ++gyi, ++gxxi, ++gxyi, ++gyyi, ++gx3i, ++gy3i)
         {
             dest.setComponent(sq(*gxxi) + sq(*gxyi) - *gxi * *gx3i, d, 0);
             dest.setComponent(-*gxyi * (*gxxi + *gyyi) + 0.5 * (*gxi * *gy3i + *gyi * *gx3i), d, 1);
@@ -200,8 +200,8 @@ doxygen_overloaded_function(template<...> void gradientEnergyTensor)
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 gradientEnergyTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                      pair<DestIterator, DestAccessor> dest,
@@ -211,8 +211,8 @@ gradientEnergyTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                          dest.first, dest.second, derivKernel, smoothKernel);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     gradientEnergyTensor(MultiArrayView<2, T1, S1> const& src,
                          MultiArrayView<2, T2, S2> dest,

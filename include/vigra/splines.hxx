@@ -48,7 +48,7 @@ namespace vigra
 namespace autodiff
 {
 
-template<class T, int N>
+template <class T, int N>
 class DualVector;
 
 } // namespace autodiff
@@ -87,7 +87,7 @@ class DualVector;
     <b>\#include</b> \<vigra/splines.hxx\><br>
     Namespace: vigra
 */
-template<int ORDER, class T = double>
+template <int ORDER, class T = double>
 class BSplineBase
 {
 public:
@@ -203,17 +203,17 @@ protected:
     static WeightMatrix weightMatrix_;
 };
 
-template<int ORDER, class T>
+template <int ORDER, class T>
 ArrayVector<double> BSplineBase<ORDER, T>::prefilterCoefficients_(getPrefilterCoefficients());
 
-template<int ORDER, class T>
+template <int ORDER, class T>
 typename BSplineBase<ORDER, T>::WeightMatrix BSplineBase<ORDER, T>::weightMatrix_(calculateWeightMatrix());
 
-template<int ORDER, class T>
+template <int ORDER, class T>
 typename BSplineBase<ORDER, T>::result_type
 BSplineBase<ORDER, T>::exec(first_argument_type x, second_argument_type derivative_order) const
 {
-    if (derivative_order == 0)
+    if(derivative_order == 0)
     {
         T n12 = (ORDER + 1.0) / 2.0;
         return ((n12 + x) * s1_(x + 0.5) + (n12 - x) * s1_(x - 0.5)) / ORDER;
@@ -225,7 +225,7 @@ BSplineBase<ORDER, T>::exec(first_argument_type x, second_argument_type derivati
     }
 }
 
-template<int ORDER, class T>
+template <int ORDER, class T>
 ArrayVector<double>
 BSplineBase<ORDER, T>::getPrefilterCoefficients()
 {
@@ -251,19 +251,19 @@ BSplineBase<ORDER, T>::getPrefilterCoefficients()
     return ArrayVector<double>(coeffs[ORDER], coeffs[ORDER] + ORDER / 2);
 }
 
-template<int ORDER, class T>
+template <int ORDER, class T>
 typename BSplineBase<ORDER, T>::WeightMatrix
 BSplineBase<ORDER, T>::calculateWeightMatrix()
 {
     WeightMatrix res(ORDER + 1, ArrayVector<T>(ORDER + 1));
     double faculty = 1.0;
-    for (int d = 0; d <= ORDER; ++d)
+    for(int d = 0; d <= ORDER; ++d)
     {
-        if (d > 1)
+        if(d > 1)
             faculty *= d;
         double x = ORDER / 2; // (note: integer division)
         BSplineBase spline;
-        for (int i = 0; i <= ORDER; ++i, --x)
+        for(int i = 0; i <= ORDER; ++i, --x)
             res[d][i] = spline(x, d) / faculty;
     }
     return res;
@@ -280,7 +280,7 @@ BSplineBase<ORDER, T>::calculateWeightMatrix()
     Provides the interface of \ref vigra::BSplineBase with a more convenient
     name -- see there for more documentation.
 */
-template<int ORDER, class T = double>
+template <int ORDER, class T = double>
 class BSpline
     : public BSplineBase<ORDER, T>
 {
@@ -299,7 +299,7 @@ public:
 /*                                                      */
 /********************************************************/
 
-template<class T>
+template <class T>
 class BSplineBase<0, T>
 {
 public:
@@ -323,7 +323,7 @@ public:
         return exec(x, derivativeOrder_);
     }
 
-    template<unsigned int IntBits, unsigned int FracBits>
+    template <unsigned int IntBits, unsigned int FracBits>
     FixedPoint<IntBits, FracBits> operator()(FixedPoint<IntBits, FracBits> x) const
     {
         typedef FixedPoint<IntBits, FracBits> Value;
@@ -332,7 +332,7 @@ public:
                    : Value(0, FPNoShift);
     }
 
-    template<class U, int N>
+    template <class U, int N>
     autodiff::DualVector<U, N> operator()(autodiff::DualVector<U, N> const& x) const
     {
         return x < 0.5 && -0.5 <= x
@@ -375,7 +375,7 @@ public:
 protected:
     result_type exec(first_argument_type x, second_argument_type derivative_order) const
     {
-        if (derivative_order == 0)
+        if(derivative_order == 0)
             return x < 0.5 && -0.5 <= x ? 1.0
                                         : 0.0;
         else
@@ -387,10 +387,10 @@ protected:
     static WeightMatrix weightMatrix_;
 };
 
-template<class T>
+template <class T>
 ArrayVector<double> BSplineBase<0, T>::prefilterCoefficients_;
 
-template<class T>
+template <class T>
 typename BSplineBase<0, T>::WeightMatrix BSplineBase<0, T>::weightMatrix_ = {{1.0}};
 
 /********************************************************/
@@ -399,7 +399,7 @@ typename BSplineBase<0, T>::WeightMatrix BSplineBase<0, T>::weightMatrix_ = {{1.
 /*                                                      */
 /********************************************************/
 
-template<class T>
+template <class T>
 class BSpline<1, T>
 {
 public:
@@ -423,7 +423,7 @@ public:
         return exec(x, derivativeOrder_);
     }
 
-    template<unsigned int IntBits, unsigned int FracBits>
+    template <unsigned int IntBits, unsigned int FracBits>
     FixedPoint<IntBits, FracBits> operator()(FixedPoint<IntBits, FracBits> x) const
     {
         typedef FixedPoint<IntBits, FracBits> Value;
@@ -432,7 +432,7 @@ public:
                               : Value(0, FPNoShift);
     }
 
-    template<class U, int N>
+    template <class U, int N>
     autodiff::DualVector<U, N> operator()(autodiff::DualVector<U, N> x) const
     {
         x = abs(x);
@@ -481,17 +481,17 @@ protected:
     static WeightMatrix weightMatrix_;
 };
 
-template<class T>
+template <class T>
 ArrayVector<double> BSpline<1, T>::prefilterCoefficients_;
 
-template<class T>
+template <class T>
 typename BSpline<1, T>::WeightMatrix BSpline<1, T>::weightMatrix_ = {{1.0, 0.0}, {-1.0, 1.0}};
 
-template<class T>
+template <class T>
 T
 BSpline<1, T>::exec(T x, unsigned int derivative_order) const
 {
-    switch (derivative_order)
+    switch(derivative_order)
     {
         case 0:
         {
@@ -517,7 +517,7 @@ BSpline<1, T>::exec(T x, unsigned int derivative_order) const
 /*                                                      */
 /********************************************************/
 
-template<class T>
+template <class T>
 class BSpline<2, T>
 {
 public:
@@ -541,7 +541,7 @@ public:
         return exec(x, derivativeOrder_);
     }
 
-    template<unsigned int IntBits, unsigned int FracBits>
+    template <unsigned int IntBits, unsigned int FracBits>
     FixedPoint<IntBits, FracBits> operator()(FixedPoint<IntBits, FracBits> x) const
     {
         typedef FixedPoint<IntBits, FracBits> Value;
@@ -567,7 +567,7 @@ public:
                                : Value(0, FPNoShift);
     }
 
-    template<class U, int N>
+    template <class U, int N>
     autodiff::DualVector<U, N> operator()(autodiff::DualVector<U, N> x) const
     {
         x = abs(x);
@@ -623,20 +623,20 @@ protected:
     static WeightMatrix weightMatrix_;
 };
 
-template<class T>
+template <class T>
 ArrayVector<double> BSpline<2, T>::prefilterCoefficients_(1, 2.0 * M_SQRT2 - 3.0);
 
-template<class T>
+template <class T>
 typename BSpline<2, T>::WeightMatrix BSpline<2, T>::weightMatrix_ =
     {{0.125, 0.75, 0.125},
      {-0.5, 0.0, 0.5},
      {0.5, -1.0, 0.5}};
 
-template<class T>
+template <class T>
 typename BSpline<2, T>::result_type
 BSpline<2, T>::exec(first_argument_type x, second_argument_type derivative_order) const
 {
-    switch (derivative_order)
+    switch(derivative_order)
     {
         case 0:
         {
@@ -672,7 +672,7 @@ BSpline<2, T>::exec(first_argument_type x, second_argument_type derivative_order
 /*                                                      */
 /********************************************************/
 
-template<class T>
+template <class T>
 class BSpline<3, T>
 {
 public:
@@ -696,7 +696,7 @@ public:
         return exec(x, derivativeOrder_);
     }
 
-    template<unsigned int IntBits, unsigned int FracBits>
+    template <unsigned int IntBits, unsigned int FracBits>
     FixedPoint<IntBits, FracBits> operator()(FixedPoint<IntBits, FracBits> x) const
     {
         typedef FixedPoint<IntBits, FracBits> Value;
@@ -721,15 +721,15 @@ public:
                                : Value(0, FPNoShift);
     }
 
-    template<class U, int N>
+    template <class U, int N>
     autodiff::DualVector<U, N> operator()(autodiff::DualVector<U, N> x) const
     {
         x = abs(x);
-        if (x < 1.0)
+        if(x < 1.0)
         {
             return 2.0 / 3.0 + x * x * (-1.0 + 0.5 * x);
         }
-        else if (x < 2.0)
+        else if(x < 2.0)
         {
             x = 2.0 - x;
             return x * x * x / 6.0;
@@ -788,30 +788,30 @@ protected:
     static WeightMatrix weightMatrix_;
 };
 
-template<class T>
+template <class T>
 ArrayVector<double> BSpline<3, T>::prefilterCoefficients_(1, VIGRA_CSTD::sqrt(3.0) - 2.0);
 
-template<class T>
+template <class T>
 typename BSpline<3, T>::WeightMatrix BSpline<3, T>::weightMatrix_ =
     {{1.0 / 6.0, 2.0 / 3.0, 1.0 / 6.0, 0.0},
      {-0.5, 0.0, 0.5, 0.0},
      {0.5, -1.0, 0.5, 0.0},
      {-1.0 / 6.0, 0.5, -0.5, 1.0 / 6.0}};
 
-template<class T>
+template <class T>
 typename BSpline<3, T>::result_type
 BSpline<3, T>::exec(first_argument_type x, second_argument_type derivative_order) const
 {
-    switch (derivative_order)
+    switch(derivative_order)
     {
         case 0:
         {
             x = VIGRA_CSTD::fabs(x);
-            if (x < 1.0)
+            if(x < 1.0)
             {
                 return 2.0 / 3.0 + x * x * (-1.0 + 0.5 * x);
             }
-            else if (x < 2.0)
+            else if(x < 2.0)
             {
                 x = 2.0 - x;
                 return x * x * x / 6.0;
@@ -857,7 +857,7 @@ typedef BSpline<3, double> CubicBSplineKernel;
 /*                                                      */
 /********************************************************/
 
-template<class T>
+template <class T>
 class BSpline<4, T>
 {
 public:
@@ -886,19 +886,19 @@ public:
         return exec(x, derivativeOrder_ + derivative_order);
     }
 
-    template<class U, int N>
+    template <class U, int N>
     autodiff::DualVector<U, N> operator()(autodiff::DualVector<U, N> x) const
     {
         x = abs(x);
-        if (x <= 0.5)
+        if(x <= 0.5)
         {
             return 115.0 / 192.0 + x * x * (-0.625 + x * x * 0.25);
         }
-        else if (x < 1.5)
+        else if(x < 1.5)
         {
             return (55.0 / 16.0 + x * (1.25 + x * (-7.5 + x * (5.0 - x)))) / 6.0;
         }
-        else if (x < 2.5)
+        else if(x < 2.5)
         {
             x = 2.5 - x;
             return sq(x * x) / 24.0;
@@ -957,10 +957,10 @@ protected:
     static WeightMatrix weightMatrix_;
 };
 
-template<class T>
+template <class T>
 ArrayVector<double> BSpline<4, T>::prefilterCoefficients_(BSplineBase<4, T>::getPrefilterCoefficients());
 
-template<class T>
+template <class T>
 typename BSpline<4, T>::WeightMatrix BSpline<4, T>::weightMatrix_ =
     {{1.0 / 384.0, 19.0 / 96.0, 115.0 / 192.0, 19.0 / 96.0, 1.0 / 384.0},
      {-1.0 / 48.0, -11.0 / 24.0, 0.0, 11.0 / 24.0, 1.0 / 48.0},
@@ -968,24 +968,24 @@ typename BSpline<4, T>::WeightMatrix BSpline<4, T>::weightMatrix_ =
      {-1.0 / 12.0, 1.0 / 6.0, 0.0, -1.0 / 6.0, 1.0 / 12.0},
      {1.0 / 24.0, -1.0 / 6.0, 0.25, -1.0 / 6.0, 1.0 / 24.0}};
 
-template<class T>
+template <class T>
 typename BSpline<4, T>::result_type
 BSpline<4, T>::exec(first_argument_type x, second_argument_type derivative_order) const
 {
-    switch (derivative_order)
+    switch(derivative_order)
     {
         case 0:
         {
             x = VIGRA_CSTD::fabs(x);
-            if (x <= 0.5)
+            if(x <= 0.5)
             {
                 return 115.0 / 192.0 + x * x * (-0.625 + x * x * 0.25);
             }
-            else if (x < 1.5)
+            else if(x < 1.5)
             {
                 return (55.0 / 16.0 + x * (1.25 + x * (-7.5 + x * (5.0 - x)))) / 6.0;
             }
-            else if (x < 2.5)
+            else if(x < 2.5)
             {
                 x = 2.5 - x;
                 return sq(x * x) / 24.0;
@@ -997,15 +997,15 @@ BSpline<4, T>::exec(first_argument_type x, second_argument_type derivative_order
         {
             double s = x < 0.0 ? -1.0 : 1.0;
             x = VIGRA_CSTD::fabs(x);
-            if (x <= 0.5)
+            if(x <= 0.5)
             {
                 return s * x * (-1.25 + x * x);
             }
-            else if (x < 1.5)
+            else if(x < 1.5)
             {
                 return s * (5.0 + x * (-60.0 + x * (60.0 - 16.0 * x))) / 24.0;
             }
-            else if (x < 2.5)
+            else if(x < 2.5)
             {
                 x = 2.5 - x;
                 return s * x * x * x / -6.0;
@@ -1016,15 +1016,15 @@ BSpline<4, T>::exec(first_argument_type x, second_argument_type derivative_order
         case 2:
         {
             x = VIGRA_CSTD::fabs(x);
-            if (x <= 0.5)
+            if(x <= 0.5)
             {
                 return -1.25 + 3.0 * x * x;
             }
-            else if (x < 1.5)
+            else if(x < 1.5)
             {
                 return -2.5 + x * (5.0 - 2.0 * x);
             }
-            else if (x < 2.5)
+            else if(x < 2.5)
             {
                 x = 2.5 - x;
                 return x * x / 2.0;
@@ -1036,15 +1036,15 @@ BSpline<4, T>::exec(first_argument_type x, second_argument_type derivative_order
         {
             double s = x < 0.0 ? -1.0 : 1.0;
             x = VIGRA_CSTD::fabs(x);
-            if (x <= 0.5)
+            if(x <= 0.5)
             {
                 return s * x * 6.0;
             }
-            else if (x < 1.5)
+            else if(x < 1.5)
             {
                 return s * (5.0 - 4.0 * x);
             }
-            else if (x < 2.5)
+            else if(x < 2.5)
             {
                 return s * (x - 2.5);
             }
@@ -1082,7 +1082,7 @@ typedef BSpline<4, double> QuarticBSplineKernel;
 /*                                                      */
 /********************************************************/
 
-template<class T>
+template <class T>
 class BSpline<5, T>
 {
 public:
@@ -1111,19 +1111,19 @@ public:
         return exec(x, derivativeOrder_ + derivative_order);
     }
 
-    template<class U, int N>
+    template <class U, int N>
     autodiff::DualVector<U, N> operator()(autodiff::DualVector<U, N> x) const
     {
         x = abs(x);
-        if (x <= 1.0)
+        if(x <= 1.0)
         {
             return 0.55 + x * x * (-0.5 + x * x * (0.25 - x / 12.0));
         }
-        else if (x < 2.0)
+        else if(x < 2.0)
         {
             return 17.0 / 40.0 + x * (0.625 + x * (-1.75 + x * (1.25 + x * (-0.375 + x / 24.0))));
         }
-        else if (x < 3.0)
+        else if(x < 3.0)
         {
             x = 3.0 - x;
             return x * sq(x * x) / 120.0;
@@ -1187,10 +1187,10 @@ protected:
     static WeightMatrix weightMatrix_;
 };
 
-template<class T>
+template <class T>
 ArrayVector<double> BSpline<5, T>::prefilterCoefficients_(BSplineBase<5, T>::getPrefilterCoefficients());
 
-template<class T>
+template <class T>
 typename BSpline<5, T>::WeightMatrix BSpline<5, T>::weightMatrix_ =
     {{1.0 / 120.0, 13.0 / 60.0, 11.0 / 20.0, 13.0 / 60.0, 1.0 / 120.0, 0.0},
      {-1.0 / 24.0, -5.0 / 12.0, 0.0, 5.0 / 12.0, 1.0 / 24.0, 0.0},
@@ -1199,24 +1199,24 @@ typename BSpline<5, T>::WeightMatrix BSpline<5, T>::weightMatrix_ =
      {1.0 / 24.0, -1.0 / 6.0, 0.25, -1.0 / 6.0, 1.0 / 24.0, 0.0},
      {-1.0 / 120.0, 1.0 / 24.0, -1.0 / 12.0, 1.0 / 12.0, -1.0 / 24.0, 1.0 / 120.0}};
 
-template<class T>
+template <class T>
 typename BSpline<5, T>::result_type
 BSpline<5, T>::exec(first_argument_type x, second_argument_type derivative_order) const
 {
-    switch (derivative_order)
+    switch(derivative_order)
     {
         case 0:
         {
             x = VIGRA_CSTD::fabs(x);
-            if (x <= 1.0)
+            if(x <= 1.0)
             {
                 return 0.55 + x * x * (-0.5 + x * x * (0.25 - x / 12.0));
             }
-            else if (x < 2.0)
+            else if(x < 2.0)
             {
                 return 17.0 / 40.0 + x * (0.625 + x * (-1.75 + x * (1.25 + x * (-0.375 + x / 24.0))));
             }
-            else if (x < 3.0)
+            else if(x < 3.0)
             {
                 x = 3.0 - x;
                 return x * sq(x * x) / 120.0;
@@ -1228,15 +1228,15 @@ BSpline<5, T>::exec(first_argument_type x, second_argument_type derivative_order
         {
             double s = x < 0.0 ? -1.0 : 1.0;
             x = VIGRA_CSTD::fabs(x);
-            if (x <= 1.0)
+            if(x <= 1.0)
             {
                 return s * x * (-1.0 + x * x * (1.0 - 5.0 / 12.0 * x));
             }
-            else if (x < 2.0)
+            else if(x < 2.0)
             {
                 return s * (0.625 + x * (-3.5 + x * (3.75 + x * (-1.5 + 5.0 / 24.0 * x))));
             }
-            else if (x < 3.0)
+            else if(x < 3.0)
             {
                 x = 3.0 - x;
                 return s * sq(x * x) / -24.0;
@@ -1247,15 +1247,15 @@ BSpline<5, T>::exec(first_argument_type x, second_argument_type derivative_order
         case 2:
         {
             x = VIGRA_CSTD::fabs(x);
-            if (x <= 1.0)
+            if(x <= 1.0)
             {
                 return -1.0 + x * x * (3.0 - 5.0 / 3.0 * x);
             }
-            else if (x < 2.0)
+            else if(x < 2.0)
             {
                 return -3.5 + x * (7.5 + x * (-4.5 + 5.0 / 6.0 * x));
             }
-            else if (x < 3.0)
+            else if(x < 3.0)
             {
                 x = 3.0 - x;
                 return x * x * x / 6.0;
@@ -1267,15 +1267,15 @@ BSpline<5, T>::exec(first_argument_type x, second_argument_type derivative_order
         {
             double s = x < 0.0 ? -1.0 : 1.0;
             x = VIGRA_CSTD::fabs(x);
-            if (x <= 1.0)
+            if(x <= 1.0)
             {
                 return s * x * (6.0 - 5.0 * x);
             }
-            else if (x < 2.0)
+            else if(x < 2.0)
             {
                 return s * (7.5 + x * (-9.0 + 2.5 * x));
             }
-            else if (x < 3.0)
+            else if(x < 3.0)
             {
                 x = 3.0 - x;
                 return -0.5 * s * x * x;
@@ -1286,15 +1286,15 @@ BSpline<5, T>::exec(first_argument_type x, second_argument_type derivative_order
         case 4:
         {
             x = VIGRA_CSTD::fabs(x);
-            if (x <= 1.0)
+            if(x <= 1.0)
             {
                 return 6.0 - 10.0 * x;
             }
-            else if (x < 2.0)
+            else if(x < 2.0)
             {
                 return -9.0 + 5.0 * x;
             }
-            else if (x < 3.0)
+            else if(x < 3.0)
             {
                 return 3.0 - x;
             }
@@ -1347,7 +1347,7 @@ typedef BSpline<5, double> QuinticBSplineKernel;
     <b>\#include</b> \<vigra/splines.hxx\><br>
     Namespace: vigra
 */
-template<class T = double>
+template <class T = double>
 class CatmullRomSpline
 {
 public:
@@ -1405,19 +1405,19 @@ protected:
     static ArrayVector<double> prefilterCoefficients_;
 };
 
-template<class T>
+template <class T>
 ArrayVector<double> CatmullRomSpline<T>::prefilterCoefficients_;
 
-template<class T>
+template <class T>
 typename CatmullRomSpline<T>::result_type
 CatmullRomSpline<T>::operator()(argument_type x) const
 {
     x = VIGRA_CSTD::fabs(x);
-    if (x <= 1.0)
+    if(x <= 1.0)
     {
         return 1.0 + x * x * (-2.5 + 1.5 * x);
     }
-    else if (x >= 2.0)
+    else if(x >= 2.0)
     {
         return 0.0;
     }

@@ -53,7 +53,7 @@ namespace vigra
 /** Standard Stackentry used to Build a Tree. Contains Information 
  * About the current region being split
  */
-template<class Iter>
+template <class Iter>
 class DT_StackEntry
 {
 public:
@@ -115,7 +115,7 @@ public:
     {
         int num = 0;
 
-        for (int ii = 0; ii < static_cast<int>(classCounts().size()); ++ii)
+        for(int ii = 0; ii < static_cast<int>(classCounts().size()); ++ii)
         {
             num += classCounts()[ii] > 0;
         }

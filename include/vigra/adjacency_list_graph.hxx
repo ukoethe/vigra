@@ -64,7 +64,7 @@ namespace vigra
 namespace detail_adjacency_list_graph
 {
 
-template<class G, class ITEM>
+template <class G, class ITEM>
 class ItemIter
     : public ForwardIteratorFacade<
           ItemIter<G, ITEM>, ITEM, true>
@@ -86,7 +86,7 @@ public:
           id_(0),
           item_(ItemHelper::itemFromId(*graph_, id_))
     {
-        while (!isEnd() && item_ == lemon::INVALID)
+        while(!isEnd() && item_ == lemon::INVALID)
         {
             ++id_;
             item_ = ItemHelper::itemFromId(*graph_, id_);
@@ -120,7 +120,7 @@ private:
     {
         ++id_;
         item_ = ItemHelper::itemFromId(*graph_, id_);
-        while (!isEnd() && item_ == lemon::INVALID)
+        while(!isEnd() && item_ == lemon::INVALID)
         {
             ++id_;
             item_ = ItemHelper::itemFromId(*graph_, id_);
@@ -137,7 +137,7 @@ private:
 
 
 
-template<class GRAPH>
+template <class GRAPH>
 class ArcIt
     : public ForwardIteratorFacade<
           ArcIt<GRAPH>,
@@ -187,10 +187,10 @@ private:
     }
     void increment()
     {
-        if (inFirstHalf_)
+        if(inFirstHalf_)
         {
             ++pos_;
-            if (pos_ == lemon::INVALID)
+            if(pos_ == lemon::INVALID)
             {
                 pos_ = EdgeIt(*graph_);
                 inFirstHalf_ = false;
@@ -200,7 +200,7 @@ private:
         else
         {
             ++pos_;
-            if (pos_ == lemon::INVALID)
+            if(pos_ == lemon::INVALID)
             {
                 veryEnd_ = true;
             }
@@ -305,7 +305,7 @@ public:
 
 
     /// default edge map
-    template<class T>
+    template <class T>
     struct EdgeMap : DenseEdgeReferenceMap<GraphType, T>
     {
         EdgeMap()
@@ -323,7 +323,7 @@ public:
     };
 
     /// default node map
-    template<class T>
+    template <class T>
     struct NodeMap : DenseNodeReferenceMap<GraphType, T>
     {
         NodeMap()
@@ -341,7 +341,7 @@ public:
     };
 
     /// default arc map
-    template<class T>
+    template <class T>
     struct ArcMap : DenseArcReferenceMap<GraphType, T>
     {
         ArcMap()
@@ -505,7 +505,7 @@ public:
     size_t maxDegree() const
     {
         size_t md = 0;
-        for (NodeIt it(*this); it != lemon::INVALID; ++it)
+        for(NodeIt it(*this); it != lemon::INVALID; ++it)
         {
             std::max(md, size_t(degree(*it)));
         }
@@ -532,13 +532,13 @@ public:
 public:
     void reserveMaxNodeId(const index_type mxid)
     {
-        if (nodeNum() == 0 || mxid > maxNodeId())
+        if(nodeNum() == 0 || mxid > maxNodeId())
             nodes_.reserve(mxid + 1);
     }
 
     void reserveEdges(const size_t size)
     {
-        if (size > (size_t)edgeNum())
+        if(size > (size_t)edgeNum())
             edges_.reserve(size);
     }
 
@@ -561,7 +561,7 @@ public:
         size += 2 * edgeNum();
 
 
-        for (NodeIt iter(*this); iter != lemon::INVALID; ++iter)
+        for(NodeIt iter(*this); iter != lemon::INVALID; ++iter)
         {
             size += 2 + this->degree(*iter) * 2;
         }
@@ -569,7 +569,7 @@ public:
         return size;
     }
 
-    template<class ITER>
+    template <class ITER>
     void serialize(ITER outIter) const
     {
 
@@ -584,7 +584,7 @@ public:
         ++outIter;
 
         // edges
-        for (EdgeIt iter(*this); iter != lemon::INVALID; ++iter)
+        for(EdgeIt iter(*this); iter != lemon::INVALID; ++iter)
         {
             const Edge e(*iter);
             const size_t ui = this->id(this->u(e));
@@ -598,7 +598,7 @@ public:
 
 
         // node neighbors
-        for (NodeIt iter(*this); iter != lemon::INVALID; ++iter)
+        for(NodeIt iter(*this); iter != lemon::INVALID; ++iter)
         {
             const Node n(*iter);
 
@@ -607,7 +607,7 @@ public:
             *outIter = this->degree(*iter);
             ++outIter;
 
-            for (OutArcIt eIter(*this, n); eIter != lemon::INVALID; ++eIter)
+            for(OutArcIt eIter(*this, n); eIter != lemon::INVALID; ++eIter)
             {
                 const Edge e(*eIter);
                 const Node oNode(this->target(*eIter));
@@ -623,7 +623,7 @@ public:
         }
     }
 
-    template<class ITER>
+    template <class ITER>
     void deserialize(ITER begin, ITER)
     {
 
@@ -643,7 +643,7 @@ public:
         edges_.resize(maxEid + 1, EdgeStorage());
 
         // set up edges
-        for (size_t eid = 0; eid < edgeNum_; ++eid)
+        for(size_t eid = 0; eid < edgeNum_; ++eid)
         {
             const size_t u = *begin;
             ++begin;
@@ -655,7 +655,7 @@ public:
         }
 
         // set up nodes
-        for (size_t i = 0; i < nodeNum_; ++i)
+        for(size_t i = 0; i < nodeNum_; ++i)
         {
 
             const size_t id = *begin;
@@ -665,7 +665,7 @@ public:
 
             NodeStorage& nodeImpl = nodes_[id];
             nodeImpl.setId(id);
-            for (size_t d = 0; d < nodeDegree; ++d)
+            for(size_t d = 0; d < nodeDegree; ++d)
             {
                 const size_t ei = *begin;
                 ++begin;
@@ -683,20 +683,20 @@ private:
 
 
     // needs acces to const nodeImpl
-    template<class G, class NIMPL, class FILT>
+    template <class G, class NIMPL, class FILT>
     friend class detail::GenericIncEdgeIt;
 
-    template<class G>
+    template <class G>
     friend struct detail::NeighborNodeFilter;
-    template<class G>
+    template <class G>
     friend struct detail::IncEdgeFilter;
-    template<class G>
+    template <class G>
     friend struct detail::BackEdgeFilter;
-    template<class G>
+    template <class G>
     friend struct detail::IsOutFilter;
-    template<class G>
+    template <class G>
     friend struct detail::IsBackOutFilter;
-    template<class G>
+    template <class G>
     friend struct detail::IsInFilter;
 
 
@@ -753,16 +753,16 @@ AdjacencyListGraph::addNode()
 inline AdjacencyListGraph::Node
 AdjacencyListGraph::addNode(const AdjacencyListGraph::index_type id)
 {
-    if ((std::size_t)id == nodes_.size())
+    if((std::size_t)id == nodes_.size())
     {
         nodes_.push_back(NodeStorage(id));
         ++nodeNum_;
         return Node(id);
     }
-    else if ((std::size_t)id < nodes_.size())
+    else if((std::size_t)id < nodes_.size())
     {
         const Node node = nodeFromId(id);
-        if (node == lemon::INVALID)
+        if(node == lemon::INVALID)
         {
             nodes_[id] = NodeStorage(id);
             ++nodeNum_;
@@ -776,7 +776,7 @@ AdjacencyListGraph::addNode(const AdjacencyListGraph::index_type id)
     else
     {
         // refactor me
-        while (nodes_.size() < (std::size_t)id)
+        while(nodes_.size() < (std::size_t)id)
         {
             nodes_.push_back(NodeStorage(lemon::INVALID));
         }
@@ -795,7 +795,7 @@ AdjacencyListGraph::assignNodeRange(const AdjacencyListGraph::index_type beginId
     edgeNum_ = 0;
     nodeNum_ = endId - beginId;
     nodes_.resize(endId);
-    for (index_type i = beginId; i < endId; ++i)
+    for(index_type i = beginId; i < endId; ++i)
         nodes_[i] = NodeStorage(i);
 }
 
@@ -807,11 +807,11 @@ AdjacencyListGraph::addEdge(
     const AdjacencyListGraph::Node& v)
 {
     const Edge foundEdge = findEdge(u, v);
-    if (foundEdge != lemon::INVALID)
+    if(foundEdge != lemon::INVALID)
     {
         return foundEdge;
     }
-    else if (u == lemon::INVALID || v == lemon::INVALID)
+    else if(u == lemon::INVALID || v == lemon::INVALID)
     {
         return Edge(lemon::INVALID);
     }
@@ -845,9 +845,9 @@ AdjacencyListGraph::direct(
     const AdjacencyListGraph::Edge& edge,
     const bool forward) const
 {
-    if (edge != lemon::INVALID)
+    if(edge != lemon::INVALID)
     {
-        if (forward)
+        if(forward)
             return Arc(id(edge), id(edge));
         else
             return Arc(id(edge) + maxEdgeId() + 1, id(edge));
@@ -862,11 +862,11 @@ AdjacencyListGraph::direct(
     const AdjacencyListGraph::Edge& edge,
     const AdjacencyListGraph::Node& node) const
 {
-    if (u(edge) == node)
+    if(u(edge) == node)
     {
         return Arc(id(edge), id(edge));
     }
-    else if (v(edge) == node)
+    else if(v(edge) == node)
     {
         return Arc(id(edge) + maxEdgeId() + 1, id(edge));
     }
@@ -907,7 +907,7 @@ AdjacencyListGraph::source(
     const AdjacencyListGraph::Arc& arc) const
 {
     const index_type arcIndex = id(arc);
-    if (arcIndex > maxEdgeId())
+    if(arcIndex > maxEdgeId())
     {
         const index_type edgeIndex = arc.edgeId();
         const Edge edge = edgeFromId(edgeIndex);
@@ -928,7 +928,7 @@ AdjacencyListGraph::target(
     const AdjacencyListGraph::Arc& arc) const
 {
     const index_type arcIndex = id(arc);
-    if (arcIndex > maxEdgeId())
+    if(arcIndex > maxEdgeId())
     {
         const index_type edgeIndex = arc.edgeId();
         const Edge edge = edgeFromId(edgeIndex);
@@ -949,11 +949,11 @@ AdjacencyListGraph::oppositeNode(
 {
     const Node uNode = u(e);
     const Node vNode = v(e);
-    if (id(uNode) == id(n))
+    if(id(uNode) == id(n))
     {
         return vNode;
     }
-    else if (id(vNode) == id(n))
+    else if(id(vNode) == id(n))
     {
         return uNode;
     }
@@ -1070,7 +1070,7 @@ inline AdjacencyListGraph::Edge
 AdjacencyListGraph::edgeFromId(
     const AdjacencyListGraph::index_type id) const
 {
-    if ((std::size_t)id < edges_.size() && edges_[id].id() != -1)
+    if((std::size_t)id < edges_.size() && edges_[id].id() != -1)
         return Edge(edges_[id].id());
     else
         return Edge(lemon::INVALID);
@@ -1081,7 +1081,7 @@ inline AdjacencyListGraph::Node
 AdjacencyListGraph::nodeFromId(
     const AdjacencyListGraph::index_type id) const
 {
-    if ((std::size_t)id < nodes_.size() && nodes_[id].id() != -1)
+    if((std::size_t)id < nodes_.size() && nodes_[id].id() != -1)
         return Node(nodes_[id].id());
     else
         return Node(lemon::INVALID);
@@ -1092,9 +1092,9 @@ inline AdjacencyListGraph::Arc
 AdjacencyListGraph::arcFromId(
     const AdjacencyListGraph::index_type id) const
 {
-    if (id <= maxEdgeId())
+    if(id <= maxEdgeId())
     {
-        if (edgeFromId(id) == lemon::INVALID)
+        if(edgeFromId(id) == lemon::INVALID)
             return Arc(lemon::INVALID);
         else
             return Arc(id, id);
@@ -1102,7 +1102,7 @@ AdjacencyListGraph::arcFromId(
     else
     {
         const index_type edgeId = id - (maxEdgeId() + 1);
-        if (edgeFromId(edgeId) == lemon::INVALID)
+        if(edgeFromId(edgeId) == lemon::INVALID)
             return Arc(lemon::INVALID);
         else
             return Arc(id, edgeId);
@@ -1115,10 +1115,10 @@ AdjacencyListGraph::findEdge(
     const AdjacencyListGraph::Node& a,
     const AdjacencyListGraph::Node& b) const
 {
-    if (a != b)
+    if(a != b)
     {
         std::pair<index_type, bool> res = nodes_[id(a)].findEdge(id(b));
-        if (res.second)
+        if(res.second)
         {
             return Edge(res.first);
         }
@@ -1134,13 +1134,13 @@ AdjacencyListGraph::findArc(
     const AdjacencyListGraph::Node& vNode) const
 {
     const Edge e = findEdge(uNode, vNode);
-    if (e == lemon::INVALID)
+    if(e == lemon::INVALID)
     {
         return Arc(lemon::INVALID);
     }
     else
     {
-        if (u(e) == uNode)
+        if(u(e) == uNode)
             return direct(e, true);
         else
             return direct(e, false);

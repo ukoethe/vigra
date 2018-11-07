@@ -50,7 +50,7 @@ namespace python = boost::python;
 namespace vigra
 {
 
-template<class LabelType, class FeatureType>
+template <class LabelType, class FeatureType>
 RandomForest<LabelType>*
     pythonConstructRandomForest(NumpyArray<2, FeatureType> trainData,
                                 NumpyArray<1, LabelType> trainLabels,
@@ -89,7 +89,7 @@ RandomForest<LabelType>*
     return rf;
 }
 
-template<class LabelType, class FeatureType>
+template <class LabelType, class FeatureType>
 NumpyAnyArray
 pythonRFPredictLabels(RandomForest<LabelType> const& rf,
                       NumpyArray<2, FeatureType> testData,
@@ -105,7 +105,7 @@ pythonRFPredictLabels(RandomForest<LabelType> const& rf,
     return res;
 }
 
-template<class LabelType, class FeatureType>
+template <class LabelType, class FeatureType>
 NumpyAnyArray
 pythonRFPredictProbabilities(RandomForest<LabelType> const& rf,
                              NumpyArray<2, FeatureType> testData,

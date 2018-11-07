@@ -8,10 +8,10 @@
 namespace vigra
 {
 
-template<class> // undefined class to provoke usable error messages
+template <class> // undefined class to provoke usable error messages
 class vigra_error_BitArray_accepts_only_unsigned_underlying_types_and_no_;
 
-template<unsigned SIZE, class X> // bitwise operators do not necessarily work for bool
+template <unsigned SIZE, class X> // bitwise operators do not necessarily work for bool
 struct EnableBitArray
     : public enable_if<(HasMetaLog2<X>::value && !IsSameType<X, bool>::value && SIZE > 0)>
 {
@@ -22,13 +22,13 @@ struct EnableBitArray
 // flip<unsigned>(), plus all relational operators;
 // furthermore, there are no range checks.
 
-template<unsigned SIZE, class WORD_TYPE = unsigned, class = void>
+template <unsigned SIZE, class WORD_TYPE = unsigned, class = void>
 class BitArray
     : public vigra_error_BitArray_accepts_only_unsigned_underlying_types_and_no_<WORD_TYPE>
 {
 };
 
-template<unsigned SIZE, class WORD_TYPE>
+template <unsigned SIZE, class WORD_TYPE>
 class BitArray<SIZE, WORD_TYPE, typename EnableBitArray<SIZE, WORD_TYPE>::type>
 {
     // 'unsigned' will be the most efficent word type for most CPUs,
@@ -39,7 +39,7 @@ protected:
     static const unsigned word_len = MetaLog2<WORD_TYPE>::value;
     static const unsigned array_len = (bit_size + word_len - 1) / word_len;
     static const unsigned last_pos = array_len - 1;
-    template<unsigned pos>
+    template <unsigned pos>
     struct bit_index
     {
         static const unsigned word_pos = pos / word_len;
@@ -70,32 +70,32 @@ public:
     }
     void clear()
     {
-        for (unsigned i = 0; i != array_len; ++i)
+        for(unsigned i = 0; i != array_len; ++i)
             set_bits[i] = 0;
     }
     BitArray()
     {
         clear();
     }
-    template<unsigned pos>
+    template <unsigned pos>
     void set()
     {
         typedef bit_index<pos> index;
         set_bits[index::word_pos] |= index::bit_mask;
     }
-    template<unsigned pos>
+    template <unsigned pos>
     void reset()
     {
         typedef bit_index<pos> index;
         set_bits[index::word_pos] &= ~index::bit_mask;
     }
-    template<unsigned pos>
+    template <unsigned pos>
     void flip()
     {
         typedef bit_index<pos> index;
         set_bits[index::word_pos] ^= index::bit_mask;
     }
-    template<unsigned pos>
+    template <unsigned pos>
     bool test() const
     {
         typedef bit_index<pos> index;
@@ -128,31 +128,31 @@ public:
 
     BitArray& set()
     {
-        for (unsigned i = 0; i != last_pos + does_fit; ++i)
+        for(unsigned i = 0; i != last_pos + does_fit; ++i)
             set_bits[i] = ones_mask;
-        if (!does_fit)
+        if(!does_fit)
             set_bits[last_pos] = last_mask;
         return *this;
     }
     BitArray& reset()
     {
-        for (unsigned i = 0; i != array_len; ++i)
+        for(unsigned i = 0; i != array_len; ++i)
             set_bits[i] = 0;
         return *this;
     }
     BitArray& flip()
     {
-        for (unsigned i = 0; i != last_pos + does_fit; ++i)
+        for(unsigned i = 0; i != last_pos + does_fit; ++i)
             set_bits[i] ^= ones_mask;
-        if (!does_fit)
+        if(!does_fit)
             set_bits[last_pos] ^= last_mask;
         return *this;
     }
 
     operator bool() const
     {
-        for (unsigned i = 0; i != array_len; ++i)
-            if (set_bits[i] != 0)
+        for(unsigned i = 0; i != array_len; ++i)
+            if(set_bits[i] != 0)
                 return true;
         return false;
     }
@@ -170,10 +170,10 @@ public:
     }
     bool all() const
     {
-        for (unsigned i = 0; i != last_pos + does_fit; ++i)
-            if (set_bits[i] != ones_mask)
+        for(unsigned i = 0; i != last_pos + does_fit; ++i)
+            if(set_bits[i] != ones_mask)
                 return false;
-        if (!does_fit)
+        if(!does_fit)
             return set_bits[last_pos] == last_mask;
         return true;
     }
@@ -186,16 +186,16 @@ public:
     }
 
 protected:
-    template<class F>
+    template <class F>
     bool mutual_compare(const BitArray& t, F f, bool if_equal = false) const
     {
-        for (int i = last_pos; i >= 0; i--)
+        for(int i = last_pos; i >= 0; i--)
         {
             WORD_TYPE x = set_bits[i];
             WORD_TYPE y = t.set_bits[i];
-            if (f(x, y))
+            if(f(x, y))
                 return true;
-            if (f(y, x))
+            if(f(y, x))
                 return false;
         }
         return if_equal;
@@ -224,8 +224,8 @@ public:
 
     bool operator!=(const BitArray& t) const
     {
-        for (unsigned i = 0; i != array_len; ++i)
-            if (set_bits[i] != t.set_bits[i])
+        for(unsigned i = 0; i != array_len; ++i)
+            if(set_bits[i] != t.set_bits[i])
                 return true;
         return false;
     }
@@ -256,10 +256,10 @@ protected:
             a |= b;
         }
     };
-    template<class A>
+    template <class A>
     BitArray& assign_operator(const BitArray& x)
     {
-        for (unsigned i = 0; i != array_len; ++i)
+        for(unsigned i = 0; i != array_len; ++i)
             A::assign(set_bits[i], x.set_bits[i]);
         return *this;
     }
@@ -279,7 +279,7 @@ public:
     }
 
 protected:
-    template<class A>
+    template <class A>
     BitArray& bit_operator(const BitArray& y) const
     {
         BitArray x(*this);
@@ -311,14 +311,14 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, const BitArray& z)
     {
-        for (int i = bit_size - 1; i >= 0; i--)
+        for(int i = bit_size - 1; i >= 0; i--)
             os << (z[i] ? "1" : "0");
         return os;
     }
 };
 
 // work around GCC's zero-sized array extension
-template<class WORD_TYPE>
+template <class WORD_TYPE>
 class BitArray<0, WORD_TYPE>
 {
     //    bool error[-(long int)sizeof(WORD_TYPE)];

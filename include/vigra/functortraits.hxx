@@ -80,7 +80,7 @@ struct BinaryReduceFunctorTag
 typedef UnaryFunctorTag UnaryExpandFunctorTag;
 typedef BinaryFunctorTag BinaryExpandFunctorTag;
 
-template<class T>
+template <class T>
 class FunctorTraitsBase
 {
 public:
@@ -172,14 +172,14 @@ public:
     <b>\#include</b> \<vigra/functortraits.hxx\> <br/>
     Namespace: vigra
 */
-template<class T>
+template <class T>
 class FunctorTraits
     : public FunctorTraitsBase<T>
 {
 };
 
 #define VIGRA_DEFINE_STL_FUNCTOR(name, unary, binary) \
-    template<class T>                                 \
+    template <class T>                                \
     class FunctorTraits<name<T>>                      \
     {                                                 \
     public:                                           \
@@ -217,7 +217,7 @@ VIGRA_DEFINE_STL_FUNCTOR(std::logical_not, VigraTrueType, VigraFalseType)
 VIGRA_DEFINE_STL_FUNCTOR(std::unary_negate, VigraTrueType, VigraFalseType)
 #undef VIGRA_DEFINE_STL_FUNCTOR
 
-template<class R>
+template <class R>
 class FunctorTraits<R (*)()>
 {
 public:
@@ -232,7 +232,7 @@ public:
     typedef VigraFalseType isTernaryAnalyser;
 };
 
-template<class R, class T>
+template <class R, class T>
 class FunctorTraits<R (*)(T)>
 {
 public:
@@ -247,7 +247,7 @@ public:
     typedef VigraFalseType isTernaryAnalyser;
 };
 
-template<class R, class T1, class T2>
+template <class R, class T1, class T2>
 class FunctorTraits<R (*)(T1, T2)>
 {
 public:
@@ -262,7 +262,7 @@ public:
     typedef VigraFalseType isTernaryAnalyser;
 };
 
-template<class R, class T1, class T2, class T3>
+template <class R, class T1, class T2, class T3>
 class FunctorTraits<R (*)(T1, T2, T3)>
 {
 public:

@@ -25,7 +25,7 @@ namespace vigra
 {
 
 
-template<class GRAPH, class PREDECESSORS, class IDS_ARRAY>
+template <class GRAPH, class PREDECESSORS, class IDS_ARRAY>
 void
 pathIds(
     const GRAPH& g,
@@ -34,13 +34,13 @@ pathIds(
     const PREDECESSORS& predecessors,
     IDS_ARRAY& ids)
 {
-    if (predecessors[target] != lemon::INVALID)
+    if(predecessors[target] != lemon::INVALID)
     {
 
         ids(0) = g.id(target);
         typename GRAPH::Node currentNode = target;
         size_t length = 1;
-        while (currentNode != source)
+        while(currentNode != source)
         {
             currentNode = predecessors[currentNode];
             ids(length) = g.id(currentNode);
@@ -51,7 +51,7 @@ pathIds(
     }
 }
 
-template<class GRAPH, class PREDECESSORS, class COORDINATE_ARRAY>
+template <class GRAPH, class PREDECESSORS, class COORDINATE_ARRAY>
 void
 pathCoordinates(
     const GRAPH& g,
@@ -61,12 +61,12 @@ pathCoordinates(
     COORDINATE_ARRAY& coords)
 {
     typedef GraphDescriptorToMultiArrayIndex<GRAPH> DescToCoord;
-    if (predecessors[target] != lemon::INVALID)
+    if(predecessors[target] != lemon::INVALID)
     {
         coords(0) = DescToCoord::intrinsicNodeCoordinate(g, target);
         typename GRAPH::Node currentNode = target;
         size_t length = 1;
-        while (currentNode != source)
+        while(currentNode != source)
         {
             currentNode = predecessors[currentNode];
             coords(length) = DescToCoord::intrinsicNodeCoordinate(g, currentNode);
@@ -79,7 +79,7 @@ pathCoordinates(
 
 
 
-template<class GRAPH>
+template <class GRAPH>
 class LemonGraphShortestPathVisitor
     : public boost::python::def_visitor<LemonGraphShortestPathVisitor<GRAPH>>
 {
@@ -188,7 +188,7 @@ public:
     }
 
     std::string clsName_;
-    template<class classT>
+    template <class classT>
     void visit(classT& /*c*/) const
     {
         // - Dijkstra
@@ -233,7 +233,7 @@ public:
         // numpy arrays => lemon maps
         Int32NodeArrayMap predecessorsArrayMap(sp.graph(), predecessorsArray);
 
-        for (NodeIt n(sp.graph()); n != lemon::INVALID; ++n)
+        for(NodeIt n(sp.graph()); n != lemon::INVALID; ++n)
         {
             const Node pred = sp.predecessors()[*n];
             predecessorsArrayMap[*n] = (pred != lemon::INVALID ? sp.graph().id(pred) : -1);

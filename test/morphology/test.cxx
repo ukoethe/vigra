@@ -63,7 +63,7 @@ struct FlatMorphologyTest
         Image::Accessor acc = img.accessor();
         const unsigned char* p = in;
 
-        for (; i != end; ++i, ++p)
+        for(; i != end; ++i, ++p)
         {
             acc.set(*p, i);
         }
@@ -81,7 +81,7 @@ struct FlatMorphologyTest
         end = mask.end();
         p = in1;
 
-        for (; i != end; ++i, ++p)
+        for(; i != end; ++i, ++p)
         {
             acc.set(*p, i);
         }
@@ -107,7 +107,7 @@ struct FlatMorphologyTest
         Image::ScanOrderIterator i2 = res.begin();
         Image::Accessor acc = res.accessor();
 
-        for (; i1 != i1end; ++i1, ++i2)
+        for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == acc(i2));
         }
@@ -137,7 +137,7 @@ struct FlatMorphologyTest
         Image::ScanOrderIterator i2 = res.begin();
         Image::Accessor acc = res.accessor();
 
-        for (; i1 != i1end; ++i1, ++i2)
+        for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == acc(i2));
         }
@@ -166,7 +166,7 @@ struct FlatMorphologyTest
         Image::ScanOrderIterator i2 = res.begin();
         Image::Accessor acc = res.accessor();
 
-        for (; i1 != i1end; ++i1, ++i2)
+        for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == acc(i2));
         }
@@ -196,7 +196,7 @@ struct FlatMorphologyTest
         Image::ScanOrderIterator i2 = res.begin();
         Image::Accessor acc = res.accessor();
 
-        for (; i1 != i1end; ++i1, ++i2)
+        for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == acc(i2));
         }
@@ -225,7 +225,7 @@ struct FlatMorphologyTest
         Image::ScanOrderIterator i2 = res.begin();
         Image::Accessor acc = res.accessor();
 
-        for (; i1 != i1end; ++i1, ++i2)
+        for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == acc(i2));
         }
@@ -255,7 +255,7 @@ struct FlatMorphologyTest
         Image::ScanOrderIterator i2 = res.begin();
         Image::Accessor acc = res.accessor();
 
-        for (; i1 != i1end; ++i1, ++i2)
+        for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == acc(i2));
         }

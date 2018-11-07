@@ -4,7 +4,7 @@
 #include "test_policy_parent.hxx"
 #include <unittest.hxx>
 
-template<class Vector3ImageP> // bei dem template handelt es sich um Vector3Image, der einer der folgenden Varianten einnehmen kann: FVector3Image, DVector3Image, Vector3Image
+template <class Vector3ImageP> // bei dem template handelt es sich um Vector3Image, der einer der folgenden Varianten einnehmen kann: FVector3Image, DVector3Image, Vector3Image
 class Vector3ImagePolicy
     : public TestPolicy<Vector3ImageP>
 {
@@ -24,7 +24,7 @@ public:
         type frgb = 0.1;
         static value_type data[15];
 
-        for (int i = 0; i <= 14; i++)
+        for(int i = 0; i <= 14; i++)
         {
             data[i] = value_type((i + frgb), (2 * i), (2 * i + frgb));
         }

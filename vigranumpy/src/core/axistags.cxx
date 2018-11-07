@@ -59,14 +59,14 @@ namespace python = boost::python;
 namespace vigra
 {
 
-template<class T>
+template <class T>
 inline PyObject*
 managingPyObject(T* p)
 {
     return typename python::manage_new_object::apply<T*>::type()(p);
 }
 
-template<class Copyable>
+template <class Copyable>
 python::object
 generic__copy__(python::object copyable)
 {
@@ -78,7 +78,7 @@ generic__copy__(python::object copyable)
     return result;
 }
 
-template<class Copyable>
+template <class Copyable>
 python::object
 generic__deepcopy__(python::object copyable, python::dict memo)
 {
@@ -188,8 +188,8 @@ AxisTags::fromJSON(std::string const& repr)
     read_json(s, pt);
 
     AxisTags res;
-    for (ptree::iterator v = pt.get_child("axes").begin();
-         v != pt.get_child("axes").end(); ++v)
+    for(ptree::iterator v = pt.get_child("axes").begin();
+        v != pt.get_child("axes").end(); ++v)
     {
         std::string key(v->second.get<std::string>("key"));
         unsigned int typeFlags(v->second.get<unsigned int>("typeFlags"));
@@ -215,25 +215,25 @@ AxisTags_create(python::object i1, python::object i2,
     VIGRA_UNIQUE_PTR<AxisTags> res(new AxisTags());
 
     python::extract<AxisTags const&> tags(i1);
-    if (tags.check())
+    if(tags.check())
     {
         res = VIGRA_UNIQUE_PTR<AxisTags>(new AxisTags(tags()));
     }
 #if PY_MAJOR_VERSION < 3
-    else if (PyString_Check(i1.ptr()))
+    else if(PyString_Check(i1.ptr()))
 #else
-    else if (PyUnicode_Check(i1.ptr()))
+    else if(PyUnicode_Check(i1.ptr()))
 #endif
     {
         res = VIGRA_UNIQUE_PTR<AxisTags>(new AxisTags(python::extract<std::string>(i1)()));
     }
-    else if (PySequence_Check(i1.ptr()))
+    else if(PySequence_Check(i1.ptr()))
     {
         int size = len(i1);
-        for (int k = 0; k < size; ++k)
+        for(int k = 0; k < size; ++k)
         {
             python::extract<AxisInfo const&> info(i1[k]);
-            if (!info.check())
+            if(!info.check())
             {
                 PyErr_SetString(PyExc_TypeError, "AxisTags(): Argument must be a sequence of AxisInfo objects.");
                 python::throw_error_already_set();
@@ -242,61 +242,61 @@ AxisTags_create(python::object i1, python::object i2,
         }
     }
 #if PY_MAJOR_VERSION < 3
-    else if (PyInt_Check(i1.ptr()))
+    else if(PyInt_Check(i1.ptr()))
 #else
-    else if (PyLong_Check(i1.ptr()))
+    else if(PyLong_Check(i1.ptr()))
 #endif
     {
         int size = python::extract<int>(i1)();
-        for (int k = 0; k < size; ++k)
+        for(int k = 0; k < size; ++k)
             res->push_back(AxisInfo());
     }
     else
     {
-        if (i1 != python::object())
+        if(i1 != python::object())
         {
             python::extract<AxisInfo const&> info(i1);
-            if (!info.check())
+            if(!info.check())
             {
                 PyErr_SetString(PyExc_TypeError, "AxisTags(): Argument must be a sequence of AxisInfo objects.");
                 python::throw_error_already_set();
             }
             res->push_back(info());
         }
-        if (i2 != python::object())
+        if(i2 != python::object())
         {
             python::extract<AxisInfo const&> info(i2);
-            if (!info.check())
+            if(!info.check())
             {
                 PyErr_SetString(PyExc_TypeError, "AxisTags(): Argument must be a sequence of AxisInfo objects.");
                 python::throw_error_already_set();
             }
             res->push_back(info());
         }
-        if (i3 != python::object())
+        if(i3 != python::object())
         {
             python::extract<AxisInfo const&> info(i3);
-            if (!info.check())
+            if(!info.check())
             {
                 PyErr_SetString(PyExc_TypeError, "AxisTags(): Argument must be a sequence of AxisInfo objects.");
                 python::throw_error_already_set();
             }
             res->push_back(info());
         }
-        if (i4 != python::object())
+        if(i4 != python::object())
         {
             python::extract<AxisInfo const&> info(i4);
-            if (!info.check())
+            if(!info.check())
             {
                 PyErr_SetString(PyExc_TypeError, "AxisTags(): Argument must be a sequence of AxisInfo objects.");
                 python::throw_error_already_set();
             }
             res->push_back(info());
         }
-        if (i5 != python::object())
+        if(i5 != python::object())
         {
             python::extract<AxisInfo const&> info(i5);
-            if (!info.check())
+            if(!info.check())
             {
                 PyErr_SetString(PyExc_TypeError, "AxisTags(): Argument must be a sequence of AxisInfo objects.");
                 python::throw_error_already_set();
@@ -314,7 +314,7 @@ AxisTags_insertChannelAxis(AxisTags& axistags)
     int k = axistags.channelIndex();
     vigra_precondition(k == (int)axistags.size(),
                        "AxisTags::insertChannelAxis(): already has a channel axis.");
-    if (detail::defaultOrder() == "F")
+    if(detail::defaultOrder() == "F")
         axistags.insert(0, AxisInfo::c());
     else
         axistags.push_back(AxisInfo::c());
@@ -323,10 +323,10 @@ AxisTags_insertChannelAxis(AxisTags& axistags)
 AxisInfo&
 AxisTags_getitem(AxisTags& axistags, int index)
 {
-    if (index < 0)
+    if(index < 0)
         index += axistags.size();
 
-    if (index >= (int)axistags.size())
+    if(index >= (int)axistags.size())
     {
         PyErr_SetString(PyExc_IndexError, "AxisTags.__getitem__(): Invalid index or key.");
         python::throw_error_already_set();
@@ -339,7 +339,7 @@ std::string
 AxisTags_str(AxisTags const& axistags)
 {
     std::string res;
-    for (unsigned int k = 0; k < axistags.size(); ++k)
+    for(unsigned int k = 0; k < axistags.size(); ++k)
         res += axistags.get(k).repr() + "\n";
     return res;
 }
@@ -348,7 +348,7 @@ python::list
 AxisTags_keys(AxisTags const& axistags)
 {
     python::list res;
-    for (unsigned int k = 0; k < axistags.size(); ++k)
+    for(unsigned int k = 0; k < axistags.size(); ++k)
         res.append(axistags.get(k).key());
     return res;
 }
@@ -357,7 +357,7 @@ python::list
 AxisTags_values(AxisTags const& axistags)
 {
     python::list res;
-    for (unsigned int k = 0; k < axistags.size(); ++k)
+    for(unsigned int k = 0; k < axistags.size(); ++k)
         res.append(axistags.get(k));
     return res;
 }
@@ -448,35 +448,35 @@ AxisTags_transform(AxisTags const& oldTags, python::object index, int lnew)
     VIGRA_UNIQUE_PTR<AxisTags> newTags(new AxisTags());
     python::object ellipsis = python::object(python::detail::borrowed_reference(Py_Ellipsis));
     int lold = oldTags.size();
-    if (!PySequence_Check(index.ptr()))
+    if(!PySequence_Check(index.ptr()))
     {
         index = python::make_tuple(index);
     }
     int lindex = len(index);
     int lnewaxis = 0, lellipsis = 0;
-    for (int k = 0; k < lindex; ++k)
+    for(int k = 0; k < lindex; ++k)
     {
         python::object item(index[k]);
-        if (item == python::object() || python::extract<AxisInfo const&>(item).check())
+        if(item == python::object() || python::extract<AxisInfo const&>(item).check())
             ++lnewaxis;
-        else if (item == ellipsis)
+        else if(item == ellipsis)
             ++lellipsis;
     }
     lindex -= lnewaxis;
-    if (lindex < lold && lellipsis == 0)
+    if(lindex < lold && lellipsis == 0)
     {
         index += python::make_tuple(ellipsis);
         ++lindex;
     }
     lellipsis = lold - lindex;
     int knew = 0, kold = 0, kindex = 0;
-    while (knew < lnew)
+    while(knew < lnew)
     {
         python::object item = index[kindex];
 #if PY_MAJOR_VERSION < 3
-        if (PyInt_Check(item.ptr()))
+        if(PyInt_Check(item.ptr()))
 #else
-        if (PyLong_Check(item.ptr()))
+        if(PyLong_Check(item.ptr()))
 #endif
         {
             ++kold;
@@ -484,11 +484,11 @@ AxisTags_transform(AxisTags const& oldTags, python::object index, int lnew)
         }
         else
         {
-            if (item != python::object())
+            if(item != python::object())
             {
                 python::extract<AxisInfo const&> newaxis(item);
 
-                if (newaxis.check())
+                if(newaxis.check())
                 {
                     newTags->push_back(newaxis);
                 }
@@ -497,10 +497,10 @@ AxisTags_transform(AxisTags const& oldTags, python::object index, int lnew)
                     newTags->push_back(oldTags.get(kold));
                     // adjust the resolution if item has a valid 'step' member
                     python::extract<python::slice> slice(item);
-                    if (slice.check())
+                    if(slice.check())
                     {
                         python::extract<int> step(slice().step());
-                        if (step.check())
+                        if(step.check())
                         {
                             newTags->get(knew).resolution_ *= step();
                         }
@@ -513,7 +513,7 @@ AxisTags_transform(AxisTags const& oldTags, python::object index, int lnew)
                 newTags->push_back(AxisInfo());
             }
             ++knew;
-            if (lellipsis > 0 && item == ellipsis)
+            if(lellipsis > 0 && item == ellipsis)
                 --lellipsis;
             else
                 ++kindex;

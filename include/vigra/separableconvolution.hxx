@@ -49,7 +49,7 @@
 namespace vigra
 {
 
-template<class ARITHTYPE>
+template <class ARITHTYPE>
 class Kernel1D;
 
 /********************************************************/
@@ -62,9 +62,9 @@ class Kernel1D;
 // the range [is, iend), so that it can safely access values outside
 // this range. This is useful if (1) we work on a small ROI, or
 // (2) we enlarge the input by copying with border treatment.
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class KernelIterator, class KernelAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class KernelIterator, class KernelAccessor>
 void
 internalConvolveLineOptimistic(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                                DestIterator id, DestAccessor da,
@@ -77,13 +77,13 @@ internalConvolveLineOptimistic(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     int w = std::distance(is, iend);
     int kw = kright - kleft + 1;
-    for (int x = 0; x < w; ++x, ++is, ++id)
+    for(int x = 0; x < w; ++x, ++is, ++id)
     {
         SrcIterator iss = is + (-kright);
         KernelIterator ik = kernel + kright;
         SumType sum = NumericTraits<SumType>::zero();
 
-        for (int k = 0; k < kw; ++k, --ik, ++iss)
+        for(int k = 0; k < kw; ++k, --ik, ++iss)
         {
             sum += ka(ik) * sa(iss);
         }
@@ -96,8 +96,8 @@ namespace detail
 {
 
 // dest array must have size = stop - start + kright - kleft
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 copyLineWithBorderTreatment(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                             DestIterator id, DestAccessor da,
@@ -110,13 +110,13 @@ copyLineWithBorderTreatment(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     int rightBorder = stop - kleft;
     int copyEnd = std::min(w, rightBorder);
 
-    if (leftBorder < 0)
+    if(leftBorder < 0)
     {
-        switch (borderTreatment)
+        switch(borderTreatment)
         {
             case BORDER_TREATMENT_WRAP:
             {
-                for (; leftBorder < 0; ++leftBorder, ++id)
+                for(; leftBorder < 0; ++leftBorder, ++id)
                     da.set(sa(iend, leftBorder), id);
                 break;
             }
@@ -127,13 +127,13 @@ copyLineWithBorderTreatment(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             }
             case BORDER_TREATMENT_REFLECT:
             {
-                for (; leftBorder < 0; ++leftBorder, ++id)
+                for(; leftBorder < 0; ++leftBorder, ++id)
                     da.set(sa(is, -leftBorder), id);
                 break;
             }
             case BORDER_TREATMENT_REPEAT:
             {
-                for (; leftBorder < 0; ++leftBorder, ++id)
+                for(; leftBorder < 0; ++leftBorder, ++id)
                     da.set(sa(is), id);
                 break;
             }
@@ -145,7 +145,7 @@ copyLineWithBorderTreatment(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             }
             case BORDER_TREATMENT_ZEROPAD:
             {
-                for (; leftBorder < 0; ++leftBorder, ++id)
+                for(; leftBorder < 0; ++leftBorder, ++id)
                     da.set(NumericTraits<typename DestAccessor::value_type>::zero(), id);
                 break;
             }
@@ -160,16 +160,16 @@ copyLineWithBorderTreatment(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     SrcIterator iss = is + leftBorder;
     vigra_invariant(leftBorder < copyEnd,
                     "copyLineWithBorderTreatment(): assertion failed.");
-    for (; leftBorder < copyEnd; ++leftBorder, ++id, ++iss)
+    for(; leftBorder < copyEnd; ++leftBorder, ++id, ++iss)
         da.set(sa(iss), id);
 
-    if (copyEnd < rightBorder)
+    if(copyEnd < rightBorder)
     {
-        switch (borderTreatment)
+        switch(borderTreatment)
         {
             case BORDER_TREATMENT_WRAP:
             {
-                for (; copyEnd < rightBorder; ++copyEnd, ++id, ++is)
+                for(; copyEnd < rightBorder; ++copyEnd, ++id, ++is)
                     da.set(sa(is), id);
                 break;
             }
@@ -181,14 +181,14 @@ copyLineWithBorderTreatment(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             case BORDER_TREATMENT_REFLECT:
             {
                 iss -= 2;
-                for (; copyEnd < rightBorder; ++copyEnd, ++id, --iss)
+                for(; copyEnd < rightBorder; ++copyEnd, ++id, --iss)
                     da.set(sa(iss), id);
                 break;
             }
             case BORDER_TREATMENT_REPEAT:
             {
                 --iss;
-                for (; copyEnd < rightBorder; ++copyEnd, ++id)
+                for(; copyEnd < rightBorder; ++copyEnd, ++id)
                     da.set(sa(iss), id);
                 break;
             }
@@ -200,7 +200,7 @@ copyLineWithBorderTreatment(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             }
             case BORDER_TREATMENT_ZEROPAD:
             {
-                for (; copyEnd < rightBorder; ++copyEnd, ++id)
+                for(; copyEnd < rightBorder; ++copyEnd, ++id)
                     da.set(NumericTraits<typename DestAccessor::value_type>::zero(), id);
                 break;
             }
@@ -221,9 +221,9 @@ copyLineWithBorderTreatment(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class KernelIterator, class KernelAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class KernelIterator, class KernelAccessor>
 void
 internalConvolveLineWrap(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                          DestIterator id, DestAccessor da,
@@ -239,30 +239,30 @@ internalConvolveLineWrap(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     SrcIterator ibegin = is;
 
-    if (stop == 0)
+    if(stop == 0)
         stop = w;
     is += start;
 
-    for (int x = start; x < stop; ++x, ++is, ++id)
+    for(int x = start; x < stop; ++x, ++is, ++id)
     {
         KernelIterator ik = kernel + kright;
         SumType sum = NumericTraits<SumType>::zero();
 
-        if (x < kright)
+        if(x < kright)
         {
             int x0 = x - kright;
             SrcIterator iss = iend + x0;
 
-            for (; x0; ++x0, --ik, ++iss)
+            for(; x0; ++x0, --ik, ++iss)
             {
                 sum += ka(ik) * sa(iss);
             }
 
             iss = ibegin;
-            if (w - x <= -kleft)
+            if(w - x <= -kleft)
             {
                 SrcIterator isend = iend;
-                for (; iss != isend; --ik, ++iss)
+                for(; iss != isend; --ik, ++iss)
                 {
                     sum += ka(ik) * sa(iss);
                 }
@@ -270,7 +270,7 @@ internalConvolveLineWrap(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                 int x0 = -kleft - w + x + 1;
                 iss = ibegin;
 
-                for (; x0; --x0, --ik, ++iss)
+                for(; x0; --x0, --ik, ++iss)
                 {
                     sum += ka(ik) * sa(iss);
                 }
@@ -278,17 +278,17 @@ internalConvolveLineWrap(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             else
             {
                 SrcIterator isend = is + (1 - kleft);
-                for (; iss != isend; --ik, ++iss)
+                for(; iss != isend; --ik, ++iss)
                 {
                     sum += ka(ik) * sa(iss);
                 }
             }
         }
-        else if (w - x <= -kleft)
+        else if(w - x <= -kleft)
         {
             SrcIterator iss = is + (-kright);
             SrcIterator isend = iend;
-            for (; iss != isend; --ik, ++iss)
+            for(; iss != isend; --ik, ++iss)
             {
                 sum += ka(ik) * sa(iss);
             }
@@ -296,7 +296,7 @@ internalConvolveLineWrap(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             int x0 = -kleft - w + x + 1;
             iss = ibegin;
 
-            for (; x0; --x0, --ik, ++iss)
+            for(; x0; --x0, --ik, ++iss)
             {
                 sum += ka(ik) * sa(iss);
             }
@@ -305,7 +305,7 @@ internalConvolveLineWrap(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         {
             SrcIterator iss = is - kright;
             SrcIterator isend = is + (1 - kleft);
-            for (; iss != isend; --ik, ++iss)
+            for(; iss != isend; --ik, ++iss)
             {
                 sum += ka(ik) * sa(iss);
             }
@@ -321,10 +321,10 @@ internalConvolveLineWrap(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class KernelIterator, class KernelAccessor,
-         class Norm>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class KernelIterator, class KernelAccessor,
+          class Norm>
 void
 internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                          DestIterator id, DestAccessor da,
@@ -340,37 +340,37 @@ internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     SrcIterator ibegin = is;
 
-    if (stop == 0)
+    if(stop == 0)
         stop = w;
     is += start;
 
-    for (int x = start; x < stop; ++x, ++is, ++id)
+    for(int x = start; x < stop; ++x, ++is, ++id)
     {
         KernelIterator ik = kernel + kright;
         SumType sum = NumericTraits<SumType>::zero();
 
-        if (x < kright)
+        if(x < kright)
         {
             int x0 = x - kright;
             Norm clipped = NumericTraits<Norm>::zero();
 
-            for (; x0; ++x0, --ik)
+            for(; x0; ++x0, --ik)
             {
                 clipped += ka(ik);
             }
 
             SrcIterator iss = ibegin;
-            if (w - x <= -kleft)
+            if(w - x <= -kleft)
             {
                 SrcIterator isend = iend;
-                for (; iss != isend; --ik, ++iss)
+                for(; iss != isend; --ik, ++iss)
                 {
                     sum += ka(ik) * sa(iss);
                 }
 
                 int x0 = -kleft - w + x + 1;
 
-                for (; x0; --x0, --ik)
+                for(; x0; --x0, --ik)
                 {
                     clipped += ka(ik);
                 }
@@ -378,7 +378,7 @@ internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             else
             {
                 SrcIterator isend = is + (1 - kleft);
-                for (; iss != isend; --ik, ++iss)
+                for(; iss != isend; --ik, ++iss)
                 {
                     sum += ka(ik) * sa(iss);
                 }
@@ -386,11 +386,11 @@ internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
             sum = norm / (norm - clipped) * sum;
         }
-        else if (w - x <= -kleft)
+        else if(w - x <= -kleft)
         {
             SrcIterator iss = is + (-kright);
             SrcIterator isend = iend;
-            for (; iss != isend; --ik, ++iss)
+            for(; iss != isend; --ik, ++iss)
             {
                 sum += ka(ik) * sa(iss);
             }
@@ -399,7 +399,7 @@ internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
             int x0 = -kleft - w + x + 1;
 
-            for (; x0; --x0, --ik)
+            for(; x0; --x0, --ik)
             {
                 clipped += ka(ik);
             }
@@ -410,7 +410,7 @@ internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         {
             SrcIterator iss = is + (-kright);
             SrcIterator isend = is + (1 - kleft);
-            for (; iss != isend; --ik, ++iss)
+            for(; iss != isend; --ik, ++iss)
             {
                 sum += ka(ik) * sa(iss);
             }
@@ -426,9 +426,9 @@ internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class KernelIterator, class KernelAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class KernelIterator, class KernelAccessor>
 void
 internalConvolveLineZeropad(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                             DestIterator id, DestAccessor da,
@@ -444,23 +444,23 @@ internalConvolveLineZeropad(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     SrcIterator ibegin = is;
 
-    if (stop == 0)
+    if(stop == 0)
         stop = w;
     is += start;
 
-    for (int x = start; x < stop; ++x, ++is, ++id)
+    for(int x = start; x < stop; ++x, ++is, ++id)
     {
         SumType sum = NumericTraits<SumType>::zero();
 
-        if (x < kright)
+        if(x < kright)
         {
             KernelIterator ik = kernel + x;
             SrcIterator iss = ibegin;
 
-            if (w - x <= -kleft)
+            if(w - x <= -kleft)
             {
                 SrcIterator isend = iend;
-                for (; iss != isend; --ik, ++iss)
+                for(; iss != isend; --ik, ++iss)
                 {
                     sum += ka(ik) * sa(iss);
                 }
@@ -468,18 +468,18 @@ internalConvolveLineZeropad(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             else
             {
                 SrcIterator isend = is + (1 - kleft);
-                for (; iss != isend; --ik, ++iss)
+                for(; iss != isend; --ik, ++iss)
                 {
                     sum += ka(ik) * sa(iss);
                 }
             }
         }
-        else if (w - x <= -kleft)
+        else if(w - x <= -kleft)
         {
             KernelIterator ik = kernel + kright;
             SrcIterator iss = is + (-kright);
             SrcIterator isend = iend;
-            for (; iss != isend; --ik, ++iss)
+            for(; iss != isend; --ik, ++iss)
             {
                 sum += ka(ik) * sa(iss);
             }
@@ -489,7 +489,7 @@ internalConvolveLineZeropad(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             KernelIterator ik = kernel + kright;
             SrcIterator iss = is + (-kright);
             SrcIterator isend = is + (1 - kleft);
-            for (; iss != isend; --ik, ++iss)
+            for(; iss != isend; --ik, ++iss)
             {
                 sum += ka(ik) * sa(iss);
             }
@@ -505,9 +505,9 @@ internalConvolveLineZeropad(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class KernelIterator, class KernelAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class KernelIterator, class KernelAccessor>
 void
 internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                             DestIterator id, DestAccessor da,
@@ -523,29 +523,29 @@ internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     SrcIterator ibegin = is;
 
-    if (stop == 0)
+    if(stop == 0)
         stop = w;
     is += start;
 
-    for (int x = start; x < stop; ++x, ++is, ++id)
+    for(int x = start; x < stop; ++x, ++is, ++id)
     {
         KernelIterator ik = kernel + kright;
         SumType sum = NumericTraits<SumType>::zero();
 
-        if (x < kright)
+        if(x < kright)
         {
             int x0 = x - kright;
             SrcIterator iss = ibegin - x0;
 
-            for (; x0; ++x0, --ik, --iss)
+            for(; x0; ++x0, --ik, --iss)
             {
                 sum += ka(ik) * sa(iss);
             }
 
-            if (w - x <= -kleft)
+            if(w - x <= -kleft)
             {
                 SrcIterator isend = iend;
-                for (; iss != isend; --ik, ++iss)
+                for(; iss != isend; --ik, ++iss)
                 {
                     sum += ka(ik) * sa(iss);
                 }
@@ -553,7 +553,7 @@ internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                 int x0 = -kleft - w + x + 1;
                 iss = iend - 2;
 
-                for (; x0; --x0, --ik, --iss)
+                for(; x0; --x0, --ik, --iss)
                 {
                     sum += ka(ik) * sa(iss);
                 }
@@ -561,17 +561,17 @@ internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             else
             {
                 SrcIterator isend = is + (1 - kleft);
-                for (; iss != isend; --ik, ++iss)
+                for(; iss != isend; --ik, ++iss)
                 {
                     sum += ka(ik) * sa(iss);
                 }
             }
         }
-        else if (w - x <= -kleft)
+        else if(w - x <= -kleft)
         {
             SrcIterator iss = is + (-kright);
             SrcIterator isend = iend;
-            for (; iss != isend; --ik, ++iss)
+            for(; iss != isend; --ik, ++iss)
             {
                 sum += ka(ik) * sa(iss);
             }
@@ -579,7 +579,7 @@ internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             int x0 = -kleft - w + x + 1;
             iss = iend - 2;
 
-            for (; x0; --x0, --ik, --iss)
+            for(; x0; --x0, --ik, --iss)
             {
                 sum += ka(ik) * sa(iss);
             }
@@ -588,7 +588,7 @@ internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         {
             SrcIterator iss = is + (-kright);
             SrcIterator isend = is + (1 - kleft);
-            for (; iss != isend; --ik, ++iss)
+            for(; iss != isend; --ik, ++iss)
             {
                 sum += ka(ik) * sa(iss);
             }
@@ -604,9 +604,9 @@ internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class KernelIterator, class KernelAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class KernelIterator, class KernelAccessor>
 void
 internalConvolveLineRepeat(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                            DestIterator id, DestAccessor da,
@@ -622,29 +622,29 @@ internalConvolveLineRepeat(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     SrcIterator ibegin = is;
 
-    if (stop == 0)
+    if(stop == 0)
         stop = w;
     is += start;
 
-    for (int x = start; x < stop; ++x, ++is, ++id)
+    for(int x = start; x < stop; ++x, ++is, ++id)
     {
         KernelIterator ik = kernel + kright;
         SumType sum = NumericTraits<SumType>::zero();
 
-        if (x < kright)
+        if(x < kright)
         {
             int x0 = x - kright;
             SrcIterator iss = ibegin;
 
-            for (; x0; ++x0, --ik)
+            for(; x0; ++x0, --ik)
             {
                 sum += ka(ik) * sa(iss);
             }
 
-            if (w - x <= -kleft)
+            if(w - x <= -kleft)
             {
                 SrcIterator isend = iend;
-                for (; iss != isend; --ik, ++iss)
+                for(; iss != isend; --ik, ++iss)
                 {
                     sum += ka(ik) * sa(iss);
                 }
@@ -652,7 +652,7 @@ internalConvolveLineRepeat(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                 int x0 = -kleft - w + x + 1;
                 iss = iend - 1;
 
-                for (; x0; --x0, --ik)
+                for(; x0; --x0, --ik)
                 {
                     sum += ka(ik) * sa(iss);
                 }
@@ -660,17 +660,17 @@ internalConvolveLineRepeat(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             else
             {
                 SrcIterator isend = is + (1 - kleft);
-                for (; iss != isend; --ik, ++iss)
+                for(; iss != isend; --ik, ++iss)
                 {
                     sum += ka(ik) * sa(iss);
                 }
             }
         }
-        else if (w - x <= -kleft)
+        else if(w - x <= -kleft)
         {
             SrcIterator iss = is + (-kright);
             SrcIterator isend = iend;
-            for (; iss != isend; --ik, ++iss)
+            for(; iss != isend; --ik, ++iss)
             {
                 sum += ka(ik) * sa(iss);
             }
@@ -678,7 +678,7 @@ internalConvolveLineRepeat(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             int x0 = -kleft - w + x + 1;
             iss = iend - 1;
 
-            for (; x0; --x0, --ik)
+            for(; x0; --x0, --ik)
             {
                 sum += ka(ik) * sa(iss);
             }
@@ -687,7 +687,7 @@ internalConvolveLineRepeat(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         {
             SrcIterator iss = is + (-kright);
             SrcIterator isend = is + (1 - kleft);
-            for (; iss != isend; --ik, ++iss)
+            for(; iss != isend; --ik, ++iss)
             {
                 sum += ka(ik) * sa(iss);
             }
@@ -703,9 +703,9 @@ internalConvolveLineRepeat(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class KernelIterator, class KernelAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class KernelIterator, class KernelAccessor>
 void
 internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                           DestIterator id, DestAccessor da,
@@ -714,11 +714,11 @@ internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                           int start = 0, int stop = 0)
 {
     int w = std::distance(is, iend);
-    if (start < stop) // we got a valid subrange
+    if(start < stop) // we got a valid subrange
     {
-        if (w + kleft < stop)
+        if(w + kleft < stop)
             stop = w + kleft;
-        if (start < kright)
+        if(start < kright)
         {
             id += kright - start;
             start = kright;
@@ -737,14 +737,14 @@ internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     is += start;
 
-    for (int x = start; x < stop; ++x, ++is, ++id)
+    for(int x = start; x < stop; ++x, ++is, ++id)
     {
         KernelIterator ik = kernel + kright;
         SumType sum = NumericTraits<SumType>::zero();
 
         SrcIterator iss = is + (-kright);
         SrcIterator isend = is + (1 - kleft);
-        for (; iss != isend; --ik, ++iss)
+        for(; iss != isend; --ik, ++iss)
         {
             sum += ka(ik) * sa(iss);
         }
@@ -893,11 +893,11 @@ internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     If border == BORDER_TREATMENT_CLIP: Sum of kernel elements must be
     != 0.
 */
-doxygen_overloaded_function(template<...> void convolveLine)
+doxygen_overloaded_function(template <...> void convolveLine)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class KernelIterator, class KernelAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class KernelIterator, class KernelAccessor>
     void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                       DestIterator id, DestAccessor da,
                       KernelIterator ik, KernelAccessor ka,
@@ -915,7 +915,7 @@ doxygen_overloaded_function(template<...> void convolveLine)
     vigra_precondition(w >= std::max(kright, -kleft) + 1,
                        "convolveLine(): kernel longer than line.\n");
 
-    if (stop != 0)
+    if(stop != 0)
         vigra_precondition(0 <= start && start < stop && stop <= w,
                            "convolveLine(): invalid subrange (start, stop).\n");
 
@@ -923,7 +923,7 @@ doxygen_overloaded_function(template<...> void convolveLine)
         typename SrcAccessor::value_type,
         typename KernelAccessor::value_type>::Promote SumType;
     ArrayVector<SumType> a(iend - is);
-    switch (border)
+    switch(border)
     {
         case BORDER_TREATMENT_WRAP:
         {
@@ -951,7 +951,7 @@ doxygen_overloaded_function(template<...> void convolveLine)
             typedef typename KernelAccessor::value_type KT;
             KT norm = NumericTraits<KT>::zero();
             KernelIterator iik = ik + kleft;
-            for (int i = kleft; i <= kright; ++i, ++iik)
+            for(int i = kleft; i <= kright; ++i, ++iik)
                 norm += ka(iik);
 
             vigra_precondition(norm != NumericTraits<KT>::zero(),
@@ -974,9 +974,9 @@ doxygen_overloaded_function(template<...> void convolveLine)
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class KernelIterator, class KernelAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class KernelIterator, class KernelAccessor>
 inline void
 convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
              pair<DestIterator, DestAccessor> dest,
@@ -1083,11 +1083,11 @@ convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     <li> If <tt>border == BORDER_TREATMENT_CLIP</tt>: The sum of kernel elements must be != 0.
     </ul>
 */
-doxygen_overloaded_function(template<...> void separableConvolveX)
+doxygen_overloaded_function(template <...> void separableConvolveX)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class KernelIterator, class KernelAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class KernelIterator, class KernelAccessor>
     void separableConvolveX(SrcIterator supperleft,
                             SrcIterator slowerright, SrcAccessor sa,
                             DestIterator dupperleft, DestAccessor da,
@@ -1107,7 +1107,7 @@ doxygen_overloaded_function(template<...> void separableConvolveX)
 
     int y;
 
-    for (y = 0; y < h; ++y, ++supperleft.y, ++dupperleft.y)
+    for(y = 0; y < h; ++y, ++supperleft.y, ++dupperleft.y)
     {
         typename SrcIterator::row_iterator rs = supperleft.rowIterator();
         typename DestIterator::row_iterator rd = dupperleft.rowIterator();
@@ -1117,9 +1117,9 @@ doxygen_overloaded_function(template<...> void separableConvolveX)
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class KernelIterator, class KernelAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class KernelIterator, class KernelAccessor>
 inline void
 separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
@@ -1133,9 +1133,9 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        kernel.third, kernel.fourth, kernel.fifth);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class T3>
+template <class T1, class S1,
+          class T2, class S2,
+          class T3>
 inline void
     separableConvolveX(MultiArrayView<2, T1, S1> const& src,
                        MultiArrayView<2, T2, S2> dest,
@@ -1239,11 +1239,11 @@ inline void
     <li> If <tt>border == BORDER_TREATMENT_CLIP</tt>: The sum of kernel elements must be != 0.
     </ul>
 */
-doxygen_overloaded_function(template<...> void separableConvolveY)
+doxygen_overloaded_function(template <...> void separableConvolveY)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class KernelIterator, class KernelAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class KernelIterator, class KernelAccessor>
     void separableConvolveY(SrcIterator supperleft,
                             SrcIterator slowerright, SrcAccessor sa,
                             DestIterator dupperleft, DestAccessor da,
@@ -1263,7 +1263,7 @@ doxygen_overloaded_function(template<...> void separableConvolveY)
 
     int x;
 
-    for (x = 0; x < w; ++x, ++supperleft.x, ++dupperleft.x)
+    for(x = 0; x < w; ++x, ++supperleft.x, ++dupperleft.x)
     {
         typename SrcIterator::column_iterator cs = supperleft.columnIterator();
         typename DestIterator::column_iterator cd = dupperleft.columnIterator();
@@ -1273,9 +1273,9 @@ doxygen_overloaded_function(template<...> void separableConvolveY)
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class KernelIterator, class KernelAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class KernelIterator, class KernelAccessor>
 inline void
 separableConvolveY(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
@@ -1289,9 +1289,9 @@ separableConvolveY(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        kernel.third, kernel.fourth, kernel.fifth);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class T3>
+template <class T1, class S1,
+          class T2, class S2,
+          class T3>
 inline void
     separableConvolveY(MultiArrayView<2, T1, S1> const& src,
                        MultiArrayView<2, T2, S2> dest,
@@ -1367,7 +1367,7 @@ inline void
     \deprecatedEnd
 */
 
-template<class ARITHTYPE = double>
+template <class ARITHTYPE = double>
 class Kernel1D
 {
 public:
@@ -1428,14 +1428,14 @@ public:
 
         InitProxy& operator,(value_type const& v)
         {
-            if (sum_ == count_)
+            if(sum_ == count_)
                 norm_ = *iter_;
 
             norm_ += v;
 
             --count_;
 
-            if (count_ > 0)
+            if(count_ > 0)
             {
                 ++iter_;
                 *iter_ = v;
@@ -1480,7 +1480,7 @@ public:
 
     /** Construct from kernel with different element type, e.g. double => FixedPoint16.
         */
-    template<class U>
+    template <class U>
     Kernel1D(Kernel1D<U> const& k)
         : kernel_(k.center() + k.left(), k.center() + k.right() + 1),
           left_(k.left()),
@@ -1494,7 +1494,7 @@ public:
         */
     Kernel1D& operator=(Kernel1D const& k)
     {
-        if (this != &k)
+        if(this != &k)
         {
             left_ = k.left_;
             right_ = k.right_;
@@ -1524,7 +1524,7 @@ public:
     InitProxy operator=(value_type const& v)
     {
         int size = right_ - left_ + 1;
-        for (unsigned int i = 0; i < kernel_.size(); ++i)
+        for(unsigned int i = 0; i < kernel_.size(); ++i)
             kernel_[i] = v;
         norm_ = (double)size * v;
 
@@ -2238,7 +2238,7 @@ private:
     value_type norm_;
 };
 
-template<class ARITHTYPE>
+template <class ARITHTYPE>
 void
 Kernel1D<ARITHTYPE>::normalize(value_type norm,
                                unsigned int derivativeOrder,
@@ -2250,9 +2250,9 @@ Kernel1D<ARITHTYPE>::normalize(value_type norm,
     Iterator k = kernel_.begin();
     TmpType sum = NumericTraits<TmpType>::zero();
 
-    if (derivativeOrder == 0)
+    if(derivativeOrder == 0)
     {
-        for (; k < kernel_.end(); ++k)
+        for(; k < kernel_.end(); ++k)
         {
             sum += *k;
         }
@@ -2260,9 +2260,9 @@ Kernel1D<ARITHTYPE>::normalize(value_type norm,
     else
     {
         unsigned int faculty = 1;
-        for (unsigned int i = 2; i <= derivativeOrder; ++i)
+        for(unsigned int i = 2; i <= derivativeOrder; ++i)
             faculty *= i;
-        for (double x = left() + offset; k < kernel_.end(); ++x, ++k)
+        for(double x = left() + offset; k < kernel_.end(); ++x, ++k)
         {
             sum = TmpType(sum + *k * VIGRA_CSTD::pow(-x, int(derivativeOrder)) / faculty);
         }
@@ -2274,7 +2274,7 @@ Kernel1D<ARITHTYPE>::normalize(value_type norm,
     // normalize
     sum = norm / sum;
     k = kernel_.begin();
-    for (; k != kernel_.end(); ++k)
+    for(; k != kernel_.end(); ++k)
     {
         *k = *k * sum;
     }
@@ -2284,7 +2284,7 @@ Kernel1D<ARITHTYPE>::normalize(value_type norm,
 
 /***********************************************************************/
 
-template<class ARITHTYPE>
+template <class ARITHTYPE>
 void
 Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
                                   value_type norm,
@@ -2295,24 +2295,24 @@ Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
     vigra_precondition(windowRatio >= 0.0,
                        "Kernel1D::initGaussian(): windowRatio must be >= 0.");
 
-    if (std_dev > 0.0)
+    if(std_dev > 0.0)
     {
         Gaussian<ARITHTYPE> gauss((ARITHTYPE)std_dev);
 
         // first calculate required kernel sizes
         int radius;
-        if (windowRatio == 0.0)
+        if(windowRatio == 0.0)
             radius = (int)(3.0 * std_dev + 0.5);
         else
             radius = (int)(windowRatio * std_dev + 0.5);
-        if (radius == 0)
+        if(radius == 0)
             radius = 1;
 
         // allocate the kernel
         kernel_.erase(kernel_.begin(), kernel_.end());
         kernel_.reserve(radius * 2 + 1);
 
-        for (ARITHTYPE x = -(ARITHTYPE)radius; x <= (ARITHTYPE)radius; ++x)
+        for(ARITHTYPE x = -(ARITHTYPE)radius; x <= (ARITHTYPE)radius; ++x)
         {
             kernel_.push_back(gauss(x));
         }
@@ -2327,7 +2327,7 @@ Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
         right_ = 0;
     }
 
-    if (norm != 0.0)
+    if(norm != 0.0)
         normalize(norm);
     else
         norm_ = 1.0;
@@ -2338,7 +2338,7 @@ Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
 
 /***********************************************************************/
 
-template<class ARITHTYPE>
+template <class ARITHTYPE>
 void
 Kernel1D<ARITHTYPE>::initDiscreteGaussian(double std_dev,
                                           value_type norm)
@@ -2346,11 +2346,11 @@ Kernel1D<ARITHTYPE>::initDiscreteGaussian(double std_dev,
     vigra_precondition(std_dev >= 0.0,
                        "Kernel1D::initDiscreteGaussian(): Standard deviation must be >= 0.");
 
-    if (std_dev > 0.0)
+    if(std_dev > 0.0)
     {
         // first calculate required kernel sizes
         int radius = (int)(3.0 * std_dev + 0.5);
-        if (radius == 0)
+        if(radius == 0)
             radius = 1;
 
         double f = 2.0 / std_dev / std_dev;
@@ -2361,10 +2361,10 @@ Kernel1D<ARITHTYPE>::initDiscreteGaussian(double std_dev,
         warray[maxIndex] = 0.0;
         warray[maxIndex - 1] = 1.0;
 
-        for (int i = maxIndex - 2; i >= radius; --i)
+        for(int i = maxIndex - 2; i >= radius; --i)
         {
             warray[i] = warray[i + 2] + f * (i + 1) * warray[i + 1];
-            if (warray[i] > 1.0e40)
+            if(warray[i] > 1.0e40)
             {
                 warray[i + 1] /= warray[i];
                 warray[i] = 1.0;
@@ -2377,7 +2377,7 @@ Kernel1D<ARITHTYPE>::initDiscreteGaussian(double std_dev,
         warray[radius + 1] = er * warray[radius + 1] / warray[radius];
         warray[radius] = er;
 
-        for (int i = radius - 1; i >= 0; --i)
+        for(int i = radius - 1; i >= 0; --i)
         {
             warray[i] = warray[i + 2] + f * (i + 1) * warray[i + 1];
             er += warray[i];
@@ -2388,7 +2388,7 @@ Kernel1D<ARITHTYPE>::initDiscreteGaussian(double std_dev,
         initExplicitly(-radius, radius);
         iterator c = center();
 
-        for (int i = 0; i <= radius; ++i)
+        for(int i = 0; i <= radius; ++i)
         {
             c[i] = c[-i] = warray[i] * scale;
         }
@@ -2409,7 +2409,7 @@ Kernel1D<ARITHTYPE>::initDiscreteGaussian(double std_dev,
 
 /***********************************************************************/
 
-template<class ARITHTYPE>
+template <class ARITHTYPE>
 void
 Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
                                             int order,
@@ -2419,7 +2419,7 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
     vigra_precondition(order >= 0,
                        "Kernel1D::initGaussianDerivative(): Order must be >= 0.");
 
-    if (order == 0)
+    if(order == 0)
     {
         initGaussian(std_dev, norm, windowRatio);
         return;
@@ -2435,11 +2435,11 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
 
     // first calculate required kernel sizes
     int radius;
-    if (windowRatio == 0.0)
+    if(windowRatio == 0.0)
         radius = (int)((3.0 + 0.5 * order) * std_dev + 0.5);
     else
         radius = (int)(windowRatio * std_dev + 0.5);
-    if (radius == 0)
+    if(radius == 0)
         radius = 1;
 
     // allocate the kernels
@@ -2449,7 +2449,7 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
     // fill the kernel and calculate the DC component
     // introduced by truncation of the Gaussian
     ARITHTYPE dc = 0.0;
-    for (ARITHTYPE x = -(ARITHTYPE)radius; x <= (ARITHTYPE)radius; ++x)
+    for(ARITHTYPE x = -(ARITHTYPE)radius; x <= (ARITHTYPE)radius; ++x)
     {
         kernel_.push_back(gauss(x));
         dc += kernel_[kernel_.size() - 1];
@@ -2458,9 +2458,9 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
 
     // remove DC, but only if kernel correction is permitted by a non-zero
     // value for norm
-    if (norm != 0.0)
+    if(norm != 0.0)
     {
-        for (unsigned int i = 0; i < kernel_.size(); ++i)
+        for(unsigned int i = 0; i < kernel_.size(); ++i)
         {
             kernel_[i] -= dc;
         }
@@ -2469,7 +2469,7 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
     left_ = -radius;
     right_ = radius;
 
-    if (norm != 0.0)
+    if(norm != 0.0)
         normalize(norm, order);
     else
         norm_ = 1.0;
@@ -2481,7 +2481,7 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
 
 /***********************************************************************/
 
-template<class ARITHTYPE>
+template <class ARITHTYPE>
 void
 Kernel1D<ARITHTYPE>::initBinomial(int radius,
                                   value_type norm)
@@ -2495,10 +2495,10 @@ Kernel1D<ARITHTYPE>::initBinomial(int radius,
 
     // fill kernel
     x[radius] = norm;
-    for (int j = radius - 1; j >= -radius; --j)
+    for(int j = radius - 1; j >= -radius; --j)
     {
         x[j] = 0.5 * x[j + 1];
-        for (int i = j + 1; i < radius; ++i)
+        for(int i = j + 1; i < radius; ++i)
         {
             x[i] = 0.5 * (x[i] + x[i + 1]);
         }
@@ -2515,7 +2515,7 @@ Kernel1D<ARITHTYPE>::initBinomial(int radius,
 
 /***********************************************************************/
 
-template<class ARITHTYPE>
+template <class ARITHTYPE>
 void
 Kernel1D<ARITHTYPE>::initAveraging(int radius,
                                    value_type norm)
@@ -2530,7 +2530,7 @@ Kernel1D<ARITHTYPE>::initAveraging(int radius,
     kernel_.erase(kernel_.begin(), kernel_.end());
     kernel_.reserve(radius * 2 + 1);
 
-    for (int i = 0; i <= radius * 2 + 1; ++i)
+    for(int i = 0; i <= radius * 2 + 1; ++i)
     {
         kernel_.push_back(scale * norm);
     }
@@ -2545,7 +2545,7 @@ Kernel1D<ARITHTYPE>::initAveraging(int radius,
 
 /***********************************************************************/
 
-template<class ARITHTYPE>
+template <class ARITHTYPE>
 void
 Kernel1D<ARITHTYPE>::initSymmetricDifference(value_type norm)
 {
@@ -2573,7 +2573,7 @@ Kernel1D<ARITHTYPE>::initSymmetricDifference(value_type norm)
 /*                                                            */
 /**************************************************************/
 
-template<class KernelIterator, class KernelAccessor>
+template <class KernelIterator, class KernelAccessor>
 inline tuple5<KernelIterator, KernelAccessor, int, int, BorderTreatmentMode>
 kernel1d(KernelIterator ik, KernelAccessor ka,
          int kleft, int kright, BorderTreatmentMode border)
@@ -2582,7 +2582,7 @@ kernel1d(KernelIterator ik, KernelAccessor ka,
         ik, ka, kleft, kright, border);
 }
 
-template<class T>
+template <class T>
 inline tuple5<typename Kernel1D<T>::const_iterator, typename Kernel1D<T>::ConstAccessor,
               int, int, BorderTreatmentMode>
 kernel1d(Kernel1D<T> const& k)
@@ -2596,7 +2596,7 @@ kernel1d(Kernel1D<T> const& k)
         k.borderTreatment());
 }
 
-template<class T>
+template <class T>
 inline tuple5<typename Kernel1D<T>::const_iterator, typename Kernel1D<T>::ConstAccessor,
               int, int, BorderTreatmentMode>
 kernel1d(Kernel1D<T> const& k, BorderTreatmentMode border)

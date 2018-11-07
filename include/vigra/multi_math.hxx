@@ -49,7 +49,7 @@ namespace vigra
 namespace multi_math
 {
 
-template<class ARG>
+template <class ARG>
 struct MultiMathOperand
 {
     typedef typename ARG::result_type result_type;
@@ -66,7 +66,7 @@ struct MultiMathOperand
     // 's' is the shape of the LHS array. If 's' is zero (i.e. the LHS is
     // not yet initialized), it is set to the maximal RHS shape.
     //
-    template<class SHAPE>
+    template <class SHAPE>
     bool checkShape(SHAPE& s) const
     {
         return arg_.checkShape(s);
@@ -91,7 +91,7 @@ struct MultiMathOperand
     }
 
     // get the value of the expression at an offset of the current pointer location
-    template<class SHAPE>
+    template <class SHAPE>
     result_type operator[](SHAPE const& s) const
     {
         return arg_[s];
@@ -100,7 +100,7 @@ struct MultiMathOperand
     ARG arg_;
 };
 
-template<unsigned int N, class T, class C>
+template <unsigned int N, class T, class C>
 struct MultiMathOperand<MultiArrayView<N, T, C>>
 {
     typedef MultiMathOperand AllowOverload;
@@ -116,8 +116,8 @@ struct MultiMathOperand<MultiArrayView<N, T, C>>
           strides_(a.stride())
     {
         // allow for transparent expansion of singleton dimensions
-        for (unsigned int k = 0; k < N; ++k)
-            if (shape_[k] == 1)
+        for(unsigned int k = 0; k < N; ++k)
+            if(shape_[k] == 1)
                 strides_[k] = 0;
     }
 
@@ -126,17 +126,17 @@ struct MultiMathOperand<MultiArrayView<N, T, C>>
         // support:
         //   * transparent expansion of singleton dimensions
         //   * determining LHS shape in a constructor
-        for (unsigned int k = 0; k < N; ++k)
+        for(unsigned int k = 0; k < N; ++k)
         {
-            if (shape_[k] == 0)
+            if(shape_[k] == 0)
             {
                 return false;
             }
-            else if (s[k] <= 1)
+            else if(s[k] <= 1)
             {
                 s[k] = shape_[k];
             }
-            else if (shape_[k] > 1 && shape_[k] != s[k])
+            else if(shape_[k] > 1 && shape_[k] != s[k])
             {
                 return false;
             }
@@ -168,7 +168,7 @@ struct MultiMathOperand<MultiArrayView<N, T, C>>
     Shape shape_, strides_;
 };
 
-template<unsigned int N, class T, class A>
+template <unsigned int N, class T, class A>
 struct MultiMathOperand<MultiArray<N, T, A>>
     : public MultiMathOperand<MultiArrayView<N, T, UnstridedArrayTag>>
 {
@@ -180,7 +180,7 @@ struct MultiMathOperand<MultiArray<N, T, A>>
     }
 };
 
-template<class T>
+template <class T>
 struct MultiMathScalarOperand
 {
     typedef MultiMathOperand<T> AllowOverload;
@@ -193,13 +193,13 @@ struct MultiMathScalarOperand
     {
     }
 
-    template<class SHAPE>
+    template <class SHAPE>
     bool checkShape(SHAPE const&) const
     {
         return true;
     }
 
-    template<class SHAPE>
+    template <class SHAPE>
     T const& operator[](SHAPE const&) const
     {
         return v_;
@@ -260,7 +260,7 @@ VIGRA_CONSTANT_OPERAND(VIGRA_RGBVALUE_ARGS, VIGRA_RGBVALUE_DECL)
 
 #undef VIGRA_CONSTANT_OPERAND
 
-template<class O, class F>
+template <class O, class F>
 struct MultiMathUnaryOperator
 {
     typedef typename F::template Result<typename O::result_type>::type result_type;
@@ -272,7 +272,7 @@ struct MultiMathUnaryOperator
     {
     }
 
-    template<class SHAPE>
+    template <class SHAPE>
     bool checkShape(SHAPE& s) const
     {
         return o_.checkShape(s);
@@ -289,7 +289,7 @@ struct MultiMathUnaryOperator
         o_.reset(axis);
     }
 
-    template<class POINT>
+    template <class POINT>
     result_type operator[](POINT const& p) const
     {
         return f_(o_[p]);
@@ -309,13 +309,13 @@ struct MultiMathUnaryOperator
     {                                                                                  \
     struct NAME                                                                        \
     {                                                                                  \
-        template<class T>                                                              \
+        template <class T>                                                             \
         struct Result                                                                  \
         {                                                                              \
             typedef RESTYPE type;                                                      \
         };                                                                             \
                                                                                        \
-        template<class T>                                                              \
+        template <class T>                                                             \
         typename Result<T>::type                                                       \
         operator()(T const& t) const                                                   \
         {                                                                              \
@@ -324,7 +324,7 @@ struct MultiMathUnaryOperator
     };                                                                                 \
     }                                                                                  \
                                                                                        \
-    template<unsigned int N, class T, class C>                                         \
+    template <unsigned int N, class T, class C>                                        \
     MultiMathOperand<MultiMathUnaryOperator<MultiMathOperand<MultiArrayView<N, T, C>>, \
                                             math_detail::NAME>>                        \
     OPNAME(MultiArrayView<N, T, C> const& v)                                           \
@@ -334,7 +334,7 @@ struct MultiMathUnaryOperator
         return MultiMathOperand<OP>(OP(v));                                            \
     }                                                                                  \
                                                                                        \
-    template<unsigned int N, class T, class A>                                         \
+    template <unsigned int N, class T, class A>                                        \
     MultiMathOperand<MultiMathUnaryOperator<MultiMathOperand<MultiArray<N, T, A>>,     \
                                             math_detail::NAME>>                        \
     OPNAME(MultiArray<N, T, A> const& v)                                               \
@@ -344,7 +344,7 @@ struct MultiMathUnaryOperator
         return MultiMathOperand<OP>(OP(v));                                            \
     }                                                                                  \
                                                                                        \
-    template<class T>                                                                  \
+    template <class T>                                                                 \
     MultiMathOperand<MultiMathUnaryOperator<MultiMathOperand<T>,                       \
                                             math_detail::NAME>>                        \
     OPNAME(MultiMathOperand<T> const& v)                                               \
@@ -414,7 +414,7 @@ VIGRA_MULTIMATH_UNARY_OPERATOR(Arg, arg, arg, typename T::value_type)
 #undef VIGRA_REALPROMOTE
 #undef VIGRA_MULTIMATH_UNARY_OPERATOR
 
-template<class O1, class O2, class F>
+template <class O1, class O2, class F>
 struct MultiMathBinaryOperator
 {
     typedef typename F::template Result<typename O1::result_type,
@@ -428,13 +428,13 @@ struct MultiMathBinaryOperator
     {
     }
 
-    template<class SHAPE>
+    template <class SHAPE>
     bool checkShape(SHAPE& s) const
     {
         return o1_.checkShape(s) && o2_.checkShape(s);
     }
 
-    template<class POINT>
+    template <class POINT>
     result_type operator[](POINT const& p) const
     {
         return f_(o1_[p], o2_[p]);
@@ -474,13 +474,13 @@ struct MultiMathBinaryOperator
     {                                                                                                        \
     struct NAME                                                                                              \
     {                                                                                                        \
-        template<class T1, class T2>                                                                         \
+        template <class T1, class T2>                                                                        \
         struct Result                                                                                        \
         {                                                                                                    \
             typedef RESTYPE type;                                                                            \
         };                                                                                                   \
                                                                                                              \
-        template<class T1, class T2>                                                                         \
+        template <class T1, class T2>                                                                        \
         typename Result<T1, T2>::type                                                                        \
         operator()(T1 const& t1, T2 const& t2) const                                                         \
         {                                                                                                    \
@@ -489,7 +489,7 @@ struct MultiMathBinaryOperator
     };                                                                                                       \
     }                                                                                                        \
                                                                                                              \
-    template<unsigned int N, class T1, class A1, class T2, class A2>                                         \
+    template <unsigned int N, class T1, class A1, class T2, class A2>                                        \
     MultiMathOperand<MultiMathBinaryOperator<MultiMathOperand<MultiArrayView<N, T1>>,                        \
                                              MultiMathOperand<MultiArrayView<N, T2>>,                        \
                                              math_detail::NAME>>                                             \
@@ -501,7 +501,7 @@ struct MultiMathBinaryOperator
         return MultiMathOperand<OP>(OP((MultiArrayView<N, T1> const&)v1, (MultiArrayView<N, T2> const&)v2)); \
     }                                                                                                        \
                                                                                                              \
-    template<unsigned int N, class T1, class C1, class T2, class C2>                                         \
+    template <unsigned int N, class T1, class C1, class T2, class C2>                                        \
     MultiMathOperand<MultiMathBinaryOperator<MultiMathOperand<MultiArrayView<N, T1, C1>>,                    \
                                              MultiMathOperand<MultiArrayView<N, T2, C2>>,                    \
                                              math_detail::NAME>>                                             \
@@ -513,7 +513,7 @@ struct MultiMathBinaryOperator
         return MultiMathOperand<OP>(OP(v1, v2));                                                             \
     }                                                                                                        \
                                                                                                              \
-    template<unsigned int N, class T1, class T2, class C2>                                                   \
+    template <unsigned int N, class T1, class T2, class C2>                                                  \
     MultiMathOperand<MultiMathBinaryOperator<typename MultiMathOperand<T1>::AllowOverload,                   \
                                              MultiMathOperand<MultiArrayView<N, T2, C2>>,                    \
                                              math_detail::NAME>>                                             \
@@ -525,7 +525,7 @@ struct MultiMathBinaryOperator
         return MultiMathOperand<OP>(OP(v1, v2));                                                             \
     }                                                                                                        \
                                                                                                              \
-    template<unsigned int N, class T1, class C1, class T2>                                                   \
+    template <unsigned int N, class T1, class C1, class T2>                                                  \
     MultiMathOperand<MultiMathBinaryOperator<MultiMathOperand<MultiArrayView<N, T1, C1>>,                    \
                                              typename MultiMathOperand<T2>::AllowOverload,                   \
                                              math_detail::NAME>>                                             \
@@ -537,7 +537,7 @@ struct MultiMathBinaryOperator
         return MultiMathOperand<OP>(OP(v1, v2));                                                             \
     }                                                                                                        \
                                                                                                              \
-    template<unsigned int N, class T1, class T2, class C2>                                                   \
+    template <unsigned int N, class T1, class T2, class C2>                                                  \
     MultiMathOperand<MultiMathBinaryOperator<MultiMathOperand<T1>,                                           \
                                              MultiMathOperand<MultiArrayView<N, T2, C2>>,                    \
                                              math_detail::NAME>>                                             \
@@ -549,7 +549,7 @@ struct MultiMathBinaryOperator
         return MultiMathOperand<OP>(OP(v1, v2));                                                             \
     }                                                                                                        \
                                                                                                              \
-    template<unsigned int N, class T1, class C1, class T2>                                                   \
+    template <unsigned int N, class T1, class C1, class T2>                                                  \
     MultiMathOperand<MultiMathBinaryOperator<MultiMathOperand<MultiArrayView<N, T1, C1>>,                    \
                                              MultiMathOperand<T2>,                                           \
                                              math_detail::NAME>>                                             \
@@ -561,7 +561,7 @@ struct MultiMathBinaryOperator
         return MultiMathOperand<OP>(OP(v1, v2));                                                             \
     }                                                                                                        \
                                                                                                              \
-    template<class T1, class T2>                                                                             \
+    template <class T1, class T2>                                                                            \
     MultiMathOperand<MultiMathBinaryOperator<MultiMathOperand<T1>,                                           \
                                              MultiMathOperand<T2>,                                           \
                                              math_detail::NAME>>                                             \
@@ -573,7 +573,7 @@ struct MultiMathBinaryOperator
         return MultiMathOperand<OP>(OP(v1, v2));                                                             \
     }                                                                                                        \
                                                                                                              \
-    template<class T1, class T2>                                                                             \
+    template <class T1, class T2>                                                                            \
     MultiMathOperand<MultiMathBinaryOperator<typename MultiMathOperand<T1>::AllowOverload,                   \
                                              MultiMathOperand<T2>,                                           \
                                              math_detail::NAME>>                                             \
@@ -585,7 +585,7 @@ struct MultiMathBinaryOperator
         return MultiMathOperand<OP>(OP(v1, v2));                                                             \
     }                                                                                                        \
                                                                                                              \
-    template<class T1, class T2>                                                                             \
+    template <class T1, class T2>                                                                            \
     MultiMathOperand<MultiMathBinaryOperator<MultiMathOperand<T1>,                                           \
                                              typename MultiMathOperand<T2>::AllowOverload,                   \
                                              math_detail::NAME>>                                             \
@@ -645,7 +645,7 @@ namespace math_detail
 // differently -- maybe it is better to find the most common order
 // among all arguments (both RHS and LHS)?
 //
-template<unsigned int N, class Assign>
+template <unsigned int N, class Assign>
 struct MultiMathExec
 {
     enum
@@ -653,12 +653,12 @@ struct MultiMathExec
         LEVEL = N - 1
     };
 
-    template<class T, class Shape, class Expression>
+    template <class T, class Shape, class Expression>
     static void exec(T* data, Shape const& shape, Shape const& strides,
                      Shape const& strideOrder, Expression const& e)
     {
         MultiArrayIndex axis = strideOrder[LEVEL];
-        for (MultiArrayIndex k = 0; k < shape[axis]; ++k, data += strides[axis], e.inc(axis))
+        for(MultiArrayIndex k = 0; k < shape[axis]; ++k, data += strides[axis], e.inc(axis))
         {
             MultiMathExec<N - 1, Assign>::exec(data, shape, strides, strideOrder, e);
         }
@@ -667,7 +667,7 @@ struct MultiMathExec
     }
 };
 
-template<class Assign>
+template <class Assign>
 struct MultiMathExec<1, Assign>
 {
     enum
@@ -675,12 +675,12 @@ struct MultiMathExec<1, Assign>
         LEVEL = 0
     };
 
-    template<class T, class Shape, class Expression>
+    template <class T, class Shape, class Expression>
     static void exec(T* data, Shape const& shape, Shape const& strides,
                      Shape const& strideOrder, Expression const& e)
     {
         MultiArrayIndex axis = strideOrder[LEVEL];
-        for (MultiArrayIndex k = 0; k < shape[axis]; ++k, data += strides[axis], e.inc(axis))
+        for(MultiArrayIndex k = 0; k < shape[axis]; ++k, data += strides[axis], e.inc(axis))
         {
             Assign::assign(data, e);
         }
@@ -692,14 +692,14 @@ struct MultiMathExec<1, Assign>
 #define VIGRA_MULTIMATH_ASSIGN(NAME, OP)                                               \
     struct MultiMath##NAME                                                             \
     {                                                                                  \
-        template<class T, class Expression>                                            \
+        template <class T, class Expression>                                           \
         static void assign(T* data, Expression const& e)                               \
         {                                                                              \
             *data OP vigra::detail::RequiresExplicitCast<T>::cast(*e);                 \
         }                                                                              \
     };                                                                                 \
                                                                                        \
-    template<unsigned int N, class T, class C, class Expression>                       \
+    template <unsigned int N, class T, class C, class Expression>                      \
     void NAME(MultiArrayView<N, T, C> a, MultiMathOperand<Expression> const& e)        \
     {                                                                                  \
         typename MultiArrayShape<N>::type shape(a.shape());                            \
@@ -711,7 +711,7 @@ struct MultiMathExec<1, Assign>
                                                 a.strideOrdering(), e);                \
     }                                                                                  \
                                                                                        \
-    template<unsigned int N, class T, class A, class Expression>                       \
+    template <unsigned int N, class T, class A, class Expression>                      \
     void NAME##OrResize(MultiArray<N, T, A>& a, MultiMathOperand<Expression> const& e) \
     {                                                                                  \
         typename MultiArrayShape<N>::type shape(a.shape());                            \
@@ -719,7 +719,7 @@ struct MultiMathExec<1, Assign>
         vigra_precondition(e.checkShape(shape),                                        \
                            "multi_math: shape mismatch in expression.");               \
                                                                                        \
-        if (a.size() == 0)                                                             \
+        if(a.size() == 0)                                                              \
             a.reshape(shape);                                                          \
                                                                                        \
         MultiMathExec<N, MultiMath##NAME>::exec(a.data(), a.shape(), a.stride(),       \
@@ -734,7 +734,7 @@ VIGRA_MULTIMATH_ASSIGN(divideAssign, /=)
 
 #undef VIGRA_MULTIMATH_ASSIGN
 
-template<unsigned int N, class Assign>
+template <unsigned int N, class Assign>
 struct MultiMathReduce
 {
     enum
@@ -742,10 +742,10 @@ struct MultiMathReduce
         LEVEL = N - 1
     };
 
-    template<class T, class Shape, class Expression>
+    template <class T, class Shape, class Expression>
     static void exec(T& t, Shape const& shape, Expression const& e)
     {
-        for (MultiArrayIndex k = 0; k < shape[LEVEL]; ++k, e.inc(LEVEL))
+        for(MultiArrayIndex k = 0; k < shape[LEVEL]; ++k, e.inc(LEVEL))
         {
             MultiMathReduce<N - 1, Assign>::exec(t, shape, e);
         }
@@ -753,7 +753,7 @@ struct MultiMathReduce
     }
 };
 
-template<class Assign>
+template <class Assign>
 struct MultiMathReduce<1, Assign>
 {
     enum
@@ -761,10 +761,10 @@ struct MultiMathReduce<1, Assign>
         LEVEL = 0
     };
 
-    template<class T, class Shape, class Expression>
+    template <class T, class Shape, class Expression>
     static void exec(T& t, Shape const& shape, Expression const& e)
     {
-        for (MultiArrayIndex k = 0; k < shape[0]; ++k, e.inc(0))
+        for(MultiArrayIndex k = 0; k < shape[0]; ++k, e.inc(0))
         {
             Assign::assign(&t, e);
         }
@@ -774,7 +774,7 @@ struct MultiMathReduce<1, Assign>
 
 struct MultiMathReduceAll
 {
-    template<class T, class Expression>
+    template <class T, class Expression>
     static void assign(T* data, Expression const& e)
     {
         *data = *data && (*e != NumericTraits<typename Expression::result_type>::zero());
@@ -783,7 +783,7 @@ struct MultiMathReduceAll
 
 struct MultiMathReduceAny
 {
-    template<class T, class Expression>
+    template <class T, class Expression>
     static void assign(T* data, Expression const& e)
     {
         *data = *data || (*e != NumericTraits<typename Expression::result_type>::zero());
@@ -793,7 +793,7 @@ struct MultiMathReduceAny
 
 } // namespace math_detail
 
-template<class U, class T>
+template <class U, class T>
 U
 sum(MultiMathOperand<T> const& v, U res = NumericTraits<U>::zero())
 {
@@ -804,14 +804,14 @@ sum(MultiMathOperand<T> const& v, U res = NumericTraits<U>::zero())
     return res;
 }
 
-template<class U, unsigned int N, class T, class S>
+template <class U, unsigned int N, class T, class S>
 U
 sum(MultiArrayView<N, T, S> const& v, U res = NumericTraits<U>::zero())
 {
     return v.template sum<U>() + res;
 }
 
-template<class U, class T>
+template <class U, class T>
 U
 product(MultiMathOperand<T> const& v, U res = NumericTraits<U>::one())
 {
@@ -822,14 +822,14 @@ product(MultiMathOperand<T> const& v, U res = NumericTraits<U>::one())
     return res;
 }
 
-template<class U, unsigned int N, class T, class S>
+template <class U, unsigned int N, class T, class S>
 U
 product(MultiArrayView<N, T, S> const& v, U res = NumericTraits<U>::one())
 {
     return v.template product<U>() * res;
 }
 
-template<class T>
+template <class T>
 bool
 all(MultiMathOperand<T> const& v)
 {
@@ -841,7 +841,7 @@ all(MultiMathOperand<T> const& v)
     return res;
 }
 
-template<class T>
+template <class T>
 bool
 any(MultiMathOperand<T> const& v)
 {

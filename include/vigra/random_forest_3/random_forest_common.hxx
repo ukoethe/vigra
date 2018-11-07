@@ -53,7 +53,7 @@ namespace rf3
 **/
 //@{
 
-template<typename T>
+template <typename T>
 struct LessEqualSplitTest
 {
 public:
@@ -63,7 +63,7 @@ public:
     {
     }
 
-    template<typename FEATURES>
+    template <typename FEATURES>
     size_t operator()(FEATURES const& features) const
     {
         return features(dim_) <= val_ ? 0 : 1;
@@ -80,16 +80,16 @@ struct ArgMaxAcc
 public:
     typedef size_t input_type;
 
-    template<typename ITER, typename OUTITER>
+    template <typename ITER, typename OUTITER>
     void operator()(ITER begin, ITER end, OUTITER out)
     {
         std::fill(buffer_.begin(), buffer_.end(), 0);
         size_t max_v = 0;
         size_t n = 0;
-        for (ITER it = begin; it != end; ++it)
+        for(ITER it = begin; it != end; ++it)
         {
             size_t const v = *it;
-            if (v >= buffer_.size())
+            if(v >= buffer_.size())
             {
                 buffer_.resize(v + 1, 0);
             }
@@ -97,7 +97,7 @@ public:
             ++n;
             max_v = std::max(max_v, v);
         }
-        for (size_t i = 0; i <= max_v; ++i)
+        for(size_t i = 0; i <= max_v; ++i)
         {
             *out = buffer_[i] / static_cast<double>(n);
             ++out;
@@ -110,32 +110,32 @@ private:
 
 
 
-template<typename VALUETYPE>
+template <typename VALUETYPE>
 struct ArgMaxVectorAcc
 {
 public:
     typedef VALUETYPE value_type;
     typedef std::vector<value_type> input_type;
-    template<typename ITER, typename OUTITER>
+    template <typename ITER, typename OUTITER>
     void operator()(ITER begin, ITER end, OUTITER out)
     {
         std::fill(buffer_.begin(), buffer_.end(), 0);
         size_t max_v = 0;
-        for (ITER it = begin; it != end; ++it)
+        for(ITER it = begin; it != end; ++it)
         {
             input_type const& vec = *it;
-            if (vec.size() >= buffer_.size())
+            if(vec.size() >= buffer_.size())
             {
                 buffer_.resize(vec.size(), 0);
             }
             value_type const n = std::accumulate(vec.begin(), vec.end(), static_cast<value_type>(0));
-            for (size_t i = 0; i < vec.size(); ++i)
+            for(size_t i = 0; i < vec.size(); ++i)
             {
                 buffer_[i] += vec[i] / static_cast<double>(n);
             }
             max_v = std::max(vec.size() - 1, max_v);
         }
-        for (size_t i = 0; i <= max_v; ++i)
+        for(size_t i = 0; i <= max_v; ++i)
         {
             *out = buffer_[i];
             ++out;
@@ -215,7 +215,7 @@ namespace detail
 
 /// Abstract scorer that iterates over all split candidates, uses FUNCTOR to compute a score,
 /// and saves the split with the minimum score.
-template<typename FUNCTOR>
+template <typename FUNCTOR>
 class GeneralScorer
 {
 public:
@@ -231,7 +231,7 @@ public:
     {
     }
 
-    template<typename FEATURES, typename LABELS, typename WEIGHTS, typename ITER>
+    template <typename FEATURES, typename LABELS, typename WEIGHTS, typename ITER>
     void operator()(
         FEATURES const& features,
         LABELS const& labels,
@@ -240,7 +240,7 @@ public:
         ITER end,
         size_t dim)
     {
-        if (begin == end)
+        if(begin == end)
             return;
 
         Functor score;
@@ -249,7 +249,7 @@ public:
         double n_left = 0;
         ITER next = begin;
         ++next;
-        for (; next != end; ++begin, ++next)
+        for(; next != end; ++begin, ++next)
         {
             // Move the label from the right side to the left side.
             size_t const left_index = *begin;
@@ -261,14 +261,14 @@ public:
             // Skip if there is no new split.
             auto const left = features(left_index, dim);
             auto const right = features(right_index, dim);
-            if (left == right)
+            if(left == right)
                 continue;
 
             // Update the score.
             split_found_ = true;
             double const s = score(priors_, counts, n_total_, n_left);
             bool const better_score = s < best_score_;
-            if (better_score)
+            if(better_score)
             {
                 best_score_ = s;
                 best_split_ = 0.5 * (left + right);
@@ -302,7 +302,7 @@ public:
         double const n_right = n_total - n_left;
         double gini_left = 1.0;
         double gini_right = 1.0;
-        for (size_t i = 0; i < counts.size(); ++i)
+        for(size_t i = 0; i < counts.size(); ++i)
         {
             double const p_left = counts[i] / n_left;
             double const p_right = (priors[i] - counts[i]) / n_right;
@@ -313,17 +313,17 @@ public:
     }
 
     // needed for Gini-based variable importance calculation
-    template<typename LABELS, typename WEIGHTS, typename ITER>
+    template <typename LABELS, typename WEIGHTS, typename ITER>
     static double region_score(LABELS const& labels, WEIGHTS const& weights, ITER begin, ITER end)
     {
         // Count the occurences.
         std::vector<double> counts;
         double total = 0.0;
-        for (auto it = begin; it != end; ++it)
+        for(auto it = begin; it != end; ++it)
         {
             auto const d = *it;
             auto const lbl = labels[d];
-            if (counts.size() <= lbl)
+            if(counts.size() <= lbl)
             {
                 counts.resize(lbl + 1, 0.0);
             }
@@ -333,7 +333,7 @@ public:
 
         // Compute the gini.
         double gini = total;
-        for (auto x : counts)
+        for(auto x : counts)
         {
             gini -= x * x / total;
         }
@@ -352,20 +352,20 @@ public:
     {
         double const n_right = n_total - n_left;
         double ig = 0;
-        for (size_t i = 0; i < counts.size(); ++i)
+        for(size_t i = 0; i < counts.size(); ++i)
         {
             double c = counts[i];
-            if (c != 0)
+            if(c != 0)
                 ig -= c * std::log(c / n_left);
 
             c = priors[i] - c;
-            if (c != 0)
+            if(c != 0)
                 ig -= c * std::log(c / n_right);
         }
         return ig;
     }
 
-    template<typename LABELS, typename WEIGHTS, typename ITER>
+    template <typename LABELS, typename WEIGHTS, typename ITER>
     double region_score(LABELS const& /*labels*/, WEIGHTS const& /*weights*/, ITER /*begin*/, ITER /*end*/) const
     {
         vigra_fail("EntropyScore::region_score(): Not implemented yet.");
@@ -387,15 +387,15 @@ public:
         double const eps = 1e-10;
         double nnz = 0;
         std::vector<double> norm_counts(counts.size(), 0.0);
-        for (size_t i = 0; i < counts.size(); ++i)
+        for(size_t i = 0; i < counts.size(); ++i)
         {
-            if (priors[i] > eps)
+            if(priors[i] > eps)
             {
                 norm_counts[i] = counts[i] / priors[i];
                 ++nnz;
             }
         }
-        if (nnz < eps)
+        if(nnz < eps)
             return 0.0;
 
         // NOTE to future self:
@@ -404,9 +404,9 @@ public:
 
         // Compute the sum of the squared distances.
         double ksd = 0.0;
-        for (size_t i = 0; i < norm_counts.size(); ++i)
+        for(size_t i = 0; i < norm_counts.size(); ++i)
         {
-            if (priors[i] != 0)
+            if(priors[i] != 0)
             {
                 double const v = (mean - norm_counts[i]);
                 ksd += v * v;
@@ -415,7 +415,7 @@ public:
         return -ksd;
     }
 
-    template<typename LABELS, typename WEIGHTS, typename ITER>
+    template <typename LABELS, typename WEIGHTS, typename ITER>
     double region_score(LABELS const& /*labels*/, WEIGHTS const& /*weights*/, ITER /*begin*/, ITER /*end*/) const
     {
         vigra_fail("KolmogorovSmirnovScore::region_score(): Region score not available for the Kolmogorov-Smirnov split.");
@@ -424,7 +424,7 @@ public:
 };
 
 // This struct holds the depth and the weighted number of datapoints per class of a single node.
-template<typename ARR>
+template <typename ARR>
 struct RFNodeDescription
 {
 public:
@@ -440,16 +440,16 @@ public:
 
 
 // Return true if the given node is pure.
-template<typename LABELS, typename ITER>
+template <typename LABELS, typename ITER>
 bool
 is_pure(LABELS const& /*labels*/, RFNodeDescription<ITER> const& desc)
 {
     bool found = false;
-    for (auto n : desc.priors_)
+    for(auto n : desc.priors_)
     {
-        if (n > 0)
+        if(n > 0)
         {
-            if (found)
+            if(found)
                 return false;
             else
                 found = true;
@@ -464,7 +464,7 @@ is_pure(LABELS const& /*labels*/, RFNodeDescription<ITER> const& desc)
 class PurityStop
 {
 public:
-    template<typename LABELS, typename ITER>
+    template <typename LABELS, typename ITER>
     bool operator()(LABELS const& labels, RFNodeDescription<ITER> const& desc) const
     {
         return is_pure(labels, desc);
@@ -483,10 +483,10 @@ public:
     {
     }
 
-    template<typename LABELS, typename ITER>
+    template <typename LABELS, typename ITER>
     bool operator()(LABELS const& labels, RFNodeDescription<ITER> const& desc) const
     {
-        if (desc.depth_ >= max_depth_)
+        if(desc.depth_ >= max_depth_)
             return true;
         else
             return is_pure(labels, desc);
@@ -506,11 +506,11 @@ public:
     {
     }
 
-    template<typename LABELS, typename ARR>
+    template <typename LABELS, typename ARR>
     bool operator()(LABELS const& labels, RFNodeDescription<ARR> const& desc) const
     {
         typedef typename ARR::value_type value_type;
-        if (std::accumulate(desc.priors_.begin(), desc.priors_.end(), static_cast<value_type>(0)) <= min_n_)
+        if(std::accumulate(desc.priors_.begin(), desc.priors_.end(), static_cast<value_type>(0)) <= min_n_)
             return true;
         else
             return is_pure(labels, desc);
@@ -532,7 +532,7 @@ public:
         vigra_precondition(tau > 0 && tau < 1, "NodeComplexityStop(): Tau must be in the open interval (0, 1).");
     }
 
-    template<typename LABELS, typename ARR>
+    template <typename LABELS, typename ARR>
     bool operator()(LABELS const& /*labels*/, RFNodeDescription<ARR> const& desc) // Fix unused parameter, but leave in for API compatability
     {
         typedef typename ARR::value_type value_type;
@@ -543,9 +543,9 @@ public:
         // Compute log(prod_k(n_k!)).
         size_t nnz = 0;
         double lg = 0.0;
-        for (auto v : desc.priors_)
+        for(auto v : desc.priors_)
         {
-            if (v > 0)
+            if(v > 0)
             {
                 ++nnz;
                 lg += loggamma(static_cast<double>(v + 1));
@@ -553,7 +553,7 @@ public:
         }
         lg += loggamma(static_cast<double>(nnz + 1));
         lg -= loggamma(static_cast<double>(total + 1));
-        if (nnz <= 1)
+        if(nnz <= 1)
             return true;
 
         return lg >= logtau_;
@@ -770,13 +770,13 @@ public:
      */
     size_t get_features_per_node(size_t total) const
     {
-        if (features_per_node_switch_ == RF_SQRT)
+        if(features_per_node_switch_ == RF_SQRT)
             return std::ceil(std::sqrt(total));
-        else if (features_per_node_switch_ == RF_LOG)
+        else if(features_per_node_switch_ == RF_LOG)
             return std::ceil(std::log(total));
-        else if (features_per_node_switch_ == RF_CONST)
+        else if(features_per_node_switch_ == RF_CONST)
             return features_per_node_;
-        else if (features_per_node_switch_ == RF_ALL)
+        else if(features_per_node_switch_ == RF_ALL)
             return total;
         vigra_fail("RandomForestOptions::get_features_per_node(): Unknown switch.");
         return 0;
@@ -798,7 +798,7 @@ public:
 
 
 
-template<typename LabelType>
+template <typename LabelType>
 class ProblemSpec
 {
 public:
@@ -851,8 +851,8 @@ public:
 
     bool operator==(ProblemSpec const& other) const
     {
-#define COMPARE(field)        \
-    if (field != other.field) \
+#define COMPARE(field)       \
+    if(field != other.field) \
         return false;
         COMPARE(num_features_);
         COMPARE(num_instances_);

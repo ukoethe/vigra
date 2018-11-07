@@ -45,7 +45,7 @@ using namespace vigra;
 int
 main(int argc, char** argv)
 {
-    if (argc != 2)
+    if(argc != 2)
     {
         std::cout << "Usage: " << argv[0] << " infile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
@@ -86,19 +86,19 @@ main(int argc, char** argv)
         BImage::Iterator column = out.upperLeft() + Diff2D(0, 255);
 
         // iterate along the line and across the destination image
-        for (; line != end; ++line, ++column.x)
+        for(; line != end; ++line, ++column.x)
         {
             BImage::Iterator row(column);
             // paint all pixels black whose coordinates are smaller than the
             // current gray value along the diagonal
-            for (int y = 0; y <= *line; ++y, --row.y)
+            for(int y = 0; y <= *line; ++y, --row.y)
                 *row = 0;
         }
 
         std::cout << "Writing profile.gif" << std::endl;
         exportImage(srcImageRange(out), ImageExportInfo("profile.gif"));
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         std::cout << e.what() << std::endl;
         return 1;

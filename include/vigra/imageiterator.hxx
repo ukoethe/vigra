@@ -45,7 +45,7 @@
 namespace vigra
 {
 
-template<class IMAGEITERATOR>
+template <class IMAGEITERATOR>
 class StridedIteratorPolicy
 {
 public:
@@ -376,14 +376,14 @@ The following iterator traits must be defined for an image iterator:
 namespace detail
 {
 
-template<class StridedOrUnstrided>
+template <class StridedOrUnstrided>
 class DirectionSelector;
 
-template<>
+template <>
 class DirectionSelector<UnstridedArrayTag>
 {
 public:
-    template<class T>
+    template <class T>
     class type
     {
     public:
@@ -477,11 +477,11 @@ public:
     };
 };
 
-template<>
+template <>
 class DirectionSelector<StridedArrayTag>
 {
 public:
-    template<class T>
+    template <class T>
     class type
     {
     public:
@@ -579,20 +579,20 @@ public:
     };
 };
 
-template<class StridedOrUnstrided>
+template <class StridedOrUnstrided>
 class LinearIteratorSelector;
 
-template<>
+template <>
 class LinearIteratorSelector<UnstridedArrayTag>
 {
 public:
-    template<class IMAGEITERATOR>
+    template <class IMAGEITERATOR>
     class type
     {
     public:
         typedef typename IMAGEITERATOR::pointer res;
 
-        template<class DirSelect>
+        template <class DirSelect>
         static res construct(typename IMAGEITERATOR::pointer data, DirSelect const&)
         {
             return data;
@@ -600,17 +600,17 @@ public:
     };
 };
 
-template<>
+template <>
 class LinearIteratorSelector<StridedArrayTag>
 {
 public:
-    template<class IMAGEITERATOR>
+    template <class IMAGEITERATOR>
     class type
     {
     public:
         typedef IteratorAdaptor<StridedIteratorPolicy<IMAGEITERATOR>> res;
 
-        template<class DirSelect>
+        template <class DirSelect>
         static res construct(typename IMAGEITERATOR::pointer data, DirSelect const& d)
         {
             typedef typename res::BaseType Base;
@@ -650,9 +650,9 @@ public:
     for a discussion of the concepts behind ImageIterators.
 
 */
-template<class IMAGEITERATOR,
-         class PIXELTYPE, class REFERENCE, class POINTER,
-         class StridedOrUnstrided = UnstridedArrayTag>
+template <class IMAGEITERATOR,
+          class PIXELTYPE, class REFERENCE, class POINTER,
+          class StridedOrUnstrided = UnstridedArrayTag>
 class ImageIteratorBase
 {
     typedef typename vigra::detail::LinearIteratorSelector<StridedOrUnstrided>::template type<ImageIteratorBase>
@@ -806,7 +806,7 @@ protected:
     /** Copy assignment */
     ImageIteratorBase& operator=(ImageIteratorBase const& rhs)
     {
-        if (this != &rhs)
+        if(this != &rhs)
         {
             x = rhs.x;
             y = rhs.y;
@@ -942,7 +942,7 @@ private:
     Namespace: vigra
 
 */
-template<class PIXELTYPE>
+template <class PIXELTYPE>
 class ImageIterator
     : public ImageIteratorBase<ImageIterator<PIXELTYPE>,
                                PIXELTYPE, PIXELTYPE&, PIXELTYPE*>
@@ -989,7 +989,7 @@ public:
     Namespace: vigra
 
 */
-template<class PIXELTYPE>
+template <class PIXELTYPE>
 class ConstImageIterator
     : public ImageIteratorBase<ConstImageIterator<PIXELTYPE>,
                                PIXELTYPE, PIXELTYPE const&, PIXELTYPE const*>
@@ -1066,7 +1066,7 @@ public:
     Namespace: vigra
 
 */
-template<class PIXELTYPE>
+template <class PIXELTYPE>
 class StridedImageIterator
     : public ImageIteratorBase<StridedImageIterator<PIXELTYPE>,
                                PIXELTYPE, PIXELTYPE&, PIXELTYPE*, StridedArrayTag>
@@ -1128,7 +1128,7 @@ public:
     Namespace: vigra
 
 */
-template<class PIXELTYPE>
+template <class PIXELTYPE>
 class ConstStridedImageIterator
     : public ImageIteratorBase<ConstStridedImageIterator<PIXELTYPE>,
                                PIXELTYPE, PIXELTYPE const&, PIXELTYPE const*,
@@ -1182,7 +1182,7 @@ public:
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template<class T>
+template <class T>
 struct IteratorTraits<ImageIterator<T>>
     : public IteratorTraitsBase<ImageIterator<T>>
 {
@@ -1193,7 +1193,7 @@ struct IteratorTraits<ImageIterator<T>>
     typedef VigraTrueType hasConstantStrides;
 };
 
-template<class T>
+template <class T>
 struct IteratorTraits<ConstImageIterator<T>>
     : public IteratorTraitsBase<ConstImageIterator<T>>
 {
@@ -1204,7 +1204,7 @@ struct IteratorTraits<ConstImageIterator<T>>
     typedef VigraTrueType hasConstantStrides;
 };
 
-template<class T>
+template <class T>
 struct IteratorTraits<StridedImageIterator<T>>
     : public IteratorTraitsBase<StridedImageIterator<T>>
 {
@@ -1215,7 +1215,7 @@ struct IteratorTraits<StridedImageIterator<T>>
     typedef VigraTrueType hasConstantStrides;
 };
 
-template<class T>
+template <class T>
 struct IteratorTraits<ConstStridedImageIterator<T>>
     : public IteratorTraitsBase<ConstStridedImageIterator<T>>
 {
@@ -1229,7 +1229,7 @@ struct IteratorTraits<ConstStridedImageIterator<T>>
 #else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 #define VIGRA_DEFINE_ITERATORTRAITS(VALUETYPE)                                              \
-    template<>                                                                              \
+    template <>                                                                             \
     struct IteratorTraits<ImageIterator<VALUETYPE>>                                         \
         : public IteratorTraitsBase<ImageIterator<VALUETYPE>>                               \
     {                                                                                       \
@@ -1240,7 +1240,7 @@ struct IteratorTraits<ConstStridedImageIterator<T>>
         typedef VigraTrueType hasConstantStrides;                                           \
     };                                                                                      \
                                                                                             \
-    template<>                                                                              \
+    template <>                                                                             \
     struct IteratorTraits<ConstImageIterator<VALUETYPE>>                                    \
         : public IteratorTraitsBase<ConstImageIterator<VALUETYPE>>                          \
     {                                                                                       \
@@ -1250,7 +1250,7 @@ struct IteratorTraits<ConstStridedImageIterator<T>>
         typedef DefaultAccessor default_accessor;                                           \
         typedef VigraTrueType hasConstantStrides;                                           \
     };                                                                                      \
-    template<>                                                                              \
+    template <>                                                                             \
     struct IteratorTraits<StridedImageIterator<VALUETYPE>>                                  \
         : public IteratorTraitsBase<StridedImageIterator<VALUETYPE>>                        \
     {                                                                                       \
@@ -1261,7 +1261,7 @@ struct IteratorTraits<ConstStridedImageIterator<T>>
         typedef VigraTrueType hasConstantStrides;                                           \
     };                                                                                      \
                                                                                             \
-    template<>                                                                              \
+    template <>                                                                             \
     struct IteratorTraits<ConstStridedImageIterator<VALUETYPE>>                             \
         : public IteratorTraitsBase<ConstStridedImageIterator<VALUETYPE>>                   \
     {                                                                                       \
@@ -1328,7 +1328,7 @@ VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE)
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template<class PIXELTYPE>
+template <class PIXELTYPE>
 class ConstValueIteratorPolicy
 {
 public:
@@ -1411,7 +1411,7 @@ public:
     Namespace: vigra
 
 */
-template<class PIXELTYPE>
+template <class PIXELTYPE>
 class ConstValueIterator
 {
 public:
@@ -1485,7 +1485,7 @@ public:
         */
     ConstValueIterator& operator=(ConstValueIterator const& v)
     {
-        if (this != &v)
+        if(this != &v)
         {
             value_ = v.value_;
             x = v.x;
@@ -1607,7 +1607,7 @@ private:
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template<class T>
+template <class T>
 struct IteratorTraits<ConstValueIterator<T>>
 {
     typedef ConstValueIterator<T> Iterator;

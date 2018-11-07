@@ -59,10 +59,10 @@ namespace vigra
 
 
 
-template<class MAP>
+template <class MAP>
 struct GraphMapTypeTraits;
 
-template<unsigned int DIM, class T>
+template <unsigned int DIM, class T>
 struct GraphMapTypeTraits<NumpyArray<DIM, T>>
 {
     typedef typename NumpyArray<DIM, T>::value_type Value;
@@ -72,7 +72,7 @@ struct GraphMapTypeTraits<NumpyArray<DIM, T>>
 
 
 
-template<class GRAPH>
+template <class GRAPH>
 struct NodeHolder : GRAPH::Node
 {
     typedef typename GRAPH::Node Node;
@@ -103,7 +103,7 @@ struct NodeHolder : GRAPH::Node
 
 
 
-template<class GRAPH>
+template <class GRAPH>
 struct EdgeHolder : GRAPH::Edge
 {
 
@@ -144,7 +144,7 @@ struct EdgeHolder : GRAPH::Edge
 
 
 
-template<class GRAPH>
+template <class GRAPH>
 struct ArcHolder : GRAPH::Arc
 {
     typedef typename GRAPH::Arc Arc;
@@ -178,7 +178,7 @@ struct ArcHolder : GRAPH::Arc
 namespace detail_python_graph
 {
 
-template<class GRAPH>
+template <class GRAPH>
 struct ArcToTargetNodeHolder
 {
     typedef typename GRAPH::Node Node;
@@ -194,7 +194,7 @@ struct ArcToTargetNodeHolder
     const GRAPH* graph_;
 };
 
-template<class GRAPH>
+template <class GRAPH>
 struct ArcToEdgeHolder
 {
     typedef typename GRAPH::Edge Edge;
@@ -211,7 +211,7 @@ struct ArcToEdgeHolder
     const GRAPH* graph_;
 };
 
-template<class GRAPH>
+template <class GRAPH>
 struct ArcToArcHolder
 {
     typedef typename GRAPH::Edge Edge;
@@ -228,7 +228,7 @@ struct ArcToArcHolder
 };
 
 
-template<class GRAPH>
+template <class GRAPH>
 struct NodeToNodeHolder
 {
     typedef typename GRAPH::Node Node;
@@ -243,7 +243,7 @@ struct NodeToNodeHolder
     const GRAPH* graph_;
 };
 
-template<class GRAPH>
+template <class GRAPH>
 struct EdgeToEdgeHolder
 {
     typedef typename GRAPH::Edge Edge;
@@ -262,7 +262,7 @@ struct EdgeToEdgeHolder
 
 
 
-template<class GRAPH>
+template <class GRAPH>
 struct NodeIteratorHolder
 {
     typedef typename GRAPH::Node Node;
@@ -289,7 +289,7 @@ struct NodeIteratorHolder
     Node node_;
 };
 
-template<class GRAPH>
+template <class GRAPH>
 struct EdgeIteratorHolder
 {
     typedef typename GRAPH::Edge Edge;
@@ -317,7 +317,7 @@ struct EdgeIteratorHolder
 };
 
 
-template<class GRAPH>
+template <class GRAPH>
 struct NeighbourNodeIteratorHolder
 {
     typedef typename GRAPH::Node Node;
@@ -344,7 +344,7 @@ struct NeighbourNodeIteratorHolder
 };
 
 
-template<class GRAPH>
+template <class GRAPH>
 struct IncEdgeIteratorHolder
 {
     typedef typename GRAPH::Node Node;
@@ -372,7 +372,7 @@ struct IncEdgeIteratorHolder
 };
 
 
-template<class G, class AV>
+template <class G, class AV>
 class NumpyScalarEdgeMap
 {
 
@@ -419,7 +419,7 @@ private:
     MultiArrayView<IntrinsicGraphShape<Graph>::IntrinsicEdgeMapDimension, Value> array_;
 };
 
-template<class G, class AV>
+template <class G, class AV>
 class NumpyScalarNodeMap
 {
 
@@ -469,7 +469,7 @@ private:
 };
 
 
-template<class G, class AV>
+template <class G, class AV>
 class NumpyMultibandNodeMap
 {
 
@@ -523,7 +523,7 @@ private:
 };
 
 
-template<class G, class AV>
+template <class G, class AV>
 class NumpyMultibandEdgeMap
 {
 
@@ -580,7 +580,7 @@ private:
 
 // tagged shape for lemon graphs
 // edge map / node map / arc map
-template<class G>
+template <class G>
 class TaggedGraphShape
 {
 public:
@@ -618,7 +618,7 @@ public:
 // macro to specialize TaggedGraphShape for
 // grid graphs up to 4 dimensions
 #define VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(DIM, tn, te, ta)                                                                    \
-    template<class BOOST_DIRECTED_TAG>                                                                                          \
+    template <class BOOST_DIRECTED_TAG>                                                                                         \
     class TaggedGraphShape<GridGraph<DIM, BOOST_DIRECTED_TAG>>                                                                  \
     {                                                                                                                           \
     public:                                                                                                                     \
@@ -697,7 +697,7 @@ void reshapeNodeMapIfEmpty(
 
 
 
-template<class G, class T>
+template <class G, class T>
 struct NumpyNodeMap
     : IfBool<
           IsMultiband<T>::value,
@@ -723,7 +723,7 @@ struct NumpyNodeMap
 };
 
 
-template<class G, class T>
+template <class G, class T>
 struct NumpyEdgeMap
     : IfBool<
           IsMultiband<T>::value,
@@ -750,7 +750,7 @@ struct NumpyEdgeMap
 
 
 
-template<class G, class T>
+template <class G, class T>
 struct PyEdgeMapTraits
 {
     typedef NumpyEdgeMap<G, T> Map;
@@ -762,7 +762,7 @@ struct PyEdgeMapTraits
 
 
 
-template<class G, class T>
+template <class G, class T>
 struct PyNodeMapTraits
 {
     typedef NumpyNodeMap<G, T> Map;
@@ -776,7 +776,7 @@ struct PyNodeMapTraits
 namespace cluster_operators
 {
 
-template<class MERGE_GRAPH>
+template <class MERGE_GRAPH>
 class PythonOperator
 {
 
@@ -810,19 +810,19 @@ public:
         : mergeGraph_(mergeGraph),
           object_(object)
     {
-        if (useMergeNodeCallback)
+        if(useMergeNodeCallback)
         {
             typedef typename MergeGraph::MergeNodeCallBackType Callback;
             Callback cb(Callback::template from_method<SelfType, &SelfType::mergeNodes>(this));
             mergeGraph_.registerMergeNodeCallBack(cb);
         }
-        if (useMergeEdgesCallback)
+        if(useMergeEdgesCallback)
         {
             typedef typename MergeGraph::MergeEdgeCallBackType Callback;
             Callback cb(Callback::template from_method<SelfType, &SelfType::mergeEdges>(this));
             mergeGraph_.registerMergeEdgeCallBack(cb);
         }
-        if (useEraseEdgeCallback)
+        if(useEraseEdgeCallback)
         {
             typedef typename MergeGraph::EraseEdgeCallBackType Callback;
             Callback cb(Callback::template from_method<SelfType, &SelfType::eraseEdge>(this));
@@ -836,7 +836,7 @@ public:
         {
             retVal = boost::python::extract<bool>(object_.attr("done")());
         }
-        catch (std::exception& e)
+        catch(std::exception& e)
         {
             std::cout << "reason: " << e.what() << "\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::done");
@@ -851,7 +851,7 @@ public:
             const EdgeHolderType bb(mergeGraph_, b);
             object_.attr("mergeEdges")(aa, bb);
         }
-        catch (std::exception& e)
+        catch(std::exception& e)
         {
             std::cout << "reason: " << e.what() << "\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::mergeEdges");
@@ -865,7 +865,7 @@ public:
             const NodeHolderType bb(mergeGraph_, b);
             object_.attr("mergeNodes")(aa, bb);
         }
-        catch (std::exception& e)
+        catch(std::exception& e)
         {
             std::cout << "reason: " << e.what() << "\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::mergeNodes");
@@ -878,7 +878,7 @@ public:
             const EdgeHolderType ee(mergeGraph_, e);
             object_.attr("eraseEdge")(ee);
         }
-        catch (std::exception& e)
+        catch(std::exception& e)
         {
             std::cout << "reason: " << e.what() << "\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::eraseEdge");
@@ -891,7 +891,7 @@ public:
         {
             eh = boost::python::extract<EdgeHolderType>(object_.attr("contractionEdge")());
         }
-        catch (std::exception& e)
+        catch(std::exception& e)
         {
             std::cout << "reason: " << e.what() << "\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::contractionEdge");
@@ -905,7 +905,7 @@ public:
         {
             w = boost::python::extract<WeightType>(object_.attr("contractionWeight")());
         }
-        catch (std::exception& e)
+        catch(std::exception& e)
         {
             std::cout << "reason: " << e.what() << "\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::contractionWeight");

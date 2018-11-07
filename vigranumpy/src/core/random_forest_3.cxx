@@ -85,7 +85,7 @@ pythonConstructRandomForest3(
 
     rf_opts.tree_count(treeCount);
 
-    if (mtry > 0)
+    if(mtry > 0)
         rf_opts.features_per_node(mtry);
 
     // TODO training_set_size -> can't find the corresponding parameter, afaik this is the number of bootstrap samples used

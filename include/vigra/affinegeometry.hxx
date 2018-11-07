@@ -163,8 +163,8 @@ rotationMatrix2DDegrees(double angle, TinyVector<double, 2> const& center)
 /********************************************************/
 
 // documentation is in basicgeometry.hxx
-template<int ORDER, class T,
-         class DestIterator, class DestAccessor>
+template <int ORDER, class T,
+          class DestIterator, class DestAccessor>
 void
 rotateImage(SplineImageView<ORDER, T> const& src,
             DestIterator id, DestAccessor dest,
@@ -177,21 +177,21 @@ rotateImage(SplineImageView<ORDER, T> const& src,
     double c = cos_pi(angle); // avoid round-off errors for simple rotations
     double s = sin_pi(angle);
 
-    for (int y = 0; y < h; ++y, ++id.y)
+    for(int y = 0; y < h; ++y, ++id.y)
     {
         typename DestIterator::row_iterator rd = id.rowIterator();
         double sy = (y - center[1]) * c - center[0] * s + center[1];
         double sx = -(y - center[1]) * s - center[0] * c + center[0];
-        for (int x = 0; x < w; ++x, ++rd, sx += c, sy += s)
+        for(int x = 0; x < w; ++x, ++rd, sx += c, sy += s)
         {
-            if (src.isInside(sx, sy))
+            if(src.isInside(sx, sy))
                 dest.set(src(sx, sy), rd);
         }
     }
 }
 
-template<int ORDER, class T,
-         class DestIterator, class DestAccessor>
+template <int ORDER, class T,
+          class DestIterator, class DestAccessor>
 inline void
 rotateImage(SplineImageView<ORDER, T> const& src,
             pair<DestIterator, DestAccessor> dest,
@@ -200,8 +200,8 @@ rotateImage(SplineImageView<ORDER, T> const& src,
     rotateImage(src, dest.first, dest.second, angleInDegree, center);
 }
 
-template<int ORDER, class T,
-         class DestIterator, class DestAccessor>
+template <int ORDER, class T,
+          class DestIterator, class DestAccessor>
 inline void
 rotateImage(SplineImageView<ORDER, T> const& src,
             DestIterator id, DestAccessor dest,
@@ -211,8 +211,8 @@ rotateImage(SplineImageView<ORDER, T> const& src,
     rotateImage(src, id, dest, angleInDegree, center);
 }
 
-template<int ORDER, class T,
-         class DestIterator, class DestAccessor>
+template <int ORDER, class T,
+          class DestIterator, class DestAccessor>
 inline void
 rotateImage(SplineImageView<ORDER, T> const& src,
             pair<DestIterator, DestAccessor> dest,
@@ -222,8 +222,8 @@ rotateImage(SplineImageView<ORDER, T> const& src,
     rotateImage(src, dest.first, dest.second, angleInDegree, center);
 }
 
-template<int ORDER, class T,
-         class T2, class S2>
+template <int ORDER, class T,
+          class T2, class S2>
 inline void
 rotateImage(SplineImageView<ORDER, T> const& src,
             MultiArrayView<2, T2, S2> dest,
@@ -232,8 +232,8 @@ rotateImage(SplineImageView<ORDER, T> const& src,
     rotateImage(src, destImage(dest), angleInDegree, center);
 }
 
-template<int ORDER, class T,
-         class T2, class S2>
+template <int ORDER, class T,
+          class T2, class S2>
 inline void
 rotateImage(SplineImageView<ORDER, T> const& src,
             MultiArrayView<2, T2, S2> dest,
@@ -362,11 +362,11 @@ rotateImage(SplineImageView<ORDER, T> const& src,
     <b>See also:</b> Functions to specify affine transformation: \ref translationMatrix2D(), \ref scalingMatrix2D(),
                     \ref shearMatrix2D(), \ref rotationMatrix2DRadians(), \ref rotationMatrix2DDegrees()
 */
-doxygen_overloaded_function(template<...> void affineWarpImage)
+doxygen_overloaded_function(template <...> void affineWarpImage)
 
-    template<int ORDER, class T,
-             class DestIterator, class DestAccessor,
-             class C>
+    template <int ORDER, class T,
+              class DestIterator, class DestAccessor,
+              class C>
     void affineWarpImage(SplineImageView<ORDER, T> const& src,
                          DestIterator dul, DestIterator dlr, DestAccessor dest,
                          MultiArrayView<2, double, C> const& affineMatrix)
@@ -379,22 +379,22 @@ doxygen_overloaded_function(template<...> void affineWarpImage)
     double w = dlr.x - dul.x;
     double h = dlr.y - dul.y;
 
-    for (double y = 0.0; y < h; ++y, ++dul.y)
+    for(double y = 0.0; y < h; ++y, ++dul.y)
     {
         typename DestIterator::row_iterator rd = dul.rowIterator();
-        for (double x = 0.0; x < w; ++x, ++rd)
+        for(double x = 0.0; x < w; ++x, ++rd)
         {
             double sx = x * affineMatrix(0, 0) + y * affineMatrix(0, 1) + affineMatrix(0, 2);
             double sy = x * affineMatrix(1, 0) + y * affineMatrix(1, 1) + affineMatrix(1, 2);
-            if (src.isInside(sx, sy))
+            if(src.isInside(sx, sy))
                 dest.set(src(sx, sy), rd);
         }
     }
 }
 
-template<int ORDER, class T,
-         class DestIterator, class DestAccessor,
-         class C>
+template <int ORDER, class T,
+          class DestIterator, class DestAccessor,
+          class C>
 inline void
 affineWarpImage(SplineImageView<ORDER, T> const& src,
                 triple<DestIterator, DestIterator, DestAccessor> dest,
@@ -403,9 +403,9 @@ affineWarpImage(SplineImageView<ORDER, T> const& src,
     affineWarpImage(src, dest.first, dest.second, dest.third, affineMatrix);
 }
 
-template<int ORDER, class T,
-         class T2, class S2,
-         class C>
+template <int ORDER, class T,
+          class T2, class S2,
+          class C>
 inline void
 affineWarpImage(SplineImageView<ORDER, T> const& src,
                 MultiArrayView<2, T2, S2> dest,

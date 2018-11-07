@@ -65,15 +65,15 @@ namespace vigra
         <b>\#include</b> \<vigra/algorithm.hxx\><br>
         Namespace: vigra
     */
-template<class Iterator>
+template <class Iterator>
 Iterator
 argMin(Iterator first, Iterator last)
 {
-    if (first == last)
+    if(first == last)
         return last;
     Iterator best = first;
-    for (++first; first != last; ++first)
-        if (*first < *best)
+    for(++first; first != last; ++first)
+        if(*first < *best)
             best = first;
     return best;
 }
@@ -94,15 +94,15 @@ argMin(Iterator first, Iterator last)
         <b>\#include</b> \<vigra/algorithm.hxx\><br>
         Namespace: vigra
     */
-template<class Iterator>
+template <class Iterator>
 Iterator
 argMax(Iterator first, Iterator last)
 {
-    if (first == last)
+    if(first == last)
         return last;
     Iterator best = first;
-    for (++first; first != last; ++first)
-        if (*best < *first)
+    for(++first; first != last; ++first)
+        if(*best < *first)
             best = first;
     return best;
 }
@@ -128,18 +128,18 @@ argMax(Iterator first, Iterator last)
         <b>\#include</b> \<vigra/algorithm.hxx\><br>
         Namespace: vigra
     */
-template<class Iterator, class UnaryFunctor>
+template <class Iterator, class UnaryFunctor>
 Iterator
 argMinIf(Iterator first, Iterator last, UnaryFunctor condition)
 {
-    for (; first != last; ++first)
-        if (condition(*first))
+    for(; first != last; ++first)
+        if(condition(*first))
             break;
-    if (first == last)
+    if(first == last)
         return last;
     Iterator best = first;
-    for (++first; first != last; ++first)
-        if (condition(*first) && *first < *best)
+    for(++first; first != last; ++first)
+        if(condition(*first) && *first < *best)
             best = first;
     return best;
 }
@@ -165,18 +165,18 @@ argMinIf(Iterator first, Iterator last, UnaryFunctor condition)
         <b>\#include</b> \<vigra/algorithm.hxx\><br>
         Namespace: vigra
     */
-template<class Iterator, class UnaryFunctor>
+template <class Iterator, class UnaryFunctor>
 Iterator
 argMaxIf(Iterator first, Iterator last, UnaryFunctor condition)
 {
-    for (; first != last; ++first)
-        if (condition(*first))
+    for(; first != last; ++first)
+        if(condition(*first))
             break;
-    if (first == last)
+    if(first == last)
         return last;
     Iterator best = first;
-    for (++first; first != last; ++first)
-        if (condition(*first) && *best < *first)
+    for(++first; first != last; ++first)
+        if(condition(*first) && *best < *first)
             best = first;
     return best;
 }
@@ -209,22 +209,22 @@ argMaxIf(Iterator first, Iterator last, UnaryFunctor condition)
         <b>\#include</b> \<vigra/algorithm.hxx\><br>
         Namespace: vigra
     */
-template<class Iterator, class Value>
+template <class Iterator, class Value>
 void
 linearSequence(Iterator first, Iterator last, Value start, Value step)
 {
-    for (; first != last; ++first, start += step)
+    for(; first != last; ++first, start += step)
         *first = start;
 }
 
-template<class Iterator, class Value>
+template <class Iterator, class Value>
 void
 linearSequence(Iterator first, Iterator last, Value start)
 {
     linearSequence(first, last, start, NumericTraits<Value>::one());
 }
 
-template<class Iterator>
+template <class Iterator>
 void
 linearSequence(Iterator first, Iterator last)
 {
@@ -268,12 +268,12 @@ linearSequence(Iterator first, Iterator last)
     \endcode
 
 */
-doxygen_overloaded_function(template<...> void inspectSequence)
+doxygen_overloaded_function(template <...> void inspectSequence)
 
     namespace detail
 {
 
-    template<class InputIterator>
+    template <class InputIterator>
     struct inspectSequence_binder
     {
         InputIterator first;
@@ -282,17 +282,17 @@ doxygen_overloaded_function(template<...> void inspectSequence)
             : first(first_), last(last_)
         {
         }
-        template<class Functor>
+        template <class Functor>
         void operator()(Functor& f)
         {
-            for (InputIterator i = first; i != last; ++i)
+            for(InputIterator i = first; i != last; ++i)
                 f(*i);
         }
     };
 
 } // namespace detail
 
-template<class InputIterator, class Functor>
+template <class InputIterator, class Functor>
 inline void
 inspectSequence(InputIterator first, InputIterator last, Functor& f)
 {
@@ -303,7 +303,7 @@ inspectSequence(InputIterator first, InputIterator last, Functor& f)
 namespace detail
 {
 
-template<class ArrayLike, class Compare>
+template <class ArrayLike, class Compare>
 struct IndexCompare
 {
     ArrayLike i_;
@@ -315,7 +315,7 @@ struct IndexCompare
     {
     }
 
-    template<class Index>
+    template <class Index>
     bool operator()(Index const& l, Index const& r) const
     {
         return c_(i_[l], i_[r]);
@@ -364,14 +364,14 @@ struct IndexCompare
         }
         \endcode
     */
-template<class ArrayLike, class Compare>
+template <class ArrayLike, class Compare>
 inline detail::IndexCompare<ArrayLike, Compare>
 makeIndexComparator(ArrayLike a, Compare c)
 {
     return detail::IndexCompare<ArrayLike, Compare>(a, c);
 }
 
-template<class ArrayLike>
+template <class ArrayLike>
 inline detail::IndexCompare<ArrayLike, std::less<typename ArrayLike::value_type>>
 makeIndexComparator(ArrayLike a)
 {
@@ -423,7 +423,7 @@ makeIndexComparator(ArrayLike a)
         <b>\#include</b> \<vigra/algorithm.hxx\><br>
         Namespace: vigra
     */
-template<class Iterator, class IndexIterator, class Compare>
+template <class Iterator, class IndexIterator, class Compare>
 void
 indexSort(Iterator first, Iterator last, IndexIterator index_first, Compare c)
 {
@@ -432,7 +432,7 @@ indexSort(Iterator first, Iterator last, IndexIterator index_first, Compare c)
     std::sort(index_first, index_first + size, makeIndexComparator(first, c));
 }
 
-template<class Iterator, class IndexIterator>
+template <class Iterator, class IndexIterator>
 void
 indexSort(Iterator first, Iterator last, IndexIterator index_first)
 {
@@ -467,12 +467,12 @@ indexSort(Iterator first, Iterator last, IndexIterator index_first)
         <b>\#include</b> \<vigra/algorithm.hxx\><br>
         Namespace: vigra
     */
-template<class IndexIterator, class InIterator, class OutIterator>
+template <class IndexIterator, class InIterator, class OutIterator>
 void
 applyPermutation(IndexIterator index_first, IndexIterator index_last,
                  InIterator in, OutIterator out)
 {
-    for (; index_first != index_last; ++index_first, ++out)
+    for(; index_first != index_last; ++index_first, ++out)
         *out = in[*index_first];
 }
 
@@ -503,7 +503,7 @@ applyPermutation(IndexIterator index_first, IndexIterator index_last,
         <b>\#include</b> \<vigra/algorithm.hxx\><br>
         Namespace: vigra
     */
-template<class InIterator, class OutIterator>
+template <class InIterator, class OutIterator>
 void
 inversePermutation(InIterator first, InIterator last,
                    OutIterator out)
@@ -521,7 +521,7 @@ isLittleEndian()
     return reinterpret_cast<const UInt8*>(&testint)[0] == 0x01;
 }
 
-template<class INT>
+template <class INT>
 struct ChecksumImpl
 {
     static UInt32 table0[256];
@@ -529,11 +529,11 @@ struct ChecksumImpl
     static UInt32 table2[256];
     static UInt32 table3[256];
 
-    template<class InIterator>
+    template <class InIterator>
     static UInt32 exec(InIterator i, unsigned int size, UInt32 crc = 0xFFFFFFFF);
 };
 
-template<class INT>
+template <class INT>
 UInt32 ChecksumImpl<INT>::table0[256] = {
     0x0U, 0x77073096U, 0xee0e612cU, 0x990951baU, 0x76dc419U, 0x706af48fU,
     0xe963a535U, 0x9e6495a3U, 0xedb8832U, 0x79dcb8a4U, 0xe0d5e91eU, 0x97d2d988U,
@@ -579,7 +579,7 @@ UInt32 ChecksumImpl<INT>::table0[256] = {
     0x54de5729U, 0x23d967bfU, 0xb3667a2eU, 0xc4614ab8U, 0x5d681b02U, 0x2a6f2b94U,
     0xb40bbe37U, 0xc30c8ea1U, 0x5a05df1bU, 0x2d02ef8dU};
 
-template<class INT>
+template <class INT>
 UInt32 ChecksumImpl<INT>::table1[256] = {
     0x00000000U, 0x191b3141U, 0x32366282U, 0x2b2d53c3U, 0x646cc504U,
     0x7d77f445U, 0x565aa786U, 0x4f4196c7U, 0xc8d98a08U, 0xd1c2bb49U,
@@ -634,7 +634,7 @@ UInt32 ChecksumImpl<INT>::table1[256] = {
     0xee530937U, 0xf7483876U, 0xb809aeb1U, 0xa1129ff0U, 0x8a3fcc33U,
     0x9324fd72U};
 
-template<class INT>
+template <class INT>
 UInt32 ChecksumImpl<INT>::table2[256] = {
     0x00000000U, 0x01c26a37U, 0x0384d46eU, 0x0246be59U, 0x0709a8dcU,
     0x06cbc2ebU, 0x048d7cb2U, 0x054f1685U, 0x0e1351b8U, 0x0fd13b8fU,
@@ -689,7 +689,7 @@ UInt32 ChecksumImpl<INT>::table2[256] = {
     0xb853f606U, 0xb9919c31U, 0xbcde8ab4U, 0xbd1ce083U, 0xbf5a5edaU,
     0xbe9834edU};
 
-template<class INT>
+template <class INT>
 UInt32 ChecksumImpl<INT>::table3[256] = {
     0x00000000U, 0xb8bc6765U, 0xaa09c88bU, 0x12b5afeeU, 0x8f629757U,
     0x37def032U, 0x256b5fdcU, 0x9dd738b9U, 0xc5b428efU, 0x7d084f8aU,
@@ -745,21 +745,21 @@ UInt32 ChecksumImpl<INT>::table3[256] = {
     0xde0506f1U};
 
 
-template<class INT>
-template<class InIterator>
+template <class INT>
+template <class InIterator>
 UInt32
 ChecksumImpl<INT>::exec(InIterator i, unsigned int size, UInt32 crc)
 {
     InIterator end = i + size;
 
-    if (isLittleEndian() && size > 3)
+    if(isLittleEndian() && size > 3)
     {
         // take care of alignment
-        for (; reinterpret_cast<std::size_t>(i) % 4 != 0; ++i)
+        for(; reinterpret_cast<std::size_t>(i) % 4 != 0; ++i)
         {
             crc = (crc >> 8) ^ table0[(crc ^ *i) & 0xFF];
         }
-        for (; i < end - 3; i += 4)
+        for(; i < end - 3; i += 4)
         {
             crc ^= *(reinterpret_cast<const UInt32*>(i));
             crc = table3[crc & 0xFF] ^
@@ -768,7 +768,7 @@ ChecksumImpl<INT>::exec(InIterator i, unsigned int size, UInt32 crc)
                   table0[crc >> 24];
         }
     }
-    for (; i < end; ++i)
+    for(; i < end; ++i)
     {
         crc = (crc >> 8) ^ table0[(crc ^ *i) & 0xFF];
     }
@@ -798,7 +798,7 @@ concatenateChecksum(UInt32 checksum, const char* data, unsigned int size)
     return detail::ChecksumImpl<UInt32>::exec(data, size, ~checksum);
 }
 
-template<class T>
+template <class T>
 void
 updateMin(T& x, const T& y)
 {
@@ -806,7 +806,7 @@ updateMin(T& x, const T& y)
     x = min(x, y);
 }
 
-template<class T>
+template <class T>
 void
 updateMax(T& x, const T& y)
 {

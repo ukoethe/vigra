@@ -9,7 +9,7 @@
 namespace vigra
 {
 
-template<unsigned int N>
+template <unsigned int N>
 class Permutation : public TinyVector<unsigned int, N>
 {
 public:
@@ -35,13 +35,13 @@ public:
         vigra_precondition(
             index < N,
             "Permutation::Permutation(): Invalid index");
-        for (size_type n = 0; n < N; n++)
+        for(size_type n = 0; n < N; n++)
         {
-            if (n < index)
+            if(n < index)
             {
                 (*this)[n] = other[n];
             }
-            else if (n == index)
+            else if(n == index)
             {
                 (*this)[n] = N - 1;
             }
@@ -50,7 +50,7 @@ public:
                 (*this)[n] = other[n - 1];
             }
         }
-        if ((N - 1 - index) % 2 == 0)
+        if((N - 1 - index) % 2 == 0)
         {
             sign_ = (other.sign() == 1);
         }
@@ -62,7 +62,7 @@ public:
 
     integral_type sign() const
     {
-        if (sign_)
+        if(sign_)
         {
             return +1;
         }
@@ -76,7 +76,7 @@ private:
     bool sign_;
 };
 
-template<>
+template <>
 class Permutation<1> : public TinyVector<unsigned int, 1>
 {
 public:
@@ -100,7 +100,7 @@ public:
 
     integral_type sign() const
     {
-        if (sign_)
+        if(sign_)
         {
             return +1;
         }
@@ -114,7 +114,7 @@ private:
     bool sign_;
 };
 
-template<unsigned int N>
+template <unsigned int N>
 class PlainChangesPermutations : public ArrayVector<Permutation<N>>
 {
 public:
@@ -132,18 +132,18 @@ public:
         : base_type()
     {
         PlainChangesPermutations<N - 1> permutations;
-        for (auto permutation : permutations)
+        for(auto permutation : permutations)
         {
-            if (permutation.sign() == -1)
+            if(permutation.sign() == -1)
             {
-                for (unsigned int n = 0; n < N; n++)
+                for(unsigned int n = 0; n < N; n++)
                 {
                     this->push_back(Permutation<N>(permutation, n));
                 }
             }
             else
             {
-                for (unsigned int n = N; n > 0; n--)
+                for(unsigned int n = N; n > 0; n--)
                 {
                     this->push_back(Permutation<N>(permutation, n - 1));
                 }
@@ -152,7 +152,7 @@ public:
     }
 };
 
-template<>
+template <>
 class PlainChangesPermutations<1> : public ArrayVector<Permutation<1>>
 {
 public:

@@ -138,7 +138,7 @@ BmpFileHeader::to_stream(std::ofstream& stream, byteorder& bo)
 {
     write_field(stream, bo, magic);
     write_field(stream, bo, size);
-    for (unsigned int i = 0; i < 4; ++i)
+    for(unsigned int i = 0; i < 4; ++i)
         stream.put(0); // clear reserved fields
     write_field(stream, bo, offset);
 }
@@ -189,7 +189,7 @@ BmpInfoHeader::from_stream(std::ifstream& stream, byteorder& bo)
     vigra_precondition(bit_count == 1 || bit_count == 4 || bit_count == 8 || bit_count == 24, "illegal bit count");
     read_field(stream, bo, compression);
     read_field(stream, bo, image_size);
-    if (image_size == 0)
+    if(image_size == 0)
     {
         image_size = height * width * ((bit_count == 24) ? 3 : 1);
     }
@@ -273,7 +273,7 @@ BmpDecoderImpl::BmpDecoderImpl(const std::string& filename)
 #endif
       scanline(-1)
 {
-    if (!stream.good())
+    if(!stream.good())
     {
         std::string msg("Unable to open file '");
         msg += filename;
@@ -289,7 +289,7 @@ BmpDecoderImpl::BmpDecoderImpl(const std::string& filename)
     // read the map, if there is one, to determine if this is a grayscale
     // or rgb image.
     grayscale = false; // default is rgb
-    if (info_header.bit_count != 24)
+    if(info_header.bit_count != 24)
         read_colormap();
 
     data_read = false;
@@ -299,13 +299,13 @@ void
 BmpDecoderImpl::read_data()
 {
     // read (and eventually map) the bands
-    switch (info_header.bit_count)
+    switch(info_header.bit_count)
     {
         case 1:
             read_1bit_data();
             break;
         case 4:
-            if (info_header.compression)
+            if(info_header.compression)
             {
                 read_rle4_data();
             }
@@ -315,7 +315,7 @@ BmpDecoderImpl::read_data()
             }
             break;
         case 8:
-            if (info_header.compression)
+            if(info_header.compression)
             {
                 read_rle8_data();
             }
@@ -337,7 +337,7 @@ BmpDecoderImpl::read_colormap()
     const unsigned int num_colors = 1 << info_header.bit_count;
     map.resize(3 * num_colors);
     grayscale = true;
-    for (unsigned int i = 0; i < num_colors; ++i)
+    for(unsigned int i = 0; i < num_colors; ++i)
     {
         map[3 * i + 2] = stream.get();
         map[3 * i + 1] = stream.get();
@@ -365,7 +365,7 @@ BmpDecoderImpl::read_1bit_data()
 
     // padding after each line (must end on a 32-bit boundary)
     unsigned int pad_size = ((info_header.width + 7) / 8) % 4;
-    if (pad_size > 0)
+    if(pad_size > 0)
         pad_size = 4 - pad_size;
 
     // setup the base pointer at one line after the end
@@ -373,7 +373,7 @@ BmpDecoderImpl::read_1bit_data()
     UInt8* mover = base;
 
     // read scanlines from bottom to top
-    for (int y = info_header.height - 1; y >= 0; --y)
+    for(int y = info_header.height - 1; y >= 0; --y)
     {
 
         // set the base pointer to the beginning of the line to be read
@@ -381,11 +381,11 @@ BmpDecoderImpl::read_1bit_data()
         mover = base;
 
         // read the line from left to right
-        for (int x = 0; x < info_header.width; ++x)
+        for(int x = 0; x < info_header.width; ++x)
         {
 
             // eventually get a new byte from the stream
-            if (x % 8 == 0)
+            if(x % 8 == 0)
                 c = stream.get();
 
             // get the color bit
@@ -393,7 +393,7 @@ BmpDecoderImpl::read_1bit_data()
 
             // map and assign the pixel
             const UInt8* map_base = map.data() + 3 * index;
-            for (unsigned int i = 0; i < ncomp; ++i)
+            for(unsigned int i = 0; i < ncomp; ++i)
                 mover[i] = map_base[i];
             mover += ncomp;
         }
@@ -420,7 +420,7 @@ BmpDecoderImpl::read_4bit_data()
 
     // padding after each line (must end on a 32-bit boundary)
     unsigned int pad_size = ((info_header.width + 1) / 2) % 4;
-    if (pad_size > 0)
+    if(pad_size > 0)
         pad_size = 4 - pad_size;
 
     // setup the base pointer at one line after the end
@@ -428,7 +428,7 @@ BmpDecoderImpl::read_4bit_data()
     UInt8* mover = base;
 
     // read scanlines from bottom to top
-    for (int y = info_header.height - 1; y >= 0; --y)
+    for(int y = info_header.height - 1; y >= 0; --y)
     {
 
         // set the base pointer to the beginning of the line to be read
@@ -436,11 +436,11 @@ BmpDecoderImpl::read_4bit_data()
         mover = base;
 
         // read the line from left to right
-        for (int x = 0; x < info_header.width; ++x)
+        for(int x = 0; x < info_header.width; ++x)
         {
 
             // eventually get a new byte from the stream
-            if (x % 2 == 0)
+            if(x % 2 == 0)
                 c = stream.get();
 
             // get the color index
@@ -448,7 +448,7 @@ BmpDecoderImpl::read_4bit_data()
 
             // map and assign the pixel
             const UInt8* map_base = map.data() + 3 * index;
-            for (unsigned int i = 0; i < ncomp; ++i)
+            for(unsigned int i = 0; i < ncomp; ++i)
                 mover[i] = map_base[i];
             mover += ncomp;
         }
@@ -486,17 +486,17 @@ BmpDecoderImpl::read_rle4_data()
     int x = 0;
     int y = 0;
 
-    while (painting)
+    while(painting)
     {
 
         c1 = stream.get();
         c2 = stream.get();
 
-        if (c1 == 0x00)
+        if(c1 == 0x00)
         {
 
             // escape sequences
-            switch (c2)
+            switch(c2)
             {
                 case 0x00:
                 {
@@ -526,7 +526,7 @@ BmpDecoderImpl::read_rle4_data()
                     // "delta" movement
 
                     // handle the end-of-line case.
-                    if (x == info_header.width)
+                    if(x == info_header.width)
                     {
                         mover -= line_size + ncomp * x;
                         x = 0;
@@ -538,7 +538,7 @@ BmpDecoderImpl::read_rle4_data()
                     int nx = x + dx;
 
                     // x movement.
-                    if (nx > info_header.width)
+                    if(nx > info_header.width)
                     {
                         dy += nx / info_header.width + 1;
                         nx %= info_header.width;
@@ -547,7 +547,7 @@ BmpDecoderImpl::read_rle4_data()
                     x = nx;
 
                     // y movement.
-                    if (dy != 0)
+                    if(dy != 0)
                     {
                         mover -= line_size * dy;
                         y += dy;
@@ -561,7 +561,7 @@ BmpDecoderImpl::read_rle4_data()
                     // then, eventually skip one byte to respect 16 bit boundaries.
                     int k = 0;
 
-                    while (true)
+                    while(true)
                     {
                         const int c = stream.get();
 
@@ -572,22 +572,22 @@ BmpDecoderImpl::read_rle4_data()
                         // paint the the higher-order nibble.
                         const UInt8* map_base_h = map.data() + 3 * nh;
                         unsigned int j;
-                        for (j = 0; j < ncomp; ++j)
+                        for(j = 0; j < ncomp; ++j)
                             mover[j] = map_base_h[j];
                         mover += ncomp;
-                        if (++k >= c2)
+                        if(++k >= c2)
                             break;
 
                         // paint the lower-order nibble.
                         const UInt8* map_base_l = map.data() + 3 * nl;
-                        for (j = 0; j < ncomp; ++j)
+                        for(j = 0; j < ncomp; ++j)
                             mover[j] = map_base_l[j];
                         mover += ncomp;
-                        if (++k >= c2)
+                        if(++k >= c2)
                             break;
                     }
 
-                    if (c2 % 2)
+                    if(c2 % 2)
                         stream.get();
             }
         }
@@ -596,7 +596,7 @@ BmpDecoderImpl::read_rle4_data()
 
             // plain rle: repeat the next byte mapped, c1 times.
             // a line break may not happen here.
-            for (int i = 0; i < c1; ++i)
+            for(int i = 0; i < c1; ++i)
             {
                 // the high-order and lower-order nibbles
                 const int nh = (c2 & 0xf0) >> 4;
@@ -604,12 +604,12 @@ BmpDecoderImpl::read_rle4_data()
                 // paint the higher-order nibble.
                 const UInt8* map_base_h = map.data() + 3 * nh;
                 unsigned int j;
-                for (j = 0; j < ncomp; ++j)
+                for(j = 0; j < ncomp; ++j)
                     mover[j] = map_base_h[j];
                 mover += ncomp;
                 // paint the lower-order nibble.
                 const UInt8* map_base_l = map.data() + 3 * nl;
-                for (j = 0; j < ncomp; ++j)
+                for(j = 0; j < ncomp; ++j)
                     mover[j] = map_base_l[j];
                 mover += ncomp;
             }
@@ -634,7 +634,7 @@ BmpDecoderImpl::read_8bit_data()
 
     // padding after each line (must end on a 32-bit boundary)
     unsigned int pad_size = info_header.width % 4;
-    if (pad_size > 0)
+    if(pad_size > 0)
         pad_size = 4 - pad_size;
 
     // setup the base pointer at one line after the end
@@ -642,7 +642,7 @@ BmpDecoderImpl::read_8bit_data()
     UInt8* mover = base;
 
     // read scanlines from bottom to top
-    for (int y = info_header.height - 1; y >= 0; --y)
+    for(int y = info_header.height - 1; y >= 0; --y)
     {
 
         // set the base pointer to the beginning of the line to be read
@@ -650,7 +650,7 @@ BmpDecoderImpl::read_8bit_data()
         mover = base;
 
         // read the line from left to right
-        for (int x = 0; x < info_header.width; ++x)
+        for(int x = 0; x < info_header.width; ++x)
         {
 
             // get the color byte
@@ -658,7 +658,7 @@ BmpDecoderImpl::read_8bit_data()
 
             // map and assign the pixel
             const UInt8* map_base = map.data() + 3 * index;
-            for (unsigned int i = 0; i < ncomp; ++i)
+            for(unsigned int i = 0; i < ncomp; ++i)
                 mover[i] = map_base[i];
             mover += ncomp;
         }
@@ -696,17 +696,17 @@ BmpDecoderImpl::read_rle8_data()
     int x = 0;
     int y = 0;
 
-    while (painting)
+    while(painting)
     {
 
         c1 = stream.get();
         c2 = stream.get();
 
-        if (c1 == 0x00)
+        if(c1 == 0x00)
         {
 
             // escape sequences
-            switch (c2)
+            switch(c2)
             {
                 case 0x00:
                 {
@@ -736,7 +736,7 @@ BmpDecoderImpl::read_rle8_data()
                     // "delta" movement
 
                     // handle the end-of-line case.
-                    if (x == info_header.width)
+                    if(x == info_header.width)
                     {
                         mover -= line_size + ncomp * x;
                         x = 0;
@@ -748,7 +748,7 @@ BmpDecoderImpl::read_rle8_data()
                     int nx = x + dx;
 
                     // x movement.
-                    if (nx > info_header.width)
+                    if(nx > info_header.width)
                     {
                         dy += nx / info_header.width + 1;
                         nx %= info_header.width;
@@ -757,7 +757,7 @@ BmpDecoderImpl::read_rle8_data()
                     x = nx;
 
                     // y movement.
-                    if (dy != 0)
+                    if(dy != 0)
                     {
                         mover -= line_size * dy;
                         y += dy;
@@ -768,15 +768,15 @@ BmpDecoderImpl::read_rle8_data()
 
                     // absolute mode. paint the following c2 bytes.
                     // then, eventually skip one byte to respect 16 bit boundaries.
-                    for (int k = 0; k < c2; ++k)
+                    for(int k = 0; k < c2; ++k)
                     {
                         const int c = stream.get();
                         const UInt8* map_base = map.data() + 3 * c;
-                        for (unsigned int j = 0; j < ncomp; ++j)
+                        for(unsigned int j = 0; j < ncomp; ++j)
                             mover[j] = map_base[j];
                         mover += ncomp;
                     }
-                    if (c2 % 2)
+                    if(c2 % 2)
                         stream.get();
             }
         }
@@ -785,10 +785,10 @@ BmpDecoderImpl::read_rle8_data()
 
             // plain rle: repeat c2 mapped, c1 times.
             // a line break may not happen here.
-            for (int i = 0; i < c1; ++i)
+            for(int i = 0; i < c1; ++i)
             {
                 const UInt8* map_base = map.data() + 3 * c2;
-                for (unsigned int j = 0; j < ncomp; ++j)
+                for(unsigned int j = 0; j < ncomp; ++j)
                     mover[j] = map_base[j];
                 mover += ncomp;
             }
@@ -820,7 +820,7 @@ BmpDecoderImpl::read_rgb_data()
     UInt8* mover;
 
     // read scanlines from bottom to top
-    for (int y = info_header.height - 1; y >= 0; --y)
+    for(int y = info_header.height - 1; y >= 0; --y)
     {
 
         // set the base pointer to the beginning of the line to be read
@@ -828,7 +828,7 @@ BmpDecoderImpl::read_rgb_data()
         mover = base;
 
         // read the line from left to right
-        for (int x = 0; x < info_header.width; ++x)
+        for(int x = 0; x < info_header.width; ++x)
         {
             mover[2] = stream.get(); // B
             mover[1] = stream.get(); // G
@@ -891,7 +891,7 @@ BmpDecoder::getOffset() const
 const void*
 BmpDecoder::currentScanlineOfBand(unsigned int band) const
 {
-    if (!pimpl->data_read)
+    if(!pimpl->data_read)
         pimpl->read_data();
     return pimpl->pixels.data() + band + pimpl->scanline * (pimpl->grayscale ? 1 : 3) * pimpl->info_header.width;
 }
@@ -957,7 +957,7 @@ BmpEncoderImpl::BmpEncoderImpl(const std::string& filename)
 #endif
       scanline(0), finalized(false)
 {
-    if (!stream.good())
+    if(!stream.good())
     {
         std::string msg("Unable to open file '");
         msg += filename;
@@ -969,12 +969,12 @@ BmpEncoderImpl::BmpEncoderImpl(const std::string& filename)
 void
 BmpEncoderImpl::finalize()
 {
-    if (grayscale)
+    if(grayscale)
     {
 
         unsigned int line_size = 3 * info_header.width;
         unsigned int pad_size = info_header.width % 4;
-        if (pad_size > 0)
+        if(pad_size > 0)
             pad_size = 4 - pad_size;
         line_size += pad_size;
         const unsigned int cmap_size = 4 * 256;
@@ -1021,7 +1021,7 @@ BmpEncoderImpl::write()
     file_header.to_stream(stream, bo);
     info_header.to_stream(stream, bo);
 
-    if (grayscale)
+    if(grayscale)
     {
         write_colormap();
         write_8bit_data();
@@ -1036,7 +1036,7 @@ void
 BmpEncoderImpl::write_colormap()
 {
     const unsigned int num_colors = 256;
-    for (unsigned int i = 0; i < num_colors; ++i)
+    for(unsigned int i = 0; i < num_colors; ++i)
     {
         const int c = i;
         stream.put(c);
@@ -1052,7 +1052,7 @@ BmpEncoderImpl::write_8bit_data()
     const unsigned int line_size = info_header.width;
     const unsigned int image_size = info_header.height * line_size;
     unsigned int pad_size = info_header.width % 4;
-    if (pad_size > 0)
+    if(pad_size > 0)
         pad_size = 4 - pad_size;
 
     UInt8* base = pixels.data() + image_size;
@@ -1060,7 +1060,7 @@ BmpEncoderImpl::write_8bit_data()
 
     // write scanlines, the scanlines are already in bottom-to-top
     // order.
-    for (int y = 0; y < info_header.height; ++y)
+    for(int y = 0; y < info_header.height; ++y)
     {
 
         // set the base pointer to the beginning of the line to be read
@@ -1068,14 +1068,14 @@ BmpEncoderImpl::write_8bit_data()
         mover = base;
 
         // write the line from left to right
-        for (int x = 0; x < info_header.width; ++x)
+        for(int x = 0; x < info_header.width; ++x)
         {
             stream.put(*mover);
             ++mover;
         }
 
         // pad
-        for (unsigned int p = 0; p < pad_size; ++p)
+        for(unsigned int p = 0; p < pad_size; ++p)
             stream.put(0);
     }
 }
@@ -1092,7 +1092,7 @@ BmpEncoderImpl::write_rgb_data()
 
     // write scanlines, the scanlines are already in bottom-to-top
     // order.
-    for (int y = 0; y < info_header.height; ++y)
+    for(int y = 0; y < info_header.height; ++y)
     {
 
         // set the base pointer to the beginning of the line to be read
@@ -1100,7 +1100,7 @@ BmpEncoderImpl::write_rgb_data()
         mover = base;
 
         // write the line from left to right
-        for (int x = 0; x < info_header.width; ++x)
+        for(int x = 0; x < info_header.width; ++x)
         {
             stream.put(mover[2]); // B
             stream.put(mover[1]); // G
@@ -1109,7 +1109,7 @@ BmpEncoderImpl::write_rgb_data()
         }
 
         // pad
-        for (unsigned int p = 0; p < pad_size; ++p)
+        for(unsigned int p = 0; p < pad_size; ++p)
             stream.put(0);
     }
 }
@@ -1184,7 +1184,7 @@ BmpEncoder::finalizeSettings()
 void*
 BmpEncoder::currentScanlineOfBand(unsigned int band)
 {
-    if (pimpl->grayscale)
+    if(pimpl->grayscale)
     {
         const unsigned int row_stride = pimpl->info_header.width;
         return pimpl->pixels.data() + (row_stride * pimpl->scanline);

@@ -11,7 +11,7 @@
 * abstrakte Oberklasse geschaffen, damit die Methoden brauchen nicht mehrmals auf gleiche Weise in
 * unterschiedlichen Unterklassen wiederhollt zu werden.
 */
-template<class ToTestImage>
+template <class ToTestImage>
 class TestPolicy
 {
 public:

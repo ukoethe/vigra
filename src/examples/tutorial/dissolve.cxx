@@ -8,7 +8,7 @@ using namespace vigra;
 int
 main(int argc, char** argv)
 {
-    if (argc != 4)
+    if(argc != 4)
     {
         std::cout << "Usage: " << argv[0] << " infile1 infile2 outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
@@ -53,7 +53,7 @@ main(int argc, char** argv)
         // write image data to the file given as third argument
         exportImage(exportArray, ImageExportInfo(argv[3]));
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         // catch any errors that might have occurred and print their reason
         std::cout << e.what() << std::endl;

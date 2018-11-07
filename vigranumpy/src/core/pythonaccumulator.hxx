@@ -62,7 +62,7 @@ struct GetTag_Visitor
     {
     }
 
-    template<class Permutation>
+    template <class Permutation>
     GetTag_Visitor(Permutation const&)
     {
     }
@@ -120,35 +120,35 @@ struct GetTag_Visitor
         return python::object(t);
     }
 
-    template<class T, int N>
+    template <class T, int N>
     python::object to_python(TinyVector<T, N> const& t) const
     {
         NumpyArray<1, T> a = NumpyArray<1, T>(Shape1(N));
-        for (int k = 0; k < N; ++k)
+        for(int k = 0; k < N; ++k)
             a(k) = t[k];
         return python::object(a);
     }
 
-    template<class T, class Stride>
+    template <class T, class Stride>
     python::object to_python(MultiArrayView<1, T, Stride> const& t) const
     {
         NumpyArray<1, T> a(t);
         return python::object(a);
     }
 
-    template<class T>
+    template <class T>
     python::object to_python(Matrix<T> const& t) const
     {
         return python::object(t);
     }
 
-    template<class T1, class T2>
+    template <class T1, class T2>
     python::object to_python(std::pair<T1, T2> const& t) const
     {
         return python::make_tuple(to_python(t.first), to_python(t.second));
     }
 
-    template<class TAG, class Accu>
+    template <class TAG, class Accu>
     void exec(Accu& a) const
     {
         result = to_python(get<TAG>(a));
@@ -158,43 +158,43 @@ struct GetTag_Visitor
 struct GetArrayTag_Visitor
     : public GetTag_Visitor
 {
-    template<class TAG, class T, class Accu>
+    template <class TAG, class T, class Accu>
     struct ToPythonArray
     {
-        template<class Permutation>
+        template <class Permutation>
         static python::object exec(Accu& a, Permutation const&)
         {
             unsigned int n = a.regionCount();
             Shape1 s(n);
             NumpyArray<1, T> res(s);
 
-            for (unsigned int k = 0; k < n; ++k)
+            for(unsigned int k = 0; k < n; ++k)
                 res(k) = get<TAG>(a, k);
             return python::object(res);
         }
     };
 
-    template<class TAG, class T, int N, class Accu>
+    template <class TAG, class T, int N, class Accu>
     struct ToPythonArray<TAG, TinyVector<T, N>, Accu>
     {
-        template<class Permutation>
+        template <class Permutation>
         static python::object exec(Accu& a, Permutation const& p)
         {
             unsigned int n = a.regionCount();
             Shape2 s(n, N);
             NumpyArray<2, T> res(s);
 
-            for (unsigned int k = 0; k < n; ++k)
-                for (int j = 0; j < N; ++j)
+            for(unsigned int k = 0; k < n; ++k)
+                for(int j = 0; j < N; ++j)
                     res(k, p(j)) = get<TAG>(a, k)[j];
             return python::object(res);
         }
     };
 
-    template<class TAG, class T, class Alloc, class Accu>
+    template <class TAG, class T, class Alloc, class Accu>
     struct ToPythonArray<TAG, MultiArray<1, T, Alloc>, Accu>
     {
-        template<class Permutation>
+        template <class Permutation>
         static python::object exec(Accu& a, Permutation const& p)
         {
             unsigned int n = a.regionCount();
@@ -202,17 +202,17 @@ struct GetArrayTag_Visitor
             Shape2 s(n, N);
             NumpyArray<2, T> res(s);
 
-            for (unsigned int k = 0; k < n; ++k)
-                for (int j = 0; j < N; ++j)
+            for(unsigned int k = 0; k < n; ++k)
+                for(int j = 0; j < N; ++j)
                     res(k, p(j)) = get<TAG>(a, k)[j];
             return python::object(res);
         }
     };
 
-    template<class TAG, class T, class Accu>
+    template <class TAG, class T, class Accu>
     struct ToPythonArray<TAG, Matrix<T>, Accu>
     {
-        template<class Permutation>
+        template <class Permutation>
         static python::object exec(Accu& a, Permutation const& p)
         {
             unsigned int n = a.regionCount();
@@ -220,18 +220,18 @@ struct GetArrayTag_Visitor
             Shape3 s(n, m[0], m[1]);
             NumpyArray<3, T> res(s);
 
-            for (unsigned int k = 0; k < n; ++k)
-                for (int i = 0; i < m[0]; ++i)
-                    for (int j = 0; j < m[1]; ++j)
+            for(unsigned int k = 0; k < n; ++k)
+                for(int i = 0; i < m[0]; ++i)
+                    for(int j = 0; j < m[1]; ++j)
                         res(k, p(i), p(j)) = get<TAG>(a, k)(i, j);
             return python::object(res);
         }
     };
 
-    template<class TAG, class T, class Accu>
+    template <class TAG, class T, class Accu>
     struct ToPythonArray<TAG, Error__Attempt_to_access_inactive_statistic<T>, Accu>
     {
-        template<class Permutation>
+        template <class Permutation>
         static python::object exec(Accu&, Permutation const&)
         {
             vigra_precondition(false, "PythonAccumulator::get(): Attempt to access inactive statistic.");
@@ -239,10 +239,10 @@ struct GetArrayTag_Visitor
         }
     };
 
-    template<class TAG, class T1, class T2, class Accu>
+    template <class TAG, class T1, class T2, class Accu>
     struct ToPythonArray<TAG, std::pair<T1, T2>, Accu>
     {
-        template<class Permutation>
+        template <class Permutation>
         static python::object exec(Accu&, Permutation const&)
         {
             vigra_precondition(false, "PythonAccumulator::get(): Export for this statistic is not implemented, sorry.");
@@ -258,13 +258,13 @@ struct GetArrayTag_Visitor
         {
         }
 
-        template<class Permute>
+        template <class Permute>
         CoordPermutation(Permute const& p)
             : permutation_(p.begin(), p.end())
         {
         }
 
-        template<class T>
+        template <class T>
         T operator()(T const& t) const
         {
             return permutation_[t];
@@ -273,7 +273,7 @@ struct GetArrayTag_Visitor
 
     struct IdentityPermutation
     {
-        template<class T>
+        template <class T>
         T operator()(T const& t) const
         {
             return t;
@@ -286,28 +286,28 @@ struct GetArrayTag_Visitor
     {
     }
 
-    template<class Permute>
+    template <class Permute>
     GetArrayTag_Visitor(Permute const& p)
         : coord_permutation_(p)
     {
     }
 
-    template<class TAG, class Accu>
+    template <class TAG, class Accu>
     void exec(Accu& a) const
     {
         exec(a, (TAG*)0);
     }
 
-    template<class Accu, class TAG>
+    template <class Accu, class TAG>
     void exec(Accu& a, TAG*) const
     {
-        if (IsCoordinateFeature<TAG>::value && !IsPrincipalFeature<TAG>::value)
+        if(IsCoordinateFeature<TAG>::value && !IsPrincipalFeature<TAG>::value)
             this->result = ToPythonArray<TAG, typename LookupTag<TAG, Accu>::value_type, Accu>::exec(a, coord_permutation_);
         else
             this->result = ToPythonArray<TAG, typename LookupTag<TAG, Accu>::value_type, Accu>::exec(a, IdentityPermutation());
     }
 
-    template<class Accu, class TAG>
+    template <class Accu, class TAG>
     void exec(Accu& a, Global<TAG>*) const
     {
         vigra_precondition(IsPrincipalFeature<TAG>::value || !IsCoordinateFeature<TAG>::value,
@@ -469,7 +469,7 @@ struct PythonRegionFeatureAccumulator
     }
 };
 
-template<class BaseType, class PythonBaseType, class GetVisitor>
+template <class BaseType, class PythonBaseType, class GetVisitor>
 struct PythonAccumulator
     : public BaseType,
       public PythonBaseType
@@ -483,7 +483,7 @@ struct PythonAccumulator
     {
     }
 
-    template<class Permutation>
+    template <class Permutation>
     PythonAccumulator(Permutation const& p)
         : permutation_(p.begin(), p.end())
     {
@@ -506,8 +506,8 @@ struct PythonAccumulator
     python::list activeNames() const
     {
         python::list result;
-        for (unsigned int k = 0; k < nameList().size(); ++k)
-            if (isActive(nameList()[k]))
+        for(unsigned int k = 0; k < nameList().size(); ++k)
+            if(isActive(nameList()[k]))
                 result.append(python::object(nameList()[k]));
         return result;
     }
@@ -515,7 +515,7 @@ struct PythonAccumulator
     python::list names() const
     {
         python::list result;
-        for (unsigned int k = 0; k < nameList().size(); ++k)
+        for(unsigned int k = 0; k < nameList().size(); ++k)
             result.append(python::object(nameList()[k]));
         return result;
     }
@@ -532,7 +532,7 @@ struct PythonAccumulator
     void merge(PythonFeatureAccumulator const& o)
     {
         PythonAccumulator const* p = dynamic_cast<PythonAccumulator const*>(&o);
-        if (p == 0)
+        if(p == 0)
         {
             PyErr_SetString(PyExc_TypeError, "FeatureAccumulator::merge(): accumulators are incompatible.");
             python::throw_error_already_set();
@@ -548,7 +548,7 @@ struct PythonAccumulator
     void remappingMerge(PythonRegionFeatureAccumulator const& o, NumpyArray<1, npy_uint32> labelMapping)
     {
         PythonAccumulator const* p = dynamic_cast<PythonAccumulator const*>(&o);
-        if (p == 0)
+        if(p == 0)
         {
             PyErr_SetString(PyExc_TypeError, "FeatureAccumulator::merge(): accumulators are incompatible.");
             python::throw_error_already_set();
@@ -577,7 +577,7 @@ private:
     static std::string createAlias(std::string const& n)
     {
         AliasMap::const_iterator k = tagToAlias().find(n);
-        if (k == tagToAlias().end())
+        if(k == tagToAlias().end())
             return n;
         else
             return k->second;
@@ -586,7 +586,7 @@ private:
     static std::string resolveAlias(std::string const& n)
     {
         AliasMap::const_iterator k = aliasToTag().find(normalizeString(n));
-        if (k == aliasToTag().end())
+        if(k == aliasToTag().end())
             return n;
         else
             return k->second;
@@ -611,28 +611,28 @@ private:
     }
 };
 
-template<class Accu>
+template <class Accu>
 bool
 pythonActivateTags(Accu& a, python::object tags)
 {
-    if (tags == python::object() || python::len(tags) == 0)
+    if(tags == python::object() || python::len(tags) == 0)
         return false;
 
 #if PY_MAJOR_VERSION < 3
-    if (PyString_Check(tags.ptr()))
+    if(PyString_Check(tags.ptr()))
 #else
-    if (PyUnicode_Check(tags.ptr()))
+    if(PyUnicode_Check(tags.ptr()))
 #endif
     {
         std::string tag = python::extract<std::string>(tags)();
-        if (normalizeString(tag) == "all")
+        if(normalizeString(tag) == "all")
             a.activateAll();
         else
             a.activate(tag);
     }
     else
     {
-        for (int k = 0; k < python::len(tags); ++k)
+        for(int k = 0; k < python::len(tags); ++k)
         {
             a.activate(python::extract<std::string>(tags[k])());
         }
@@ -640,28 +640,28 @@ pythonActivateTags(Accu& a, python::object tags)
     return true;
 }
 
-template<class Accu>
+template <class Accu>
 void
 pythonHistogramOptions(Accu& a, python::object minmax, int binCount)
 {
     HistogramOptions options;
     options.setBinCount(binCount);
 #if PY_MAJOR_VERSION < 3
-    if (PyString_Check(minmax.ptr()))
+    if(PyString_Check(minmax.ptr()))
 #else
-    if (PyUnicode_Check(minmax.ptr()))
+    if(PyUnicode_Check(minmax.ptr()))
 #endif
     {
         std::string spec = normalizeString(python::extract<std::string>(minmax)());
-        if (spec == "globalminmax")
+        if(spec == "globalminmax")
             options.globalAutoInit();
-        else if (spec == "regionminmax")
+        else if(spec == "regionminmax")
             options.regionAutoInit();
         else
             vigra_precondition(false,
                                "extractFeatures(): invalid histogramRange.");
     }
-    else if (python::len(minmax) == 2)
+    else if(python::len(minmax) == 2)
     {
         options.setMinMax(python::extract<double>(minmax[0])(), python::extract<double>(minmax[1])());
     }
@@ -670,12 +670,12 @@ pythonHistogramOptions(Accu& a, python::object minmax, int binCount)
     a.setHistogramOptions(options);
 }
 
-template<class Accumulator, unsigned int ndim, class T>
+template <class Accumulator, unsigned int ndim, class T>
 typename Accumulator::PythonBase*
 pythonInspect(NumpyArray<ndim, T> in, python::object tags)
 {
     VIGRA_UNIQUE_PTR<Accumulator> res(new Accumulator);
-    if (pythonActivateTags(*res, tags))
+    if(pythonActivateTags(*res, tags))
     {
         PyAllowThreads _pythread;
 
@@ -685,13 +685,13 @@ pythonInspect(NumpyArray<ndim, T> in, python::object tags)
     return res.release();
 }
 
-template<class Accumulator, unsigned int ndim, class T>
+template <class Accumulator, unsigned int ndim, class T>
 typename Accumulator::PythonBase*
 pythonInspectWithHistogram(NumpyArray<ndim, Singleband<T>> in, python::object tags,
                            python::object histogramRange, int binCount)
 {
     VIGRA_UNIQUE_PTR<Accumulator> res(new Accumulator);
-    if (pythonActivateTags(*res, tags))
+    if(pythonActivateTags(*res, tags))
     {
         pythonHistogramOptions(*res, histogramRange, binCount);
 
@@ -703,14 +703,14 @@ pythonInspectWithHistogram(NumpyArray<ndim, Singleband<T>> in, python::object ta
     return res.release();
 }
 
-template<class Accumulator, unsigned int ndim, class T>
+template <class Accumulator, unsigned int ndim, class T>
 typename Accumulator::PythonBase*
 pythonInspectMultiband(NumpyArray<ndim, Multiband<T>> in, python::object tags)
 {
     typedef typename CoupledIteratorType<ndim, Multiband<T>>::type Iterator;
 
     VIGRA_UNIQUE_PTR<Accumulator> res(new Accumulator);
-    if (pythonActivateTags(*res, tags))
+    if(pythonActivateTags(*res, tags))
     {
         PyAllowThreads _pythread;
 
@@ -722,7 +722,7 @@ pythonInspectMultiband(NumpyArray<ndim, Multiband<T>> in, python::object tags)
     return res.release();
 }
 
-template<class Accumulator, unsigned int ndim, class T>
+template <class Accumulator, unsigned int ndim, class T>
 typename Accumulator::PythonBase*
 pythonRegionInspect(NumpyArray<ndim, T> in,
                     NumpyArray<ndim, Singleband<npy_uint32>> labels,
@@ -734,9 +734,9 @@ pythonRegionInspect(NumpyArray<ndim, T> in,
     TinyVector<npy_intp, ndim> permutation = in.template permuteLikewise<ndim>();
 
     VIGRA_UNIQUE_PTR<Accumulator> res(new Accumulator(permutation));
-    if (pythonActivateTags(*res, tags))
+    if(pythonActivateTags(*res, tags))
     {
-        if (ignore_label != python::object())
+        if(ignore_label != python::object())
             res->ignoreLabel(python::extract<MultiArrayIndex>(ignore_label)());
 
         PyAllowThreads _pythread;
@@ -749,7 +749,7 @@ pythonRegionInspect(NumpyArray<ndim, T> in,
     return res.release();
 }
 
-template<class Accumulator, unsigned int ndim, class T>
+template <class Accumulator, unsigned int ndim, class T>
 typename Accumulator::PythonBase*
 pythonRegionInspectWithHistogram(NumpyArray<ndim, Singleband<T>> in,
                                  NumpyArray<ndim, Singleband<npy_uint32>> labels,
@@ -761,10 +761,10 @@ pythonRegionInspectWithHistogram(NumpyArray<ndim, Singleband<T>> in,
     TinyVector<npy_intp, ndim> permutation = in.template permuteLikewise<ndim>();
 
     VIGRA_UNIQUE_PTR<Accumulator> res(new Accumulator(permutation));
-    if (pythonActivateTags(*res, tags))
+    if(pythonActivateTags(*res, tags))
     {
         pythonHistogramOptions(*res, histogramRange, binCount);
-        if (ignore_label != python::object())
+        if(ignore_label != python::object())
             res->ignoreLabel(python::extract<MultiArrayIndex>(ignore_label)());
 
         PyAllowThreads _pythread;
@@ -777,7 +777,7 @@ pythonRegionInspectWithHistogram(NumpyArray<ndim, Singleband<T>> in,
     return res.release();
 }
 
-template<class Accumulator, unsigned int ndim, class T>
+template <class Accumulator, unsigned int ndim, class T>
 typename Accumulator::PythonBase*
 pythonRegionInspectMultiband(NumpyArray<ndim, Multiband<T>> in,
                              NumpyArray<ndim - 1, Singleband<npy_uint32>> labels,
@@ -789,9 +789,9 @@ pythonRegionInspectMultiband(NumpyArray<ndim, Multiband<T>> in,
     TinyVector<npy_intp, ndim - 1> permutation = in.template permuteLikewise<ndim - 1>();
 
     VIGRA_UNIQUE_PTR<Accumulator> res(new Accumulator(permutation));
-    if (pythonActivateTags(*res, tags))
+    if(pythonActivateTags(*res, tags))
     {
-        if (ignore_label != python::object())
+        if(ignore_label != python::object())
             res->ignoreLabel(python::extract<MultiArrayIndex>(ignore_label)());
 
         PyAllowThreads _pythread;
@@ -806,7 +806,7 @@ pythonRegionInspectMultiband(NumpyArray<ndim, Multiband<T>> in,
 
 } // namespace acc
 
-template<class T, class Accumulators>
+template <class T, class Accumulators>
 void
 definePythonAccumulatorSingleband()
 {
@@ -841,7 +841,7 @@ definePythonAccumulatorSingleband()
         return_value_policy<manage_new_object>());
 }
 
-template<class T, class Accumulators>
+template <class T, class Accumulators>
 void
 definePythonAccumulator()
 {
@@ -866,7 +866,7 @@ definePythonAccumulator()
         return_value_policy<manage_new_object>());
 }
 
-template<unsigned int N, class T, class Accumulators>
+template <unsigned int N, class T, class Accumulators>
 void
 definePythonAccumulatorMultiband()
 {
@@ -884,7 +884,7 @@ definePythonAccumulatorMultiband()
                               : "volume";
 
     std::string doc_string;
-    if (N == 3)
+    if(N == 3)
     {
         doc_string +=
             "Extract global features (e.g. Mean, Variance, Minimum, etc.)\n"
@@ -924,7 +924,7 @@ definePythonAccumulatorMultiband()
         return_value_policy<manage_new_object>());
 }
 
-template<unsigned int N, class T, class Accumulators>
+template <unsigned int N, class T, class Accumulators>
 void
 definePythonAccumulatorArraySingleband()
 {
@@ -944,7 +944,7 @@ definePythonAccumulatorArraySingleband()
                               : "volume";
 
     std::string doc_string;
-    if (N == 2)
+    if(N == 2)
     {
         doc_string +=
             "\nThis overload of extractRegionFeatures() computes region statistics\n"
@@ -973,7 +973,7 @@ definePythonAccumulatorArraySingleband()
         return_value_policy<manage_new_object>());
 }
 
-template<unsigned int N, class T, class Accumulators>
+template <unsigned int N, class T, class Accumulators>
 void
 definePythonAccumulatorArray()
 {
@@ -993,7 +993,7 @@ definePythonAccumulatorArray()
                               : "volume";
 
     std::string doc_string;
-    if (N == 2)
+    if(N == 2)
     {
         doc_string +=
             "This overload of extractRegionFeatures() is called for\n"
@@ -1012,7 +1012,7 @@ definePythonAccumulatorArray()
         return_value_policy<manage_new_object>());
 }
 
-template<unsigned int N, class T, class Accumulators>
+template <unsigned int N, class T, class Accumulators>
 void
 definePythonAccumulatorArrayMultiband()
 {
@@ -1030,7 +1030,7 @@ definePythonAccumulatorArrayMultiband()
                               : "volume";
 
     std::string doc_string;
-    if (N == 3)
+    if(N == 3)
     {
         doc_string +=
             "\nExtract region features from an input array with **dtype=numpy.float32**\n"

@@ -58,9 +58,9 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
     ****************************************************************************************************/
     int out = 0;
 
-    if (method == std::string("bla"))
+    if(method == std::string("bla"))
         out = 1;
-    else if (method == std::string("user"))
+    else if(method == std::string("user"))
         out = 2;
 
     outputs.createScalar<double>(0, v_required(), out);

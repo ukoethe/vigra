@@ -175,7 +175,7 @@ SunDecoderImpl::SunDecoderImpl(const std::string& filename)
       bands(0),
       recode(false)
 {
-    if (!stream.good())
+    if(!stream.good())
     {
         std::string msg("Unable to open file '");
         msg += filename;
@@ -186,7 +186,7 @@ SunDecoderImpl::SunDecoderImpl(const std::string& filename)
     // read the magic number, adjust byte order if necessary
     SunHeader::field_type magic;
     read_field(stream, bo, magic);
-    if (magic == RAS_MAGIC_REVERSE)
+    if(magic == RAS_MAGIC_REVERSE)
         bo.set("little endian");
     else
         vigra_precondition(magic == RAS_MAGIC, "the stored magic number is invalid");
@@ -204,7 +204,7 @@ SunDecoderImpl::SunDecoderImpl(const std::string& filename)
     bands.resize(row_stride);
 
     // read the color map, if there is one
-    if (header.maptype != RMT_NONE)
+    if(header.maptype != RMT_NONE)
     {
         vigra_precondition(header.maplength != 0,
                            "mapping requested, but color maps have zero length");
@@ -213,17 +213,17 @@ SunDecoderImpl::SunDecoderImpl(const std::string& filename)
     }
 
     // compute the header length, if it is not set.
-    if (header.length == 0)
+    if(header.length == 0)
         header.length = header.height * row_stride;
 
     // find out if recoding is necessary.
-    if (header.maptype != RMT_NONE || header.depth == 1)
+    if(header.maptype != RMT_NONE || header.depth == 1)
         recode = true;
     else
         recode = false;
 
     // find out the number of components.
-    if (header.depth == 24 || header.maptype == RMT_EQUAL_RGB)
+    if(header.depth == 24 || header.maptype == RMT_EQUAL_RGB)
         components = 3;
     else
         components = 1;
@@ -240,17 +240,17 @@ SunDecoderImpl::read_scanline()
     read_array(stream, bo, bands.data(), row_stride);
 
     // recode if necessary
-    if (recode)
+    if(recode)
     {
 
         void_vector<UInt8> recode_bands;
 
-        if (header.depth == 1)
+        if(header.depth == 1)
         {
 
             // expand to UInt8.
             recode_bands.resize(header.width);
-            for (unsigned int i = 0; i < header.width; ++i)
+            for(unsigned int i = 0; i < header.width; ++i)
             {
 
                 // there are eight pixels in each byte.
@@ -263,14 +263,14 @@ SunDecoderImpl::read_scanline()
         }
 
         // color map the scanline.
-        if (header.maptype == RMT_EQUAL_RGB)
+        if(header.maptype == RMT_EQUAL_RGB)
         {
 
             // map from UInt8 to rgb
             recode_bands.resize(3 * header.width);
             const unsigned int mapstride = header.maplength / 3;
             UInt8* recode_mover = recode_bands.data();
-            for (unsigned int i = 0; i < header.width; ++i)
+            for(unsigned int i = 0; i < header.width; ++i)
             {
                 // find out the pointer to the red color
                 UInt8* map_mover = maps.data() + bands[i];
@@ -284,12 +284,12 @@ SunDecoderImpl::read_scanline()
                 *recode_mover++ = *map_mover;
             }
         }
-        else if (header.maptype == RMT_RAW)
+        else if(header.maptype == RMT_RAW)
         {
 
             // map from UInt8 to UInt8
             recode_bands.resize(header.width);
-            for (unsigned int i = 0; i < header.width; ++i)
+            for(unsigned int i = 0; i < header.width; ++i)
                 recode_bands[i] = maps[bands[i]];
         }
 
@@ -299,11 +299,11 @@ SunDecoderImpl::read_scanline()
 
     // swap the color components of a BGR image to RGB.
     // i really don't know the exact condition for this.
-    if (header.type == RT_STANDARD && header.maptype != RMT_EQUAL_RGB && components == 3)
+    if(header.type == RT_STANDARD && header.maptype != RMT_EQUAL_RGB && components == 3)
     {
 
         void_vector<UInt8> recode_bands(3 * header.width);
-        for (unsigned int i = 0; i < header.width; ++i)
+        for(unsigned int i = 0; i < header.width; ++i)
         {
             recode_bands[3 * i] = bands[3 * i + 2];
             recode_bands[3 * i + 1] = bands[3 * i + 1];
@@ -413,7 +413,7 @@ SunEncoderImpl::SunEncoderImpl(const std::string& filename)
       bo("big endian"),
       bands(0), finalized(false)
 {
-    if (!stream.good())
+    if(!stream.good())
     {
         std::string msg("Unable to open file '");
         msg += filename;
@@ -440,7 +440,7 @@ SunEncoderImpl::finalize()
     bands.resize(row_stride);
 
     // set bands memory to zero
-    for (unsigned int i = 0; i < row_stride; ++i)
+    for(unsigned int i = 0; i < row_stride; ++i)
         bands[i] = 0;
 
     // set the band length
@@ -460,11 +460,11 @@ SunEncoderImpl::finalize()
 void
 SunEncoderImpl::write_scanline()
 {
-    if (components == 3)
+    if(components == 3)
     {
         // rgb -> bgr
         void_vector<UInt8> recode_bands(bands.size());
-        for (unsigned int i = 0; i < header.width; ++i)
+        for(unsigned int i = 0; i < header.width; ++i)
         {
             recode_bands[3 * i] = bands[3 * i + 2];
             recode_bands[3 * i + 1] = bands[3 * i + 1];

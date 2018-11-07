@@ -66,7 +66,7 @@ public:
         // data 1:
         MultiArray<3, int> out_data_1(MultiArrayShape<3>::type(2, 3, 4));
         // ...initialize the array to the test data
-        for (int i = 0; i < 24; ++i)
+        for(int i = 0; i < 24; ++i)
             out_data_1.data()[i] = i - 12;
         //std::cout << "Test (0,0), (0,1), (1,0): " << out_data_1(0,0) << " " << out_data_1(0,1) << " " << out_data_1(1,0) << " " << std::endl;
 
@@ -96,7 +96,7 @@ public:
         // data 1: unstrided
         MultiArray<3, int> out_data_1(MultiArrayShape<3>::type(2, 3, 4));
         // ...initialize the array to the test data
-        for (int i = 0; i < 24; ++i)
+        for(int i = 0; i < 24; ++i)
             out_data_1.data()[i] = i - 12;
         // data 2: strided
         MultiArrayView<2, int, StridedArrayTag> out_data_2(out_data_1.bindAt(1, 0));
@@ -131,7 +131,7 @@ public:
         // create RGB image from that
         MultiArray<2, RGBValue<double>> out_data_1(MultiArrayShape<2>::type(5, 8));
         // ...initialize the array to the test data
-        for (int i = 0; i < 40; ++i)
+        for(int i = 0; i < 40; ++i)
             out_data_1.data()[i] = RGBValue<double>(i + 0.1, i + 0.2, i + 0.3);
 
         // export
@@ -161,7 +161,7 @@ public:
         // create RGB image from that
         MultiArray<3, RGBValue<double>> out_data_1(MultiArrayShape<3>::type(5, 3, 8));
         // ...initialize the array to the test data
-        for (int i = 0; i < 120; ++i)
+        for(int i = 0; i < 120; ++i)
             out_data_1.data()[i] = RGBValue<double>(i + 0.1, i + 0.2, i + 0.3);
         MultiArrayView<2, RGBValue<double>, StridedArrayTag> out_data_2(out_data_1.bindAt(1, 0));
 
@@ -196,7 +196,7 @@ public:
         // create TinyVector image from that
         MultiArray<2, TinyVector<double, 4>> out_data_1(MultiArrayShape<2>::type(5, 8));
         // ...initialize the array to the test data
-        for (int i = 0; i < 40; ++i)
+        for(int i = 0; i < 40; ++i)
             out_data_1.data()[i] = TinyVector<double, 4>(i + 0.1, i + 0.2, i + 0.3, i + 0.4);
 
         // export
@@ -226,7 +226,7 @@ public:
         // create TinyVector image from that
         MultiArray<3, TinyVector<double, 4>> out_data_1(MultiArrayShape<3>::type(5, 3, 8));
         // ...initialize the array to the test data
-        for (int i = 0; i < 120; ++i)
+        for(int i = 0; i < 120; ++i)
             out_data_1.data()[i] = TinyVector<double, 4>(i + 0.1, i + 0.2, i + 0.3, i + 0.4);
         MultiArrayView<2, TinyVector<double, 4>, StridedArrayTag> out_data_2(out_data_1.bindAt(1, 0));
 
@@ -259,7 +259,7 @@ public:
         // data 1: 3D multi array
         MultiArray<3, double> out_data_1(MultiArrayShape<3>::type(3, 5, 8));
         // ...initialize the array to the test data
-        for (int i = 0; i < 120; ++i)
+        for(int i = 0; i < 120; ++i)
             out_data_1.data()[i] = i;
 
         // export
@@ -275,7 +275,7 @@ public:
 
         // compare content
         int i = 0;
-        for (int j = 0; j < 120; ++i, j += 3)
+        for(int j = 0; j < 120; ++i, j += 3)
             should(in_data_1.data()[i] == RGBValue<double>((double)out_data_1.data()[j], (double)out_data_1.data()[j + 1], (double)out_data_1.data()[j + 2]));
     }
 
@@ -290,12 +290,12 @@ public:
         // data 1: int data in 2 dimensions (partly negative)
         MultiArray<2, int> out_data_1(MultiArrayShape<2>::type(10, 11));
         // ...initialize the array to the test data
-        for (int i = 0; i < 110; ++i)
+        for(int i = 0; i < 110; ++i)
             out_data_1.data()[i] = i - 55;
         // data 2: double data in 4 dimensions (partly negative)
         MultiArray<4, double> out_data_2(MultiArrayShape<4>::type(10, 2, 3, 4));
         // ...initialize the array to the test data
-        for (int i = 0; i < 240; ++i)
+        for(int i = 0; i < 240; ++i)
             out_data_2.data()[i] = i + (std::rand() / (double)RAND_MAX) - 120;
 
         // export
@@ -326,13 +326,13 @@ public:
         // data 1: int data in 2 dimensions (partly negative)
         MultiArray<2, int> out_data_1(MultiArrayShape<2>::type(10, 11));
         // ...initialize the array to the test data
-        for (int i = 0; i < 110; ++i)
+        for(int i = 0; i < 110; ++i)
             out_data_1.data()[i] = i - 55;
 
         // data 2: double data in 4 dimensions (partly negative)
         MultiArray<4, double> out_data_2(MultiArrayShape<4>::type(10, 2, 3, 4));
         // ...initialize the array to the test data
-        for (int i = 0; i < 240; ++i)
+        for(int i = 0; i < 240; ++i)
             out_data_2.data()[i] = i + (std::rand() / (double)RAND_MAX) - 120;
 
         // export
@@ -373,25 +373,25 @@ public:
         // data 1: int data in 2 dimensions (partly negative)
         MultiArray<2, int> out_data_1(MultiArrayShape<2>::type(10, 11));
         // ...initialize the array to the test data
-        for (int i = 0; i < 110; ++i)
+        for(int i = 0; i < 110; ++i)
             out_data_1.data()[i] = i - 55;
 
         // data 2: double data in 4 dimensions (partly negative)
         MultiArray<4, double> out_data_2(MultiArrayShape<4>::type(10, 2, 3, 4));
         // ...initialize the array to the test data
-        for (int i = 0; i < 240; ++i)
+        for(int i = 0; i < 240; ++i)
             out_data_2.data()[i] = i + (std::rand() / (double)RAND_MAX) - 120;
 
         // data 3: 2+1D multi array
         MultiArray<2, TinyVector<double, 4>> out_data_3(MultiArrayShape<2>::type(5, 8));
         // ...initialize the array to the test data
-        for (int i = 0; i < 40; ++i)
+        for(int i = 0; i < 40; ++i)
             out_data_3.data()[i] = TinyVector<double, 4>(i + 0.1, i + 0.2, i + 0.3, i + 0.4);
 
         // data 4: RGB values
         MultiArray<2, RGBValue<double>> out_data_4(MultiArrayShape<2>::type(5, 8));
         // ...initialize the array to the test data
-        for (int i = 0; i < 40; ++i)
+        for(int i = 0; i < 40; ++i)
             out_data_4.data()[i] = RGBValue<double>(i + 0.1, i + 0.2, i + 0.3);
 
         //create a file
@@ -665,7 +665,7 @@ public:
         // double data in 4 dimensions (partly negative)
         MultiArray<4, double> out_data_1(MultiArrayShape<4>::type(10, 2, 3, 4));
         // ...initialize the array to the test data
-        for (int i = 0; i < 240; ++i)
+        for(int i = 0; i < 240; ++i)
             out_data_1.data()[i] = i + (std::rand() / (double)RAND_MAX) - 120;
 
         // variable length string MultiArrays
@@ -697,7 +697,7 @@ public:
         // integer attribute
         MultiArray<2, int> out_attr_1(MultiArrayShape<2>::type(2, 3));
         // ...initialize the array to the test data
-        for (int i = 0; i < 6; ++i)
+        for(int i = 0; i < 6; ++i)
             out_attr_1.data()[i] = i;
 
         // variable length string attribute
@@ -711,13 +711,13 @@ public:
         // tiny vector multi array
         MultiArray<2, TinyVector<double, 3>> out_attr_3(MultiArrayShape<2>::type(2, 1));
         // ...initialize the array to the test data
-        for (int i = 0; i < 2; ++i)
+        for(int i = 0; i < 2; ++i)
             out_attr_3.data()[i] = TinyVector<double, 3>(i + 0.1, i + 0.2, i + 0.3);
 
         // data 4: RGB values
         MultiArray<2, RGBValue<double>> out_attr_4(MultiArrayShape<2>::type(2, 3));
         // ...initialize the array to the test data
-        for (int i = 0; i < 6; ++i)
+        for(int i = 0; i < 6; ++i)
             out_attr_4.data()[i] = RGBValue<double>(i + 0.1, i + 0.2, i + 0.3);
 
         file.writeAttribute("/double/dataset", "int attribute", out_attr_1);
@@ -864,11 +864,11 @@ public:
         // Create 3D dataset
         MultiArray<3, double> out_data(MultiArrayShape<3>::type(10, 10, 10));
         // ...initialize the array to the test data
-        for (int i = 0; i < 10; ++i)
+        for(int i = 0; i < 10; ++i)
         {
-            for (int j = 0; j < 10; ++j)
+            for(int j = 0; j < 10; ++j)
             {
-                for (int k = 0; k < 10; ++k)
+                for(int k = 0; k < 10; ++k)
                 {
                     out_data(i, j, k) = 100 * i + 10 * j + k;
                 }
@@ -935,25 +935,25 @@ public:
         // data 1: int data in 2 dimensions (partly negative)
         MultiArray<2, int> out_data_1(MultiArrayShape<2>::type(10, 11));
         // ...initialize the array to the test data
-        for (int i = 0; i < 110; ++i)
+        for(int i = 0; i < 110; ++i)
             out_data_1.data()[i] = i - 55;
 
         // data 2: double data in 4 dimensions (partly negative)
         MultiArray<4, double> out_data_2(MultiArrayShape<4>::type(10, 2, 3, 4));
         // ...initialize the array to the test data
-        for (int i = 0; i < 240; ++i)
+        for(int i = 0; i < 240; ++i)
             out_data_2.data()[i] = i + (std::rand() / (double)RAND_MAX) - 120;
 
         // data 3: 2+1D multi array
         MultiArray<2, TinyVector<double, 4>> out_data_3(MultiArrayShape<2>::type(5, 8));
         // ...initialize the array to the test data
-        for (int i = 0; i < 40; ++i)
+        for(int i = 0; i < 40; ++i)
             out_data_3.data()[i] = TinyVector<double, 4>(i + 0.1, i + 0.2, i + 0.3, i + 0.4);
 
         // data 4: RGB values
         MultiArray<2, RGBValue<double>> out_data_4(MultiArrayShape<2>::type(5, 8));
         // ...initialize the array to the test data
-        for (int i = 0; i < 40; ++i)
+        for(int i = 0; i < 40; ++i)
             out_data_4.data()[i] = RGBValue<double>(i + 0.1, i + 0.2, i + 0.3);
 
         //create a file
@@ -1014,25 +1014,25 @@ public:
         // data 1: int data in 2 dimensions (partly negative)
         MultiArray<2, int> out_data_1(MultiArrayShape<2>::type(10, 11));
         // ...initialize the array to the test data
-        for (int i = 0; i < 110; ++i)
+        for(int i = 0; i < 110; ++i)
             out_data_1.data()[i] = i - 55;
 
         // data 2: double data in 4 dimensions (partly negative)
         MultiArray<4, double> out_data_2(MultiArrayShape<4>::type(10, 2, 3, 4));
         // ...initialize the array to the test data
-        for (int i = 0; i < 240; ++i)
+        for(int i = 0; i < 240; ++i)
             out_data_2.data()[i] = i + (std::rand() / (double)RAND_MAX) - 120;
 
         // data 3: 2+1D multi array
         MultiArray<2, TinyVector<double, 4>> out_data_3(MultiArrayShape<2>::type(5, 8));
         // ...initialize the array to the test data
-        for (int i = 0; i < 40; ++i)
+        for(int i = 0; i < 40; ++i)
             out_data_3.data()[i] = TinyVector<double, 4>(i + 0.1, i + 0.2, i + 0.3, i + 0.4);
 
         // data 4: RGB values
         MultiArray<2, RGBValue<double>> out_data_4(MultiArrayShape<2>::type(5, 8));
         // ...initialize the array to the test data
-        for (int i = 0; i < 40; ++i)
+        for(int i = 0; i < 40; ++i)
             out_data_4.data()[i] = RGBValue<double>(i + 0.1, i + 0.2, i + 0.3);
 
         //create a file
@@ -1198,7 +1198,7 @@ public:
         // Create a double MultiArray
         MultiArray<4, double> out_data(MultiArrayShape<4>::type(10, 2, 3, 4));
         // ...initialize the array with some data
-        for (int i = 0; i < 240; ++i)
+        for(int i = 0; i < 240; ++i)
             out_data.data()[i] = i + (std::rand() / (double)RAND_MAX) - 120;
 
         // Write double MultiArray to "/group2". Use relative paths and ".." notation.

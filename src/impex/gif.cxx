@@ -58,13 +58,13 @@ read_data_block(std::ifstream& stream, void_vector<UInt8>& data)
     int count;
 
     count = stream.get();
-    if (!stream.good())
+    if(!stream.good())
         return -1;
-    if (count == 0)
+    if(count == 0)
         return 0;
     data.resize(count);
     stream.read(reinterpret_cast<char*>(data.begin()), count);
-    if (!stream.good())
+    if(!stream.good())
         return -1;
     return count;
 }
@@ -107,7 +107,7 @@ struct ColorCluster
 
     void reset_minmax()
     {
-        for (int i = 0; i < 3; ++i)
+        for(int i = 0; i < 3; ++i)
         {
             cmin[i] = 255;
             cmax[i] = 0;
@@ -118,11 +118,11 @@ struct ColorCluster
 
     void update_minmax(UInt8* entry)
     {
-        for (int i = 0; i < 3; ++i)
+        for(int i = 0; i < 3; ++i)
         {
-            if (entry[i] < cmin[i])
+            if(entry[i] < cmin[i])
                 cmin[i] = entry[i];
-            if (cmax[i] < entry[i])
+            if(cmax[i] < entry[i])
                 cmax[i] = entry[i];
         }
 
@@ -131,14 +131,14 @@ struct ColorCluster
 
     void update_largest() const
     {
-        if (largest_dim >= 0)
+        if(largest_dim >= 0)
             return;
         largest_diff = cmax[0] - cmin[0];
         largest_dim = 0;
 
-        for (int i = 1; i < 3; ++i)
+        for(int i = 1; i < 3; ++i)
         {
-            if (largest_diff < cmax[i] - cmin[i])
+            if(largest_diff < cmax[i] - cmin[i])
             {
                 largest_dim = i;
                 largest_diff = cmax[i] - cmin[i];
@@ -163,11 +163,11 @@ struct ColorCluster
         reset_minmax();
 
         UInt32 i = 0;
-        for (; i < old_list.size() / 2; ++i)
+        for(; i < old_list.size() / 2; ++i)
         {
             add(old_list[i]);
         }
-        for (; i < old_list.size(); ++i)
+        for(; i < old_list.size(); ++i)
         {
             o.add(old_list[i]);
         }
@@ -177,7 +177,7 @@ struct ColorCluster
     {
         UIntBiggest r = 0, g = 0, b = 0;
 
-        for (size_t i = 0; i < entries.size(); ++i)
+        for(size_t i = 0; i < entries.size(); ++i)
         {
             r += entries[i][0];
             g += entries[i][1];
@@ -203,29 +203,29 @@ find_color_clusters(void_vector<UInt8>& data,
     size_t count = clusters.size();
     size_t size = data.size() / 3;
     size_t i, current;
-    for (i = 0; i < size; ++i)
+    for(i = 0; i < size; ++i)
     {
         clusters[0].add(data.begin() + 3 * i);
     }
 
-    for (current = 1; current < count; ++current)
+    for(current = 1; current < count; ++current)
     {
         size_t largest_index = 0;
-        for (i = 1; i < current; ++i)
+        for(i = 1; i < current; ++i)
         {
-            if (clusters[largest_index] < clusters[i])
+            if(clusters[largest_index] < clusters[i])
             {
                 largest_index = i;
             }
         }
-        if (clusters[largest_index].size() == 1)
+        if(clusters[largest_index].size() == 1)
             break;
         clusters[largest_index].split(clusters[current]);
     }
 
-    for (i = 0; i < count; ++i)
+    for(i = 0; i < count; ++i)
     {
-        if (clusters[i].size() == 0)
+        if(clusters[i].size() == 0)
         {
             colors[3 * i] = colors[3 * i + 1] = colors[3 * i + 2] = 0;
         }
@@ -244,9 +244,9 @@ find_color_indices(void_vector<UInt8>& data,
     UInt8* base = data.begin();
 
     size_t i;
-    for (i = 0; i < count; ++i)
+    for(i = 0; i < count; ++i)
     {
-        for (size_t j = 0; j < clusters[i].size(); ++j)
+        for(size_t j = 0; j < clusters[i].size(); ++j)
         {
             size_t offset = (clusters[i].entries[j] - base) / 3;
             indices[offset] = static_cast<UInt8>(i);
@@ -327,7 +327,7 @@ GIFHeader::global_from_stream(std::ifstream& stream, const byteorder& bo)
     read_field(stream, bo, background);
     read_field(stream, bo, c);
     global_colormap = BitSet(flag, 0x80);
-    if (global_colormap)
+    if(global_colormap)
     {
         bits_per_pixel = (flag & 0x07) + 1;
         maplength = 3 * (1 << bits_per_pixel);
@@ -348,21 +348,21 @@ bool
 GIFHeader::local_from_stream(std::ifstream& stream, const byteorder& bo)
 {
     UInt8 c, flag;
-    for (;;)
+    for(;;)
     {
         c = stream.get();
-        if (!stream.good() || c == ';')
+        if(!stream.good() || c == ';')
             return false;
-        if (c == '!')
+        if(c == '!')
         {
             void_vector<UInt8> extensions;
 
             // read and ignore extension data
             read_field(stream, bo, c);
-            while (read_data_block(stream, extensions) > 0) /* empty */
+            while(read_data_block(stream, extensions) > 0) /* empty */
                 ;
         }
-        if (c == ',')
+        if(c == ',')
             break;
     }
 
@@ -374,7 +374,7 @@ GIFHeader::local_from_stream(std::ifstream& stream, const byteorder& bo)
     read_field(stream, bo, height);
     read_field(stream, bo, flag);
     interlace = BitSet(flag, 0x40);
-    if (BitSet(flag, 0x80))
+    if(BitSet(flag, 0x80))
     {
         global_colormap = false;
         bits_per_pixel = (flag & 0x07) + 1;
@@ -425,7 +425,7 @@ GIFDecoderImpl::GIFDecoderImpl(const std::string& filename)
       bands(0),
       scanline(0)
 {
-    if (!stream.good())
+    if(!stream.good())
     {
         std::string msg("Unable to open file '");
         msg += filename;
@@ -446,14 +446,14 @@ GIFDecoderImpl::GIFDecoderImpl(const std::string& filename)
     header.global_from_stream(stream, bo);
 
     // read the global color map, if there is one
-    if (header.global_colormap)
+    if(header.global_colormap)
     {
         // read the maps
         maps.resize(header.maplength);
         read_array(stream, bo, maps.data(), header.maplength);
     }
 
-    if (!header.local_from_stream(stream, bo))
+    if(!header.local_from_stream(stream, bo))
     {
         std::string msg("Unable to read file '");
         msg += filename;
@@ -462,7 +462,7 @@ GIFDecoderImpl::GIFDecoderImpl(const std::string& filename)
     }
 
     // read the local color map, if there is one
-    if (!header.global_colormap)
+    if(!header.global_colormap)
     {
         // read the maps
         maps.resize(header.maplength);
@@ -472,9 +472,9 @@ GIFDecoderImpl::GIFDecoderImpl(const std::string& filename)
     // check if image is Gray or RGB
     int i = 0;
     components = 1;
-    for (; i < header.maplength / 3; ++i)
+    for(; i < header.maplength / 3; ++i)
     {
-        if (maps[3 * i] != maps[3 * i + 1] || maps[3 * i] != maps[3 * i + 2])
+        if(maps[3 * i] != maps[3 * i + 1] || maps[3 * i] != maps[3 * i + 2])
         {
             components = 3;
             break;
@@ -529,7 +529,7 @@ GIFDecoderImpl::decodeGIF()
     old_code = NullCode;
     code_size = data_size + 1;
     code_mask = (1 << code_size) - 1;
-    for (code = 0; code < clear; code++)
+    for(code = 0; code < clear; code++)
     {
         prefix[code] = 0;
         suffix[code] = code;
@@ -543,22 +543,22 @@ GIFDecoderImpl::decodeGIF()
     count = 0;
     first = 0;
     top_stack = pixel_stack.begin();
-    while (p < indices.end())
+    while(p < indices.end())
     {
-        if (top_stack == pixel_stack.begin())
+        if(top_stack == pixel_stack.begin())
         {
-            if (bits < code_size)
+            if(bits < code_size)
             {
                 /*
                       Load bytes until there is enough bits for a code.
                     */
-                if (count == 0)
+                if(count == 0)
                 {
                     /*
                           Read a new data block.
                         */
                     count = read_data_block(stream, packet);
-                    if (count <= 0)
+                    if(count <= 0)
                         break;
                     c = packet.begin();
                 }
@@ -577,9 +577,9 @@ GIFDecoderImpl::decodeGIF()
             /*
                   Interpret the code
                 */
-            if ((code > available) || (code == end_of_information))
+            if((code > available) || (code == end_of_information))
                 break;
-            if (code == clear)
+            if(code == clear)
             {
                 /*
                       Reset decoder.
@@ -590,7 +590,7 @@ GIFDecoderImpl::decodeGIF()
                 old_code = NullCode;
                 continue;
             }
-            if (old_code == NullCode)
+            if(old_code == NullCode)
             {
                 *top_stack++ = suffix[code];
                 old_code = code;
@@ -598,12 +598,12 @@ GIFDecoderImpl::decodeGIF()
                 continue;
             }
             in_code = code;
-            if (code == available)
+            if(code == available)
             {
                 *top_stack++ = first;
                 code = old_code;
             }
-            while (code > clear)
+            while(code > clear)
             {
                 *top_stack++ = suffix[code];
                 code = prefix[code];
@@ -612,13 +612,13 @@ GIFDecoderImpl::decodeGIF()
             /*
                   Add a new string to the string table,
                 */
-            if (available >= MaxStackSize)
+            if(available >= MaxStackSize)
                 break;
             *top_stack++ = first;
             prefix[available] = old_code;
             suffix[available] = first;
             available++;
-            if (((available & code_mask) == 0) && (available < MaxStackSize))
+            if(((available & code_mask) == 0) && (available < MaxStackSize))
             {
                 code_size++;
                 code_mask += available;
@@ -633,7 +633,7 @@ GIFDecoderImpl::decodeGIF()
     }
 
     // decode intelaced image
-    if (header.interlace)
+    if(header.interlace)
     {
         void_vector<UInt16> non_interlaced(header.width * header.height);
 
@@ -646,13 +646,13 @@ GIFDecoderImpl::decodeGIF()
             interlace_start[4] = {0, 4, 2, 1};
 
         p = indices.begin();
-        for (pass = 0; pass < 4; pass++)
+        for(pass = 0; pass < 4; pass++)
         {
             y = interlace_start[pass];
-            while (y < header.height)
+            while(y < header.height)
             {
                 q = non_interlaced.begin() + (y * header.width);
-                for (x = 0; x < header.width; x++)
+                for(x = 0; x < header.width; x++)
                 {
                     *q = (*p);
                     p++;
@@ -668,9 +668,9 @@ GIFDecoderImpl::decodeGIF()
 
     // apply colormap
     bands.resize(header.width * header.height * components);
-    for (int i = 0; i < header.width * header.height; ++i)
+    for(int i = 0; i < header.width * header.height; ++i)
     {
-        if (components == 1)
+        if(components == 1)
         {
             bands[i] = maps[3 * indices[i]];
         }
@@ -739,7 +739,7 @@ GIFDecoder::currentScanlineOfBand(unsigned int band) const
 void
 GIFDecoder::nextScanline()
 {
-    if (pimpl->scanline)
+    if(pimpl->scanline)
         pimpl->scanline += getWidth() * getNumBands();
     else
     {
@@ -798,7 +798,7 @@ GIFEncoderImpl::GIFEncoderImpl(const std::string& filename)
       scanline(0),
       finalized(false)
 {
-    if (!stream.good())
+    if(!stream.good())
     {
         std::string msg("Unable to open file '");
         msg += filename;
@@ -836,7 +836,7 @@ void
 GIFEncoderImpl::writeImageData()
 {
     stream.put(header.bits_per_pixel); // code size
-    if (components == 3)
+    if(components == 3)
     {
         outputEncodedData(indices);
     }
@@ -855,7 +855,7 @@ GIFEncoderImpl::reduceTo256Colors()
     header.maplength = 3 * 256;
 
     maps.resize(header.maplength);
-    if (components == 3)
+    if(components == 3)
     {
         std::vector<ColorCluster> clusters(256);
         find_color_clusters(bands, clusters, maps);
@@ -864,7 +864,7 @@ GIFEncoderImpl::reduceTo256Colors()
     }
     else
     {
-        for (int i = 0; i < 256; ++i)
+        for(int i = 0; i < 256; ++i)
         {
             maps[3 * i] = maps[3 * i + 1] = maps[3 * i + 2] = i;
         }
@@ -887,18 +887,18 @@ GIFEncoderImpl::outputEncodedData(void_vector<UInt8>& indices)
         /*                                                                         \
           Emit a code.                                                             \
         */                                                                         \
-        if (bits > 0)                                                              \
+        if(bits > 0)                                                               \
             datum |= ((long)code << bits);                                         \
         else                                                                       \
             datum = (long)code;                                                    \
         bits += number_bits;                                                       \
-        while (bits >= 8)                                                          \
+        while(bits >= 8)                                                           \
         {                                                                          \
             /*                                                                     \
               Add a character to current packet.                                   \
             */                                                                     \
             packet[byte_count++] = (UInt8)(datum & 0xff);                          \
-            if (byte_count >= 254)                                                 \
+            if(byte_count >= 254)                                                  \
             {                                                                      \
                 stream.put(byte_count);                                            \
                 stream.write(reinterpret_cast<char*>(packet.begin()), byte_count); \
@@ -907,10 +907,10 @@ GIFEncoderImpl::outputEncodedData(void_vector<UInt8>& indices)
             datum >>= 8;                                                           \
             bits -= 8;                                                             \
         }                                                                          \
-        if (free_code > max_code)                                                  \
+        if(free_code > max_code)                                                   \
         {                                                                          \
             number_bits++;                                                         \
-            if (number_bits == MaxGIFBits)                                         \
+            if(number_bits == MaxGIFBits)                                          \
                 max_code = MaxGIFTable;                                            \
             else                                                                   \
                 max_code = MaxCode(number_bits);                                   \
@@ -956,7 +956,7 @@ GIFEncoderImpl::outputEncodedData(void_vector<UInt8>& indices)
     byte_count = 0;
     datum = 0;
     bits = 0;
-    for (i = 0; i < MaxHashTable; i++)
+    for(i = 0; i < MaxHashTable; i++)
         hash_code[i] = 0;
     GIFOutputCode(clear_code);
     /*
@@ -964,19 +964,19 @@ GIFEncoderImpl::outputEncodedData(void_vector<UInt8>& indices)
         */
     p = indices.begin();
     waiting_code = *p;
-    for (i = 0; i < indices.size(); i++)
+    for(i = 0; i < indices.size(); i++)
     {
-        if (i > 0)
+        if(i > 0)
         {
             /*
               Probe hash table.
             */
             index = *p & 0xff;
             k = (int)((int)index << (MaxGIFBits - 8)) + waiting_code;
-            if (k >= MaxHashTable)
+            if(k >= MaxHashTable)
                 k -= MaxHashTable;
             GIFOutputCode(waiting_code);
-            if (free_code < MaxGIFTable)
+            if(free_code < MaxGIFTable)
             {
                 hash_code[k] = free_code++;
                 hash_prefix[k] = waiting_code;
@@ -987,7 +987,7 @@ GIFEncoderImpl::outputEncodedData(void_vector<UInt8>& indices)
                 /*
                   Fill the hash table with empty entries.
                 */
-                for (k = 0; k < MaxHashTable; k++)
+                for(k = 0; k < MaxHashTable; k++)
                     hash_code[k] = 0;
                 /*
                   Reset compressor and issue a clear code.
@@ -1006,13 +1006,13 @@ GIFEncoderImpl::outputEncodedData(void_vector<UInt8>& indices)
         */
     GIFOutputCode(waiting_code);
     GIFOutputCode(end_of_information_code);
-    if (bits > 0)
+    if(bits > 0)
     {
         /*
               Add a character to current packet.
             */
         packet[byte_count++] = (UInt8)(datum & 0xff);
-        if (byte_count >= 254)
+        if(byte_count >= 254)
         {
             stream.put(byte_count);
             stream.write(reinterpret_cast<char*>(packet.begin()), byte_count);
@@ -1022,7 +1022,7 @@ GIFEncoderImpl::outputEncodedData(void_vector<UInt8>& indices)
     /*
           Flush accumulated data.
         */
-    if (byte_count > 0)
+    if(byte_count > 0)
     {
         stream.put(byte_count);
         stream.write(reinterpret_cast<char*>(packet.begin()), byte_count);
@@ -1098,7 +1098,7 @@ GIFEncoder::finalizeSettings()
 void*
 GIFEncoder::currentScanlineOfBand(unsigned int band)
 {
-    if (!pimpl->scanline)
+    if(!pimpl->scanline)
     {
         pimpl->bands.resize(pimpl->header.width * pimpl->header.height * pimpl->components);
         pimpl->scanline = pimpl->bands.begin();

@@ -160,10 +160,10 @@ namespace vigra
     \endcode
 
 */
-doxygen_overloaded_function(template<...> void recursiveFilterLine)
+doxygen_overloaded_function(template <...> void recursiveFilterLine)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
                              DestIterator id, DestAccessor ad, double b, BorderTreatmentMode border)
 {
@@ -176,9 +176,9 @@ doxygen_overloaded_function(template<...> void recursiveFilterLine)
                        "recursiveFilterLine(): -1 < factor < 1 required.\n");
 
     // trivial case: b == 0.0 is an identity filter => simply copy the data and return
-    if (b == 0.0)
+    if(b == 0.0)
     {
-        for (; is != isend; ++is, ++id)
+        for(; is != isend; ++is, ++id)
         {
             ad.set(as(is), id);
         }
@@ -200,27 +200,27 @@ doxygen_overloaded_function(template<...> void recursiveFilterLine)
 
     TempType old;
 
-    if (border == BORDER_TREATMENT_REPEAT ||
-        border == BORDER_TREATMENT_AVOID)
+    if(border == BORDER_TREATMENT_REPEAT ||
+       border == BORDER_TREATMENT_AVOID)
     {
         old = TempType((1.0 / (1.0 - b)) * as(is));
     }
-    else if (border == BORDER_TREATMENT_REFLECT)
+    else if(border == BORDER_TREATMENT_REFLECT)
     {
         is += kernelw;
         old = TempType((1.0 / (1.0 - b)) * as(is));
-        for (x = 0; x < kernelw; ++x, --is)
+        for(x = 0; x < kernelw; ++x, --is)
             old = TempType(as(is) + b * old);
     }
-    else if (border == BORDER_TREATMENT_WRAP)
+    else if(border == BORDER_TREATMENT_WRAP)
     {
         is = isend - kernelw;
         old = TempType((1.0 / (1.0 - b)) * as(is));
-        for (x = 0; x < kernelw; ++x, ++is)
+        for(x = 0; x < kernelw; ++x, ++is)
             old = TempType(as(is) + b * old);
     }
-    else if (border == BORDER_TREATMENT_CLIP ||
-             border == BORDER_TREATMENT_ZEROPAD)
+    else if(border == BORDER_TREATMENT_CLIP ||
+            border == BORDER_TREATMENT_ZEROPAD)
     {
         old = NumericTraits<TempType>::zero();
     }
@@ -231,45 +231,45 @@ doxygen_overloaded_function(template<...> void recursiveFilterLine)
     }
 
     // left side of filter
-    for (x = 0, is = istart; x < w; ++x, ++is)
+    for(x = 0, is = istart; x < w; ++x, ++is)
     {
         old = TempType(as(is) + b * old);
         line[x] = old;
     }
 
     // right side of the filter
-    if (border == BORDER_TREATMENT_REPEAT ||
-        border == BORDER_TREATMENT_AVOID)
+    if(border == BORDER_TREATMENT_REPEAT ||
+       border == BORDER_TREATMENT_AVOID)
     {
         is = isend - 1;
         old = TempType((1.0 / (1.0 - b)) * as(is));
     }
-    else if (border == BORDER_TREATMENT_REFLECT)
+    else if(border == BORDER_TREATMENT_REFLECT)
     {
         old = line[w - 2];
     }
-    else if (border == BORDER_TREATMENT_WRAP)
+    else if(border == BORDER_TREATMENT_WRAP)
     {
         is = istart + kernelw - 1;
         old = TempType((1.0 / (1.0 - b)) * as(is));
-        for (x = 0; x < kernelw; ++x, --is)
+        for(x = 0; x < kernelw; ++x, --is)
             old = TempType(as(is) + b * old);
     }
-    else if (border == BORDER_TREATMENT_CLIP ||
-             border == BORDER_TREATMENT_ZEROPAD)
+    else if(border == BORDER_TREATMENT_CLIP ||
+            border == BORDER_TREATMENT_ZEROPAD)
     {
         old = NumericTraits<TempType>::zero();
     }
 
     is = isend - 1;
     id += w - 1;
-    if (border == BORDER_TREATMENT_CLIP)
+    if(border == BORDER_TREATMENT_CLIP)
     {
         // correction factors for b
         double bright = b;
         double bleft = VIGRA_CSTD::pow(b, w);
 
-        for (x = w - 1; x >= 0; --x, --is, --id)
+        for(x = w - 1; x >= 0; --x, --is, --id)
         {
             TempType f = TempType(b * old);
             old = as(is) + f;
@@ -279,19 +279,19 @@ doxygen_overloaded_function(template<...> void recursiveFilterLine)
             ad.set(norm * (line[x] + f), id);
         }
     }
-    else if (border == BORDER_TREATMENT_AVOID)
+    else if(border == BORDER_TREATMENT_AVOID)
     {
-        for (x = w - 1; x >= kernelw; --x, --is, --id)
+        for(x = w - 1; x >= kernelw; --x, --is, --id)
         {
             TempType f = TempType(b * old);
             old = as(is) + f;
-            if (x < w - kernelw)
+            if(x < w - kernelw)
                 ad.set(DestTraits::fromRealPromote(RealPromote(norm * (line[x] + f))), id);
         }
     }
     else
     {
-        for (x = w - 1; x >= 0; --x, --is, --id)
+        for(x = w - 1; x >= 0; --x, --is, --id)
         {
             TempType f = TempType(b * old);
             old = as(is) + f;
@@ -306,8 +306,8 @@ doxygen_overloaded_function(template<...> void recursiveFilterLine)
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
                     DestIterator id, DestAccessor ad, double b1, double b2)
@@ -331,7 +331,7 @@ recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     is += (kernelw - 2);
     line[kernelw] = as(is);
     line[kernelw - 1] = as(is);
-    for (x = kernelw - 2; x > 0; --x, --is)
+    for(x = kernelw - 2; x > 0; --x, --is)
     {
         line[x] = detail::RequiresExplicitCast<TempType>::cast(as(is) + b1 * line[x + 1] + b2 * line[x + 2]);
     }
@@ -339,7 +339,7 @@ recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     ++is;
     line[1] = detail::RequiresExplicitCast<TempType>::cast(as(is) + b1 * line[0] + b2 * line[1]);
     ++is;
-    for (x = 2; x < w; ++x, ++is)
+    for(x = 2; x < w; ++x, ++is)
     {
         line[x] = detail::RequiresExplicitCast<TempType>::cast(as(is) + b1 * line[x - 1] + b2 * line[x - 2]);
     }
@@ -352,7 +352,7 @@ recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     --id;
     ad.set(line[w - 2], id);
     --id;
-    for (x = w - 3; x >= 0; --x, --id, --is)
+    for(x = w - 3; x >= 0; --x, --id, --is)
     {
         line[x] = detail::RequiresExplicitCast<TempType>::cast(norm2 * line[x] + b1 * line[x + 1] + b2 * line[x + 2]);
         ad.set(line[x], id);
@@ -439,10 +439,10 @@ recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     \endcode
 
 */
-doxygen_overloaded_function(template<...> void recursiveGaussianFilterLine)
+doxygen_overloaded_function(template <...> void recursiveGaussianFilterLine)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void recursiveGaussianFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
                                      DestIterator id, DestAccessor ad,
                                      double sigma)
@@ -473,7 +473,7 @@ doxygen_overloaded_function(template<...> void recursiveGaussianFilterLine)
     std::vector<TempType> ybackward(w, 0.0);
 
     // initialise the filter for reflective boundary conditions
-    for (x = kernelw; x >= 0; --x)
+    for(x = kernelw; x >= 0; --x)
     {
         ybackward[x] = detail::RequiresExplicitCast<TempType>::cast(B * as(is, x) + (b1 * ybackward[x + 1] + b2 * ybackward[x + 2] + b3 * ybackward[x + 3]));
     }
@@ -488,7 +488,7 @@ doxygen_overloaded_function(template<...> void recursiveGaussianFilterLine)
     yforward[2] = detail::RequiresExplicitCast<TempType>::cast(B * as(is) + (b1 * yforward[1] + b2 * yforward[0] + b3 * ybackward[1]));
 
     ++is;
-    for (x = 3; x < w; ++x, ++is)
+    for(x = 3; x < w; ++x, ++is)
     {
         yforward[x] = detail::RequiresExplicitCast<TempType>::cast(B * as(is) + (b1 * yforward[x - 1] + b2 * yforward[x - 2] + b3 * yforward[x - 3]));
     }
@@ -500,13 +500,13 @@ doxygen_overloaded_function(template<...> void recursiveGaussianFilterLine)
 
     ybackward[w - 3] = detail::RequiresExplicitCast<TempType>::cast(B * yforward[w - 3] + (b1 * ybackward[w - 2] + b2 * ybackward[w - 1] + b3 * yforward[w - 2]));
 
-    for (x = w - 4; x >= 0; --x)
+    for(x = w - 4; x >= 0; --x)
     {
         ybackward[x] = detail::RequiresExplicitCast<TempType>::cast(B * yforward[x] + (b1 * ybackward[x + 1] + b2 * ybackward[x + 2] + b3 * ybackward[x + 3]));
     }
 
     // output
-    for (x = 0; x < w; ++x, ++id)
+    for(x = 0; x < w; ++x, ++id)
     {
         ad.set(ybackward[x], id);
     }
@@ -579,10 +579,10 @@ doxygen_overloaded_function(template<...> void recursiveGaussianFilterLine)
     \endcode
 
 */
-doxygen_overloaded_function(template<...> void recursiveSmoothLine)
+doxygen_overloaded_function(template <...> void recursiveSmoothLine)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     inline void recursiveSmoothLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
                                     DestIterator id, DestAccessor ad, double scale)
 {
@@ -664,10 +664,10 @@ doxygen_overloaded_function(template<...> void recursiveSmoothLine)
     \endcode
 
 */
-doxygen_overloaded_function(template<...> void recursiveFirstDerivativeLine)
+doxygen_overloaded_function(template <...> void recursiveFirstDerivativeLine)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void recursiveFirstDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
                                       DestIterator id, DestAccessor ad, double scale)
 {
@@ -690,7 +690,7 @@ doxygen_overloaded_function(template<...> void recursiveFirstDerivativeLine)
     TempType old = (1.0 / (1.0 - b)) * as(is);
 
     // left side of filter
-    for (x = 0; x < w; ++x, ++is)
+    for(x = 0; x < w; ++x, ++is)
     {
         old = as(is) + b * old;
         line[x] = -old;
@@ -702,7 +702,7 @@ doxygen_overloaded_function(template<...> void recursiveFirstDerivativeLine)
     id += w;
     ++is;
 
-    for (x = w - 1; x >= 0; --x)
+    for(x = w - 1; x >= 0; --x)
     {
         --is;
         --id;
@@ -783,10 +783,10 @@ doxygen_overloaded_function(template<...> void recursiveFirstDerivativeLine)
     \endcode
 
 */
-doxygen_overloaded_function(template<...> void recursiveSecondDerivativeLine)
+doxygen_overloaded_function(template <...> void recursiveSecondDerivativeLine)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
                                        DestIterator id, DestAccessor ad, double scale)
 {
@@ -810,7 +810,7 @@ doxygen_overloaded_function(template<...> void recursiveSecondDerivativeLine)
     TempType old = detail::RequiresExplicitCast<TempType>::cast((1.0 / (1.0 - b)) * as(is));
 
     // left side of filter
-    for (x = 0; x < w; ++x, ++is)
+    for(x = 0; x < w; ++x, ++is)
     {
         line[x] = old;
         old = detail::RequiresExplicitCast<TempType>::cast(as(is) + b * old);
@@ -822,7 +822,7 @@ doxygen_overloaded_function(template<...> void recursiveSecondDerivativeLine)
     id += w;
     ++is;
 
-    for (x = w - 1; x >= 0; --x)
+    for(x = w - 1; x >= 0; --x)
     {
         --is;
         --id;
@@ -934,10 +934,10 @@ doxygen_overloaded_function(template<...> void recursiveSecondDerivativeLine)
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void recursiveFilterX)
+doxygen_overloaded_function(template <...> void recursiveFilterX)
 
-    template<class SrcImageIterator, class SrcAccessor,
-             class DestImageIterator, class DestAccessor>
+    template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
     void recursiveFilterX(SrcImageIterator supperleft,
                           SrcImageIterator slowerright, SrcAccessor as,
                           DestImageIterator dupperleft, DestAccessor ad,
@@ -948,7 +948,7 @@ doxygen_overloaded_function(template<...> void recursiveFilterX)
 
     int y;
 
-    for (y = 0; y < h; ++y, ++supperleft.y, ++dupperleft.y)
+    for(y = 0; y < h; ++y, ++supperleft.y, ++dupperleft.y)
     {
         typename SrcImageIterator::row_iterator rs = supperleft.rowIterator();
         typename DestImageIterator::row_iterator rd = dupperleft.rowIterator();
@@ -959,8 +959,8 @@ doxygen_overloaded_function(template<...> void recursiveFilterX)
     }
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 recursiveFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                  pair<DestImageIterator, DestAccessor> dest,
@@ -970,8 +970,8 @@ recursiveFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                      dest.first, dest.second, b, border);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     recursiveFilterX(MultiArrayView<2, T1, S1> const& src,
                      MultiArrayView<2, T2, S2> dest,
@@ -989,8 +989,8 @@ inline void
 /*                                                      */
 /********************************************************/
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 void
 recursiveFilterX(SrcImageIterator supperleft,
                  SrcImageIterator slowerright, SrcAccessor as,
@@ -1002,7 +1002,7 @@ recursiveFilterX(SrcImageIterator supperleft,
 
     int y;
 
-    for (y = 0; y < h; ++y, ++supperleft.y, ++dupperleft.y)
+    for(y = 0; y < h; ++y, ++supperleft.y, ++dupperleft.y)
     {
         typename SrcImageIterator::row_iterator rs = supperleft.rowIterator();
         typename DestImageIterator::row_iterator rd = dupperleft.rowIterator();
@@ -1013,8 +1013,8 @@ recursiveFilterX(SrcImageIterator supperleft,
     }
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 recursiveFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                  pair<DestImageIterator, DestAccessor> dest,
@@ -1024,8 +1024,8 @@ recursiveFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                      dest.first, dest.second, b1, b2);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     recursiveFilterX(MultiArrayView<2, T1, S1> const& src,
                      MultiArrayView<2, T2, S2> dest,
@@ -1111,10 +1111,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void recursiveGaussianFilterX)
+doxygen_overloaded_function(template <...> void recursiveGaussianFilterX)
 
-    template<class SrcImageIterator, class SrcAccessor,
-             class DestImageIterator, class DestAccessor>
+    template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
     void recursiveGaussianFilterX(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as,
                                   DestImageIterator dupperleft, DestAccessor ad,
                                   double sigma)
@@ -1124,7 +1124,7 @@ doxygen_overloaded_function(template<...> void recursiveGaussianFilterX)
 
     int y;
 
-    for (y = 0; y < h; ++y, ++supperleft.y, ++dupperleft.y)
+    for(y = 0; y < h; ++y, ++supperleft.y, ++dupperleft.y)
     {
         typename SrcImageIterator::row_iterator rs = supperleft.rowIterator();
         typename DestImageIterator::row_iterator rd = dupperleft.rowIterator();
@@ -1135,8 +1135,8 @@ doxygen_overloaded_function(template<...> void recursiveGaussianFilterX)
     }
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 recursiveGaussianFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                          pair<DestImageIterator, DestAccessor> dest,
@@ -1146,8 +1146,8 @@ recursiveGaussianFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor>
                              dest.first, dest.second, sigma);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     recursiveGaussianFilterX(MultiArrayView<2, T1, S1> const& src,
                              MultiArrayView<2, T2, S2> dest,
@@ -1231,10 +1231,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void recursiveSmoothX)
+doxygen_overloaded_function(template <...> void recursiveSmoothX)
 
-    template<class SrcImageIterator, class SrcAccessor,
-             class DestImageIterator, class DestAccessor>
+    template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
     void recursiveSmoothX(SrcImageIterator supperleft,
                           SrcImageIterator slowerright, SrcAccessor as,
                           DestImageIterator dupperleft, DestAccessor ad,
@@ -1245,7 +1245,7 @@ doxygen_overloaded_function(template<...> void recursiveSmoothX)
 
     int y;
 
-    for (y = 0; y < h; ++y, ++supperleft.y, ++dupperleft.y)
+    for(y = 0; y < h; ++y, ++supperleft.y, ++dupperleft.y)
     {
         typename SrcImageIterator::row_iterator rs = supperleft.rowIterator();
         typename DestImageIterator::row_iterator rd = dupperleft.rowIterator();
@@ -1256,8 +1256,8 @@ doxygen_overloaded_function(template<...> void recursiveSmoothX)
     }
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 recursiveSmoothX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                  pair<DestImageIterator, DestAccessor> dest,
@@ -1267,8 +1267,8 @@ recursiveSmoothX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                      dest.first, dest.second, scale);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     recursiveSmoothX(MultiArrayView<2, T1, S1> const& src,
                      MultiArrayView<2, T2, S2> dest,
@@ -1380,10 +1380,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void recursiveFilterY)
+doxygen_overloaded_function(template <...> void recursiveFilterY)
 
-    template<class SrcImageIterator, class SrcAccessor,
-             class DestImageIterator, class DestAccessor>
+    template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
     void recursiveFilterY(SrcImageIterator supperleft,
                           SrcImageIterator slowerright, SrcAccessor as,
                           DestImageIterator dupperleft, DestAccessor ad,
@@ -1394,7 +1394,7 @@ doxygen_overloaded_function(template<...> void recursiveFilterY)
 
     int x;
 
-    for (x = 0; x < w; ++x, ++supperleft.x, ++dupperleft.x)
+    for(x = 0; x < w; ++x, ++supperleft.x, ++dupperleft.x)
     {
         typename SrcImageIterator::column_iterator cs = supperleft.columnIterator();
         typename DestImageIterator::column_iterator cd = dupperleft.columnIterator();
@@ -1405,8 +1405,8 @@ doxygen_overloaded_function(template<...> void recursiveFilterY)
     }
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 recursiveFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                  pair<DestImageIterator, DestAccessor> dest,
@@ -1416,8 +1416,8 @@ recursiveFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                      dest.first, dest.second, b, border);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     recursiveFilterY(MultiArrayView<2, T1, S1> const& src,
                      MultiArrayView<2, T2, S2> dest,
@@ -1435,8 +1435,8 @@ inline void
 /*                                                      */
 /********************************************************/
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 void
 recursiveFilterY(SrcImageIterator supperleft,
                  SrcImageIterator slowerright, SrcAccessor as,
@@ -1448,7 +1448,7 @@ recursiveFilterY(SrcImageIterator supperleft,
 
     int x;
 
-    for (x = 0; x < w; ++x, ++supperleft.x, ++dupperleft.x)
+    for(x = 0; x < w; ++x, ++supperleft.x, ++dupperleft.x)
     {
         typename SrcImageIterator::column_iterator cs = supperleft.columnIterator();
         typename DestImageIterator::column_iterator cd = dupperleft.columnIterator();
@@ -1459,8 +1459,8 @@ recursiveFilterY(SrcImageIterator supperleft,
     }
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 recursiveFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                  pair<DestImageIterator, DestAccessor> dest,
@@ -1470,8 +1470,8 @@ recursiveFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                      dest.first, dest.second, b1, b2);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     recursiveFilterY(MultiArrayView<2, T1, S1> const& src,
                      MultiArrayView<2, T2, S2> dest,
@@ -1557,10 +1557,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void recursiveGaussianFilterY)
+doxygen_overloaded_function(template <...> void recursiveGaussianFilterY)
 
-    template<class SrcImageIterator, class SrcAccessor,
-             class DestImageIterator, class DestAccessor>
+    template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
     void recursiveGaussianFilterY(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as,
                                   DestImageIterator dupperleft, DestAccessor ad,
                                   double sigma)
@@ -1570,7 +1570,7 @@ doxygen_overloaded_function(template<...> void recursiveGaussianFilterY)
 
     int x;
 
-    for (x = 0; x < w; ++x, ++supperleft.x, ++dupperleft.x)
+    for(x = 0; x < w; ++x, ++supperleft.x, ++dupperleft.x)
     {
         typename SrcImageIterator::column_iterator cs = supperleft.columnIterator();
         typename DestImageIterator::column_iterator cd = dupperleft.columnIterator();
@@ -1581,8 +1581,8 @@ doxygen_overloaded_function(template<...> void recursiveGaussianFilterY)
     }
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 recursiveGaussianFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                          pair<DestImageIterator, DestAccessor> dest,
@@ -1592,8 +1592,8 @@ recursiveGaussianFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor>
                              dest.first, dest.second, sigma);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     recursiveGaussianFilterY(MultiArrayView<2, T1, S1> const& src,
                              MultiArrayView<2, T2, S2> dest,
@@ -1678,10 +1678,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void recursiveSmoothY)
+doxygen_overloaded_function(template <...> void recursiveSmoothY)
 
-    template<class SrcImageIterator, class SrcAccessor,
-             class DestImageIterator, class DestAccessor>
+    template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
     void recursiveSmoothY(SrcImageIterator supperleft,
                           SrcImageIterator slowerright, SrcAccessor as,
                           DestImageIterator dupperleft, DestAccessor ad,
@@ -1692,7 +1692,7 @@ doxygen_overloaded_function(template<...> void recursiveSmoothY)
 
     int x;
 
-    for (x = 0; x < w; ++x, ++supperleft.x, ++dupperleft.x)
+    for(x = 0; x < w; ++x, ++supperleft.x, ++dupperleft.x)
     {
         typename SrcImageIterator::column_iterator cs = supperleft.columnIterator();
         typename DestImageIterator::column_iterator cd = dupperleft.columnIterator();
@@ -1703,8 +1703,8 @@ doxygen_overloaded_function(template<...> void recursiveSmoothY)
     }
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 recursiveSmoothY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                  pair<DestImageIterator, DestAccessor> dest,
@@ -1714,8 +1714,8 @@ recursiveSmoothY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                      dest.first, dest.second, scale);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     recursiveSmoothY(MultiArrayView<2, T1, S1> const& src,
                      MultiArrayView<2, T2, S2> dest,
@@ -1800,10 +1800,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void recursiveFirstDerivativeX)
+doxygen_overloaded_function(template <...> void recursiveFirstDerivativeX)
 
-    template<class SrcImageIterator, class SrcAccessor,
-             class DestImageIterator, class DestAccessor>
+    template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
     void recursiveFirstDerivativeX(SrcImageIterator supperleft,
                                    SrcImageIterator slowerright, SrcAccessor as,
                                    DestImageIterator dupperleft, DestAccessor ad,
@@ -1814,7 +1814,7 @@ doxygen_overloaded_function(template<...> void recursiveFirstDerivativeX)
 
     int y;
 
-    for (y = 0; y < h; ++y, ++supperleft.y, ++dupperleft.y)
+    for(y = 0; y < h; ++y, ++supperleft.y, ++dupperleft.y)
     {
         typename SrcImageIterator::row_iterator rs = supperleft.rowIterator();
         typename DestImageIterator::row_iterator rd = dupperleft.rowIterator();
@@ -1825,8 +1825,8 @@ doxygen_overloaded_function(template<...> void recursiveFirstDerivativeX)
     }
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 recursiveFirstDerivativeX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                           pair<DestImageIterator, DestAccessor> dest,
@@ -1836,8 +1836,8 @@ recursiveFirstDerivativeX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor
                               dest.first, dest.second, scale);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     recursiveFirstDerivativeX(MultiArrayView<2, T1, S1> const& src,
                               MultiArrayView<2, T2, S2> dest,
@@ -1922,10 +1922,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void recursiveFirstDerivativeY)
+doxygen_overloaded_function(template <...> void recursiveFirstDerivativeY)
 
-    template<class SrcImageIterator, class SrcAccessor,
-             class DestImageIterator, class DestAccessor>
+    template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
     void recursiveFirstDerivativeY(SrcImageIterator supperleft,
                                    SrcImageIterator slowerright, SrcAccessor as,
                                    DestImageIterator dupperleft, DestAccessor ad,
@@ -1936,7 +1936,7 @@ doxygen_overloaded_function(template<...> void recursiveFirstDerivativeY)
 
     int x;
 
-    for (x = 0; x < w; ++x, ++supperleft.x, ++dupperleft.x)
+    for(x = 0; x < w; ++x, ++supperleft.x, ++dupperleft.x)
     {
         typename SrcImageIterator::column_iterator cs = supperleft.columnIterator();
         typename DestImageIterator::column_iterator cd = dupperleft.columnIterator();
@@ -1947,8 +1947,8 @@ doxygen_overloaded_function(template<...> void recursiveFirstDerivativeY)
     }
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 recursiveFirstDerivativeY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                           pair<DestImageIterator, DestAccessor> dest,
@@ -1958,8 +1958,8 @@ recursiveFirstDerivativeY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor
                               dest.first, dest.second, scale);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     recursiveFirstDerivativeY(MultiArrayView<2, T1, S1> const& src,
                               MultiArrayView<2, T2, S2> dest,
@@ -2044,10 +2044,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void recursiveSecondDerivativeX)
+doxygen_overloaded_function(template <...> void recursiveSecondDerivativeX)
 
-    template<class SrcImageIterator, class SrcAccessor,
-             class DestImageIterator, class DestAccessor>
+    template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
     void recursiveSecondDerivativeX(SrcImageIterator supperleft,
                                     SrcImageIterator slowerright, SrcAccessor as,
                                     DestImageIterator dupperleft, DestAccessor ad,
@@ -2058,7 +2058,7 @@ doxygen_overloaded_function(template<...> void recursiveSecondDerivativeX)
 
     int y;
 
-    for (y = 0; y < h; ++y, ++supperleft.y, ++dupperleft.y)
+    for(y = 0; y < h; ++y, ++supperleft.y, ++dupperleft.y)
     {
         typename SrcImageIterator::row_iterator rs = supperleft.rowIterator();
         typename DestImageIterator::row_iterator rd = dupperleft.rowIterator();
@@ -2069,8 +2069,8 @@ doxygen_overloaded_function(template<...> void recursiveSecondDerivativeX)
     }
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 recursiveSecondDerivativeX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                            pair<DestImageIterator, DestAccessor> dest,
@@ -2080,8 +2080,8 @@ recursiveSecondDerivativeX(triple<SrcImageIterator, SrcImageIterator, SrcAccesso
                                dest.first, dest.second, scale);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     recursiveSecondDerivativeX(MultiArrayView<2, T1, S1> const& src,
                                MultiArrayView<2, T2, S2> dest,
@@ -2166,10 +2166,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void recursiveSecondDerivativeY)
+doxygen_overloaded_function(template <...> void recursiveSecondDerivativeY)
 
-    template<class SrcImageIterator, class SrcAccessor,
-             class DestImageIterator, class DestAccessor>
+    template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
     void recursiveSecondDerivativeY(SrcImageIterator supperleft,
                                     SrcImageIterator slowerright, SrcAccessor as,
                                     DestImageIterator dupperleft, DestAccessor ad,
@@ -2180,7 +2180,7 @@ doxygen_overloaded_function(template<...> void recursiveSecondDerivativeY)
 
     int x;
 
-    for (x = 0; x < w; ++x, ++supperleft.x, ++dupperleft.x)
+    for(x = 0; x < w; ++x, ++supperleft.x, ++dupperleft.x)
     {
         typename SrcImageIterator::column_iterator cs = supperleft.columnIterator();
         typename DestImageIterator::column_iterator cd = dupperleft.columnIterator();
@@ -2191,8 +2191,8 @@ doxygen_overloaded_function(template<...> void recursiveSecondDerivativeY)
     }
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 recursiveSecondDerivativeY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                            pair<DestImageIterator, DestAccessor> dest,
@@ -2202,8 +2202,8 @@ recursiveSecondDerivativeY(triple<SrcImageIterator, SrcImageIterator, SrcAccesso
                                dest.first, dest.second, scale);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     recursiveSecondDerivativeY(MultiArrayView<2, T1, S1> const& src,
                                MultiArrayView<2, T2, S2> dest,

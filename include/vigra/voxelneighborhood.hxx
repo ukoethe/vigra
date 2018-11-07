@@ -193,7 +193,7 @@ public:
         OppositeOffset = 3
     };
 
-    template<int DUMMY>
+    template <int DUMMY>
     struct StaticData
     {
         static unsigned int b[];
@@ -314,14 +314,14 @@ public:
     */
     static Direction code(Diff3D const& diff)
     {
-        switch (diff[0])
+        switch(diff[0])
         {
             case 0:
             {
-                switch (diff[1])
+                switch(diff[1])
                 {
                     case 0:
-                        switch (diff[2])
+                        switch(diff[2])
                         {
                             case 1:
                                 return Behind;
@@ -421,7 +421,7 @@ static const Direction Behind = NeighborCode3D::Behind;                 /**<  Ex
 static const Direction InFront = NeighborCode3D::InFront;               /**<  Export NeighborCode3D::InFront to namespace Neighborhood3DSix */
 static const Direction DirectionCount = NeighborCode3D::DirectionCount; /**<  Export NeighborCode3D::DirectionCount to namespace Neighborhood3DSix */
 
-template<int DUMMY>
+template <int DUMMY>
 unsigned int NeighborCode3D::StaticData<DUMMY>::b[] = {
     1 << InFront,
     1 << North,
@@ -430,7 +430,7 @@ unsigned int NeighborCode3D::StaticData<DUMMY>::b[] = {
     1 << South,
     1 << East};
 
-template<int DUMMY>
+template <int DUMMY>
 unsigned int NeighborCode3D::StaticData<DUMMY>::c[] = {
     6, 5, 5, 0, 5, 4, 4, 0, 5, 4,
     4, 0, 0, 0, 0, 0, 5, 4, 4, 0,
@@ -438,7 +438,7 @@ unsigned int NeighborCode3D::StaticData<DUMMY>::c[] = {
     0, 0, 5, 4, 4, 0, 4, 3, 3, 0,
     4, 3, 3};
 
-template<int DUMMY>
+template <int DUMMY>
 Direction NeighborCode3D::StaticData<DUMMY>::bd[43][6] = {
     {InFront, North, West, Behind, South, East},  // 0 - NotAtBorder
     {InFront, North, West, Behind, South, Error}, // 1 - AtRightBorder
@@ -485,7 +485,7 @@ Direction NeighborCode3D::StaticData<DUMMY>::bd[43][6] = {
     {InFront, North, East, Error, Error, Error}  //42 - AtBottomLeftRearBorder
 };
 
-template<int DUMMY>
+template <int DUMMY>
 Direction NeighborCode3D::StaticData<DUMMY>::bc[43][4] = {
     {InFront, North, West, Error},  // 0 - NotAtBorder
     {InFront, North, West, Error},  // 1 - AtRightBorder
@@ -532,7 +532,7 @@ Direction NeighborCode3D::StaticData<DUMMY>::bc[43][4] = {
     {InFront, North, Error, Error} //42 - AtBottomLeftRearBorder
 };
 
-template<int DUMMY>
+template <int DUMMY>
 Diff3D NeighborCode3D::StaticData<DUMMY>::d[] = {
     Diff3D(0, 0, -1), //InFront
     Diff3D(0, -1, 0), //North
@@ -542,7 +542,7 @@ Diff3D NeighborCode3D::StaticData<DUMMY>::d[] = {
     Diff3D(1, 0, 0)   //East
 };
 
-template<int DUMMY>
+template <int DUMMY>
 Diff3D NeighborCode3D::StaticData<DUMMY>::rd[][6] = {
     //     InFront      -      North         -           West     -         Behind     -      South        -        East
     {Diff3D(0, 0, 0), Diff3D(0, -1, 1), Diff3D(-1, 0, 1), Diff3D(0, 0, 2), Diff3D(0, 1, 1), Diff3D(1, 0, 1)},      //InFront
@@ -621,7 +621,7 @@ public:
         OppositeOffset = 25
     };
 
-    template<int DUMMY>
+    template <int DUMMY>
     struct StaticData
     {
         static unsigned int b[];
@@ -773,7 +773,7 @@ public:
      */
     static Direction code(Neighborhood3DSix::Direction d)
     {
-        switch (d)
+        switch(d)
         {
             case Neighborhood3DSix::InFront:
                 return InFront;
@@ -799,13 +799,13 @@ public:
     */
     static Direction code(Diff3D const& diff)
     {
-        switch (diff[0])
+        switch(diff[0])
         {
             case -1:
-                switch (diff[1])
+                switch(diff[1])
                 {
                     case -1:
-                        switch (diff[2])
+                        switch(diff[2])
                         {
                             case -1:
                                 return InFrontNorthWest; // ( -1, -1, -1)
@@ -815,7 +815,7 @@ public:
                                 return BehindNorthWest; // ( -1, -1,  1)
                         }
                     case 0:
-                        switch (diff[2])
+                        switch(diff[2])
                         {
                             case -1:
                                 return InFrontWest; // ( -1,  0, -1)
@@ -825,7 +825,7 @@ public:
                                 return BehindWest; // ( -1,  0,  1)
                         }
                     case 1:
-                        switch (diff[2])
+                        switch(diff[2])
                         {
                             case -1:
                                 return InFrontSouthWest; // ( -1,  1, -1)
@@ -836,10 +836,10 @@ public:
                         }
                 }
             case 0:
-                switch (diff[1])
+                switch(diff[1])
                 {
                     case -1:
-                        switch (diff[2])
+                        switch(diff[2])
                         {
                             case -1:
                                 return InFrontNorth; // (  0,  0, -1)
@@ -849,7 +849,7 @@ public:
                                 return BehindNorth; // (  0, -1,  1)
                         }
                     case 0:
-                        switch (diff[2])
+                        switch(diff[2])
                         {
                             case -1:
                                 return InFront; // (  0,  0, -1)
@@ -857,7 +857,7 @@ public:
                                 return Behind; // (  0,  0,  1)
                         }
                     case 1:
-                        switch (diff[2])
+                        switch(diff[2])
                         {
                             case -1:
                                 return InFrontSouth; // (  0,  1, -1)
@@ -868,10 +868,10 @@ public:
                         }
                 }
             case 1:
-                switch (diff[1])
+                switch(diff[1])
                 {
                     case -1:
-                        switch (diff[2])
+                        switch(diff[2])
                         {
                             case -1:
                                 return InFrontNorthEast; // (  1, -1, -1)
@@ -881,7 +881,7 @@ public:
                                 return BehindNorthEast; // (  1, -1,  1)
                         }
                     case 0:
-                        switch (diff[2])
+                        switch(diff[2])
                         {
                             case -1:
                                 return InFrontEast; // (  1,  0, -1)
@@ -891,7 +891,7 @@ public:
                                 return BehindEast; // (  1,  0,  1)
                         }
                     case 1:
-                        switch (diff[2])
+                        switch(diff[2])
                         {
                             case -1:
                                 return InFrontSouthEast; // (  1,  1, -1)
@@ -912,7 +912,7 @@ public:
     static bool isDiagonal(Direction dir)
     {
         Diff3D d = diff(dir);
-        if (abs(d[0]) + abs(d[1]) + abs(d[2]) == 1)
+        if(abs(d[0]) + abs(d[1]) + abs(d[2]) == 1)
             return false;
         else
             return true;
@@ -1171,7 +1171,7 @@ static const Direction BehindSouthEast = NeighborCode3D::BehindSouthEast; /**<  
 
 static const Direction DirectionCount = NeighborCode3D::DirectionCount; /**<  Export NeighborCode3D::DirectionCount to namespace Neighborhood3DTwentySix */
 
-template<int DUMMY>
+template <int DUMMY>
 unsigned int NeighborCode3D::StaticData<DUMMY>::b[] = {
     1 << InFrontNorthWest,
     1 << InFrontNorth,
@@ -1202,7 +1202,7 @@ unsigned int NeighborCode3D::StaticData<DUMMY>::b[] = {
     1 << BehindSouth,
     1 << BehindSouthEast};
 
-template<int DUMMY>
+template <int DUMMY>
 unsigned int NeighborCode3D::StaticData<DUMMY>::c[] = {
     26, 17, 17, 0, 17, 11, 11, 0, 17, 11,
     11, 0, 0, 0, 0, 0, 17, 11, 11, 0,
@@ -1210,7 +1210,7 @@ unsigned int NeighborCode3D::StaticData<DUMMY>::c[] = {
     0, 0, 17, 11, 11, 0, 11, 7, 7, 0,
     11, 7, 7};
 
-template<int DUMMY>
+template <int DUMMY>
 Direction NeighborCode3D::StaticData<DUMMY>::bd[43][26] = {
     //0 - NotAtBorder
     {InFrontNorthWest, InFrontNorth, InFrontNorthEast,
@@ -1655,7 +1655,7 @@ Direction NeighborCode3D::StaticData<DUMMY>::bd[43][26] = {
      Error, Error, Error, Error, Error, Error,
      Error, Error, Error, Error}};
 
-template<int DUMMY>
+template <int DUMMY>
 Direction NeighborCode3D::StaticData<DUMMY>::bc[43][13] = {
     //0 - NotAtBorder -----> should never be used
     {InFrontNorthWest, InFrontNorth, InFrontNorthEast,
@@ -1895,7 +1895,7 @@ Direction NeighborCode3D::StaticData<DUMMY>::bc[43][13] = {
      /*West*/
      Error, Error, Error, Error, Error, Error, Error}};
 
-template<int DUMMY>
+template <int DUMMY>
 Diff3D NeighborCode3D::StaticData<DUMMY>::d[] = {
     Diff3D(-1, -1, -1), //InFrontNorthWest
     Diff3D(0, -1, -1),  //InFrontNorth

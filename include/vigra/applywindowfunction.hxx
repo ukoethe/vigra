@@ -157,11 +157,11 @@ namespace vigra
     The image must be larger than the window size.
 */
 
-doxygen_overloaded_function(template<...> void applyWindowFunction)
+doxygen_overloaded_function(template <...> void applyWindowFunction)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class ProcessingFunctor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class ProcessingFunctor>
     void applyWindowFunction(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
                              DestIterator d_ul, DestAccessor d_acc,
                              ProcessingFunctor func,
@@ -210,7 +210,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
 
     unsigned int y = 0;
 
-    for (; ys.y != end.y; ys.y++, yd.y++, y++)
+    for(; ys.y != end.y; ys.y++, yd.y++, y++)
     {
         xs = ys;
         xs.x += win_shape.x / 2;
@@ -218,7 +218,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         xd = yd;
         xd.x += win_shape.x / 2;
 
-        for (; xs.x != end.x; xs.x++, xd.x++)
+        for(; xs.x != end.x; xs.x++, xd.x++)
         {
             func(xs, s_acc, xd, d_acc);
         }
@@ -236,7 +236,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
      **********************************************************************************/
 
 
-    if (border == BORDER_TREATMENT_AVOID)
+    if(border == BORDER_TREATMENT_AVOID)
         return; // skip processing near the border
 
 
@@ -261,28 +261,28 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
      *       HANDLE UPPER PIXELS WHERE THE MASK IS MISSING MINIMUM y-COORDINATES      *
      *                                                                                *
      **********************************************************************************/
-    if (border == BORDER_TREATMENT_REPEAT)
+    if(border == BORDER_TREATMENT_REPEAT)
     {
         ys = s_ul;
         Diff2D lineDiff(img_shape.x, 1);
 
-        for (; yt.y != t_lr.y - win_shape.y; ++yt.y)
+        for(; yt.y != t_lr.y - win_shape.y; ++yt.y)
         {
             copyImage(ys, ys + lineDiff, s_acc, yt, t_acc);
         }
         copyImage(ys, ys + Diff2D(img_shape.x, win_shape.y), s_acc, yt, t_acc);
     }
-    else if (border == BORDER_TREATMENT_REFLECT)
+    else if(border == BORDER_TREATMENT_REFLECT)
     {
         reflectImage(s_ul, s_ul + Diff2D(img_shape.x, win_shape.y / 2), s_acc, t_ul, t_acc, horizontal);
         copyImage(s_ul, s_ul + Diff2D(img_shape.x, win_shape.y), s_acc, t_ul + Diff2D(0, win_shape.y / 2), t_acc);
     }
-    else if (border == BORDER_TREATMENT_WRAP)
+    else if(border == BORDER_TREATMENT_WRAP)
     {
         copyImage(s_ul + Diff2D(0, img_shape.y - win_shape.y / 2), s_lr, s_acc, t_ul, t_acc);
         copyImage(s_ul, s_ul + Diff2D(img_shape.x, win_shape.y), s_acc, t_ul + Diff2D(0, win_shape.y / 2), t_acc);
     }
-    else if (border == BORDER_TREATMENT_ZEROPAD)
+    else if(border == BORDER_TREATMENT_ZEROPAD)
     {
         initImage(t_ul, t_lr, t_acc, 0);
         copyImage(s_ul, s_ul + Diff2D(img_shape.x, win_shape.y), s_acc, t_ul + Diff2D(0, win_shape.y / 2), t_acc);
@@ -292,7 +292,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
     yt.y += win_shape.y / 2;
     yd = d_ul;
 
-    for (; yt.y != t_lr.y - win_shape.y / 2; ++yd.y, ++yt.y)
+    for(; yt.y != t_lr.y - win_shape.y / 2; ++yd.y, ++yt.y)
     {
         xt = yt;
         xt.x += win_shape.x / 2;
@@ -300,7 +300,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         xd = yd;
         xd.x += win_shape.x / 2;
 
-        for (; xt.x != t_lr.x - win_shape.x / 2; xd.x++, xt.x++)
+        for(; xt.x != t_lr.x - win_shape.x / 2; xd.x++, xt.x++)
         {
             func(xt, t_acc, xd, d_acc);
         }
@@ -313,14 +313,14 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
      *       HANDLE LOWER PIXELS WHERE THE MASK IS MISSING MAXIMUM y-COORDINATES      *
      *                                                                                *
      **********************************************************************************/
-    if (border == BORDER_TREATMENT_REPEAT)
+    if(border == BORDER_TREATMENT_REPEAT)
     {
         ys = s_ul + Diff2D(0, img_shape.y - 1);
         yt = t_ul + Diff2D(0, win_shape.x);
 
         Diff2D lineDiff(img_shape.x, 1);
 
-        for (; yt.y != t_lr.y; ++yt.y)
+        for(; yt.y != t_lr.y; ++yt.y)
         {
             copyImage(ys, ys + lineDiff, s_acc, yt, t_acc);
         }
@@ -328,17 +328,17 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         yt = t_ul;
         copyImage(ys, ys + Diff2D(img_shape.x, win_shape.y), s_acc, yt, t_acc);
     }
-    else if (border == BORDER_TREATMENT_REFLECT)
+    else if(border == BORDER_TREATMENT_REFLECT)
     {
         reflectImage(s_ul + Diff2D(0, img_shape.y - win_shape.y / 2), s_lr, s_acc, t_ul + Diff2D(0, win_shape.y), t_acc, horizontal);
         copyImage(s_ul + Diff2D(0, img_shape.y - win_shape.y), s_lr, s_acc, t_ul, t_acc);
     }
-    else if (border == BORDER_TREATMENT_WRAP)
+    else if(border == BORDER_TREATMENT_WRAP)
     {
         copyImage(s_ul, s_ul + Diff2D(img_shape.x, win_shape.y / 2), s_acc, t_ul + Diff2D(0, win_shape.y), t_acc);
         copyImage(s_ul + Diff2D(0, img_shape.y - win_shape.y), s_lr, s_acc, t_ul, t_acc);
     }
-    else if (border == BORDER_TREATMENT_ZEROPAD)
+    else if(border == BORDER_TREATMENT_ZEROPAD)
     {
         initImage(t_ul, t_lr, t_acc, 0);
         copyImage(s_ul + Diff2D(0, img_shape.y - win_shape.y), s_lr, s_acc, t_ul, t_acc);
@@ -350,7 +350,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
     yd = d_ul;
     yd.y += img_shape.y - win_shape.y / 2 - 1;
 
-    for (; yt.y != t_lr.y - win_shape.y / 2; ++yd.y, ++yt.y)
+    for(; yt.y != t_lr.y - win_shape.y / 2; ++yd.y, ++yt.y)
     {
         xt = yt;
         xt.x += win_shape.x / 2;
@@ -358,7 +358,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         xd = yd;
         xd.x += win_shape.x / 2;
 
-        for (; xt.x != t_lr.x - win_shape.x / 2; xd.x++, xt.x++)
+        for(; xt.x != t_lr.x - win_shape.x / 2; xd.x++, xt.x++)
         {
             func(xt, t_acc, xd, d_acc);
         }
@@ -380,7 +380,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
      *       HANDLE LEFT PIXELS WHERE THE MASK IS MISSING MINIMUM x-COORDINATES       *
      *                                                                                *
      **********************************************************************************/
-    if (border == BORDER_TREATMENT_REPEAT)
+    if(border == BORDER_TREATMENT_REPEAT)
     {
         xs = s_ul;
         xt = t_ul;
@@ -388,23 +388,23 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
 
         Diff2D colDiff(1, img_shape.y);
 
-        for (; xt.x != t_lr.x - win_shape.x; ++xt.x)
+        for(; xt.x != t_lr.x - win_shape.x; ++xt.x)
         {
             copyImage(xs, xs + colDiff, s_acc, xt, t_acc);
         }
         copyImage(xs, xs + Diff2D(win_shape.x, img_shape.y), s_acc, xt, t_acc);
     }
-    else if (border == BORDER_TREATMENT_REFLECT)
+    else if(border == BORDER_TREATMENT_REFLECT)
     {
         reflectImage(s_ul, s_ul + Diff2D(win_shape.x / 2, img_shape.y), s_acc, t_ul, t_acc, vertical);
         copyImage(s_ul, s_ul + Diff2D(win_shape.x, img_shape.y), s_acc, t_ul + Diff2D(win_shape.x / 2, 0), t_acc);
     }
-    else if (border == BORDER_TREATMENT_WRAP)
+    else if(border == BORDER_TREATMENT_WRAP)
     {
         copyImage(s_ul + Diff2D(img_shape.x - win_shape.x / 2, 0), s_lr, s_acc, t_ul, t_acc);
         copyImage(s_ul, s_ul + Diff2D(win_shape.x, img_shape.y), s_acc, t_ul + Diff2D(win_shape.x / 2, 0), t_acc);
     }
-    else if (border == BORDER_TREATMENT_ZEROPAD)
+    else if(border == BORDER_TREATMENT_ZEROPAD)
     {
         initImage(t_ul, t_lr, t_acc, 0);
         copyImage(s_ul, s_ul + Diff2D(win_shape.x, img_shape.y), s_acc, t_ul + Diff2D(win_shape.x / 2, 0), t_acc);
@@ -416,14 +416,14 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
     yd = d_ul;
     yd.y += win_shape.y / 2;
 
-    for (; yt.y != t_lr.y - win_shape.y / 2; ++yd.y, ++yt.y)
+    for(; yt.y != t_lr.y - win_shape.y / 2; ++yd.y, ++yt.y)
     {
         xt = yt;
         xt.x += win_shape.x / 2;
 
         xd = yd;
 
-        for (; xt.x != t_lr.x - win_shape.x / 2; xd.x++, xt.x++)
+        for(; xt.x != t_lr.x - win_shape.x / 2; xd.x++, xt.x++)
         {
             func(xt, t_acc, xd, d_acc);
         }
@@ -437,7 +437,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
      *       HANDLE RIGHT PIXELS WHERE THE MASK IS MISSING MAXIMUM x-COORDINATES      *
      *                                                                                *
      **********************************************************************************/
-    if (border == BORDER_TREATMENT_REPEAT)
+    if(border == BORDER_TREATMENT_REPEAT)
     {
         xs = s_ul + Diff2D(img_shape.x - 1, 0);
         xt = t_ul + Diff2D(win_shape.x, 0);
@@ -445,7 +445,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
 
         Diff2D colDiff(1, img_shape.y);
 
-        for (; xt.x != t_lr.x; ++xt.x)
+        for(; xt.x != t_lr.x; ++xt.x)
         {
             copyImage(xs, xs + colDiff, s_acc, xt, t_acc);
         }
@@ -453,17 +453,17 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         yt = t_ul;
         copyImage(ys, ys + Diff2D(win_shape.x, img_shape.y), s_acc, yt, t_acc);
     }
-    else if (border == BORDER_TREATMENT_REFLECT)
+    else if(border == BORDER_TREATMENT_REFLECT)
     {
         reflectImage(s_ul + Diff2D(img_shape.x - win_shape.x / 2, 0), s_lr, s_acc, t_ul + Diff2D(win_shape.x, 0), t_acc, vertical);
         copyImage(s_ul + Diff2D(img_shape.x - win_shape.x, 0), s_lr, s_acc, t_ul, t_acc);
     }
-    else if (border == BORDER_TREATMENT_WRAP)
+    else if(border == BORDER_TREATMENT_WRAP)
     {
         copyImage(s_ul, s_ul + Diff2D(win_shape.x / 2, img_shape.y), s_acc, t_ul + Diff2D(win_shape.x, 0), t_acc);
         copyImage(s_ul + Diff2D(img_shape.x - win_shape.x, 0), s_lr, s_acc, t_ul, t_acc);
     }
-    else if (border == BORDER_TREATMENT_ZEROPAD)
+    else if(border == BORDER_TREATMENT_ZEROPAD)
     {
         initImage(t_ul, t_lr, t_acc, 0);
         copyImage(s_ul + Diff2D(img_shape.x - win_shape.x, 0), s_lr, s_acc, t_ul, t_acc);
@@ -476,14 +476,14 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
     yd.x += img_shape.x - win_shape.x / 2 - 1;
     yd.y += win_shape.y / 2;
 
-    for (; yt.y != t_lr.y - win_shape.y / 2; ++yd.y, ++yt.y)
+    for(; yt.y != t_lr.y - win_shape.y / 2; ++yd.y, ++yt.y)
     {
         xt = yt;
         xt.x += win_shape.x / 2;
 
         xd = yd;
 
-        for (; xt.x != t_lr.x - win_shape.x / 2; xd.x++, xt.x++)
+        for(; xt.x != t_lr.x - win_shape.x / 2; xd.x++, xt.x++)
         {
             func(xt, t_acc, xd, d_acc);
         }
@@ -505,7 +505,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
      *                 x-COORDINATES AND MINIMUM y-COORDINATES                        *
      *                                                                                *
      **********************************************************************************/
-    if (border == BORDER_TREATMENT_REPEAT)
+    if(border == BORDER_TREATMENT_REPEAT)
     {
         //init upperleft rect with single value
         ys = s_ul;
@@ -516,7 +516,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         ys = s_ul;
         yt = t_ul + Diff2D(win_shape.x / 2, 0);
         Diff2D lineDiff(win_shape.x, 1);
-        for (; yt.y != t_lr.y - win_shape.y; ++yt.y)
+        for(; yt.y != t_lr.y - win_shape.y; ++yt.y)
         {
             copyImage(ys, ys + lineDiff, s_acc, yt, t_acc);
         }
@@ -525,7 +525,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         xs = s_ul;
         xt = t_ul + Diff2D(0, win_shape.y / 2);
         Diff2D rowDiff(1, win_shape.y);
-        for (; xt.x != t_lr.x - win_shape.x; ++xt.x)
+        for(; xt.x != t_lr.x - win_shape.x; ++xt.x)
         {
             copyImage(xs, xs + rowDiff, s_acc, xt, t_acc);
         }
@@ -535,7 +535,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         yt = t_ul + win_shape / 2;
         copyImage(ys, ys + win_shape, s_acc, yt, t_acc);
     }
-    else if (border == BORDER_TREATMENT_REFLECT)
+    else if(border == BORDER_TREATMENT_REFLECT)
     {
         //init upperleft rect with double reflect image
         ys = s_ul;
@@ -557,7 +557,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         yt = t_ul + win_shape / 2;
         copyImage(ys, ys + win_shape, s_acc, yt, t_acc);
     }
-    else if (border == BORDER_TREATMENT_WRAP)
+    else if(border == BORDER_TREATMENT_WRAP)
     {
         //init upperleft rect with lower right image part
         ys = s_ul + img_shape - win_shape / 2;
@@ -579,7 +579,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         yt = t_ul + win_shape / 2;
         copyImage(ys, ys + win_shape, s_acc, yt, t_acc);
     }
-    else if (border == BORDER_TREATMENT_ZEROPAD)
+    else if(border == BORDER_TREATMENT_ZEROPAD)
     {
         initImage(t_ul, t_lr, t_acc, 0);
 
@@ -594,14 +594,14 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
     yt.y += win_shape.y / 2;
     yd = d_ul;
 
-    for (; yt.y != t_lr.y - win_shape.y / 2; ++yd.y, ++yt.y)
+    for(; yt.y != t_lr.y - win_shape.y / 2; ++yd.y, ++yt.y)
     {
         xt = yt;
         xt.x += win_shape.x / 2;
 
         xd = yd;
 
-        for (; xt.x != t_lr.x - win_shape.x / 2; xd.x++, xt.x++)
+        for(; xt.x != t_lr.x - win_shape.x / 2; xd.x++, xt.x++)
         {
             func(xt, t_acc, xd, d_acc);
         }
@@ -616,7 +616,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
      *                 x-COORDINATES AND MINIMUM y-COORDINATES                        *
      *                                                                                *
      **********************************************************************************/
-    if (border == BORDER_TREATMENT_REPEAT)
+    if(border == BORDER_TREATMENT_REPEAT)
     {
         //init upperright rect with single value
         ys = s_ul + Diff2D(img_shape.x - 1, 0);
@@ -628,7 +628,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         ;
         yt = t_ul;
         Diff2D lineDiff(win_shape.x, 1);
-        for (; yt.y != t_lr.y - win_shape.y; ++yt.y)
+        for(; yt.y != t_lr.y - win_shape.y; ++yt.y)
         {
             copyImage(ys, ys + lineDiff, s_acc, yt, t_acc);
         }
@@ -638,7 +638,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         ;
         xt = t_ul + Diff2D(win_shape.x, win_shape.y / 2);
         Diff2D rowDiff(1, win_shape.y);
-        for (; xt.x != t_lr.x; ++xt.x)
+        for(; xt.x != t_lr.x; ++xt.x)
         {
             copyImage(xs, xs + rowDiff, s_acc, xt, t_acc);
         }
@@ -648,7 +648,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         yt = t_ul + Diff2D(0, win_shape.y / 2);
         copyImage(ys, ys + win_shape, s_acc, yt, t_acc);
     }
-    else if (border == BORDER_TREATMENT_REFLECT)
+    else if(border == BORDER_TREATMENT_REFLECT)
     {
         //init upperright rect with double flipped image
         ys = s_ul + Diff2D(img_shape.x - win_shape.x / 2, 0);
@@ -670,7 +670,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         yt = t_ul + Diff2D(0, win_shape.y / 2);
         copyImage(ys, ys + win_shape, s_acc, yt, t_acc);
     }
-    else if (border == BORDER_TREATMENT_WRAP)
+    else if(border == BORDER_TREATMENT_WRAP)
     {
         //init upperright rect with lower left image part
         ys = s_ul + Diff2D(0, img_shape.y - win_shape.y / 2);
@@ -692,7 +692,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         yt = t_ul + Diff2D(0, win_shape.y / 2);
         copyImage(ys, ys + win_shape, s_acc, yt, t_acc);
     }
-    else if (border == BORDER_TREATMENT_ZEROPAD)
+    else if(border == BORDER_TREATMENT_ZEROPAD)
     {
         initImage(t_ul, t_lr, t_acc, 0);
 
@@ -707,14 +707,14 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
     yt.y += win_shape.y / 2;
     yd = d_ul + Diff2D(img_shape.x - win_shape.x / 2 - 1, 0);
 
-    for (; yt.y != t_lr.y - win_shape.y / 2; ++yd.y, ++yt.y)
+    for(; yt.y != t_lr.y - win_shape.y / 2; ++yd.y, ++yt.y)
     {
         xt = yt;
         xt.x += win_shape.x / 2;
 
         xd = yd;
 
-        for (; xt.x != t_lr.x - win_shape.x / 2; xd.x++, xt.x++)
+        for(; xt.x != t_lr.x - win_shape.x / 2; xd.x++, xt.x++)
         {
             func(xt, t_acc, xd, d_acc);
         }
@@ -728,7 +728,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
      *                 x-COORDINATES AND MAXIMUM y-COORDINATES                        *
      *                                                                                *
      **********************************************************************************/
-    if (border == BORDER_TREATMENT_REPEAT)
+    if(border == BORDER_TREATMENT_REPEAT)
     {
         //init lowerleft rect with single value
         ys = s_ul + Diff2D(0, img_shape.y - 1);
@@ -739,7 +739,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         ys = s_ul + Diff2D(0, img_shape.y - 1);
         yt = t_ul + Diff2D(win_shape.x / 2, win_shape.y);
         Diff2D lineDiff(win_shape.x, 1);
-        for (; yt.y != t_lr.y; ++yt.y)
+        for(; yt.y != t_lr.y; ++yt.y)
         {
             copyImage(ys, ys + lineDiff, s_acc, yt, t_acc);
         }
@@ -748,7 +748,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         xs = s_ul + Diff2D(0, img_shape.y - win_shape.y);
         xt = t_ul;
         Diff2D rowDiff(1, win_shape.y);
-        for (; xt.x != t_lr.x - win_shape.x; ++xt.x)
+        for(; xt.x != t_lr.x - win_shape.x; ++xt.x)
         {
             copyImage(xs, xs + rowDiff, s_acc, xt, t_acc);
         }
@@ -758,7 +758,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         ys = s_ul + Diff2D(0, img_shape.y - win_shape.y);
         copyImage(ys, ys + win_shape, s_acc, yt, t_acc);
     }
-    else if (border == BORDER_TREATMENT_REFLECT)
+    else if(border == BORDER_TREATMENT_REFLECT)
     {
         //init lowerleft rect with double reflected image
         ys = s_ul + Diff2D(0, img_shape.y - win_shape.y / 2);
@@ -780,7 +780,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         ys = s_ul + Diff2D(0, img_shape.y - win_shape.y);
         copyImage(ys, ys + win_shape, s_acc, yt, t_acc);
     }
-    else if (border == BORDER_TREATMENT_WRAP)
+    else if(border == BORDER_TREATMENT_WRAP)
     {
         //init lowerleft rect with upper right image part
         ys = s_ul + Diff2D(img_shape.x - win_shape.x / 2, 0);
@@ -802,7 +802,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         ys = s_ul + Diff2D(0, img_shape.y - win_shape.y);
         copyImage(ys, ys + win_shape, s_acc, yt, t_acc);
     }
-    else if (border == BORDER_TREATMENT_ZEROPAD)
+    else if(border == BORDER_TREATMENT_ZEROPAD)
     {
         initImage(t_ul, t_lr, t_acc, 0);
 
@@ -817,14 +817,14 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
     yt.y += win_shape.y / 2;
     yd = d_ul + Diff2D(0, img_shape.y - win_shape.y / 2 - 1);
 
-    for (; yt.y != t_lr.y - win_shape.y / 2; ++yd.y, ++yt.y)
+    for(; yt.y != t_lr.y - win_shape.y / 2; ++yd.y, ++yt.y)
     {
         xt = yt;
         xt.x += win_shape.x / 2;
 
         xd = yd;
 
-        for (; xt.x != t_lr.x - win_shape.x / 2; xd.x++, xt.x++)
+        for(; xt.x != t_lr.x - win_shape.x / 2; xd.x++, xt.x++)
         {
             func(xt, t_acc, xd, d_acc);
         }
@@ -838,7 +838,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
      *                 x-COORDINATES AND MAXIMUM y-COORDINATES                        *
      *                                                                                *
      **********************************************************************************/
-    if (border == BORDER_TREATMENT_REPEAT)
+    if(border == BORDER_TREATMENT_REPEAT)
     {
         //init lowerright rect with single value
         ys = s_ul + Diff2D(img_shape.x - 1, img_shape.y - 1);
@@ -849,7 +849,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         ys = s_ul + Diff2D(img_shape.x - win_shape.x, img_shape.y - 1);
         yt = t_ul + Diff2D(0, win_shape.y);
         Diff2D lineDiff(win_shape.x, 1);
-        for (; yt.y != t_lr.y; ++yt.y)
+        for(; yt.y != t_lr.y; ++yt.y)
         {
             copyImage(ys, ys + lineDiff, s_acc, yt, t_acc);
         }
@@ -858,7 +858,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         xs = s_ul + Diff2D(img_shape.x - 1, img_shape.y - win_shape.y);
         xt = t_ul + Diff2D(win_shape.x, 0);
         Diff2D rowDiff(1, win_shape.y);
-        for (; xt.x != t_lr.x; ++xt.x)
+        for(; xt.x != t_lr.x; ++xt.x)
         {
             copyImage(xs, xs + rowDiff, s_acc, xt, t_acc);
         }
@@ -868,7 +868,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         yt = t_ul;
         copyImage(ys, ys + win_shape, s_acc, yt, t_acc);
     }
-    else if (border == BORDER_TREATMENT_REFLECT)
+    else if(border == BORDER_TREATMENT_REFLECT)
     {
         //init lowerright rect  with double reflected image
         ys = s_ul + img_shape - win_shape / 2;
@@ -890,7 +890,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         yt = t_ul;
         copyImage(ys, ys + win_shape, s_acc, yt, t_acc);
     }
-    else if (border == BORDER_TREATMENT_WRAP)
+    else if(border == BORDER_TREATMENT_WRAP)
     {
         //init lowerright with upperleft image part
         ys = s_ul;
@@ -912,7 +912,7 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
         yt = t_ul;
         copyImage(ys, ys + win_shape, s_acc, yt, t_acc);
     }
-    else if (border == BORDER_TREATMENT_ZEROPAD)
+    else if(border == BORDER_TREATMENT_ZEROPAD)
     {
         initImage(t_ul, t_lr, t_acc, 0);
 
@@ -927,23 +927,23 @@ doxygen_overloaded_function(template<...> void applyWindowFunction)
     yt.y += win_shape.y / 2;
     yd = d_ul + img_shape - win_shape / 2 - Diff2D(1, 1);
 
-    for (; yt.y != t_lr.y - win_shape.y / 2; ++yd.y, ++yt.y)
+    for(; yt.y != t_lr.y - win_shape.y / 2; ++yd.y, ++yt.y)
     {
         xt = yt;
         xt.x += win_shape.x / 2;
 
         xd = yd;
 
-        for (; xt.x != t_lr.x - win_shape.x / 2; xd.x++, xt.x++)
+        for(; xt.x != t_lr.x - win_shape.x / 2; xd.x++, xt.x++)
         {
             func(xt, t_acc, xd, d_acc);
         }
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class ProcessingFunctor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class ProcessingFunctor>
 inline void
 applyWindowFunction(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                     pair<DestIterator, DestAccessor> d,
@@ -956,9 +956,9 @@ applyWindowFunction(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                         border);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class ProcessingFunctor>
+template <class T1, class S1,
+          class T2, class S2,
+          class ProcessingFunctor>
 inline void applyWindowFunction(MultiArrayView<2, T1, S1> const& src,
                                 MultiArrayView<2, T2, S2> dest,
                                 ProcessingFunctor func,

@@ -53,7 +53,7 @@ using namespace matlab;
 
 //#define RN_DEBUG
 #define cP3_(a, b, c) cP3<a, b, c>::value
-template<class T>
+template <class T>
 void
 vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
 {
@@ -95,7 +95,7 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
 #ifdef RN_DEBUG
     mexPrintf("---%d---%d---%d---", max_region_label, numOfDim, connectivity);
 #endif
-    switch (cantorPair(hasBackground, numOfDim, connectivity))
+    switch(cantorPair(hasBackground, numOfDim, connectivity))
     {
         //cP is the templated version o f the cantorPair function first value is Dimension of Inputimage, second the connectivity setting
         //Code is basically the code on the VIGRA-reference page
@@ -168,7 +168,7 @@ void
 vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
     //Add classes as you feel
-    switch (inputs.typeOf(0))
+    switch(inputs.typeOf(0))
     {
         ALLOW_FD
         ALLOW_UINT_8_64

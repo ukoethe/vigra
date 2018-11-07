@@ -151,10 +151,10 @@ namespace vigra
     radius >= 0
     \endcode
 */
-doxygen_overloaded_function(template<...> void discRankOrderFilter)
+doxygen_overloaded_function(template <...> void discRankOrderFilter)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void discRankOrderFilter(SrcIterator upperleft1,
                              SrcIterator lowerright1, SrcAccessor sa,
                              DestIterator upperleft2, DestAccessor da,
@@ -177,7 +177,7 @@ doxygen_overloaded_function(template<...> void discRankOrderFilter)
     struct_function[0] = radius;
 
     double r2 = (double)radius * radius;
-    for (i = 1; i <= radius; ++i)
+    for(i = 1; i <= radius; ++i)
     {
         double r = (double)i - 0.5;
         struct_function[i] = (int)(VIGRA_CSTD::sqrt(r2 - r * r) + 0.5);
@@ -189,7 +189,7 @@ doxygen_overloaded_function(template<...> void discRankOrderFilter)
     SrcIterator ys(upperleft1);
     DestIterator yd(upperleft2);
 
-    for (y = 0; y < h; ++y, ++ys.y, ++yd.y)
+    for(y = 0; y < h; ++y, ++ys.y, ++yd.y)
     {
         SrcIterator xs(ys);
         DestIterator xd(yd);
@@ -201,16 +201,16 @@ doxygen_overloaded_function(template<...> void discRankOrderFilter)
         int y1 = h - y - 1;
 
         // clear histogram
-        for (i = 0; i < 256; ++i)
+        for(i = 0; i < 256; ++i)
             hist[i] = 0;
         winsize = 0;
 
         // init histogram
         ymax = (y1 < radius) ? y1 : radius;
-        for (yy = 0; yy <= ymax; ++yy)
+        for(yy = 0; yy <= ymax; ++yy)
         {
             xmax = (x1 < struct_function[yy]) ? x1 : struct_function[yy];
-            for (xx = 0; xx <= xmax; ++xx)
+            for(xx = 0; xx <= xmax; ++xx)
             {
                 hist[sa(xs, Diff2D(xx, yy))]++;
                 winsize++;
@@ -218,10 +218,10 @@ doxygen_overloaded_function(template<...> void discRankOrderFilter)
         }
 
         ymax = (y0 < radius) ? y0 : radius;
-        for (yy = 1; yy <= ymax; ++yy)
+        for(yy = 1; yy <= ymax; ++yy)
         {
             xmax = (x1 < struct_function[yy]) ? x1 : struct_function[yy];
-            for (xx = 0; xx <= xmax; ++xx)
+            for(xx = 0; xx <= xmax; ++xx)
             {
                 hist[sa(xs, Diff2D(xx, -yy))]++;
                 winsize++;
@@ -230,20 +230,20 @@ doxygen_overloaded_function(template<...> void discRankOrderFilter)
 
         // find the desired histogram bin
         leftsum = 0;
-        if (rank == 0.0)
+        if(rank == 0.0)
         {
-            for (i = 0; i < 256; i++)
+            for(i = 0; i < 256; i++)
             {
-                if (hist[i])
+                if(hist[i])
                     break;
             }
             rankpos = i;
         }
         else
         {
-            for (i = 0; i < 256; i++)
+            for(i = 0; i < 256; i++)
             {
-                if ((float)(hist[i] + leftsum) / winsize >= rank)
+                if((float)(hist[i] + leftsum) / winsize >= rank)
                     break;
                 leftsum += hist[i];
             }
@@ -256,7 +256,7 @@ doxygen_overloaded_function(template<...> void discRankOrderFilter)
         ++xd.x;
 
         // inner columns
-        for (x = 1; x < w; ++x, ++xs.x, ++xd.x)
+        for(x = 1; x < w; ++x, ++xs.x, ++xd.x)
         {
             x0 = x;
             y0 = y;
@@ -266,77 +266,77 @@ doxygen_overloaded_function(template<...> void discRankOrderFilter)
             // update histogram
             // remove pixels at left border
             yy = (y1 < radius) ? y1 : radius;
-            for (; yy >= 0; yy--)
+            for(; yy >= 0; yy--)
             {
                 unsigned char cur;
                 xx = struct_function[yy] + 1;
-                if (xx > x0)
+                if(xx > x0)
                     break;
 
                 cur = sa(xs, Diff2D(-xx, yy));
 
                 hist[cur]--;
-                if (cur < rankpos)
+                if(cur < rankpos)
                     leftsum--;
                 winsize--;
             }
             yy = (y0 < radius) ? y0 : radius;
-            for (; yy >= 1; yy--)
+            for(; yy >= 1; yy--)
             {
                 unsigned char cur;
                 xx = struct_function[yy] + 1;
-                if (xx > x0)
+                if(xx > x0)
                     break;
 
                 cur = sa(xs, Diff2D(-xx, -yy));
 
                 hist[cur]--;
-                if (cur < rankpos)
+                if(cur < rankpos)
                     leftsum--;
                 winsize--;
             }
 
             // add pixels at right border
             yy = (y1 < radius) ? y1 : radius;
-            for (; yy >= 0; yy--)
+            for(; yy >= 0; yy--)
             {
                 unsigned char cur;
                 xx = struct_function[yy];
-                if (xx > x1)
+                if(xx > x1)
                     break;
 
                 cur = sa(xs, Diff2D(xx, yy));
 
                 hist[cur]++;
-                if (cur < rankpos)
+                if(cur < rankpos)
                     leftsum++;
                 winsize++;
             }
             yy = (y0 < radius) ? y0 : radius;
-            for (; yy >= 1; yy--)
+            for(; yy >= 1; yy--)
             {
                 unsigned char cur;
                 xx = struct_function[yy];
-                if (xx > x1)
+                if(xx > x1)
                     break;
 
                 cur = sa(xs, Diff2D(xx, -yy));
 
                 hist[cur]++;
-                if (cur < rankpos)
+                if(cur < rankpos)
                     leftsum++;
                 winsize++;
             }
 
             // find the desired histogram bin
-            if (rank == 0.0)
+            if(rank == 0.0)
             {
-                if (leftsum == 0)
+                if(leftsum == 0)
                 {
                     // search to the right
-                    for (i = rankpos; i < 256; i++)
+                    for(i = rankpos; i < 256; i++)
                     {
-                        if (hist[i])
+                        if(hist[i])
                             break;
                     }
                     rankpos = i;
@@ -344,10 +344,10 @@ doxygen_overloaded_function(template<...> void discRankOrderFilter)
                 else
                 {
                     // search to the left
-                    for (i = rankpos - 1; i >= 0; i--)
+                    for(i = rankpos - 1; i >= 0; i--)
                     {
                         leftsum -= hist[i];
-                        if (leftsum == 0)
+                        if(leftsum == 0)
                             break;
                     }
                     rankpos = i;
@@ -355,12 +355,12 @@ doxygen_overloaded_function(template<...> void discRankOrderFilter)
             }
             else // rank > 0.0
             {
-                if ((float)leftsum / winsize < rank)
+                if((float)leftsum / winsize < rank)
                 {
                     // search to the right
-                    for (i = rankpos; i < 256; i++)
+                    for(i = rankpos; i < 256; i++)
                     {
-                        if ((float)(hist[i] + leftsum) / winsize >= rank)
+                        if((float)(hist[i] + leftsum) / winsize >= rank)
                             break;
                         leftsum += hist[i];
                     }
@@ -369,10 +369,10 @@ doxygen_overloaded_function(template<...> void discRankOrderFilter)
                 else
                 {
                     // search to the left
-                    for (i = rankpos - 1; i >= 0; i--)
+                    for(i = rankpos - 1; i >= 0; i--)
                     {
                         leftsum -= hist[i];
-                        if ((float)leftsum / winsize < rank)
+                        if((float)leftsum / winsize < rank)
                             break;
                     }
                     rankpos = i;
@@ -384,8 +384,8 @@ doxygen_overloaded_function(template<...> void discRankOrderFilter)
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     pair<DestIterator, DestAccessor> dest,
@@ -396,8 +396,8 @@ discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         radius, rank);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     discRankOrderFilter(MultiArrayView<2, T1, S1> const& src,
                         MultiArrayView<2, T2, S2> dest,
@@ -461,10 +461,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void discErosion)
+doxygen_overloaded_function(template <...> void discErosion)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     inline void discErosion(SrcIterator upperleft1,
                             SrcIterator lowerright1, SrcAccessor sa,
                             DestIterator upperleft2, DestAccessor da,
@@ -476,8 +476,8 @@ doxygen_overloaded_function(template<...> void discErosion)
                         upperleft2, da, radius, 0.0);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             pair<DestIterator, DestAccessor> dest,
@@ -490,8 +490,8 @@ discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         radius, 0.0);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     discErosion(MultiArrayView<2, T1, S1> const& src,
                 MultiArrayView<2, T2, S2> dest,
@@ -553,10 +553,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void discDilation)
+doxygen_overloaded_function(template <...> void discDilation)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     inline void discDilation(SrcIterator upperleft1,
                              SrcIterator lowerright1, SrcAccessor sa,
                              DestIterator upperleft2, DestAccessor da,
@@ -568,8 +568,8 @@ doxygen_overloaded_function(template<...> void discDilation)
                         upperleft2, da, radius, 1.0);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
              pair<DestIterator, DestAccessor> dest,
@@ -582,8 +582,8 @@ discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         radius, 1.0);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     discDilation(MultiArrayView<2, T1, S1> const& src,
                  MultiArrayView<2, T2, S2> dest,
@@ -645,10 +645,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void discMedian)
+doxygen_overloaded_function(template <...> void discMedian)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     inline void discMedian(SrcIterator upperleft1,
                            SrcIterator lowerright1, SrcAccessor sa,
                            DestIterator upperleft2, DestAccessor da,
@@ -660,8 +660,8 @@ doxygen_overloaded_function(template<...> void discMedian)
                         upperleft2, da, radius, 0.5);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
            pair<DestIterator, DestAccessor> dest,
@@ -674,8 +674,8 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         radius, 0.5);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     discMedian(MultiArrayView<2, T1, S1> const& src,
                MultiArrayView<2, T2, S2> dest,
@@ -803,11 +803,11 @@ inline void
     radius >= 0
     \endcode
 */
-doxygen_overloaded_function(template<...> void discRankOrderFilterWithMask)
+doxygen_overloaded_function(template <...> void discRankOrderFilterWithMask)
 
-    template<class SrcIterator, class SrcAccessor,
-             class MaskIterator, class MaskAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class MaskIterator, class MaskAccessor,
+              class DestIterator, class DestAccessor>
     void discRankOrderFilterWithMask(SrcIterator upperleft1,
                                      SrcIterator lowerright1, SrcAccessor sa,
                                      MaskIterator upperleftm, MaskAccessor mask,
@@ -830,7 +830,7 @@ doxygen_overloaded_function(template<...> void discRankOrderFilterWithMask)
     struct_function[0] = radius;
 
     double r2 = (double)radius * radius;
-    for (i = 1; i <= radius; ++i)
+    for(i = 1; i <= radius; ++i)
     {
         double r = (double)i - 0.5;
         struct_function[i] = (int)(VIGRA_CSTD::sqrt(r2 - r * r) + 0.5);
@@ -843,7 +843,7 @@ doxygen_overloaded_function(template<...> void discRankOrderFilterWithMask)
     MaskIterator ym(upperleftm);
     DestIterator yd(upperleft2);
 
-    for (y = 0; y < h; ++y, ++ys.y, ++yd.y, ++ym.y)
+    for(y = 0; y < h; ++y, ++ys.y, ++yd.y, ++ym.y)
     {
         SrcIterator xs(ys);
         MaskIterator xm(ym);
@@ -856,7 +856,7 @@ doxygen_overloaded_function(template<...> void discRankOrderFilterWithMask)
         int y1 = h - y - 1;
 
         // clear histogram
-        for (i = 0; i < 256; ++i)
+        for(i = 0; i < 256; ++i)
             hist[i] = 0;
         winsize = 0;
         leftsum = 0;
@@ -864,13 +864,13 @@ doxygen_overloaded_function(template<...> void discRankOrderFilterWithMask)
 
         // init histogram
         ymax = (y1 < radius) ? y1 : radius;
-        for (yy = 0; yy <= ymax; ++yy)
+        for(yy = 0; yy <= ymax; ++yy)
         {
             xmax = (x1 < struct_function[yy]) ? x1 : struct_function[yy];
-            for (xx = 0; xx <= xmax; ++xx)
+            for(xx = 0; xx <= xmax; ++xx)
             {
                 Diff2D pos(xx, yy);
-                if (mask(xm, pos))
+                if(mask(xm, pos))
                 {
                     hist[sa(xs, pos)]++;
                     winsize++;
@@ -879,13 +879,13 @@ doxygen_overloaded_function(template<...> void discRankOrderFilterWithMask)
         }
 
         ymax = (y0 < radius) ? y0 : radius;
-        for (yy = 1; yy <= ymax; ++yy)
+        for(yy = 1; yy <= ymax; ++yy)
         {
             xmax = (x1 < struct_function[yy]) ? x1 : struct_function[yy];
-            for (xx = 0; xx <= xmax; ++xx)
+            for(xx = 0; xx <= xmax; ++xx)
             {
                 Diff2D pos(xx, -yy);
-                if (mask(xm, pos))
+                if(mask(xm, pos))
                 {
                     hist[sa(xs, pos)]++;
                     winsize++;
@@ -894,22 +894,22 @@ doxygen_overloaded_function(template<...> void discRankOrderFilterWithMask)
         }
 
         // find the desired histogram bin
-        if (winsize)
+        if(winsize)
         {
-            if (rank == 0.0)
+            if(rank == 0.0)
             {
-                for (i = 0; i < 256; i++)
+                for(i = 0; i < 256; i++)
                 {
-                    if (hist[i])
+                    if(hist[i])
                         break;
                 }
                 rankpos = i;
             }
             else
             {
-                for (i = 0; i < 256; i++)
+                for(i = 0; i < 256; i++)
                 {
-                    if ((float)(hist[i] + leftsum) / winsize >= rank)
+                    if((float)(hist[i] + leftsum) / winsize >= rank)
                         break;
                     leftsum += hist[i];
                 }
@@ -924,7 +924,7 @@ doxygen_overloaded_function(template<...> void discRankOrderFilterWithMask)
         ++xm.x;
 
         // inner columns
-        for (x = 1; x < w; ++x, ++xs.x, ++xd.x, ++xm.x)
+        for(x = 1; x < w; ++x, ++xs.x, ++xd.x, ++xm.x)
         {
             x0 = x;
             y0 = y;
@@ -934,39 +934,39 @@ doxygen_overloaded_function(template<...> void discRankOrderFilterWithMask)
             // update histogram
             // remove pixels at left border
             yy = (y1 < radius) ? y1 : radius;
-            for (; yy >= 0; yy--)
+            for(; yy >= 0; yy--)
             {
                 unsigned char cur;
                 xx = struct_function[yy] + 1;
-                if (xx > x0)
+                if(xx > x0)
                     break;
 
                 Diff2D pos(-xx, yy);
-                if (mask(xm, pos))
+                if(mask(xm, pos))
                 {
                     cur = sa(xs, pos);
 
                     hist[cur]--;
-                    if (cur < rankpos)
+                    if(cur < rankpos)
                         leftsum--;
                     winsize--;
                 }
             }
             yy = (y0 < radius) ? y0 : radius;
-            for (; yy >= 1; yy--)
+            for(; yy >= 1; yy--)
             {
                 unsigned char cur;
                 xx = struct_function[yy] + 1;
-                if (xx > x0)
+                if(xx > x0)
                     break;
 
                 Diff2D pos(-xx, -yy);
-                if (mask(xm, pos))
+                if(mask(xm, pos))
                 {
                     cur = sa(xs, pos);
 
                     hist[cur]--;
-                    if (cur < rankpos)
+                    if(cur < rankpos)
                         leftsum--;
                     winsize--;
                 }
@@ -974,55 +974,55 @@ doxygen_overloaded_function(template<...> void discRankOrderFilterWithMask)
 
             // add pixels at right border
             yy = (y1 < radius) ? y1 : radius;
-            for (; yy >= 0; yy--)
+            for(; yy >= 0; yy--)
             {
                 unsigned char cur;
                 xx = struct_function[yy];
-                if (xx > x1)
+                if(xx > x1)
                     break;
 
                 Diff2D pos(xx, yy);
-                if (mask(xm, pos))
+                if(mask(xm, pos))
                 {
                     cur = sa(xs, pos);
 
                     hist[cur]++;
-                    if (cur < rankpos)
+                    if(cur < rankpos)
                         leftsum++;
                     winsize++;
                 }
             }
             yy = (y0 < radius) ? y0 : radius;
-            for (; yy >= 1; yy--)
+            for(; yy >= 1; yy--)
             {
                 unsigned char cur;
                 xx = struct_function[yy];
-                if (xx > x1)
+                if(xx > x1)
                     break;
 
                 Diff2D pos(xx, -yy);
-                if (mask(xm, pos))
+                if(mask(xm, pos))
                 {
                     cur = sa(xs, pos);
 
                     hist[cur]++;
-                    if (cur < rankpos)
+                    if(cur < rankpos)
                         leftsum++;
                     winsize++;
                 }
             }
 
             // find the desired histogram bin
-            if (winsize)
+            if(winsize)
             {
-                if (rank == 0.0)
+                if(rank == 0.0)
                 {
-                    if (leftsum == 0)
+                    if(leftsum == 0)
                     {
                         // search to the right
-                        for (i = rankpos; i < 256; i++)
+                        for(i = rankpos; i < 256; i++)
                         {
-                            if (hist[i])
+                            if(hist[i])
                                 break;
                         }
                         rankpos = i;
@@ -1030,10 +1030,10 @@ doxygen_overloaded_function(template<...> void discRankOrderFilterWithMask)
                     else
                     {
                         // search to the left
-                        for (i = rankpos - 1; i >= 0; i--)
+                        for(i = rankpos - 1; i >= 0; i--)
                         {
                             leftsum -= hist[i];
-                            if (leftsum == 0)
+                            if(leftsum == 0)
                                 break;
                         }
                         rankpos = i;
@@ -1041,12 +1041,12 @@ doxygen_overloaded_function(template<...> void discRankOrderFilterWithMask)
                 }
                 else // rank > 0.0
                 {
-                    if ((float)leftsum / winsize < rank)
+                    if((float)leftsum / winsize < rank)
                     {
                         // search to the right
-                        for (i = rankpos; i < 256; i++)
+                        for(i = rankpos; i < 256; i++)
                         {
-                            if ((float)(hist[i] + leftsum) / winsize >= rank)
+                            if((float)(hist[i] + leftsum) / winsize >= rank)
                                 break;
                             leftsum += hist[i];
                         }
@@ -1055,10 +1055,10 @@ doxygen_overloaded_function(template<...> void discRankOrderFilterWithMask)
                     else
                     {
                         // search to the left
-                        for (i = rankpos - 1; i >= 0; i--)
+                        for(i = rankpos - 1; i >= 0; i--)
                         {
                             leftsum -= hist[i];
-                            if ((float)leftsum / winsize < rank)
+                            if((float)leftsum / winsize < rank)
                                 break;
                         }
                         rankpos = i;
@@ -1076,9 +1076,9 @@ doxygen_overloaded_function(template<...> void discRankOrderFilterWithMask)
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class MaskIterator, class MaskAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class MaskIterator, class MaskAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<MaskIterator, MaskAccessor> mask,
@@ -1091,9 +1091,9 @@ discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 radius, rank);
 }
 
-template<class T1, class S1,
-         class TM, class SM,
-         class T2, class S2>
+template <class T1, class S1,
+          class TM, class SM,
+          class T2, class S2>
 inline void
     discRankOrderFilterWithMask(MultiArrayView<2, T1, S1> const& src,
                                 MultiArrayView<2, TM, SM> const& mask,
@@ -1166,11 +1166,11 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void discErosionWithMask)
+doxygen_overloaded_function(template <...> void discErosionWithMask)
 
-    template<class SrcIterator, class SrcAccessor,
-             class MaskIterator, class MaskAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class MaskIterator, class MaskAccessor,
+              class DestIterator, class DestAccessor>
     inline void discErosionWithMask(SrcIterator upperleft1,
                                     SrcIterator lowerright1, SrcAccessor sa,
                                     MaskIterator upperleftm, MaskAccessor mask,
@@ -1185,9 +1185,9 @@ doxygen_overloaded_function(template<...> void discErosionWithMask)
                                 radius, 0.0);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class MaskIterator, class MaskAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class MaskIterator, class MaskAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     pair<MaskIterator, MaskAccessor> mask,
@@ -1202,9 +1202,9 @@ discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 radius, 0.0);
 }
 
-template<class T1, class S1,
-         class TM, class SM,
-         class T2, class S2>
+template <class T1, class S1,
+          class TM, class SM,
+          class T2, class S2>
 inline void
     discErosionWithMask(MultiArrayView<2, T1, S1> const& src,
                         MultiArrayView<2, TM, SM> const& mask,
@@ -1274,11 +1274,11 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void discDilationWithMask)
+doxygen_overloaded_function(template <...> void discDilationWithMask)
 
-    template<class SrcIterator, class SrcAccessor,
-             class MaskIterator, class MaskAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class MaskIterator, class MaskAccessor,
+              class DestIterator, class DestAccessor>
     inline void discDilationWithMask(SrcIterator upperleft1,
                                      SrcIterator lowerright1, SrcAccessor sa,
                                      MaskIterator upperleftm, MaskAccessor mask,
@@ -1293,9 +1293,9 @@ doxygen_overloaded_function(template<...> void discDilationWithMask)
                                 radius, 1.0);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class MaskIterator, class MaskAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class MaskIterator, class MaskAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                      pair<MaskIterator, MaskAccessor> mask,
@@ -1310,9 +1310,9 @@ discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 radius, 1.0);
 }
 
-template<class T1, class S1,
-         class TM, class SM,
-         class T2, class S2>
+template <class T1, class S1,
+          class TM, class SM,
+          class T2, class S2>
 inline void
     discDilationWithMask(MultiArrayView<2, T1, S1> const& src,
                          MultiArrayView<2, TM, SM> const& mask,
@@ -1382,11 +1382,11 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void discMedianWithMask)
+doxygen_overloaded_function(template <...> void discMedianWithMask)
 
-    template<class SrcIterator, class SrcAccessor,
-             class MaskIterator, class MaskAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class MaskIterator, class MaskAccessor,
+              class DestIterator, class DestAccessor>
     inline void discMedianWithMask(SrcIterator upperleft1,
                                    SrcIterator lowerright1, SrcAccessor sa,
                                    MaskIterator upperleftm, MaskAccessor mask,
@@ -1401,9 +1401,9 @@ doxygen_overloaded_function(template<...> void discMedianWithMask)
                                 radius, 0.5);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class MaskIterator, class MaskAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class MaskIterator, class MaskAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 discMedianWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<MaskIterator, MaskAccessor> mask,
@@ -1418,9 +1418,9 @@ discMedianWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 radius, 0.5);
 }
 
-template<class T1, class S1,
-         class TM, class SM,
-         class T2, class S2>
+template <class T1, class S1,
+          class TM, class SM,
+          class T2, class S2>
 inline void
     discMedianWithMask(MultiArrayView<2, T1, S1> const& src,
                        MultiArrayView<2, TM, SM> const& mask,

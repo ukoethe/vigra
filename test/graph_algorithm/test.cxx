@@ -74,7 +74,7 @@ struct GraphAlgorithmTest
 
         EdgeMap edgeMap(gridGraph);
 
-        for (GridGraph2d::EdgeIt ei(gridGraph); ei != lemon::INVALID; ++ei)
+        for(GridGraph2d::EdgeIt ei(gridGraph); ei != lemon::INVALID; ++ei)
         {
             edgeMap[*ei] = 1.0;
         }
@@ -138,7 +138,7 @@ struct GraphAlgorithmTest
         //shouldEqual(pmap[Shape2(2,2)], );
     }
 
-    template<class Graph>
+    template <class Graph>
     void testShortestPathImpl(Graph const& g)
     {
         typedef ShortestPathDijkstra<Graph, float> Sp;
@@ -245,7 +245,7 @@ struct GraphAlgorithmTest
         }
     }
 
-    template<class Graph>
+    template <class Graph>
     void testShortestPathWithROIImpl(Graph const& g)
     {
         typedef ShortestPathDijkstra<Graph, float> Sp;

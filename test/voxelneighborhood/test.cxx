@@ -70,7 +70,7 @@ struct NeighborhoodCirculator3dTest
           twentySixTrav(vol.traverser_begin() + vigra::Diff3D(1, 1, 1)) // set twentySixTrav to voxel 31=(1,1,1)
     {
         int i = 0;
-        for (vigra::MultiArray<3, int>::iterator iter = vol.begin(); iter != vol.end(); ++iter, ++i)
+        for(vigra::MultiArray<3, int>::iterator iter = vol.begin(); iter != vol.end(); ++iter, ++i)
         {
             *iter = i;
         }
@@ -226,9 +226,9 @@ struct NeighborhoodCirculator3dTest
     {
         should(*twentySixTrav == 0);
         should(*sixTrav == 6);
-        for (int i = 0; i < 27; i++, sixTrav++, twentySixTrav++)
+        for(int i = 0; i < 27; i++, sixTrav++, twentySixTrav++)
         {
-            switch (i)
+            switch(i)
             {
                 case 4:
                 case 10:
@@ -329,7 +329,7 @@ struct NeighborhoodCirculator3dTest
         SixTraverser sixTrav2 = sixTrav;
         TwentySixTraverser twentySixTrav2 = twentySixTrav;
         // test operator[]
-        for (int i = 0; i < 6; i++, sixTrav++, twentySixTrav++)
+        for(int i = 0; i < 6; i++, sixTrav++, twentySixTrav++)
         {
             should(sixTrav2[i] == *sixTrav);
             should(twentySixTrav2[i] == *twentySixTrav);
@@ -374,7 +374,7 @@ struct RestrictedNeighborhoodCirculator3dTest
           twentySixTrav(vol.traverser_begin(), TopLeftFrontBorder)
     {
         int i = 0;
-        for (vigra::MultiArray<3, int>::iterator iter = vol.begin(); iter != vol.end(); ++iter, ++i)
+        for(vigra::MultiArray<3, int>::iterator iter = vol.begin(); iter != vol.end(); ++iter, ++i)
         {
             *iter = i;
         }
@@ -422,7 +422,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------TopFrontBorder--------------//
         x = 1, y = 0, z = 0;
@@ -445,7 +445,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------TopRightFrontBorder--------------//
         x = 2, y = 0, z = 0;
@@ -467,7 +467,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------FrontLeftBorder--------------//
         x = 0, y = 1, z = 0;
@@ -490,7 +490,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------FrontBorder--------------//
         x = 1, y = 1, z = 0;
@@ -514,7 +514,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------FrontRightBorder--------------//
         x = 2, y = 1, z = 0;
@@ -537,7 +537,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------BottomLeftFrontBorder--------------//
         x = 0, y = 2, z = 0;
@@ -559,7 +559,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------BottomFrontBorder--------------//
         x = 1, y = 2, z = 0;
@@ -582,7 +582,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------BottomRightFrontBorder--------------//
         x = 2, y = 2, z = 0;
@@ -604,7 +604,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
 
         ////////test second plane in volume
@@ -630,7 +630,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------TopBorder--------------//
         x = 1, y = 0, z = 1;
@@ -654,7 +654,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------TopRightBorder--------------//
         x = 2, y = 0, z = 1;
@@ -677,7 +677,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------LeftBorder--------------//
         x = 0, y = 1, z = 1;
@@ -701,7 +701,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------NotAtBorder--------------//
         x = 1, y = 1, z = 1;
@@ -726,7 +726,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------RightBorder--------------//
         x = 2, y = 1, z = 1;
@@ -750,7 +750,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------BottomLeftBorder--------------//
         x = 0, y = 2, z = 1;
@@ -773,7 +773,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------BottomBorder--------------//
         x = 1, y = 2, z = 1;
@@ -797,7 +797,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------BottomRightBorder--------------//
         x = 2, y = 2, z = 1;
@@ -820,7 +820,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
 
         ////////test third plane in volume
@@ -845,7 +845,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------TopRearBorder--------------//
         x = 1, y = 0, z = 2;
@@ -868,7 +868,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------TopRightRearBorder--------------//
         x = 2, y = 0, z = 2;
@@ -890,7 +890,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------RearLeftBorder--------------//
         x = 0, y = 1, z = 2;
@@ -913,7 +913,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------RearBorder--------------//
         x = 1, y = 1, z = 2;
@@ -937,7 +937,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------RearRightBorder--------------//
         x = 2, y = 1, z = 2;
@@ -960,7 +960,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------BottomLeftRearBorder--------------//
         x = 0, y = 2, z = 2;
@@ -982,7 +982,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------BottomRearBorder--------------//
         x = 1, y = 2, z = 2;
@@ -1005,7 +1005,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
 
         //-------------BottomRightRearBorder--------------//
         x = 2, y = 2, z = 2;
@@ -1027,7 +1027,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == sixTrav.direction());
             sixTrav++;
             dir_Iter++;
-        } while (*sixTrav != start);
+        } while(*sixTrav != start);
     }
 
 
@@ -1087,7 +1087,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------TopFrontBorder--------------//
         x = 1, y = 0, z = 0;
@@ -1136,7 +1136,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------TopRightFrontBorder--------------//
         x = 2, y = 0, z = 0;
@@ -1185,7 +1185,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------FrontLeftBorder--------------//
         x = 0, y = 1, z = 0;
@@ -1234,7 +1234,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------FrontBorder--------------//
         x = 1, y = 1, z = 0;
@@ -1283,7 +1283,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------FrontRightBorder--------------//
         x = 2, y = 1, z = 0;
@@ -1332,7 +1332,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------BottomLeftFrontBorder--------------//
         x = 0, y = 2, z = 0;
@@ -1381,7 +1381,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------BottomFrontBorder--------------//
         x = 1, y = 2, z = 0;
@@ -1430,7 +1430,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------BottomRightFrontBorder--------------//
         x = 2, y = 2, z = 0;
@@ -1479,7 +1479,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
 
         ////////test middle plane in volume
@@ -1531,7 +1531,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------TopBorder--------------//
         x = 1, y = 0, z = 1;
@@ -1580,7 +1580,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------TopRightBorder--------------//
         x = 2, y = 0, z = 1;
@@ -1629,7 +1629,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------LeftBorder--------------//
         x = 0, y = 1, z = 1;
@@ -1678,7 +1678,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------NotAtBorder--------------//
         x = 1, y = 1, z = 1;
@@ -1727,7 +1727,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------RightBorder--------------//
         x = 2, y = 1, z = 1;
@@ -1776,7 +1776,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------BottomLeftBorder--------------//
         x = 0, y = 2, z = 1;
@@ -1825,7 +1825,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------BottomBorder--------------//
         x = 1, y = 2, z = 1;
@@ -1874,7 +1874,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------BottomRightBorder--------------//
         x = 2, y = 2, z = 1;
@@ -1923,7 +1923,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         ////////test back plane in volume
 
@@ -1974,7 +1974,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------TopRearBorder--------------//
         x = 1, y = 0, z = 2;
@@ -2023,7 +2023,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------TopRightRearBorder--------------//
         x = 2, y = 0, z = 2;
@@ -2072,7 +2072,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------RearLeftBorder--------------//
         x = 0, y = 1, z = 2;
@@ -2121,7 +2121,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------RearBorder--------------//
         x = 1, y = 1, z = 2;
@@ -2170,7 +2170,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------RearRightBorder--------------//
         x = 2, y = 1, z = 2;
@@ -2219,7 +2219,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------BottomLeftRearBorder--------------//
         x = 0, y = 2, z = 2;
@@ -2268,7 +2268,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------BottomRearBorder--------------//
         x = 1, y = 2, z = 2;
@@ -2317,7 +2317,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
 
         //-------------BottomRightRearBorder--------------//
         x = 2, y = 2, z = 2;
@@ -2366,7 +2366,7 @@ struct RestrictedNeighborhoodCirculator3dTest
             should(*dir_Iter == twentySixTrav.direction());
             twentySixTrav++;
             dir_Iter++;
-        } while (*twentySixTrav != start);
+        } while(*twentySixTrav != start);
     }
 };
 

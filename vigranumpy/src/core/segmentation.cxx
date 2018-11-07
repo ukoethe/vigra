@@ -69,7 +69,7 @@ namespace vigra
 {
 
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonLabelImage(NumpyArray<2, Singleband<PixelType>> image,
                      int neighborhood = 4,
@@ -86,7 +86,7 @@ NumpyAnyArray
 
     {
         PyAllowThreads _pythread;
-        switch (neighborhood)
+        switch(neighborhood)
         {
             case 4:
             {
@@ -106,7 +106,7 @@ NumpyAnyArray
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyLabelImage, pythonLabelImage)
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonLabelImageWithBackground(NumpyArray<2, Singleband<PixelType>> image,
                                    int neighborhood = 4,
@@ -124,7 +124,7 @@ NumpyAnyArray
 
     {
         PyAllowThreads _pythread;
-        switch (neighborhood)
+        switch(neighborhood)
         {
             case 4:
             {
@@ -145,7 +145,7 @@ NumpyAnyArray
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyLabelImageWithBackground, pythonLabelImageWithBackground)
 
-template<class VoxelType>
+template <class VoxelType>
 NumpyAnyArray
     pythonLabelVolume(NumpyArray<3, Singleband<VoxelType>> volume,
                       int neighborhood = 6,
@@ -162,7 +162,7 @@ NumpyAnyArray
 
     {
         PyAllowThreads _pythread;
-        switch (neighborhood)
+        switch(neighborhood)
         {
             case 6:
             {
@@ -183,7 +183,7 @@ NumpyAnyArray
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyLabelVolume, pythonLabelVolume)
 
-template<class VoxelType>
+template <class VoxelType>
 NumpyAnyArray
     pythonLabelVolumeWithBackground(NumpyArray<3, Singleband<VoxelType>> volume,
                                     int neighborhood = 6,
@@ -201,7 +201,7 @@ NumpyAnyArray
 
     {
         PyAllowThreads _pythread;
-        switch (neighborhood)
+        switch(neighborhood)
         {
             case 6:
             {
@@ -224,7 +224,7 @@ NumpyAnyArray
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyLabelVolumeWithBackground, pythonLabelVolumeWithBackground)
 
-template<class VoxelType, unsigned int ndim>
+template <class VoxelType, unsigned int ndim>
 NumpyAnyArray
 pythonLabelMultiArray(NumpyArray<ndim, Singleband<VoxelType>> volume,
                       // std::string neighborhood="",
@@ -232,26 +232,26 @@ pythonLabelMultiArray(NumpyArray<ndim, Singleband<VoxelType>> volume,
                       NumpyArray<ndim, Singleband<npy_uint32>> res = NumpyArray<ndim, Singleband<npy_uint32>>())
 {
     std::string neighborhood;
-    if (neighborspec == python::object())
+    if(neighborspec == python::object())
     {
         neighborhood = "direct";
     }
-    else if (python::extract<int>(neighborspec).check())
+    else if(python::extract<int>(neighborspec).check())
     {
         int n = python::extract<int>(neighborspec)();
-        if (n == 2 * ndim || n == 0)
+        if(n == 2 * ndim || n == 0)
         {
             neighborhood = "direct";
         }
-        else if (n == std::pow(3, ndim) - 1)
+        else if(n == std::pow(3, ndim) - 1)
         {
             neighborhood = "indirect";
         }
     }
-    else if (python::extract<std::string>(neighborspec).check())
+    else if(python::extract<std::string>(neighborspec).check())
     {
         neighborhood = tolower(python::extract<std::string>(neighborspec)());
-        if (neighborhood == "")
+        if(neighborhood == "")
         {
             neighborhood = "direct";
         }
@@ -268,7 +268,7 @@ pythonLabelMultiArray(NumpyArray<ndim, Singleband<VoxelType>> volume,
 
     {
         PyAllowThreads _pythread;
-        if (neighborhood == "direct")
+        if(neighborhood == "direct")
         {
             labelMultiArray(volume, res, DirectNeighborhood);
         }
@@ -282,7 +282,7 @@ pythonLabelMultiArray(NumpyArray<ndim, Singleband<VoxelType>> volume,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyLabelMultiArray, pythonLabelMultiArray)
 
-template<class VoxelType, unsigned int ndim>
+template <class VoxelType, unsigned int ndim>
 NumpyAnyArray
 pythonLabelMultiArrayWithBackground(NumpyArray<ndim, Singleband<VoxelType>> volume,
                                     // std::string neighborhood="",
@@ -291,26 +291,26 @@ pythonLabelMultiArrayWithBackground(NumpyArray<ndim, Singleband<VoxelType>> volu
                                     NumpyArray<ndim, Singleband<npy_uint32>> res = NumpyArray<ndim, Singleband<npy_uint32>>())
 {
     std::string neighborhood;
-    if (neighborspec == python::object())
+    if(neighborspec == python::object())
     {
         neighborhood = "direct";
     }
-    else if (python::extract<int>(neighborspec).check())
+    else if(python::extract<int>(neighborspec).check())
     {
         int n = python::extract<int>(neighborspec)();
-        if (n == 2 * ndim || n == 0)
+        if(n == 2 * ndim || n == 0)
         {
             neighborhood = "direct";
         }
-        else if (n == std::pow(3, ndim) - 1)
+        else if(n == std::pow(3, ndim) - 1)
         {
             neighborhood = "indirect";
         }
     }
-    else if (python::extract<std::string>(neighborspec).check())
+    else if(python::extract<std::string>(neighborspec).check())
     {
         neighborhood = tolower(python::extract<std::string>(neighborspec)());
-        if (neighborhood == "")
+        if(neighborhood == "")
         {
             neighborhood = "direct";
         }
@@ -328,7 +328,7 @@ pythonLabelMultiArrayWithBackground(NumpyArray<ndim, Singleband<VoxelType>> volu
 
     {
         PyAllowThreads _pythread;
-        if (neighborhood == "direct")
+        if(neighborhood == "direct")
         {
             labelMultiArrayWithBackground(volume,
                                           res, DirectNeighborhood,
@@ -350,7 +350,7 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyLabelMultiArrayWithBackground, pythonLabel
 
 // FIXME: support output of label images from localMinim/Maxima functions
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonLocalMinima2D(NumpyArray<2, Singleband<PixelType>> image,
                         PixelType marker = NumericTraits<PixelType>::one(),
@@ -381,7 +381,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonLocalMinima3D(NumpyArray<3, Singleband<PixelType>> volume,
                         PixelType marker = NumericTraits<PixelType>::one(),
@@ -412,7 +412,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonExtendedLocalMinima2D(NumpyArray<2, Singleband<PixelType>> image,
                                 PixelType marker = NumericTraits<PixelType>::one(),
@@ -430,7 +430,7 @@ NumpyAnyArray
 
     {
         PyAllowThreads _pythread;
-        switch (neighborhood)
+        switch(neighborhood)
         {
             case 4:
             {
@@ -451,7 +451,7 @@ NumpyAnyArray
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyExtendedLocalMinima2D, pythonExtendedLocalMinima2D)
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonExtendedLocalMinima3D(NumpyArray<3, Singleband<PixelType>> volume,
                                 PixelType marker = NumericTraits<PixelType>::one(),
@@ -466,7 +466,7 @@ NumpyAnyArray
 
     res.reshapeIfEmpty(volume.taggedShape().setChannelDescription(description),
                        "extendedLocalMinima(): Output array has wrong shape.");
-    switch (neighborhood)
+    switch(neighborhood)
     {
         case 6:
         {
@@ -487,7 +487,7 @@ NumpyAnyArray
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyExtendedLocalMinima3D, pythonExtendedLocalMinima3D)
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonLocalMaxima2D(NumpyArray<2, Singleband<PixelType>> image,
                         PixelType marker = NumericTraits<PixelType>::one(),
@@ -518,7 +518,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonLocalMaxima3D(NumpyArray<3, Singleband<PixelType>> volume,
                         PixelType marker = NumericTraits<PixelType>::one(),
@@ -549,7 +549,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonExtendedLocalMaxima2D(NumpyArray<2, Singleband<PixelType>> image,
                                 PixelType marker = NumericTraits<PixelType>::one(),
@@ -567,7 +567,7 @@ NumpyAnyArray
 
     {
         PyAllowThreads _pythread;
-        switch (neighborhood)
+        switch(neighborhood)
         {
             case 4:
             {
@@ -586,7 +586,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonExtendedLocalMaxima3D(NumpyArray<3, Singleband<PixelType>> volume,
                                 PixelType marker = NumericTraits<PixelType>::one(),
@@ -601,7 +601,7 @@ NumpyAnyArray
 
     res.reshapeIfEmpty(volume.taggedShape().setChannelDescription(description),
                        "extendedLocalMaxima(): Output array has wrong shape.");
-    switch (neighborhood)
+    switch(neighborhood)
     {
         case 6:
         {
@@ -622,7 +622,7 @@ NumpyAnyArray
 
 /*************************************************************************/
 
-template<class PixelType>
+template <class PixelType>
 python::tuple
     pythonWatersheds2D(NumpyArray<2, Singleband<PixelType>> image,
                        int neighborhood = 4,
@@ -636,9 +636,9 @@ python::tuple
                        "watersheds2D(): neighborhood must be 4 or 8.");
 
     method = tolower(method);
-    if (method == "")
+    if(method == "")
     {
-        if (IsSameType<PixelType, npy_uint8>::value)
+        if(IsSameType<PixelType, npy_uint8>::value)
             method = "turbo";
         else
             method = "regiongrowing";
@@ -653,14 +653,14 @@ python::tuple
     WatershedOptions options;
     options.srgType(srgType);
 
-    if (max_cost > 0.0)
+    if(max_cost > 0.0)
     {
         vigra_precondition(method != "unionfind",
                            "watersheds(): UnionFind does not support a cost threshold.");
         options.stopAtThreshold(max_cost);
     }
 
-    if (seeds.hasData())
+    if(seeds.hasData())
     {
         vigra_precondition(method != "unionfind",
                            "watersheds(): UnionFind does not support seed images.");
@@ -668,13 +668,13 @@ python::tuple
     }
     else
     {
-        if (method == "turbo")
+        if(method == "turbo")
             options.seedOptions(SeedOptions().extendedMinima());
         else
             options.seedOptions(SeedOptions().minima());
     }
 
-    if (method == "turbo")
+    if(method == "turbo")
     {
         vigra_precondition((IsSameType<PixelType, npy_uint8>::value),
                            "watersheds(): Turbo method only works for uint8 images.");
@@ -683,10 +683,10 @@ python::tuple
     }
 
     npy_uint32 maxRegionLabel = 0;
-    if (method == "regiongrowing")
+    if(method == "regiongrowing")
     {
         PyAllowThreads _pythread;
-        if (neighborhood == 4)
+        if(neighborhood == 4)
         {
             maxRegionLabel = watershedsRegionGrowing(srcImageRange(image), destImage(res),
                                                      FourNeighborCode(), options);
@@ -697,13 +697,13 @@ python::tuple
                                                      EightNeighborCode(), options);
         }
     }
-    else if (method == "unionfind")
+    else if(method == "unionfind")
     {
         vigra_precondition(srgType == CompleteGrow,
                            "watersheds(): UnionFind only supports 'CompleteGrow' mode.");
 
         PyAllowThreads _pythread;
-        if (neighborhood == 4)
+        if(neighborhood == 4)
         {
             maxRegionLabel = watershedsUnionFind(srcImageRange(image), destImage(res),
                                                  FourNeighborCode());
@@ -724,7 +724,7 @@ python::tuple
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywatersheds2D, pythonWatersheds2D)
 
-template<unsigned int N, class PixelType>
+template <unsigned int N, class PixelType>
 python::tuple
 pythonWatershedsNew(NumpyArray<N, Singleband<PixelType>> image,
                     int neighborhood = 0,
@@ -735,7 +735,7 @@ pythonWatershedsNew(NumpyArray<N, Singleband<PixelType>> image,
                     NumpyArray<N, Singleband<npy_uint32>> res = NumpyArray<N, Singleband<npy_uint32>>())
 {
     method = tolower(method);
-    if (method == "" || method == "turbo")
+    if(method == "" || method == "turbo")
     {
         method = "regiongrowing";
     }
@@ -749,11 +749,11 @@ pythonWatershedsNew(NumpyArray<N, Singleband<PixelType>> image,
     WatershedOptions options;
     options.srgType(srgType);
 
-    if (method == "regiongrowing")
+    if(method == "regiongrowing")
     {
         options.regionGrowing();
     }
-    else if (method == "unionfind")
+    else if(method == "unionfind")
     {
         options.unionFind();
     }
@@ -762,14 +762,14 @@ pythonWatershedsNew(NumpyArray<N, Singleband<PixelType>> image,
         vigra_precondition(false, "watersheds(): Unknown watershed method requested.");
     }
 
-    if (max_cost > 0.0)
+    if(max_cost > 0.0)
     {
         vigra_precondition(method != "unionfind",
                            "watersheds(): UnionFind does not support a cost threshold.");
         options.stopAtThreshold(max_cost);
     }
 
-    if (seeds.hasData())
+    if(seeds.hasData())
     {
         vigra_precondition(method != "unionfind",
                            "watersheds(): UnionFind does not support seed images.");
@@ -792,7 +792,7 @@ pythonWatershedsNew(NumpyArray<N, Singleband<PixelType>> image,
     return python::make_tuple(res, maxRegionLabel);
 }
 
-template<class PixelType>
+template <class PixelType>
 python::tuple
     pythonWatersheds2DNew(NumpyArray<2, Singleband<PixelType>> image,
                           int neighborhood = 4,
@@ -810,7 +810,7 @@ python::tuple
     return pythonWatershedsNew(image, neighborhood, seeds, method, srgType, max_cost, res);
 }
 
-template<class PixelType>
+template <class PixelType>
 python::tuple
     pythonWatersheds3DNew(NumpyArray<3, Singleband<PixelType>> image,
                           int neighborhood = 6,
@@ -831,7 +831,7 @@ python::tuple
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywatersheds2DNew, pythonWatersheds2DNew)
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywatersheds3DNew, pythonWatersheds3DNew)
 
-template<class PixelType>
+template <class PixelType>
 python::tuple
     pythonWatersheds3D(NumpyArray<3, Singleband<PixelType>> image,
                        int neighborhood = 6,
@@ -849,15 +849,15 @@ python::tuple
     bool haveSeeds = seeds.hasData();
     unsigned int maxRegionLabel;
 
-    if (method == "")
+    if(method == "")
     {
-        if (IsSameType<PixelType, npy_uint8>::value)
+        if(IsSameType<PixelType, npy_uint8>::value)
             method = "turbo";
         else
             method = "regiongrowing";
     }
 
-    if (method == "turbo")
+    if(method == "turbo")
     {
         vigra_precondition((Or<typename IsSameType<PixelType, npy_uint8>::type,
                                typename IsSameType<PixelType, float>::type>::value),
@@ -870,21 +870,21 @@ python::tuple
                            "watersheds3D(): Turbo algorithm doesn't support 'max_cost'.");
     }
 
-    if (method == "regiongrowing" || method == "turbo")
+    if(method == "regiongrowing" || method == "turbo")
     {
         std::string description("watershed seeds");
 
         seeds.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
                              "watersheds(): Seed array has wrong shape.");
 
-        if (!haveSeeds)
+        if(!haveSeeds)
         {
             PyAllowThreads _pythread;
             maxRegionLabel = 0;
 
             MultiArray<3, npy_uint32> minima(seeds.shape());
 
-            if (neighborhood == 6)
+            if(neighborhood == 6)
             {
                 extendedLocalMinima3D(srcMultiArrayRange(image), destMultiArray(minima),
                                       (npy_uint32)1, NeighborCode3DSix());
@@ -917,9 +917,9 @@ python::tuple
 
         PyAllowThreads _pythread;
         ArrayOfRegionStatistics<SeedRgDirectValueFunctor<PixelType>> stats(maxRegionLabel);
-        if (neighborhood == 6)
+        if(neighborhood == 6)
         {
-            if (method == "turbo")
+            if(method == "turbo")
             {
                 res = seeds;
 
@@ -939,7 +939,7 @@ python::tuple
                                   stats, srgType, NeighborCode3DTwentySix(), max_cost);
         }
     }
-    else if (method == "unionfind")
+    else if(method == "unionfind")
     {
         vigra_precondition(!haveSeeds,
                            "watersheds(): UnionFind does not support seed images.");
@@ -953,7 +953,7 @@ python::tuple
                            "watersheds(): Output array has wrong shape.");
 
         PyAllowThreads _pythread;
-        if (neighborhood == 6)
+        if(neighborhood == 6)
         {
             maxRegionLabel = watersheds3DSix(srcMultiArrayRange(image), destMultiArray(res));
         }
@@ -972,7 +972,7 @@ python::tuple
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywatersheds3D, pythonWatersheds3D)
 
-template<class PixelType, int N>
+template <class PixelType, int N>
 python::tuple
 pythonSlic(NumpyArray<N, PixelType> array,
            double intensityScaling,
@@ -1009,7 +1009,7 @@ pythonSlic(NumpyArray<N, PixelType> array,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pySlic, pythonSlic)
 
-template<unsigned int DIM>
+template <unsigned int DIM>
 NumpyAnyArray
 pythonShrinkLabels(
     NumpyArray<DIM, npy_uint32> labels,
@@ -1022,31 +1022,31 @@ pythonShrinkLabels(
 }
 
 
-template<class T>
+template <class T>
 vigra::NumpyAnyArray pySizeFilterSegInplace(vigra::NumpyArray<3, T> seg, const vigra::UInt32 maxLabel, const vigra::UInt32 sizeLimit, bool checkAtBorder = false)
 {
 
 
     std::vector<bool> atBorder(maxLabel + 1, false);
 
-    if (!checkAtBorder)
+    if(!checkAtBorder)
     {
-        for (std::ptrdiff_t z = 0; z < seg.shape(2); ++z)
-            for (std::ptrdiff_t y = 0; y < seg.shape(1); ++y)
+        for(std::ptrdiff_t z = 0; z < seg.shape(2); ++z)
+            for(std::ptrdiff_t y = 0; y < seg.shape(1); ++y)
             {
                 atBorder[seg(0, y, z)] = true;
                 atBorder[seg(seg.shape(0) - 1, y, z)] = true;
             }
 
-        for (std::ptrdiff_t z = 0; z < seg.shape(2); ++z)
-            for (std::ptrdiff_t x = 0; x < seg.shape(0); ++x)
+        for(std::ptrdiff_t z = 0; z < seg.shape(2); ++z)
+            for(std::ptrdiff_t x = 0; x < seg.shape(0); ++x)
             {
                 atBorder[seg(x, 0, z)] = true;
                 atBorder[seg(x, seg.shape(1) - 1, z)] = true;
             }
 
-        for (std::ptrdiff_t y = 0; y < seg.shape(1); ++y)
-            for (std::ptrdiff_t x = 0; x < seg.shape(0); ++x)
+        for(std::ptrdiff_t y = 0; y < seg.shape(1); ++y)
+            for(std::ptrdiff_t x = 0; x < seg.shape(0); ++x)
             {
                 atBorder[seg(x, y, 0)] = true;
                 atBorder[seg(x, y, seg.shape(2) - 1)] = true;
@@ -1057,18 +1057,18 @@ vigra::NumpyAnyArray pySizeFilterSegInplace(vigra::NumpyArray<3, T> seg, const v
 
     std::vector<size_t> counts(maxLabel + 1, 0);
 
-    for (auto iter = seg.begin(); iter != seg.end(); ++iter)
+    for(auto iter = seg.begin(); iter != seg.end(); ++iter)
     {
         counts[*iter] += 1;
     }
 
 
 
-    for (auto iter = seg.begin(); iter != seg.end(); ++iter)
+    for(auto iter = seg.begin(); iter != seg.end(); ++iter)
     {
         const auto l = *iter;
         const auto c = counts[l];
-        if (c < sizeLimit && atBorder[l] == false)
+        if(c < sizeLimit && atBorder[l] == false)
         {
             *iter = 0;
         }
@@ -1078,7 +1078,7 @@ vigra::NumpyAnyArray pySizeFilterSegInplace(vigra::NumpyArray<3, T> seg, const v
 }
 
 
-template<unsigned int DIM>
+template <unsigned int DIM>
 python::tuple
 pyUnionFindWatershedsBlockwise(
     NumpyArray<DIM, float> data,
@@ -1094,7 +1094,7 @@ pyUnionFindWatershedsBlockwise(
 /** \brief Map all values in src to new values using the given mapping (a dict).
  *  See python docstring for details.
 */
-template<unsigned int NDIM, class SrcVoxelType, class DestVoxelType>
+template <unsigned int NDIM, class SrcVoxelType, class DestVoxelType>
 NumpyAnyArray
 pythonApplyMapping(NumpyArray<NDIM, Singleband<SrcVoxelType>> src,
                    python::dict mapping,
@@ -1118,7 +1118,7 @@ pythonApplyMapping(NumpyArray<NDIM, Singleband<SrcVoxelType>> src,
     dict_iter_t map_iter = mapping.items();
 #endif
 
-    for (; map_iter != dict_iter_t(); ++map_iter)
+    for(; map_iter != dict_iter_t(); ++map_iter)
     {
         object key = (*map_iter)[0];
         object value = (*map_iter)[1];
@@ -1135,12 +1135,12 @@ pythonApplyMapping(NumpyArray<NDIM, Singleband<SrcVoxelType>> src,
                             [&_labelmap, allow_incomplete_mapping, &pythread_ptr](SrcVoxelType px) -> DestVoxelType {
                                 typename labelmap_t::const_iterator iter = _labelmap.find(px);
 
-                                if (iter != _labelmap.end())
+                                if(iter != _labelmap.end())
                                 {
                                     return iter->second;
                                 }
 
-                                if (allow_incomplete_mapping)
+                                if(allow_incomplete_mapping)
                                 {
                                     // Key is missing. Return the original value.
                                     return static_cast<DestVoxelType>(px);
@@ -1167,7 +1167,7 @@ pythonApplyMapping(NumpyArray<NDIM, Singleband<SrcVoxelType>> src,
 
 /** \brief Find unique values in the given array.
 */
-template<class VoxelType, unsigned int NDIM>
+template <class VoxelType, unsigned int NDIM>
 NumpyAnyArray
 pythonUnique(NumpyArray<NDIM, Singleband<VoxelType>> src, bool sort = true)
 {
@@ -1179,7 +1179,7 @@ pythonUnique(NumpyArray<NDIM, Singleband<VoxelType>> src, bool sort = true)
     result.reshape(Shape1(labelset.size()));
     std::copy(labelset.begin(), labelset.end(), result.begin());
 
-    if (sort)
+    if(sort)
     {
         std::sort(result.begin(), result.end());
     }
@@ -1193,7 +1193,7 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyUnique, pythonUnique)
  * (i.e. there are no gaps in the label values used by the array)
  * See python docstring below for details.
 */
-template<unsigned int NDIM, class SrcVoxelType, class DestVoxelType>
+template <unsigned int NDIM, class SrcVoxelType, class DestVoxelType>
 boost::python::tuple
 pythonRelabelConsecutive(NumpyArray<NDIM, Singleband<SrcVoxelType>> src,
                          DestVoxelType start_label = 1,
@@ -1204,7 +1204,7 @@ pythonRelabelConsecutive(NumpyArray<NDIM, Singleband<SrcVoxelType>> src,
     res.reshapeIfEmpty(src.taggedShape(), "relabelConsecutive(): Output array has wrong shape.");
 
     std::unordered_map<SrcVoxelType, DestVoxelType> labelmap;
-    if (keep_zeros)
+    if(keep_zeros)
     {
         vigra_precondition(!keep_zeros || start_label > 0,
                            "relabelConsecutive(): start_label must be non-zero if using keep_zeros=True");
@@ -1219,7 +1219,7 @@ pythonRelabelConsecutive(NumpyArray<NDIM, Singleband<SrcVoxelType>> src,
         transformMultiArray(src, res,
                             [&](SrcVoxelType px) -> DestVoxelType {
                                 auto iter = labelmap.find(px);
-                                if (iter != labelmap.end())
+                                if(iter != labelmap.end())
                                 {
                                     return iter->second;
                                 }
@@ -1233,7 +1233,7 @@ pythonRelabelConsecutive(NumpyArray<NDIM, Singleband<SrcVoxelType>> src,
 
     // Convert labelmap to dict
     dict labelmap_dict;
-    for (auto old_new_pair : labelmap)
+    for(auto old_new_pair : labelmap)
     {
         labelmap_dict[old_new_pair.first] = old_new_pair.second;
     }

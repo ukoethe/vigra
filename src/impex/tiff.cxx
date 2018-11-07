@@ -75,13 +75,13 @@ extern "C"
     static void vigraWarningHandler(char* module, char* fmt, va_list ap)
     {
         static const std::string ignore("Unknown field with tag");
-        if (ignore.compare(0, ignore.size(), fmt, ignore.size()) == 0)
+        if(ignore.compare(0, ignore.size(), fmt, ignore.size()) == 0)
             return;
 
-        if (module != NULL)
+        if(module != NULL)
         {
             static const std::string ignore("TIFFFetchNormalTag");
-            if (ignore.compare(module) == 0)
+            if(ignore.compare(module) == 0)
                 return;
 
             fprintf(stderr, "%s: ", module);
@@ -220,27 +220,27 @@ TIFFCodecImpl::TIFFCodecImpl()
 
 TIFFCodecImpl::~TIFFCodecImpl()
 {
-    if (planarconfig == PLANARCONFIG_SEPARATE)
+    if(planarconfig == PLANARCONFIG_SEPARATE)
     {
-        if (stripbuffer != 0)
+        if(stripbuffer != 0)
         {
-            for (unsigned int i = 0; i < samples_per_pixel; ++i)
-                if (stripbuffer[i] != 0)
+            for(unsigned int i = 0; i < samples_per_pixel; ++i)
+                if(stripbuffer[i] != 0)
                     _TIFFfree(stripbuffer[i]);
             delete[] stripbuffer;
         }
     }
     else
     {
-        if (stripbuffer != 0)
+        if(stripbuffer != 0)
         {
-            if (stripbuffer[0] != 0)
+            if(stripbuffer[0] != 0)
                 _TIFFfree(stripbuffer[0]);
             delete[] stripbuffer;
         }
     }
 
-    if (tiff != 0)
+    if(tiff != 0)
         TIFFClose(tiff);
 }
 
@@ -270,7 +270,7 @@ TIFFDecoderImpl::TIFFDecoderImpl(const std::string& filename)
 {
     tiff = TIFFOpen(filename.c_str(), "r");
 
-    if (!tiff)
+    if(!tiff)
     {
         std::string msg("Unable to open file '");
         msg += filename;
@@ -286,15 +286,15 @@ TIFFDecoderImpl::get_pixeltype_by_sampleformat() const
 {
     uint16 sampleformat;
 
-    if (TIFFGetField(tiff, TIFFTAG_SAMPLEFORMAT, &sampleformat))
+    if(TIFFGetField(tiff, TIFFTAG_SAMPLEFORMAT, &sampleformat))
     {
 
-        switch (sampleformat)
+        switch(sampleformat)
         {
 
             case SAMPLEFORMAT_UINT:
                 // added by dangelo, support for UINT 16 & 32 bit
-                switch (bits_per_sample)
+                switch(bits_per_sample)
                 {
                     case 8:
                         return "UINT8";
@@ -306,7 +306,7 @@ TIFFDecoderImpl::get_pixeltype_by_sampleformat() const
                 break;
 
             case SAMPLEFORMAT_INT:
-                switch (bits_per_sample)
+                switch(bits_per_sample)
                 {
                     case 8:
                         return "INT8";
@@ -318,7 +318,7 @@ TIFFDecoderImpl::get_pixeltype_by_sampleformat() const
                 break;
 
             case SAMPLEFORMAT_IEEEFP:
-                switch (bits_per_sample)
+                switch(bits_per_sample)
                 {
                     case 32:
                         return "FLOAT";
@@ -336,10 +336,10 @@ TIFFDecoderImpl::get_pixeltype_by_datatype() const
 {
     uint16 datatype;
 
-    if (TIFFGetField(tiff, TIFFTAG_DATATYPE, &datatype))
+    if(TIFFGetField(tiff, TIFFTAG_DATATYPE, &datatype))
     {
         // dangelo: correct parsing of INT/UINT (given in tiff.h)
-        switch (datatype)
+        switch(datatype)
         {
             case TIFF_BYTE:
                 return "UINT8";
@@ -367,9 +367,9 @@ void
 TIFFDecoderImpl::init(unsigned int imageIndex)
 {
     // set image directory, if necessary:
-    if (imageIndex != TIFFCurrentDirectory(tiff))
+    if(imageIndex != TIFFCurrentDirectory(tiff))
     {
-        if (!TIFFSetDirectory(tiff, (tdir_t)(imageIndex)))
+        if(!TIFFSetDirectory(tiff, (tdir_t)(imageIndex)))
             vigra_fail("Invalid TIFF image index");
     }
 
@@ -379,8 +379,8 @@ TIFFDecoderImpl::init(unsigned int imageIndex)
 
     // check for tiled TIFFs
     uint32 tileWidth, tileHeight;
-    if (TIFFGetField(tiff, TIFFTAG_TILEWIDTH, &tileWidth) &&
-        TIFFGetField(tiff, TIFFTAG_TILELENGTH, &tileHeight))
+    if(TIFFGetField(tiff, TIFFTAG_TILEWIDTH, &tileWidth) &&
+       TIFFGetField(tiff, TIFFTAG_TILELENGTH, &tileHeight))
         vigra_precondition((tileWidth == width) && (tileHeight == height),
                            "TIFFDecoder: "
                            "Cannot read tiled TIFFs (not implemented).");
@@ -391,24 +391,24 @@ TIFFDecoderImpl::init(unsigned int imageIndex)
     // get samples_per_pixel
     samples_per_pixel = 0;
     extra_samples_per_pixel = 0;
-    if (!TIFFGetFieldDefaulted(tiff, TIFFTAG_SAMPLESPERPIXEL,
-                               &samples_per_pixel))
+    if(!TIFFGetFieldDefaulted(tiff, TIFFTAG_SAMPLESPERPIXEL,
+                              &samples_per_pixel))
         vigra_fail("TIFFDecoder: Samples per pixel not set."
                    " A suitable default was not found.");
 
     // read extra samples (# of alpha channels)
     uint16* extra_sample_types = 0;
-    if (TIFFGetField(tiff, TIFFTAG_EXTRASAMPLES,
-                     &extra_samples_per_pixel, &extra_sample_types) != 1)
+    if(TIFFGetField(tiff, TIFFTAG_EXTRASAMPLES,
+                    &extra_samples_per_pixel, &extra_sample_types) != 1)
     {
         extra_samples_per_pixel = 0;
     }
 
-    if (extra_samples_per_pixel > 0)
+    if(extra_samples_per_pixel > 0)
     {
-        for (int i = 0; i < extra_samples_per_pixel; i++)
+        for(int i = 0; i < extra_samples_per_pixel; i++)
         {
-            if (extra_sample_types[i] == EXTRASAMPLE_ASSOCALPHA)
+            if(extra_sample_types[i] == EXTRASAMPLE_ASSOCALPHA)
             {
                 std::cerr << "WARNING: TIFFDecoder: associated alpha treated"
                              " as unassociated alpha!"
@@ -418,19 +418,19 @@ TIFFDecoderImpl::init(unsigned int imageIndex)
     }
 
     // get photometric
-    if (!TIFFGetFieldDefaulted(tiff, TIFFTAG_PHOTOMETRIC,
-                               &photometric))
+    if(!TIFFGetFieldDefaulted(tiff, TIFFTAG_PHOTOMETRIC,
+                              &photometric))
     {
         // No photometric found in the file, try to guess.
         // FIXME: also look at extra_samples_per_pixel here
-        if (samples_per_pixel == 1)
+        if(samples_per_pixel == 1)
         {
             photometric = PHOTOMETRIC_MINISBLACK;
             std::cerr << "Warning: TIFFDecoder: TIFFTAG_PHOTOMETRIC is not set, "
                          "guessing PHOTOMETRIC_MINISBLACK."
                       << std::endl;
         }
-        else if (samples_per_pixel == 3)
+        else if(samples_per_pixel == 3)
         {
             photometric = PHOTOMETRIC_RGB;
             std::cerr << "Warning: TIFFDecoder: TIFFTAG_PHOTOMETRIC is not set, "
@@ -445,13 +445,13 @@ TIFFDecoderImpl::init(unsigned int imageIndex)
     }
 
     // check photometric preconditions
-    switch (photometric)
+    switch(photometric)
     {
         case PHOTOMETRIC_MINISWHITE:
         case PHOTOMETRIC_MINISBLACK:
         case PHOTOMETRIC_PALETTE:
         {
-            if (samples_per_pixel - extra_samples_per_pixel != 1)
+            if(samples_per_pixel - extra_samples_per_pixel != 1)
                 vigra_fail("TIFFDecoder:"
                            " Photometric tag does not fit the number of"
                            " samples per pixel.");
@@ -459,12 +459,12 @@ TIFFDecoderImpl::init(unsigned int imageIndex)
         }
         case PHOTOMETRIC_RGB:
         {
-            if (samples_per_pixel > 3 && extra_samples_per_pixel == 0)
+            if(samples_per_pixel > 3 && extra_samples_per_pixel == 0)
             {
                 // file probably lacks the extra_samples tag
                 extra_samples_per_pixel = samples_per_pixel - 3;
             }
-            if (samples_per_pixel - extra_samples_per_pixel != 3)
+            if(samples_per_pixel - extra_samples_per_pixel != 3)
                 vigra_fail("TIFFDecoder:"
                            " Photometric tag does not fit the number of"
                            " samples per pixel.");
@@ -475,7 +475,7 @@ TIFFDecoderImpl::init(unsigned int imageIndex)
         {
             uint16 tiffcomp;
             TIFFGetFieldDefaulted(tiff, TIFFTAG_COMPRESSION, &tiffcomp);
-            if (tiffcomp != COMPRESSION_SGILOG && tiffcomp != COMPRESSION_SGILOG24)
+            if(tiffcomp != COMPRESSION_SGILOG && tiffcomp != COMPRESSION_SGILOG24)
                 vigra_fail("TIFFDecoder:"
                            " Only SGILOG compression is supported for"
                            " LogLuv TIFF.");
@@ -485,39 +485,39 @@ TIFFDecoderImpl::init(unsigned int imageIndex)
     }
 
     // get planarconfig
-    if (samples_per_pixel > 1)
+    if(samples_per_pixel > 1)
     {
-        if (!TIFFGetFieldDefaulted(tiff, TIFFTAG_PLANARCONFIG,
-                                   &planarconfig))
+        if(!TIFFGetFieldDefaulted(tiff, TIFFTAG_PLANARCONFIG,
+                                  &planarconfig))
             vigra_fail("TIFFDecoder: TIFFTAG_PLANARCONFIG is not"
                        " set. A suitable default was not found.");
     }
 
     // get bits per pixel
-    if (!TIFFGetField(tiff, TIFFTAG_BITSPERSAMPLE, &bits_per_sample))
+    if(!TIFFGetField(tiff, TIFFTAG_BITSPERSAMPLE, &bits_per_sample))
     {
         std::cerr << "Warning: TIFFDecoder: no TIFFTAG_BITSPERSAMPLE, using 8 bits per sample.\n";
         bits_per_sample = 8;
     }
     // get pixeltype
-    if (bits_per_sample != 1)
+    if(bits_per_sample != 1)
     {
 
         // try the sampleformat tag
         pixeltype = get_pixeltype_by_sampleformat();
 
-        if (pixeltype == "undefined")
+        if(pixeltype == "undefined")
         {
 
             // try the (obsolete) datatype tag
             pixeltype = get_pixeltype_by_datatype();
 
-            if (pixeltype == "undefined")
+            if(pixeltype == "undefined")
             {
                 // ERROR: no useable pixeltype found..
                 // imagemagick can write files without it..
                 // try to guess a suitable one here.
-                switch (bits_per_sample)
+                switch(bits_per_sample)
                 {
                     case 8:
                         pixeltype = "UINT8";
@@ -535,7 +535,7 @@ TIFFDecoderImpl::init(unsigned int imageIndex)
                         vigra_fail("TIFFDecoder: Sampleformat or Datatype tag undefined and guessing sampletype from Bits per Sample failed.");
                         break;
                 }
-                if (bits_per_sample != 8) // issue the warning only for non-trivial cases
+                if(bits_per_sample != 8) // issue the warning only for non-trivial cases
                     std::cerr << "Warning: TIFFDecoder: no TIFFTAG_SAMPLEFORMAT or "
                                  "TIFFTAG_DATATYPE, guessing pixeltype '"
                               << pixeltype << "'.\n";
@@ -549,12 +549,12 @@ TIFFDecoderImpl::init(unsigned int imageIndex)
         pixeltype = "BILEVEL";
 
         // get fillorder
-        if (!TIFFGetField(tiff, TIFFTAG_FILLORDER, &fillorder))
+        if(!TIFFGetField(tiff, TIFFTAG_FILLORDER, &fillorder))
             fillorder = FILLORDER_MSB2LSB;
     }
 
     // make sure the LogLuv has correct pixeltype because only float is supported
-    if (photometric == PHOTOMETRIC_LOGLUV)
+    if(photometric == PHOTOMETRIC_LOGLUV)
     {
         pixeltype = "FLOAT";
         samples_per_pixel = 3;
@@ -564,9 +564,9 @@ TIFFDecoderImpl::init(unsigned int imageIndex)
     uint16 u16value;
     uint32 u32value;
     float unitLength = 1.0f;
-    if (TIFFGetField(tiff, TIFFTAG_RESOLUTIONUNIT, &u16value))
+    if(TIFFGetField(tiff, TIFFTAG_RESOLUTIONUNIT, &u16value))
     {
-        switch (u16value)
+        switch(u16value)
         {
             case RESUNIT_NONE:
                 unitLength = 1.0f;
@@ -583,40 +583,40 @@ TIFFDecoderImpl::init(unsigned int imageIndex)
     }
 
     float fvalue;
-    if (TIFFGetField(tiff, TIFFTAG_XRESOLUTION, &fvalue))
+    if(TIFFGetField(tiff, TIFFTAG_XRESOLUTION, &fvalue))
     {
         x_resolution = fvalue / unitLength;
     }
 
-    if (TIFFGetField(tiff, TIFFTAG_YRESOLUTION, &fvalue))
+    if(TIFFGetField(tiff, TIFFTAG_YRESOLUTION, &fvalue))
     {
         y_resolution = fvalue / unitLength;
     }
 
     // XPosition
-    if (TIFFGetField(tiff, TIFFTAG_XPOSITION, &fvalue))
+    if(TIFFGetField(tiff, TIFFTAG_XPOSITION, &fvalue))
     {
         fvalue = fvalue * x_resolution;
         position.x = (int)floor(fvalue + 0.5);
     }
     // YPosition
-    if (TIFFGetField(tiff, TIFFTAG_YPOSITION, &fvalue))
+    if(TIFFGetField(tiff, TIFFTAG_YPOSITION, &fvalue))
     {
         fvalue = fvalue * y_resolution;
         position.y = (int)floor(fvalue + 0.5);
     }
 
     // canvas size
-    if (TIFFGetField(tiff, TIFFTAG_PIXAR_IMAGEFULLWIDTH, &u32value))
+    if(TIFFGetField(tiff, TIFFTAG_PIXAR_IMAGEFULLWIDTH, &u32value))
     {
         canvasSize.x = u32value;
     }
-    if (TIFFGetField(tiff, TIFFTAG_PIXAR_IMAGEFULLLENGTH, &u32value))
+    if(TIFFGetField(tiff, TIFFTAG_PIXAR_IMAGEFULLLENGTH, &u32value))
     {
         canvasSize.y = u32value;
     }
 
-    if ((uint32)canvasSize.x < position.x + width || (uint32)canvasSize.y < position.y + height)
+    if((uint32)canvasSize.x < position.x + width || (uint32)canvasSize.y < position.y + height)
     {
         canvasSize.x = canvasSize.y = 0;
     }
@@ -624,9 +624,9 @@ TIFFDecoderImpl::init(unsigned int imageIndex)
     // ICC Profile
     UInt32 iccProfileLength = 0;
     const unsigned char* iccProfilePtr = NULL;
-    if (TIFFGetField(tiff, TIFFTAG_ICCPROFILE,
-                     &iccProfileLength, &iccProfilePtr) &&
-        iccProfileLength)
+    if(TIFFGetField(tiff, TIFFTAG_ICCPROFILE,
+                    &iccProfileLength, &iccProfilePtr) &&
+       iccProfileLength)
     {
         Decoder::ICCProfile iccData(
             iccProfilePtr, iccProfilePtr + iccProfileLength);
@@ -635,17 +635,17 @@ TIFFDecoderImpl::init(unsigned int imageIndex)
 
     // allocate data buffers
     const unsigned int stripsize = TIFFScanlineSize(tiff);
-    if (planarconfig == PLANARCONFIG_SEPARATE)
+    if(planarconfig == PLANARCONFIG_SEPARATE)
     {
         stripbuffer = new tdata_t[samples_per_pixel];
-        for (unsigned int i = 0; i < samples_per_pixel; ++i)
+        for(unsigned int i = 0; i < samples_per_pixel; ++i)
         {
             stripbuffer[i] = 0;
         }
-        for (unsigned int i = 0; i < samples_per_pixel; ++i)
+        for(unsigned int i = 0; i < samples_per_pixel; ++i)
         {
             stripbuffer[i] = _TIFFmalloc(stripsize);
-            if (stripbuffer[i] == 0)
+            if(stripbuffer[i] == 0)
                 throw std::bad_alloc();
         }
     }
@@ -654,7 +654,7 @@ TIFFDecoderImpl::init(unsigned int imageIndex)
         stripbuffer = new tdata_t[1];
         stripbuffer[0] = 0;
         stripbuffer[0] = _TIFFmalloc(stripsize < width ? width : stripsize);
-        if (stripbuffer[0] == 0)
+        if(stripbuffer[0] == 0)
             throw std::bad_alloc();
     }
 
@@ -665,14 +665,14 @@ TIFFDecoderImpl::init(unsigned int imageIndex)
 const void*
 TIFFDecoderImpl::currentScanlineOfBand(unsigned int band) const
 {
-    if (bits_per_sample == 1)
+    if(bits_per_sample == 1)
     {
         const unsigned int n = TIFFScanlineSize(tiff);
         UInt8* const startpointer = static_cast<UInt8*>(stripbuffer[0]);
         UInt8* bytepointer = startpointer;
 
         bytepointer += n - 1;
-        for (int byte = n - 1; byte >= 0; --byte)
+        for(int byte = n - 1; byte >= 0; --byte)
         {
             UInt8 currentByte = *bytepointer;
             --bytepointer;
@@ -680,14 +680,14 @@ TIFFDecoderImpl::currentScanlineOfBand(unsigned int band) const
             UInt8* bitpointer = startpointer;
             bitpointer += byte * 8;
 
-            for (unsigned char bit = 7; bit < 8; --bit)
+            for(unsigned char bit = 7; bit < 8; --bit)
             {
                 *bitpointer = ((currentByte & (1 << bit)) ? photometric : 1 - photometric);
                 ++bitpointer;
                 // NOTE: byte * 8 + 7 - bit is promoted to int by C++'s promotion rules.
                 // The cast to unsigned should be safe given the bounds of the looping
                 // variables bit and bytes.
-                if (static_cast<unsigned>(byte * 8 + 7 - bit) == width - 1)
+                if(static_cast<unsigned>(byte * 8 + 7 - bit) == width - 1)
                     break;
             }
         }
@@ -696,7 +696,7 @@ TIFFDecoderImpl::currentScanlineOfBand(unsigned int band) const
     }
     else
     {
-        if (planarconfig == PLANARCONFIG_SEPARATE)
+        if(planarconfig == PLANARCONFIG_SEPARATE)
         {
             UInt8* const buf = static_cast<UInt8*>(stripbuffer[band]);
             return buf + (stripindex * width) * (bits_per_sample / 8);
@@ -713,14 +713,14 @@ void
 TIFFDecoderImpl::nextScanline()
 {
     // eventually read a new strip
-    if (++stripindex >= stripheight)
+    if(++stripindex >= stripheight)
     {
         stripindex = 0;
 
-        if (planarconfig == PLANARCONFIG_SEPARATE)
+        if(planarconfig == PLANARCONFIG_SEPARATE)
         {
             const tsize_t size = TIFFScanlineSize(tiff);
-            for (unsigned int i = 0; i < samples_per_pixel; ++i)
+            for(unsigned int i = 0; i < samples_per_pixel; ++i)
                 TIFFReadScanline(tiff, stripbuffer[i], scanline++, size);
         }
         else
@@ -731,15 +731,15 @@ TIFFDecoderImpl::nextScanline()
         // XXX handle bilevel images
 
         // invert grayscale images that interpret 0 as white
-        if (photometric == PHOTOMETRIC_MINISWHITE &&
-            samples_per_pixel == 1 && pixeltype == "UINT8")
+        if(photometric == PHOTOMETRIC_MINISWHITE &&
+           samples_per_pixel == 1 && pixeltype == "UINT8")
         {
 
             UInt8* buf = static_cast<UInt8*>(stripbuffer[0]);
             const unsigned int n = TIFFScanlineSize(tiff);
 
             // invert every pixel
-            for (unsigned int i = 0; i < n; ++i, ++buf)
+            for(unsigned int i = 0; i < n; ++i, ++buf)
                 *buf = 0xff - *buf;
         }
     }
@@ -848,7 +848,7 @@ TIFFDecoderImpl::getNumImages()
     unsigned int currIndex = getImageIndex();
     TIFFSetDirectory(tiff, 0);
     int numPages = 1;
-    while (TIFFReadDirectory(tiff))
+    while(TIFFReadDirectory(tiff))
         numPages++;
     TIFFSetDirectory(tiff, currIndex);
     return numPages;
@@ -904,7 +904,7 @@ public:
         : tiffcomp(COMPRESSION_LZW), finalized(false)
     {
         tiff = TIFFOpen(filename.c_str(), mode.c_str());
-        if (!tiff)
+        if(!tiff)
         {
             std::string msg("Unable to open file '");
             msg += filename;
@@ -933,7 +933,7 @@ public:
         // compute the number of rows in the current strip
         unsigned int rows = (strip + 1) * stripheight > height ? height - strip * stripheight : stripheight;
 
-        if (++stripindex >= rows)
+        if(++stripindex >= rows)
         {
 
             // write next strip
@@ -941,7 +941,7 @@ public:
 
             int success = TIFFWriteEncodedStrip(tiff, strip++, stripbuffer[0],
                                                 TIFFVStripSize(tiff, rows));
-            if (success == -1 && tiffcomp != COMPRESSION_NONE)
+            if(success == -1 && tiffcomp != COMPRESSION_NONE)
             {
                 throw Encoder::TIFFCompressionException(); // retry without compression
             }
@@ -958,17 +958,17 @@ TIFFEncoderImpl::setCompressionType(const std::string& comp,
 {
     // if any compression type is set that we do not support,
     // the expected behavior is to do nothing
-    if (comp == "NONE")
+    if(comp == "NONE")
         tiffcomp = COMPRESSION_NONE;
-    else if ((comp == "JPEG") && (quality != -1))
+    else if((comp == "JPEG") && (quality != -1))
         tiffcomp = COMPRESSION_OJPEG;
-    else if (comp == "RLE" || comp == "RunLength")
+    else if(comp == "RLE" || comp == "RunLength")
         tiffcomp = COMPRESSION_CCITTRLE;
-    else if (comp == "PACKBITS")
+    else if(comp == "PACKBITS")
         tiffcomp = COMPRESSION_PACKBITS;
-    else if (comp == "LZW")
+    else if(comp == "LZW")
         tiffcomp = COMPRESSION_LZW;
-    else if (comp == "DEFLATE")
+    else if(comp == "DEFLATE")
         tiffcomp = COMPRESSION_DEFLATE;
 }
 
@@ -977,7 +977,7 @@ TIFFEncoderImpl::finalizeSettings()
 {
     // decide if we should write Grey, or RGB files
     // all additional channels are treated as extra samples
-    if (samples_per_pixel < 3)
+    if(samples_per_pixel < 3)
     {
         extra_samples_per_pixel = samples_per_pixel - 1;
     }
@@ -1006,52 +1006,52 @@ TIFFEncoderImpl::finalizeSettings()
     TIFFSetField(tiff, TIFFTAG_SUBFILETYPE, 0);
 
     // set pixel type
-    if (pixeltype == "BILEVEL")
+    if(pixeltype == "BILEVEL")
     {
         // no sampleformat applies for bilevel
         bits_per_sample = 1;
     }
-    else if (pixeltype == "UINT8")
+    else if(pixeltype == "UINT8")
     {
         TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_UINT);
         bits_per_sample = 8;
     }
-    else if (pixeltype == "INT16")
+    else if(pixeltype == "INT16")
     {
         TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_INT);
         bits_per_sample = 16;
     }
-    else if (pixeltype == "UINT16")
+    else if(pixeltype == "UINT16")
     {
         TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_UINT);
         bits_per_sample = 16;
     }
-    else if (pixeltype == "INT32")
+    else if(pixeltype == "INT32")
     {
         TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_INT);
         bits_per_sample = 32;
     }
-    else if (pixeltype == "UINT32")
+    else if(pixeltype == "UINT32")
     {
         TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_UINT);
         bits_per_sample = 32;
     }
-    else if (pixeltype == "FLOAT")
+    else if(pixeltype == "FLOAT")
     {
         TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_IEEEFP);
         bits_per_sample = 32;
     }
-    else if (pixeltype == "DOUBLE")
+    else if(pixeltype == "DOUBLE")
     {
         TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_IEEEFP);
         bits_per_sample = 64;
     }
     TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, bits_per_sample);
 
-    if (extra_samples_per_pixel > 0)
+    if(extra_samples_per_pixel > 0)
     {
         uint16* types = new uint16[extra_samples_per_pixel];
-        for (int i = 0; i < extra_samples_per_pixel; i++)
+        for(int i = 0; i < extra_samples_per_pixel; i++)
         {
             types[i] = EXTRASAMPLE_UNASSALPHA;
         }
@@ -1061,41 +1061,41 @@ TIFFEncoderImpl::finalizeSettings()
     }
 
     // set photometric
-    if (samples_per_pixel - extra_samples_per_pixel == 1)
+    if(samples_per_pixel - extra_samples_per_pixel == 1)
         TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
-    else if (samples_per_pixel - extra_samples_per_pixel == 3)
+    else if(samples_per_pixel - extra_samples_per_pixel == 3)
         TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
 
     // set resolution
-    if (x_resolution > 0)
+    if(x_resolution > 0)
     {
         TIFFSetField(tiff, TIFFTAG_XRESOLUTION, x_resolution);
     }
-    if (y_resolution > 0)
+    if(y_resolution > 0)
     {
         TIFFSetField(tiff, TIFFTAG_YRESOLUTION, y_resolution);
     }
-    if (x_resolution > 0 || y_resolution > 0)
+    if(x_resolution > 0 || y_resolution > 0)
     {
         TIFFSetField(tiff, TIFFTAG_RESOLUTIONUNIT, RESUNIT_INCH);
     }
 
     // save position, if available
-    if (position.x >= 0 && position.y >= 0 &&
-        x_resolution > 0 && y_resolution > 0)
+    if(position.x >= 0 && position.y >= 0 &&
+       x_resolution > 0 && y_resolution > 0)
     {
         TIFFSetField(tiff, TIFFTAG_XPOSITION, position.x / x_resolution);
         TIFFSetField(tiff, TIFFTAG_YPOSITION, position.y / y_resolution);
     }
 
-    if ((uint32)canvasSize.x >= position.x + width && (uint32)canvasSize.y >= position.y + height)
+    if((uint32)canvasSize.x >= position.x + width && (uint32)canvasSize.y >= position.y + height)
     {
         TIFFSetField(tiff, TIFFTAG_PIXAR_IMAGEFULLWIDTH, canvasSize.x);
         TIFFSetField(tiff, TIFFTAG_PIXAR_IMAGEFULLLENGTH, canvasSize.y);
     }
 
     // Set ICC profile, if available.
-    if (iccProfile.size())
+    if(iccProfile.size())
     {
         TIFFSetField(tiff, TIFFTAG_ICCPROFILE,
                      iccProfile.size(), iccProfile.begin());
@@ -1105,7 +1105,7 @@ TIFFEncoderImpl::finalizeSettings()
     stripbuffer = new tdata_t[1];
     stripbuffer[0] = 0;
     stripbuffer[0] = _TIFFmalloc(TIFFStripSize(tiff));
-    if (stripbuffer[0] == 0)
+    if(stripbuffer[0] == 0)
         throw std::bad_alloc();
 
     finalized = true;

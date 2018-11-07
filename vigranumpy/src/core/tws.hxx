@@ -16,18 +16,18 @@
 namespace vigra
 {
 
-template<class T>
+template <class T>
 void twsc(
     const MultiArrayView<3, UInt8, StridedArrayTag>&,
     MultiArrayView<3, T, StridedArrayTag>&,
     MultiArrayView<3, UInt8, StridedArrayTag>&);
 
-template<class T>
+template <class T>
 inline bool isAtSeedBorder(
     const MultiArrayView<3, T, StridedArrayTag>& labeling,
     const MultiArrayIndex& index);
 
-template<class S1, class T, class S2>
+template <class S1, class T, class S2>
 void
 tws(
     const MultiArrayView<3, UInt8, S1>& vol,
@@ -43,13 +43,13 @@ tws(
 
     // add each unlabeled pixels which is adjacent to a seed
     // to the queue corresponding to its gray level
-    for (MultiArrayIndex j = 0; j < labeling.size(); ++j)
+    for(MultiArrayIndex j = 0; j < labeling.size(); ++j)
     {
-        if (j % 1000000 == 0)
+        if(j % 1000000 == 0)
         {
             std::cout << "\r  initializing queues " << (j / float(numVoxels) * 100) << "%                    " << std::flush;
         }
-        if (isAtSeedBorder<T>(labeling, j))
+        if(isAtSeedBorder<T>(labeling, j))
         {
             queues[vol[j]].push(j);
         }
@@ -61,9 +61,9 @@ tws(
 
     size_t voxelsProcessed = 0;
 
-    for (;;)
+    for(;;)
     {
-        while (!queues[grayLevel].empty())
+        while(!queues[grayLevel].empty())
         {
             // label pixel and remove from queue
             MultiArrayIndex j = queues[grayLevel].front();
@@ -71,7 +71,7 @@ tws(
 
             ++voxelsProcessed;
 
-            if (voxelsProcessed % 1000000 == 0)
+            if(voxelsProcessed % 1000000 == 0)
             {
                 std::cout << "\r  watersheds " << (voxelsProcessed / float(numVoxels) * 100) << "%                    " << std::flush;
             }
@@ -79,12 +79,12 @@ tws(
             // add unlabeled neighbors to queues
             // left, upper, and front voxel
             typename MultiArrayView<3, UInt32>::difference_type coordinate = labeling.scanOrderIndexToCoordinate(j);
-            for (unsigned short d = 0; d < 3; ++d)
+            for(unsigned short d = 0; d < 3; ++d)
             {
-                if (coordinate[d] != 0)
+                if(coordinate[d] != 0)
                 {
                     --coordinate[d];
-                    if (labeling[coordinate] == 0)
+                    if(labeling[coordinate] == 0)
                     {
                         MultiArrayIndex k = labeling.coordinateToScanOrderIndex(coordinate);
                         UInt8 queueIndex = std::max(vol[coordinate], grayLevel);
@@ -95,12 +95,12 @@ tws(
                 }
             }
             // right, lower, and back voxel
-            for (unsigned short d = 0; d < 3; ++d)
+            for(unsigned short d = 0; d < 3; ++d)
             {
-                if (coordinate[d] < labeling.shape(d) - 1)
+                if(coordinate[d] < labeling.shape(d) - 1)
                 {
                     ++coordinate[d];
-                    if (labeling[coordinate] == 0)
+                    if(labeling[coordinate] == 0)
                     {
                         MultiArrayIndex k = labeling.coordinateToScanOrderIndex(coordinate);
                         UInt8 queueIndex = std::max(vol[coordinate], grayLevel);
@@ -111,7 +111,7 @@ tws(
                 }
             }
         }
-        if (grayLevel == 255)
+        if(grayLevel == 255)
         {
             break;
         }
@@ -124,7 +124,7 @@ tws(
     std::cout << "\r  watersheds 100.0000%                    " << std::endl;
 }
 
-template<class S1, class T, class S2>
+template <class S1, class T, class S2>
 void
 tws(
     const MultiArrayView<3, float, S1>& vol,
@@ -141,13 +141,13 @@ tws(
 
     // add each unlabeled pixels which is adjacent to a seed
     // to the queue corresponding to its gray level
-    for (MultiArrayIndex j = 0; j < labeling.size(); ++j)
+    for(MultiArrayIndex j = 0; j < labeling.size(); ++j)
     {
-        if (j % 1000000 == 0)
+        if(j % 1000000 == 0)
         {
             std::cout << "\r  initializing queues " << (j / float(numVoxels) * 100) << "%                    " << std::flush;
         }
-        if (isAtSeedBorder<T>(labeling, j))
+        if(isAtSeedBorder<T>(labeling, j))
         {
             queues[(int)vol[j]].push(j, vol[j]);
         }
@@ -159,9 +159,9 @@ tws(
 
     size_t voxelsProcessed = 0;
 
-    for (;;)
+    for(;;)
     {
-        while (!queues[grayLevel].empty())
+        while(!queues[grayLevel].empty())
         {
             // label pixel and remove from queue
             MultiArrayIndex j = queues[grayLevel].top();
@@ -170,7 +170,7 @@ tws(
 
             ++voxelsProcessed;
 
-            if (voxelsProcessed % 1000000 == 0)
+            if(voxelsProcessed % 1000000 == 0)
             {
                 std::cout << "\r  watersheds " << (voxelsProcessed / float(numVoxels) * 100) << "%                    " << std::flush;
             }
@@ -178,12 +178,12 @@ tws(
             // add unlabeled neighbors to queues
             // left, upper, and front voxel
             typename MultiArrayView<3, UInt32>::difference_type coordinate = labeling.scanOrderIndexToCoordinate(j);
-            for (unsigned short d = 0; d < 3; ++d)
+            for(unsigned short d = 0; d < 3; ++d)
             {
-                if (coordinate[d] != 0)
+                if(coordinate[d] != 0)
                 {
                     --coordinate[d];
-                    if (labeling[coordinate] == 0)
+                    if(labeling[coordinate] == 0)
                     {
                         MultiArrayIndex k = labeling.coordinateToScanOrderIndex(coordinate);
                         float priority = std::max(vol[coordinate], p);
@@ -194,12 +194,12 @@ tws(
                 }
             }
             // right, lower, and back voxel
-            for (unsigned short d = 0; d < 3; ++d)
+            for(unsigned short d = 0; d < 3; ++d)
             {
-                if (coordinate[d] < labeling.shape(d) - 1)
+                if(coordinate[d] < labeling.shape(d) - 1)
                 {
                     ++coordinate[d];
-                    if (labeling[coordinate] == 0)
+                    if(labeling[coordinate] == 0)
                     {
                         MultiArrayIndex k = labeling.coordinateToScanOrderIndex(coordinate);
                         float priority = std::max(vol[coordinate], p);
@@ -210,7 +210,7 @@ tws(
                 }
             }
         }
-        if (grayLevel == 255)
+        if(grayLevel == 255)
         {
             break;
         }
@@ -223,10 +223,10 @@ tws(
     std::cout << "\r  watersheds 100.0000%                    " << std::endl;
 }
 
-template<class T>
+template <class T>
 struct TWS
 {
-    template<class S1, class U, class S2>
+    template <class S1, class U, class S2>
     static void exec(const MultiArrayView<3, T, S1>&,
                      MultiArrayView<3, U, S2>&)
     {
@@ -235,10 +235,10 @@ struct TWS
     }
 };
 
-template<>
+template <>
 struct TWS<UInt8>
 {
-    template<class S1, class U, class S2>
+    template <class S1, class U, class S2>
     static void exec(const MultiArrayView<3, UInt8, S1>& vol,
                      MultiArrayView<3, U, S2>& labeling)
     {
@@ -246,10 +246,10 @@ struct TWS<UInt8>
     }
 };
 
-template<>
+template <>
 struct TWS<float>
 {
-    template<class S1, class U, class S2>
+    template <class S1, class U, class S2>
     static void exec(const MultiArrayView<3, float, S1>& vol,
                      MultiArrayView<3, U, S2>& labeling)
     {
@@ -257,7 +257,7 @@ struct TWS<float>
     }
 };
 
-template<class T>
+template <class T>
 void
 twsc(
     const MultiArrayView<3, UInt8>& vol,
@@ -270,9 +270,9 @@ twsc(
 
     // add each unlabeled pixels which is adjacent to a seed
     // to the queue corresponding to its gray level
-    for (MultiArrayIndex j = 0; j < labeling.size(); ++j)
+    for(MultiArrayIndex j = 0; j < labeling.size(); ++j)
     {
-        if (isAtSeedBorder<T>(labeling, j))
+        if(isAtSeedBorder<T>(labeling, j))
         {
             queues[vol[j]].push(j);
         }
@@ -280,9 +280,9 @@ twsc(
 
     // flood
     UInt8 grayLevel = 0;
-    for (;;)
+    for(;;)
     {
-        while (!queues[grayLevel].empty())
+        while(!queues[grayLevel].empty())
         {
             // label pixel and remove from queue
             MultiArrayIndex j = queues[grayLevel].front();
@@ -291,12 +291,12 @@ twsc(
             // add unlabeled neighbors to queues
             // left, upper, and front voxel
             typename MultiArrayView<3, UInt32>::difference_type coordinate = labeling.scanOrderIndexToCoordinate(j);
-            for (unsigned short d = 0; d < 3; ++d)
+            for(unsigned short d = 0; d < 3; ++d)
             {
-                if (coordinate[d] != 0)
+                if(coordinate[d] != 0)
                 {
                     --coordinate[d];
-                    if (labeling[coordinate] == 0)
+                    if(labeling[coordinate] == 0)
                     {
                         MultiArrayIndex k = labeling.coordinateToScanOrderIndex(coordinate);
                         UInt8 queueIndex = std::max(vol[coordinate], grayLevel);
@@ -304,13 +304,13 @@ twsc(
                         directions[k] = d + 1;     // save direction
                         queues[queueIndex].push(k);
                     }
-                    else if (labeling[coordinate] != labeling[j])
+                    else if(labeling[coordinate] != labeling[j])
                     {
                         MultiArrayIndex k = labeling.coordinateToScanOrderIndex(coordinate);
-                        if (labeling[j] < labeling[k])
+                        if(labeling[j] < labeling[k])
                         {
                             std::pair<T, T> p(labeling[j], labeling[k]);
-                            if (adjacency.count(p) == 0)
+                            if(adjacency.count(p) == 0)
                             {
                                 adjacency[p] = std::pair<MultiArrayIndex, MultiArrayIndex>(j, k);
                             }
@@ -318,7 +318,7 @@ twsc(
                         else
                         {
                             std::pair<T, T> p(labeling[k], labeling[j]);
-                            if (adjacency.count(p) == 0)
+                            if(adjacency.count(p) == 0)
                             {
                                 adjacency[p] = std::pair<MultiArrayIndex, MultiArrayIndex>(k, j);
                             }
@@ -328,12 +328,12 @@ twsc(
                 }
             }
             // right, lower, and back voxel
-            for (unsigned short d = 0; d < 3; ++d)
+            for(unsigned short d = 0; d < 3; ++d)
             {
-                if (coordinate[d] < labeling.shape(d) - 1)
+                if(coordinate[d] < labeling.shape(d) - 1)
                 {
                     ++coordinate[d];
-                    if (labeling[coordinate] == 0)
+                    if(labeling[coordinate] == 0)
                     {
                         MultiArrayIndex k = labeling.coordinateToScanOrderIndex(coordinate);
                         UInt8 queueIndex = std::max(vol[coordinate], grayLevel);
@@ -341,13 +341,13 @@ twsc(
                         directions[k] = d + 4;     // save direction
                         queues[queueIndex].push(k);
                     }
-                    else if (labeling[coordinate] != labeling[j])
+                    else if(labeling[coordinate] != labeling[j])
                     {
                         MultiArrayIndex k = labeling.coordinateToScanOrderIndex(coordinate);
-                        if (labeling[j] < labeling[k])
+                        if(labeling[j] < labeling[k])
                         {
                             std::pair<T, T> p(labeling[j], labeling[k]);
-                            if (adjacency.count(p) == 0)
+                            if(adjacency.count(p) == 0)
                             {
                                 adjacency[p] = std::pair<MultiArrayIndex, MultiArrayIndex>(j, k);
                             }
@@ -355,7 +355,7 @@ twsc(
                         else
                         {
                             std::pair<T, T> p(labeling[k], labeling[j]);
-                            if (adjacency.count(p) == 0)
+                            if(adjacency.count(p) == 0)
                             {
                                 adjacency[p] = std::pair<MultiArrayIndex, MultiArrayIndex>(k, j);
                             }
@@ -365,7 +365,7 @@ twsc(
                 }
             }
         }
-        if (grayLevel == 255)
+        if(grayLevel == 255)
         {
             break;
         }
@@ -377,13 +377,13 @@ twsc(
     }
 }
 
-template<class T>
+template <class T>
 inline bool
 isAtSeedBorder(
     const MultiArrayView<3, T, StridedArrayTag>& labeling,
     const MultiArrayIndex& index)
 {
-    if (labeling[index] == 0)
+    if(labeling[index] == 0)
     {
         return false; // not a seed voxel
     }
@@ -391,12 +391,12 @@ isAtSeedBorder(
     {
         typename MultiArrayView<3, UInt32>::difference_type coordinate = labeling.scanOrderIndexToCoordinate(index);
         // check left, upper, and front voxel for zero label
-        for (unsigned short d = 0; d < 3; ++d)
+        for(unsigned short d = 0; d < 3; ++d)
         {
-            if (coordinate[d] != 0)
+            if(coordinate[d] != 0)
             {
                 --coordinate[d];
-                if (labeling[coordinate] == 0)
+                if(labeling[coordinate] == 0)
                 {
                     return true;
                 }
@@ -404,12 +404,12 @@ isAtSeedBorder(
             }
         }
         // check right, lower, and back voxel for zero label
-        for (unsigned short d = 0; d < 3; ++d)
+        for(unsigned short d = 0; d < 3; ++d)
         {
-            if (coordinate[d] < labeling.shape(d) - 1)
+            if(coordinate[d] < labeling.shape(d) - 1)
             {
                 ++coordinate[d];
-                if (labeling[coordinate] == 0)
+                if(labeling[coordinate] == 0)
                 {
                     return true;
                 }

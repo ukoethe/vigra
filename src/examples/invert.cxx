@@ -47,7 +47,7 @@ using namespace vigra;
 int
 main(int argc, char** argv)
 {
-    if (argc != 3)
+    if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
@@ -59,7 +59,7 @@ main(int argc, char** argv)
     {
         ImageImportInfo info(argv[1]);
 
-        if (info.isGrayscale())
+        if(info.isGrayscale())
         {
             MultiArray<2, UInt8> in(info.width(), info.height()),
                 out(info.width(), info.height());
@@ -76,7 +76,7 @@ main(int argc, char** argv)
             using namespace multi_math; // activate array expressions
             out = 255 - in;
 
-            if (strcmp(argv[2], "-") == 0)
+            if(strcmp(argv[2], "-") == 0)
             {
                 // write stdout
                 exportImage(out, ImageExportInfo(argv[2]).setFileType(info.getFileType()));
@@ -103,7 +103,7 @@ main(int argc, char** argv)
             using namespace multi_math; // activate array expressions
             out = RGBValue<int>(255) - in;
 
-            if (strcmp(argv[2], "-") == 0)
+            if(strcmp(argv[2], "-") == 0)
             {
                 // write stdout
                 exportImage(out,
@@ -115,7 +115,7 @@ main(int argc, char** argv)
             }
         }
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         std::cout << e.what() << std::endl;
         return 1;

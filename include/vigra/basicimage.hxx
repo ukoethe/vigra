@@ -55,7 +55,7 @@
 namespace vigra
 {
 
-template<class IMAGEITERATOR>
+template <class IMAGEITERATOR>
 class LineBasedColumnIteratorPolicy
 {
 public:
@@ -139,8 +139,8 @@ public:
     <b>\#include</b> \<vigra/basicimage.hxx\> <br/>
     Namespace: vigra
 */
-template<class IMAGEITERATOR, class PIXELTYPE,
-         class REFERENCE, class POINTER, class LINESTARTITERATOR>
+template <class IMAGEITERATOR, class PIXELTYPE,
+          class REFERENCE, class POINTER, class LINESTARTITERATOR>
 class BasicImageIteratorBase
 {
 public:
@@ -282,7 +282,7 @@ protected:
     <b>\#include</b> \<vigra/basicimage.hxx\> <br/>
     Namespace: vigra
 */
-template<class PIXELTYPE, class ITERATOR>
+template <class PIXELTYPE, class ITERATOR>
 class BasicImageIterator
     : public BasicImageIteratorBase<BasicImageIterator<PIXELTYPE, ITERATOR>,
                                     PIXELTYPE, PIXELTYPE&, PIXELTYPE*, ITERATOR>
@@ -316,7 +316,7 @@ public:
     <b>\#include</b> \<vigra/basicimage.hxx\> <br/>
     Namespace: vigra
 */
-template<class PIXELTYPE, class ITERATOR>
+template <class PIXELTYPE, class ITERATOR>
 class ConstBasicImageIterator
     : public BasicImageIteratorBase<ConstBasicImageIterator<PIXELTYPE, ITERATOR>,
                                     PIXELTYPE, PIXELTYPE const&, PIXELTYPE const*, ITERATOR>
@@ -360,7 +360,7 @@ public:
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template<class T>
+template <class T>
 struct IteratorTraits<BasicImageIterator<T, T**>>
     : public IteratorTraitsBase<BasicImageIterator<T, T**>>
 {
@@ -371,7 +371,7 @@ struct IteratorTraits<BasicImageIterator<T, T**>>
     typedef VigraTrueType hasConstantStrides;
 };
 
-template<class T>
+template <class T>
 struct IteratorTraits<ConstBasicImageIterator<T, T**>>
     : public IteratorTraitsBase<ConstBasicImageIterator<T, T**>>
 {
@@ -385,7 +385,7 @@ struct IteratorTraits<ConstBasicImageIterator<T, T**>>
 #else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 #define VIGRA_DEFINE_ITERATORTRAITS(VALUETYPE)                                              \
-    template<>                                                                              \
+    template <>                                                                             \
     struct IteratorTraits<BasicImageIterator<VALUETYPE, VALUETYPE**>>                       \
         : public IteratorTraitsBase<BasicImageIterator<VALUETYPE, VALUETYPE**>>             \
     {                                                                                       \
@@ -396,7 +396,7 @@ struct IteratorTraits<ConstBasicImageIterator<T, T**>>
         typedef VigraTrueType hasConstantStrides;                                           \
     };                                                                                      \
                                                                                             \
-    template<>                                                                              \
+    template <>                                                                             \
     struct IteratorTraits<ConstBasicImageIterator<VALUETYPE, VALUETYPE**>>                  \
         : public IteratorTraitsBase<ConstBasicImageIterator<VALUETYPE, VALUETYPE**>>        \
     {                                                                                       \
@@ -499,7 +499,7 @@ VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE)
     <b>\#include</b> \<vigra/basicimage.hxx\> <br/>
     Namespace: vigra
 */
-template<class PIXELTYPE, class Alloc = std::allocator<PIXELTYPE>>
+template <class PIXELTYPE, class Alloc = std::allocator<PIXELTYPE>>
 class BasicImage
 {
 public:
@@ -802,7 +802,7 @@ public:
         */
     void resize(std::ptrdiff_t width, std::ptrdiff_t height)
     {
-        if (width != width_ || height != height_)
+        if(width != width_ || height != height_)
             resize(width, height, value_type());
     }
 
@@ -811,7 +811,7 @@ public:
         */
     void resize(difference_type const& size)
     {
-        if (size.x != width_ || size.y != height_)
+        if(size.x != width_ || size.y != height_)
         {
             resize(size.x, size.y, value_type());
         }
@@ -1114,14 +1114,14 @@ private:
     LineAllocator pallocator_;
 };
 
-template<class PIXELTYPE, class Alloc>
+template <class PIXELTYPE, class Alloc>
 BasicImage<PIXELTYPE, Alloc>&
 BasicImage<PIXELTYPE, Alloc>::operator=(const BasicImage& rhs)
 {
-    if (this != &rhs)
+    if(this != &rhs)
     {
-        if ((width() != rhs.width()) ||
-            (height() != rhs.height()))
+        if((width() != rhs.width()) ||
+           (height() != rhs.height()))
         {
             resizeCopy(rhs);
         }
@@ -1131,40 +1131,40 @@ BasicImage<PIXELTYPE, Alloc>::operator=(const BasicImage& rhs)
             ConstScanOrderIterator iend = rhs.end();
             ScanOrderIterator id = begin();
 
-            for (; is != iend; ++is, ++id)
+            for(; is != iend; ++is, ++id)
                 *id = *is;
         }
     }
     return *this;
 }
 
-template<class PIXELTYPE, class Alloc>
+template <class PIXELTYPE, class Alloc>
 BasicImage<PIXELTYPE, Alloc>&
 BasicImage<PIXELTYPE, Alloc>::operator=(value_type pixel)
 {
     ScanOrderIterator i = begin();
     ScanOrderIterator iend = end();
 
-    for (; i != iend; ++i)
+    for(; i != iend; ++i)
         *i = pixel;
 
     return *this;
 }
 
-template<class PIXELTYPE, class Alloc>
+template <class PIXELTYPE, class Alloc>
 BasicImage<PIXELTYPE, Alloc>&
 BasicImage<PIXELTYPE, Alloc>::init(value_type const& pixel)
 {
     ScanOrderIterator i = begin();
     ScanOrderIterator iend = end();
 
-    for (; i != iend; ++i)
+    for(; i != iend; ++i)
         *i = pixel;
 
     return *this;
 }
 
-template<class PIXELTYPE, class Alloc>
+template <class PIXELTYPE, class Alloc>
 void
 BasicImage<PIXELTYPE, Alloc>::resizeImpl(std::ptrdiff_t width, std::ptrdiff_t height, value_type const& d, bool skipInit)
 {
@@ -1175,16 +1175,16 @@ BasicImage<PIXELTYPE, Alloc>::resizeImpl(std::ptrdiff_t width, std::ptrdiff_t he
                        "BasicImage::resize(int width, int height, value_type const &): "
                        "width * height too large (integer overflow -> negative).\n");
 
-    if (width_ != width || height_ != height) // change size?
+    if(width_ != width || height_ != height) // change size?
     {
         value_type* newdata = 0;
         value_type** newlines = 0;
-        if (width * height > 0)
+        if(width * height > 0)
         {
-            if (width * height != width_ * height_) // different sizes, must reallocate
+            if(width * height != width_ * height_) // different sizes, must reallocate
             {
                 newdata = allocator_.allocate(typename Alloc::size_type(width * height));
-                if (!skipInit)
+                if(!skipInit)
                     std::uninitialized_fill_n(newdata, width * height, d);
                 newlines = initLineStartArray(newdata, width, height);
                 deallocate();
@@ -1192,7 +1192,7 @@ BasicImage<PIXELTYPE, Alloc>::resizeImpl(std::ptrdiff_t width, std::ptrdiff_t he
             else // need only to reshape
             {
                 newdata = data_;
-                if (!skipInit)
+                if(!skipInit)
                     std::fill_n(newdata, width * height, d);
                 newlines = initLineStartArray(newdata, width, height);
                 pallocator_.deallocate(lines_, typename Alloc::size_type(height_));
@@ -1208,25 +1208,25 @@ BasicImage<PIXELTYPE, Alloc>::resizeImpl(std::ptrdiff_t width, std::ptrdiff_t he
         width_ = width;
         height_ = height;
     }
-    else if (width * height > 0 && !skipInit) // keep size, re-init data
+    else if(width * height > 0 && !skipInit) // keep size, re-init data
     {
         std::fill_n(data_, width * height, d);
     }
 }
 
 
-template<class PIXELTYPE, class Alloc>
+template <class PIXELTYPE, class Alloc>
 void
 BasicImage<PIXELTYPE, Alloc>::resizeCopy(std::ptrdiff_t width, std::ptrdiff_t height, const_pointer data)
 {
     std::ptrdiff_t newsize = width * height;
-    if (width_ != width || height_ != height) // change size?
+    if(width_ != width || height_ != height) // change size?
     {
         value_type* newdata = 0;
         value_type** newlines = 0;
-        if (newsize > 0)
+        if(newsize > 0)
         {
-            if (newsize != width_ * height_) // different sizes, must reallocate
+            if(newsize != width_ * height_) // different sizes, must reallocate
             {
                 newdata = allocator_.allocate(typename Alloc::size_type(newsize));
                 std::uninitialized_copy(data, data + newsize, newdata);
@@ -1251,17 +1251,17 @@ BasicImage<PIXELTYPE, Alloc>::resizeCopy(std::ptrdiff_t width, std::ptrdiff_t he
         width_ = width;
         height_ = height;
     }
-    else if (newsize > 0) // keep size, copy data
+    else if(newsize > 0) // keep size, copy data
     {
         std::copy(data, data + newsize, data_);
     }
 }
 
-template<class PIXELTYPE, class Alloc>
+template <class PIXELTYPE, class Alloc>
 void
 BasicImage<PIXELTYPE, Alloc>::swap(BasicImage& rhs)
 {
-    if (&rhs != this)
+    if(&rhs != this)
     {
         std::swap(data_, rhs.data_);
         std::swap(lines_, rhs.lines_);
@@ -1270,16 +1270,16 @@ BasicImage<PIXELTYPE, Alloc>::swap(BasicImage& rhs)
     }
 }
 
-template<class PIXELTYPE, class Alloc>
+template <class PIXELTYPE, class Alloc>
 void
 BasicImage<PIXELTYPE, Alloc>::deallocate()
 {
-    if (data_)
+    if(data_)
     {
         ScanOrderIterator i = begin();
         ScanOrderIterator iend = end();
 
-        for (; i != iend; ++i)
+        for(; i != iend; ++i)
             (*i).~PIXELTYPE();
 
         allocator_.deallocate(data_, typename Alloc::size_type(width() * height()));
@@ -1287,12 +1287,12 @@ BasicImage<PIXELTYPE, Alloc>::deallocate()
     }
 }
 
-template<class PIXELTYPE, class Alloc>
+template <class PIXELTYPE, class Alloc>
 PIXELTYPE**
 BasicImage<PIXELTYPE, Alloc>::initLineStartArray(value_type* data, std::ptrdiff_t width, std::ptrdiff_t height)
 {
     value_type** lines = pallocator_.allocate(typename Alloc::size_type(height));
-    for (std::ptrdiff_t y = 0; y < height; ++y)
+    for(std::ptrdiff_t y = 0; y < height; ++y)
         lines[y] = data + y * width;
     return lines;
 }
@@ -1303,7 +1303,7 @@ BasicImage<PIXELTYPE, Alloc>::initLineStartArray(value_type* data, std::ptrdiff_
 /*                                                      */
 /********************************************************/
 
-template<class PixelType, class Accessor, class Alloc>
+template <class PixelType, class Accessor, class Alloc>
 inline triple<typename BasicImage<PixelType, Alloc>::const_traverser,
               typename BasicImage<PixelType, Alloc>::const_traverser, Accessor>
 srcImageRange(BasicImage<PixelType, Alloc> const& img, Accessor a)
@@ -1315,7 +1315,7 @@ srcImageRange(BasicImage<PixelType, Alloc> const& img, Accessor a)
                             a);
 }
 
-template<class PixelType, class Accessor, class Alloc>
+template <class PixelType, class Accessor, class Alloc>
 inline triple<typename BasicImage<PixelType, Alloc>::const_traverser,
               typename BasicImage<PixelType, Alloc>::const_traverser, Accessor>
 srcImageRange(BasicImage<PixelType, Alloc> const& img, Rect2D const& roi, Accessor a)
@@ -1330,7 +1330,7 @@ srcImageRange(BasicImage<PixelType, Alloc> const& img, Rect2D const& roi, Access
                             a);
 }
 
-template<class PixelType, class Accessor, class Alloc>
+template <class PixelType, class Accessor, class Alloc>
 inline pair<typename BasicImage<PixelType, Alloc>::const_traverser, Accessor>
 srcImage(BasicImage<PixelType, Alloc> const& img, Accessor a)
 {
@@ -1338,7 +1338,7 @@ srcImage(BasicImage<PixelType, Alloc> const& img, Accessor a)
                 Accessor>(img.upperLeft(), a);
 }
 
-template<class PixelType, class Accessor, class Alloc>
+template <class PixelType, class Accessor, class Alloc>
 inline pair<typename BasicImage<PixelType, Alloc>::const_traverser, Accessor>
 srcImage(BasicImage<PixelType, Alloc> const& img, Point2D const& ul, Accessor a)
 {
@@ -1348,7 +1348,7 @@ srcImage(BasicImage<PixelType, Alloc> const& img, Point2D const& ul, Accessor a)
                 Accessor>(img.upperLeft() + ul, a);
 }
 
-template<class PixelType, class Accessor, class Alloc>
+template <class PixelType, class Accessor, class Alloc>
 inline triple<typename BasicImage<PixelType, Alloc>::traverser,
               typename BasicImage<PixelType, Alloc>::traverser, Accessor>
 destImageRange(BasicImage<PixelType, Alloc>& img, Accessor a)
@@ -1360,7 +1360,7 @@ destImageRange(BasicImage<PixelType, Alloc>& img, Accessor a)
                             a);
 }
 
-template<class PixelType, class Accessor, class Alloc>
+template <class PixelType, class Accessor, class Alloc>
 inline triple<typename BasicImage<PixelType, Alloc>::traverser,
               typename BasicImage<PixelType, Alloc>::traverser, Accessor>
 destImageRange(BasicImage<PixelType, Alloc>& img, Rect2D const& roi, Accessor a)
@@ -1375,7 +1375,7 @@ destImageRange(BasicImage<PixelType, Alloc>& img, Rect2D const& roi, Accessor a)
                             a);
 }
 
-template<class PixelType, class Accessor, class Alloc>
+template <class PixelType, class Accessor, class Alloc>
 inline pair<typename BasicImage<PixelType, Alloc>::traverser, Accessor>
 destImage(BasicImage<PixelType, Alloc>& img, Accessor a)
 {
@@ -1383,7 +1383,7 @@ destImage(BasicImage<PixelType, Alloc>& img, Accessor a)
                 Accessor>(img.upperLeft(), a);
 }
 
-template<class PixelType, class Accessor, class Alloc>
+template <class PixelType, class Accessor, class Alloc>
 inline pair<typename BasicImage<PixelType, Alloc>::traverser, Accessor>
 destImage(BasicImage<PixelType, Alloc>& img, Point2D const& ul, Accessor a)
 {
@@ -1393,7 +1393,7 @@ destImage(BasicImage<PixelType, Alloc>& img, Point2D const& ul, Accessor a)
                 Accessor>(img.upperLeft() + ul, a);
 }
 
-template<class PixelType, class Accessor, class Alloc>
+template <class PixelType, class Accessor, class Alloc>
 inline pair<typename BasicImage<PixelType, Alloc>::const_traverser, Accessor>
 maskImage(BasicImage<PixelType, Alloc> const& img, Accessor a)
 {
@@ -1401,7 +1401,7 @@ maskImage(BasicImage<PixelType, Alloc> const& img, Accessor a)
                 Accessor>(img.upperLeft(), a);
 }
 
-template<class PixelType, class Accessor, class Alloc>
+template <class PixelType, class Accessor, class Alloc>
 inline pair<typename BasicImage<PixelType, Alloc>::const_traverser, Accessor>
 maskImage(BasicImage<PixelType, Alloc> const& img, Point2D const& ul, Accessor a)
 {
@@ -1413,7 +1413,7 @@ maskImage(BasicImage<PixelType, Alloc> const& img, Point2D const& ul, Accessor a
 
 /****************************************************************/
 
-template<class PixelType, class Alloc>
+template <class PixelType, class Alloc>
 inline triple<typename BasicImage<PixelType, Alloc>::const_traverser,
               typename BasicImage<PixelType, Alloc>::const_traverser,
               typename BasicImage<PixelType, Alloc>::ConstAccessor>
@@ -1426,7 +1426,7 @@ srcImageRange(BasicImage<PixelType, Alloc> const& img)
                                                                         img.accessor());
 }
 
-template<class PixelType, class Alloc>
+template <class PixelType, class Alloc>
 inline triple<typename BasicImage<PixelType, Alloc>::const_traverser,
               typename BasicImage<PixelType, Alloc>::const_traverser,
               typename BasicImage<PixelType, Alloc>::ConstAccessor>
@@ -1442,7 +1442,7 @@ srcImageRange(BasicImage<PixelType, Alloc> const& img, Rect2D const& roi)
                                                                         img.accessor());
 }
 
-template<class PixelType, class Alloc>
+template <class PixelType, class Alloc>
 inline pair<typename BasicImage<PixelType, Alloc>::const_traverser,
             typename BasicImage<PixelType, Alloc>::ConstAccessor>
 srcImage(BasicImage<PixelType, Alloc> const& img)
@@ -1452,7 +1452,7 @@ srcImage(BasicImage<PixelType, Alloc> const& img)
                                                                       img.accessor());
 }
 
-template<class PixelType, class Alloc>
+template <class PixelType, class Alloc>
 inline pair<typename BasicImage<PixelType, Alloc>::const_traverser,
             typename BasicImage<PixelType, Alloc>::ConstAccessor>
 srcImage(BasicImage<PixelType, Alloc> const& img, Point2D const& ul)
@@ -1464,7 +1464,7 @@ srcImage(BasicImage<PixelType, Alloc> const& img, Point2D const& ul)
                                                                       img.accessor());
 }
 
-template<class PixelType, class Alloc>
+template <class PixelType, class Alloc>
 inline triple<typename BasicImage<PixelType, Alloc>::traverser,
               typename BasicImage<PixelType, Alloc>::traverser,
               typename BasicImage<PixelType, Alloc>::Accessor>
@@ -1477,7 +1477,7 @@ destImageRange(BasicImage<PixelType, Alloc>& img)
                                                                    img.accessor());
 }
 
-template<class PixelType, class Alloc>
+template <class PixelType, class Alloc>
 inline triple<typename BasicImage<PixelType, Alloc>::traverser,
               typename BasicImage<PixelType, Alloc>::traverser,
               typename BasicImage<PixelType, Alloc>::Accessor>
@@ -1493,7 +1493,7 @@ destImageRange(BasicImage<PixelType, Alloc>& img, Rect2D const& roi)
                                                                    img.accessor());
 }
 
-template<class PixelType, class Alloc>
+template <class PixelType, class Alloc>
 inline pair<typename BasicImage<PixelType, Alloc>::traverser,
             typename BasicImage<PixelType, Alloc>::Accessor>
 destImage(BasicImage<PixelType, Alloc>& img)
@@ -1503,7 +1503,7 @@ destImage(BasicImage<PixelType, Alloc>& img)
                                                                  img.accessor());
 }
 
-template<class PixelType, class Alloc>
+template <class PixelType, class Alloc>
 inline pair<typename BasicImage<PixelType, Alloc>::traverser,
             typename BasicImage<PixelType, Alloc>::Accessor>
 destImage(BasicImage<PixelType, Alloc>& img, Point2D const& ul)
@@ -1515,7 +1515,7 @@ destImage(BasicImage<PixelType, Alloc>& img, Point2D const& ul)
                                                                  img.accessor());
 }
 
-template<class PixelType, class Alloc>
+template <class PixelType, class Alloc>
 inline pair<typename BasicImage<PixelType, Alloc>::const_traverser,
             typename BasicImage<PixelType, Alloc>::ConstAccessor>
 maskImage(BasicImage<PixelType, Alloc> const& img)
@@ -1525,7 +1525,7 @@ maskImage(BasicImage<PixelType, Alloc> const& img)
                                                                       img.accessor());
 }
 
-template<class PixelType, class Alloc>
+template <class PixelType, class Alloc>
 inline pair<typename BasicImage<PixelType, Alloc>::const_traverser,
             typename BasicImage<PixelType, Alloc>::ConstAccessor>
 maskImage(BasicImage<PixelType, Alloc> const& img, Point2D const& ul)

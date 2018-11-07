@@ -89,7 +89,7 @@ namespace vigra
     <b>\#include</b> \<vigra/contourcirculator.hxx\><br>
     Namespace: vigra
 */
-template<class IMAGEITERATOR>
+template <class IMAGEITERATOR>
 class CrackContourCirculator
 {
     typedef NeighborhoodCirculator<IMAGEITERATOR, EightNeighborCode>
@@ -153,7 +153,7 @@ public:
 
         neighborCirc_--;
 
-        if (*neighborCirc_ == label_)
+        if(*neighborCirc_ == label_)
         {
             neighborCirc_.moveCenterToNeighbor(); // TODO: simplify moveCenterToNeighbor()s
             --neighborCirc_;
@@ -162,7 +162,7 @@ public:
         {
             neighborCirc_.moveCenterToNeighbor(); // jump out
             neighborCirc_ += 3;
-            if (*neighborCirc_ == label_)
+            if(*neighborCirc_ == label_)
             {
                 neighborCirc_.moveCenterToNeighbor();
                 neighborCirc_.turnRight();

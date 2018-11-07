@@ -93,7 +93,7 @@ public:
 
 public:
     /* \brief Create tree with parameters */
-    template<class T>
+    template <class T>
     DecisionTree(ProblemSpec<T> ext_param)
         : ext_param_(ext_param),
           classCount_(ext_param.class_count_)
@@ -104,7 +104,7 @@ public:
      */
     void reset(unsigned int classCount = 0)
     {
-        if (classCount)
+        if(classCount)
             classCount_ = classCount;
         topology_.clear();
         parameters_.clear();
@@ -118,13 +118,13 @@ public:
      *          Stack entry associated with it (Split_t::StackEntry_t)
      * \sa RandomForest::learn()
      */
-    template<class U, class C,
-             class U2, class C2,
-             class StackEntry_t,
-             class Stop_t,
-             class Split_t,
-             class Visitor_t,
-             class Random_t>
+    template <class U, class C,
+              class U2, class C2,
+              class StackEntry_t,
+              class Stop_t,
+              class Split_t,
+              class Visitor_t,
+              class Random_t>
     void learn(MultiArrayView<2, U, C> const& features,
                MultiArrayView<2, U2, C2> const& labels,
                StackEntry_t const& stack_entry,
@@ -132,13 +132,13 @@ public:
                Stop_t stop,
                Visitor_t& visitor,
                Random_t& randint);
-    template<class U, class C,
-             class U2, class C2,
-             class StackEntry_t,
-             class Stop_t,
-             class Split_t,
-             class Visitor_t,
-             class Random_t>
+    template <class U, class C,
+              class U2, class C2,
+              class StackEntry_t,
+              class Stop_t,
+              class Split_t,
+              class Visitor_t,
+              class Random_t>
     void continueLearn(MultiArrayView<2, U, C> const& features,
                        MultiArrayView<2, U2, C2> const& labels,
                        StackEntry_t const& stack_entry,
@@ -160,15 +160,15 @@ public:
      * traverse through tree with data given in features. Use Visitors to 
      * collect statistics along the way. 
      */
-    template<class U, class C, class Visitor_t>
+    template <class U, class C, class Visitor_t>
     TreeInt getToLeaf(MultiArrayView<2, U, C> const& features,
                       Visitor_t& visitor) const
     {
         TreeInt index = 2;
-        while (!isLeafNode(topology_[index]))
+        while(!isLeafNode(topology_[index]))
         {
             visitor.visit_internal_node(*this, index, topology_[index], features);
-            switch (topology_[index])
+            switch(topology_[index])
             {
                 case i_ThresholdNode:
                 {
@@ -213,13 +213,13 @@ public:
      * Tree is traversed in order the Nodes are in memory (i.e. if no 
      * relearning//pruning scheme is utilized this will be pre order)
      */
-    template<class Visitor_t>
+    template <class Visitor_t>
     void traverse_mem_order(Visitor_t visitor) const
     {
         UInt32 index = 2;
-        while (index < topology_.size())
+        while(index < topology_.size())
         {
-            if (isLeafNode(topology_[index]))
+            if(isLeafNode(topology_[index]))
             {
                 visitor
                     .visit_external_node(*this, index, topology_[index]);
@@ -232,7 +232,7 @@ public:
         }
     }
 
-    template<class Visitor_t>
+    template <class Visitor_t>
     void traverse_post_order(Visitor_t visitor, TreeInt /*start*/ = 2) const
     {
         typedef TinyVector<double, 2> Entry;
@@ -240,11 +240,11 @@ public:
         std::vector<double> result_stack;
         stack.push_back(Entry(2, 0));
         int addr;
-        while (!stack.empty())
+        while(!stack.empty())
         {
             addr = stack.back()[0];
             NodeBase node(topology_, parameters_, stack.back()[0]);
-            if (stack.back()[1] == 1)
+            if(stack.back()[1] == 1)
             {
                 stack.pop_back();
                 double leftRes = result_stack.back();
@@ -259,7 +259,7 @@ public:
             }
             else
             {
-                if (isLeafNode(node.typeID()))
+                if(isLeafNode(node.typeID()))
                 {
                     visitor.visit_external_node(*this,
                                                 addr,
@@ -279,7 +279,7 @@ public:
     }
 
     /* same thing as above, without any visitors */
-    template<class U, class C>
+    template <class U, class C>
     TreeInt getToLeaf(MultiArrayView<2, U, C> const& features) const
     {
         ::vigra::rf::visitors::StopVisiting stop;
@@ -287,12 +287,12 @@ public:
     }
 
 
-    template<class U, class C>
+    template <class U, class C>
     ArrayVector<double>::iterator
         predict(MultiArrayView<2, U, C> const& features) const
     {
         TreeInt nodeindex = getToLeaf(features);
-        switch (topology_[nodeindex])
+        switch(topology_[nodeindex])
         {
             case e_ConstProbNode:
                 return Node<e_ConstProbNode>(topology_,
@@ -316,7 +316,7 @@ public:
 
 
 
-    template<class U, class C>
+    template <class U, class C>
     Int32 predictLabel(MultiArrayView<2, U, C> const& features) const
     {
         ArrayVector<double>::const_iterator weights = predict(features);
@@ -325,13 +325,13 @@ public:
 };
 
 
-template<class U, class C,
-         class U2, class C2,
-         class StackEntry_t,
-         class Stop_t,
-         class Split_t,
-         class Visitor_t,
-         class Random_t>
+template <class U, class C,
+          class U2, class C2,
+          class StackEntry_t,
+          class Stop_t,
+          class Split_t,
+          class Visitor_t,
+          class Random_t>
 void DecisionTree::learn(MultiArrayView<2, U, C> const& features,
                          MultiArrayView<2, U2, C2> const& labels,
                          StackEntry_t const& stack_entry,
@@ -348,13 +348,13 @@ void DecisionTree::learn(MultiArrayView<2, U, C> const& features,
     continueLearn(features, labels, stack_entry, split, stop, visitor, randint);
 }
 
-template<class U, class C,
-         class U2, class C2,
-         class StackEntry_t,
-         class Stop_t,
-         class Split_t,
-         class Visitor_t,
-         class Random_t>
+template <class U, class C,
+          class U2, class C2,
+          class StackEntry_t,
+          class Stop_t,
+          class Split_t,
+          class Visitor_t,
+          class Random_t>
 void DecisionTree::continueLearn(MultiArrayView<2, U, C> const& features,
                                  MultiArrayView<2, U2, C2> const& labels,
                                  StackEntry_t const& stack_entry,
@@ -372,7 +372,7 @@ void DecisionTree::continueLearn(MultiArrayView<2, U, C> const& features,
     size_t last_node_pos = 0;
     StackEntry_t top = stack.back();
 
-    while (!stack.empty())
+    while(!stack.empty())
     {
 
         // Take an element of the stack. Obvious ain't it?
@@ -390,7 +390,7 @@ void DecisionTree::continueLearn(MultiArrayView<2, U, C> const& features,
         //kind of node to make
         TreeInt NodeID;
 
-        if (stop(top))
+        if(stop(top))
             NodeID = split.makeTerminalNode(features,
                                             labels,
                                             top,
@@ -419,14 +419,14 @@ void DecisionTree::continueLearn(MultiArrayView<2, U, C> const& features,
         // Using InteriorNodeBase because exact parameter form not needed.
         // look at the Node base before getting scared.
         last_node_pos = topology_.size();
-        if (top.leftParent != StackEntry_t::DecisionTreeNoParent)
+        if(top.leftParent != StackEntry_t::DecisionTreeNoParent)
         {
             NodeBase(topology_,
                      parameters_,
                      top.leftParent)
                 .child(0) = last_node_pos;
         }
-        else if (top.rightParent != StackEntry_t::DecisionTreeNoParent)
+        else if(top.rightParent != StackEntry_t::DecisionTreeNoParent)
         {
             NodeBase(topology_,
                      parameters_,
@@ -438,7 +438,7 @@ void DecisionTree::continueLearn(MultiArrayView<2, U, C> const& features,
         // Supply the split functor with the Node type it requires.
         // set the address to which the children of this node should point
         // to and push back children onto stack
-        if (!isLeafNode(NodeID))
+        if(!isLeafNode(NodeID))
         {
             child_stack_entry[0].leftParent = topology_.size();
             child_stack_entry[1].rightParent = topology_.size();
@@ -453,7 +453,7 @@ void DecisionTree::continueLearn(MultiArrayView<2, U, C> const& features,
         NodeBase node(split.createNode(), topology_, parameters_);
         ignore_argument(node);
     }
-    if (garbaged_child != -1)
+    if(garbaged_child != -1)
     {
         Node<e_ConstProbNode>(topology_, parameters_, garbaged_child).copy(Node<e_ConstProbNode>(topology_, parameters_, last_node_pos));
 
@@ -461,12 +461,12 @@ void DecisionTree::continueLearn(MultiArrayView<2, U, C> const& features,
         topology_.resize(last_node_pos);
         parameters_.resize(parameters_.size() - last_parameter_size);
 
-        if (top.leftParent != StackEntry_t::DecisionTreeNoParent)
+        if(top.leftParent != StackEntry_t::DecisionTreeNoParent)
             NodeBase(topology_,
                      parameters_,
                      top.leftParent)
                 .child(0) = garbaged_child;
-        else if (top.rightParent != StackEntry_t::DecisionTreeNoParent)
+        else if(top.rightParent != StackEntry_t::DecisionTreeNoParent)
             NodeBase(topology_,
                      parameters_,
                      top.rightParent)

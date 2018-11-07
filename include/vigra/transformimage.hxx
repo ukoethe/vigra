@@ -60,22 +60,22 @@ namespace vigra
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor, class Functor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Functor>
 void
 transformLine(SrcIterator s,
               SrcIterator send, SrcAccessor src,
               DestIterator d, DestAccessor dest,
               Functor const& f)
 {
-    for (; s != send; ++s, ++d)
+    for(; s != send; ++s, ++d)
         dest.set(f(src(s)), d);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class MaskIterator, class MaskAccessor,
-         class DestIterator, class DestAccessor,
-         class Functor>
+template <class SrcIterator, class SrcAccessor,
+          class MaskIterator, class MaskAccessor,
+          class DestIterator, class DestAccessor,
+          class Functor>
 void
 transformLineIf(SrcIterator s,
                 SrcIterator send, SrcAccessor src,
@@ -83,8 +83,8 @@ transformLineIf(SrcIterator s,
                 DestIterator d, DestAccessor dest,
                 Functor const& f)
 {
-    for (; s != send; ++s, ++d, ++m)
-        if (mask(m))
+    for(; s != send; ++s, ++d, ++m)
+        if(mask(m))
             dest.set(f(src(s)), d);
 }
 
@@ -190,10 +190,10 @@ transformLineIf(SrcIterator s,
 
     \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
-doxygen_overloaded_function(template<...> void transformImage)
+doxygen_overloaded_function(template <...> void transformImage)
 
-    template<class SrcImageIterator, class SrcAccessor,
-             class DestImageIterator, class DestAccessor, class Functor>
+    template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor, class Functor>
     void transformImage(SrcImageIterator src_upperleft,
                         SrcImageIterator src_lowerright, SrcAccessor sa,
                         DestImageIterator dest_upperleft, DestAccessor da,
@@ -201,7 +201,7 @@ doxygen_overloaded_function(template<...> void transformImage)
 {
     int w = src_lowerright.x - src_upperleft.x;
 
-    for (; src_upperleft.y < src_lowerright.y; ++src_upperleft.y, ++dest_upperleft.y)
+    for(; src_upperleft.y < src_lowerright.y; ++src_upperleft.y, ++dest_upperleft.y)
     {
         transformLine(src_upperleft.rowIterator(),
                       src_upperleft.rowIterator() + w, sa,
@@ -209,8 +209,8 @@ doxygen_overloaded_function(template<...> void transformImage)
     }
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor, class Functor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor, class Functor>
 inline void
 transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                pair<DestImageIterator, DestAccessor> dest,
@@ -220,8 +220,8 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                    dest.first, dest.second, f);
 }
 
-template<class T1, class S1,
-         class T2, class S2, class Functor>
+template <class T1, class S1,
+          class T2, class S2, class Functor>
 inline void
     transformImage(MultiArrayView<2, T1, S1> const& src,
                    MultiArrayView<2, T2, S2> dest,
@@ -352,12 +352,12 @@ inline void
 
     \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
-doxygen_overloaded_function(template<...> void transformImageIf)
+doxygen_overloaded_function(template <...> void transformImageIf)
 
-    template<class SrcImageIterator, class SrcAccessor,
-             class MaskImageIterator, class MaskAccessor,
-             class DestImageIterator, class DestAccessor,
-             class Functor>
+    template <class SrcImageIterator, class SrcAccessor,
+              class MaskImageIterator, class MaskAccessor,
+              class DestImageIterator, class DestAccessor,
+              class Functor>
     void transformImageIf(SrcImageIterator src_upperleft,
                           SrcImageIterator src_lowerright, SrcAccessor sa,
                           MaskImageIterator mask_upperleft, MaskAccessor ma,
@@ -366,8 +366,8 @@ doxygen_overloaded_function(template<...> void transformImageIf)
 {
     int w = src_lowerright.x - src_upperleft.x;
 
-    for (; src_upperleft.y < src_lowerright.y;
-         ++src_upperleft.y, ++mask_upperleft.y, ++dest_upperleft.y)
+    for(; src_upperleft.y < src_lowerright.y;
+        ++src_upperleft.y, ++mask_upperleft.y, ++dest_upperleft.y)
     {
         transformLineIf(src_upperleft.rowIterator(),
                         src_upperleft.rowIterator() + w, sa,
@@ -376,10 +376,10 @@ doxygen_overloaded_function(template<...> void transformImageIf)
     }
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class MaskImageIterator, class MaskAccessor,
-         class DestImageIterator, class DestAccessor,
-         class Functor>
+template <class SrcImageIterator, class SrcAccessor,
+          class MaskImageIterator, class MaskAccessor,
+          class DestImageIterator, class DestAccessor,
+          class Functor>
 inline void
 transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                  pair<MaskImageIterator, MaskAccessor> mask,
@@ -391,10 +391,10 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                      dest.first, dest.second, f);
 }
 
-template<class T1, class S1,
-         class TM, class SM,
-         class T2, class S2,
-         class Functor>
+template <class T1, class S1,
+          class TM, class SM,
+          class T2, class S2,
+          class Functor>
 inline void
     transformImageIf(MultiArrayView<2, T1, S1> const& src,
                      MultiArrayView<2, TM, SM> const& mask,
@@ -506,10 +506,10 @@ inline void
 
     \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
-doxygen_overloaded_function(template<...> void gradientBasedTransform)
+doxygen_overloaded_function(template <...> void gradientBasedTransform)
 
-    template<class SrcImageIterator, class SrcAccessor,
-             class DestImageIterator, class DestAccessor, class Functor>
+    template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor, class Functor>
     void gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccessor sa,
                                 DestImageIterator destul, DestAccessor da, Functor const& grad)
 {
@@ -535,7 +535,7 @@ doxygen_overloaded_function(template<...> void gradientBasedTransform)
     diffy = sa(sx) - sa(sx, bottom);
     da.set(grad(diffx, diffy), dx);
 
-    for (x = 2, ++sx.x, ++dx.x; x < w; ++x, ++sx.x, ++dx.x)
+    for(x = 2, ++sx.x, ++dx.x; x < w; ++x, ++sx.x, ++dx.x)
     {
         diffx = (sa(sx, left) - sa(sx, right)) / TmpType(2.0);
         diffy = sa(sx) - sa(sx, bottom);
@@ -549,7 +549,7 @@ doxygen_overloaded_function(template<...> void gradientBasedTransform)
     ++sy.y;
     ++dy.y;
 
-    for (y = 2; y < h; ++y, ++sy.y, ++dy.y)
+    for(y = 2; y < h; ++y, ++sy.y, ++dy.y)
     {
         sx = sy;
         dx = dy;
@@ -558,7 +558,7 @@ doxygen_overloaded_function(template<...> void gradientBasedTransform)
         diffy = (sa(sx, top) - sa(sx, bottom)) / TmpType(2.0);
         da.set(grad(diffx, diffy), dx);
 
-        for (x = 2, ++sx.x, ++dx.x; x < w; ++x, ++sx.x, ++dx.x)
+        for(x = 2, ++sx.x, ++dx.x; x < w; ++x, ++sx.x, ++dx.x)
         {
             diffx = (sa(sx, left) - sa(sx, right)) / TmpType(2.0);
             diffy = (sa(sx, top) - sa(sx, bottom)) / TmpType(2.0);
@@ -577,7 +577,7 @@ doxygen_overloaded_function(template<...> void gradientBasedTransform)
     diffy = sa(sx, top) - sa(sx);
     da.set(grad(diffx, diffy), dx);
 
-    for (x = 2, ++sx.x, ++dx.x; x < w; ++x, ++sx.x, ++dx.x)
+    for(x = 2, ++sx.x, ++dx.x; x < w; ++x, ++sx.x, ++dx.x)
     {
         diffx = (sa(sx, left) - sa(sx, right)) / TmpType(2.0);
         diffy = sa(sx, top) - sa(sx);
@@ -589,8 +589,8 @@ doxygen_overloaded_function(template<...> void gradientBasedTransform)
     da.set(grad(diffx, diffy), dx);
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor, class Functor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor, class Functor>
 inline void
 gradientBasedTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                        pair<DestImageIterator, DestAccessor> dest, Functor const& grad)
@@ -599,8 +599,8 @@ gradientBasedTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> s
                            dest.first, dest.second, grad);
 }
 
-template<class T1, class S1,
-         class T2, class S2, class Functor>
+template <class T1, class S1,
+          class T2, class S2, class Functor>
 inline void
     gradientBasedTransform(MultiArrayView<2, T1, S1> const& src,
                            MultiArrayView<2, T2, S2> dest, Functor const& grad)
@@ -619,7 +619,7 @@ inline void
 */
 //@{
 
-template<class DestValueType, class Multiplier = double>
+template <class DestValueType, class Multiplier = double>
 class LinearIntensityTransform
 {
 public:
@@ -654,7 +654,7 @@ public:
 
     /* calculate transform
         */
-    template<class SrcValueType>
+    template <class SrcValueType>
     result_type operator()(SrcValueType const& s) const
     {
         return NumericTraits<result_type>::fromRealPromote(scale_ * (s + offset_));
@@ -665,7 +665,7 @@ private:
     argument_promote offset_;
 };
 
-template<class DestValueType, class Multiplier>
+template <class DestValueType, class Multiplier>
 class FunctorTraits<LinearIntensityTransform<DestValueType, Multiplier>>
     : public FunctorTraitsBase<LinearIntensityTransform<DestValueType, Multiplier>>
 {
@@ -673,7 +673,7 @@ public:
     typedef VigraTrueType isUnaryFunctor;
 };
 
-template<class DestValueType, class Multiplier = double>
+template <class DestValueType, class Multiplier = double>
 class ScalarIntensityTransform
 {
 public:
@@ -703,7 +703,7 @@ public:
 
     /* calculate transform
         */
-    template<class SrcValueType>
+    template <class SrcValueType>
     result_type operator()(SrcValueType const& s) const
     {
         return NumericTraits<result_type>::fromRealPromote(scale_ * s);
@@ -713,7 +713,7 @@ private:
     scalar_multiplier_type scale_;
 };
 
-template<class DestValueType, class Multiplier>
+template <class DestValueType, class Multiplier>
 class FunctorTraits<ScalarIntensityTransform<DestValueType, Multiplier>>
     : public FunctorTraitsBase<ScalarIntensityTransform<DestValueType, Multiplier>>
 {
@@ -793,14 +793,14 @@ public:
     The source and destination value types must be models of \ref LinearSpace in both cases.
 
 */
-template<class Multiplier, class DestValueType>
+template <class Multiplier, class DestValueType>
 LinearIntensityTransform<DestValueType, Multiplier>
 linearIntensityTransform(Multiplier scale, DestValueType offset)
 {
     return LinearIntensityTransform<DestValueType, Multiplier>(scale, offset);
 }
 
-template<class DestValueType, class Multiplier>
+template <class DestValueType, class Multiplier>
 ScalarIntensityTransform<DestValueType, Multiplier>
 linearIntensityTransform(Multiplier scale)
 {
@@ -875,7 +875,7 @@ linearIntensityTransform(Multiplier scale)
     The source and destination value types must be models of \ref LinearSpace in both cases.
 
 */
-template<class SrcValueType, class DestValueType>
+template <class SrcValueType, class DestValueType>
 LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
 linearRangeMapping(SrcValueType src_min, SrcValueType src_max,
                    DestValueType dest_min, DestValueType dest_max)
@@ -884,7 +884,7 @@ linearRangeMapping(SrcValueType src_min, SrcValueType src_max,
                               typename NumericTraits<DestValueType>::isScalar());
 }
 
-template<class SrcValueType, class DestValueType>
+template <class SrcValueType, class DestValueType>
 LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
 linearRangeMapping(FindMinMax<SrcValueType> const& src,
                    DestValueType dest_min, DestValueType dest_max)
@@ -893,7 +893,7 @@ linearRangeMapping(FindMinMax<SrcValueType> const& src,
                               typename NumericTraits<DestValueType>::isScalar());
 }
 
-template<class SrcValueType, class DestValueType>
+template <class SrcValueType, class DestValueType>
 LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
 linearRangeMapping(
     SrcValueType src_min, SrcValueType src_max,
@@ -909,7 +909,7 @@ linearRangeMapping(
         scale, dest_min / scale - src_min);
 }
 
-template<class SrcValueType, class DestValueType>
+template <class SrcValueType, class DestValueType>
 LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
 linearRangeMapping(
     SrcValueType src_min, SrcValueType src_max,
@@ -919,7 +919,7 @@ linearRangeMapping(
     typedef typename NumericTraits<DestValueType>::RealPromote Multiplier;
     typedef typename Multiplier::value_type MComponent;
     Multiplier scale(dest_max), offset(dest_max);
-    for (unsigned int i = 0; i < src_min.size(); ++i)
+    for(unsigned int i = 0; i < src_min.size(); ++i)
     {
         MComponent diff = src_max[i] - src_min[i];
         scale[i] = diff == NumericTraits<MComponent>::zero()
@@ -977,7 +977,7 @@ linearRangeMapping(
     \endcode
 
 */
-template<class SrcValueType, class DestValueType>
+template <class SrcValueType, class DestValueType>
 class Threshold
 {
 public:
@@ -1010,7 +1010,7 @@ private:
     result_type yesresult_, noresult_;
 };
 
-template<class SrcValueType, class DestValueType>
+template <class SrcValueType, class DestValueType>
 class FunctorTraits<Threshold<SrcValueType, DestValueType>>
     : public FunctorTraitsBase<Threshold<SrcValueType, DestValueType>>
 {
@@ -1097,7 +1097,7 @@ public:
 
     RGB values: the component type must meet the above requirements.
 */
-template<class PixelType>
+template <class PixelType>
 class BrightnessContrastFunctor
 {
     typedef typename NumericTraits<PixelType>::RealPromote promote_type;
@@ -1148,7 +1148,7 @@ private:
     promote_type diff_, zero_, one_;
 };
 
-template<>
+template <>
 class BrightnessContrastFunctor<unsigned char>
 {
     typedef NumericTraits<unsigned char>::RealPromote promote_type;
@@ -1162,7 +1162,7 @@ public:
     {
         BrightnessContrastFunctor<promote_type> f(brightness, contrast, min, max);
 
-        for (int i = min; i <= max; ++i)
+        for(int i = min; i <= max; ++i)
         {
             lut[i] = static_cast<unsigned char>(f(i) + 0.5);
         }
@@ -1177,7 +1177,7 @@ public:
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template<class ComponentType>
+template <class ComponentType>
 class BrightnessContrastFunctor<RGBValue<ComponentType>>
 {
     typedef typename NumericTraits<ComponentType>::RealPromote promote_type;
@@ -1203,7 +1203,7 @@ public:
 
 #else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template<>
+template <>
 class BrightnessContrastFunctor<RGBValue<int>>
 {
     typedef NumericTraits<int>::RealPromote promote_type;
@@ -1227,7 +1227,7 @@ public:
     }
 };
 
-template<>
+template <>
 class BrightnessContrastFunctor<RGBValue<float>>
 {
     typedef NumericTraits<float>::RealPromote promote_type;
@@ -1251,7 +1251,7 @@ public:
     }
 };
 
-template<class PixelType>
+template <class PixelType>
 class FunctorTraits<BrightnessContrastFunctor<PixelType>>
     : public FunctorTraitsBase<BrightnessContrastFunctor<PixelType>>
 {
@@ -1261,7 +1261,7 @@ public:
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template<>
+template <>
 class BrightnessContrastFunctor<RGBValue<unsigned char>>
 {
     typedef NumericTraits<unsigned char>::RealPromote promote_type;
@@ -1358,7 +1358,7 @@ public:
 
     RGB values: the component type must meet the above requirements.
 */
-template<class PixelType>
+template <class PixelType>
 class GammaFunctor
 {
     typedef typename NumericTraits<PixelType>::RealPromote promote_type;
@@ -1405,7 +1405,7 @@ private:
     promote_type diff_, zero_, one_;
 };
 
-template<>
+template <>
 class GammaFunctor<unsigned char>
 {
     typedef NumericTraits<unsigned char>::RealPromote promote_type;
@@ -1419,7 +1419,7 @@ public:
     {
         GammaFunctor<promote_type> f(gamma, min, max);
 
-        for (int i = min; i <= max; ++i)
+        for(int i = min; i <= max; ++i)
         {
             lut[i] = static_cast<unsigned char>(f(i) + 0.5);
         }
@@ -1434,7 +1434,7 @@ public:
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template<class ComponentType>
+template <class ComponentType>
 class GammaFunctor<RGBValue<ComponentType>>
 {
     typedef typename NumericTraits<ComponentType>::RealPromote promote_type;
@@ -1459,7 +1459,7 @@ public:
 
 #else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template<>
+template <>
 class GammaFunctor<RGBValue<int>>
 {
     typedef NumericTraits<int>::RealPromote promote_type;
@@ -1482,7 +1482,7 @@ public:
     }
 };
 
-template<>
+template <>
 class GammaFunctor<RGBValue<float>>
 {
     typedef NumericTraits<float>::RealPromote promote_type;
@@ -1505,7 +1505,7 @@ public:
     }
 };
 
-template<class PixelType>
+template <class PixelType>
 class FunctorTraits<GammaFunctor<PixelType>>
     : public FunctorTraitsBase<GammaFunctor<PixelType>>
 {
@@ -1515,7 +1515,7 @@ public:
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template<>
+template <>
 class GammaFunctor<RGBValue<unsigned char>>
 {
     typedef NumericTraits<unsigned char>::RealPromote promote_type;
@@ -1577,7 +1577,7 @@ public:
 
     \see vigra::TinyVector, dot(), vigra::MagnitudeFunctor
 */
-template<class ValueType>
+template <class ValueType>
 class VectorNormFunctor
 {
 public:
@@ -1597,7 +1597,7 @@ public:
     }
 }; //-- class VectorNormFunctor
 
-template<class ValueType>
+template <class ValueType>
 class FunctorTraits<VectorNormFunctor<ValueType>>
     : public FunctorTraitsBase<VectorNormFunctor<ValueType>>
 {
@@ -1622,7 +1622,7 @@ public:
 
     \see TinyVector, dot()
 */
-template<class ValueType>
+template <class ValueType>
 class VectorNormSqFunctor
 {
 public:
@@ -1642,7 +1642,7 @@ public:
     }
 }; //-- class VectorNormSqFunctor
 
-template<class ValueType>
+template <class ValueType>
 class FunctorTraits<VectorNormSqFunctor<ValueType>>
     : public FunctorTraitsBase<VectorNormSqFunctor<ValueType>>
 {

@@ -69,7 +69,7 @@ namespace vigra
     HDF5 library. Note: This file must only be included when the HDF5 headers
     and libraries are installed on the system.
 */
-template<unsigned int N, class T, class Alloc = std::allocator<T>>
+template <unsigned int N, class T, class Alloc = std::allocator<T>>
 class ChunkedArrayHDF5
     : public ChunkedArray<N, T>
 {
@@ -110,16 +110,16 @@ public:
 
         void write(bool deallocate = true)
         {
-            if (this->pointer_ != 0)
+            if(this->pointer_ != 0)
             {
-                if (!array_->file_.isReadOnly())
+                if(!array_->file_.isReadOnly())
                 {
                     herr_t status = array_->file_.writeBlock(array_->dataset_, start_,
                                                              MultiArrayView<N, T>(shape_, this->strides_, this->pointer_));
                     vigra_postcondition(status >= 0,
                                         "ChunkedArrayHDF5: write to dataset failed.");
                 }
-                if (deallocate)
+                if(deallocate)
                 {
                     alloc_.deallocate(this->pointer_, this->size());
                     this->pointer_ = 0;
@@ -129,7 +129,7 @@ public:
 
         pointer read()
         {
-            if (this->pointer_ == 0)
+            if(this->pointer_ == 0)
             {
                 this->pointer_ = alloc_.allocate(this->size());
                 herr_t status = array_->file_.readBlock(array_->dataset_, start_, shape_,
@@ -244,7 +244,7 @@ public:
           compression_(src.compression_),
           alloc_(src.alloc_)
     {
-        if (file_.isReadOnly())
+        if(file_.isReadOnly())
             init(HDF5File::ReadOnly);
         else
             init(HDF5File::ReadWrite);
@@ -254,19 +254,19 @@ public:
     {
         bool exists = file_.existsDataset(dataset_name_);
 
-        if (mode == HDF5File::Replace)
+        if(mode == HDF5File::Replace)
         {
             mode = HDF5File::New;
         }
-        else if (mode == HDF5File::Default)
+        else if(mode == HDF5File::Default)
         {
-            if (exists)
+            if(exists)
                 mode = HDF5File::ReadOnly;
             else
                 mode = HDF5File::New;
         }
 
-        if (mode == HDF5File::ReadOnly)
+        if(mode == HDF5File::ReadOnly)
             file_.setReadOnly();
         else
             vigra_precondition(!file_.isReadOnly(),
@@ -275,7 +275,7 @@ public:
         vigra_precondition(exists || !file_.isReadOnly(),
                            "ChunkedArrayHDF5(): dataset does not exist, but file is read-only.");
 
-        if (!exists || mode == HDF5File::New)
+        if(!exists || mode == HDF5File::New)
         {
             // FIXME: set rdcc_nbytes to 0 (disable cache, because we don't
             //        need two caches
@@ -294,7 +294,7 @@ public:
             // chunk size in the file matches the chunk size in the CachedArray.
             // Otherwise, make sure that the file cache can hold at least as many
             // chunks as are needed for a single array chunk.
-            if (compression_ == DEFAULT_COMPRESSION)
+            if(compression_ == DEFAULT_COMPRESSION)
                 compression_ = ZLIB_FAST;
             vigra_precondition(compression_ != LZ4,
                                "ChunkedArrayHDF5(): HDF5 does not support LZ4 compression.");
@@ -315,14 +315,14 @@ public:
             // check shape
             ArrayVector<hsize_t> fileShape(file_.getDatasetShape(dataset_name_));
             typedef detail::HDF5TypeTraits<T> TypeTraits;
-            if (TypeTraits::numberOfBands() > 1)
+            if(TypeTraits::numberOfBands() > 1)
             {
                 vigra_precondition(fileShape.size() == N + 1,
                                    "ChunkedArrayHDF5(file, dataset): dataset has wrong dimension.");
                 vigra_precondition(fileShape[0] == static_cast<unsigned>(TypeTraits::numberOfBands()),
                                    "ChunkedArrayHDF5(file, dataset): dataset has wrong number of bands.");
                 shape_type shape(fileShape.begin() + 1);
-                if (this->size() > 0)
+                if(this->size() > 0)
                 {
                     vigra_precondition(shape == this->shape_,
                                        "ChunkedArrayHDF5(file, dataset, shape): shape mismatch between dataset and shape argument.");
@@ -337,7 +337,7 @@ public:
                 vigra_precondition(fileShape.size() == N,
                                    "ChunkedArrayHDF5(file, dataset): dataset has wrong dimension.");
                 shape_type shape(fileShape.begin());
-                if (this->size() > 0)
+                if(this->size() > 0)
                 {
                     vigra_precondition(shape == this->shape_,
                                        "ChunkedArrayHDF5(file, dataset, shape): shape mismatch between dataset and shape argument.");
@@ -350,7 +350,7 @@ public:
             }
             typename ChunkStorage::iterator i = this->handle_array_.begin(),
                                             end = this->handle_array_.end();
-            for (; i != end; ++i)
+            for(; i != end; ++i)
             {
                 i->chunk_state_.store(base_type::chunk_asleep);
             }
@@ -380,27 +380,27 @@ public:
 
     void flushToDiskImpl(bool destroy, bool force_destroy)
     {
-        if (file_.isReadOnly())
+        if(file_.isReadOnly())
             return;
 
         threading::lock_guard<threading::mutex> guard(*this->chunk_lock_);
         typename ChunkStorage::iterator i = this->handle_array_.begin(),
                                         end = this->handle_array_.end();
-        if (destroy && !force_destroy)
+        if(destroy && !force_destroy)
         {
-            for (; i != end; ++i)
+            for(; i != end; ++i)
             {
                 vigra_precondition(i->chunk_state_.load() <= 0,
                                    "ChunkedArrayHDF5::close(): cannot close file because there are active chunks.");
             }
             i = this->handle_array_.begin();
         }
-        for (; i != end; ++i)
+        for(; i != end; ++i)
         {
             Chunk* chunk = static_cast<Chunk*>(i->pointer_);
-            if (!chunk)
+            if(!chunk)
                 continue;
-            if (destroy)
+            if(destroy)
             {
                 delete chunk;
                 i->pointer_ = 0;
@@ -422,7 +422,7 @@ public:
     {
         vigra_precondition(file_.isOpen(),
                            "ChunkedArrayHDF5::loadChunk(): file was already closed.");
-        if (*p == 0)
+        if(*p == 0)
         {
             *p = new Chunk(this->chunkShape(index), index * this->chunk_shape_, this, alloc_);
             this->overhead_bytes_ += sizeof(Chunk);
@@ -432,7 +432,7 @@ public:
 
     virtual bool unloadChunk(ChunkBase<N, T>* chunk, bool /* destroy */)
     {
-        if (!file_.isOpen())
+        if(!file_.isOpen())
             return true;
         static_cast<Chunk*>(chunk)->write();
         return false;

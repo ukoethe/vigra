@@ -49,7 +49,7 @@ namespace python = boost::python;
 namespace vigra
 {
 
-template<unsigned int DIM, class T_IN, class T_OUT>
+template <unsigned int DIM, class T_IN, class T_OUT>
 NumpyAnyArray
 pyBlockwiseGaussianSmoothMultiArray(
     const NumpyArray<DIM, T_IN>& source,
@@ -61,7 +61,7 @@ pyBlockwiseGaussianSmoothMultiArray(
     return dest;
 }
 
-template<unsigned int DIM, class T_IN, class T_OUT>
+template <unsigned int DIM, class T_IN, class T_OUT>
 NumpyAnyArray
 pyBlockwiseGaussianGradientMagnitudeMultiArray(
     const NumpyArray<DIM, T_IN>& source,
@@ -73,7 +73,7 @@ pyBlockwiseGaussianGradientMagnitudeMultiArray(
     return dest;
 }
 
-template<unsigned int DIM, class T_IN, class T_OUT>
+template <unsigned int DIM, class T_IN, class T_OUT>
 NumpyAnyArray
 pyBlockwiseGaussianGradientMultiArray(
     const NumpyArray<DIM, T_IN>& source,
@@ -85,7 +85,7 @@ pyBlockwiseGaussianGradientMultiArray(
     return dest;
 }
 
-template<unsigned int DIM, class T_IN, class T_OUT>
+template <unsigned int DIM, class T_IN, class T_OUT>
 NumpyAnyArray
 pyBlockwiseHessianOfGaussianEigenvaluesMultiArray(
     const NumpyArray<DIM, T_IN>& source,
@@ -97,7 +97,7 @@ pyBlockwiseHessianOfGaussianEigenvaluesMultiArray(
     return dest;
 }
 
-template<unsigned int DIM, class T_IN, class T_OUT>
+template <unsigned int DIM, class T_IN, class T_OUT>
 NumpyAnyArray
 pyBlockwiseHessianOfGaussianFirstEigenvalueMultiArray(
     const NumpyArray<DIM, T_IN>& source,
@@ -109,7 +109,7 @@ pyBlockwiseHessianOfGaussianFirstEigenvalueMultiArray(
     return dest;
 }
 
-template<unsigned int DIM, class T_IN, class T_OUT>
+template <unsigned int DIM, class T_IN, class T_OUT>
 NumpyAnyArray
 pyBlockwiseHessianOfGaussianLastEigenvalueMultiArray(
     const NumpyArray<DIM, T_IN>& source,
@@ -123,7 +123,7 @@ pyBlockwiseHessianOfGaussianLastEigenvalueMultiArray(
 
 
 
-template<unsigned int DIM, class T_IN>
+template <unsigned int DIM, class T_IN>
 void
 defineBlockwiseFilters()
 {
@@ -164,7 +164,7 @@ defineBlockwiseFilters()
                     python::arg("out") = python::object()));
 }
 
-template<class MB>
+template <class MB>
 NumpyAnyArray
 intersectingBlocks(
     const MB& mb,
@@ -178,7 +178,7 @@ intersectingBlocks(
     return out;
 }
 
-template<class MB>
+template <class MB>
 python::tuple
 getBlock(
     const MB& mb,
@@ -192,7 +192,7 @@ getBlock(
 }
 
 
-template<class MB>
+template <class MB>
 python::tuple
 getBlock2(
     const MB& mb,
@@ -204,20 +204,20 @@ getBlock2(
     return python::make_tuple(tl, br);
 }
 
-template<class BLOCK>
+template <class BLOCK>
 typename BLOCK::Vector
 blockBegin(const BLOCK& b)
 {
     return b.begin();
 }
-template<class BLOCK>
+template <class BLOCK>
 typename BLOCK::Vector
 blockEnd(const BLOCK& b)
 {
     return b.end();
 }
 
-template<class BLOCK>
+template <class BLOCK>
 typename BLOCK::Vector
 blockShape(const BLOCK& b)
 {
@@ -225,7 +225,7 @@ blockShape(const BLOCK& b)
 }
 
 
-template<unsigned int DIM>
+template <unsigned int DIM>
 void
 defineMultiBlocking(const std::string& clsName)
 {
@@ -254,7 +254,7 @@ defineMultiBlocking(const std::string& clsName)
 
 
 
-template<unsigned int DIM>
+template <unsigned int DIM>
 void
 defineBlockwiseConvolutionOptions(const std::string& clsName)
 {

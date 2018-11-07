@@ -53,7 +53,7 @@ public:
     }
 
     //TODO split must be const
-    template<class Tree, class Split, class Region, class Feature_t, class Label_t>
+    template <class Tree, class Split, class Region, class Feature_t, class Label_t>
     void visit_after_split(Tree& /*tree*/,
                            Split& split,
                            Region& parent,
@@ -62,7 +62,7 @@ public:
                            Feature_t& /*features*/,
                            Label_t& /*labels*/)
     {
-        if (split.createNode().typeID() == i_ThresholdNode)
+        if(split.createNode().typeID() == i_ThresholdNode)
         {
             std::ostringstream s1;
             s1.precision(10);
@@ -73,19 +73,19 @@ public:
             fout << "Region.size: " << parent.size() << std::endl;
             fout << "LeftChild.size: " << leftChild.size() << std::endl;
             fout << "LeftChild.ClassCounts: ";
-            for (int ii = 0; ii < split.classCount(); ++ii)
+            for(int ii = 0; ii < split.classCount(); ++ii)
                 fout << leftChild.classCounts()[ii] << " ";
             fout << std::endl;
             fout << "RightChild.size: " << rightChild.size() << std::endl;
             fout << "RightChild.ClassCounts: ";
-            for (int ii = 0; ii < split.classCount(); ++ii)
+            for(int ii = 0; ii < split.classCount(); ++ii)
                 fout << rightChild.classCounts()[ii] << " ";
             fout << std::endl;
             fout << std::endl;
         }
     }
 
-    template<class RF, class PR, class SM, class ST>
+    template <class RF, class PR, class SM, class ST>
     void visit_after_tree(RF& /*rf*/, PR& /*pr*/, SM& /*sm*/, ST& /*st*/, int index)
     {
         fout << std::endl
@@ -108,7 +108,7 @@ public:
     std::set<std::string> treesset;
 
 
-    template<class Tree, class Split, class Region, class Feature_t, class Label_t>
+    template <class Tree, class Split, class Region, class Feature_t, class Label_t>
     void visit_after_split(Tree& /*tree*/,
                            Split& split,
                            Region& parent,
@@ -117,38 +117,38 @@ public:
                            Feature_t& /*features*/,
                            Label_t& /*labels*/)
     {
-        if (split.createNode().typeID() == i_ThresholdNode)
+        if(split.createNode().typeID() == i_ThresholdNode)
         {
             sout << "minGini: " << split.minGini() << " - " << split.bestSplitColumn() << std::endl;
             sout << "Region.size: " << parent.size() << std::endl;
             sout << "LeftChild.size: " << leftChild.size() << std::endl;
             sout << "LeftChild.ClassCounts: ";
-            for (int ii = 0; ii < split.classCount(); ++ii)
+            for(int ii = 0; ii < split.classCount(); ++ii)
                 sout << leftChild.classCounts()[ii] << " ";
             sout << std::endl;
             sout << "RightChild.size: " << rightChild.size() << std::endl;
             sout << "RightChild.ClassCounts: ";
-            for (int ii = 0; ii < split.classCount(); ++ii)
+            for(int ii = 0; ii < split.classCount(); ++ii)
                 sout << rightChild.classCounts()[ii] << " ";
             sout << std::endl;
             sout << std::endl;
         }
     }
 
-    template<class RF, class PR, class SM, class ST>
+    template <class RF, class PR, class SM, class ST>
     void visit_after_tree(RF& /*rf*/, PR& /*pr*/, SM& /*sm*/, ST& /*st*/, int /*index*/)
     {
         treesset.insert(sout.str());
         sout.str(std::string());
     }
 
-    template<class RF, class PR>
+    template <class RF, class PR>
     void visit_at_end(RF& /*rf*/, PR& /*pr*/)
     {
         std::ofstream fout("setTest.log");
         std::set<std::string>::iterator iter;
         int k = 0;
-        for (iter = treesset.begin(); iter != treesset.end(); ++iter)
+        for(iter = treesset.begin(); iter != treesset.end(); ++iter)
         {
             fout << *iter;
             fout << std::endl
@@ -162,7 +162,7 @@ public:
 };
 
 // comprehensive debug output
-template<class T1, class C1, class T2, class C2>
+template <class T1, class C1, class T2, class C2>
 class AllOutputVisitor : public rf::visitors::VisitorBase
 {
     MultiArrayView<2, T1, C1>* features;
@@ -177,7 +177,7 @@ public:
     }
 
     //TODO split must be const
-    template<class Tree, class Split, class Region, class Feature_t, class Label_t>
+    template <class Tree, class Split, class Region, class Feature_t, class Label_t>
     void visit_after_split(Tree& /*tree*/,
                            Split& split,
                            Region& parent,
@@ -186,46 +186,46 @@ public:
                            Feature_t& features,
                            Label_t& labels)
     {
-        if (split.createNode().typeID() == i_ThresholdNode)
+        if(split.createNode().typeID() == i_ThresholdNode)
         {
             fout << "minGini: " << split.minGini << " - " << split.bestSplitColumn << std::endl;
             fout << "Threshold: " << *(split.node_.parameters_begin() + 1) << std::endl;
             fout << "Region.size: " << parent.size() << std::endl;
-            for (int ii = 0; ii < parent.size(); ++ii)
+            for(int ii = 0; ii < parent.size(); ++ii)
             {
                 fout << "(" << parent[ii] << ", " << (*labels)[parent[ii]] << ", " << (*features)(parent[ii], split.bestSplitColumn) << ") ";
-                if (ii % 4 == 0)
+                if(ii % 4 == 0)
                     fout << std::endl;
             }
             fout << std::endl;
             fout << "LeftChild.size: " << leftChild.size() << std::endl;
             fout << "LeftChild.ClassCounts: ";
-            for (int ii = 0; ii < split.classCount(); ++ii)
+            for(int ii = 0; ii < split.classCount(); ++ii)
                 fout << leftChild.classCounts()[ii] << " ";
             fout << std::endl;
-            for (int ii = 0; ii < leftChild.size(); ++ii)
+            for(int ii = 0; ii < leftChild.size(); ++ii)
             {
                 fout << "(" << leftChild[ii] << ", " << (*labels)[leftChild[ii]] << ", " << (*features)(leftChild[ii], split.bestSplitColumn) << ") ";
-                if (ii % 4 == 0)
+                if(ii % 4 == 0)
                     fout << std::endl;
             }
             fout << std::endl;
             fout << "RightChild.size: " << rightChild.size() << std::endl;
             fout << "RightChild.ClassCounts: ";
-            for (int ii = 0; ii < split.classCount(); ++ii)
+            for(int ii = 0; ii < split.classCount(); ++ii)
                 fout << rightChild.classCounts()[ii] << " ";
             fout << std::endl;
-            for (int ii = 0; ii < rightChild.size(); ++ii)
+            for(int ii = 0; ii < rightChild.size(); ++ii)
             {
                 fout << "(" << rightChild[ii] << ", " << (*labels)[rightChild[ii]] << ", " << (*features)(rightChild[ii], split.bestSplitColumn) << ") ";
-                if (ii % 4 == 0)
+                if(ii % 4 == 0)
                     fout << std::endl;
             }
             fout << std::endl;
         }
     }
 
-    template<class RF, class PR, class SM, class ST>
+    template <class RF, class PR, class SM, class ST>
     void visit_after_tree(RF& /*rf*/, PR& /*pr*/, SM& /*sm*/, ST& /*st*/, int index)
     {
         fout << std::endl

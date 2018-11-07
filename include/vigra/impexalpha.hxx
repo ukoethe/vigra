@@ -50,9 +50,9 @@ namespace vigra
 */
 namespace detail
 {
-template<class ValueType,
-         class ImageIterator, class ImageAccessor,
-         class AlphaIterator, class AlphaAccessor>
+template <class ValueType,
+          class ImageIterator, class ImageAccessor,
+          class AlphaIterator, class AlphaAccessor>
 void
 read_image_band_and_alpha(Decoder* decoder,
                           ImageIterator image_iterator, ImageAccessor image_accessor,
@@ -70,7 +70,7 @@ read_image_band_and_alpha(Decoder* decoder,
     const unsigned height(decoder->getHeight());
     const unsigned offset(decoder->getOffset());
 
-    for (unsigned y = 0U; y != height; ++y)
+    for(unsigned y = 0U; y != height; ++y)
     {
         decoder->nextScanline();
 
@@ -81,7 +81,7 @@ read_image_band_and_alpha(Decoder* decoder,
         const ImageRowIterator is_end(is + width);
         AlphaRowIterator as(alpha_iterator.rowIterator());
 
-        while (is != is_end)
+        while(is != is_end)
         {
             image_accessor.set(*scanline0, is);
             scanline0 += offset;
@@ -98,9 +98,9 @@ read_image_band_and_alpha(Decoder* decoder,
 }
 
 
-template<class ValueType,
-         class ImageIterator, class ImageAccessor,
-         class AlphaIterator, class AlphaAccessor>
+template <class ValueType,
+          class ImageIterator, class ImageAccessor,
+          class AlphaIterator, class AlphaAccessor>
 void
 read_image_bands_and_alpha(Decoder* decoder,
                            ImageIterator image_iterator, ImageAccessor image_accessor,
@@ -122,14 +122,14 @@ read_image_bands_and_alpha(Decoder* decoder,
     // OPTIMIZATION: Specialization for the most common case
     // of an RGBA-image, i.e. three color channels plus one
     // alpha channel.
-    if (accessor_size == 3U)
+    if(accessor_size == 3U)
     {
         const ValueType* scanline_0;
         const ValueType* scanline_1;
         const ValueType* scanline_2;
         const ValueType* scanline_3; // alpha
 
-        for (unsigned y = 0U; y != height; ++y)
+        for(unsigned y = 0U; y != height; ++y)
         {
             decoder->nextScanline();
 
@@ -142,7 +142,7 @@ read_image_bands_and_alpha(Decoder* decoder,
             const ImageRowIterator is_end(is + width);
             AlphaRowIterator as(alpha_iterator.rowIterator());
 
-            while (is != is_end)
+            while(is != is_end)
             {
                 image_accessor.setComponent(*scanline_0, is, 0);
                 image_accessor.setComponent(*scanline_1, is, 1);
@@ -165,11 +165,11 @@ read_image_bands_and_alpha(Decoder* decoder,
     {
         std::vector<const ValueType*> scanlines(accessor_size + 1U);
 
-        for (unsigned y = 0U; y != height; ++y)
+        for(unsigned y = 0U; y != height; ++y)
         {
             decoder->nextScanline();
 
-            for (unsigned i = 0U; i != accessor_size + 1U; ++i)
+            for(unsigned i = 0U; i != accessor_size + 1U; ++i)
             {
                 scanlines[i] = static_cast<const ValueType*>(decoder->currentScanlineOfBand(i));
             }
@@ -178,9 +178,9 @@ read_image_bands_and_alpha(Decoder* decoder,
             const ImageRowIterator is_end(is + width);
             AlphaRowIterator as(alpha_iterator.rowIterator());
 
-            while (is != is_end)
+            while(is != is_end)
             {
-                for (unsigned i = 0U; i != accessor_size; ++i)
+                for(unsigned i = 0U; i != accessor_size; ++i)
                 {
                     image_accessor.setComponent(*scanlines[i], is, static_cast<int>(i));
                     scanlines[i] += offset;
@@ -199,8 +199,8 @@ read_image_bands_and_alpha(Decoder* decoder,
 }
 
 
-template<class ImageIterator, class ImageAccessor,
-         class AlphaIterator, class AlphaAccessor>
+template <class ImageIterator, class ImageAccessor,
+          class AlphaIterator, class AlphaAccessor>
 void
 importImageAlpha(const ImageImportInfo& import_info,
                  ImageIterator image_iterator, ImageAccessor image_accessor,
@@ -209,7 +209,7 @@ importImageAlpha(const ImageImportInfo& import_info,
 {
     VIGRA_UNIQUE_PTR<Decoder> decoder(vigra::decoder(import_info));
 
-    switch (pixel_t_of_string(decoder->getPixelType()))
+    switch(pixel_t_of_string(decoder->getPixelType()))
     {
         case UNSIGNED_INT_8:
             read_image_band_and_alpha<UInt8>(decoder.get(),
@@ -254,8 +254,8 @@ importImageAlpha(const ImageImportInfo& import_info,
 }
 
 
-template<class ImageIterator, class ImageAccessor,
-         class AlphaIterator, class AlphaAccessor>
+template <class ImageIterator, class ImageAccessor,
+          class AlphaIterator, class AlphaAccessor>
 void
 importImageAlpha(const ImageImportInfo& import_info,
                  ImageIterator image_iterator, ImageAccessor image_accessor,
@@ -264,7 +264,7 @@ importImageAlpha(const ImageImportInfo& import_info,
 {
     VIGRA_UNIQUE_PTR<Decoder> decoder(vigra::decoder(import_info));
 
-    switch (pixel_t_of_string(decoder->getPixelType()))
+    switch(pixel_t_of_string(decoder->getPixelType()))
     {
         case UNSIGNED_INT_8:
             read_image_bands_and_alpha<UInt8>(decoder.get(),
@@ -421,11 +421,11 @@ importImageAlpha(const ImageImportInfo& import_info,
     - The alpha channel always is scalar-valued, i.e. comprises a
       single band.
 */
-doxygen_overloaded_function(template<...> void importImageAlpha)
+doxygen_overloaded_function(template <...> void importImageAlpha)
 
 
-    template<class ImageIterator, class ImageAccessor,
-             class AlphaIterator, class AlphaAccessor>
+    template <class ImageIterator, class ImageAccessor,
+              class AlphaIterator, class AlphaAccessor>
     inline void importImageAlpha(const ImageImportInfo& import_info,
                                  ImageIterator image_iterator, ImageAccessor image_accessor,
                                  AlphaIterator alpha_iterator, AlphaAccessor alpha_accessor)
@@ -440,8 +440,8 @@ doxygen_overloaded_function(template<...> void importImageAlpha)
 }
 
 
-template<class ImageIterator, class ImageAccessor,
-         class AlphaIterator, class AlphaAccessor>
+template <class ImageIterator, class ImageAccessor,
+          class AlphaIterator, class AlphaAccessor>
 inline void
 importImageAlpha(ImageImportInfo const& import_info,
                  pair<ImageIterator, ImageAccessor> image,
@@ -452,8 +452,8 @@ importImageAlpha(ImageImportInfo const& import_info,
                      alpha.first, alpha.second);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
 importImageAlpha(ImageImportInfo const& import_info,
                  MultiArrayView<2, T1, S1> image,
@@ -467,9 +467,9 @@ importImageAlpha(ImageImportInfo const& import_info,
 
 namespace detail
 {
-template<class ValueType,
-         class ImageIterator, class ImageAccessor, class ImageScaler,
-         class AlphaIterator, class AlphaAccessor, class AlphaScaler>
+template <class ValueType,
+          class ImageIterator, class ImageAccessor, class ImageScaler,
+          class AlphaIterator, class AlphaAccessor, class AlphaScaler>
 void
 write_image_band_and_alpha(Encoder* encoder,
                            ImageIterator image_upper_left, ImageIterator image_lower_right, ImageAccessor image_accessor,
@@ -503,7 +503,7 @@ write_image_band_and_alpha(Encoder* encoder,
     ImageIterator image_iterator(image_upper_left);
     AlphaIterator alpha_iterator(alpha_upper_left);
 
-    for (unsigned y = 0U; y != height; ++y)
+    for(unsigned y = 0U; y != height; ++y)
     {
         ValueType* scanline0 = static_cast<ValueType*>(encoder->currentScanlineOfBand(0));
         ValueType* scanline1 = static_cast<ValueType*>(encoder->currentScanlineOfBand(1));
@@ -512,7 +512,7 @@ write_image_band_and_alpha(Encoder* encoder,
         const ImageRowIterator is_end(is + width);
         AlphaRowIterator as(alpha_iterator.rowIterator());
 
-        while (is != is_end)
+        while(is != is_end)
         {
             *scanline0 = explicit_cast::cast(image_scaler(image_accessor(is)));
             scanline0 += offset;
@@ -531,9 +531,9 @@ write_image_band_and_alpha(Encoder* encoder,
 }
 
 
-template<class ValueType,
-         class ImageIterator, class ImageAccessor, class ImageScaler,
-         class AlphaIterator, class AlphaAccessor, class AlphaScaler>
+template <class ValueType,
+          class ImageIterator, class ImageAccessor, class ImageScaler,
+          class AlphaIterator, class AlphaAccessor, class AlphaScaler>
 void
 write_image_bands_and_alpha(Encoder* encoder,
                             ImageIterator image_upper_left, ImageIterator image_lower_right, ImageAccessor image_accessor,
@@ -570,14 +570,14 @@ write_image_bands_and_alpha(Encoder* encoder,
     // OPTIMIZATION: Specialization for the most common case
     // of an RGBA-image, i.e. three color channels plus one
     // alpha channel.
-    if (accessor_size == 3U)
+    if(accessor_size == 3U)
     {
         ValueType* scanline_0;
         ValueType* scanline_1;
         ValueType* scanline_2;
         ValueType* scanline_3; // alpha
 
-        for (unsigned y = 0U; y != height; ++y)
+        for(unsigned y = 0U; y != height; ++y)
         {
             scanline_0 = static_cast<ValueType*>(encoder->currentScanlineOfBand(0));
             scanline_1 = static_cast<ValueType*>(encoder->currentScanlineOfBand(1));
@@ -588,7 +588,7 @@ write_image_bands_and_alpha(Encoder* encoder,
             const ImageRowIterator is_end(is + width);
             AlphaRowIterator as(alpha_iterator.rowIterator());
 
-            while (is != is_end)
+            while(is != is_end)
             {
                 *scanline_0 = explicit_cast::cast(image_scaler(image_accessor.getComponent(is, 0)));
                 *scanline_1 = explicit_cast::cast(image_scaler(image_accessor.getComponent(is, 1)));
@@ -613,9 +613,9 @@ write_image_bands_and_alpha(Encoder* encoder,
     {
         std::vector<ValueType*> scanlines(accessor_size + 1U);
 
-        for (unsigned y = 0U; y != height; ++y)
+        for(unsigned y = 0U; y != height; ++y)
         {
-            for (unsigned i = 0U; i != accessor_size + 1U; ++i)
+            for(unsigned i = 0U; i != accessor_size + 1U; ++i)
             {
                 scanlines[i] = static_cast<ValueType*>(encoder->currentScanlineOfBand(i));
             }
@@ -624,9 +624,9 @@ write_image_bands_and_alpha(Encoder* encoder,
             const ImageRowIterator is_end(is + width);
             AlphaRowIterator as(alpha_iterator.rowIterator());
 
-            while (is != is_end)
+            while(is != is_end)
             {
-                for (unsigned i = 0U; i != accessor_size; ++i)
+                for(unsigned i = 0U; i != accessor_size; ++i)
                 {
                     *scanlines[i] = explicit_cast::cast(image_scaler(image_accessor.getComponent(is, static_cast<int>(i))));
                     scanlines[i] += offset;
@@ -647,8 +647,8 @@ write_image_bands_and_alpha(Encoder* encoder,
 }
 
 
-template<class ImageIterator, class ImageAccessor,
-         class AlphaIterator, class AlphaAccessor>
+template <class ImageIterator, class ImageAccessor,
+          class AlphaIterator, class AlphaAccessor>
 void
 exportImageAlpha(ImageIterator image_upper_left, ImageIterator image_lower_right, ImageAccessor image_accessor,
                  AlphaIterator alpha_upper_left, AlphaAccessor alpha_accessor,
@@ -673,14 +673,14 @@ exportImageAlpha(ImageIterator image_upper_left, ImageIterator image_lower_right
                                                              alpha_accessor));
     const range_t destination_range(find_destination_value_range(export_info, type));
 
-    if ((downcast || export_info.hasForcedRangeMapping()) &&
-        (image_source_range.first != destination_range.first || image_source_range.second != destination_range.second ||
-         alpha_source_range.first != destination_range.first || alpha_source_range.second != destination_range.second))
+    if((downcast || export_info.hasForcedRangeMapping()) &&
+       (image_source_range.first != destination_range.first || image_source_range.second != destination_range.second ||
+        alpha_source_range.first != destination_range.first || alpha_source_range.second != destination_range.second))
     {
         const linear_transform image_rescaler(image_source_range, destination_range);
         const linear_transform alpha_rescaler(alpha_source_range, destination_range);
 
-        switch (type)
+        switch(type)
         {
             case UNSIGNED_INT_8:
                 write_image_band_and_alpha<UInt8>(encoder.get(),
@@ -723,7 +723,7 @@ exportImageAlpha(ImageIterator image_upper_left, ImageIterator image_lower_right
     }
     else
     {
-        switch (type)
+        switch(type)
         {
             case UNSIGNED_INT_8:
                 write_image_band_and_alpha<UInt8>(encoder.get(),
@@ -769,8 +769,8 @@ exportImageAlpha(ImageIterator image_upper_left, ImageIterator image_lower_right
 }
 
 
-template<class ImageIterator, class ImageAccessor,
-         class AlphaIterator, class AlphaAccessor>
+template <class ImageIterator, class ImageAccessor,
+          class AlphaIterator, class AlphaAccessor>
 void
 exportImageAlpha(ImageIterator image_upper_left, ImageIterator image_lower_right, ImageAccessor image_accessor,
                  AlphaIterator alpha_upper_left, AlphaAccessor alpha_accessor,
@@ -799,14 +799,14 @@ exportImageAlpha(ImageIterator image_upper_left, ImageIterator image_lower_right
                                                              alpha_accessor));
     const range_t destination_range(find_destination_value_range(export_info, pixel_t_of_string(pixel_type)));
 
-    if ((downcast || export_info.hasForcedRangeMapping()) &&
-        (image_source_range.first != destination_range.first || image_source_range.second != destination_range.second ||
-         alpha_source_range.first != destination_range.first || alpha_source_range.second != destination_range.second))
+    if((downcast || export_info.hasForcedRangeMapping()) &&
+       (image_source_range.first != destination_range.first || image_source_range.second != destination_range.second ||
+        alpha_source_range.first != destination_range.first || alpha_source_range.second != destination_range.second))
     {
         const linear_transform image_rescaler(image_source_range, destination_range);
         const linear_transform alpha_rescaler(alpha_source_range, destination_range);
 
-        switch (type)
+        switch(type)
         {
             case UNSIGNED_INT_8:
                 write_image_bands_and_alpha<UInt8>(encoder.get(),
@@ -849,7 +849,7 @@ exportImageAlpha(ImageIterator image_upper_left, ImageIterator image_lower_right
     }
     else
     {
-        switch (type)
+        switch(type)
         {
             case UNSIGNED_INT_8:
                 write_image_bands_and_alpha<UInt8>(encoder.get(),
@@ -1014,11 +1014,11 @@ exportImageAlpha(ImageIterator image_upper_left, ImageIterator image_lower_right
     - The alpha channel always is scalar-valued, i.e. comprises a
       single band.
 */
-doxygen_overloaded_function(template<...> void exportImageAlpha)
+doxygen_overloaded_function(template <...> void exportImageAlpha)
 
 
-    template<class ImageIterator, class ImageAccessor,
-             class AlphaIterator, class AlphaAccessor>
+    template <class ImageIterator, class ImageAccessor,
+              class AlphaIterator, class AlphaAccessor>
     inline void exportImageAlpha(ImageIterator image_upper_left, ImageIterator image_lower_right, ImageAccessor image_accessor,
                                  AlphaIterator alpha_upper_left, AlphaAccessor alpha_accessor,
                                  const ImageExportInfo& export_info)
@@ -1033,7 +1033,7 @@ doxygen_overloaded_function(template<...> void exportImageAlpha)
                                  export_info,
                                  is_scalar());
     }
-    catch (Encoder::TIFFCompressionException&)
+    catch(Encoder::TIFFCompressionException&)
     {
         ImageExportInfo info(export_info);
 
@@ -1046,8 +1046,8 @@ doxygen_overloaded_function(template<...> void exportImageAlpha)
 }
 
 
-template<class ImageIterator, class ImageAccessor,
-         class AlphaIterator, class AlphaAccessor>
+template <class ImageIterator, class ImageAccessor,
+          class AlphaIterator, class AlphaAccessor>
 inline void
 exportImageAlpha(triple<ImageIterator, ImageIterator, ImageAccessor> image,
                  pair<AlphaIterator, AlphaAccessor> alpha,
@@ -1058,8 +1058,8 @@ exportImageAlpha(triple<ImageIterator, ImageIterator, ImageAccessor> image,
                      export_info);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     exportImageAlpha(MultiArrayView<2, T1, S1> const& image,
                      MultiArrayView<2, T2, S2> const& alpha,
@@ -1070,8 +1070,8 @@ inline void
                      export_info);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     exportImageAlpha(MultiArrayView<2, T1, S1> const& image,
                      MultiArrayView<2, T2, S2> const& alpha,
@@ -1083,8 +1083,8 @@ inline void
                      export_info);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     exportImageAlpha(MultiArrayView<2, T1, S1> const& image,
                      MultiArrayView<2, T2, S2> const& alpha,

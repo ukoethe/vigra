@@ -58,9 +58,9 @@ namespace acc
 
 class CoordinateSystem; // returns an identity matrix of appropriate size
 
-template<unsigned N>
+template <unsigned N>
 class PowerSum; // sum over powers of values
-template<unsigned N>
+template <unsigned N>
 class AbsPowerSum; // sum over powers of absolute values
 
 class Skewness;                 // skewness
@@ -71,20 +71,20 @@ class FlatScatterMatrix;        // flattened upper-triangular part of the scatte
 class ScatterMatrixEigensystem; // eigenvalues and eigenvectors of the scatter matrix
 
 // in all histogram classes: set bin count at runtime if BinCount == 0
-template<int BinCount>
+template <int BinCount>
 class IntegerHistogram; // use data values directly as bin indices
-template<int BinCount>
+template <int BinCount>
 class UserRangeHistogram; // set min/max explicitly at runtime
-template<int BinCount>
+template <int BinCount>
 class AutoRangeHistogram; // get min/max from accumulators
-template<int BinCount>
+template <int BinCount>
 class GlobalRangeHistogram; // like AutoRangeHistogram, but use global min/max rather than region min/max
 
 class FirstSeen; // remember the first value seen
 class Minimum;   // minimum
 class Maximum;   // maximum
 class Range;     // minimum and maximum as a <tt>std::pair</tt>
-template<class Hist>
+template <class Hist>
 class StandardQuantiles; // compute (min, 10%, 25%, 50%, 75%, 90%, max) quantiles from
                          // min/max accumulators and given histogram
 
@@ -92,7 +92,7 @@ class ArgMinWeight; // store the value (or coordinate) where weight was minimal
 class ArgMaxWeight; // store the value (or coordinate) where weight was maximal
 
 // FIXME: not yet implemented
-template<unsigned NDim>
+template <unsigned NDim>
 class MultiHistogram; // multi-dimensional histogram
                       // (always specify number of bins at runtime)
 
@@ -102,13 +102,13 @@ class PrincipalProjection; // cache values after principal projection
 class Whiten;       // cache values after whitening
 class RangeMapping; // map value from [min, max] to another range and cache result (e.g. for histogram creation)
 
-template<int INDEX>
+template <int INDEX>
 class DataArg; // specifiy the index of the data member in a CoupledHandle
-template<int INDEX>
+template <int INDEX>
 class WeightArg; // specifiy the index of the weight member in a CoupledHandle
-template<int INDEX>
+template <int INDEX>
 class LabelArg; // specifiy the index of the label member in a CoupledHandle
-template<int INDEX>
+template <int INDEX>
 class CoordArg; // specifiy the index of the coord member in a CoupledHandle
 
 class RegionContour;      // compute the contour of a 2D region
@@ -150,36 +150,36 @@ Quantiles other than minimum and maximum require more thought:
 /**************************************************************************/
 
 // data normalization w.r.t. number of samples
-template<class A>
+template <class A>
 class DivideByCount; //  A / count
-template<class A>
+template <class A>
 class RootDivideByCount; //  sqrt(A / count)
-template<class A>
+template <class A>
 class DivideUnbiased; //  A / (count - 1)
-template<class A>
+template <class A>
 class RootDivideUnbiased; //  sqrt(A / (count - 1))
 
 // data access
-template<class A>
+template <class A>
 class Coord; // use pixel coordinate instead of pixel value (index 0 of CoupledHandle)
-template<class A>
+template <class A>
 class Weighted; // use (value, weight) pairs (index 1 and 2 of CoupledHandle)
-template<class A>
+template <class A>
 class CoordWeighted; // use (coord, weight) pairs(index 0 and end of CoupledHandle)
-template<class A>
+template <class A>
 class DataFromHandle; // extract data from index 1 of a CoupledHandle
 
 // data preparation
-template<class A>
+template <class A>
 class Central; // subtract mean
-template<class A>
+template <class A>
 class Principal; // subtract mean and rotate to principal coordinates
 
 // FIXME: not implemented yet
-template<class A>
+template <class A>
 class Whitened; // transform to principal coordinates and scale to unit variance
 
-template<class A>
+template <class A>
 class Global; // compute statistic A globally rather than per region
 
 /**************************************************************************/
@@ -208,10 +208,10 @@ typedef RootDivideByCount<SumOfSquares> RootMeanSquares;
 // actual definition (desired behavior is realised by rules below)
 //
 /** \brief Alias. Moment<N>. */
-template<unsigned N>
+template <unsigned N>
 class Moment;
 /** \brief Alias. CentralMoment<N>. */
-template<unsigned N>
+template <unsigned N>
 class CentralMoment;
 
 /** \brief Alias. Sum of squared differences. */
@@ -274,7 +274,7 @@ typedef Weighted<RegionAxes> AxesOfInertia;
 namespace acc_detail
 {
 
-template<class A>
+template <class A>
 struct ModifierRule
 {
     typedef A type;
@@ -282,25 +282,25 @@ struct ModifierRule
 
 } // namespace acc_detail
 
-template<class A>
+template <class A>
 struct Error___Tag_modifiers_of_same_kind_must_not_be_combined;
 
 // apply rules as long as the Tag type changes ...
-template<class A, class S = typename acc_detail::ModifierRule<A>::type>
+template <class A, class S = typename acc_detail::ModifierRule<A>::type>
 struct StandardizeTag
 {
     typedef typename StandardizeTag<S>::type type;
 };
 
 // ... and stop otherwise ...
-template<class A>
+template <class A>
 struct StandardizeTag<A, A>
 {
     typedef A type;
 };
 
 // ... or fail when the tag spec was non-conforming
-template<class A, class B>
+template <class A, class B>
 struct StandardizeTag<A, Error___Tag_modifiers_of_same_kind_must_not_be_combined<B>>
     : public Error___Tag_modifiers_of_same_kind_must_not_be_combined<B>
 {
@@ -324,14 +324,14 @@ enum
     SubstitutionMask = PrepareDataPriority | AccessDataPriority | WeightingPriority | GlobalPriority
 };
 
-template<class A>
+template <class A>
 struct ModifierPriority
 {
     static const int value = AccumulatorPriority;
 };
 
 #define VIGRA_MODIFIER_PRIORITY(MODIFIER, VALUE) \
-    template<class A>                            \
+    template <class A>                           \
     struct ModifierPriority<MODIFIER<A>>         \
     {                                            \
         static const int value = VALUE;          \
@@ -359,27 +359,27 @@ VIGRA_MODIFIER_PRIORITY(StandardQuantiles, AccumulatorPriority)
 #undef VIGRA_MODIFIER_PRIORITY
 
 // check if the tag A contains a modifier with TARGET_PRIORITY
-template<class A, int TARGET_PRIORITY, int PRIORITY = ModifierPriority<A>::value>
+template <class A, int TARGET_PRIORITY, int PRIORITY = ModifierPriority<A>::value>
 struct HasModifierPriority
 {
     typedef VigraFalseType type;
     static const bool value = false;
 };
 
-template<class A, int TARGET_PRIORITY>
+template <class A, int TARGET_PRIORITY>
 struct HasModifierPriority<A, TARGET_PRIORITY, TARGET_PRIORITY>
 {
     typedef VigraTrueType type;
     static const bool value = true;
 };
 
-template<class A, template<class> class B, int TARGET_PRIORITY, int PRIORITY>
+template <class A, template <class> class B, int TARGET_PRIORITY, int PRIORITY>
 struct HasModifierPriority<B<A>, TARGET_PRIORITY, PRIORITY>
     : public HasModifierPriority<A, TARGET_PRIORITY>
 {
 };
 
-template<class A, template<class> class B, int TARGET_PRIORITY>
+template <class A, template <class> class B, int TARGET_PRIORITY>
 struct HasModifierPriority<B<A>, TARGET_PRIORITY, TARGET_PRIORITY>
 {
     typedef VigraTrueType type;
@@ -387,7 +387,7 @@ struct HasModifierPriority<B<A>, TARGET_PRIORITY, TARGET_PRIORITY>
 };
 
 // three-way compare
-template<class A, class B>
+template <class A, class B>
 struct ModifierCompare
 {
     static const int p1 = ModifierPriority<A>::value;
@@ -399,42 +399,42 @@ struct ModifierCompare
                                        : 0;
 };
 
-template<class A>
+template <class A>
 struct ModifierCompareToInner;
 
-template<class A, template<class> class B>
+template <class A, template <class> class B>
 struct ModifierCompareToInner<B<A>>
     : public ModifierCompare<B<A>, A>
 {
 };
 
 // sort modifiers by ascending priority
-template<class A, int compare = ModifierCompareToInner<A>::value>
+template <class A, int compare = ModifierCompareToInner<A>::value>
 struct ModifierOrder;
 
 // do nothing if the order is correct (compare == -1)
-template<class A>
+template <class A>
 struct ModifierOrder<A, -1>
 {
     typedef A type;
 };
 
 // fail if there are two modifiers with the same priority (compare == 0)
-template<class A, template<class> class B, template<class> class C>
+template <class A, template <class> class B, template <class> class C>
 struct ModifierOrder<C<B<A>>, 0>
 {
     typedef Error___Tag_modifiers_of_same_kind_must_not_be_combined<C<B<A>>> type;
 };
 
 // sort if the order is reversed (compare == 1)
-template<class A, template<class> class B, template<class> class C>
+template <class A, template <class> class B, template <class> class C>
 struct ModifierOrder<C<B<A>>, 1>
 {
     typedef B<C<A>> type;
 };
 
 #define VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(OUTER, INNER, RESULT) \
-    template<class A>                                                  \
+    template <class A>                                                 \
     struct ModifierOrder<OUTER<INNER<A>>, 0>                           \
     {                                                                  \
         typedef RESULT<A> type;                                        \
@@ -456,22 +456,22 @@ VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(DataFromHandle, Coord, Coord)
 #undef VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS
 
 // drop duplicates
-template<class A, template<class> class B>
+template <class A, template <class> class B>
 struct ModifierRule<B<B<A>>>
 {
     typedef B<A> type;
 };
 
-template<class A, int PRIORITY = ModifierPriority<A>::value>
+template <class A, int PRIORITY = ModifierPriority<A>::value>
 struct RecurseModifier;
 
-template<class A, template<class> class B, int PRIORITY>
+template <class A, template <class> class B, int PRIORITY>
 struct RecurseModifier<B<A>, PRIORITY>
 {
     typedef typename ModifierOrder<B<typename StandardizeTag<A>::type>>::type type;
 };
 
-template<class A, template<class> class B>
+template <class A, template <class> class B>
 struct RecurseModifier<B<A>, AccumulatorPriority>
 {
     typedef B<A> type;
@@ -480,7 +480,7 @@ struct RecurseModifier<B<A>, AccumulatorPriority>
 // recurse down the modifier chain, but only of B is actually a modifier,
 // and not a templated base accumulator (i.e. do not recurse if B's
 // priority is 'AccumulatorPriority')
-template<class A, template<class> class B>
+template <class A, template <class> class B>
 struct ModifierRule<B<A>>
     : public RecurseModifier<B<A>>
 {
@@ -490,7 +490,7 @@ struct ModifierRule<B<A>>
 // using the given TEMPLATE arguments
 // (this is a work-around for the lack of templated typedef in C++)
 #define VIGRA_REDUCE_MODFIER(TEMPLATE, SOURCE, TARGET) \
-    template<TEMPLATE>                                 \
+    template <TEMPLATE>                                \
     struct ModifierRule<SOURCE>                        \
     {                                                  \
         typedef TARGET type;                           \
@@ -504,7 +504,7 @@ VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<CoordinateSystem>, CoordinateSystem)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Whitened<CoordinateSystem>, Principal<CoordinateSystem>)
 
 // counting modified data is the same as counting data, except for weighted data and global counting
-VIGRA_REDUCE_MODFIER(template<class> class A, A<Count>, Count)
+VIGRA_REDUCE_MODFIER(template <class> class A, A<Count>, Count)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Weighted<Count>, Weighted<Count>)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, CoordWeighted<Count>, Weighted<Count>)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Global<Count>, Global<Count>)
@@ -528,18 +528,18 @@ VIGRA_REDUCE_MODFIER(VIGRA_VOID, Whitened<PrincipalProjection>, Whiten)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Whitened<Whiten>, Whiten)
 
 // ignore all modifiers of RegionContour and related features
-VIGRA_REDUCE_MODFIER(template<class> class A, A<RegionContour>, RegionContour)
+VIGRA_REDUCE_MODFIER(template <class> class A, A<RegionContour>, RegionContour)
 #ifdef WITH_LEMON
-VIGRA_REDUCE_MODFIER(template<class> class A, A<ConvexHull>, ConvexHull)
-VIGRA_REDUCE_MODFIER(template<class> class A, A<ConvexHullFeatures>, ConvexHullFeatures)
+VIGRA_REDUCE_MODFIER(template <class> class A, A<ConvexHull>, ConvexHull)
+VIGRA_REDUCE_MODFIER(template <class> class A, A<ConvexHullFeatures>, ConvexHullFeatures)
 #endif // WITH_LEMON
-VIGRA_REDUCE_MODFIER(template<class> class A, A<RegionPerimeter>, RegionPerimeter)
-VIGRA_REDUCE_MODFIER(template<class> class A, A<RegionCircularity>, RegionCircularity)
-VIGRA_REDUCE_MODFIER(template<class> class A, A<RegionEccentricity>, RegionEccentricity)
+VIGRA_REDUCE_MODFIER(template <class> class A, A<RegionPerimeter>, RegionPerimeter)
+VIGRA_REDUCE_MODFIER(template <class> class A, A<RegionCircularity>, RegionCircularity)
+VIGRA_REDUCE_MODFIER(template <class> class A, A<RegionEccentricity>, RegionEccentricity)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Weighted<RegionEccentricity>, Weighted<RegionEccentricity>)
 
 // reduce even absolute powers to plain powers
-template<unsigned N>
+template <unsigned N>
 struct ModifierRule<AbsPowerSum<N>>
 {
     typedef typename IfBool<(N % 2 == 0), PowerSum<N>, AbsPowerSum<N>>::type type;
@@ -548,28 +548,28 @@ struct ModifierRule<AbsPowerSum<N>>
 #undef VIGRA_VOID
 #undef VIGRA_REDUCE_MODFIER
 
-template<class A>
+template <class A>
 struct ShouldBeWeighted
 {
     typedef VigraFalseType type;
     static const bool value = false;
 };
 
-template<>
+template <>
 struct ShouldBeWeighted<ArgMinWeight>
 {
     typedef VigraTrueType type;
     static const bool value = true;
 };
 
-template<>
+template <>
 struct ShouldBeWeighted<ArgMaxWeight>
 {
     typedef VigraTrueType type;
     static const bool value = true;
 };
 
-template<class A, template<class> class B>
+template <class A, template <class> class B>
 struct ShouldBeWeighted<B<A>>
     : public ShouldBeWeighted<A>
 {
@@ -577,49 +577,49 @@ struct ShouldBeWeighted<B<A>>
 
 } // namespace acc_detail
 
-template<class A>
+template <class A>
 struct IsCoordinateFeature
 {
     typedef VigraFalseType type;
     static const bool value = false;
 };
 
-template<class A, template<class> class B>
+template <class A, template <class> class B>
 struct IsCoordinateFeature<B<A>>
 {
     typedef typename IsCoordinateFeature<A>::type type;
     static const bool value = IsCoordinateFeature<A>::value;
 };
 
-template<class A>
+template <class A>
 struct IsCoordinateFeature<Coord<A>>
 {
     typedef VigraTrueType type;
     static const bool value = true;
 };
 
-template<class A>
+template <class A>
 struct IsPrincipalFeature
 {
     typedef VigraFalseType type;
     static const bool value = false;
 };
 
-template<class A, template<class> class B>
+template <class A, template <class> class B>
 struct IsPrincipalFeature<B<A>>
 {
     typedef typename IsPrincipalFeature<A>::type type;
     static const bool value = IsPrincipalFeature<A>::value;
 };
 
-template<class A>
+template <class A>
 struct IsPrincipalFeature<Principal<A>>
 {
     typedef VigraTrueType type;
     static const bool value = true;
 };
 
-template<class A>
+template <class A>
 struct IsPrincipalFeature<Whitened<A>>
 {
     typedef VigraTrueType type;
@@ -635,90 +635,90 @@ struct IsPrincipalFeature<Whitened<A>>
 namespace acc_detail
 {
 
-template<class A>
+template <class A>
 struct DefaultModifier;
 
-template<class A>
+template <class A>
 struct ModifierPriority<DefaultModifier<A>>
 {
     static const int value = ModifierPriority<A>::value << 1;
 };
 
-template<class A, int TargetPriority, int Priority = ModifierPriority<A>::value>
+template <class A, int TargetPriority, int Priority = ModifierPriority<A>::value>
 struct InsertDefaultModifier
 {
     typedef DefaultModifier<typename InsertDefaultModifier<A, (TargetPriority << 1)>::type> type;
 };
 
-template<class A, int TargetPriority>
+template <class A, int TargetPriority>
 struct InsertDefaultModifier<A, TargetPriority, TargetPriority>
 {
     typedef A type;
 };
 
-template<class A, int TargetPriority, int Priority = ModifierPriority<A>::value>
+template <class A, int TargetPriority, int Priority = ModifierPriority<A>::value>
 struct TagLongForm;
 
-template<class A, int TargetPriority>
+template <class A, int TargetPriority>
 struct TagLongForm<A, TargetPriority, MaxPriority>
 {
     typedef typename InsertDefaultModifier<A, TargetPriority>::type type;
 };
 
-template<class A, template<class> class B, int TargetPriority>
+template <class A, template <class> class B, int TargetPriority>
 struct TagLongForm<B<A>, TargetPriority, MaxPriority>
 {
     typedef typename InsertDefaultModifier<B<A>, TargetPriority>::type type;
 };
 
-template<class A, template<class> class B, int TargetPriority, int Priority>
+template <class A, template <class> class B, int TargetPriority, int Priority>
 struct TagLongForm<B<A>, TargetPriority, Priority>
 {
     typedef typename TagLongForm<A, (Priority << 1)>::type Inner;
     typedef typename InsertDefaultModifier<B<Inner>, TargetPriority>::type type;
 };
 
-template<class A, template<class> class B, int TargetPriority>
+template <class A, template <class> class B, int TargetPriority>
 struct TagLongForm<B<A>, TargetPriority, TargetPriority>
 {
     typedef typename TagLongForm<A, (TargetPriority << 1)>::type Inner;
     typedef B<Inner> type;
 };
 
-template<class A>
+template <class A>
 struct LongModifierRule
 {
     typedef A type;
 };
 
 // apply rules as long as the Tag type changes ...
-template<class A, class S = typename LongModifierRule<A>::type>
+template <class A, class S = typename LongModifierRule<A>::type>
 struct StandardizeTagLongForm
 {
     typedef typename StandardizeTagLongForm<S>::type type;
 };
 
 // ... and stop otherwise ...
-template<class A>
+template <class A>
 struct StandardizeTagLongForm<A, A>
 {
     typedef A type;
 };
 
-template<class A, template<class> class B>
+template <class A, template <class> class B>
 struct LongModifierRule<B<A>>
 {
     typedef B<typename LongModifierRule<A>::type> type;
 };
 
-template<class A>
+template <class A>
 struct LongModifierRule<DefaultModifier<A>>
 {
     typedef A type;
 };
 
 #define VIGRA_DROP_DATA_PREPARATION_MODIFIERS(SOURCE, TARGET) \
-    template<>                                                \
+    template <>                                               \
     struct LongModifierRule<SOURCE>                           \
     {                                                         \
         typedef TARGET type;                                  \
@@ -734,35 +734,35 @@ VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<ScatterMatrixEigensystem>, Scatte
 
 #undef VIGRA_DROP_DATA_PREPARATION_MODIFIERS
 
-template<class A>
+template <class A>
 struct CheckSubstitutionFlag
 {
     static const bool value = (ModifierPriority<A>::value & SubstitutionMask) != 0;
 };
 
-template<class A, class B,
-         bool substitute = CheckSubstitutionFlag<A>::value>
+template <class A, class B,
+          bool substitute = CheckSubstitutionFlag<A>::value>
 struct SubstituteModifiers;
 
-template<class A, class B>
+template <class A, class B>
 struct SubstituteModifiers<A, B, false>
 {
     typedef B type;
 };
 
-template<class A, template<class> class AA, class B, template<class> class BB>
+template <class A, template <class> class AA, class B, template <class> class BB>
 struct SubstituteModifiers<AA<A>, BB<B>, true>
 {
     typedef AA<typename SubstituteModifiers<A, B>::type> type;
 };
 
-template<class A, class B, template<class> class BB>
+template <class A, class B, template <class> class BB>
 struct SubstituteModifiers<DefaultModifier<A>, BB<B>, true>
 {
     typedef BB<typename SubstituteModifiers<A, B>::type> type;
 };
 
-template<class A, template<class> class AA, class B, template<class> class BB>
+template <class A, template <class> class AA, class B, template <class> class BB>
 struct SubstituteModifiers<AA<A>, BB<B>, false>
 {
     typedef BB<typename SubstituteModifiers<A, B>::type> type;
@@ -770,7 +770,7 @@ struct SubstituteModifiers<AA<A>, BB<B>, false>
 
 } // namespace acc_detail
 
-template<class A, class B>
+template <class A, class B>
 struct TransferModifiers
 {
     typedef typename StandardizeTag<A>::type StdA;
@@ -782,7 +782,7 @@ struct TransferModifiers
     typedef typename StandardizeTag<StdAB>::type type;
 };
 
-template<class A, class HEAD, class TAIL>
+template <class A, class HEAD, class TAIL>
 struct TransferModifiers<A, TypeList<HEAD, TAIL>>
 {
     typedef TypeList<typename TransferModifiers<A, HEAD>::type,
@@ -790,13 +790,13 @@ struct TransferModifiers<A, TypeList<HEAD, TAIL>>
         type;
 };
 
-template<class A>
+template <class A>
 struct TransferModifiers<A, void>
 {
     typedef void type;
 };
 
-template<class TargetTag, class A = typename TargetTag::Dependencies>
+template <class TargetTag, class A = typename TargetTag::Dependencies>
 struct StandardizeDependencies
 #ifndef DOXYGEN
     : public StandardizeDependencies<TargetTag, typename A::type>
@@ -804,14 +804,14 @@ struct StandardizeDependencies
 {
 };
 
-template<class TargetTag, class HEAD, class TAIL>
+template <class TargetTag, class HEAD, class TAIL>
 struct StandardizeDependencies<TargetTag, TypeList<HEAD, TAIL>>
 {
     typedef typename StandardizeTag<TargetTag>::type Target;
     typedef typename TransferModifiers<Target, TypeList<HEAD, TAIL>>::type type;
 };
 
-template<class TargetTag>
+template <class TargetTag>
 struct StandardizeDependencies<TargetTag, void>
 {
     typedef void type;

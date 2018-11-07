@@ -202,7 +202,7 @@ struct BinaryForestTests
         should(gr.numParents(n4) == 0);
     }
 
-    template<ContainerTag CTag>
+    template <ContainerTag CTag>
     void test_property_map()
     {
         PropertyMap<Node, int, CTag> m;
@@ -248,7 +248,7 @@ struct BinaryForestTests
             values_expected.push_back(27);
             values_expected.push_back(12);
             values_expected.push_back(73);
-            for (auto const& p : m)
+            for(auto const& p : m)
             {
                 keys.push_back(p.first);
                 values.push_back(p.second);
@@ -271,7 +271,7 @@ struct BinaryForestTests
             std::vector<int> values, values_expected; // = {27, 73};
             values_expected.push_back(27);
             values_expected.push_back(73);
-            for (auto const& p : m)
+            for(auto const& p : m)
             {
                 keys.push_back(p.first);
                 values.push_back(p.second);

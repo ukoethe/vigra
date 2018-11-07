@@ -6,7 +6,7 @@ namespace vigra
 
 
 
-template<class T>
+template <class T>
 class TransformIterValProxy
 {
 public:
@@ -30,7 +30,7 @@ private:
 };
 
 
-template<class T>
+template <class T>
 class TransformIterValProxy<const T&>
 {
     typedef const T& reference;
@@ -52,7 +52,7 @@ private:
     T t_;
 };
 
-template<class T>
+template <class T>
 class TransformIterValProxy<T&>
 {
     typedef T& reference;
@@ -75,7 +75,7 @@ private:
 };
 
 
-template<
+template <
     class UnaryFunction,
     class Iterator>
 class TransformIterator
@@ -196,7 +196,7 @@ private:
 };
 
 
-template<
+template <
     class UnaryFunction,
     class Iterator>
 class EndAwareTransformIterator

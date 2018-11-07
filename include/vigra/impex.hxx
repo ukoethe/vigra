@@ -60,8 +60,8 @@ namespace vigra
 */
 namespace detail
 {
-template<class ValueType,
-         class ImageIterator, class ImageAccessor>
+template <class ValueType,
+          class ImageIterator, class ImageAccessor>
 void
 read_image_band(Decoder* decoder,
                 ImageIterator image_iterator, ImageAccessor image_accessor)
@@ -72,7 +72,7 @@ read_image_band(Decoder* decoder,
     const unsigned height(decoder->getHeight());
     const unsigned offset(decoder->getOffset());
 
-    for (unsigned y = 0U; y != height; ++y)
+    for(unsigned y = 0U; y != height; ++y)
     {
         decoder->nextScanline();
 
@@ -81,7 +81,7 @@ read_image_band(Decoder* decoder,
         ImageRowIterator is(image_iterator.rowIterator());
         const ImageRowIterator is_end(is + width);
 
-        while (is != is_end)
+        while(is != is_end)
         {
             image_accessor.set(*scanline, is);
             scanline += offset;
@@ -93,8 +93,8 @@ read_image_band(Decoder* decoder,
 }
 
 
-template<class ValueType,
-         class ImageIterator, class ImageAccessor>
+template <class ValueType,
+          class ImageIterator, class ImageAccessor>
 void
 read_image_bands(Decoder* decoder,
                  ImageIterator image_iterator, ImageAccessor image_accessor)
@@ -109,19 +109,19 @@ read_image_bands(Decoder* decoder,
 
     // OPTIMIZATION: Specialization for the most common case
     // of an RGB-image, i.e. 3 channels.
-    if (accessor_size == 3U)
+    if(accessor_size == 3U)
     {
         const ValueType* scanline_0;
         const ValueType* scanline_1;
         const ValueType* scanline_2;
 
-        for (unsigned y = 0U; y != height; ++y)
+        for(unsigned y = 0U; y != height; ++y)
         {
             decoder->nextScanline();
 
             scanline_0 = static_cast<const ValueType*>(decoder->currentScanlineOfBand(0));
 
-            if (bands == 1)
+            if(bands == 1)
             {
                 scanline_1 = scanline_0;
                 scanline_2 = scanline_0;
@@ -135,7 +135,7 @@ read_image_bands(Decoder* decoder,
             ImageRowIterator is(image_iterator.rowIterator());
             const ImageRowIterator is_end(is + width);
 
-            while (is != is_end)
+            while(is != is_end)
             {
                 image_accessor.setComponent(*scanline_0, is, 0);
                 image_accessor.setComponent(*scanline_1, is, 1);
@@ -155,22 +155,22 @@ read_image_bands(Decoder* decoder,
     {
         std::vector<const ValueType*> scanlines(accessor_size);
 
-        for (unsigned y = 0U; y != height; ++y)
+        for(unsigned y = 0U; y != height; ++y)
         {
             decoder->nextScanline();
 
             scanlines[0] = static_cast<const ValueType*>(decoder->currentScanlineOfBand(0));
 
-            if (bands == 1)
+            if(bands == 1)
             {
-                for (unsigned i = 1U; i != accessor_size; ++i)
+                for(unsigned i = 1U; i != accessor_size; ++i)
                 {
                     scanlines[i] = scanlines[0];
                 }
             }
             else
             {
-                for (unsigned i = 1U; i != accessor_size; ++i)
+                for(unsigned i = 1U; i != accessor_size; ++i)
                 {
                     scanlines[i] = static_cast<const ValueType*>(decoder->currentScanlineOfBand(i));
                 }
@@ -179,9 +179,9 @@ read_image_bands(Decoder* decoder,
             ImageRowIterator is(image_iterator.rowIterator());
             const ImageRowIterator is_end(is + width);
 
-            while (is != is_end)
+            while(is != is_end)
             {
-                for (unsigned i = 0U; i != accessor_size; ++i)
+                for(unsigned i = 0U; i != accessor_size; ++i)
                 {
                     image_accessor.setComponent(*scanlines[i], is, static_cast<int>(i));
                     scanlines[i] += offset;
@@ -195,7 +195,7 @@ read_image_bands(Decoder* decoder,
 }
 
 
-template<class ImageIterator, class ImageAccessor>
+template <class ImageIterator, class ImageAccessor>
 void
 importImage(const ImageImportInfo& import_info,
             ImageIterator image_iterator, ImageAccessor image_accessor,
@@ -203,7 +203,7 @@ importImage(const ImageImportInfo& import_info,
 {
     VIGRA_UNIQUE_PTR<Decoder> decoder(vigra::decoder(import_info));
 
-    switch (pixel_t_of_string(decoder->getPixelType()))
+    switch(pixel_t_of_string(decoder->getPixelType()))
     {
         case UNSIGNED_INT_8:
             read_image_band<UInt8>(decoder.get(), image_iterator, image_accessor);
@@ -234,7 +234,7 @@ importImage(const ImageImportInfo& import_info,
 }
 
 
-template<class ImageIterator, class ImageAccessor>
+template <class ImageIterator, class ImageAccessor>
 void
 importImage(const ImageImportInfo& import_info,
             ImageIterator image_iterator, ImageAccessor image_accessor,
@@ -246,7 +246,7 @@ importImage(const ImageImportInfo& import_info,
 
     VIGRA_UNIQUE_PTR<Decoder> decoder(vigra::decoder(import_info));
 
-    switch (pixel_t_of_string(decoder->getPixelType()))
+    switch(pixel_t_of_string(decoder->getPixelType()))
     {
         case UNSIGNED_INT_8:
             read_image_bands<UInt8>(decoder.get(), image_iterator, image_accessor);
@@ -276,8 +276,8 @@ importImage(const ImageImportInfo& import_info,
     decoder->close();
 }
 
-template<class ValueType,
-         class ImageIterator, class ImageAccessor, class ImageScaler>
+template <class ValueType,
+          class ImageIterator, class ImageAccessor, class ImageScaler>
 void
 write_image_band(Encoder* encoder,
                  ImageIterator image_upper_left, ImageIterator image_lower_right, ImageAccessor image_accessor,
@@ -307,14 +307,14 @@ write_image_band(Encoder* encoder,
     // define one.
     ImageIterator image_iterator(image_upper_left);
 
-    for (unsigned y = 0U; y != height; ++y)
+    for(unsigned y = 0U; y != height; ++y)
     {
         ValueType* scanline = static_cast<ValueType*>(encoder->currentScanlineOfBand(0));
 
         ImageRowIterator is(image_iterator.rowIterator());
         const ImageRowIterator is_end(is + width);
 
-        while (is != is_end)
+        while(is != is_end)
         {
             *scanline = explicit_cast::cast(image_scaler(image_accessor(is)));
             scanline += offset;
@@ -328,8 +328,8 @@ write_image_band(Encoder* encoder,
 }
 
 
-template<class ValueType,
-         class ImageIterator, class ImageAccessor, class ImageScaler>
+template <class ValueType,
+          class ImageIterator, class ImageAccessor, class ImageScaler>
 void
 write_image_bands(Encoder* encoder,
                   ImageIterator image_upper_left, ImageIterator image_lower_right, ImageAccessor image_accessor,
@@ -361,13 +361,13 @@ write_image_bands(Encoder* encoder,
 
     // OPTIMIZATION: Specialization for the most common case
     // of an RGB-image, i.e. 3 channels.
-    if (accessor_size == 3U)
+    if(accessor_size == 3U)
     {
         ValueType* scanline_0;
         ValueType* scanline_1;
         ValueType* scanline_2;
 
-        for (unsigned y = 0U; y != height; ++y)
+        for(unsigned y = 0U; y != height; ++y)
         {
             scanline_0 = static_cast<ValueType*>(encoder->currentScanlineOfBand(0));
             scanline_1 = static_cast<ValueType*>(encoder->currentScanlineOfBand(1));
@@ -376,7 +376,7 @@ write_image_bands(Encoder* encoder,
             ImageRowIterator is(image_iterator.rowIterator());
             const ImageRowIterator is_end(is + width);
 
-            while (is != is_end)
+            while(is != is_end)
             {
                 *scanline_0 = explicit_cast::cast(image_scaler(image_accessor.getComponent(is, 0)));
                 *scanline_1 = explicit_cast::cast(image_scaler(image_accessor.getComponent(is, 1)));
@@ -398,9 +398,9 @@ write_image_bands(Encoder* encoder,
     {
         std::vector<ValueType*> scanlines(accessor_size);
 
-        for (unsigned y = 0U; y != height; ++y)
+        for(unsigned y = 0U; y != height; ++y)
         {
-            for (unsigned i = 0U; i != accessor_size; ++i)
+            for(unsigned i = 0U; i != accessor_size; ++i)
             {
                 scanlines[i] = static_cast<ValueType*>(encoder->currentScanlineOfBand(i));
             }
@@ -408,9 +408,9 @@ write_image_bands(Encoder* encoder,
             ImageRowIterator is(image_iterator.rowIterator());
             const ImageRowIterator is_end(is + width);
 
-            while (is != is_end)
+            while(is != is_end)
             {
-                for (unsigned i = 0U; i != accessor_size; ++i)
+                for(unsigned i = 0U; i != accessor_size; ++i)
                 {
                     *scanlines[i] = explicit_cast::cast(image_scaler(image_accessor.getComponent(is, static_cast<int>(i))));
                     scanlines[i] += offset;
@@ -426,7 +426,7 @@ write_image_bands(Encoder* encoder,
 }
 
 
-template<class ImageIterator, class ImageAccessor>
+template <class ImageIterator, class ImageAccessor>
 void
 exportImage(ImageIterator image_upper_left, ImageIterator image_lower_right, ImageAccessor image_accessor,
             const ImageExportInfo& export_info,
@@ -446,12 +446,12 @@ exportImage(ImageIterator image_upper_left, ImageIterator image_lower_right, Ima
                                                              image_upper_left, image_lower_right, image_accessor));
     const range_t destination_range(find_destination_value_range(export_info, type));
 
-    if ((downcast || export_info.hasForcedRangeMapping()) &&
-        (image_source_range.first != destination_range.first || image_source_range.second != destination_range.second))
+    if((downcast || export_info.hasForcedRangeMapping()) &&
+       (image_source_range.first != destination_range.first || image_source_range.second != destination_range.second))
     {
         const linear_transform image_rescaler(image_source_range, destination_range);
 
-        switch (type)
+        switch(type)
         {
             case UNSIGNED_INT_8:
                 write_image_band<UInt8>(encoder.get(),
@@ -487,7 +487,7 @@ exportImage(ImageIterator image_upper_left, ImageIterator image_lower_right, Ima
     }
     else
     {
-        switch (type)
+        switch(type)
         {
             case UNSIGNED_INT_8:
                 write_image_band<UInt8>(encoder.get(),
@@ -526,7 +526,7 @@ exportImage(ImageIterator image_upper_left, ImageIterator image_lower_right, Ima
 }
 
 
-template<class ImageIterator, class ImageAccessor>
+template <class ImageIterator, class ImageAccessor>
 void
 exportImage(ImageIterator image_upper_left, ImageIterator image_lower_right, ImageAccessor image_accessor,
             const ImageExportInfo& export_info,
@@ -550,12 +550,12 @@ exportImage(ImageIterator image_upper_left, ImageIterator image_lower_right, Ima
                                                              image_upper_left, image_lower_right, image_accessor));
     const range_t destination_range(find_destination_value_range(export_info, pixel_t_of_string(pixel_type)));
 
-    if ((downcast || export_info.hasForcedRangeMapping()) &&
-        (image_source_range.first != destination_range.first || image_source_range.second != destination_range.second))
+    if((downcast || export_info.hasForcedRangeMapping()) &&
+       (image_source_range.first != destination_range.first || image_source_range.second != destination_range.second))
     {
         const linear_transform image_rescaler(image_source_range, destination_range);
 
-        switch (type)
+        switch(type)
         {
             case UNSIGNED_INT_8:
                 write_image_bands<UInt8>(encoder.get(),
@@ -591,7 +591,7 @@ exportImage(ImageIterator image_upper_left, ImageIterator image_lower_right, Ima
     }
     else
     {
-        switch (type)
+        switch(type)
         {
             case UNSIGNED_INT_8:
                 write_image_bands<UInt8>(encoder.get(),
@@ -782,10 +782,10 @@ exportImage(ImageIterator image_upper_left, ImageIterator image_lower_right, Ima
        <td> VIFF </td><td> xv        </td><td> Khoros Visualization image file                            </td><td> </td>
        </table>
 */
-doxygen_overloaded_function(template<...> void importImage)
+doxygen_overloaded_function(template <...> void importImage)
 
 
-    template<class ImageIterator, class ImageAccessor>
+    template <class ImageIterator, class ImageAccessor>
     inline void importImage(const ImageImportInfo& import_info,
                             ImageIterator image_iterator, ImageAccessor image_accessor)
 {
@@ -798,7 +798,7 @@ doxygen_overloaded_function(template<...> void importImage)
 }
 
 
-template<class ImageIterator, class ImageAccessor>
+template <class ImageIterator, class ImageAccessor>
 inline void
 importImage(ImageImportInfo const& import_info,
             pair<ImageIterator, ImageAccessor> image)
@@ -807,7 +807,7 @@ importImage(ImageImportInfo const& import_info,
                 image.first, image.second);
 }
 
-template<class T, class S>
+template <class T, class S>
 inline void
 importImage(ImageImportInfo const& import_info,
             MultiArrayView<2, T, S> image)
@@ -817,7 +817,7 @@ importImage(ImageImportInfo const& import_info,
     importImage(import_info, destImage(image));
 }
 
-template<class T, class A>
+template <class T, class A>
 inline void
 importImage(char const* name,
             MultiArray<2, T, A>& image)
@@ -827,7 +827,7 @@ importImage(char const* name,
     importImage(info, destImage(image));
 }
 
-template<class T, class A>
+template <class T, class A>
 inline void
 importImage(std::string const& name,
             MultiArray<2, T, A>& image)
@@ -955,10 +955,10 @@ importImage(std::string const& name,
     - The image file must be writable and
     - the file type must be one of the supported file types.
 */
-doxygen_overloaded_function(template<...> void exportImage)
+doxygen_overloaded_function(template <...> void exportImage)
 
 
-    template<class ImageIterator, class ImageAccessor>
+    template <class ImageIterator, class ImageAccessor>
     inline void exportImage(ImageIterator image_upper_left, ImageIterator image_lower_right, ImageAccessor image_accessor,
                             const ImageExportInfo& export_info)
 {
@@ -971,7 +971,7 @@ doxygen_overloaded_function(template<...> void exportImage)
                             export_info,
                             is_scalar());
     }
-    catch (Encoder::TIFFCompressionException&)
+    catch(Encoder::TIFFCompressionException&)
     {
         ImageExportInfo info(export_info);
 
@@ -982,7 +982,7 @@ doxygen_overloaded_function(template<...> void exportImage)
     }
 }
 
-template<class ImageIterator, class ImageAccessor>
+template <class ImageIterator, class ImageAccessor>
 inline void
 exportImage(triple<ImageIterator, ImageIterator, ImageAccessor> image,
             ImageExportInfo const& export_info)
@@ -991,7 +991,7 @@ exportImage(triple<ImageIterator, ImageIterator, ImageAccessor> image,
                 export_info);
 }
 
-template<class T, class S>
+template <class T, class S>
 inline void
     exportImage(MultiArrayView<2, T, S> const& image,
                 ImageExportInfo const& export_info)
@@ -999,7 +999,7 @@ inline void
     exportImage(srcImageRange(image), export_info);
 }
 
-template<class T, class S>
+template <class T, class S>
 inline void
     exportImage(MultiArrayView<2, T, S> const& image,
                 char const* name)
@@ -1008,7 +1008,7 @@ inline void
     exportImage(srcImageRange(image), export_info);
 }
 
-template<class T, class S>
+template <class T, class S>
 inline void
     exportImage(MultiArrayView<2, T, S> const& image,
                 std::string const& name)

@@ -47,7 +47,7 @@ namespace python = boost::python;
 namespace vigra
 {
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonCornerResponseFunction2D(NumpyArray<2, Singleband<PixelType>> image,
                                    double scale = 1.0,
@@ -66,7 +66,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonFoerstnerCornerDetector2D(NumpyArray<2, Singleband<PixelType>> image,
                                     double scale = 1.0,
@@ -85,7 +85,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonRohrCornerDetector2D(NumpyArray<2, Singleband<PixelType>> image,
                                double scale = 1.0,
@@ -104,7 +104,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonBeaudetCornerDetector2D(NumpyArray<2, Singleband<PixelType>> image,
                                   double scale = 1.0,
@@ -123,7 +123,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonBoundaryTensorCornerDetector2D(NumpyArray<2, Singleband<PixelType>> image,
                                          double scale = 1.0,
@@ -141,9 +141,9 @@ NumpyAnyArray
         boundaryTensor(srcImageRange(image), destImage(bt), scale);
 
         PixelType ev1, ev2;
-        for (int y = 0; y < image.shape(1); ++y)
+        for(int y = 0; y < image.shape(1); ++y)
         {
-            for (int x = 0; x < image.shape(0); ++x)
+            for(int x = 0; x < image.shape(0); ++x)
             {
                 symmetric2x2Eigenvalues(bt(x, y)[0], bt(x, y)[1], bt(x, y)[2], &ev1, &ev2);
                 res(x, y) = PixelType(2.0) * ev2;

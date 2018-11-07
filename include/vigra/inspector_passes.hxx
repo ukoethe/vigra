@@ -11,29 +11,29 @@ namespace vigra
 namespace detail
 {
 
-template<bool>
+template <bool>
 struct extra_passes_selector
 {
-    template<class Inspector, class Functor>
+    template <class Inspector, class Functor>
     static void
     call(Inspector, Functor&)
     {
     }
 };
-template<>
+template <>
 struct extra_passes_selector<true>
 {
-    template<class Inspector, class Functor_n>
+    template <class Inspector, class Functor_n>
     static void
     call_n(Inspector g, Functor_n f_n)
     {
         g(f_n);
     }
-    template<class Inspector, class Functor>
+    template <class Inspector, class Functor>
     static void
     call(Inspector g, Functor& f)
     {
-        for (unsigned n = 2; n <= Functor::max_passes; ++n)
+        for(unsigned n = 2; n <= Functor::max_passes; ++n)
         {
             f.calc_sync();
             call_n(g, f.pass_n(n));
@@ -41,14 +41,14 @@ struct extra_passes_selector<true>
     }
 };
 
-template<class T>
+template <class T>
 struct has_extra_passes : public sfinae_test<T, has_extra_passes>
 {
-    template<class U>
+    template <class U>
     has_extra_passes(U*, typename U::extra_passes* = 0);
 };
 
-template<class Functor, bool extra = has_extra_passes<Functor>::value>
+template <class Functor, bool extra = has_extra_passes<Functor>::value>
 struct get_extra_passes
     : public VigraFalseType
 {
@@ -57,7 +57,7 @@ struct get_extra_passes
     }
 };
 
-template<class Functor>
+template <class Functor>
 struct get_extra_passes<Functor, true>
 {
     typedef get_extra_passes extra_passes;
@@ -70,7 +70,7 @@ struct get_extra_passes<Functor, true>
     }
 };
 
-template<class Inspector, class Functor>
+template <class Inspector, class Functor>
 inline void
 extra_passes_select(Inspector g, Functor& f)
 {

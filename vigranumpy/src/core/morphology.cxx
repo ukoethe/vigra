@@ -51,7 +51,7 @@ namespace python = boost::python;
 namespace vigra
 {
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonDiscRankOrderFilter(NumpyArray<3, Multiband<PixelType>> image,
                               int radius, float rank,
@@ -66,7 +66,7 @@ NumpyAnyArray
 
     {
         PyAllowThreads _pythread;
-        for (int k = 0; k < image.shape(2); ++k)
+        for(int k = 0; k < image.shape(2); ++k)
         {
             MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
             MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
@@ -77,7 +77,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonDiscRankOrderFilterWithMask(NumpyArray<3, Multiband<PixelType>> image,
                                       NumpyArray<3, Multiband<PixelType>> mask,
@@ -97,7 +97,7 @@ NumpyAnyArray
 
     {
         PyAllowThreads _pythread;
-        for (int k = 0; k < image.shape(2); ++k)
+        for(int k = 0; k < image.shape(2); ++k)
         {
             MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
             MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
@@ -111,7 +111,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonDiscErosion(NumpyArray<3, Multiband<PixelType>> image,
                       int radius,
@@ -120,7 +120,7 @@ NumpyAnyArray
     return pythonDiscRankOrderFilter(image, radius, 0.0f, res);
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonDiscDilation(NumpyArray<3, Multiband<PixelType>> image,
                        int radius,
@@ -129,7 +129,7 @@ NumpyAnyArray
     return pythonDiscRankOrderFilter(image, radius, 1.0f, res);
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonDiscMedian(NumpyArray<3, Multiband<PixelType>> image,
                      int radius,
@@ -138,7 +138,7 @@ NumpyAnyArray
     return pythonDiscRankOrderFilter(image, radius, 0.5f, res);
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonDiscOpening(NumpyArray<3, Multiband<PixelType>> image,
                       int radius,
@@ -153,7 +153,7 @@ NumpyAnyArray
         PyAllowThreads _pythread;
         MultiArray<2, PixelType> tmp(MultiArrayShape<2>::type(image.shape(0), image.shape(1)));
 
-        for (int k = 0; k < image.shape(2); ++k)
+        for(int k = 0; k < image.shape(2); ++k)
         {
             MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
             MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
@@ -164,7 +164,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonDiscClosing(NumpyArray<3, Multiband<PixelType>> image,
                       int radius,
@@ -179,7 +179,7 @@ NumpyAnyArray
         PyAllowThreads _pythread;
         MultiArray<2, PixelType> tmp(MultiArrayShape<2>::type(image.shape(0), image.shape(1)));
 
-        for (int k = 0; k < image.shape(2); ++k)
+        for(int k = 0; k < image.shape(2); ++k)
         {
             MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
             MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
@@ -190,7 +190,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType, int dim>
+template <class PixelType, int dim>
 NumpyAnyArray
 pythonMultiBinaryErosion(NumpyArray<dim, Multiband<PixelType>> array,
                          double radius,
@@ -201,7 +201,7 @@ pythonMultiBinaryErosion(NumpyArray<dim, Multiband<PixelType>> array,
 
     {
         PyAllowThreads _pythread;
-        for (int k = 0; k < array.shape(dim - 1); ++k)
+        for(int k = 0; k < array.shape(dim - 1); ++k)
         {
             MultiArrayView<dim - 1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
             MultiArrayView<dim - 1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
@@ -213,7 +213,7 @@ pythonMultiBinaryErosion(NumpyArray<dim, Multiband<PixelType>> array,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyMultiBinaryErosion, pythonMultiBinaryErosion)
 
-template<class PixelType, int dim>
+template <class PixelType, int dim>
 NumpyAnyArray
 pythonMultiBinaryDilation(NumpyArray<dim, Multiband<PixelType>> array,
                           double radius,
@@ -224,7 +224,7 @@ pythonMultiBinaryDilation(NumpyArray<dim, Multiband<PixelType>> array,
 
     {
         PyAllowThreads _pythread;
-        for (int k = 0; k < array.shape(dim - 1); ++k)
+        for(int k = 0; k < array.shape(dim - 1); ++k)
         {
             MultiArrayView<dim - 1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
             MultiArrayView<dim - 1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
@@ -236,7 +236,7 @@ pythonMultiBinaryDilation(NumpyArray<dim, Multiband<PixelType>> array,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyMultiBinaryDilation, pythonMultiBinaryDilation)
 
-template<class PixelType, int dim>
+template <class PixelType, int dim>
 NumpyAnyArray
 pythonMultiBinaryOpening(NumpyArray<dim, Multiband<PixelType>> array,
                          double radius,
@@ -249,7 +249,7 @@ pythonMultiBinaryOpening(NumpyArray<dim, Multiband<PixelType>> array,
         PyAllowThreads _pythread;
         MultiArray<dim - 1, PixelType> tmp(typename MultiArrayShape<dim - 1>::type(array.shape().begin()));
 
-        for (int k = 0; k < array.shape(dim - 1); ++k)
+        for(int k = 0; k < array.shape(dim - 1); ++k)
         {
             MultiArrayView<dim - 1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
             MultiArrayView<dim - 1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
@@ -262,7 +262,7 @@ pythonMultiBinaryOpening(NumpyArray<dim, Multiband<PixelType>> array,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyMultiBinaryOpening, pythonMultiBinaryOpening)
 
-template<class PixelType, int dim>
+template <class PixelType, int dim>
 NumpyAnyArray
 pythonMultiBinaryClosing(NumpyArray<dim, Multiband<PixelType>> array,
                          double radius,
@@ -275,7 +275,7 @@ pythonMultiBinaryClosing(NumpyArray<dim, Multiband<PixelType>> array,
         PyAllowThreads _pythread;
         MultiArray<dim - 1, PixelType> tmp(typename MultiArrayShape<dim - 1>::type(array.shape().begin()));
 
-        for (int k = 0; k < array.shape(dim - 1); ++k)
+        for(int k = 0; k < array.shape(dim - 1); ++k)
         {
             MultiArrayView<dim - 1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
             MultiArrayView<dim - 1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
@@ -288,7 +288,7 @@ pythonMultiBinaryClosing(NumpyArray<dim, Multiband<PixelType>> array,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyMultiBinaryClosing, pythonMultiBinaryClosing)
 
-template<class PixelType, int dim>
+template <class PixelType, int dim>
 NumpyAnyArray
 pythonMultiGrayscaleErosion(NumpyArray<dim, Multiband<PixelType>> array,
                             double sigma,
@@ -299,7 +299,7 @@ pythonMultiGrayscaleErosion(NumpyArray<dim, Multiband<PixelType>> array,
 
     {
         PyAllowThreads _pythread;
-        for (int k = 0; k < array.shape(dim - 1); ++k)
+        for(int k = 0; k < array.shape(dim - 1); ++k)
         {
             MultiArrayView<dim - 1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
             MultiArrayView<dim - 1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
@@ -311,7 +311,7 @@ pythonMultiGrayscaleErosion(NumpyArray<dim, Multiband<PixelType>> array,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyMultiGrayscaleErosion, pythonMultiGrayscaleErosion)
 
-template<class PixelType, int dim>
+template <class PixelType, int dim>
 NumpyAnyArray
 pythonMultiGrayscaleDilation(NumpyArray<dim, Multiband<PixelType>> array,
                              double sigma,
@@ -322,7 +322,7 @@ pythonMultiGrayscaleDilation(NumpyArray<dim, Multiband<PixelType>> array,
 
     {
         PyAllowThreads _pythread;
-        for (int k = 0; k < array.shape(dim - 1); ++k)
+        for(int k = 0; k < array.shape(dim - 1); ++k)
         {
             MultiArrayView<dim - 1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
             MultiArrayView<dim - 1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
@@ -334,7 +334,7 @@ pythonMultiGrayscaleDilation(NumpyArray<dim, Multiband<PixelType>> array,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyMultiGrayscaleDilation, pythonMultiGrayscaleDilation)
 
-template<class PixelType, int dim>
+template <class PixelType, int dim>
 NumpyAnyArray
 pythonMultiGrayscaleOpening(NumpyArray<dim, Multiband<PixelType>> array,
                             double sigma,
@@ -347,7 +347,7 @@ pythonMultiGrayscaleOpening(NumpyArray<dim, Multiband<PixelType>> array,
         PyAllowThreads _pythread;
         MultiArray<dim - 1, PixelType> tmp(typename MultiArrayShape<dim - 1>::type(array.shape().begin()));
 
-        for (int k = 0; k < array.shape(dim - 1); ++k)
+        for(int k = 0; k < array.shape(dim - 1); ++k)
         {
             MultiArrayView<dim - 1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
             MultiArrayView<dim - 1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
@@ -360,7 +360,7 @@ pythonMultiGrayscaleOpening(NumpyArray<dim, Multiband<PixelType>> array,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyMultiGrayscaleOpening, pythonMultiGrayscaleOpening)
 
-template<class PixelType, int dim>
+template <class PixelType, int dim>
 NumpyAnyArray
 pythonMultiGrayscaleClosing(NumpyArray<dim, Multiband<PixelType>> array,
                             double sigma,
@@ -373,7 +373,7 @@ pythonMultiGrayscaleClosing(NumpyArray<dim, Multiband<PixelType>> array,
         PyAllowThreads _pythread;
         MultiArray<dim - 1, PixelType> tmp(typename MultiArrayShape<dim - 1>::type(array.shape().begin()));
 
-        for (int k = 0; k < array.shape(dim - 1); ++k)
+        for(int k = 0; k < array.shape(dim - 1); ++k)
         {
             MultiArrayView<dim - 1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
             MultiArrayView<dim - 1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
@@ -389,12 +389,12 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyMultiGrayscaleClosing, pythonMultiGrayscal
 namespace detail
 {
 
-template<class PixelType>
+template <class PixelType>
 struct IsBackgroundAccessor
 {
     typedef bool value_type;
 
-    template<class Iterator>
+    template <class Iterator>
     value_type operator()(Iterator const& i) const
     {
         return *i == NumericTraits<PixelType>::zero();
@@ -403,7 +403,7 @@ struct IsBackgroundAccessor
 
 } // namespace detail
 
-template<class PixelType, typename DestPixelType>
+template <class PixelType, typename DestPixelType>
 NumpyAnyArray
     pythonDistanceTransform2D(NumpyArray<2, Singleband<PixelType>> image,
                               bool background,
@@ -414,10 +414,10 @@ NumpyAnyArray
     res.reshapeIfEmpty(image.taggedShape(),
                        "distanceTransform2D(): Output array has wrong shape.");
 
-    if (pixelPitch.size() == 0)
+    if(pixelPitch.size() == 0)
     {
         PyAllowThreads _pythread;
-        if (background)
+        if(background)
         {
             distanceTransform(srcImageRange(image), destImage(res),
                               NumericTraits<PixelType>::zero(), norm);
@@ -441,7 +441,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class VoxelType, int N>
+template <class VoxelType, int N>
 NumpyAnyArray
 pythonDistanceTransform(NumpyArray<N, Singleband<VoxelType>> volume,
                         bool background,
@@ -451,7 +451,7 @@ pythonDistanceTransform(NumpyArray<N, Singleband<VoxelType>> volume,
     res.reshapeIfEmpty(volume.taggedShape(),
                        "distanceTransform(): Output array has wrong shape.");
 
-    if (pixelPitch.size() == 0)
+    if(pixelPitch.size() == 0)
     {
         pixelPitch = ArrayVector<double>(N, 1.0);
     }
@@ -469,7 +469,7 @@ pythonDistanceTransform(NumpyArray<N, Singleband<VoxelType>> volume,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyDistanceTransform, pythonDistanceTransform)
 
-template<class VoxelType, int N>
+template <class VoxelType, int N>
 NumpyAnyArray
 pythonVectorDistanceTransform(NumpyArray<N, Singleband<VoxelType>> volume,
                               bool background,
@@ -483,7 +483,7 @@ pythonVectorDistanceTransform(NumpyArray<N, Singleband<VoxelType>> volume,
                        "vectorDistanceTransform(): Output array has wrong shape.");
 
     TinyVector<double, N> pixelPitch(1.0);
-    if (pyPixelPitch.size() > 0)
+    if(pyPixelPitch.size() > 0)
     {
         pixelPitch.init(pyPixelPitch.begin(), pyPixelPitch.end());
         pixelPitch = volume.permuteLikewise(pixelPitch);
@@ -498,7 +498,7 @@ pythonVectorDistanceTransform(NumpyArray<N, Singleband<VoxelType>> volume,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyVectorDistanceTransform, pythonVectorDistanceTransform)
 
-template<class VoxelType, int N>
+template <class VoxelType, int N>
 NumpyAnyArray
 pythonboundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType>> volume,
                                 bool array_border_is_active,
@@ -510,11 +510,11 @@ pythonboundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType>> volume,
 
     boundary = tolower(boundary);
     BoundaryDistanceTag boundary_tag = InterpixelBoundary;
-    if (boundary == "outerboundary")
+    if(boundary == "outerboundary")
         boundary_tag = OuterBoundary;
-    else if (boundary == "interpixelboundary" || boundary == "")
+    else if(boundary == "interpixelboundary" || boundary == "")
         boundary_tag = InterpixelBoundary;
-    else if (boundary == "innerboundary")
+    else if(boundary == "innerboundary")
         boundary_tag = InnerBoundary;
     else
         vigra_precondition(false,
@@ -528,7 +528,7 @@ pythonboundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType>> volume,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyboundaryDistanceTransform, pythonboundaryDistanceTransform)
 
-template<class VoxelType, int N>
+template <class VoxelType, int N>
 NumpyAnyArray
 pythonboundaryVectorDistanceTransform(NumpyArray<N, Singleband<VoxelType>> volume,
                                       bool array_border_is_active,
@@ -540,11 +540,11 @@ pythonboundaryVectorDistanceTransform(NumpyArray<N, Singleband<VoxelType>> volum
 
     boundary = tolower(boundary);
     BoundaryDistanceTag boundary_tag = InterpixelBoundary;
-    if (boundary == "outerboundary")
+    if(boundary == "outerboundary")
         boundary_tag = OuterBoundary;
-    else if (boundary == "interpixelboundary" || boundary == "")
+    else if(boundary == "interpixelboundary" || boundary == "")
         boundary_tag = InterpixelBoundary;
-    else if (boundary == "innerboundary")
+    else if(boundary == "innerboundary")
         boundary_tag = InnerBoundary;
     else
         vigra_precondition(false,
@@ -558,7 +558,7 @@ pythonboundaryVectorDistanceTransform(NumpyArray<N, Singleband<VoxelType>> volum
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyboundaryVectorDistanceTransform, pythonboundaryVectorDistanceTransform)
 
-template<class T, int N>
+template <class T, int N>
 NumpyAnyArray
 pythonEccentricityTransform(const NumpyArray<N, T>& image,
                             NumpyArray<N, float> res)
@@ -574,7 +574,7 @@ pythonEccentricityTransform(const NumpyArray<N, T>& image,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyEccentricityTransform, pythonEccentricityTransform)
 
-template<class T, int N>
+template <class T, int N>
 python::list
 pythonEccentricityCenters(const NumpyArray<N, T>& image)
 {
@@ -586,7 +586,7 @@ pythonEccentricityCenters(const NumpyArray<N, T>& image)
     }
 
     python::list centerlist = python::list();
-    for (decltype(centers.size()) i = 0; i < centers.size(); ++i)
+    for(decltype(centers.size()) i = 0; i < centers.size(); ++i)
     {
         centerlist.append(centers[i]);
     }
@@ -595,7 +595,7 @@ pythonEccentricityCenters(const NumpyArray<N, T>& image)
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyEccentricityCenters, pythonEccentricityCenters)
 
-template<class T, int N>
+template <class T, int N>
 python::tuple
 pythonEccentricityTransformWithCenters(const NumpyArray<N, T>& image,
                                        NumpyArray<N, float> res)
@@ -610,7 +610,7 @@ pythonEccentricityTransformWithCenters(const NumpyArray<N, T>& image,
     }
 
     python::list centerlist = python::list();
-    for (decltype(centers.size()) i = 0; i < centers.size(); ++i)
+    for(decltype(centers.size()) i = 0; i < centers.size(); ++i)
     {
         centerlist.append(centers[i]);
     }
@@ -619,7 +619,7 @@ pythonEccentricityTransformWithCenters(const NumpyArray<N, T>& image,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyEccentricityTransformWithCenters, pythonEccentricityTransformWithCenters)
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 NumpyAnyArray
 pySkeletonizeImage(NumpyArray<N, Singleband<T>> const& labels,
                    std::string mode,
@@ -629,41 +629,41 @@ pySkeletonizeImage(NumpyArray<N, Singleband<T>> const& labels,
     SkeletonOptions options;
     bool returnFloat = false;
 
-    if (mode == "dontprune")
+    if(mode == "dontprune")
     {
         options.dontPrune();
     }
-    else if (mode == "returnlength")
+    else if(mode == "returnlength")
     {
         options.returnLength();
         returnFloat = true;
     }
-    else if (mode == "prunelength")
+    else if(mode == "prunelength")
     {
         options.pruneLength(pruning_threshold);
     }
-    else if (mode == "prunelengthrelative")
+    else if(mode == "prunelengthrelative")
     {
         options.pruneLengthRelative(pruning_threshold);
     }
-    else if (mode == "returnsalience")
+    else if(mode == "returnsalience")
     {
         options.returnSalience();
         returnFloat = true;
     }
-    else if (mode == "pruneasalience")
+    else if(mode == "pruneasalience")
     {
         options.pruneSalience(pruning_threshold);
     }
-    else if (mode == "prunesaliencerelative" || mode == "")
+    else if(mode == "prunesaliencerelative" || mode == "")
     {
         options.pruneSalienceRelative(pruning_threshold);
     }
-    else if (mode == "prunetopology")
+    else if(mode == "prunetopology")
     {
         options.pruneTopology();
     }
-    else if (mode == "pruneaggressive")
+    else if(mode == "pruneaggressive")
     {
         options.pruneTopology(false);
     }
@@ -672,7 +672,7 @@ pySkeletonizeImage(NumpyArray<N, Singleband<T>> const& labels,
         vigra_precondition(false, "skeletonizeImage(): invalid mode.");
     }
 
-    if (returnFloat)
+    if(returnFloat)
     {
         NumpyArray<N, Singleband<float>> res(labels.taggedShape());
 

@@ -96,7 +96,7 @@ namespace vigra
     UInt32 vf = spi1.unchecked(fx, fy); // caller is sure that (fx, fy) are valid coordinates
     \endcode
 */
-template<int ORDER, class VALUETYPE>
+template <int ORDER, class VALUETYPE>
 class SplineImageView
 {
     typedef typename NumericTraits<VALUETYPE>::RealPromote InternalValue;
@@ -149,7 +149,7 @@ public:
             in an approximating (smoothing) rather than interpolating spline. This is
             especially useful if customized prefilters are to be applied.
         */
-    template<class U, class S>
+    template <class U, class S>
     SplineImageView(MultiArrayView<2, U, S> const& s, bool skipPrefiltering = false)
         : w_(s.shape(0)), h_(s.shape(1)), w1_(w_ - 1), h1_(h_ - 1),
           x0_(kcenter_), x1_(w_ - kcenter_ - 2), y0_(kcenter_), y1_(h_ - kcenter_ - 2),
@@ -158,7 +158,7 @@ public:
           u_(-1.0), v_(-1.0)
     {
         copyImage(srcImageRange(s), destImage(image_));
-        if (!skipPrefiltering)
+        if(!skipPrefiltering)
             init();
     }
 
@@ -169,7 +169,7 @@ public:
             in an approximating (smoothing) rather than interpolating spline. This is
             especially useful if customized prefilters are to be applied.
         */
-    template<class SrcIterator, class SrcAccessor>
+    template <class SrcIterator, class SrcAccessor>
     SplineImageView(SrcIterator is, SrcIterator iend, SrcAccessor sa, bool skipPrefiltering = false)
         : w_(iend.x - is.x), h_(iend.y - is.y), w1_(w_ - 1), h1_(h_ - 1),
           x0_(kcenter_), x1_(w_ - kcenter_ - 2), y0_(kcenter_), y1_(h_ - kcenter_ - 2),
@@ -178,7 +178,7 @@ public:
           u_(-1.0), v_(-1.0)
     {
         copyImage(srcIterRange(is, iend, sa), destImage(image_));
-        if (!skipPrefiltering)
+        if(!skipPrefiltering)
             init();
     }
 
@@ -189,7 +189,7 @@ public:
             in an approximating (smoothing) rather than interpolating spline. This is
             especially useful if customized prefilters are to be applied.
         */
-    template<class SrcIterator, class SrcAccessor>
+    template <class SrcIterator, class SrcAccessor>
     SplineImageView(triple<SrcIterator, SrcIterator, SrcAccessor> s, bool skipPrefiltering = false)
         : w_(s.second.x - s.first.x), h_(s.second.y - s.first.y), w1_(w_ - 1), h1_(h_ - 1),
           x0_(kcenter_), x1_(w_ - kcenter_ - 2), y0_(kcenter_), y1_(h_ - kcenter_ - 2),
@@ -198,7 +198,7 @@ public:
           u_(-1.0), v_(-1.0)
     {
         copyImage(srcIterRange(s.first, s.second, s.third), destImage(image_));
-        if (!skipPrefiltering)
+        if(!skipPrefiltering)
             init();
     }
 
@@ -528,7 +528,7 @@ public:
             assert(abs(f_x_y - view(x, y)) < 1e-6);
             \endcode
         */
-    template<class Array>
+    template <class Array>
     void coefficientArray(double x, double y, Array& res) const;
 
     /** Check if x is in the original image range.
@@ -597,13 +597,13 @@ protected:
     mutable int ix_[ksize_], iy_[ksize_];
 };
 
-template<int ORDER, class VALUETYPE>
+template <int ORDER, class VALUETYPE>
 void
 SplineImageView<ORDER, VALUETYPE>::init()
 {
     ArrayVector<double> const& b = k_.prefilterCoefficients();
 
-    for (unsigned int i = 0; i < b.size(); ++i)
+    for(unsigned int i = 0; i < b.size(); ++i)
     {
         recursiveFilterX(srcImageRange(image_), destImage(image_), b[i], BORDER_TREATMENT_REFLECT);
         recursiveFilterY(srcImageRange(image_), destImage(image_), b[i], BORDER_TREATMENT_REFLECT);
@@ -613,10 +613,10 @@ SplineImageView<ORDER, VALUETYPE>::init()
 namespace detail
 {
 
-template<int i>
+template <int i>
 struct SplineImageViewUnrollLoop1
 {
-    template<class Array>
+    template <class Array>
     static void exec(int c0, Array c)
     {
         SplineImageViewUnrollLoop1<i - 1>::exec(c0, c);
@@ -624,20 +624,20 @@ struct SplineImageViewUnrollLoop1
     }
 };
 
-template<>
+template <>
 struct SplineImageViewUnrollLoop1<0>
 {
-    template<class Array>
+    template <class Array>
     static void exec(int c0, Array c)
     {
         c[0] = c0;
     }
 };
 
-template<int i, class ValueType>
+template <int i, class ValueType>
 struct SplineImageViewUnrollLoop2
 {
-    template<class Array1, class RowIterator, class Array2>
+    template <class Array1, class RowIterator, class Array2>
     static ValueType
     exec(Array1 k, RowIterator r, Array2 x)
     {
@@ -645,10 +645,10 @@ struct SplineImageViewUnrollLoop2
     }
 };
 
-template<class ValueType>
+template <class ValueType>
 struct SplineImageViewUnrollLoop2<0, ValueType>
 {
-    template<class Array1, class RowIterator, class Array2>
+    template <class Array1, class RowIterator, class Array2>
     static ValueType
     exec(Array1 k, RowIterator r, Array2 x)
     {
@@ -658,14 +658,14 @@ struct SplineImageViewUnrollLoop2<0, ValueType>
 
 } // namespace detail
 
-template<int ORDER, class VALUETYPE>
+template <int ORDER, class VALUETYPE>
 void
 SplineImageView<ORDER, VALUETYPE>::calculateIndices(double x, double y) const
 {
-    if (x == x_ && y == y_)
+    if(x == x_ && y == y_)
         return; // still in cache
 
-    if (x > x0_ && x < x1_ && y > y0_ && y < y1_)
+    if(x > x0_ && x < x1_ && y > y0_ && y < y1_)
     {
         detail::SplineImageViewUnrollLoop1<ORDER>::exec(
             (ORDER % 2) ? int(x - kcenter_) : int(x + 0.5 - kcenter_), ix_);
@@ -683,24 +683,24 @@ SplineImageView<ORDER, VALUETYPE>::calculateIndices(double x, double y) const
         int xCenter = (ORDER % 2) ? (int)VIGRA_CSTD::floor(x) : (int)VIGRA_CSTD::floor(x + 0.5);
         int yCenter = (ORDER % 2) ? (int)VIGRA_CSTD::floor(y) : (int)VIGRA_CSTD::floor(y + 0.5);
 
-        if (x >= x1_)
+        if(x >= x1_)
         {
-            for (int i = 0; i < ksize_; ++i)
+            for(int i = 0; i < ksize_; ++i)
                 ix_[i] = w1_ - vigra::abs(w1_ - xCenter - (i - kcenter_));
         }
         else
         {
-            for (int i = 0; i < ksize_; ++i)
+            for(int i = 0; i < ksize_; ++i)
                 ix_[i] = vigra::abs(xCenter - (kcenter_ - i));
         }
-        if (y >= y1_)
+        if(y >= y1_)
         {
-            for (int i = 0; i < ksize_; ++i)
+            for(int i = 0; i < ksize_; ++i)
                 iy_[i] = h1_ - vigra::abs(h1_ - yCenter - (i - kcenter_));
         }
         else
         {
-            for (int i = 0; i < ksize_; ++i)
+            for(int i = 0; i < ksize_; ++i)
                 iy_[i] = vigra::abs(yCenter - (kcenter_ - i));
         }
         u_ = x - xCenter;
@@ -710,26 +710,26 @@ SplineImageView<ORDER, VALUETYPE>::calculateIndices(double x, double y) const
     y_ = y;
 }
 
-template<int ORDER, class VALUETYPE>
+template <int ORDER, class VALUETYPE>
 void
 SplineImageView<ORDER, VALUETYPE>::coefficients(double t, double* const& c) const
 {
     t += kcenter_;
-    for (int i = 0; i < ksize_; ++i)
+    for(int i = 0; i < ksize_; ++i)
         c[i] = k_(t - i);
 }
 
-template<int ORDER, class VALUETYPE>
+template <int ORDER, class VALUETYPE>
 void
 SplineImageView<ORDER, VALUETYPE>::derivCoefficients(double t,
                                                      unsigned int d, double* const& c) const
 {
     t += kcenter_;
-    for (int i = 0; i < ksize_; ++i)
+    for(int i = 0; i < ksize_; ++i)
         c[i] = k_(t - i, d);
 }
 
-template<int ORDER, class VALUETYPE>
+template <int ORDER, class VALUETYPE>
 VALUETYPE
 SplineImageView<ORDER, VALUETYPE>::convolve() const
 {
@@ -738,7 +738,7 @@ SplineImageView<ORDER, VALUETYPE>::convolve() const
     sum = RealPromote(
         ky_[0] * detail::SplineImageViewUnrollLoop2<ORDER, RealPromote>::exec(kx_, image_.rowBegin(iy_[0]), ix_));
 
-    for (int j = 1; j < ksize_; ++j)
+    for(int j = 1; j < ksize_; ++j)
     {
         sum += RealPromote(
             ky_[j] * detail::SplineImageViewUnrollLoop2<ORDER, RealPromote>::exec(kx_, image_.rowBegin(iy_[j]), ix_));
@@ -746,8 +746,8 @@ SplineImageView<ORDER, VALUETYPE>::convolve() const
     return detail::RequiresExplicitCast<VALUETYPE>::cast(sum);
 }
 
-template<int ORDER, class VALUETYPE>
-template<class Array>
+template <int ORDER, class VALUETYPE>
+template <class Array>
 void
 SplineImageView<ORDER, VALUETYPE>::coefficientArray(double x, double y, Array& res) const
 {
@@ -756,23 +756,23 @@ SplineImageView<ORDER, VALUETYPE>::coefficientArray(double x, double y, Array& r
     ResType tmp[ksize_][ksize_];
 
     calculateIndices(x, y);
-    for (int j = 0; j < ksize_; ++j)
+    for(int j = 0; j < ksize_; ++j)
     {
-        for (int i = 0; i < ksize_; ++i)
+        for(int i = 0; i < ksize_; ++i)
         {
             tmp[i][j] = ResType();
-            for (int k = 0; k < ksize_; ++k)
+            for(int k = 0; k < ksize_; ++k)
             {
                 tmp[i][j] += weights[i][k] * image_(ix_[k], iy_[j]);
             }
         }
     }
-    for (int j = 0; j < ksize_; ++j)
+    for(int j = 0; j < ksize_; ++j)
     {
-        for (int i = 0; i < ksize_; ++i)
+        for(int i = 0; i < ksize_; ++i)
         {
             res(i, j) = ResType();
-            for (int k = 0; k < ksize_; ++k)
+            for(int k = 0; k < ksize_; ++k)
             {
                 res(i, j) += weights[j][k] * tmp[i][k];
             }
@@ -780,7 +780,7 @@ SplineImageView<ORDER, VALUETYPE>::coefficientArray(double x, double y, Array& r
     }
 }
 
-template<int ORDER, class VALUETYPE>
+template <int ORDER, class VALUETYPE>
 VALUETYPE
 SplineImageView<ORDER, VALUETYPE>::operator()(double x, double y) const
 {
@@ -790,7 +790,7 @@ SplineImageView<ORDER, VALUETYPE>::operator()(double x, double y) const
     return convolve();
 }
 
-template<int ORDER, class VALUETYPE>
+template <int ORDER, class VALUETYPE>
 VALUETYPE
 SplineImageView<ORDER, VALUETYPE>::operator()(double x, double y,
                                               unsigned int dx, unsigned int dy) const
@@ -801,28 +801,28 @@ SplineImageView<ORDER, VALUETYPE>::operator()(double x, double y,
     return convolve();
 }
 
-template<int ORDER, class VALUETYPE>
+template <int ORDER, class VALUETYPE>
 typename SplineImageView<ORDER, VALUETYPE>::SquaredNormType
 SplineImageView<ORDER, VALUETYPE>::g2(double x, double y) const
 {
     return squaredNorm(dx(x, y)) + squaredNorm(dy(x, y));
 }
 
-template<int ORDER, class VALUETYPE>
+template <int ORDER, class VALUETYPE>
 typename SplineImageView<ORDER, VALUETYPE>::SquaredNormType
 SplineImageView<ORDER, VALUETYPE>::g2x(double x, double y) const
 {
     return SquaredNormType(2.0) * (dot(dx(x, y), dxx(x, y)) + dot(dy(x, y), dxy(x, y)));
 }
 
-template<int ORDER, class VALUETYPE>
+template <int ORDER, class VALUETYPE>
 typename SplineImageView<ORDER, VALUETYPE>::SquaredNormType
 SplineImageView<ORDER, VALUETYPE>::g2y(double x, double y) const
 {
     return SquaredNormType(2.0) * (dot(dx(x, y), dxy(x, y)) + dot(dy(x, y), dyy(x, y)));
 }
 
-template<int ORDER, class VALUETYPE>
+template <int ORDER, class VALUETYPE>
 typename SplineImageView<ORDER, VALUETYPE>::SquaredNormType
 SplineImageView<ORDER, VALUETYPE>::g2xx(double x, double y) const
 {
@@ -830,7 +830,7 @@ SplineImageView<ORDER, VALUETYPE>::g2xx(double x, double y) const
                                    squaredNorm(dxy(x, y)) + dot(dy(x, y), dxxy(x, y)));
 }
 
-template<int ORDER, class VALUETYPE>
+template <int ORDER, class VALUETYPE>
 typename SplineImageView<ORDER, VALUETYPE>::SquaredNormType
 SplineImageView<ORDER, VALUETYPE>::g2yy(double x, double y) const
 {
@@ -838,7 +838,7 @@ SplineImageView<ORDER, VALUETYPE>::g2yy(double x, double y) const
                                    squaredNorm(dyy(x, y)) + dot(dy(x, y), dy3(x, y)));
 }
 
-template<int ORDER, class VALUETYPE>
+template <int ORDER, class VALUETYPE>
 typename SplineImageView<ORDER, VALUETYPE>::SquaredNormType
 SplineImageView<ORDER, VALUETYPE>::g2xy(double x, double y) const
 {
@@ -851,7 +851,7 @@ SplineImageView<ORDER, VALUETYPE>::g2xy(double x, double y) const
 /*                    SplineImageView0                  */
 /*                                                      */
 /********************************************************/
-template<class VALUETYPE, class INTERNAL_INDEXER>
+template <class VALUETYPE, class INTERNAL_INDEXER>
 class SplineImageView0Base
 {
     typedef typename INTERNAL_INDEXER::value_type InternalValue;
@@ -877,21 +877,21 @@ public:
     {
     }
 
-    template<unsigned IntBits1, unsigned FractionalBits1,
-             unsigned IntBits2, unsigned FractionalBits2>
+    template <unsigned IntBits1, unsigned FractionalBits1,
+              unsigned IntBits2, unsigned FractionalBits2>
     value_type unchecked(FixedPoint<IntBits1, FractionalBits1> x,
                          FixedPoint<IntBits2, FractionalBits2> y) const
     {
         return internalIndexer_(round(x), round(y));
     }
 
-    template<unsigned IntBits1, unsigned FractionalBits1,
-             unsigned IntBits2, unsigned FractionalBits2>
+    template <unsigned IntBits1, unsigned FractionalBits1,
+              unsigned IntBits2, unsigned FractionalBits2>
     value_type unchecked(FixedPoint<IntBits1, FractionalBits1> x,
                          FixedPoint<IntBits2, FractionalBits2> y,
                          unsigned int dx, unsigned int dy) const
     {
-        if ((dx != 0) || (dy != 0))
+        if((dx != 0) || (dy != 0))
             return NumericTraits<VALUETYPE>::zero();
         return unchecked(x, y);
     }
@@ -903,7 +903,7 @@ public:
 
     value_type unchecked(double x, double y, unsigned int dx, unsigned int dy) const
     {
-        if ((dx != 0) || (dy != 0))
+        if((dx != 0) || (dy != 0))
             return NumericTraits<VALUETYPE>::zero();
         return unchecked(x, y);
     }
@@ -911,7 +911,7 @@ public:
     value_type operator()(double x, double y) const
     {
         int ix, iy;
-        if (x < 0.0)
+        if(x < 0.0)
         {
             ix = (int)(-x + 0.5);
             vigra_precondition(ix <= (int)w_ - 1,
@@ -920,14 +920,14 @@ public:
         else
         {
             ix = (int)(x + 0.5);
-            if (ix >= (int)w_)
+            if(ix >= (int)w_)
             {
                 ix = 2 * w_ - 2 - ix;
                 vigra_precondition(ix >= 0,
                                    "SplineImageView::operator(): coordinates out of range.");
             }
         }
-        if (y < 0.0)
+        if(y < 0.0)
         {
             iy = (int)(-y + 0.5);
             vigra_precondition(iy <= (int)h_ - 1,
@@ -936,7 +936,7 @@ public:
         else
         {
             iy = (int)(y + 0.5);
-            if (iy >= (int)h_)
+            if(iy >= (int)h_)
             {
                 iy = 2 * h_ - 2 - iy;
                 vigra_precondition(iy >= 0,
@@ -948,7 +948,7 @@ public:
 
     value_type operator()(double x, double y, unsigned int dx, unsigned int dy) const
     {
-        if ((dx != 0) || (dy != 0))
+        if((dx != 0) || (dy != 0))
             return NumericTraits<VALUETYPE>::zero();
         return operator()(x, y);
     }
@@ -1133,7 +1133,7 @@ public:
         return TinyVector<unsigned int, 2>(w_, h_);
     }
 
-    template<class Array>
+    template <class Array>
     void coefficientArray(double x, double y, Array& res) const
     {
         res(0, 0) = operator()(x, y);
@@ -1182,7 +1182,7 @@ protected:
     \ref vigra::MultiArray&lt;2, ...&gt;, and \ref vigra::MultiArrayView&lt;2, ...&gt;.
 
 */
-template<class VALUETYPE, class INTERNAL_TRAVERSER = typename BasicImage<VALUETYPE>::const_traverser>
+template <class VALUETYPE, class INTERNAL_TRAVERSER = typename BasicImage<VALUETYPE>::const_traverser>
 class SplineImageView0
     : public SplineImageView0Base<VALUETYPE, INTERNAL_TRAVERSER>
 {
@@ -1229,18 +1229,18 @@ public:
     {
     }
 
-    template<class T, class SU>
+    template <class T, class SU>
     SplineImageView0(MultiArrayView<2, T, SU> const& i)
         : Base(i.shape(0), i.shape(1)),
           image_(i.shape(0), i.shape(1))
     {
-        for (unsigned int y = 0; y < this->height(); ++y)
-            for (unsigned int x = 0; x < this->width(); ++x)
+        for(unsigned int y = 0; y < this->height(); ++y)
+            for(unsigned int x = 0; x < this->width(); ++x)
                 image_(x, y) = detail::RequiresExplicitCast<VALUETYPE>::cast(i(x, y));
         this->internalIndexer_ = image_.upperLeft();
     }
 
-    template<class SrcIterator, class SrcAccessor>
+    template <class SrcIterator, class SrcAccessor>
     SplineImageView0(SrcIterator is, SrcIterator iend, SrcAccessor sa)
         : Base(iend.x - is.x, iend.y - is.y),
           image_(iend - is)
@@ -1249,7 +1249,7 @@ public:
         this->internalIndexer_ = image_.upperLeft();
     }
 
-    template<class SrcIterator, class SrcAccessor>
+    template <class SrcIterator, class SrcAccessor>
     SplineImageView0(triple<SrcIterator, SrcIterator, SrcAccessor> s)
         : Base(s.second.x - s.first.x, s.second.y - s.first.y),
           image_(s.second - s.first)
@@ -1267,7 +1267,7 @@ protected:
     InternalImage image_;
 };
 
-template<class VALUETYPE, class StridedOrUnstrided>
+template <class VALUETYPE, class StridedOrUnstrided>
 class SplineImageView0<VALUETYPE, MultiArrayView<2, VALUETYPE, StridedOrUnstrided>>
     : public SplineImageView0Base<VALUETYPE, MultiArrayView<2, VALUETYPE, StridedOrUnstrided>>
 {
@@ -1296,19 +1296,19 @@ public:
     {
     }
 
-    template<class T, class SU>
+    template <class T, class SU>
     SplineImageView0(MultiArrayView<2, T, SU> const& i)
         : Base(i.shape(0), i.shape(1)),
           image_(i.shape(0), i.shape(1))
     {
-        for (unsigned int y = 0; y < this->height(); ++y)
-            for (unsigned int x = 0; x < this->width(); ++x)
+        for(unsigned int y = 0; y < this->height(); ++y)
+            for(unsigned int x = 0; x < this->width(); ++x)
                 image_(x, y) = detail::RequiresExplicitCast<VALUETYPE>::cast(i(x, y));
         this->internalIndexer_ = InternalIndexer(typename InternalIndexer::difference_type(this->width(), this->height()),
                                                  image_.data());
     }
 
-    template<class SrcIterator, class SrcAccessor>
+    template <class SrcIterator, class SrcAccessor>
     SplineImageView0(SrcIterator is, SrcIterator iend, SrcAccessor sa)
         : Base(iend.x - is.x, iend.y - is.y),
           image_(iend - is)
@@ -1318,7 +1318,7 @@ public:
                                                  image_.data());
     }
 
-    template<class SrcIterator, class SrcAccessor>
+    template <class SrcIterator, class SrcAccessor>
     SplineImageView0(triple<SrcIterator, SrcIterator, SrcAccessor> s)
         : Base(s.second.x - s.first.x, s.second.y - s.first.y),
           image_(s.second - s.first)
@@ -1337,7 +1337,7 @@ protected:
     InternalImage image_;
 };
 
-template<class VALUETYPE>
+template <class VALUETYPE>
 class SplineImageView<0, VALUETYPE>
     : public SplineImageView0<VALUETYPE>
 {
@@ -1384,14 +1384,14 @@ public:
     {
     }
 
-    template<class SrcIterator, class SrcAccessor>
+    template <class SrcIterator, class SrcAccessor>
     SplineImageView(SrcIterator is, SrcIterator iend, SrcAccessor sa, bool /* unused */ = false)
         : Base(is, iend, sa)
     {
         copyImage(srcIterRange(is, iend, sa), destImage(this->image_));
     }
 
-    template<class SrcIterator, class SrcAccessor>
+    template <class SrcIterator, class SrcAccessor>
     SplineImageView(triple<SrcIterator, SrcIterator, SrcAccessor> s, bool /* unused */ = false)
         : Base(s)
     {
@@ -1404,7 +1404,7 @@ public:
 /*                    SplineImageView1                  */
 /*                                                      */
 /********************************************************/
-template<class VALUETYPE, class INTERNAL_INDEXER>
+template <class VALUETYPE, class INTERNAL_INDEXER>
 class SplineImageView1Base
 {
     typedef typename INTERNAL_INDEXER::value_type InternalValue;
@@ -1430,15 +1430,15 @@ public:
     {
     }
 
-    template<unsigned IntBits1, unsigned FractionalBits1,
-             unsigned IntBits2, unsigned FractionalBits2>
+    template <unsigned IntBits1, unsigned FractionalBits1,
+              unsigned IntBits2, unsigned FractionalBits2>
     value_type unchecked(FixedPoint<IntBits1, FractionalBits1> x,
                          FixedPoint<IntBits2, FractionalBits2> y) const
     {
         int ix = floor(x);
         FixedPoint<0, FractionalBits1> tx = frac(x - FixedPoint<IntBits1, FractionalBits1>(ix));
         FixedPoint<0, FractionalBits1> dtx = dual_frac(tx);
-        if (ix == (int)w_ - 1)
+        if(ix == (int)w_ - 1)
         {
             --ix;
             tx.value = FixedPoint<0, FractionalBits1>::ONE;
@@ -1447,7 +1447,7 @@ public:
         int iy = floor(y);
         FixedPoint<0, FractionalBits2> ty = frac(y - FixedPoint<IntBits2, FractionalBits2>(iy));
         FixedPoint<0, FractionalBits2> dty = dual_frac(ty);
-        if (iy == (int)h_ - 1)
+        if(iy == (int)h_ - 1)
         {
             --iy;
             ty.value = FixedPoint<0, FractionalBits2>::ONE;
@@ -1460,8 +1460,8 @@ public:
                   tx * fixedPoint(internalIndexer_(ix + 1, iy + 1))));
     }
 
-    template<unsigned IntBits1, unsigned FractionalBits1,
-             unsigned IntBits2, unsigned FractionalBits2>
+    template <unsigned IntBits1, unsigned FractionalBits1,
+              unsigned IntBits2, unsigned FractionalBits2>
     value_type unchecked(FixedPoint<IntBits1, FractionalBits1> x,
                          FixedPoint<IntBits2, FractionalBits2> y,
                          unsigned int dx, unsigned int dy) const
@@ -1469,7 +1469,7 @@ public:
         int ix = floor(x);
         FixedPoint<0, FractionalBits1> tx = frac(x - FixedPoint<IntBits1, FractionalBits1>(ix));
         FixedPoint<0, FractionalBits1> dtx = dual_frac(tx);
-        if (ix == (int)w_ - 1)
+        if(ix == (int)w_ - 1)
         {
             --ix;
             tx.value = FixedPoint<0, FractionalBits1>::ONE;
@@ -1478,16 +1478,16 @@ public:
         int iy = floor(y);
         FixedPoint<0, FractionalBits2> ty = frac(y - FixedPoint<IntBits2, FractionalBits2>(iy));
         FixedPoint<0, FractionalBits2> dty = dual_frac(ty);
-        if (iy == (int)h_ - 1)
+        if(iy == (int)h_ - 1)
         {
             --iy;
             ty.value = FixedPoint<0, FractionalBits2>::ONE;
             dty.value = 0;
         }
-        switch (dx)
+        switch(dx)
         {
             case 0:
-                switch (dy)
+                switch(dy)
                 {
                     case 0:
                         return fixed_point_cast<value_type>(
@@ -1503,7 +1503,7 @@ public:
                         return NumericTraits<VALUETYPE>::zero();
                 }
             case 1:
-                switch (dy)
+                switch(dy)
                 {
                     case 0:
                         return fixed_point_cast<value_type>(
@@ -1524,11 +1524,11 @@ public:
     value_type unchecked(double x, double y) const
     {
         int ix = (int)std::floor(x);
-        if (ix == (int)w_ - 1)
+        if(ix == (int)w_ - 1)
             --ix;
         double tx = x - ix;
         int iy = (int)std::floor(y);
-        if (iy == (int)h_ - 1)
+        if(iy == (int)h_ - 1)
             --iy;
         double ty = y - iy;
         return NumericTraits<value_type>::fromRealPromote(
@@ -1539,17 +1539,17 @@ public:
     value_type unchecked(double x, double y, unsigned int dx, unsigned int dy) const
     {
         int ix = (int)std::floor(x);
-        if (ix == (int)w_ - 1)
+        if(ix == (int)w_ - 1)
             --ix;
         double tx = x - ix;
         int iy = (int)std::floor(y);
-        if (iy == (int)h_ - 1)
+        if(iy == (int)h_ - 1)
             --iy;
         double ty = y - iy;
-        switch (dx)
+        switch(dx)
         {
             case 0:
-                switch (dy)
+                switch(dy)
                 {
                     case 0:
                         return detail::RequiresExplicitCast<value_type>::cast(
@@ -1563,7 +1563,7 @@ public:
                         return NumericTraits<VALUETYPE>::zero();
                 }
             case 1:
-                switch (dy)
+                switch(dy)
                 {
                     case 0:
                         return detail::RequiresExplicitCast<value_type>::cast(
@@ -1589,36 +1589,36 @@ public:
     value_type operator()(double x, double y, unsigned int dx, unsigned int dy) const
     {
         value_type mul = NumericTraits<value_type>::one();
-        if (x < 0.0)
+        if(x < 0.0)
         {
             x = -x;
             vigra_precondition(x <= w_ - 1.0,
                                "SplineImageView::operator(): coordinates out of range.");
-            if (dx % 2)
+            if(dx % 2)
                 mul = -mul;
         }
-        else if (x > w_ - 1.0)
+        else if(x > w_ - 1.0)
         {
             x = 2.0 * w_ - 2.0 - x;
             vigra_precondition(x >= 0.0,
                                "SplineImageView::operator(): coordinates out of range.");
-            if (dx % 2)
+            if(dx % 2)
                 mul = -mul;
         }
-        if (y < 0.0)
+        if(y < 0.0)
         {
             y = -y;
             vigra_precondition(y <= h_ - 1.0,
                                "SplineImageView::operator(): coordinates out of range.");
-            if (dy % 2)
+            if(dy % 2)
                 mul = -mul;
         }
-        else if (y > h_ - 1.0)
+        else if(y > h_ - 1.0)
         {
             y = 2.0 * h_ - 2.0 - y;
             vigra_precondition(y >= 0.0,
                                "SplineImageView::operator(): coordinates out of range.");
-            if (dy % 2)
+            if(dy % 2)
                 mul = -mul;
         }
         return mul * unchecked(x, y, dx, dy);
@@ -1804,7 +1804,7 @@ public:
         return TinyVector<unsigned int, 2>(w_, h_);
     }
 
-    template<class Array>
+    template <class Array>
     void coefficientArray(double x, double y, Array& res) const;
 
     void calculateIndices(double x, double y, int& ix, int& iy, int& ix1, int& iy1) const;
@@ -1843,8 +1843,8 @@ protected:
     INTERNAL_INDEXER internalIndexer_;
 };
 
-template<class VALUETYPE, class INTERNAL_INDEXER>
-template<class Array>
+template <class VALUETYPE, class INTERNAL_INDEXER>
+template <class Array>
 void
 SplineImageView1Base<VALUETYPE, INTERNAL_INDEXER>::coefficientArray(double x, double y, Array& res) const
 {
@@ -1857,11 +1857,11 @@ SplineImageView1Base<VALUETYPE, INTERNAL_INDEXER>::coefficientArray(double x, do
                 internalIndexer_(ix, iy1) + internalIndexer_(ix1, iy1);
 }
 
-template<class VALUETYPE, class INTERNAL_INDEXER>
+template <class VALUETYPE, class INTERNAL_INDEXER>
 void
 SplineImageView1Base<VALUETYPE, INTERNAL_INDEXER>::calculateIndices(double x, double y, int& ix, int& iy, int& ix1, int& iy1) const
 {
-    if (x < 0.0)
+    if(x < 0.0)
     {
         x = -x;
         vigra_precondition(x <= w_ - 1.0,
@@ -1869,7 +1869,7 @@ SplineImageView1Base<VALUETYPE, INTERNAL_INDEXER>::calculateIndices(double x, do
         ix = (int)VIGRA_CSTD::ceil(x);
         ix1 = ix - 1;
     }
-    else if (x >= w_ - 1.0)
+    else if(x >= w_ - 1.0)
     {
         x = 2.0 * w_ - 2.0 - x;
         vigra_precondition(x > 0.0,
@@ -1882,7 +1882,7 @@ SplineImageView1Base<VALUETYPE, INTERNAL_INDEXER>::calculateIndices(double x, do
         ix = (int)VIGRA_CSTD::floor(x);
         ix1 = ix + 1;
     }
-    if (y < 0.0)
+    if(y < 0.0)
     {
         y = -y;
         vigra_precondition(y <= h_ - 1.0,
@@ -1890,7 +1890,7 @@ SplineImageView1Base<VALUETYPE, INTERNAL_INDEXER>::calculateIndices(double x, do
         iy = (int)VIGRA_CSTD::ceil(y);
         iy1 = iy - 1;
     }
-    else if (y >= h_ - 1.0)
+    else if(y >= h_ - 1.0)
     {
         y = 2.0 * h_ - 2.0 - y;
         vigra_precondition(y > 0.0,
@@ -1920,7 +1920,7 @@ SplineImageView1Base<VALUETYPE, INTERNAL_INDEXER>::calculateIndices(double x, do
     In addition, <tt>x</tt> and <tt>y</tt> can have type \ref vigra::FixedPoint instead of
     <tt>double</tt>.
 */
-template<class VALUETYPE, class INTERNAL_TRAVERSER = typename BasicImage<VALUETYPE>::const_traverser>
+template <class VALUETYPE, class INTERNAL_TRAVERSER = typename BasicImage<VALUETYPE>::const_traverser>
 class SplineImageView1
     : public SplineImageView1Base<VALUETYPE, INTERNAL_TRAVERSER>
 {
@@ -1967,18 +1967,18 @@ public:
     {
     }
 
-    template<class T, class SU>
+    template <class T, class SU>
     SplineImageView1(MultiArrayView<2, T, SU> const& i)
         : Base(i.shape(0), i.shape(1)),
           image_(i.shape(0), i.shape(1))
     {
-        for (unsigned int y = 0; y < this->height(); ++y)
-            for (unsigned int x = 0; x < this->width(); ++x)
+        for(unsigned int y = 0; y < this->height(); ++y)
+            for(unsigned int x = 0; x < this->width(); ++x)
                 image_(x, y) = detail::RequiresExplicitCast<VALUETYPE>::cast(i(x, y));
         this->internalIndexer_ = image_.upperLeft();
     }
 
-    template<class SrcIterator, class SrcAccessor>
+    template <class SrcIterator, class SrcAccessor>
     SplineImageView1(SrcIterator is, SrcIterator iend, SrcAccessor sa)
         : Base(iend.x - is.x, iend.y - is.y),
           image_(iend - is)
@@ -1987,7 +1987,7 @@ public:
         this->internalIndexer_ = image_.upperLeft();
     }
 
-    template<class SrcIterator, class SrcAccessor>
+    template <class SrcIterator, class SrcAccessor>
     SplineImageView1(triple<SrcIterator, SrcIterator, SrcAccessor> s)
         : Base(s.second.x - s.first.x, s.second.y - s.first.y),
           image_(s.second - s.first)
@@ -2005,7 +2005,7 @@ protected:
     InternalImage image_;
 };
 
-template<class VALUETYPE, class StridedOrUnstrided>
+template <class VALUETYPE, class StridedOrUnstrided>
 class SplineImageView1<VALUETYPE, MultiArrayView<2, VALUETYPE, StridedOrUnstrided>>
     : public SplineImageView1Base<VALUETYPE, MultiArrayView<2, VALUETYPE, StridedOrUnstrided>>
 {
@@ -2034,7 +2034,7 @@ public:
     {
     }
 
-    template<class T, class SU>
+    template <class T, class SU>
     SplineImageView1(MultiArrayView<2, T, SU> const& i)
         : Base(i.shape(0), i.shape(1)),
           image_(i.shape(0), i.shape(1))
@@ -2047,7 +2047,7 @@ public:
                                                  image_.data());
     }
 
-    template<class SrcIterator, class SrcAccessor>
+    template <class SrcIterator, class SrcAccessor>
     SplineImageView1(SrcIterator is, SrcIterator iend, SrcAccessor sa)
         : Base(iend.x - is.x, iend.y - is.y),
           image_(iend - is)
@@ -2057,7 +2057,7 @@ public:
                                                  image_.data());
     }
 
-    template<class SrcIterator, class SrcAccessor>
+    template <class SrcIterator, class SrcAccessor>
     SplineImageView1(triple<SrcIterator, SrcIterator, SrcAccessor> s)
         : Base(s.second.x - s.first.x, s.second.y - s.first.y),
           image_(s.second - s.first)
@@ -2076,7 +2076,7 @@ protected:
     InternalImage image_;
 };
 
-template<class VALUETYPE>
+template <class VALUETYPE>
 class SplineImageView<1, VALUETYPE>
     : public SplineImageView1<VALUETYPE>
 {
@@ -2123,21 +2123,21 @@ public:
     {
     }
 
-    template<class SrcIterator, class SrcAccessor>
+    template <class SrcIterator, class SrcAccessor>
     SplineImageView(SrcIterator is, SrcIterator iend, SrcAccessor sa, bool /* unused */ = false)
         : Base(is, iend, sa)
     {
         copyImage(srcIterRange(is, iend, sa), destImage(this->image_));
     }
 
-    template<class SrcIterator, class SrcAccessor>
+    template <class SrcIterator, class SrcAccessor>
     SplineImageView(triple<SrcIterator, SrcIterator, SrcAccessor> s, bool /* unused */ = false)
         : Base(s)
     {
         copyImage(s, destImage(this->image_));
     }
 
-    template<class T, class SU>
+    template <class T, class SU>
     SplineImageView(MultiArrayView<2, T, SU> const& i, bool /* unused */ = false)
         : Base(i)
     {

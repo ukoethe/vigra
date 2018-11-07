@@ -49,14 +49,14 @@ namespace python = boost::python;
 namespace vigra
 {
 
-template<class PQ>
+template <class PQ>
 void
 pyPush(
     PQ& pq,
     const NumpyArray<1, UInt32> indices,
     const NumpyArray<1, float> priorities)
 {
-    for (std::ptrdiff_t i = 0; i < indices.shape(0); ++i)
+    for(std::ptrdiff_t i = 0; i < indices.shape(0); ++i)
     {
         pq.push(indices(i), priorities(i));
     }
@@ -64,7 +64,7 @@ pyPush(
 
 
 
-template<class T, class COMP>
+template <class T, class COMP>
 void
 defineChangeablePriorityQueue(const std::string& clsName)
 {

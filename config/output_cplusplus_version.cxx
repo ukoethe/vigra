@@ -3,7 +3,7 @@
 int
 main()
 {
-    if (__cplusplus == 1)
+    if(__cplusplus == 1)
     {
         // This is a workaround for a gcc bug:
         // http://stackoverflow.com/questions/7530047/gnu-c-macro-cplusplus-standard-conform

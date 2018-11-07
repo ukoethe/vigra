@@ -185,7 +185,7 @@ public:
      * The task result can be obtained using the get() function of the returned future.
      * If the task throws an exception, it will be raised on the call to get().
      */
-    template<class F>
+    template <class F>
     auto enqueueReturning(F&& f) -> threading::future<decltype(f(0))>;
 
     /**
@@ -193,7 +193,7 @@ public:
      * This is a special case of the enqueueReturning template function, but
      * some compilers fail on <tt>std::result_of<F(int)>::type</tt> for void(int) functions.
      */
-    template<class F>
+    template <class F>
     threading::future<void> enqueue(F&& f);
 
     /**
@@ -238,11 +238,11 @@ ThreadPool::init(const ParallelOptions& options)
     processed.store(0);
 
     const size_t actualNThreads = options.getNumThreads();
-    for (size_t ti = 0; ti < actualNThreads; ++ti)
+    for(size_t ti = 0; ti < actualNThreads; ++ti)
     {
         workers.emplace_back(
             [ti, this] {
-                for (;;)
+                for(;;)
                 {
                     std::function<void(int)> task;
                     {
@@ -254,7 +254,7 @@ ThreadPool::init(const ParallelOptions& options)
                         // so the idea of this wait, is : If where are not in the destructor
                         // (which sets stop to true, we wait here for new jobs)
                         this->worker_condition.wait(lock, [this] { return this->stop || !this->tasks.empty(); });
-                        if (!this->tasks.empty())
+                        if(!this->tasks.empty())
                         {
                             ++busy;
                             task = std::move(this->tasks.front());
@@ -265,7 +265,7 @@ ThreadPool::init(const ParallelOptions& options)
                             --busy;
                             finish_condition.notify_one();
                         }
-                        else if (stop)
+                        else if(stop)
                         {
                             return;
                         }
@@ -282,11 +282,11 @@ inline ThreadPool::~ThreadPool()
         stop = true;
     }
     worker_condition.notify_all();
-    for (threading::thread& worker : workers)
+    for(threading::thread& worker : workers)
         worker.join();
 }
 
-template<class F>
+template <class F>
 inline auto
 ThreadPool::enqueueReturning(F&& f) -> threading::future<decltype(f(0))>
 {
@@ -296,13 +296,13 @@ ThreadPool::enqueueReturning(F&& f) -> threading::future<decltype(f(0))>
     auto task = std::make_shared<PackageType>(f);
     auto res = task->get_future();
 
-    if (workers.size() > 0)
+    if(workers.size() > 0)
     {
         {
             threading::unique_lock<threading::mutex> lock(queue_mutex);
 
             // don't allow enqueueing after stopping the pool
-            if (stop)
+            if(stop)
                 throw std::runtime_error("enqueue on stopped ThreadPool");
 
             tasks.emplace(
@@ -320,7 +320,7 @@ ThreadPool::enqueueReturning(F&& f) -> threading::future<decltype(f(0))>
     return res;
 }
 
-template<class F>
+template <class F>
 inline threading::future<void>
 ThreadPool::enqueue(F&& f)
 {
@@ -340,13 +340,13 @@ ThreadPool::enqueue(F&& f)
 #endif
 
     auto res = task->get_future();
-    if (workers.size() > 0)
+    if(workers.size() > 0)
     {
         {
             threading::unique_lock<threading::mutex> lock(queue_mutex);
 
             // don't allow enqueueing after stopping the pool
-            if (stop)
+            if(stop)
                 throw std::runtime_error("enqueue on stopped ThreadPool");
 
             tasks.emplace(
@@ -383,7 +383,7 @@ ThreadPool::enqueue(F&& f)
 // NOTE: the redundancy of nItems and iter,end here is due to the fact that, for forward iterators,
 // computing the distance from iterators is costly, and, for input iterators, we might not know in advance
 // how many items there are  (e.g., stream iterators).
-template<class ITER, class F>
+template <class ITER, class F>
 inline void
 parallel_foreach_impl(
     ThreadPool& pool,
@@ -399,18 +399,18 @@ parallel_foreach_impl(
     const std::ptrdiff_t chunkedWorkPerThread = std::max<std::ptrdiff_t>(roundi(workPerThread / 3.0), 1);
 
     std::vector<threading::future<void>> futures;
-    for (; iter < end; iter += chunkedWorkPerThread)
+    for(; iter < end; iter += chunkedWorkPerThread)
     {
         const size_t lc = std::min(workload, chunkedWorkPerThread);
         workload -= lc;
         futures.emplace_back(
             pool.enqueue(
                 [&f, iter, lc](int id) {
-                    for (size_t i = 0; i < lc; ++i)
+                    for(size_t i = 0; i < lc; ++i)
                         f(id, iter[i]);
                 }));
     }
-    for (auto& fut : futures)
+    for(auto& fut : futures)
     {
         fut.get();
     }
@@ -419,7 +419,7 @@ parallel_foreach_impl(
 
 
 // nItems must be either zero or std::distance(iter, end).
-template<class ITER, class F>
+template <class ITER, class F>
 inline void
 parallel_foreach_impl(
     ThreadPool& pool,
@@ -429,7 +429,7 @@ parallel_foreach_impl(
     F&& f,
     std::forward_iterator_tag)
 {
-    if (nItems == 0)
+    if(nItems == 0)
         nItems = std::distance(iter, end);
 
     std::ptrdiff_t workload = nItems;
@@ -437,7 +437,7 @@ parallel_foreach_impl(
     const std::ptrdiff_t chunkedWorkPerThread = std::max<std::ptrdiff_t>(roundi(workPerThread / 3.0), 1);
 
     std::vector<threading::future<void>> futures;
-    for (;;)
+    for(;;)
     {
         const size_t lc = std::min(chunkedWorkPerThread, workload);
         workload -= lc;
@@ -445,32 +445,32 @@ parallel_foreach_impl(
             pool.enqueue(
                 [&f, iter, lc](int id) {
                     auto iterCopy = iter;
-                    for (size_t i = 0; i < lc; ++i)
+                    for(size_t i = 0; i < lc; ++i)
                     {
                         f(id, *iterCopy);
                         ++iterCopy;
                     }
                 }));
-        for (size_t i = 0; i < lc; ++i)
+        for(size_t i = 0; i < lc; ++i)
         {
             ++iter;
-            if (iter == end)
+            if(iter == end)
             {
                 vigra_postcondition(workload == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
                 break;
             }
         }
-        if (workload == 0)
+        if(workload == 0)
             break;
     }
-    for (auto& fut : futures)
+    for(auto& fut : futures)
         fut.get();
 }
 
 
 
 // nItems must be either zero or std::distance(iter, end).
-template<class ITER, class F>
+template <class ITER, class F>
 inline void
 parallel_foreach_impl(
     ThreadPool& pool,
@@ -482,7 +482,7 @@ parallel_foreach_impl(
 {
     std::ptrdiff_t num_items = 0;
     std::vector<threading::future<void>> futures;
-    for (; iter != end; ++iter)
+    for(; iter != end; ++iter)
     {
         auto item = *iter;
         futures.emplace_back(
@@ -493,13 +493,13 @@ parallel_foreach_impl(
         ++num_items;
     }
     vigra_postcondition(num_items == nItems || nItems == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
-    for (auto& fut : futures)
+    for(auto& fut : futures)
         fut.get();
 }
 
 // Runs foreach on a single thread.
 // Used for API compatibility when the numbe of threads is 0.
-template<class ITER, class F>
+template <class ITER, class F>
 inline void
 parallel_foreach_single_thread(
     ITER begin,
@@ -508,7 +508,7 @@ parallel_foreach_single_thread(
     const std::ptrdiff_t nItems = 0)
 {
     std::ptrdiff_t n = 0;
-    for (; begin != end; ++begin)
+    for(; begin != end; ++begin)
     {
         f(0, *begin);
         ++n;
@@ -615,9 +615,9 @@ parallel_foreach_single_thread(
     }
     \endcode
  */
-doxygen_overloaded_function(template<...> void parallel_foreach)
+doxygen_overloaded_function(template <...> void parallel_foreach)
 
-    template<class ITER, class F>
+    template <class ITER, class F>
     inline void parallel_foreach(
         ThreadPool& pool,
         ITER begin,
@@ -625,7 +625,7 @@ doxygen_overloaded_function(template<...> void parallel_foreach)
         F&& f,
         const std::ptrdiff_t nItems = 0)
 {
-    if (pool.nThreads() > 1)
+    if(pool.nThreads() > 1)
     {
         parallel_foreach_impl(pool, nItems, begin, end, f,
                               typename std::iterator_traits<ITER>::iterator_category());
@@ -636,7 +636,7 @@ doxygen_overloaded_function(template<...> void parallel_foreach)
     }
 }
 
-template<class ITER, class F>
+template <class ITER, class F>
 inline void
 parallel_foreach(
     int64_t nThreads,
@@ -650,7 +650,7 @@ parallel_foreach(
     parallel_foreach(pool, begin, end, f, nItems);
 }
 
-template<class F>
+template <class F>
 inline void
 parallel_foreach(
     int64_t nThreads,
@@ -662,7 +662,7 @@ parallel_foreach(
 }
 
 
-template<class F>
+template <class F>
 inline void
 parallel_foreach(
     ThreadPool& threadpool,

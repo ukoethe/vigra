@@ -140,19 +140,19 @@ struct CellPixelSerializer
 // -------------------------------------------------------------------
 //                   CellPixel/CellImage Accessors
 // -------------------------------------------------------------------
-template<class VALUE_TYPE = CellType>
+template <class VALUE_TYPE = CellType>
 struct TypeAccessor
 {
     typedef VALUE_TYPE value_type;
     typedef VALUE_TYPE result_type;
 
-    template<class Iterator>
+    template <class Iterator>
     value_type operator()(const Iterator& it) const
     {
         return it->type();
     }
 
-    template<class Iterator>
+    template <class Iterator>
     void set(value_type type, const Iterator& it) const
     {
         it->setType(type);
@@ -167,32 +167,32 @@ struct LabelAccessor
 {
     typedef CellLabel value_type;
 
-    template<class Iterator>
+    template <class Iterator>
     CellLabel operator()(const Iterator& it) const
     {
         return it->label();
     }
 
-    template<class Iterator>
+    template <class Iterator>
     void set(CellLabel label, const Iterator& it) const
     {
         it->setLabel(label);
     }
 };
 
-template<CellType type>
+template <CellType type>
 struct LabelWriter
 {
     typedef CellLabel value_type;
 
-    template<class Iterator>
+    template <class Iterator>
     void set(CellLabel label, const Iterator& it) const
     {
         it->setLabel(label, type);
     }
 };
 
-template<CellType type>
+template <CellType type>
 struct CellTypeEquals : public std::unary_function<CellType, bool>
 {
     bool operator()(CellType t) const
@@ -200,7 +200,7 @@ struct CellTypeEquals : public std::unary_function<CellType, bool>
         return t == type;
     }
 
-    template<class Iterator>
+    template <class Iterator>
     bool operator()(const Iterator& it) const
     {
         return it->type() == type;
@@ -216,7 +216,7 @@ struct CellMask : public std::unary_function<vigra::cellimage::CellPixel, bool>
     {
     }
 
-    template<class Iterator>
+    template <class Iterator>
     bool operator()(const Iterator& it) const
     {
         return *it == maskPixel_;
@@ -226,7 +226,7 @@ struct CellMask : public std::unary_function<vigra::cellimage::CellPixel, bool>
 // -------------------------------------------------------------------
 //                        RelabelFunctor (unused!)
 // -------------------------------------------------------------------
-template<class VALUETYPE>
+template <class VALUETYPE>
 struct RelabelFunctor
 {
     typedef VALUETYPE value_type;
@@ -255,43 +255,43 @@ struct RelabelFunctor
 // algorithms.
 // srcCellRange can not be implemented that easy, because most VIGRA
 // functions expect an ImageIterator, not a std::iterator
-template<class EndIterator, class Accessor, class Functor>
+template <class EndIterator, class Accessor, class Functor>
 void
 inspectCell(EndIterator endIterator, Accessor a, Functor& f)
 {
-    for (; endIterator.inRange(); ++endIterator)
+    for(; endIterator.inRange(); ++endIterator)
         f(a(endIterator));
 }
 
-template<class EndIterator, class Functor>
+template <class EndIterator, class Functor>
 void
 inspectCell(EndIterator endIterator, Functor& f)
 {
-    for (; endIterator.inRange(); ++endIterator)
+    for(; endIterator.inRange(); ++endIterator)
         f(*endIterator);
 }
 
 // -------------------------------------------------------------------
 //                             transformCell
 // -------------------------------------------------------------------
-template<class SrcEndIterator, class SrcAccessor,
-         class DestEndIterator, class DestAccessor, class Functor>
+template <class SrcEndIterator, class SrcAccessor,
+          class DestEndIterator, class DestAccessor, class Functor>
 void
 transformCell(SrcEndIterator srcEndIterator, SrcAccessor sa,
               DestEndIterator destEndIterator, DestAccessor da,
               Functor const& f)
 {
-    for (; srcEndIterator.inRange(); ++srcEndIterator, ++destEndIterator)
+    for(; srcEndIterator.inRange(); ++srcEndIterator, ++destEndIterator)
         da.set(f(sa(srcEndIterator)), destEndIterator);
 }
 
-template<class SrcEndIterator, class DestEndIterator, class Functor>
+template <class SrcEndIterator, class DestEndIterator, class Functor>
 void
 transformCell(SrcEndIterator srcEndIterator,
               DestEndIterator destEndIterator,
               Functor const& f)
 {
-    for (; srcEndIterator.inRange(); ++srcEndIterator, ++destEndIterator)
+    for(; srcEndIterator.inRange(); ++srcEndIterator, ++destEndIterator)
         *destEndIterator = f(*srcEndIterator);
 }
 

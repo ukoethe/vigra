@@ -174,21 +174,21 @@ using std::isnan;
 
 #else
 
-template<class REAL>
+template <class REAL>
 inline bool
 isinf(REAL v)
 {
     return _finite(v) == 0 && _isnan(v) == 0;
 }
 
-template<class REAL>
+template <class REAL>
 inline bool
 isnan(REAL v)
 {
     return _isnan(v) != 0;
 }
 
-template<class REAL>
+template <class REAL>
 inline bool
 isfinite(REAL v)
 {
@@ -314,7 +314,7 @@ isPower2(UInt32 x)
 inline UInt32
 ceilPower2(UInt32 x)
 {
-    if (x == 0)
+    if(x == 0)
         return 0;
 
     x = x - 1;
@@ -350,13 +350,13 @@ floorPower2(UInt32 x)
 namespace detail
 {
 
-template<class T>
+template <class T>
 struct IntLog2
 {
     static Int32 table[64];
 };
 
-template<class T>
+template <class T>
 Int32 IntLog2<T>::table[64] = {
     -1, 0, -1, 15, -1, 1, 28, -1, 16, -1, -1, -1, 2, 21,
     29, -1, -1, -1, 19, 17, 10, -1, 12, -1, -1, 3, -1, 6,
@@ -402,7 +402,7 @@ log2i(UInt32 x)
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-template<class T>
+template <class T>
 inline
     typename NumericTraits<T>::Promote
     sq(T t)
@@ -413,7 +413,7 @@ inline
 namespace detail
 {
 
-template<class V, unsigned>
+template <class V, unsigned>
 struct cond_mult
 {
     static V call(const V& x, const V& y)
@@ -421,7 +421,7 @@ struct cond_mult
         return x * y;
     }
 };
-template<class V>
+template <class V>
 struct cond_mult<V, 0>
 {
     static V call(const V&, const V& y)
@@ -430,7 +430,7 @@ struct cond_mult<V, 0>
     }
 };
 
-template<class V, unsigned n>
+template <class V, unsigned n>
 struct power_static
 {
     static V call(const V& x)
@@ -440,7 +440,7 @@ struct power_static
                    : n & 1 ? x : V();
     }
 };
-template<class V>
+template <class V>
 struct power_static<V, 0>
 {
     static V call(const V& /* x */)
@@ -456,7 +456,7 @@ struct power_static<V, 0>
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-template<unsigned n, class V>
+template <unsigned n, class V>
 inline V
 power(const V& x)
 {
@@ -467,14 +467,14 @@ power(const V& x)
 namespace detail
 {
 
-template<class T>
+template <class T>
 struct IntSquareRoot
 {
     static UInt32 sqq_table[];
     static UInt32 exec(UInt32 v);
 };
 
-template<class T>
+template <class T>
 UInt32 IntSquareRoot<T>::sqq_table[] = {
     0, 16, 22, 27, 32, 35, 39, 42, 45, 48, 50, 53, 55, 57,
     59, 61, 64, 65, 67, 69, 71, 73, 75, 76, 78, 80, 81, 83,
@@ -496,48 +496,48 @@ UInt32 IntSquareRoot<T>::sqq_table[] = {
     246, 247, 247, 248, 248, 249, 249, 250, 250, 251, 251, 252, 252, 253,
     253, 254, 254, 255};
 
-template<class T>
+template <class T>
 UInt32
 IntSquareRoot<T>::exec(UInt32 x)
 {
     UInt32 xn;
-    if (x >= 0x10000)
-        if (x >= 0x1000000)
-            if (x >= 0x10000000)
-                if (x >= 0x40000000)
+    if(x >= 0x10000)
+        if(x >= 0x1000000)
+            if(x >= 0x10000000)
+                if(x >= 0x40000000)
                 {
-                    if (x >= (UInt32)65535 * (UInt32)65535)
+                    if(x >= (UInt32)65535 * (UInt32)65535)
                         return 65535;
                     xn = sqq_table[x >> 24] << 8;
                 }
                 else
                     xn = sqq_table[x >> 22] << 7;
-            else if (x >= 0x4000000)
+            else if(x >= 0x4000000)
                 xn = sqq_table[x >> 20] << 6;
             else
                 xn = sqq_table[x >> 18] << 5;
         else
         {
-            if (x >= 0x100000)
-                if (x >= 0x400000)
+            if(x >= 0x100000)
+                if(x >= 0x400000)
                     xn = sqq_table[x >> 16] << 4;
                 else
                     xn = sqq_table[x >> 14] << 3;
-            else if (x >= 0x40000)
+            else if(x >= 0x40000)
                 xn = sqq_table[x >> 12] << 2;
             else
                 xn = sqq_table[x >> 10] << 1;
 
             goto nr1;
         }
-    else if (x >= 0x100)
+    else if(x >= 0x100)
     {
-        if (x >= 0x1000)
-            if (x >= 0x4000)
+        if(x >= 0x1000)
+            if(x >= 0x4000)
                 xn = (sqq_table[x >> 8] >> 0) + 1;
             else
                 xn = (sqq_table[x >> 6] >> 1) + 1;
-        else if (x >= 0x400)
+        else if(x >= 0x400)
             xn = (sqq_table[x >> 4] >> 2) + 1;
         else
             xn = (sqq_table[x >> 2] >> 3) + 1;
@@ -554,7 +554,7 @@ nr1:
     xn = (xn + 1 + x / xn) / 2;
 adj:
 
-    if (xn * xn > x) /* Correct rounding if necessary */
+    if(xn * xn > x) /* Correct rounding if necessary */
         xn--;
 
     return xn;
@@ -574,7 +574,7 @@ using VIGRA_CSTD::sqrt;
 inline Int32
 sqrti(Int32 v)
 {
-    if (v < 0)
+    if(v < 0)
         throw std::domain_error("sqrti(Int32): negative argument.");
     return (Int32)detail::IntSquareRoot<UInt32>::exec((UInt32)v);
 }
@@ -605,7 +605,7 @@ inline double
 hypot(double a, double b)
 {
     double absa = VIGRA_CSTD::fabs(a), absb = VIGRA_CSTD::fabs(b);
-    if (absa > absb)
+    if(absa > absb)
         return absa * VIGRA_CSTD::sqrt(1.0 + sq(absb / absa));
     else
         return absb == 0.0
@@ -626,7 +626,7 @@ using ::hypot;
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-template<class T>
+template <class T>
 inline T
 sign(T t)
 {
@@ -644,7 +644,7 @@ sign(T t)
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-template<class T>
+template <class T>
 inline int
 signi(T t)
 {
@@ -662,7 +662,7 @@ signi(T t)
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-template<class T1, class T2>
+template <class T1, class T2>
 inline T1
 sign(T1 t1, T2 t2)
 {
@@ -737,7 +737,7 @@ VIGRA_DEFINE_NORM(long double)
 
 #undef VIGRA_DEFINE_NORM
 
-template<class T>
+template <class T>
 inline typename NormTraits<std::complex<T>>::SquaredNormType
 squaredNorm(std::complex<T> const& t)
 {
@@ -766,7 +766,7 @@ NormTraits<T>::SquaredNormType squaredNorm(T const& t);
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-template<class T>
+template <class T>
 inline typename NormTraits<T>::NormType
 norm(T const& t)
 {
@@ -784,14 +784,14 @@ norm(T const& t)
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-template<class T>
+template <class T>
 void
 symmetric2x2Eigenvalues(T a00, T a01, T a11, T* r0, T* r1)
 {
     double d = hypot(a00 - a11, 2.0 * a01);
     *r0 = static_cast<T>(0.5 * (a00 + a11 + d));
     *r1 = static_cast<T>(0.5 * (a00 + a11 - d));
-    if (*r0 < *r1)
+    if(*r0 < *r1)
         std::swap(*r0, *r1);
 }
 
@@ -805,7 +805,7 @@ symmetric2x2Eigenvalues(T a00, T a01, T a11, T* r0, T* r1)
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-template<class T>
+template <class T>
 void
 symmetric3x3Eigenvalues(T a00, T a01, T a02, T a11, T a12, T a22,
                         T* r0, T* r1, T* r2)
@@ -817,11 +817,11 @@ symmetric3x3Eigenvalues(T a00, T a01, T a02, T a11, T a12, T a22,
     double c2 = a00 + a11 + a22;
     double c2Div3 = c2 * inv3;
     double aDiv3 = (c1 - c2 * c2Div3) * inv3;
-    if (aDiv3 > 0.0)
+    if(aDiv3 > 0.0)
         aDiv3 = 0.0;
     double mbDiv2 = 0.5 * (c0 + c2Div3 * (2.0 * c2Div3 * c2Div3 - c1));
     double q = mbDiv2 * mbDiv2 + aDiv3 * aDiv3 * aDiv3;
-    if (q > 0.0)
+    if(q > 0.0)
         q = 0.0;
     double magnitude = std::sqrt(-aDiv3);
     double angle = std::atan2(std::sqrt(-q), mbDiv2) * inv3;
@@ -830,29 +830,29 @@ symmetric3x3Eigenvalues(T a00, T a01, T a02, T a11, T a12, T a22,
     *r0 = static_cast<T>(c2Div3 + 2.0 * magnitude * cs);
     *r1 = static_cast<T>(c2Div3 - magnitude * (cs + root3 * sn));
     *r2 = static_cast<T>(c2Div3 - magnitude * (cs - root3 * sn));
-    if (*r0 < *r1)
+    if(*r0 < *r1)
         std::swap(*r0, *r1);
-    if (*r0 < *r2)
+    if(*r0 < *r2)
         std::swap(*r0, *r2);
-    if (*r1 < *r2)
+    if(*r1 < *r2)
         std::swap(*r1, *r2);
 }
 
 namespace detail
 {
 
-template<class T>
+template <class T>
 T
 ellipticRD(T x, T y, T z)
 {
     double f = 1.0, s = 0.0, X, Y, Z, m;
-    for (;;)
+    for(;;)
     {
         m = (x + y + 3.0 * z) / 5.0;
         X = 1.0 - x / m;
         Y = 1.0 - y / m;
         Z = 1.0 - z / m;
-        if (std::max(std::max(VIGRA_CSTD::fabs(X), VIGRA_CSTD::fabs(Y)), VIGRA_CSTD::fabs(Z)) < 0.01)
+        if(std::max(std::max(VIGRA_CSTD::fabs(X), VIGRA_CSTD::fabs(Y)), VIGRA_CSTD::fabs(Z)) < 0.01)
             break;
         double l = VIGRA_CSTD::sqrt(x * y) + VIGRA_CSTD::sqrt(x * z) + VIGRA_CSTD::sqrt(y * z);
         s += f / (VIGRA_CSTD::sqrt(z) * (z + l));
@@ -869,18 +869,18 @@ ellipticRD(T x, T y, T z)
     return 3.0 * s + f * (1.0 + d * (-3.0 / 14.0 + d * 9.0 / 88.0 - Z * e * 4.5 / 26.0) + Z * (e / 6.0 + Z * (-c * 9.0 / 22.0 + a * Z * 3.0 / 26.0))) / VIGRA_CSTD::pow(m, 1.5);
 }
 
-template<class T>
+template <class T>
 T
 ellipticRF(T x, T y, T z)
 {
     double X, Y, Z, m;
-    for (;;)
+    for(;;)
     {
         m = (x + y + z) / 3.0;
         X = 1.0 - x / m;
         Y = 1.0 - y / m;
         Z = 1.0 - z / m;
-        if (std::max(std::max(VIGRA_CSTD::fabs(X), VIGRA_CSTD::fabs(Y)), VIGRA_CSTD::fabs(Z)) < 0.01)
+        if(std::max(std::max(VIGRA_CSTD::fabs(X), VIGRA_CSTD::fabs(Y)), VIGRA_CSTD::fabs(Z)) < 0.01)
             break;
         double l = VIGRA_CSTD::sqrt(x * y) + VIGRA_CSTD::sqrt(x * z) + VIGRA_CSTD::sqrt(y * z);
         x = (x + l) / 4.0;
@@ -949,13 +949,13 @@ ellipticIntegralE(double x, double k)
 namespace detail
 {
 
-template<class T>
+template <class T>
 double
 erfImpl(T x)
 {
     double t = 1.0 / (1.0 + 0.5 * VIGRA_CSTD::fabs(x));
     double ans = t * VIGRA_CSTD::exp(-x * x - 1.26551223 + t * (1.00002368 + t * (0.37409196 + t * (0.09678418 + t * (-0.18628806 + t * (0.27886807 + t * (-1.13520398 + t * (1.48851587 + t * (-0.82215223 + t * 0.17087277)))))))));
-    if (x >= 0.0)
+    if(x >= 0.0)
         return 1.0 - ans;
     else
         return ans - 1.0;
@@ -993,7 +993,7 @@ using ::erf;
 namespace detail
 {
 
-template<class T>
+template <class T>
 double
 noncentralChi2CDFApprox(unsigned int degreesOfFreedom, T noncentrality, T arg)
 {
@@ -1003,12 +1003,12 @@ noncentralChi2CDFApprox(unsigned int degreesOfFreedom, T noncentrality, T arg)
     return 0.5 * (1.0 + erf(t / VIGRA_CSTD::sqrt(2.0)));
 }
 
-template<class T>
+template <class T>
 void
 noncentralChi2OneIteration(T arg, T& lans, T& dans, T& pans, unsigned int& j)
 {
     double tol = -50.0;
-    if (lans < tol)
+    if(lans < tol)
     {
         lans = lans + VIGRA_CSTD::log(arg / j);
         dans = VIGRA_CSTD::exp(lans);
@@ -1021,13 +1021,13 @@ noncentralChi2OneIteration(T arg, T& lans, T& dans, T& pans, unsigned int& j)
     j += 2;
 }
 
-template<class T>
+template <class T>
 std::pair<double, double>
 noncentralChi2CDF(unsigned int degreesOfFreedom, T noncentrality, T arg, T eps)
 {
     vigra_precondition(noncentrality >= 0.0 && arg >= 0.0 && eps > 0.0,
                        "noncentralChi2P(): parameters must be positive.");
-    if (arg == 0.0 && degreesOfFreedom > 0)
+    if(arg == 0.0 && degreesOfFreedom > 0)
         return std::make_pair(0.0, 0.0);
 
     // Determine initial values
@@ -1038,7 +1038,7 @@ noncentralChi2CDF(unsigned int degreesOfFreedom, T noncentrality, T arg, T eps)
            probability, density, lans, dans, pans, sum, am, hold;
     unsigned int maxit = 500,
                  i, m;
-    if (degreesOfFreedom % 2)
+    if(degreesOfFreedom % 2)
     {
         i = 1;
         lans = -0.5 * (arg + VIGRA_CSTD::log(arg)) - lnrtpi2;
@@ -1054,7 +1054,7 @@ noncentralChi2CDF(unsigned int degreesOfFreedom, T noncentrality, T arg, T eps)
     }
 
     // Evaluate first term
-    if (degreesOfFreedom == 0)
+    if(degreesOfFreedom == 0)
     {
         m = 1;
         degreesOfFreedom = 2;
@@ -1069,14 +1069,14 @@ noncentralChi2CDF(unsigned int degreesOfFreedom, T noncentrality, T arg, T eps)
         degreesOfFreedom = degreesOfFreedom - 1;
         am = 1.0;
         sum = 1.0 / ao - 1.0;
-        while (i < degreesOfFreedom)
+        while(i < degreesOfFreedom)
             detail::noncentralChi2OneIteration(arg, lans, dans, pans, i);
         degreesOfFreedom = degreesOfFreedom + 1;
         density = dans;
         probability = pans;
     }
     // Evaluate successive terms of the expansion
-    for (++m; m < maxit; ++m)
+    for(++m; m < maxit; ++m)
     {
         am = b1 * am / m;
         detail::noncentralChi2OneIteration(arg, lans, dans, pans, degreesOfFreedom);
@@ -1084,10 +1084,10 @@ noncentralChi2CDF(unsigned int degreesOfFreedom, T noncentrality, T arg, T eps)
         density = density + am * dans;
         hold = am * pans;
         probability = probability + hold;
-        if ((pans * sum < eps2) && (hold < eps2))
+        if((pans * sum < eps2) && (hold < eps2))
             break; // converged
     }
-    if (m == maxit)
+    if(m == maxit)
         vigra_fail("noncentralChi2P(): no convergence.");
     return std::make_pair(0.5 * ao * density, std::min(1.0, std::max(0.0, ao * probability)));
 }
@@ -1187,12 +1187,12 @@ namespace detail
 
 // computes (l+m)! / (l-m)!
 // l and m must be positive
-template<class T>
+template <class T>
 T
 facLM(T l, T m)
 {
     T tmp = NumericTraits<T>::one();
-    for (T f = l - m + 1; f <= l + m; ++f)
+    for(T f = l - m + 1; f <= l + m; ++f)
         tmp *= f;
     return tmp;
 }
@@ -1209,12 +1209,12 @@ facLM(T l, T m)
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-template<class REAL>
+template <class REAL>
 REAL
 legendre(unsigned int l, int m, REAL x)
 {
     vigra_precondition(abs(x) <= 1.0, "legendre(): x must be in [-1.0, 1.0].");
-    if (m < 0)
+    if(m < 0)
     {
         m = -m;
         REAL s = odd(m)
@@ -1223,24 +1223,24 @@ legendre(unsigned int l, int m, REAL x)
         return legendre(l, m, x) * s / detail::facLM<REAL>(l, m);
     }
     REAL result = 1.0;
-    if (m > 0)
+    if(m > 0)
     {
         REAL r = std::sqrt((1.0 - x) * (1.0 + x));
         REAL f = 1.0;
-        for (int i = 1; i <= m; i++)
+        for(int i = 1; i <= m; i++)
         {
             result *= (-f) * r;
             f += 2.0;
         }
     }
-    if ((int)l == m)
+    if((int)l == m)
         return result;
 
     REAL result_1 = x * (2.0 * m + 1.0) * result;
-    if ((int)l == m + 1)
+    if((int)l == m + 1)
         return result_1;
     REAL other = 0.0;
-    for (unsigned int i = m + 2; i <= l; ++i)
+    for(unsigned int i = m + 2; i <= l; ++i)
     {
         other = ((2.0 * i - 1.0) * x * result_1 - (i + m - 1.0) * result) / (i - m);
         result = result_1;
@@ -1257,7 +1257,7 @@ legendre(unsigned int l, int m, REAL x)
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-template<class REAL>
+template <class REAL>
 REAL
 legendre(unsigned int l, REAL x)
 {
@@ -1273,29 +1273,29 @@ legendre(unsigned int l, REAL x)
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-template<class REAL>
+template <class REAL>
 REAL
 sin_pi(REAL x)
 {
-    if (x < 0.0)
+    if(x < 0.0)
         return -sin_pi(-x);
-    if (x < 0.5)
+    if(x < 0.5)
         return std::sin(M_PI * x);
 
     bool invert = false;
-    if (x < 1.0)
+    if(x < 1.0)
     {
         invert = true;
         x = -x;
     }
 
     REAL rem = std::floor(x);
-    if (odd((int)rem))
+    if(odd((int)rem))
         invert = !invert;
     rem = x - rem;
-    if (rem > 0.5)
+    if(rem > 0.5)
         rem = 1.0 - rem;
-    if (rem == 0.5)
+    if(rem == 0.5)
         rem = NumericTraits<REAL>::one();
     else
         rem = std::sin(M_PI * rem);
@@ -1312,7 +1312,7 @@ sin_pi(REAL x)
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-template<class REAL>
+template <class REAL>
 REAL
 cos_pi(REAL x)
 {
@@ -1322,7 +1322,7 @@ cos_pi(REAL x)
 namespace detail
 {
 
-template<class REAL>
+template <class REAL>
 struct GammaImpl
 {
     static REAL gamma(REAL x);
@@ -1338,7 +1338,7 @@ struct GammaImpl
     static double w[];
 };
 
-template<class REAL>
+template <class REAL>
 double GammaImpl<REAL>::g[] = {
     1.0,
     0.5772156649015329,
@@ -1366,7 +1366,7 @@ double GammaImpl<REAL>::g[] = {
     -0.54e-14,
     0.14e-14};
 
-template<class REAL>
+template <class REAL>
 double GammaImpl<REAL>::a[] = {
     7.72156649015328655494e-02,
     3.22467033424113591611e-01,
@@ -1381,7 +1381,7 @@ double GammaImpl<REAL>::a[] = {
     2.52144565451257326939e-05,
     4.48640949618915160150e-05};
 
-template<class REAL>
+template <class REAL>
 double GammaImpl<REAL>::t[] = {
     4.83836122723810047042e-01,
     -1.47587722994593911752e-01,
@@ -1399,7 +1399,7 @@ double GammaImpl<REAL>::t[] = {
     -3.12754168375120860518e-04,
     3.35529192635519073543e-04};
 
-template<class REAL>
+template <class REAL>
 double GammaImpl<REAL>::u[] = {
     -7.72156649015328655494e-02,
     6.32827064025093366517e-01,
@@ -1408,7 +1408,7 @@ double GammaImpl<REAL>::u[] = {
     2.28963728064692451092e-01,
     1.33810918536787660377e-02};
 
-template<class REAL>
+template <class REAL>
 double GammaImpl<REAL>::v[] = {
     0.0,
     2.45597793713041134822e+00,
@@ -1417,7 +1417,7 @@ double GammaImpl<REAL>::v[] = {
     1.04222645593369134254e-01,
     3.21709242282423911810e-03};
 
-template<class REAL>
+template <class REAL>
 double GammaImpl<REAL>::s[] = {
     -7.72156649015328655494e-02,
     2.14982415960608852501e-01,
@@ -1427,7 +1427,7 @@ double GammaImpl<REAL>::s[] = {
     1.84028451407337715652e-03,
     3.19475326584100867617e-05};
 
-template<class REAL>
+template <class REAL>
 double GammaImpl<REAL>::r[] = {
     0.0,
     1.39200533467621045958e+00,
@@ -1437,7 +1437,7 @@ double GammaImpl<REAL>::r[] = {
     7.77942496381893596434e-04,
     7.32668430744625636189e-06};
 
-template<class REAL>
+template <class REAL>
 double GammaImpl<REAL>::w[] = {
     4.18938533204672725052e-01,
     8.33333333333329678849e-02,
@@ -1447,7 +1447,7 @@ double GammaImpl<REAL>::w[] = {
     8.36339918996282139126e-04,
     -1.63092934096575273989e-03};
 
-template<class REAL>
+template <class REAL>
 REAL
 GammaImpl<REAL>::gamma(REAL x)
 {
@@ -1457,12 +1457,12 @@ GammaImpl<REAL>::gamma(REAL x)
     vigra_precondition(x <= 171.0,
                        "gamma(): argument cannot exceed 171.0.");
 
-    if (x == ix)
+    if(x == ix)
     {
-        if (ix > 0)
+        if(ix > 0)
         {
             ga = 1.0; // use factorial
-            for (i = 2; i < ix; ++i)
+            for(i = 2; i < ix; ++i)
             {
                 ga *= i;
             }
@@ -1475,12 +1475,12 @@ GammaImpl<REAL>::gamma(REAL x)
     }
     else
     {
-        if (abs(x) > 1.0)
+        if(abs(x) > 1.0)
         {
             z = abs(x);
             m = (int)z;
             r = 1.0;
-            for (k = 1; k <= m; ++k)
+            for(k = 1; k <= m; ++k)
             {
                 r *= (z - k);
             }
@@ -1491,15 +1491,15 @@ GammaImpl<REAL>::gamma(REAL x)
             z = x;
         }
         gr = g[24];
-        for (k = 23; k >= 0; --k)
+        for(k = 23; k >= 0; --k)
         {
             gr = gr * z + g[k];
         }
         ga = 1.0 / (gr * z);
-        if (abs(x) > 1.0)
+        if(abs(x) > 1.0)
         {
             ga *= r;
-            if (x < 0.0)
+            if(x < 0.0)
             {
                 ga = -M_PI / (x * ga * sin_pi(x));
             }
@@ -1521,7 +1521,7 @@ GammaImpl<REAL>::gamma(REAL x)
  * ====================================================
  *
  */
-template<class REAL>
+template <class REAL>
 REAL
 GammaImpl<REAL>::loggamma(REAL x)
 {
@@ -1533,23 +1533,23 @@ GammaImpl<REAL>::loggamma(REAL x)
 
     double res;
 
-    if (x < 4.2351647362715017e-22)
+    if(x < 4.2351647362715017e-22)
     {
         res = -std::log(x);
     }
-    else if ((x == 2.0) || (x == 1.0))
+    else if((x == 2.0) || (x == 1.0))
     {
         res = 0.0;
     }
-    else if (x < 2.0)
+    else if(x < 2.0)
     {
         const double tc = 1.46163214496836224576e+00;
         const double tf = -1.21486290535849611461e-01;
         const double tt = -3.63867699703950536541e-18;
-        if (x <= 0.9)
+        if(x <= 0.9)
         {
             res = -std::log(x);
-            if (x >= 0.7316)
+            if(x >= 0.7316)
             {
                 double y = 1.0 - x;
                 double z = y * y;
@@ -1558,7 +1558,7 @@ GammaImpl<REAL>::loggamma(REAL x)
                 double p = y * p1 + p2;
                 res += (p - 0.5 * y);
             }
-            else if (x >= 0.23164)
+            else if(x >= 0.23164)
             {
                 double y = x - (tc - 1.0);
                 double z = y * y;
@@ -1580,7 +1580,7 @@ GammaImpl<REAL>::loggamma(REAL x)
         else
         {
             res = 0.0;
-            if (x >= 1.7316)
+            if(x >= 1.7316)
             {
                 double y = 2.0 - x;
                 double z = y * y;
@@ -1589,7 +1589,7 @@ GammaImpl<REAL>::loggamma(REAL x)
                 double p = y * p1 + p2;
                 res += (p - 0.5 * y);
             }
-            else if (x >= 1.23164)
+            else if(x >= 1.23164)
             {
                 double y = x - tc;
                 double z = y * y;
@@ -1609,7 +1609,7 @@ GammaImpl<REAL>::loggamma(REAL x)
             }
         }
     }
-    else if (x < 8.0)
+    else if(x < 8.0)
     {
         double i = std::floor(x);
         double y = x - i;
@@ -1617,14 +1617,14 @@ GammaImpl<REAL>::loggamma(REAL x)
         double q = 1.0 + y * (r[1] + y * (r[2] + y * (r[3] + y * (r[4] + y * (r[5] + y * r[6])))));
         res = 0.5 * y + p / q;
         double z = 1.0;
-        while (i > 2.0)
+        while(i > 2.0)
         {
             --i;
             z *= (y + i);
         }
         res += std::log(z);
     }
-    else if (x < 2.8823037615171174e+17)
+    else if(x < 2.8823037615171174e+17)
     {
         double t = std::log(x);
         double z = 1.0 / x;
@@ -1682,7 +1682,7 @@ namespace detail
 {
 
 // both f1 and f2 are unsigned here
-template<class FPT>
+template <class FPT>
 inline FPT
 safeFloatDivision(FPT f1, FPT f2)
 {
@@ -1706,14 +1706,14 @@ safeFloatDivision(FPT f1, FPT f2)
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-template<class T1, class T2>
+template <class T1, class T2>
 bool
 closeAtTolerance(T1 l, T2 r, typename PromoteTraits<T1, T2>::Promote epsilon)
 {
     typedef typename PromoteTraits<T1, T2>::Promote T;
-    if (l == 0.0)
+    if(l == 0.0)
         return VIGRA_CSTD::fabs(r) <= epsilon;
-    if (r == 0.0)
+    if(r == 0.0)
         return VIGRA_CSTD::fabs(l) <= epsilon;
     T diff = VIGRA_CSTD::fabs(l - r);
     T d1 = detail::safeFloatDivision<T>(diff, VIGRA_CSTD::fabs(r));
@@ -1722,7 +1722,7 @@ closeAtTolerance(T1 l, T2 r, typename PromoteTraits<T1, T2>::Promote epsilon)
     return (d1 <= epsilon && d2 <= epsilon);
 }
 
-template<class T1, class T2>
+template <class T1, class T2>
 inline bool
 closeAtTolerance(T1 l, T2 r)
 {
@@ -1741,14 +1741,14 @@ closeAtTolerance(T1 l, T2 r)
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-template<class T1, class T2>
+template <class T1, class T2>
 inline bool
 lessEqualAtTolerance(T1 l, T2 r, typename PromoteTraits<T1, T2>::Promote epsilon)
 {
     return l < r || closeAtTolerance(l, r, epsilon);
 }
 
-template<class T1, class T2>
+template <class T1, class T2>
 inline bool
 lessEqualAtTolerance(T1 l, T2 r)
 {
@@ -1767,14 +1767,14 @@ lessEqualAtTolerance(T1 l, T2 r)
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-template<class T1, class T2>
+template <class T1, class T2>
 inline bool
 greaterEqualAtTolerance(T1 l, T2 r, typename PromoteTraits<T1, T2>::Promote epsilon)
 {
     return r < l || closeAtTolerance(l, r, epsilon);
 }
 
-template<class T1, class T2>
+template <class T1, class T2>
 inline bool
 greaterEqualAtTolerance(T1 l, T2 r)
 {
@@ -1799,9 +1799,9 @@ greaterEqualAtTolerance(T1 l, T2 r)
     }                                                                            \
     inline TYPE clip(const TYPE t, const TYPE valLow, const TYPE valHigh)        \
     {                                                                            \
-        if (t < valLow)                                                          \
+        if(t < valLow)                                                           \
             return valLow;                                                       \
-        else if (t > valHigh)                                                    \
+        else if(t > valHigh)                                                     \
             return valHigh;                                                      \
         else                                                                     \
             return t;                                                            \

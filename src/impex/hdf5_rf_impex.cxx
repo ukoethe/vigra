@@ -94,7 +94,7 @@ dt_import_HDF5(HDF5File& h5context, detail::DecisionTree& tree,
                const std::string& name)
 {
     // check if ext_param was written(?) and read it if not
-    if (tree.ext_param_.actual_msample_ == 0)
+    if(tree.ext_param_.actual_msample_ == 0)
     {
         problemspec_import_HDF5(h5context, tree.ext_param_, rf_hdf5_ext_param);
         tree.classCount_ = tree.ext_param_.class_count_;

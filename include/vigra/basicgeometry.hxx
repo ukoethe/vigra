@@ -187,10 +187,10 @@ namespace vigra
     src.shape(0) > 1  &&  src.shape(1) > 1
     \endcode
 */
-doxygen_overloaded_function(template<...> void rotateImage)
+doxygen_overloaded_function(template <...> void rotateImage)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void rotateImage(SrcIterator is, SrcIterator end, SrcAccessor as,
                      DestIterator id, DestAccessor ad, int rotation)
 {
@@ -203,21 +203,21 @@ doxygen_overloaded_function(template<...> void rotateImage)
                        "This function rotates images only about multiples of 90 degree");
 
     rotation = rotation % 360;
-    if (rotation < 0)
+    if(rotation < 0)
         rotation += 360;
 
-    switch (rotation)
+    switch(rotation)
     {
         case 0:
             copyImage(is, end, as, id, ad);
             break;
         case 90:
             is.x += (ws - 1);
-            for (x = 0; x != ws; x++, is.x--, id.y++)
+            for(x = 0; x != ws; x++, is.x--, id.y++)
             {
                 typename SrcIterator::column_iterator cs = is.columnIterator();
                 typename DestIterator::row_iterator rd = id.rowIterator();
-                for (y = 0; y != hs; y++, cs++, rd++)
+                for(y = 0; y != hs; y++, cs++, rd++)
                 {
                     ad.set(as(cs), rd);
                 }
@@ -227,11 +227,11 @@ doxygen_overloaded_function(template<...> void rotateImage)
         case 180:
             end.x--;
             end.y--;
-            for (x = 0; x != ws; x++, end.x--, id.x++)
+            for(x = 0; x != ws; x++, end.x--, id.x++)
             {
                 typename SrcIterator::column_iterator cs = end.columnIterator();
                 typename DestIterator::column_iterator cd = id.columnIterator();
-                for (y = 0; y != hs; y++, cs--, cd++)
+                for(y = 0; y != hs; y++, cs--, cd++)
                 {
                     ad.set(as(cs), cd);
                 }
@@ -240,11 +240,11 @@ doxygen_overloaded_function(template<...> void rotateImage)
 
         case 270:
             is.y += (hs - 1);
-            for (x = 0; x != ws; x++, is.x++, id.y++)
+            for(x = 0; x != ws; x++, is.x++, id.y++)
             {
                 typename SrcIterator::column_iterator cs = is.columnIterator();
                 typename DestIterator::row_iterator rd = id.rowIterator();
-                for (y = 0; y != hs; y++, cs--, rd++)
+                for(y = 0; y != hs; y++, cs--, rd++)
                 {
                     ad.set(as(cs), rd);
                 }
@@ -255,8 +255,8 @@ doxygen_overloaded_function(template<...> void rotateImage)
     }
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 rotateImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
             pair<DestImageIterator, DestAccessor> dest, int rotation)
@@ -264,14 +264,14 @@ rotateImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     rotateImage(src.first, src.second, src.third, dest.first, dest.second, rotation);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     rotateImage(MultiArrayView<2, T1, S1> const& src,
                 MultiArrayView<2, T2, S2> dest,
                 int rotation)
 {
-    if (rotation % 180 == 0)
+    if(rotation % 180 == 0)
         vigra_precondition(src.shape() == dest.shape(),
                            "rotateImage(): shape mismatch between input and output.");
     else
@@ -381,10 +381,10 @@ operator|(Reflect l, Reflect r)
     src.shape(0) > 1  &&  src.shape(1) > 1
     \endcode
 */
-doxygen_overloaded_function(template<...> void reflectImage)
+doxygen_overloaded_function(template <...> void reflectImage)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void reflectImage(SrcIterator is, SrcIterator end, SrcAccessor as,
                       DestIterator id, DestAccessor ad, Reflect reflect)
 {
@@ -394,42 +394,42 @@ doxygen_overloaded_function(template<...> void reflectImage)
 
     int x, y;
 
-    if (reflect == horizontal)
+    if(reflect == horizontal)
     { //flipImage
         is.y += (hs - 1);
-        for (x = 0; x < ws; ++x, ++is.x, ++id.x)
+        for(x = 0; x < ws; ++x, ++is.x, ++id.x)
         {
             typename SrcIterator::column_iterator cs = is.columnIterator();
             typename DestIterator::column_iterator cd = id.columnIterator();
-            for (y = 0; y != hs; y++, cs--, cd++)
+            for(y = 0; y != hs; y++, cs--, cd++)
             {
                 ad.set(as(cs), cd);
             }
         }
     }
-    else if (reflect == vertical)
+    else if(reflect == vertical)
     { //flopImage
         is.x += (ws - 1);
-        for (x = 0; x < ws; ++x, --is.x, ++id.x)
+        for(x = 0; x < ws; ++x, --is.x, ++id.x)
         {
 
             typename SrcIterator::column_iterator cs = is.columnIterator();
             typename DestIterator::column_iterator cd = id.columnIterator();
-            for (y = 0; y != hs; y++, cs++, cd++)
+            for(y = 0; y != hs; y++, cs++, cd++)
             {
                 ad.set(as(cs), cd);
             }
         }
     }
-    else if (reflect == (horizontal | vertical))
+    else if(reflect == (horizontal | vertical))
     { //flipFlopImage   //???
         end.x--;
         end.y--;
-        for (x = 0; x != ws; x++, end.x--, id.x++)
+        for(x = 0; x != ws; x++, end.x--, id.x++)
         {
             typename SrcIterator::column_iterator cs = end.columnIterator();
             typename DestIterator::column_iterator cd = id.columnIterator();
-            for (y = 0; y != hs; y++, cs--, cd++)
+            for(y = 0; y != hs; y++, cs--, cd++)
             {
                 ad.set(as(cs), cd);
             }
@@ -441,8 +441,8 @@ doxygen_overloaded_function(template<...> void reflectImage)
                    "   'and' is included");
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 reflectImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
              pair<DestImageIterator, DestAccessor> dest, Reflect reflect)
@@ -450,8 +450,8 @@ reflectImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     reflectImage(src.first, src.second, src.third, dest.first, dest.second, reflect);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     reflectImage(MultiArrayView<2, T1, S1> const& src,
                  MultiArrayView<2, T2, S2> dest, Reflect reflect)
@@ -573,10 +573,10 @@ enum Transpose
     src.shape(0) > 1  &&  src.shape(1) > 1
     \endcode
 */
-doxygen_overloaded_function(template<...> void transposeImage)
+doxygen_overloaded_function(template <...> void transposeImage)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void transposeImage(SrcIterator is, SrcIterator end, SrcAccessor as,
                         DestIterator id, DestAccessor ad, Transpose transpose)
 {
@@ -585,43 +585,43 @@ doxygen_overloaded_function(template<...> void transposeImage)
 
     int x, y;
 
-    if (transpose == major)
+    if(transpose == major)
     { //Die Funktion spiegelt das Bild um (0,0) (1,1) Diagonale
-        for (x = 0; x != ws; x++, is.x++, id.y++)
+        for(x = 0; x != ws; x++, is.x++, id.y++)
         {
 
             typename SrcIterator::column_iterator cs = is.columnIterator();
             typename DestIterator::row_iterator rd = id.rowIterator();
-            for (y = 0; y != hs; y++, cs++, rd++)
+            for(y = 0; y != hs; y++, cs++, rd++)
             {
                 ad.set(as(cs), rd);
             }
         }
     }
-    else if (transpose == minor)
+    else if(transpose == minor)
     { //Die Funktion spiegelt das Bild (1,0) (0,1) Diagonale
         end.x--;
         end.y--;
-        for (x = 0; x != ws; x++, --end.x, ++id.y)
+        for(x = 0; x != ws; x++, --end.x, ++id.y)
         {
 
             typename SrcIterator::column_iterator cs = end.columnIterator();
             typename DestIterator::row_iterator rd = id.rowIterator();
-            for (y = 0; y != hs; y++, --cs, ++rd)
+            for(y = 0; y != hs; y++, --cs, ++rd)
             {
                 ad.set(as(cs), rd);
             }
         }
     }
-    else if (transpose == (major | minor))
+    else if(transpose == (major | minor))
     { //flipFlopImage  //???
         end.x--;
         end.y--;
-        for (x = 0; x != ws; x++, end.x--, id.x++)
+        for(x = 0; x != ws; x++, end.x--, id.x++)
         {
             typename SrcIterator::column_iterator cs = end.columnIterator();
             typename DestIterator::column_iterator cd = id.columnIterator();
-            for (y = 0; y != hs; y++, cs--, cd++)
+            for(y = 0; y != hs; y++, cs--, cd++)
             {
                 ad.set(as(cs), cd);
             }
@@ -633,8 +633,8 @@ doxygen_overloaded_function(template<...> void transposeImage)
                    "   'and' is included");
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 transposeImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                pair<DestImageIterator, DestAccessor> dest, Transpose transpose)
@@ -642,8 +642,8 @@ transposeImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     transposeImage(src.first, src.second, src.third, dest.first, dest.second, transpose);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     transposeImage(MultiArrayView<2, T1, S1> const& src,
                    MultiArrayView<2, T2, S2> dest, Transpose transpose)
@@ -671,8 +671,8 @@ inline void
 * anschliessend der Faktor um den die Linie (Zeile)
 * vergroessert bzw. verkleinert werden soll.
 */
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 resampleLine(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc,
              DestIterator dest_iter, DestAccessor dest_acc, double factor)
@@ -685,20 +685,20 @@ resampleLine(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc
     vigra_precondition(factor > 0.0,
                        "resampleLine(): factor must be positive.");
 
-    if (factor >= 1.0)
+    if(factor >= 1.0)
     {
         int int_factor = (int)factor;
         double dx = factor - int_factor;
         double saver = dx;
-        for (; src_iter != src_iter_end; ++src_iter, saver += dx)
+        for(; src_iter != src_iter_end; ++src_iter, saver += dx)
         {
-            if (saver >= 1.0)
+            if(saver >= 1.0)
             {
                 saver = saver - (int)saver;
                 dest_acc.set(src_acc(src_iter), dest_iter);
                 ++dest_iter;
             }
-            for (int i = 0; i < int_factor; i++, ++dest_iter)
+            for(int i = 0; i < int_factor; i++, ++dest_iter)
             {
                 dest_acc.set(src_acc(src_iter), dest_iter);
             }
@@ -712,17 +712,17 @@ resampleLine(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc
         double dx = factor - int_factor;
         double saver = dx;
         src_iter_end -= 1;
-        for (; src_iter != src_iter_end && dest_iter != dest_end;
-             ++dest_iter, src_iter += int_factor, saver += dx)
+        for(; src_iter != src_iter_end && dest_iter != dest_end;
+            ++dest_iter, src_iter += int_factor, saver += dx)
         {
-            if (saver >= 1.0)
+            if(saver >= 1.0)
             {
                 saver = saver - (int)saver;
                 ++src_iter;
             }
             dest_acc.set(src_acc(src_iter), dest_iter);
         }
-        if (dest_iter != dest_end)
+        if(dest_iter != dest_end)
         {
             dest_acc.set(src_acc(src_iter_end), dest_iter);
         }
@@ -853,10 +853,10 @@ sizeForResamplingFactor(int oldsize, double factor)
     src.shape(0) > 1  &&  src.shape(1) > 1
     \endcode
 */
-doxygen_overloaded_function(template<...> void resampleImage)
+doxygen_overloaded_function(template <...> void resampleImage)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                        DestIterator id, DestAccessor ad, double xfactor, double yfactor)
 {
@@ -887,7 +887,7 @@ doxygen_overloaded_function(template<...> void resampleImage)
 
     typename BasicImage<SRCVT>::Iterator yt = tmp.upperLeft();
 
-    for (x = 0; x < width_old; ++x, ++is.x, ++yt.x)
+    for(x = 0; x < width_old; ++x, ++is.x, ++yt.x)
     {
         typename SrcIterator::column_iterator c1 = is.columnIterator();
         typename TmpImageIterator::column_iterator ct = yt.columnIterator();
@@ -896,7 +896,7 @@ doxygen_overloaded_function(template<...> void resampleImage)
 
     yt = tmp.upperLeft();
 
-    for (y = 0; y < height_new; ++y, ++yt.y, ++id.y)
+    for(y = 0; y < height_new; ++y, ++yt.y, ++id.y)
     {
         typename DestIterator::row_iterator rd = id.rowIterator();
         typename TmpImageIterator::row_iterator rt = yt.rowIterator();
@@ -904,8 +904,8 @@ doxygen_overloaded_function(template<...> void resampleImage)
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
               DestIterator id, DestAccessor ad, double factor)
@@ -913,8 +913,8 @@ resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     resampleImage(is, iend, sa, id, ad, factor, factor);
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 resampleImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
               pair<DestImageIterator, DestAccessor> dest, double factor)
@@ -922,8 +922,8 @@ resampleImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     resampleImage(src.first, src.second, src.third, dest.first, dest.second, factor);
 }
 
-template<class SrcImageIterator, class SrcAccessor,
-         class DestImageIterator, class DestAccessor>
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
 inline void
 resampleImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
               pair<DestImageIterator, DestAccessor> dest, double xfactor, double yfactor)
@@ -931,13 +931,13 @@ resampleImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     resampleImage(src.first, src.second, src.third, dest.first, dest.second, xfactor, yfactor);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     resampleImage(MultiArrayView<2, T1, S1> const& src,
                   MultiArrayView<2, T2, S2> dest, double factor)
 {
-    if (factor > 1.0)
+    if(factor > 1.0)
         vigra_precondition(floor(factor * src.shape()) == dest.shape(),
                            "resampleImage(): shape mismatch between input and output.");
     else
@@ -947,19 +947,19 @@ inline void
     resampleImage(srcImageRange(src), destImage(dest), factor);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     resampleImage(MultiArrayView<2, T1, S1> const& src,
                   MultiArrayView<2, T2, S2> dest, double xfactor, double yfactor)
 {
-    if (xfactor > 1.0)
+    if(xfactor > 1.0)
         vigra_precondition(floor(xfactor * src.shape(0)) == dest.shape(0),
                            "resampleImage(): shape mismatch between input and output.");
     else
         vigra_precondition(ceil(xfactor * src.shape(0)) == dest.shape(0),
                            "resampleImage(): shape mismatch between input and output.");
-    if (yfactor > 1.0)
+    if(yfactor > 1.0)
         vigra_precondition(floor(yfactor * src.shape(1)) == dest.shape(1),
                            "resampleImage(): shape mismatch between input and output.");
     else

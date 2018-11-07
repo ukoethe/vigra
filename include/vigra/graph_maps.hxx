@@ -48,7 +48,7 @@ namespace vigra
 
 // base class for basic implementation
 // of a class for node,edge and arc maps.
-template<class T, class KEY, class REF, class CREF>
+template <class T, class KEY, class REF, class CREF>
 class DenseReferenceMap
     : public MultiArray<1, T>
 {
@@ -110,7 +110,7 @@ private:
 
 // basic implementation
 // of a class for node,edge and arc maps.
-template<class GRAPH, class ITEM, class T, class REF, class CREF>
+template <class GRAPH, class ITEM, class T, class REF, class CREF>
 class DenseGraphItemReferenceMap
     : public DenseReferenceMap<T, ITEM, REF, CREF>
 {
@@ -140,7 +140,7 @@ public:
 };
 
 // basic class for node-maps
-template<class GRAPH, class T, class REF = T&, class CREF = const T&>
+template <class GRAPH, class T, class REF = T&, class CREF = const T&>
 class DenseNodeReferenceMap
     : public DenseGraphItemReferenceMap<GRAPH, typename GRAPH::Node, T, REF, CREF>
 {
@@ -163,7 +163,7 @@ public:
 };
 
 // basic class for edge-maps
-template<class GRAPH, class T, class REF = T&, class CREF = const T&>
+template <class GRAPH, class T, class REF = T&, class CREF = const T&>
 class DenseEdgeReferenceMap
     : public DenseGraphItemReferenceMap<GRAPH, typename GRAPH::Edge, T, REF, CREF>
 {
@@ -186,7 +186,7 @@ public:
 };
 
 // basic class for arc-maps
-template<class GRAPH, class T, class REF = T&, class CREF = const T&>
+template <class GRAPH, class T, class REF = T&, class CREF = const T&>
 class DenseArcReferenceMap
     : public DenseGraphItemReferenceMap<GRAPH, typename GRAPH::Arc, T, REF, CREF>
 {
@@ -214,7 +214,7 @@ public:
 // FUNCTOR is used to convert the two
 // node map values corresponding to an edge to
 // an edge map value
-template<class G, class NODE_MAP, class FUNCTOR, class RESULT>
+template <class G, class NODE_MAP, class FUNCTOR, class RESULT>
 class OnTheFlyEdgeMap
 {
 
@@ -261,7 +261,7 @@ private:
 
 
 // node map that returns zero (specifically, <tt>RESULT()</tt>) for all keys
-template<class G, class RESULT>
+template <class G, class RESULT>
 class ZeroNodeMap
 {
 public:
@@ -287,10 +287,10 @@ public:
 
 
 
-template<class T_OUT>
+template <class T_OUT>
 struct MeanFunctor
 {
-    template<class T>
+    template <class T>
     T_OUT operator()(const T& a, const T& b) const
     {
         return static_cast<T_OUT>(a + b) / static_cast<T_OUT>(2.0);
@@ -304,7 +304,7 @@ struct MeanFunctor
 // FUNCTOR is used to convert the two
 // node map values corresponding to an edge to
 // an edge map value
-template<class G, class NODE_MAP, class FUNCTOR, class RESULT>
+template <class G, class NODE_MAP, class FUNCTOR, class RESULT>
 class OnTheFlyEdgeMap2
 {
 
@@ -351,7 +351,7 @@ private:
 
 
 // convert 2 edge maps with a functor into a single edge map
-template<class G, class EDGE_MAP_A, class EDGE_MAP_B, class FUNCTOR, class RESULT>
+template <class G, class EDGE_MAP_A, class EDGE_MAP_B, class FUNCTOR, class RESULT>
 class BinaryOpEdgeMap
 {
 public:
@@ -392,7 +392,7 @@ private:
 
 
 // encapsulate a MultiArrayView indexed by node/edge ID
-template<class T, class GRAPH, class KEY>
+template <class T, class GRAPH, class KEY>
 struct ArrayMap
 {
 

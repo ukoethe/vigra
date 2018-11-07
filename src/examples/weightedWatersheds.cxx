@@ -66,7 +66,7 @@ struct GradientSquaredMagnitudeFunctor
 };
 
 // generic implementation of the watershed algorithm
-template<class InImage, class OutImage>
+template <class InImage, class OutImage>
 void
 weightedWatershedSegmentation(InImage& in, OutImage& out, double scale, unsigned int oversampling = 1)
 {
@@ -87,7 +87,7 @@ weightedWatershedSegmentation(InImage& in, OutImage& out, double scale, unsigned
 
     // calculate the x- and y-components of the image gradient at given scale
     // optionally enlarge the image before
-    if (oversampling > 1)
+    if(oversampling > 1)
     {
         vigra::BasicImage<TmpType> big(w, h);
         resizeImageSplineInterpolation(srcImageRange(in), destImageRange(big));
@@ -136,7 +136,7 @@ weightedWatershedSegmentation(InImage& in, OutImage& out, double scale, unsigned
 int
 main(int argc, char** argv)
 {
-    if (argc != 3)
+    if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
@@ -156,7 +156,7 @@ main(int argc, char** argv)
         std::cout << "Oversampling ? ";
         std::cin >> oversampling;
 
-        if (info.isGrayscale())
+        if(info.isGrayscale())
         {
             int w = info.width();
             int h = info.height();
@@ -196,7 +196,7 @@ main(int argc, char** argv)
             exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
         }
     }
-    catch (vigra::StdException& e)
+    catch(vigra::StdException& e)
     {
         std::cout << e.what() << std::endl;
         return 1;

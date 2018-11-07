@@ -57,7 +57,7 @@ namespace vigra
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 #define VIGRA_OPENCL_VECTYPEN_INTEGER_TRAITS(basetype, n)               \
-    template<>                                                          \
+    template <>                                                         \
     struct NumericTraits<basetype##n>                                   \
     {                                                                   \
         typedef basetype##n Type;                                       \
@@ -104,7 +104,7 @@ namespace vigra
     }
 
 #define VIGRA_OPENCL_VECTYPEN_REAL_TRAITS(basetype, n)                  \
-    template<>                                                          \
+    template <>                                                         \
     struct NumericTraits<basetype##n>                                   \
     {                                                                   \
         typedef basetype##n Type;                                       \
@@ -351,42 +351,42 @@ namespace multi_math
         typedef NumericTraits<basetype##n>::ValueType value_type;                \
                                                                                  \
         /** Read component at iterator position. */                              \
-        template<class ITERATOR>                                                 \
+        template <class ITERATOR>                                                \
         value_type operator()(ITERATOR const& i) const                           \
         {                                                                        \
             return (*i).NTH;                                                     \
         }                                                                        \
                                                                                  \
         /** Read component at offset from iterator position. */                  \
-        template<class ITERATOR, class DIFFERENCE>                               \
+        template <class ITERATOR, class DIFFERENCE>                              \
         value_type operator()(ITERATOR const& i, DIFFERENCE d) const             \
         {                                                                        \
             return i[d].NTH;                                                     \
         }                                                                        \
                                                                                  \
         /** Write component at iterator position from a scalar. */               \
-        template<class ITERATOR>                                                 \
+        template <class ITERATOR>                                                \
         void set(value_type const& v, ITERATOR const& i) const                   \
         {                                                                        \
             (*i).NTH = v;                                                        \
         }                                                                        \
                                                                                  \
         /** Write component at offset from iterator position from a scalar. */   \
-        template<class ITERATOR, class DIFFERENCE>                               \
+        template <class ITERATOR, class DIFFERENCE>                              \
         void set(value_type const& v, ITERATOR const& i, DIFFERENCE d) const     \
         {                                                                        \
             i[d].NTH = v;                                                        \
         }                                                                        \
                                                                                  \
         /** Write component at iterator position into a scalar. */               \
-        template<class R, class ITERATOR>                                        \
+        template <class R, class ITERATOR>                                       \
         void set(FFTWComplex<R> const& v, ITERATOR const& i) const               \
         {                                                                        \
             *i = v.NTH;                                                          \
         }                                                                        \
                                                                                  \
         /** Write component at offset from iterator position into a scalar. */   \
-        template<class R, class ITERATOR, class DIFFERENCE>                      \
+        template <class R, class ITERATOR, class DIFFERENCE>                     \
         void set(FFTWComplex<R> const& v, ITERATOR const& i, DIFFERENCE d) const \
         {                                                                        \
             i[d] = v.NTH;                                                        \
@@ -400,14 +400,14 @@ namespace multi_math
         typedef NumericTraits<basetype##n>::ValueType value_type;                \
                                                                                  \
         /** Write component at iterator position. */                             \
-        template<class ITERATOR>                                                 \
+        template <class ITERATOR>                                                \
         void set(value_type const& v, ITERATOR const& i) const                   \
         {                                                                        \
             (*i).NTH = v;                                                        \
         }                                                                        \
                                                                                  \
         /** Write component at offset from iterator position. */                 \
-        template<class ITERATOR, class DIFFERENCE>                               \
+        template <class ITERATOR, class DIFFERENCE>                              \
         void set(value_type const& v, ITERATOR const& i, DIFFERENCE d) const     \
         {                                                                        \
             i[d].NTH = v;                                                        \

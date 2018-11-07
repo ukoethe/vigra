@@ -223,7 +223,7 @@ public:
 
     VIGRA_EXPORT const std::string& description() const;
 
-    template<class T, class Stride>
+    template <class T, class Stride>
     void importImpl(MultiArrayView<3, T, Stride>& volume) const;
 
 protected:
@@ -461,7 +461,7 @@ private:
 namespace detail
 {
 
-template<class DestIterator, class Shape, class T>
+template <class DestIterator, class Shape, class T>
 inline void
 readVolumeImpl(DestIterator d, Shape const& shape, std::ifstream& s, ArrayVector<T>& buffer, MetaInt<0>)
 {
@@ -469,18 +469,18 @@ readVolumeImpl(DestIterator d, Shape const& shape, std::ifstream& s, ArrayVector
 
     DestIterator dend = d + shape[0];
     int k = 0;
-    for (; d < dend; ++d, k++)
+    for(; d < dend; ++d, k++)
     {
         *d = buffer[k];
     }
 }
 
-template<class DestIterator, class Shape, class T, int N>
+template <class DestIterator, class Shape, class T, int N>
 void
 readVolumeImpl(DestIterator d, Shape const& shape, std::ifstream& s, ArrayVector<T>& buffer, MetaInt<N>)
 {
     DestIterator dend = d + shape[N];
-    for (; d < dend; ++d)
+    for(; d < dend; ++d)
     {
         readVolumeImpl(d.begin(), shape, s, buffer, MetaInt<N - 1>());
     }
@@ -488,34 +488,34 @@ readVolumeImpl(DestIterator d, Shape const& shape, std::ifstream& s, ArrayVector
 
 } // namespace detail
 
-template<class T, class Stride>
+template <class T, class Stride>
 void VolumeImportInfo::importImpl(MultiArrayView<3, T, Stride>& volume) const
 {
     vigra_precondition(this->shape() == volume.shape(), "importVolume(): Output array must be shaped according to VolumeImportInfo.");
 
-    if (fileType_ == "RAW")
+    if(fileType_ == "RAW")
     {
         std::string dirName, baseName;
         char oldCWD[2048];
 
 #ifdef _MSC_VER
-        if (_getcwd(oldCWD, 2048) == 0)
+        if(_getcwd(oldCWD, 2048) == 0)
         {
             perror("getcwd");
             vigra_fail("VolumeImportInfo: Unable to query current directory (getcwd).");
         }
-        if (_chdir(path_.c_str()))
+        if(_chdir(path_.c_str()))
         {
             perror("chdir");
             vigra_fail("VolumeImportInfo: Unable to change to new directory (chdir).");
         }
 #else
-        if (getcwd(oldCWD, 2048) == 0)
+        if(getcwd(oldCWD, 2048) == 0)
         {
             perror("getcwd");
             vigra_fail("VolumeImportInfo: Unable to query current directory (getcwd).");
         }
-        if (chdir(path_.c_str()))
+        if(chdir(path_.c_str()))
         {
             perror("chdir");
             vigra_fail("VolumeImportInfo: Unable to change to new directory (chdir).");
@@ -532,19 +532,19 @@ void VolumeImportInfo::importImpl(MultiArrayView<3, T, Stride>& volume) const
         //s.read((char*)volume.data(), shape_[0]*shape_[1]*shape_[2]*sizeof(T));
 
 #ifdef _MSC_VER
-        if (_chdir(oldCWD))
+        if(_chdir(oldCWD))
             perror("chdir");
 #else
-        if (chdir(oldCWD))
+        if(chdir(oldCWD))
             perror("chdir");
 #endif
 
         vigra_postcondition(
             volume.shape() == shape(), "imported volume has wrong size");
     }
-    else if (fileType_ == "STACK")
+    else if(fileType_ == "STACK")
     {
-        for (unsigned int i = 0; i < numbers_.size(); ++i)
+        for(unsigned int i = 0; i < numbers_.size(); ++i)
         {
             // build the filename
             std::string filename = baseName_ + numbers_[i] + extension_;
@@ -560,11 +560,11 @@ void VolumeImportInfo::importImpl(MultiArrayView<3, T, Stride>& volume) const
             importImage(info, destImage(view));
         }
     }
-    else if (fileType_ == "MULTIPAGE")
+    else if(fileType_ == "MULTIPAGE")
     {
         ImageImportInfo info(baseName_.c_str());
 
-        for (int k = 0; k < info.numImages(); ++k)
+        for(int k = 0; k < info.numImages(); ++k)
         {
             info.setImageIndex(k);
             importImage(info, volume.bindOuter(k));
@@ -575,7 +575,7 @@ void VolumeImportInfo::importImpl(MultiArrayView<3, T, Stride>& volume) const
     // HDF5File file(baseName_, HDF5File::OpenReadOnly);
     // file.read(extension_, volume);
     // }
-    else if (fileType_ == "SIF")
+    else if(fileType_ == "SIF")
     {
         SIFImportInfo infoSIF(baseName_.c_str());
         readSIF(infoSIF, volume);
@@ -664,16 +664,16 @@ VIGRA_EXPORT void findImageSequence(const std::string& name_base,
     are read in the same order as "9", "10", "11"). The number of images
     found determines the depth of the volume.
 */
-doxygen_overloaded_function(template<...> void importVolume)
+doxygen_overloaded_function(template <...> void importVolume)
 
-    template<class T, class Stride>
+    template <class T, class Stride>
     void importVolume(VolumeImportInfo const& info,
                       MultiArrayView<3, T, Stride>& volume)
 {
     info.importImpl(volume);
 }
 
-template<class T, class Allocator>
+template <class T, class Allocator>
 void
     importVolume(MultiArray<3, T, Allocator>& volume,
                  const std::string& filename)
@@ -684,7 +684,7 @@ void
     info.importImpl(volume);
 }
 
-template<class T, class Allocator>
+template <class T, class Allocator>
 void importVolume(MultiArray<3, T, Allocator>& volume,
                   const std::string& name_base,
                   const std::string& name_ext)
@@ -698,38 +698,38 @@ void importVolume(MultiArray<3, T, Allocator>& volume,
 namespace detail
 {
 
-template<class T>
+template <class T>
 void
 setRangeMapping(std::string const& pixeltype,
                 FindMinMax<T> const& minmax, ImageExportInfo& info)
 {
-    if (pixeltype == "UINT8")
+    if(pixeltype == "UINT8")
         info.setForcedRangeMapping((double)minmax.min, (double)minmax.max,
                                    (double)NumericTraits<UInt8>::min(),
                                    (double)NumericTraits<UInt8>::max());
-    else if (pixeltype == "INT16")
+    else if(pixeltype == "INT16")
         info.setForcedRangeMapping((double)minmax.min, (double)minmax.max,
                                    (double)NumericTraits<Int16>::min(),
                                    (double)NumericTraits<Int16>::max());
-    else if (pixeltype == "UINT16")
+    else if(pixeltype == "UINT16")
         info.setForcedRangeMapping((double)minmax.min, (double)minmax.max,
                                    (double)NumericTraits<UInt16>::min(),
                                    (double)NumericTraits<UInt16>::max());
-    else if (pixeltype == "INT32")
+    else if(pixeltype == "INT32")
         info.setForcedRangeMapping((double)minmax.min, (double)minmax.max,
                                    (double)NumericTraits<Int32>::min(),
                                    (double)NumericTraits<Int32>::max());
-    else if (pixeltype == "UINT32")
+    else if(pixeltype == "UINT32")
         info.setForcedRangeMapping((double)minmax.min, (double)minmax.max,
                                    (double)NumericTraits<UInt32>::min(),
                                    (double)NumericTraits<UInt32>::max());
-    else if (pixeltype == "FLOAT")
+    else if(pixeltype == "FLOAT")
         info.setForcedRangeMapping((double)minmax.min, (double)minmax.max, 0.0, 1.0);
-    else if (pixeltype == "DOUBLE")
+    else if(pixeltype == "DOUBLE")
         info.setForcedRangeMapping((double)minmax.min, (double)minmax.max, 0.0, 1.0);
 }
 
-template<class T, class Tag>
+template <class T, class Tag>
 void setRangeMapping(MultiArrayView<3, T, Tag> const& volume,
                      ImageExportInfo& info, VigraTrueType /* isScalar */)
 {
@@ -737,7 +737,7 @@ void setRangeMapping(MultiArrayView<3, T, Tag> const& volume,
     bool downcast = negotiatePixelType(getEncoderType(info.getFileName(), info.getFileType()),
                                        TypeAsString<T>::result(), pixeltype);
 
-    if (downcast)
+    if(downcast)
     {
         FindMinMax<T> minmax;
         inspectMultiArray(srcMultiArrayRange(volume), minmax);
@@ -745,7 +745,7 @@ void setRangeMapping(MultiArrayView<3, T, Tag> const& volume,
     }
 }
 
-template<class T, class Tag>
+template <class T, class Tag>
 void setRangeMapping(MultiArrayView<3, T, Tag> const& volume,
                      ImageExportInfo& info, VigraFalseType /* isScalar */)
 {
@@ -754,11 +754,11 @@ void setRangeMapping(MultiArrayView<3, T, Tag> const& volume,
     bool downcast = negotiatePixelType(getEncoderType(info.getFileName(), info.getFileType()),
                                        TypeAsString<SrcComponent>::result(), pixeltype);
 
-    if (downcast)
+    if(downcast)
     {
         unsigned int bands = volume(0, 0, 0).size();
         FindMinMax<SrcComponent> minmax;
-        for (unsigned int i = 0; i < bands; ++i)
+        for(unsigned int i = 0; i < bands; ++i)
         {
             VectorComponentValueAccessor<T> band(i);
             inspectMultiArray(srcMultiArrayRange(volume, band), minmax);
@@ -827,20 +827,20 @@ void setRangeMapping(MultiArrayView<3, T, Tag> const& volume,
     exportVolume(volume, info);
     \endcode
 */
-doxygen_overloaded_function(template<...> void exportVolume)
+doxygen_overloaded_function(template <...> void exportVolume)
 
-    template<class T, class Tag>
+    template <class T, class Tag>
     void exportVolume(MultiArrayView<3, T, Tag> const& volume,
                       const VolumeExportInfo& volinfo)
 {
-    if (volinfo.getFileType() == std::string("MULTIPAGE"))
+    if(volinfo.getFileType() == std::string("MULTIPAGE"))
     {
         char const* mode = "w";
         std::string compression = "LZW";
-        if (volinfo.getCompression() != std::string())
+        if(volinfo.getCompression() != std::string())
             compression = volinfo.getCompression();
 
-        for (MultiArrayIndex k = 0; k < volume.shape(2); ++k)
+        for(MultiArrayIndex k = 0; k < volume.shape(2); ++k)
         {
             ImageExportInfo info(volinfo.getFileNameBase(), mode);
             info.setFileType("TIFF");
@@ -861,7 +861,7 @@ doxygen_overloaded_function(template<...> void exportVolume)
 
         const unsigned int depth = volume.shape(2);
         int numlen = static_cast<int>(std::ceil(std::log10((double)depth)));
-        for (unsigned int i = 0; i < depth; ++i)
+        for(unsigned int i = 0; i < depth; ++i)
         {
             // build the filename
             std::stringstream stream;
@@ -882,7 +882,7 @@ doxygen_overloaded_function(template<...> void exportVolume)
     }
 }
 
-template<class T, class Tag>
+template <class T, class Tag>
 inline void
     exportVolume(MultiArrayView<3, T, Tag> const& volume,
                  const std::string& filename)
@@ -891,7 +891,7 @@ inline void
     exportVolume(volume, volinfo);
 }
 
-template<class T, class Tag>
+template <class T, class Tag>
 inline void
     exportVolume(MultiArrayView<3, T, Tag> const& volume,
                  const std::string& name_base,

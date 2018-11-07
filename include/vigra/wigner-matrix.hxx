@@ -60,7 +60,7 @@ namespace vigra
      * WARNING: not thread safe! use a new instance of WignerMatrix
      * for each thread!!!
      */
-template<class Real>
+template <class Real>
 class WignerMatrix
 {
 public:
@@ -102,7 +102,7 @@ public:
           */
     Complex get_D(int l, int n, int m) const
     {
-        if (l > 0)
+        if(l > 0)
         {
             std::string message = std::string("WignerMatrix::get_D(): index out of bounds: l=");
             message << l << " l_max=" << D.size() << " m=" << m << " n=" << n << "\n";
@@ -161,25 +161,25 @@ private:
     ArrayVector<Matrix<Complex>> D;
 };
 
-template<class Real>
+template <class Real>
 WignerMatrix<Real>::WignerMatrix(int band)
     : l_max(0),
       cg1cnt(0)
 {
     //precompute clebschGordan coeffs
-    for (int l = 2; l <= band + 1; l++)
+    for(int l = 2; l <= band + 1; l++)
     {
-        for (int m = -l; m <= l; m++)
+        for(int m = -l; m <= l; m++)
         {
-            for (int n = -l; n <= l; n++)
+            for(int n = -l; n <= l; n++)
             {
-                for (int m2 = -1; m2 <= 1; m2++)
+                for(int m2 = -1; m2 <= 1; m2++)
                 {
-                    for (int n2 = -1; n2 <= 1; n2++)
+                    for(int n2 = -1; n2 <= 1; n2++)
                     {
                         int m1 = m - m2;
                         int n1 = n - n2;
-                        if (m1 > -l && m1 < l && n1 > -l && n1 < l)
+                        if(m1 > -l && m1 < l && n1 > -l && n1 < l)
                         {
                             CGcoeff.push_back((clebschGordan(l - 1, m1, 1, m2, l, m)) * (clebschGordan(l - 1, n1, 1, n2, l, n)));
                         }
@@ -190,7 +190,7 @@ WignerMatrix<Real>::WignerMatrix(int band)
     }
 }
 
-template<class Real>
+template <class Real>
 void
 WignerMatrix<Real>::compute_D(int l, Real phi, Real theta, Real psi)
 {
@@ -203,7 +203,7 @@ WignerMatrix<Real>::compute_D(int l, Real phi, Real theta, Real psi)
     Complex eipsi = std::exp(i * psi);
     Complex emipsi = std::exp(-i * psi);
 
-    if (D.size() < (std::size_t)(l + 1))
+    if(D.size() < (std::size_t)(l + 1))
         D.resize(l + 1);
     D[1].reshape(MultiArrayShape<2>::type(3, 3));
 
@@ -219,22 +219,22 @@ WignerMatrix<Real>::compute_D(int l, Real phi, Real theta, Real psi)
 
     l_max = 1;
     cg1cnt = 0;
-    if (l > 1)
+    if(l > 1)
         compute_D(l);
 }
 
 
-template<class Real>
+template <class Real>
 void
 WignerMatrix<Real>::compute_D(int l)
 {
-    if (D.size() < (std::size_t)(l + 1))
+    if(D.size() < (std::size_t)(l + 1))
     {
         D.resize(l + 1);
         l_max = 0;
     }
 
-    if (l == 1)
+    if(l == 1)
     {
         //precompute D0 =1 and D1 = (90 degree rot)
         // FIXME: signs are inconsistent with above explicit formula for
@@ -255,7 +255,7 @@ WignerMatrix<Real>::compute_D(int l)
     else
     {
         //compute D2-Dl_max recursive
-        if (l > l_max + 1)
+        if(l > l_max + 1)
         {
             compute_D(l - 1);
         }
@@ -263,17 +263,17 @@ WignerMatrix<Real>::compute_D(int l)
         D[l].reshape(MultiArrayShape<2>::type(2 * l + 1, 2 * l + 1));
         D[l].init(Real(0.0));
 
-        for (int m = -l; m <= l; m++)
+        for(int m = -l; m <= l; m++)
         {
-            for (int n = -l; n <= l; n++)
+            for(int n = -l; n <= l; n++)
             {
-                for (int m2 = -1; m2 <= 1; m2++)
+                for(int m2 = -1; m2 <= 1; m2++)
                 {
-                    for (int n2 = -1; n2 <= 1; n2++)
+                    for(int n2 = -1; n2 <= 1; n2++)
                     {
                         int m1 = m - m2;
                         int n1 = n - n2;
-                        if ((m1 > -l) && (m1 < l) && (n1 > -l) && (n1 < l))
+                        if((m1 > -l) && (m1 < l) && (n1 > -l) && (n1 < l))
                         {
                             D[l](m + l, n + l) += D[1](m2 + 1, n2 + 1) * D[l - 1](m1 + l - 1, n1 + l - 1) * Real(CGcoeff[cg1cnt++]);
                         }
@@ -286,7 +286,7 @@ WignerMatrix<Real>::compute_D(int l)
     }
 }
 
-template<class Real>
+template <class Real>
 void
 WignerMatrix<Real>::rotatePH(NestedArray const& PH, Real phi, Real theta, Real psi,
                              NestedArray& PHresult)
@@ -296,16 +296,16 @@ WignerMatrix<Real>::rotatePH(NestedArray const& PH, Real phi, Real theta, Real p
 
     PHresult.resize(PH.size());
 
-    for (int n = 1; n <= band; n++)
+    for(int n = 1; n <= band; n++)
     {
         PHresult[n].resize(band + 1);
-        for (int l = 0; l <= band; l++)
+        for(int l = 0; l <= band; l++)
         {
             PHresult[n][l].resize(2 * band + 1);
-            for (int m = -l; m <= l; m++)
+            for(int m = -l; m <= l; m++)
             {
                 Complex tmp = 0;
-                for (int h = -l; h <= l; h++)
+                for(int h = -l; h <= l; h++)
                 {
                     tmp += get_D(l, h, m) * PH[n][l][h + l];
                 }

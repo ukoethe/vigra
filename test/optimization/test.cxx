@@ -52,14 +52,14 @@ using namespace vigra::linalg;
 struct GaussianFitModel
 {
     // pass in scalar data
-    template<class T>
+    template <class T>
     T operator()(double data, TinyVector<T, 3> const& p) const
     {
         return p[1] * exp(-0.5 * sq(data / p[0])) + p[2];
     }
 
     // pass in vector data
-    template<class T>
+    template <class T>
     T operator()(MultiArrayView<1, double> const& data, TinyVector<T, 3> const& p) const
     {
         return p[1] * exp(-0.5 * sq(data(0) / p[0])) + p[2];
@@ -101,10 +101,10 @@ struct OptimizationTest
         int numSolutions = leastAngleRegression(X, y, activeSets, results, options);
         shouldMsg(numSolutions == ref.columnCount(), (std::string("wrong number of solutions in ") + message).c_str());
 
-        for (MultiArrayIndex j = 0; j < numSolutions; ++j)
+        for(MultiArrayIndex j = 0; j < numSolutions; ++j)
         {
             Matrix<double> B(50, 1);
-            for (unsigned int i = 0; i < activeSets[j].size(); ++i)
+            for(unsigned int i = 0; i < activeSets[j].size(); ++i)
             {
                 // activeSets[j][i] is the true index of the i-th result
                 B(activeSets[j][i], 0) = results[j](i, 0) * scaling(0, activeSets[j][i]);
@@ -123,9 +123,9 @@ struct OptimizationTest
         double epsilon = 1e-10;
         const char* methods[3] = {"QR", "SVD", "NE"};
 
-        for (int m = 0; m < 3; ++m)
+        for(int m = 0; m < 3; ++m)
         {
-            for (int k = 0; k < size; ++k)
+            for(int k = 0; k < size; ++k)
             {
                 Matrix<double> result(50, 1);
                 leastSquares(x[k], y[k], result, methods[m]);
@@ -147,9 +147,9 @@ struct OptimizationTest
 
         const char* methods[3] = {"QR", "SVD", "NE"};
 
-        for (int m = 0; m < 3; ++m)
+        for(int m = 0; m < 3; ++m)
         {
-            for (int k = 0; k < size; ++k)
+            for(int k = 0; k < size; ++k)
             {
                 Matrix<double> result(50, 1);
                 weightedLeastSquares(x[k], y[k], weights, result, methods[m]);
@@ -171,11 +171,11 @@ struct OptimizationTest
         ArrayVector<double> lambdas(la, la + 4);
         Matrix<double> weights(100, 1, w);
 
-        for (int k = 0; k < size; ++k)
+        for(int k = 0; k < size; ++k)
         {
             Matrix<double> results(50, 4);
             ridgeRegressionSeries(x[k], y[k], results, lambdas);
-            for (int m = 0; m < 4; ++m)
+            for(int m = 0; m < 4; ++m)
             {
                 Matrix<double> result(50, 1);
                 ridgeRegression(x[k], y[k], result, lambdas[m]);
@@ -188,7 +188,7 @@ struct OptimizationTest
                 shouldMsg(r.norm(0) < epsilon, s.str().c_str());
                 shouldMsg((result - columnVector(results, m)).norm(0) < epsilon, s.str().c_str());
             }
-            for (int m = 0; m < 4; ++m)
+            for(int m = 0; m < 4; ++m)
             {
                 Matrix<double> result(50, 1);
                 weightedRidgeRegression(x[k], y[k], weights, result, lambdas[m]);
@@ -208,7 +208,7 @@ struct OptimizationTest
         LeastAngleRegressionOptions larsOptions;
         larsOptions = larsOptions.lars().leastSquaresSolutions(false);
 
-        for (int k = 0; k < size; ++k)
+        for(int k = 0; k < size; ++k)
         {
             std::ostringstream s;
             s << "lars " << k;
@@ -221,7 +221,7 @@ struct OptimizationTest
         LeastAngleRegressionOptions larsOptions;
         larsOptions = larsOptions.lars().leastSquaresSolutions(true);
 
-        for (int k = 0; k < size; ++k)
+        for(int k = 0; k < size; ++k)
         {
             std::ostringstream s;
             s << "larslsq " << k;
@@ -234,7 +234,7 @@ struct OptimizationTest
         LeastAngleRegressionOptions larsOptions;
         larsOptions = larsOptions.lasso().leastSquaresSolutions(false);
 
-        for (int k = 0; k < size; ++k)
+        for(int k = 0; k < size; ++k)
         {
             std::ostringstream s;
             s << "lasso " << k;
@@ -247,7 +247,7 @@ struct OptimizationTest
         LeastAngleRegressionOptions larsOptions;
         larsOptions = larsOptions.lasso().leastSquaresSolutions(true);
 
-        for (int k = 0; k < size; ++k)
+        for(int k = 0; k < size; ++k)
         {
             std::ostringstream s;
             s << "lassolsq " << k;
@@ -260,7 +260,7 @@ struct OptimizationTest
         LeastAngleRegressionOptions larsOptions;
         larsOptions = larsOptions.nnlasso().leastSquaresSolutions(false);
 
-        for (int k = 0; k < size; ++k)
+        for(int k = 0; k < size; ++k)
         {
             std::ostringstream s;
             s << "nnlasso " << k;
@@ -273,7 +273,7 @@ struct OptimizationTest
         LeastAngleRegressionOptions larsOptions;
         larsOptions = larsOptions.nnlasso().leastSquaresSolutions(true);
 
-        for (int k = 0; k < size; ++k)
+        for(int k = 0; k < size; ++k)
         {
             std::ostringstream s;
             s << "nnlassolsq " << k;
@@ -284,7 +284,7 @@ struct OptimizationTest
     void testNNLSQ()
     {
         double epsilon = 1e-10;
-        for (int k = 0; k < size; ++k)
+        for(int k = 0; k < size; ++k)
         {
             Matrix<double> result(50, 1);
             nonnegativeLeastSquares(x[k], y[k], result);
@@ -295,7 +295,7 @@ struct OptimizationTest
 
             std::ostringstream s;
             s << "failure in problem " << k << " of NNLSQ test";
-            for (int l = 0; l < 50; ++l)
+            for(int l = 0; l < 50; ++l)
                 shouldMsg((r(l, 0) <= 0.0 && result(l, 0) == 0.0) || (abs(r(l, 0)) < epsilon && result(l, 0) > 0.0), s.str().c_str());
         }
     }
@@ -427,7 +427,7 @@ struct OptimizationTest
             shouldEqualSequenceTolerance(x.data(), x.data() + 8, xrefdata, 1e-10);
         }
         double epsilon = 1e-10;
-        for (int k = 0; k < size; ++k)
+        for(int k = 0; k < size; ++k)
         {
             Matrix<double> result(50, 1), ref(50, 1);
             Matrix<double> G = transpose(x[k]) * x[k],

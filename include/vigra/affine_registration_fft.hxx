@@ -107,8 +107,8 @@ namespace vigra
  \deprecatedEnd
 */
 
-template<class SplineImage,
-         class DestIterator, class DestAccessor>
+template <class SplineImage,
+          class DestIterator, class DestAccessor>
 void
 transformToPolarCoordinates(SplineImage const& src,
                             DestIterator d_ul, DestIterator d_lr, DestAccessor d_acc)
@@ -128,17 +128,17 @@ transformToPolarCoordinates(SplineImage const& src,
     DestIterator yd = d_ul;
     DestIterator xd = yd;
 
-    for (int t_step = 0; t_step < d_h; t_step++, yd.y++)
+    for(int t_step = 0; t_step < d_h; t_step++, yd.y++)
     {
         xd = yd;
-        for (int r_step = 0; r_step < d_w; r_step++, xd.x++)
+        for(int r_step = 0; r_step < d_w; r_step++, xd.x++)
         {
             double theta = 2.0 * M_PI * double(t_step) / double(d_h);
             double r = r_max * double(r_step) / double(d_w);
             double u = r * cos(theta) + r_max;
             double v = r * -sin(theta) + r_max;
 
-            if (u >= 0 && u < s_size && v >= 0 && v < s_size)
+            if(u >= 0 && u < s_size && v >= 0 && v < s_size)
             {
                 d_acc.set(src(u, v), xd);
             }
@@ -146,8 +146,8 @@ transformToPolarCoordinates(SplineImage const& src,
     }
 }
 
-template<class SplineImage,
-         class DestIterator, class DestAccessor>
+template <class SplineImage,
+          class DestIterator, class DestAccessor>
 inline void
 transformToPolarCoordinates(SplineImage const& src,
                             vigra::triple<DestIterator, DestIterator, DestAccessor> dest)
@@ -155,8 +155,8 @@ transformToPolarCoordinates(SplineImage const& src,
     transformToPolarCoordinates(src, dest.first, dest.second, dest.third);
 }
 
-template<class SplineImage,
-         class T1, class S1>
+template <class SplineImage,
+          class T1, class S1>
 void
 transformToPolarCoordinates(SplineImage const& src,
                             MultiArrayView<2, T1, S1> dest)
@@ -168,8 +168,8 @@ transformToPolarCoordinates(SplineImage const& src,
 
 namespace detail
 {
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 maximumFastNCC(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
                DestIterator d_ul, DestIterator d_lr, DestAccessor d_acc,
@@ -193,13 +193,13 @@ maximumFastNCC(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
     float val = 0.0;
     float max_val = -1.0;
 
-    for (int y = 0; y < ncc.height() - s_shape.y; y++)
+    for(int y = 0; y < ncc.height() - s_shape.y; y++)
     {
-        for (int x = 0; x < ncc.width() - s_shape.x; x++)
+        for(int x = 0; x < ncc.width() - s_shape.x; x++)
         {
             val = ncc(x + s_shape.x / 2, y + s_shape.y / 2);
 
-            if (val > max_val)
+            if(val > max_val)
             {
                 max_x = x;
                 max_y = y;
@@ -214,8 +214,8 @@ maximumFastNCC(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
     correlation_coefficent = max_val;
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 maximumFastNCC(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                triple<DestIterator, DestIterator, DestAccessor> dest,
@@ -228,8 +228,8 @@ maximumFastNCC(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    correlation_coefficent);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 fourierLogAbsSpectrumInPolarCoordinates(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
                                         DestIterator d_ul, DestIterator d_lr, DestAccessor d_acc)
@@ -252,8 +252,8 @@ fourierLogAbsSpectrumInPolarCoordinates(SrcIterator s_ul, SrcIterator s_lr, SrcA
     transformImage(srcIterRange(d_ul, d_lr, d_acc), destIter(d_ul, d_acc), log(abs(functor::Arg1())));
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 fourierLogAbsSpectrumInPolarCoordinates(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                         triple<DestIterator, DestIterator, DestAccessor> dest)
@@ -328,10 +328,10 @@ fourierLogAbsSpectrumInPolarCoordinates(triple<SrcIterator, SrcIterator, SrcAcce
      \endcode
  \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void estimateGlobalRotation)
+doxygen_overloaded_function(template <...> void estimateGlobalRotation)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void estimateGlobalRotation(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
                                 DestIterator d_ul, DestIterator d_lr, DestAccessor d_acc,
                                 Matrix<double>& affineMatrix,
@@ -350,7 +350,7 @@ doxygen_overloaded_function(template<...> void estimateGlobalRotation)
     Diff2D mean_shape = (s_shape + d_shape) / 2;
 
     int size = min(mean_shape.x, mean_shape.y);
-    if (size % 2 == 0)
+    if(size % 2 == 0)
         size++;
 
     const int pc_w = size,
@@ -380,11 +380,11 @@ doxygen_overloaded_function(template<...> void estimateGlobalRotation)
 
     //Only look at a stripe for the maximum angle of rotation
     //at the image center, at find the best fitting angle...
-    for (int y = 0; y < pc_h / 2; y++)
+    for(int y = 0; y < pc_h / 2; y++)
     {
         val = ncc(x, y + pc_h / 4);
 
-        if (val > max_val)
+        if(val > max_val)
         {
             max_idx = y;
             max_val = val;
@@ -397,8 +397,8 @@ doxygen_overloaded_function(template<...> void estimateGlobalRotation)
     correlation_coefficient = max_val;
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 estimateGlobalRotation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        triple<DestIterator, DestIterator, DestAccessor> dest,
@@ -411,8 +411,8 @@ estimateGlobalRotation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                            correlation_coefficient);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     estimateGlobalRotation(MultiArrayView<2, T1, S1> const& src,
                            MultiArrayView<2, T2, S2> dest,
@@ -496,10 +496,10 @@ inline void
      \endcode
  \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void estimateGlobalTranslation)
+doxygen_overloaded_function(template <...> void estimateGlobalTranslation)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void estimateGlobalTranslation(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
                                    DestIterator d_ul, DestIterator d_lr, DestAccessor d_acc,
                                    Matrix<double>& affine_matrix,
@@ -511,9 +511,9 @@ doxygen_overloaded_function(template<...> void estimateGlobalTranslation)
 
     //determine matrix by using 5 quater-matches and a maximum likelihood decision:
     Diff2D q_shape = (s_shape - border - border) / 2;
-    if (q_shape.x % 2 == 0)
+    if(q_shape.x % 2 == 0)
         q_shape.x--;
-    if (q_shape.y % 2 == 0)
+    if(q_shape.y % 2 == 0)
         q_shape.y--;
 
     Diff2D q_offsets[5];
@@ -529,7 +529,7 @@ doxygen_overloaded_function(template<...> void estimateGlobalTranslation)
 
     int max_corr_idx = 0;
 
-    for (int q = 0; q != 5; q++)
+    for(int q = 0; q != 5; q++)
     {
         Diff2D offset = q_offsets[q];
 
@@ -541,14 +541,14 @@ doxygen_overloaded_function(template<...> void estimateGlobalTranslation)
 
         translation_vectors[q] = translation_vectors[q] - TinyVector<int, 2>(offset);
 
-        if (translation_correlations[q] > translation_correlations[max_corr_idx])
+        if(translation_correlations[q] > translation_correlations[max_corr_idx])
         {
             max_corr_idx = q;
         }
 
-        for (int q_old = 0; q_old != q; q_old++)
+        for(int q_old = 0; q_old != q; q_old++)
         {
-            if (translation_vectors[q] == translation_vectors[q_old])
+            if(translation_vectors[q] == translation_vectors[q_old])
             {
                 translation_votes[q_old]++;
             }
@@ -557,16 +557,16 @@ doxygen_overloaded_function(template<...> void estimateGlobalTranslation)
 
     int max_votes_idx = 0;
 
-    for (int q = 0; q != 5; q++)
+    for(int q = 0; q != 5; q++)
     {
-        if (translation_votes[q] > translation_votes[max_votes_idx])
+        if(translation_votes[q] > translation_votes[max_votes_idx])
         {
             max_votes_idx = q;
         }
     }
 
     int best_idx = 0;
-    if (translation_votes[max_votes_idx] > 1)
+    if(translation_votes[max_votes_idx] > 1)
     {
         best_idx = max_votes_idx;
     }
@@ -579,8 +579,8 @@ doxygen_overloaded_function(template<...> void estimateGlobalTranslation)
     correlation_coefficent = translation_correlations[best_idx];
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 estimateGlobalTranslation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                           triple<DestIterator, DestIterator, DestAccessor> dest,
@@ -595,8 +595,8 @@ estimateGlobalTranslation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                               border);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     estimateGlobalTranslation(MultiArrayView<2, T1, S1> const& src,
                               MultiArrayView<2, T2, S2> dest,
@@ -674,8 +674,8 @@ inline void
      \endcode
  \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void estimateGlobalRotationTranslation) template<class SrcIterator, class SrcAccessor,
-                                                                                           class DestIterator, class DestAccessor>
+doxygen_overloaded_function(template <...> void estimateGlobalRotationTranslation) template <class SrcIterator, class SrcAccessor,
+                                                                                             class DestIterator, class DestAccessor>
 void estimateGlobalRotationTranslation(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
                                        DestIterator d_ul, DestIterator d_lr, DestAccessor d_acc,
                                        Matrix<double>& affineMatrix,
@@ -708,8 +708,8 @@ void estimateGlobalRotationTranslation(SrcIterator s_ul, SrcIterator s_lr, SrcAc
     affineMatrix = rotation_matrix * translation_matrix;
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 estimateGlobalRotationTranslation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                   triple<DestIterator, DestIterator, DestAccessor> dest,
@@ -726,8 +726,8 @@ estimateGlobalRotationTranslation(triple<SrcIterator, SrcIterator, SrcAccessor> 
                                       border);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     estimateGlobalRotationTranslation(MultiArrayView<2, T1, S1> const& src,
                                       MultiArrayView<2, T2, S2> dest,

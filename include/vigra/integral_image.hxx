@@ -44,7 +44,7 @@
 namespace vigra
 {
 
-template<unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
+template <unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
 void
 cumulativeSum(MultiArrayView<N, T1, S1> const& image,
               MultiArrayView<N, T2, S2> out,
@@ -56,9 +56,9 @@ cumulativeSum(MultiArrayView<N, T1, S1> const& image,
 
     MultiCoordinateIterator<N> i(image.shape()),
         end(i.getEndIterator());
-    for (; i != end; ++i)
+    for(; i != end; ++i)
     {
-        if ((*i)[axis] == 0)
+        if((*i)[axis] == 0)
         {
             out[*i] = functor(image[*i]);
         }
@@ -69,7 +69,7 @@ cumulativeSum(MultiArrayView<N, T1, S1> const& image,
     }
 }
 
-template<unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
+template <unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
 void
 integralMultiArrayImpl(MultiArrayView<N, T1, S1> const& array,
                        MultiArrayView<N, T2, S2> intarray,
@@ -80,11 +80,11 @@ integralMultiArrayImpl(MultiArrayView<N, T1, S1> const& array,
 
     cumulativeSum(array, intarray, 0, f);
 
-    for (unsigned axis = 1; axis < N; ++axis)
+    for(unsigned axis = 1; axis < N; ++axis)
         cumulativeSum(intarray, intarray, axis, functor::Identity());
 }
 
-template<class T1, class S1, class T2, class S2, class FUNCTOR>
+template <class T1, class S1, class T2, class S2, class FUNCTOR>
 void
     integralMultiArrayImpl(MultiArrayView<2, T1, S1> const& image,
                            MultiArrayView<2, T2, S2> intimage,
@@ -97,15 +97,15 @@ void
     int height = image.shape(1);
 
     T2 s = T2();
-    for (int x = 0; x < width; ++x)
+    for(int x = 0; x < width; ++x)
     {
         s += functor(image(x, 0));
         intimage(x, 0) = s;
     }
-    for (int y = 1; y < height; ++y)
+    for(int y = 1; y < height; ++y)
     {
         s = T2();
-        for (int x = 0; x < width; ++x)
+        for(int x = 0; x < width; ++x)
         {
             s += functor(image(x, y));
             intimage(x, y) = s + intimage(x, y - 1);
@@ -113,7 +113,7 @@ void
     }
 }
 
-template<class T1, class S1, class T2, class S2, class FUNCTOR>
+template <class T1, class S1, class T2, class S2, class FUNCTOR>
 void
     integralMultiArrayImpl(MultiArrayView<3, T1, S1> const& volume,
                            MultiArrayView<3, T2, S2> intvolume,
@@ -132,10 +132,10 @@ void
     T2 s1 = T2();
     T2 s2 = T2();
 
-    for (int iy = 0; iy < ny; ++iy)
+    for(int iy = 0; iy < ny; ++iy)
     {
         s1 = T2();
-        for (int ix = 0; ix < nx; ++ix)
+        for(int ix = 0; ix < nx; ++ix)
         {
             s1 += functor(volume(ix, iy, 0));
             s2 = s2_temp(ix) + s1;
@@ -144,14 +144,14 @@ void
         }
     }
 
-    for (int iz = 1; iz < nz; ++iz)
+    for(int iz = 1; iz < nz; ++iz)
     {
         s2_temp = T2();
 
-        for (int iy = 0; iy < ny; ++iy)
+        for(int iy = 0; iy < ny; ++iy)
         {
             s1 = T2();
-            for (int ix = 0; ix < nx; ++ix)
+            for(int ix = 0; ix < nx; ++ix)
             {
                 s1 += functor(volume(ix, iy, iz));
                 s2 = s2_temp(ix) + s1;
@@ -162,7 +162,7 @@ void
     }
 }
 
-template<unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
+template <unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
 inline void
 integralMultiArray(MultiArrayView<N, T1, S1> const& array,
                    MultiArrayView<N, T2, S2> intarray,
@@ -171,17 +171,17 @@ integralMultiArray(MultiArrayView<N, T1, S1> const& array,
     integralMultiArrayImpl(array, intarray, f);
 }
 
-template<unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
+template <unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
 inline void
 integralMultiArray(MultiArrayView<N, Multiband<T1>, S1> const& array,
                    MultiArrayView<N, Multiband<T2>, S2> intarray,
                    FUNCTOR const& f)
 {
-    for (int channel = 0; channel < array.shape(N - 1); ++channel)
+    for(int channel = 0; channel < array.shape(N - 1); ++channel)
         integralMultiArrayImpl(array.bindOuter(channel), intarray.bindOuter(channel), f);
 }
 
-template<unsigned int N, class T1, class S1, class T2, class S2>
+template <unsigned int N, class T1, class S1, class T2, class S2>
 inline void
 integralMultiArray(MultiArrayView<N, T1, S1> const& array,
                    MultiArrayView<N, T2, S2> intarray)
@@ -189,7 +189,7 @@ integralMultiArray(MultiArrayView<N, T1, S1> const& array,
     integralMultiArray(array, intarray, functor::Identity());
 }
 
-template<unsigned int N, class T1, class S1, class T2, class S2>
+template <unsigned int N, class T1, class S1, class T2, class S2>
 inline void
 integralMultiArray(MultiArrayView<N, Multiband<T1>, S1> const& array,
                    MultiArrayView<N, Multiband<T2>, S2> intarray)
@@ -197,7 +197,7 @@ integralMultiArray(MultiArrayView<N, Multiband<T1>, S1> const& array,
     integralMultiArray(array, intarray, functor::Identity());
 }
 
-template<unsigned int N, class T1, class S1, class T2, class S2>
+template <unsigned int N, class T1, class S1, class T2, class S2>
 inline void
 integralMultiArraySquared(MultiArrayView<N, T1, S1> const& array,
                           MultiArrayView<N, T2, S2> intarray)
@@ -206,7 +206,7 @@ integralMultiArraySquared(MultiArrayView<N, T1, S1> const& array,
     integralMultiArray(array, intarray, sq(Arg1()));
 }
 
-template<unsigned int N, class T1, class S1, class T2, class S2>
+template <unsigned int N, class T1, class S1, class T2, class S2>
 inline void
 integralMultiArraySquared(MultiArrayView<N, Multiband<T1>, S1> const& array,
                           MultiArrayView<N, Multiband<T2>, S2> intarray)

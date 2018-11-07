@@ -53,7 +53,7 @@ struct echo
     {
         set_pr(os);
     }
-    template<class X>
+    template <class X>
     void operator()(const X& x)
     {
         os.str(empty);
@@ -77,13 +77,13 @@ struct echo_cmp : public echo
         p = r;
         return *this;
     }
-    template<class X>
+    template <class X>
     void operator()(const X& x)
     {
         os.str(empty);
         os << x;
         should(p && *p);
-        if (p && *p)
+        if(p && *p)
         {
             shouldEqual(os.str(), *p);
             ++p;

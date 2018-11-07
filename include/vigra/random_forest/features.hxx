@@ -25,11 +25,11 @@ public:
     ArrayVector<FeatureBase> sub_feats;
     void add(FeatureBase& feat)
     {
-        if (feat.shape(0) != this->shape(0))
+        if(feat.shape(0) != this->shape(0))
             throw std::runtime_error("Wrong Number Of samples");
 
         sub_feats.push_back(feat);
-        for (int ii = 0; ii < feat.shape(1); ++ii)
+        for(int ii = 0; ii < feat.shape(1); ++ii)
             ext2int.push_back(Shp(sub_feats.size() - 1,
                                   ii));
     }
@@ -46,7 +46,7 @@ public:
     }
 };
 
-template<int N, class T, class C>
+template <int N, class T, class C>
 class NeighborFeatures : public FeatureBase
 {
 public:
@@ -67,9 +67,9 @@ public:
     NeighborFeatures(MultiArrayView<N, T, C>& in, MultiArrayView<2, int> const& coos)
         : raw_data(in)
     {
-        for (int ii = 0; ii < coos.shape(0); ++ii)
+        for(int ii = 0; ii < coos.shape(0); ++ii)
             feat_coos.push_back(Shp());
-        for (int jj = 0; jj < coos.shape(1); ++jj)
+        for(int jj = 0; jj < coos.shape(1); ++jj)
             feat_coos.back()[jj] = coos(ii, jj);
     }
 };

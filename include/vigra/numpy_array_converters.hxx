@@ -47,12 +47,12 @@
 namespace vigra
 {
 
-template<class Array>
+template <class Array>
 PyObject*
 returnNumpyArray(Array const& a)
 {
     PyObject* pa = a.pyObject();
-    if (pa == 0)
+    if(pa == 0)
         PyErr_SetString(PyExc_ValueError, "returnNumpyArray(): Conversion to Python failed, array has no data.");
     else
         Py_INCREF(pa);
@@ -61,12 +61,12 @@ returnNumpyArray(Array const& a)
 
 VIGRA_EXPORT std::set<std::string>& exportedArrayKeys();
 
-template<class ArrayType>
+template <class ArrayType>
 struct NumpyArrayConverter
 {
 };
 
-template<unsigned int N, class T, class Stride>
+template <unsigned int N, class T, class Stride>
 struct NumpyArrayConverter<NumpyArray<N, T, Stride>>
 {
     typedef NumpyArray<N, T, Stride> ArrayType;
@@ -87,7 +87,7 @@ struct NumpyArrayConverter<NumpyArray<N, T, Stride>>
     }
 };
 
-template<unsigned int N, class T, class Stride>
+template <unsigned int N, class T, class Stride>
 NumpyArrayConverter<NumpyArray<N, T, Stride>>::NumpyArrayConverter()
 {
     using namespace boost::python;
@@ -95,14 +95,14 @@ NumpyArrayConverter<NumpyArray<N, T, Stride>>::NumpyArrayConverter()
     converter::registration const* reg = converter::registry::query(type_id<ArrayType>());
 
     // register the converters only once
-    if (!reg || !reg->rvalue_chain)
+    if(!reg || !reg->rvalue_chain)
     {
         to_python_converter<ArrayType, NumpyArrayConverter>();
         converter::registry::insert(&convertible, &construct, type_id<ArrayType>());
     }
 }
 
-template<unsigned int N, class T, class Stride>
+template <unsigned int N, class T, class Stride>
 void*
 NumpyArrayConverter<NumpyArray<N, T, Stride>>::convertible(PyObject* obj)
 {
@@ -114,7 +114,7 @@ NumpyArrayConverter<NumpyArray<N, T, Stride>>::convertible(PyObject* obj)
 }
 
 // from Python
-template<unsigned int N, class T, class Stride>
+template <unsigned int N, class T, class Stride>
 void
 NumpyArrayConverter<NumpyArray<N, T, Stride>>::construct(PyObject* obj,
                                                          boost::python::converter::rvalue_from_python_stage1_data* data)
@@ -122,14 +122,14 @@ NumpyArrayConverter<NumpyArray<N, T, Stride>>::construct(PyObject* obj,
     void* const storage =
         ((boost::python::converter::rvalue_from_python_storage<ArrayType>*)data)->storage.bytes;
 
-    ArrayType* array = new (storage) ArrayType();
-    if (obj != Py_None)
+    ArrayType* array = new(storage) ArrayType();
+    if(obj != Py_None)
         array->makeReferenceUnchecked(obj);
 
     data->convertible = storage;
 }
 
-template<unsigned int N, class T, class Stride>
+template <unsigned int N, class T, class Stride>
 struct NumpyArrayConverter<MultiArrayView<N, T, Stride>>
     : public NumpyArrayConverter<NumpyArray<N, T, Stride>>
 {
@@ -144,7 +144,7 @@ struct NumpyArrayConverter<MultiArrayView<N, T, Stride>>
     }
 };
 
-template<class Iter, class End>
+template <class Iter, class End>
 struct RegisterNumpyArrayConverters
 {
     static void exec()
@@ -155,7 +155,7 @@ struct RegisterNumpyArrayConverters
     }
 };
 
-template<class End>
+template <class End>
 struct RegisterNumpyArrayConverters<End, End>
 {
     static void exec()
@@ -163,14 +163,14 @@ struct RegisterNumpyArrayConverters<End, End>
     }
 };
 
-template<class Typelist>
+template <class Typelist>
 void registerNumpyArrayConverters(Typelist)
 {
     RegisterNumpyArrayConverters<typename boost::mpl::begin<Typelist>::type,
                                  typename boost::mpl::end<Typelist>::type>::exec();
 }
 
-template<class FN>
+template <class FN>
 FN
 registerConverters(FN f)
 {
@@ -181,28 +181,28 @@ registerConverters(FN f)
 namespace detail
 {
 
-template<class T>
+template <class T>
 struct TypeName;
 
-template<class T>
+template <class T>
 struct TypeName<Singleband<T>>
     : public TypeName<T>
 {
 };
 
-template<class T>
+template <class T>
 struct TypeName<Multiband<T>>
     : public TypeName<T>
 {
 };
 
-template<class T, int N>
+template <class T, int N>
 struct TypeName<TinyVector<T, N>>
     : public TypeName<T>
 {
 };
 
-template<>
+template <>
 struct TypeName<void>
 {
     static std::string name()
@@ -215,7 +215,7 @@ struct TypeName<void>
     }
 };
 
-template<>
+template <>
 struct TypeName<bool>
 {
     static std::string name()
@@ -229,7 +229,7 @@ struct TypeName<bool>
 };
 
 #define VIGRA_SIGNED_INT_NAME(type)                                       \
-    template<>                                                            \
+    template <>                                                           \
     struct TypeName<type>                                                 \
     {                                                                     \
         static std::string name()                                         \
@@ -249,7 +249,7 @@ VIGRA_SIGNED_INT_NAME(long)
 VIGRA_SIGNED_INT_NAME(long long)
 
 #define VIGRA_UNSIGNED_INT_NAME(type)                                      \
-    template<>                                                             \
+    template <>                                                            \
     struct TypeName<type>                                                  \
     {                                                                      \
         static std::string name()                                          \
@@ -269,7 +269,7 @@ VIGRA_UNSIGNED_INT_NAME(unsigned long)
 VIGRA_UNSIGNED_INT_NAME(unsigned long long)
 
 #define VIGRA_FLOAT_NAME(type)                                              \
-    template<>                                                              \
+    template <>                                                             \
     struct TypeName<type>                                                   \
     {                                                                       \
         static std::string name()                                           \
@@ -290,7 +290,7 @@ VIGRA_FLOAT_NAME(long double)
 #undef VIGRA_UNSIGNED_INT_NAME
 #undef VIGRA_FLOAT_NAME
 
-template<class T = void>
+template <class T = void>
 struct ExportDoc
 {
     static char const* exec(char const*)
@@ -299,7 +299,7 @@ struct ExportDoc
     }
 };
 
-template<>
+template <>
 struct ExportDoc<void>
 {
     static char const* exec(char const* h)
@@ -323,7 +323,7 @@ namespace python
 //       bit more complicated.
 
 #define VIGRA_PYTHON_MULTITYPE_FUNCTOR(functor_name, function)                                                     \
-    template<class T>                                                                                              \
+    template <class T>                                                                                             \
     struct functor_name##Impl                                                                                      \
     {                                                                                                              \
         static void def(const char* pythonName)                                                                    \
@@ -332,7 +332,7 @@ namespace python
             boost::python::def(pythonName, vigra::registerConverters(&function<T>));                               \
         }                                                                                                          \
                                                                                                                    \
-        template<class Args>                                                                                       \
+        template <class Args>                                                                                      \
         static void def(const char* pythonName, Args const& args)                                                  \
         {                                                                                                          \
             boost::python::docstring_options doc(false);                                                           \
@@ -341,17 +341,17 @@ namespace python
                                                                                                                    \
         static void def(const char* pythonName, char const* help)                                                  \
         {                                                                                                          \
-            if (help)                                                                                              \
+            if(help)                                                                                               \
                 boost::python::def(pythonName,                                                                     \
                                    vigra::registerConverters(&function<T>), help);                                 \
             else                                                                                                   \
                 def(pythonName);                                                                                   \
         }                                                                                                          \
                                                                                                                    \
-        template<class Args>                                                                                       \
+        template <class Args>                                                                                      \
         static void def(const char* pythonName, Args const& args, char const* help)                                \
         {                                                                                                          \
-            if (help)                                                                                              \
+            if(help)                                                                                               \
                 boost::python::def(pythonName,                                                                     \
                                    vigra::registerConverters(&function<T>), args, help);                           \
             else                                                                                                   \
@@ -359,36 +359,36 @@ namespace python
         }                                                                                                          \
     };                                                                                                             \
                                                                                                                    \
-    template<>                                                                                                     \
+    template <>                                                                                                    \
     struct functor_name##Impl<void>                                                                                \
     {                                                                                                              \
         static void def(const char*)                                                                               \
         {                                                                                                          \
         }                                                                                                          \
                                                                                                                    \
-        template<class A1>                                                                                         \
+        template <class A1>                                                                                        \
         static void def(const char*, A1 const&)                                                                    \
         {                                                                                                          \
         }                                                                                                          \
                                                                                                                    \
-        template<class A1, class A2>                                                                               \
+        template <class A1, class A2>                                                                              \
         static void def(const char*, A1 const&, A2 const&)                                                         \
         {                                                                                                          \
         }                                                                                                          \
     };                                                                                                             \
                                                                                                                    \
-    template<class T1,                                                                                             \
-             class T2 = void,                                                                                      \
-             class T3 = void,                                                                                      \
-             class T4 = void,                                                                                      \
-             class T5 = void,                                                                                      \
-             class T6 = void,                                                                                      \
-             class T7 = void,                                                                                      \
-             class T8 = void,                                                                                      \
-             class T9 = void,                                                                                      \
-             class T10 = void,                                                                                     \
-             class T11 = void,                                                                                     \
-             class T12 = void>                                                                                     \
+    template <class T1,                                                                                            \
+              class T2 = void,                                                                                     \
+              class T3 = void,                                                                                     \
+              class T4 = void,                                                                                     \
+              class T5 = void,                                                                                     \
+              class T6 = void,                                                                                     \
+              class T7 = void,                                                                                     \
+              class T8 = void,                                                                                     \
+              class T9 = void,                                                                                     \
+              class T10 = void,                                                                                    \
+              class T11 = void,                                                                                    \
+              class T12 = void>                                                                                    \
     struct functor_name                                                                                            \
         : public boost::python::PythonMultidefFunctor                                                              \
     {                                                                                                              \
@@ -428,7 +428,7 @@ namespace python
         void def(const char* pythonName) const                                                                     \
         {                                                                                                          \
             boost::python::docstring_options doc(false, false, false);                                             \
-            if (install_fallback_)                                                                                 \
+            if(install_fallback_)                                                                                  \
                 Message::def(pythonName);                                                                          \
             F1 ::def(pythonName);                                                                                  \
             F2 ::def(pythonName);                                                                                  \
@@ -444,11 +444,11 @@ namespace python
             F12::def(pythonName);                                                                                  \
         }                                                                                                          \
                                                                                                                    \
-        template<class Args>                                                                                       \
+        template <class Args>                                                                                      \
         void def(const char* pythonName, Args const& args) const                                                   \
         {                                                                                                          \
             boost::python::docstring_options doc(false, false, false);                                             \
-            if (install_fallback_)                                                                                 \
+            if(install_fallback_)                                                                                  \
                 Message::def(pythonName);                                                                          \
             F1 ::def(pythonName, args);                                                                            \
             F2 ::def(pythonName, args);                                                                            \
@@ -466,7 +466,7 @@ namespace python
                                                                                                                    \
         void def(const char* pythonName, const char* help) const                                                   \
         {                                                                                                          \
-            if (install_fallback_)                                                                                 \
+            if(install_fallback_)                                                                                  \
                 Message::def(pythonName);                                                                          \
             boost::python::docstring_options doc(true, show_python_signature_, false);                             \
             F1 ::def(pythonName, detail::ExportDoc<T2>::exec(help));                                               \
@@ -483,10 +483,10 @@ namespace python
             F12::def(pythonName, detail::ExportDoc<>::exec(help));                                                 \
         }                                                                                                          \
                                                                                                                    \
-        template<class Args>                                                                                       \
+        template <class Args>                                                                                      \
         void def(const char* pythonName, Args const& args, char const* help) const                                 \
         {                                                                                                          \
-            if (install_fallback_)                                                                                 \
+            if(install_fallback_)                                                                                  \
                 Message::def(pythonName);                                                                          \
             boost::python::docstring_options doc(true, show_python_signature_, false);                             \
             F1 ::def(pythonName, args, detail::ExportDoc<T2>::exec(help));                                         \
@@ -505,7 +505,7 @@ namespace python
     };
 
 #define VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(functor_name, function)                                                \
-    template<class T, int FROM, int TO>                                                                            \
+    template <class T, int FROM, int TO>                                                                           \
     struct functor_name##Impl                                                                                      \
     {                                                                                                              \
         typedef functor_name##Impl type;                                                                           \
@@ -516,7 +516,7 @@ namespace python
             functor_name##Impl<T, FROM + 1, TO>::def(pythonName);                                                  \
         }                                                                                                          \
                                                                                                                    \
-        template<class Args>                                                                                       \
+        template <class Args>                                                                                      \
         static void def(const char* pythonName, Args const& args)                                                  \
         {                                                                                                          \
             functor_name##Impl<T, FROM, FROM>::def(pythonName, args);                                              \
@@ -529,7 +529,7 @@ namespace python
             functor_name##Impl<T, FROM + 1, TO>::def(pythonName, help);                                            \
         }                                                                                                          \
                                                                                                                    \
-        template<class Args>                                                                                       \
+        template <class Args>                                                                                      \
         static void def(const char* pythonName, Args const& args, char const* help)                                \
         {                                                                                                          \
             functor_name##Impl<T, FROM, FROM>::def(pythonName, args);                                              \
@@ -537,7 +537,7 @@ namespace python
         }                                                                                                          \
     };                                                                                                             \
                                                                                                                    \
-    template<class T, int N>                                                                                       \
+    template <class T, int N>                                                                                      \
     struct functor_name##Impl<T, N, N>                                                                             \
     {                                                                                                              \
         typedef functor_name##Impl type;                                                                           \
@@ -548,7 +548,7 @@ namespace python
             boost::python::def(pythonName, vigra::registerConverters(&function<T, N>));                            \
         }                                                                                                          \
                                                                                                                    \
-        template<class Args>                                                                                       \
+        template <class Args>                                                                                      \
         static void def(const char* pythonName, Args const& args)                                                  \
         {                                                                                                          \
             boost::python::docstring_options doc(false);                                                           \
@@ -557,17 +557,17 @@ namespace python
                                                                                                                    \
         static void def(const char* pythonName, char const* help)                                                  \
         {                                                                                                          \
-            if (help)                                                                                              \
+            if(help)                                                                                               \
                 boost::python::def(pythonName,                                                                     \
                                    vigra::registerConverters(&function<T, N>), help);                              \
             else                                                                                                   \
                 def(pythonName);                                                                                   \
         }                                                                                                          \
                                                                                                                    \
-        template<class Args>                                                                                       \
+        template <class Args>                                                                                      \
         static void def(const char* pythonName, Args const& args, char const* help)                                \
         {                                                                                                          \
-            if (help)                                                                                              \
+            if(help)                                                                                               \
                 boost::python::def(pythonName,                                                                     \
                                    vigra::registerConverters(&function<T, N>), args, help);                        \
             else                                                                                                   \
@@ -575,55 +575,55 @@ namespace python
         }                                                                                                          \
     };                                                                                                             \
                                                                                                                    \
-    template<int FROM, int TO>                                                                                     \
+    template <int FROM, int TO>                                                                                    \
     struct functor_name##Impl<void, FROM, TO>                                                                      \
     {                                                                                                              \
         static void def(const char*)                                                                               \
         {                                                                                                          \
         }                                                                                                          \
                                                                                                                    \
-        template<class A1>                                                                                         \
+        template <class A1>                                                                                        \
         static void def(const char*, A1 const&)                                                                    \
         {                                                                                                          \
         }                                                                                                          \
                                                                                                                    \
-        template<class A1, class A2>                                                                               \
+        template <class A1, class A2>                                                                              \
         static void def(const char*, A1 const&, A2 const&)                                                         \
         {                                                                                                          \
         }                                                                                                          \
     };                                                                                                             \
                                                                                                                    \
-    template<int N>                                                                                                \
+    template <int N>                                                                                               \
     struct functor_name##Impl<void, N, N>                                                                          \
     {                                                                                                              \
         static void def(const char*)                                                                               \
         {                                                                                                          \
         }                                                                                                          \
                                                                                                                    \
-        template<class A1>                                                                                         \
+        template <class A1>                                                                                        \
         static void def(const char*, A1 const&)                                                                    \
         {                                                                                                          \
         }                                                                                                          \
                                                                                                                    \
-        template<class A1, class A2>                                                                               \
+        template <class A1, class A2>                                                                              \
         static void def(const char*, A1 const&, A2 const&)                                                         \
         {                                                                                                          \
         }                                                                                                          \
     };                                                                                                             \
                                                                                                                    \
-    template<int FROM, int TO,                                                                                     \
-             class T1,                                                                                             \
-             class T2 = void,                                                                                      \
-             class T3 = void,                                                                                      \
-             class T4 = void,                                                                                      \
-             class T5 = void,                                                                                      \
-             class T6 = void,                                                                                      \
-             class T7 = void,                                                                                      \
-             class T8 = void,                                                                                      \
-             class T9 = void,                                                                                      \
-             class T10 = void,                                                                                     \
-             class T11 = void,                                                                                     \
-             class T12 = void>                                                                                     \
+    template <int FROM, int TO,                                                                                    \
+              class T1,                                                                                            \
+              class T2 = void,                                                                                     \
+              class T3 = void,                                                                                     \
+              class T4 = void,                                                                                     \
+              class T5 = void,                                                                                     \
+              class T6 = void,                                                                                     \
+              class T7 = void,                                                                                     \
+              class T8 = void,                                                                                     \
+              class T9 = void,                                                                                     \
+              class T10 = void,                                                                                    \
+              class T11 = void,                                                                                    \
+              class T12 = void>                                                                                    \
     struct functor_name                                                                                            \
         : public boost::python::PythonMultidefFunctor                                                              \
     {                                                                                                              \
@@ -664,7 +664,7 @@ namespace python
         void def(const char* pythonName) const                                                                     \
         {                                                                                                          \
             boost::python::docstring_options doc(false, false, false);                                             \
-            if (install_fallback_)                                                                                 \
+            if(install_fallback_)                                                                                  \
                 Message::def(pythonName);                                                                          \
             F1 ::def(pythonName);                                                                                  \
             F2 ::def(pythonName);                                                                                  \
@@ -680,11 +680,11 @@ namespace python
             F12::def(pythonName);                                                                                  \
         }                                                                                                          \
                                                                                                                    \
-        template<class Args>                                                                                       \
+        template <class Args>                                                                                      \
         void def(const char* pythonName, Args const& args) const                                                   \
         {                                                                                                          \
             boost::python::docstring_options doc(false, false, false);                                             \
-            if (install_fallback_)                                                                                 \
+            if(install_fallback_)                                                                                  \
                 Message::def(pythonName);                                                                          \
             F1 ::def(pythonName, args);                                                                            \
             F2 ::def(pythonName, args);                                                                            \
@@ -702,7 +702,7 @@ namespace python
                                                                                                                    \
         void def(const char* pythonName, const char* help) const                                                   \
         {                                                                                                          \
-            if (install_fallback_)                                                                                 \
+            if(install_fallback_)                                                                                  \
                 Message::def(pythonName);                                                                          \
             boost::python::docstring_options doc(true, show_python_signature_, false);                             \
             F1 ::def(pythonName, detail::ExportDoc<T2>::exec(help));                                               \
@@ -719,10 +719,10 @@ namespace python
             F12::def(pythonName, detail::ExportDoc<>::exec(help));                                                 \
         }                                                                                                          \
                                                                                                                    \
-        template<class Args>                                                                                       \
+        template <class Args>                                                                                      \
         void def(const char* pythonName, Args const& args, char const* help) const                                 \
         {                                                                                                          \
-            if (install_fallback_)                                                                                 \
+            if(install_fallback_)                                                                                  \
                 Message::def(pythonName);                                                                          \
             boost::python::docstring_options doc(true, show_python_signature_, false);                             \
             F1 ::def(pythonName, args, detail::ExportDoc<T2>::exec(help));                                         \
@@ -744,18 +744,18 @@ struct PythonMultidefFunctor
 {
 };
 
-template<class T1,
-         class T2 = void,
-         class T3 = void,
-         class T4 = void,
-         class T5 = void,
-         class T6 = void,
-         class T7 = void,
-         class T8 = void,
-         class T9 = void,
-         class T10 = void,
-         class T11 = void,
-         class T12 = void>
+template <class T1,
+          class T2 = void,
+          class T3 = void,
+          class T4 = void,
+          class T5 = void,
+          class T6 = void,
+          class T7 = void,
+          class T8 = void,
+          class T9 = void,
+          class T10 = void,
+          class T11 = void,
+          class T12 = void>
 struct ArgumentMismatchMessage
 {
     static std::string message()
@@ -767,27 +767,27 @@ struct ArgumentMismatchMessage
             "   The function currently supports the following types:\n\n     ");
         res += vigra::detail::TypeName<T1>::sized_name();
 
-        if (vigra::detail::TypeName<T2>::sized_name() != "void")
+        if(vigra::detail::TypeName<T2>::sized_name() != "void")
             res += ", " + vigra::detail::TypeName<T2>::sized_name();
-        if (vigra::detail::TypeName<T3>::sized_name() != "void")
+        if(vigra::detail::TypeName<T3>::sized_name() != "void")
             res += ", " + vigra::detail::TypeName<T3>::sized_name();
-        if (vigra::detail::TypeName<T4>::sized_name() != "void")
+        if(vigra::detail::TypeName<T4>::sized_name() != "void")
             res += ", " + vigra::detail::TypeName<T4>::sized_name();
-        if (vigra::detail::TypeName<T5>::sized_name() != "void")
+        if(vigra::detail::TypeName<T5>::sized_name() != "void")
             res += ", " + vigra::detail::TypeName<T5>::sized_name();
-        if (vigra::detail::TypeName<T6>::sized_name() != "void")
+        if(vigra::detail::TypeName<T6>::sized_name() != "void")
             res += ", " + vigra::detail::TypeName<T6>::sized_name();
-        if (vigra::detail::TypeName<T7>::sized_name() != "void")
+        if(vigra::detail::TypeName<T7>::sized_name() != "void")
             res += ", " + vigra::detail::TypeName<T7>::sized_name();
-        if (vigra::detail::TypeName<T8>::sized_name() != "void")
+        if(vigra::detail::TypeName<T8>::sized_name() != "void")
             res += ", " + vigra::detail::TypeName<T8>::sized_name();
-        if (vigra::detail::TypeName<T9>::sized_name() != "void")
+        if(vigra::detail::TypeName<T9>::sized_name() != "void")
             res += ", " + vigra::detail::TypeName<T9>::sized_name();
-        if (vigra::detail::TypeName<T10>::sized_name() != "void")
+        if(vigra::detail::TypeName<T10>::sized_name() != "void")
             res += ", " + vigra::detail::TypeName<T10>::sized_name();
-        if (vigra::detail::TypeName<T11>::sized_name() != "void")
+        if(vigra::detail::TypeName<T11>::sized_name() != "void")
             res += ", " + vigra::detail::TypeName<T11>::sized_name();
-        if (vigra::detail::TypeName<T12>::sized_name() != "void")
+        if(vigra::detail::TypeName<T12>::sized_name() != "void")
             res += ", " + vigra::detail::TypeName<T12>::sized_name();
 
         res +=
@@ -820,7 +820,7 @@ struct ArgumentMismatchMessage
 
 // in the sequel, the doc string is only registered with the last
 // overload, so that it shows up only once
-template<class Functor>
+template <class Functor>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
 multidef(char const* python_name, Functor const& f)
@@ -828,7 +828,7 @@ multidef(char const* python_name, Functor const& f)
     f.def(python_name);
 }
 
-template<class Functor, class Args>
+template <class Functor, class Args>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
 multidef(char const* python_name, Functor const& f, Args const& args)
@@ -836,7 +836,7 @@ multidef(char const* python_name, Functor const& f, Args const& args)
     f.def(python_name, args);
 }
 
-template<class Functor>
+template <class Functor>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
 multidef(char const* python_name, Functor const& f, const char* help)
@@ -844,7 +844,7 @@ multidef(char const* python_name, Functor const& f, const char* help)
     f.def(python_name, help);
 }
 
-template<class Functor, class Args>
+template <class Functor, class Args>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
 multidef(char const* python_name, Functor const& f, Args const& args, const char* help)
@@ -853,7 +853,7 @@ multidef(char const* python_name, Functor const& f, Args const& args, const char
 }
 
 // overload def() such that it advises to use multidef() instead
-template<class Functor>
+template <class Functor>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
 def(char const*, Functor const&)
@@ -862,7 +862,7 @@ def(char const*, Functor const&)
                   "def(): use multidef() to export multiple overloads.");
 }
 
-template<class Functor, class Args>
+template <class Functor, class Args>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
 def(char const*, Functor const&, Args const&)
@@ -871,7 +871,7 @@ def(char const*, Functor const&, Args const&)
                   "def(): use multidef() to export multiple overloads.");
 }
 
-template<class Functor>
+template <class Functor>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
 def(char const*, Functor const&, const char*)
@@ -880,7 +880,7 @@ def(char const*, Functor const&, const char*)
                   "def(): use multidef() to export multiple overloads.");
 }
 
-template<class Functor, class Args>
+template <class Functor, class Args>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
 def(char const*, Functor const&, Args const&, const char*)

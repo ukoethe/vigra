@@ -31,7 +31,7 @@ protected:
     bool is_weighted_;
 
 public:
-    template<class T>
+    template <class T>
     void set_external_parameters(ProblemSpec<T> const& prob, int tree_count = 0, bool is_weighted = false)
     {
         ext_param_ = prob;
@@ -46,10 +46,10 @@ public:
          * \param prob       Total probability array
          * \param totalCt    sum of probability array. 
          */
-    template<class WeightIter, class T, class C>
+    template <class WeightIter, class T, class C>
     bool after_prediction(WeightIter weightIter, int k, MultiArrayView<2, T, C> const& prob, double totalCt)
 #else
-    template<class WeightIter, class T, class C>
+    template <class WeightIter, class T, class C>
     bool after_prediction(WeightIter, int /* k */, MultiArrayView<2, T, C> const& /* prob */, double /* totalCt */)
     {
         return false;
@@ -77,22 +77,22 @@ public:
     {
     }
 
-    template<class T>
+    template <class T>
     void set_external_parameters(ProblemSpec<T> const& prob, int tree_count = 0, bool is_weighted = false)
     {
         max_tree_ = ceil(max_tree_p * tree_count);
         SB::set_external_parameters(prob, tree_count, is_weighted);
     }
 
-    template<class WeightIter, class T, class C>
+    template <class WeightIter, class T, class C>
     bool after_prediction(WeightIter, int k, MultiArrayView<2, T, C> const& /* prob */, double /* totalCt */)
     {
-        if (k == SB::tree_count_ - 1)
+        if(k == SB::tree_count_ - 1)
         {
             depths.push_back(double(k + 1) / double(SB::tree_count_));
             return false;
         }
-        if (k < max_tree_)
+        if(k < max_tree_)
             return false;
         depths.push_back(double(k + 1) / double(SB::tree_count_));
         return true;
@@ -119,19 +119,19 @@ public:
     {
     }
 
-    template<class WeightIter, class T, class C>
+    template <class WeightIter, class T, class C>
     bool after_prediction(WeightIter, int k, MultiArrayView<2, T, C> const& prob, double /* totalCt */)
     {
-        if (k == SB::tree_count_ - 1)
+        if(k == SB::tree_count_ - 1)
         {
             depths.push_back(double(k + 1) / double(SB::tree_count_));
             return false;
         }
 
 
-        if (SB::is_weighted_)
+        if(SB::is_weighted_)
         {
-            if (prob[argMax(prob)] > proportion_ * SB::ext_param_.actual_msample_ * SB::tree_count_)
+            if(prob[argMax(prob)] > proportion_ * SB::ext_param_.actual_msample_ * SB::tree_count_)
             {
                 depths.push_back(double(k + 1) / double(SB::tree_count_));
                 return true;
@@ -139,7 +139,7 @@ public:
         }
         else
         {
-            if (prob[argMax(prob)] > proportion_ * SB::tree_count_)
+            if(prob[argMax(prob)] > proportion_ * SB::tree_count_)
             {
                 depths.push_back(double(k + 1) / double(SB::tree_count_));
                 return true;
@@ -172,22 +172,22 @@ public:
     {
     }
 
-    template<class T>
+    template <class T>
     void set_external_parameters(ProblemSpec<T> const& prob, int tree_count = 0, bool is_weighted = false)
     {
         last_.reshape(MultiArrayShape<2>::type(1, prob.class_count_), 0);
         cur_.reshape(MultiArrayShape<2>::type(1, prob.class_count_), 0);
         SB::set_external_parameters(prob, tree_count, is_weighted);
     }
-    template<class WeightIter, class T, class C>
+    template <class WeightIter, class T, class C>
     bool after_prediction(WeightIter, int k, MultiArrayView<2, T, C> const& prob, double)
     {
-        if (k == SB::tree_count_ - 1)
+        if(k == SB::tree_count_ - 1)
         {
             depths.push_back(double(k + 1) / double(SB::tree_count_));
             return false;
         }
-        if (k <= num_)
+        if(k <= num_)
         {
             last_ = prob;
             last_ /= last_.norm(1);
@@ -199,7 +199,7 @@ public:
             cur_ /= cur_.norm(1);
             last_ -= cur_;
             double nrm = last_.norm();
-            if (nrm < thresh_)
+            if(nrm < thresh_)
             {
                 depths.push_back(double(k + 1) / double(SB::tree_count_));
                 return true;
@@ -234,10 +234,10 @@ public:
     {
     }
 
-    template<class WeightIter, class T, class C>
+    template <class WeightIter, class T, class C>
     bool after_prediction(WeightIter, int k, MultiArrayView<2, T, C> prob, double /* totalCt */)
     {
-        if (k == SB::tree_count_ - 1)
+        if(k == SB::tree_count_ - 1)
         {
             depths.push_back(double(k + 1) / double(SB::tree_count_));
             return false;
@@ -248,9 +248,9 @@ public:
         double b = prob[argMax(prob)];
         prob[index] = a;
         double margin = a - b;
-        if (SB::is_weighted_)
+        if(SB::is_weighted_)
         {
-            if (margin > proportion_ * SB::ext_param_.actual_msample_ * SB::tree_count_)
+            if(margin > proportion_ * SB::ext_param_.actual_msample_ * SB::tree_count_)
             {
                 depths.push_back(double(k + 1) / double(SB::tree_count_));
                 return true;
@@ -258,7 +258,7 @@ public:
         }
         else
         {
-            if (prob[argMax(prob)] > proportion_ * SB::tree_count_)
+            if(prob[argMax(prob)] > proportion_ * SB::tree_count_)
             {
                 depths.push_back(double(k + 1) / double(SB::tree_count_));
                 return true;
@@ -304,16 +304,16 @@ public:
         return n_choose_k(N, k) * std::pow(p, k) * std::pow(1 - p, N - k);
     }
 
-    template<class WeightIter, class T, class C>
+    template <class WeightIter, class T, class C>
     bool after_prediction(WeightIter, int k,
                           MultiArrayView<2, T, C> const& prob, double)
     {
-        if (k == SB::tree_count_ - 1)
+        if(k == SB::tree_count_ - 1)
         {
             depths.push_back(double(k + 1) / double(SB::tree_count_));
             return false;
         }
-        if (k < 10)
+        if(k < 10)
         {
             return false;
         }
@@ -326,22 +326,22 @@ public:
         double cum_val = 0;
         int c = 0;
         //      std::cerr << "prob: " << p_a << std::endl;
-        if (n_a <= 0)
+        if(n_a <= 0)
             n_a = 0;
-        if (n_b <= 0)
+        if(n_b <= 0)
             n_b = 0;
-        for (int ii = 0; ii <= n_b + n_a; ++ii)
+        for(int ii = 0; ii <= n_b + n_a; ++ii)
         {
             //            std::cerr << "nb +ba " << n_b + n_a << " " << ii <<std::endl;
             cum_val += binomial(n_b + n_a, ii, p_a);
-            if (cum_val >= 1 - alpha_)
+            if(cum_val >= 1 - alpha_)
             {
                 c = ii;
                 break;
             }
         }
         //        std::cerr << c << " " << n_a << " " << n_b << " " << p_a <<   alpha_ << std::endl;
-        if (c < n_a)
+        if(c < n_a)
         {
             depths.push_back(double(k + 1) / double(SB::tree_count_));
             return true;
@@ -387,15 +387,15 @@ public:
         return n_choose_k(N, k) * std::pow(p, k) * std::pow(1 - p, N - k);
     }
 
-    template<class WeightIter, class T, class C>
+    template <class WeightIter, class T, class C>
     bool after_prediction(WeightIter, int k, MultiArrayView<2, T, C> prob, double)
     {
-        if (k == SB::tree_count_ - 1)
+        if(k == SB::tree_count_ - 1)
         {
             depths.push_back(double(k + 1) / double(SB::tree_count_));
             return false;
         }
-        if (k <= 10)
+        if(k <= 10)
         {
             return false;
         }
@@ -404,15 +404,15 @@ public:
         int n_b = prob[(index + 1) % 2];
         int n_needed = ceil(double(SB::tree_count_) / 2.0) - n_a;
         int n_tilde = SB::tree_count_ - (n_a + n_b);
-        if (n_tilde <= 0)
+        if(n_tilde <= 0)
             n_tilde = 0;
-        if (n_needed <= 0)
+        if(n_needed <= 0)
             n_needed = 0;
         double p = 0;
-        for (int ii = n_needed; ii < n_tilde; ++ii)
+        for(int ii = n_needed; ii < n_tilde; ++ii)
             p += binomial(n_tilde, ii, 0.5);
 
-        if (p >= 1 - alpha_)
+        if(p >= 1 - alpha_)
         {
             depths.push_back(double(k + 1) / double(SB::tree_count_));
             return true;
@@ -448,22 +448,22 @@ public:
     {
     }
 
-    template<class T>
+    template <class T>
     void set_external_parameters(ProblemSpec<T> const&,
                                  int /*tree_count*/ = 0, bool /* is_weighted_ */ = false)
     {
     }
 
-    template<class Region>
+    template <class Region>
     bool operator()(Region& region)
     {
-        if (region.depth() > max_depth_)
+        if(region.depth() > max_depth_)
             throw std::runtime_error("violation in the stopping criterion");
 
         return (region.depth() >= max_depth_) || (region.size() < min_size_);
     }
 
-    template<class WeightIter, class T, class C>
+    template <class WeightIter, class T, class C>
     bool after_prediction(WeightIter, int /* k */,
                           MultiArrayView<2, T, C> const& /* prob */, double /* totalCt */)
     {

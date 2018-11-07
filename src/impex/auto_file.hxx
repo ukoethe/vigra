@@ -52,7 +52,7 @@ struct auto_file
         : m_file(0)
     {
         m_file = VIGRA_CSTD::fopen(name, mode);
-        if (!m_file)
+        if(!m_file)
         {
             std::string msg("Unable to open file '");
             msg += name;
@@ -63,7 +63,7 @@ struct auto_file
 
     ~auto_file()
     {
-        if (m_file)
+        if(m_file)
             VIGRA_CSTD::fclose(m_file);
     }
 

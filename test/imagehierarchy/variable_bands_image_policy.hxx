@@ -8,7 +8,7 @@
 *  die moeglichen sind: ImagePolicy<GrayImage>, RGBImagePolicy<RGBImage>,
 *  Vector2ImagePolicy<Vector2Image>, Vector3ImagePolicy<Vector3Image>, Vector4ImagePolicy<Vector4Image>.
 */
-template<class IMAGEPOLICY>
+template <class IMAGEPOLICY>
 class VariableBandsImagePolicy
 {
 

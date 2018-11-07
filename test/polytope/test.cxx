@@ -11,7 +11,7 @@
 namespace vigra
 {
 
-template<class Iterable, class T>
+template <class Iterable, class T>
 unsigned int
 count(const Iterable& vec, const T& value)
 {
@@ -194,7 +194,7 @@ struct FloatStarPolytopeTest
             Vector2(0., 1.),
             Vector2(0.25, 0.25));
         MultiArray<2, unsigned int> label_image(vigra::Shape2(5, 5));
-        for (auto it = label_image.begin(); it != label_image.end(); it++)
+        for(auto it = label_image.begin(); it != label_image.end(); it++)
         {
             *it = 0;
         }
@@ -667,7 +667,7 @@ struct FloatConvexPolytopeTest
         poly.addExtremeVertex(Vector2(0., -1.));
         shouldEqualTolerance(poly.nVolume(), 2., eps_);
         shouldEqualTolerance(poly.nSurface(), 4. * std::sqrt(2.), eps_);
-        for (int n = 0; n < N; n++)
+        for(int n = 0; n < N; n++)
         {
             Vector2 vec(
                 std::cos(2 * M_PI * n / N),
@@ -680,16 +680,16 @@ struct FloatConvexPolytopeTest
         shouldEqualTolerance(poly.nSurface(), sur_tgt, eps_);
         const double vol_tgt = 1. * N * std::sin(M_PI / N) * std::cos(M_PI / N);
         shouldEqualTolerance(poly.nVolume(), vol_tgt, eps_);
-        for (int n = 0; n < 100; n++)
+        for(int n = 0; n < 100; n++)
         {
             Vector2 vec(
                 (2 * rand() - 1) / static_cast<double>(RAND_MAX),
                 (2 * rand() - 1) / static_cast<double>(RAND_MAX));
-            if (vec.magnitude() > 1)
+            if(vec.magnitude() > 1)
             {
                 shouldEqual(poly.contains(vec), false);
             }
-            else if (vec.magnitude() < std::cos(M_PI / N))
+            else if(vec.magnitude() < std::cos(M_PI / N))
             {
                 shouldEqual(poly.contains(vec), true);
             }
@@ -704,7 +704,7 @@ struct FloatConvexPolytopeTest
             Vector3(-1., 0., 1.),
             Vector3(0., 1., 1.),
             Vector3(0., 0., 0.));
-        for (int n = 0; n < N; n++)
+        for(int n = 0; n < N; n++)
         {
             Vector3 vec(
                 std::cos(2 * M_PI * n / N),
@@ -717,18 +717,18 @@ struct FloatConvexPolytopeTest
         shouldEqualTolerance(poly.nSurface(), sur_tgt, eps_ * N);
         const double vol_tgt = N * std::sin(M_PI / N) * std::cos(M_PI / N) / 3.;
         shouldEqualTolerance(poly.nVolume(), vol_tgt, eps_ * N);
-        for (int n = 0; n < 100; n++)
+        for(int n = 0; n < 100; n++)
         {
             Vector3 vec(
                 (2 * rand() - 1) / static_cast<double>(RAND_MAX),
                 (2 * rand() - 1) / static_cast<double>(RAND_MAX),
                 rand() / static_cast<double>(RAND_MAX));
             double dist = std::sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
-            if (dist > vec[2])
+            if(dist > vec[2])
             {
                 shouldEqual(poly.contains(vec), false);
             }
-            else if (dist < (vec[2] * std::cos(M_PI / N)))
+            else if(dist < (vec[2] * std::cos(M_PI / N)))
             {
                 shouldEqual(poly.contains(vec), true);
             }
@@ -746,12 +746,12 @@ struct FloatConvexPolytopeTest
         poly.addExtremeVertex(Vector2(0., -1.));
         shouldEqual(abs(poly.nVolume() - 2.) < eps_, true);
         shouldEqual(abs(poly.nSurface() - 4. * sqrt(2.)) < eps, true);
-        for (int n = 0; n < N; n++)
+        for(int n = 0; n < N; n++)
         {
             Vector2 vec(
                 (2 * rand() - 1) / static_cast<double>(RAND_MAX),
                 (2 * rand() - 1) / static_cast<double>(RAND_MAX));
-            if (vec.magnitude() <= 1.)
+            if(vec.magnitude() <= 1.)
             {
                 poly.addExtremeVertex(vec);
                 shouldEqual(poly.closed(), true);
@@ -763,12 +763,12 @@ struct FloatConvexPolytopeTest
         const double vol_err = (M_PI - poly.nVolume()) / (M_PI);
         shouldEqualTolerance(vol_err, 0, eps);
         shouldEqual(vol_err > 0, true);
-        for (int n = 0; n < 100; n++)
+        for(int n = 0; n < 100; n++)
         {
             Vector2 vec(
                 (2 * rand() - 1) / static_cast<double>(RAND_MAX),
                 (2 * rand() - 1) / static_cast<double>(RAND_MAX));
-            if (abs(vec.magnitude() - 1) > eps)
+            if(abs(vec.magnitude() - 1) > eps)
             {
                 shouldEqual(poly.contains(vec), vec.magnitude() < 1.);
             }
@@ -784,13 +784,13 @@ struct FloatConvexPolytopeTest
             Vector3(-1., 0., 0.),
             Vector3(0., 1., 0.),
             Vector3(0., 0., 1.));
-        for (int n = 0; n < N; n++)
+        for(int n = 0; n < N; n++)
         {
             Vector3 vec(
                 (2 * rand() - 1) / static_cast<double>(RAND_MAX),
                 (2 * rand() - 1) / static_cast<double>(RAND_MAX),
                 (2 * rand() - 1) / static_cast<double>(RAND_MAX));
-            if (vec.magnitude() <= 1.)
+            if(vec.magnitude() <= 1.)
             {
                 poly.addExtremeVertex(vec);
                 shouldEqual(poly.closed(), true);
@@ -802,13 +802,13 @@ struct FloatConvexPolytopeTest
         const double vol_err = (4. / 3. * M_PI - poly.nVolume()) / (4. / 3. * M_PI);
         shouldEqualTolerance(vol_err, 0, eps);
         shouldEqual(vol_err > 0, true);
-        for (int n = 0; n < 100; n++)
+        for(int n = 0; n < 100; n++)
         {
             Vector3 vec(
                 (2 * rand() - 1) / static_cast<double>(RAND_MAX),
                 (2 * rand() - 1) / static_cast<double>(RAND_MAX),
                 (2 * rand() - 1) / static_cast<double>(RAND_MAX));
-            if (abs(vec.magnitude() - 1) > eps)
+            if(abs(vec.magnitude() - 1) > eps)
             {
                 shouldEqual(poly.contains(vec), vec.magnitude() < 1.);
             }

@@ -25,7 +25,7 @@ namespace vigra
 
 
 
-template<class GRAPH>
+template <class GRAPH>
 class LemonUndirectedGraphCoreVisitor
     : public boost::python::def_visitor<LemonUndirectedGraphCoreVisitor<GRAPH>>
 {
@@ -70,7 +70,7 @@ public:
     {
     }
     std::string clsName_;
-    template<class classT>
+    template <class classT>
     void visit(classT& c) const
     {
 
@@ -267,7 +267,7 @@ public:
         return PyNeighbourNodeIteratorHolder(self, node);
     }
 
-    template<class ITEM, class ITEM_IT>
+    template <class ITEM, class ITEM_IT>
     static NumpyAnyArray dtypetest(
         const Graph& g,
         NumpyArray<1, ITEM> out = (NumpyArray<1, ITEM>()))
@@ -275,7 +275,7 @@ public:
         typedef GraphItemHelper<Graph, ITEM> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<1, ITEM>::difference_type(ItemHelper::itemNum(g)));
         size_t counter = 0;
-        for (ITEM_IT i(g); i != lemon::INVALID; ++i)
+        for(ITEM_IT i(g); i != lemon::INVALID; ++i)
         {
             const ITEM item = *i;
             out(counter) = item;
@@ -291,7 +291,7 @@ public:
         NumpyArray<1, Int32> out = (NumpyArray<1, Int32>()))
     {
         out.reshapeIfEmpty(typename NumpyArray<1, Int32>::difference_type(nodeIdPairs.shape(0)));
-        for (MultiArrayIndex i = 0; i < nodeIdPairs.shape(0); ++i)
+        for(MultiArrayIndex i = 0; i < nodeIdPairs.shape(0); ++i)
         {
             const Edge e = g.findEdge(
                 g.nodeFromId(nodeIdPairs(i, 0)),
@@ -316,7 +316,7 @@ public:
         typedef GraphItemHelper<Graph, Edge> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<1, UInt32>::difference_type(ItemHelper::itemNum(g)));
         size_t counter = 0;
-        for (EdgeIt i(g); i != lemon::INVALID; ++i)
+        for(EdgeIt i(g); i != lemon::INVALID; ++i)
         {
             out(counter) = g.id(g.u(*i));
             ++counter;
@@ -328,7 +328,7 @@ public:
         typedef GraphItemHelper<Graph, Edge> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<1, UInt32>::difference_type(ItemHelper::itemNum(g)));
         size_t counter = 0;
-        for (EdgeIt i(g); i != lemon::INVALID; ++i)
+        for(EdgeIt i(g); i != lemon::INVALID; ++i)
         {
             out(counter) = g.id(g.v(*i));
             ++counter;
@@ -341,7 +341,7 @@ public:
         typedef GraphItemHelper<Graph, Edge> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<2, UInt32>::difference_type(ItemHelper::itemNum(g), 2));
         size_t counter = 0;
-        for (EdgeIt i(g); i != lemon::INVALID; ++i)
+        for(EdgeIt i(g); i != lemon::INVALID; ++i)
         {
             out(counter, 0) = g.id(g.u(*i));
             out(counter, 1) = g.id(g.v(*i));
@@ -356,11 +356,11 @@ public:
         NumpyArray<1, UInt32> out = (NumpyArray<1, UInt32>()))
     {
         out.reshapeIfEmpty(typename NumpyArray<1, UInt32>::difference_type(edgeIds.shape(0)));
-        for (MultiArrayIndex i = 0; i < edgeIds.shape(0); ++i)
+        for(MultiArrayIndex i = 0; i < edgeIds.shape(0); ++i)
         {
             const index_type edgeId = edgeIds(i);
             const Edge edge = g.edgeFromId(edgeId);
-            if (edge != lemon::INVALID)
+            if(edge != lemon::INVALID)
             {
                 out(i) = g.id(g.u(edge));
             }
@@ -373,11 +373,11 @@ public:
         NumpyArray<1, UInt32> out = (NumpyArray<1, UInt32>()))
     {
         out.reshapeIfEmpty(typename NumpyArray<1, UInt32>::difference_type(edgeIds.shape(0)));
-        for (MultiArrayIndex i = 0; i < edgeIds.shape(0); ++i)
+        for(MultiArrayIndex i = 0; i < edgeIds.shape(0); ++i)
         {
             const index_type edgeId = edgeIds(i);
             const Edge edge = g.edgeFromId(edgeId);
-            if (edge != lemon::INVALID)
+            if(edge != lemon::INVALID)
             {
                 out(i) = g.id(g.v(edge));
             }
@@ -391,11 +391,11 @@ public:
         NumpyArray<2, UInt32> out = (NumpyArray<2, UInt32>()))
     {
         out.reshapeIfEmpty(typename NumpyArray<2, UInt32>::difference_type(edgeIds.shape(0), 2));
-        for (MultiArrayIndex i = 0; i < edgeIds.shape(0); ++i)
+        for(MultiArrayIndex i = 0; i < edgeIds.shape(0); ++i)
         {
             const index_type edgeId = edgeIds(i);
             const Edge edge = g.edgeFromId(edgeId);
-            if (edge != lemon::INVALID)
+            if(edge != lemon::INVALID)
             {
                 out(i, 0) = g.id(g.u(edge));
                 out(i, 1) = g.id(g.v(edge));
@@ -404,14 +404,14 @@ public:
         return out;
     }
 
-    template<class ITEM, class ITEM_IT>
+    template <class ITEM, class ITEM_IT>
     static NumpyAnyArray validIds(const Graph& g, NumpyArray<1, bool> out = (NumpyArray<1, bool>()))
     {
         typedef GraphItemHelper<Graph, ITEM> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<1, UInt32>::difference_type(ItemHelper::maxItemId(g)));
         std::fill(out.begin(), out.end(), false);
         size_t counter = 0;
-        for (ITEM_IT i(g); i != lemon::INVALID; ++i)
+        for(ITEM_IT i(g); i != lemon::INVALID; ++i)
         {
             out(g.id(*i)) = true;
             ++counter;
@@ -419,13 +419,13 @@ public:
         return out;
     }
 
-    template<class ITEM, class ITEM_IT>
+    template <class ITEM, class ITEM_IT>
     static NumpyAnyArray itemIds(const Graph& g, NumpyArray<1, UInt32> out = (NumpyArray<1, UInt32>()))
     {
         typedef GraphItemHelper<Graph, ITEM> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<1, UInt32>::difference_type(ItemHelper::itemNum(g)));
         size_t counter = 0;
-        for (ITEM_IT i(g); i != lemon::INVALID; ++i)
+        for(ITEM_IT i(g); i != lemon::INVALID; ++i)
         {
             out(counter) = g.id(*i);
             ++counter;
@@ -470,13 +470,13 @@ public:
         return PyNode(self, self.target(a));
     }
 
-    template<class ITEM>
+    template <class ITEM>
     static bool eqToInvalid(const ITEM& item, const lemon::Invalid /*iv*/)
     {
         return item.graph_ == NULL || item == lemon::INVALID;
     }
 
-    template<class ITEM>
+    template <class ITEM>
     static bool neqToInvalid(const ITEM& item, const lemon::Invalid /*iv*/)
     {
         return item.graph_ != NULL && item != lemon::INVALID;
@@ -531,7 +531,7 @@ public:
         // array to lemon map
         typename PyNodeMapTraits<Graph, UInt32>::Map idArrayMap(graph, idArray);
 
-        for (NodeIt iter(graph); iter != lemon::INVALID; ++iter)
+        for(NodeIt iter(graph); iter != lemon::INVALID; ++iter)
         {
             idArrayMap[*iter] = graph.id(*iter);
         }
@@ -541,7 +541,7 @@ public:
 };
 
 
-template<class GRAPH>
+template <class GRAPH>
 class LemonUndirectedGraphAddItemsVisitor
     : public boost::python::def_visitor<LemonUndirectedGraphAddItemsVisitor<GRAPH>>
 {
@@ -574,7 +574,7 @@ public:
     {
     }
     std::string clsName_;
-    template<class classT>
+    template <class classT>
     void visit(classT& c) const
     {
 
@@ -611,7 +611,7 @@ public:
                                   NumpyArray<1, UInt32> edgeIds = (NumpyArray<1, UInt32>()))
     {
         edgeIds.reshapeIfEmpty(typename NumpyArray<1, index_type>::difference_type(edges.shape(0)));
-        for (MultiArrayIndex i = 0; i < edges.shape(0); ++i)
+        for(MultiArrayIndex i = 0; i < edges.shape(0); ++i)
         {
             const Edge e = self.addEdge(edges(i, 0), edges(i, 1));
             edgeIds(i) = self.id(e);

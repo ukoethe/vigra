@@ -45,7 +45,7 @@ using namespace matlab;
 
 
 
-template<class T>
+template <class T>
 void
 vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
 {
@@ -63,7 +63,7 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
     /***************************************************************************************************
     **              CODE PART                                                                         **
     ****************************************************************************************************/
-    switch (method)
+    switch(method)
     {
         case Corner:
             cornerResponseFunction(srcImageRange(in), destImage(out), scale);
@@ -91,7 +91,7 @@ void
 vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
     //Add classes as you feel
-    switch (inputs.typeOf(0))
+    switch(inputs.typeOf(0))
     {
         ALLOW_FD
         ALLOW_UINT_8_64

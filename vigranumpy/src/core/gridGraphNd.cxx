@@ -60,7 +60,7 @@ namespace vigra
 
 
 
-template<unsigned int DIM>
+template <unsigned int DIM>
 NumpyAnyArray
 pySerializeAffiliatedEdges(
     const GridGraph<DIM, boost::undirected_tag>& gridGraph,
@@ -80,7 +80,7 @@ pySerializeAffiliatedEdges(
 }
 
 
-template<unsigned int DIM>
+template <unsigned int DIM>
 AdjacencyListGraph::template EdgeMap<std::vector<typename GridGraph<DIM, boost::undirected_tag>::Edge>>*
 pyDeserializeAffiliatedEdges(
     const GridGraph<DIM, boost::undirected_tag>& gridGraph,
@@ -99,7 +99,7 @@ pyDeserializeAffiliatedEdges(
 
 
 
-template<unsigned int DIM>
+template <unsigned int DIM>
 void
 defineGridGraphRagSerialization()
 {

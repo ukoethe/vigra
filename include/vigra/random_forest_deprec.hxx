@@ -60,7 +60,7 @@ namespace vigra
 namespace detail
 {
 
-template<class DataMatrix>
+template <class DataMatrix>
 class RandomForestDeprecFeatureSorter
 {
     DataMatrix const& data_;
@@ -84,7 +84,7 @@ public:
     }
 };
 
-template<class LabelArray>
+template <class LabelArray>
 class RandomForestDeprecLabelSorter
 {
     LabelArray const& labels_;
@@ -101,7 +101,7 @@ public:
     }
 };
 
-template<class CountArray>
+template <class CountArray>
 class RandomForestDeprecClassCounter
 {
     ArrayVector<int> const& labels_;
@@ -130,7 +130,7 @@ struct DecisionTreeDeprecCountNonzeroFunctor
 {
     double operator()(double old, double other) const
     {
-        if (other != 0.0)
+        if(other != 0.0)
             ++old;
         return old;
     }
@@ -148,7 +148,7 @@ struct DecisionTreeDeprecNode
     Int32 splitColumn;
 };
 
-template<class INT>
+template <class INT>
 struct DecisionTreeDeprecNodeProxy
 {
     DecisionTreeDeprecNodeProxy(ArrayVector<INT> const& tree, INT n)
@@ -187,7 +187,7 @@ struct DecisionTreeDeprecAxisSplitFunctor
     {
         this->mtry = mtry;
         splitColumns.resize(cols);
-        for (int k = 0; k < cols; ++k)
+        for(int k = 0; k < cols; ++k)
             splitColumns[k] = k;
 
         this->classCount = classCount;
@@ -198,7 +198,7 @@ struct DecisionTreeDeprecAxisSplitFunctor
         bestCounts[1].resize(classCount);
 
         isWeighted = weights.size() > 0;
-        if (isWeighted)
+        if(isWeighted)
             classWeights = weights;
         else
             classWeights.resize(classCount, 1.0);
@@ -236,20 +236,20 @@ struct DecisionTreeDeprecAxisSplitFunctor
 
     void writeWeights(int l, ArrayVector<double>& terminalWeights)
     {
-        for (int k = 0; k < classCount; ++k)
+        for(int k = 0; k < classCount; ++k)
             terminalWeights.push_back(isWeighted
                                           ? bestCounts[l][k]
                                           : bestCounts[l][k] / totalCount(l));
     }
 
-    template<class U, class C, class AxesIterator, class WeightIterator>
+    template <class U, class C, class AxesIterator, class WeightIterator>
     bool decideAtNode(MultiArrayView<2, U, C> const& features,
                       AxesIterator a, WeightIterator w) const
     {
         return (features(0, *a) < *w);
     }
 
-    template<class U, class C, class IndexIterator, class Random>
+    template <class U, class C, class IndexIterator, class Random>
     IndexIterator findBestSplit(MultiArrayView<2, U, C> const& features,
                                 ArrayVector<int> const& labels,
                                 IndexIterator indices, int exampleCount,
@@ -257,7 +257,7 @@ struct DecisionTreeDeprecAxisSplitFunctor
 };
 
 
-template<class U, class C, class IndexIterator, class Random>
+template <class U, class C, class IndexIterator, class Random>
 IndexIterator
     DecisionTreeDeprecAxisSplitFunctor::findBestSplit(MultiArrayView<2, U, C> const& features,
                                                       ArrayVector<int> const& labels,
@@ -265,7 +265,7 @@ IndexIterator
                                                       Random& randint)
 {
     // select columns to be tried for split
-    for (int k = 0; k < mtry; ++k)
+    for(int k = 0; k < mtry; ++k)
         std::swap(splitColumns[k], splitColumns[k + randint(columnCount(features) - k)]);
 
     RandomForestDeprecFeatureSorter<MultiArrayView<2, U, C>> sorter(features, 0);
@@ -275,7 +275,7 @@ IndexIterator
     // find the best gini index
     double minGini = NumericTraits<double>::max();
     IndexIterator bestSplit = indices;
-    for (int k = 0; k < mtry; ++k)
+    for(int k = 0; k < mtry; ++k)
     {
         sorter.setColumn(splitColumns[k]);
         std::sort(indices, indices + exampleCount, sorter);
@@ -285,7 +285,7 @@ IndexIterator
                        currentCounts[1].begin(), std::multiplies<double>());
         totalCounts[0] = 0;
         totalCounts[1] = std::accumulate(currentCounts[1].begin(), currentCounts[1].end(), 0.0);
-        for (int m = 0; m < exampleCount - 1; ++m)
+        for(int m = 0; m < exampleCount - 1; ++m)
         {
             int label = labels[indices[m]];
             double w = classWeights[label];
@@ -294,23 +294,23 @@ IndexIterator
             currentCounts[1][label] -= w;
             totalCounts[1] -= w;
 
-            if (m < exampleCount - 2 &&
-                features(indices[m], splitColumns[k]) == features(indices[m + 1], splitColumns[k]))
+            if(m < exampleCount - 2 &&
+               features(indices[m], splitColumns[k]) == features(indices[m + 1], splitColumns[k]))
                 continue;
 
             double gini = 0.0;
-            if (classCount == 2)
+            if(classCount == 2)
             {
                 gini = currentCounts[0][0] * currentCounts[0][1] / totalCounts[0] +
                        currentCounts[1][0] * currentCounts[1][1] / totalCounts[1];
             }
             else
             {
-                for (int l = 0; l < classCount; ++l)
+                for(int l = 0; l < classCount; ++l)
                     gini += currentCounts[0][l] * (1.0 - currentCounts[0][l] / totalCounts[0]) +
                             currentCounts[1][l] * (1.0 - currentCounts[1][l] / totalCounts[1]);
             }
-            if (gini < minGini)
+            if(gini < minGini)
             {
                 minGini = gini;
                 bestSplit = indices + m;
@@ -325,7 +325,7 @@ IndexIterator
     sorter.setColumn(bestSplitColumn);
     std::sort(indices, indices + exampleCount, sorter);
 
-    for (int k = 0; k < 2; ++k)
+    for(int k = 0; k < 2; ++k)
     {
         bestTotalCounts[k] = std::accumulate(bestCounts[k].begin(), bestCounts[k].end(), 0.0);
     }
@@ -348,7 +348,7 @@ enum
     DecisionTreeDeprecNoParent = -1
 };
 
-template<class Iterator>
+template <class Iterator>
 struct DecisionTreeDeprecStackEntry
 {
     DecisionTreeDeprecStackEntry(Iterator i, int c,
@@ -379,37 +379,37 @@ public:
 
     void reset(unsigned int classCount = 0)
     {
-        if (classCount)
+        if(classCount)
             classCount_ = classCount;
         tree_.clear();
         terminalWeights_.clear();
     }
 
-    template<class U, class C, class Iterator, class Options, class Random>
+    template <class U, class C, class Iterator, class Options, class Random>
     void learn(MultiArrayView<2, U, C> const& features,
                ArrayVector<int> const& labels,
                Iterator indices, int exampleCount,
                Options const& options,
                Random& randint);
 
-    template<class U, class C>
+    template <class U, class C>
     ArrayVector<double>::const_iterator
         predict(MultiArrayView<2, U, C> const& features) const
     {
         int nodeindex = 0;
-        for (;;)
+        for(;;)
         {
             DecisionTreeDeprecNodeProxy<TreeInt> node(tree_, nodeindex);
             nodeindex = split.decideAtNode(features, node.decisionColumns(),
                                            terminalWeights_.begin() + node.decisionWeightsIndex())
                             ? node.child(0)
                             : node.child(1);
-            if (nodeindex <= 0)
+            if(nodeindex <= 0)
                 return terminalWeights_.begin() + (-nodeindex);
         }
     }
 
-    template<class U, class C>
+    template <class U, class C>
     int
         predictLabel(MultiArrayView<2, U, C> const& features) const
     {
@@ -417,19 +417,19 @@ public:
         return argMax(weights, weights + classCount_) - weights;
     }
 
-    template<class U, class C>
+    template <class U, class C>
     int
         leafID(MultiArrayView<2, U, C> const& features) const
     {
         int nodeindex = 0;
-        for (;;)
+        for(;;)
         {
             DecisionTreeDeprecNodeProxy<TreeInt> node(tree_, nodeindex);
             nodeindex = split.decideAtNode(features, node.decisionColumns(),
                                            terminalWeights_.begin() + node.decisionWeightsIndex())
                             ? node.child(0)
                             : node.child(1);
-            if (nodeindex <= 0)
+            if(nodeindex <= 0)
                 return -nodeindex;
         }
     }
@@ -439,15 +439,15 @@ public:
         DecisionTreeDeprecNodeProxy<TreeInt> node(tree_, k);
         ++interiorCount;
         ++d;
-        for (int l = 0; l < 2; ++l)
+        for(int l = 0; l < 2; ++l)
         {
             int child = node.child(l);
-            if (child > 0)
+            if(child > 0)
                 depth(maxDep, interiorCount, leafCount, child, d);
             else
             {
                 ++leafCount;
-                if (maxDep < d)
+                if(maxDep < d)
                     maxDep = d;
             }
         }
@@ -466,10 +466,10 @@ public:
         DecisionTreeDeprecNodeProxy<TreeInt> node(tree_, k);
         o << s << (*node.decisionColumns()) << " " << terminalWeights_[node.decisionWeightsIndex()] << "\n";
 
-        for (int l = 0; l < 2; ++l)
+        for(int l = 0; l < 2; ++l)
         {
             int child = node.child(l);
-            if (child <= 0)
+            if(child <= 0)
                 o << s << " weights " << terminalWeights_[-child] << " "
                   << terminalWeights_[-child + 1] << "\n";
             else
@@ -479,7 +479,7 @@ public:
 };
 
 
-template<class U, class C, class Iterator, class Options, class Random>
+template <class U, class C, class Iterator, class Options, class Random>
 void DecisionTreeDeprec::learn(MultiArrayView<2, U, C> const& features,
                                ArrayVector<int> const& labels,
                                Iterator indices, int exampleCount,
@@ -502,7 +502,7 @@ void DecisionTreeDeprec::learn(MultiArrayView<2, U, C> const& features,
     ArrayVector<Entry> stack;
     stack.push_back(Entry(indices, exampleCount));
 
-    while (!stack.empty())
+    while(!stack.empty())
     {
         //        std::cerr << "*";
         indices = stack.back().indices;
@@ -517,17 +517,17 @@ void DecisionTreeDeprec::learn(MultiArrayView<2, U, C> const& features,
 
         int currentNode = split.writeSplitParameters(tree_, terminalWeights_);
 
-        if (leftParent != DecisionTreeDeprecNoParent)
+        if(leftParent != DecisionTreeDeprecNoParent)
             DecisionTreeDeprecNodeProxy<TreeInt>(tree_, leftParent).child(0) = currentNode;
-        if (rightParent != DecisionTreeDeprecNoParent)
+        if(rightParent != DecisionTreeDeprecNoParent)
             DecisionTreeDeprecNodeProxy<TreeInt>(tree_, rightParent).child(1) = currentNode;
         leftParent = currentNode;
         rightParent = DecisionTreeDeprecNoParent;
 
-        for (int l = 0; l < 2; ++l)
+        for(int l = 0; l < 2; ++l)
         {
 
-            if (!split.isPure(l) && split.totalCount(l) >= options.min_split_node_size)
+            if(!split.isPure(l) && split.totalCount(l) >= options.min_split_node_size)
             {
                 // sample is still large enough and not yet perfectly separated => split
                 stack.push_back(Entry(indices, split.totalCount(l), leftParent, rightParent));
@@ -610,7 +610,7 @@ public:
     {
         vigra_precondition(p >= 0.0 && p <= 1.0,
                            "RandomForestOptionsDeprec::trainingSetSizeProportional(): proportion must be in [0, 1].");
-        if (training_set_size == 0) // otherwise, absolute size gets priority
+        if(training_set_size == 0) // otherwise, absolute size gets priority
             training_set_proportion = p;
         return *this;
     }
@@ -626,7 +626,7 @@ public:
     RandomForestOptionsDeprec& trainingSetSizeAbsolute(unsigned int s)
     {
         training_set_size = s;
-        if (s > 0)
+        if(s > 0)
             training_set_proportion = 0.0;
         return *this;
     }
@@ -657,7 +657,7 @@ public:
         */
     RandomForestOptionsDeprec& minSplitNodeSize(unsigned int n)
     {
-        if (n == 0)
+        if(n == 0)
             n = 1;
         min_split_node_size = n;
         return *this;
@@ -670,11 +670,11 @@ public:
             must contain as many entries as there are classes.<br>
             Default: do not use weights
         */
-    template<class WeightIterator>
+    template <class WeightIterator>
     RandomForestOptionsDeprec& weights(WeightIterator weights, unsigned int classCount)
     {
         class_weights.clear();
-        if (weights != 0)
+        if(weights != 0)
             class_weights.insert(weights, classCount);
         return *this;
     }
@@ -699,7 +699,7 @@ public:
 /*                                                               */
 /*****************************************************************/
 
-template<class ClassLabelType>
+template <class ClassLabelType>
 class RandomForestDeprec
 {
 public:
@@ -711,7 +711,7 @@ public:
 public:
     //First two constructors are straight forward.
     //they take either the iterators to an Array of Classlabels or the values
-    template<class ClassLabelIterator>
+    template <class ClassLabelIterator>
     RandomForestDeprec(ClassLabelIterator cl, ClassLabelIterator cend,
                        unsigned int treeCount = 255,
                        RandomForestOptionsDeprec const& options = RandomForestOptionsDeprec())
@@ -744,7 +744,7 @@ public:
         classes_[1] = c2;
     }
     //This is esp. For the CrosValidator Class
-    template<class ClassLabelIterator>
+    template <class ClassLabelIterator>
     RandomForestDeprec(ClassLabelIterator cl, ClassLabelIterator cend,
                        RandomForestOptionsDeprec const& options)
         : classes_(cl, cend),
@@ -765,7 +765,7 @@ public:
 
     //Not understood yet
     //Does not use the options object but the columnCount object.
-    template<class ClassLabelIterator, class TreeIterator, class WeightIterator>
+    template <class ClassLabelIterator, class TreeIterator, class WeightIterator>
     RandomForestDeprec(ClassLabelIterator cl, ClassLabelIterator cend,
                        unsigned int treeCount, unsigned int columnCount,
                        TreeIterator trees, WeightIterator weights)
@@ -773,7 +773,7 @@ public:
           trees_(treeCount, detail::DecisionTreeDeprec(classes_.size())),
           columnCount_(columnCount)
     {
-        for (unsigned int k = 0; k < treeCount; ++k, ++trees, ++weights)
+        for(unsigned int k = 0; k < treeCount; ++k, ++trees, ++weights)
         {
             trees_[k].tree_ = *trees;
             trees_[k].terminalWeights_ = *weights;
@@ -798,45 +798,45 @@ public:
     }
 
     // loss == 0.0 means unweighted random forest
-    template<class U, class C, class Array, class Random>
+    template <class U, class C, class Array, class Random>
     double learn(MultiArrayView<2, U, C> const& features, Array const& labels,
                  Random const& random);
 
-    template<class U, class C, class Array>
+    template <class U, class C, class Array>
     double learn(MultiArrayView<2, U, C> const& features, Array const& labels)
     {
         RandomNumberGenerator<> generator(RandomSeed);
         return learn(features, labels, generator);
     }
 
-    template<class U, class C>
+    template <class U, class C>
     ClassLabelType predictLabel(MultiArrayView<2, U, C> const& features) const;
 
-    template<class U, class C1, class T, class C2>
+    template <class U, class C1, class T, class C2>
     void predictLabels(MultiArrayView<2, U, C1> const& features,
                        MultiArrayView<2, T, C2>& labels) const
     {
         vigra_precondition(features.shape(0) == labels.shape(0),
                            "RandomForestDeprec::predictLabels(): Label array has wrong size.");
-        for (int k = 0; k < features.shape(0); ++k)
+        for(int k = 0; k < features.shape(0); ++k)
             labels(k, 0) = predictLabel(rowVector(features, k));
     }
 
-    template<class U, class C, class Iterator>
+    template <class U, class C, class Iterator>
     ClassLabelType predictLabel(MultiArrayView<2, U, C> const& features,
                                 Iterator priors) const;
 
-    template<class U, class C1, class T, class C2>
+    template <class U, class C1, class T, class C2>
     void predictProbabilities(MultiArrayView<2, U, C1> const& features,
                               MultiArrayView<2, T, C2>& prob) const;
 
-    template<class U, class C1, class T, class C2>
+    template <class U, class C1, class T, class C2>
     void predictNodes(MultiArrayView<2, U, C1> const& features,
                       MultiArrayView<2, T, C2>& NodeIDs) const;
 };
 
-template<class ClassLabelType>
-template<class U, class C1, class Array, class Random>
+template <class ClassLabelType>
+template <class U, class C1, class Array, class Random>
 double
     RandomForestDeprec<ClassLabelType>::learn(MultiArrayView<2, U, C1> const& features,
                                               Array const& labels,
@@ -859,7 +859,7 @@ double
                        "RandomForestDeprec::learn(): mtry must be less than number of features.");
 
     MultiArrayIndex msamples = options_.training_set_size;
-    if (options_.sample_classes_individually)
+    if(options_.sample_classes_individually)
         msamples = int(std::ceil(double(msamples) / classCount));
 
     ArrayVector<int> intLabels(m), classExampleCounts(classCount);
@@ -870,10 +870,10 @@ double
         typedef std::map<ClassLabelType, int> LabelChecker;
         typedef typename LabelChecker::iterator LabelCheckerIterator;
         LabelChecker labelChecker;
-        for (unsigned int k = 0; k < classCount; ++k)
+        for(unsigned int k = 0; k < classCount; ++k)
             labelChecker[classes_[k]] = k;
 
-        for (unsigned int k = 0; k < m; ++k)
+        for(unsigned int k = 0; k < m; ++k)
         {
             LabelCheckerIterator found = labelChecker.find(labels[k]);
             vigra_precondition(found != labelChecker.end(),
@@ -884,8 +884,8 @@ double
         minClassCount = *argMin(classExampleCounts.begin(), classExampleCounts.end());
         vigra_precondition(minClassCount > 0,
                            "RandomForestDeprec::learn(): At least one class is missing in the training set.");
-        if (msamples > 0 && options_.sample_classes_individually &&
-            !options_.sample_with_replacement)
+        if(msamples > 0 && options_.sample_classes_individually &&
+           !options_.sample_with_replacement)
         {
             vigra_precondition(msamples <= minClassCount,
                                "RandomForestDeprec::learn(): Too few examples in smallest class to reach "
@@ -894,10 +894,10 @@ double
     }
     columnCount_ = n;
     ArrayVector<int> indices(m);
-    for (unsigned int k = 0; k < m; ++k)
+    for(unsigned int k = 0; k < m; ++k)
         indices[k] = k;
 
-    if (options_.sample_classes_individually)
+    if(options_.sample_classes_individually)
     {
         detail::RandomForestDeprecLabelSorter<ArrayVector<int>> sorter(intLabels);
         std::sort(indices.begin(), indices.end(), sorter);
@@ -907,26 +907,26 @@ double
 
     UniformIntRandomFunctor<Random> randint(0, m - 1, random);
     //std::cerr << "Learning a RF \n";
-    for (unsigned int k = 0; k < trees_.size(); ++k)
+    for(unsigned int k = 0; k < trees_.size(); ++k)
     {
         //std::cerr << "Learning tree " << k << " ...\n";
 
         ArrayVector<int> trainingSet;
         usedIndices.init(0);
 
-        if (options_.sample_classes_individually)
+        if(options_.sample_classes_individually)
         {
             int first = 0;
-            for (unsigned int l = 0; l < classCount; ++l)
+            for(unsigned int l = 0; l < classCount; ++l)
             {
                 int lc = classExampleCounts[l];
                 int lsamples = (msamples == 0)
                                    ? int(std::ceil(options_.training_set_proportion * lc))
                                    : msamples;
 
-                if (options_.sample_with_replacement)
+                if(options_.sample_with_replacement)
                 {
-                    for (int ll = 0; ll < lsamples; ++ll)
+                    for(int ll = 0; ll < lsamples; ++ll)
                     {
                         trainingSet.push_back(indices[first + randint(lc)]);
                         ++usedIndices[trainingSet.back()];
@@ -934,7 +934,7 @@ double
                 }
                 else
                 {
-                    for (int ll = 0; ll < lsamples; ++ll)
+                    for(int ll = 0; ll < lsamples; ++ll)
                     {
                         std::swap(indices[first + ll], indices[first + ll + randint(lc - ll)]);
                         trainingSet.push_back(indices[first + ll]);
@@ -947,12 +947,12 @@ double
         }
         else
         {
-            if (msamples == 0)
+            if(msamples == 0)
                 msamples = int(std::ceil(options_.training_set_proportion * m));
 
-            if (options_.sample_with_replacement)
+            if(options_.sample_with_replacement)
             {
-                for (int l = 0; l < msamples; ++l)
+                for(int l = 0; l < msamples; ++l)
                 {
                     trainingSet.push_back(indices[randint(m)]);
                     ++usedIndices[trainingSet.back()];
@@ -960,7 +960,7 @@ double
             }
             else
             {
-                for (int l = 0; l < msamples; ++l)
+                for(int l = 0; l < msamples; ++l)
                 {
                     std::swap(indices[l], indices[l + randint(m - l) /*oikas*/]);
                     trainingSet.push_back(indices[l]);
@@ -981,18 +981,18 @@ double
         //            }
         //        }
 
-        for (unsigned int l = 0; l < m; ++l)
+        for(unsigned int l = 0; l < m; ++l)
         {
-            if (!usedIndices[l])
+            if(!usedIndices[l])
             {
                 ++oobCount[l];
-                if (trees_[k].predictLabel(rowVector(features, l)) != intLabels[l])
+                if(trees_[k].predictLabel(rowVector(features, l)) != intLabels[l])
                 {
                     ++oobErrorCount[l];
-                    if (options_.oob_data.data() != 0)
+                    if(options_.oob_data.data() != 0)
                         options_.oob_data(l, k) = 2;
                 }
-                else if (options_.oob_data.data() != 0)
+                else if(options_.oob_data.data() != 0)
                 {
                     options_.oob_data(l, k) = 1;
                 }
@@ -1009,8 +1009,8 @@ double
     }
     double oobError = 0.0;
     int totalOobCount = 0;
-    for (unsigned int l = 0; l < m; ++l)
-        if (oobCount[l])
+    for(unsigned int l = 0; l < m; ++l)
+        if(oobCount[l])
         {
             oobError += double(oobErrorCount[l]) / oobCount[l];
             ++totalOobCount;
@@ -1018,8 +1018,8 @@ double
     return oobError / totalOobCount;
 }
 
-template<class ClassLabelType>
-template<class U, class C>
+template <class ClassLabelType>
+template <class U, class C>
 ClassLabelType
     RandomForestDeprec<ClassLabelType>::predictLabel(MultiArrayView<2, U, C> const& features) const
 {
@@ -1034,8 +1034,8 @@ ClassLabelType
 
 
 //Same thing as above with priors for each label !!!
-template<class ClassLabelType>
-template<class U, class C, class Iterator>
+template <class ClassLabelType>
+template <class U, class C, class Iterator>
 ClassLabelType
     RandomForestDeprec<ClassLabelType>::predictLabel(MultiArrayView<2, U, C> const& features,
                                                      Iterator priors) const
@@ -1051,8 +1051,8 @@ ClassLabelType
     return classes_[argMax(prob)];
 }
 
-template<class ClassLabelType>
-template<class U, class C1, class T, class C2>
+template <class ClassLabelType>
+template <class U, class C1, class T, class C2>
 void
     RandomForestDeprec<ClassLabelType>::predictProbabilities(MultiArrayView<2, U, C1> const& features,
                                                              MultiArrayView<2, T, C2>& prob) const
@@ -1072,7 +1072,7 @@ void
                        "RandomForestDeprec::predictProbabilities(): Probability matrix must have as many columns as there are classes.");
 
     //Classify for each row.
-    for (int row = 0; row < rowCount(features); ++row)
+    for(int row = 0; row < rowCount(features); ++row)
     {
         //contains the weights returned by a single tree???
         //thought that one tree has only one vote???
@@ -1084,17 +1084,17 @@ void
 
         //Set each VoteCount = 0 - prob(row,l) contains vote counts until
         //further normalisation
-        for (unsigned int l = 0; l < classes_.size(); ++l)
+        for(unsigned int l = 0; l < classes_.size(); ++l)
             prob(row, l) = 0.0;
 
         //Let each tree classify...
-        for (unsigned int k = 0; k < trees_.size(); ++k)
+        for(unsigned int k = 0; k < trees_.size(); ++k)
         {
             //get weights predicted by single tree
             weights = trees_[k].predict(rowVector(features, row));
 
             //update votecount.
-            for (unsigned int l = 0; l < classes_.size(); ++l)
+            for(unsigned int l = 0; l < classes_.size(); ++l)
             {
                 prob(row, l) += detail::RequiresExplicitCast<T>::cast(weights[l]);
                 //every weight in totalWeight.
@@ -1103,14 +1103,14 @@ void
         }
 
         //Normalise votes in each row by total VoteCount (totalWeight
-        for (unsigned int l = 0; l < classes_.size(); ++l)
+        for(unsigned int l = 0; l < classes_.size(); ++l)
             prob(row, l) /= detail::RequiresExplicitCast<T>::cast(totalWeight);
     }
 }
 
 
-template<class ClassLabelType>
-template<class U, class C1, class T, class C2>
+template <class ClassLabelType>
+template <class U, class C1, class T, class C2>
 void
     RandomForestDeprec<ClassLabelType>::predictNodes(MultiArrayView<2, U, C1> const& features,
                                                      MultiArrayView<2, T, C2>& NodeIDs) const
@@ -1122,9 +1122,9 @@ void
     vigra_precondition(columnCount(NodeIDs) >= treeCount(),
                        "RandomForestDeprec::getNodesRF(): Too few columns in NodeIds matrix.");
     NodeIDs.init(0);
-    for (unsigned int k = 0; k < trees_.size(); ++k)
+    for(unsigned int k = 0; k < trees_.size(); ++k)
     {
-        for (int row = 0; row < rowCount(features); ++row)
+        for(int row = 0; row < rowCount(features); ++row)
         {
             NodeIDs(row, k) = trees_[k].leafID(rowVector(features, row));
         }

@@ -49,7 +49,7 @@
 namespace vigra
 {
 
-template<class ARITHTYPE>
+template <class ARITHTYPE>
 class Kernel2D;
 
 /** \addtogroup ConvolutionFilters
@@ -57,9 +57,9 @@ class Kernel2D;
 //@{
 
 // documentation is in convolution.hxx
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class KernelIterator, class KernelAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class KernelIterator, class KernelAccessor>
 void
 convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
               DestIterator dest_ul, DestAccessor dest_acc,
@@ -106,16 +106,16 @@ convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
                        "convolveImage(): kernel larger than image.");
 
     KernelSumType norm = KernelSumType();
-    if (border == BORDER_TREATMENT_CLIP)
+    if(border == BORDER_TREATMENT_CLIP)
     {
         // calculate the sum of the kernel elements for renormalization
         KernelIterator yk = ki + klr;
 
         // determine sum within kernel (= norm)
-        for (int y = 0; y < kernel_height; ++y, --yk.y)
+        for(int y = 0; y < kernel_height; ++y, --yk.y)
         {
             KernelIterator xk = yk;
-            for (int x = 0; x < kernel_width; ++x, --xk.x)
+            for(int x = 0; x < kernel_width; ++x, --xk.x)
             {
                 norm += ak(xk);
             }
@@ -128,100 +128,100 @@ convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
     SrcIterator ys = src_ul;
 
     // iterate over the interior part
-    for (int y = 0; y < h; ++y, ++ys.y, ++yd.y)
+    for(int y = 0; y < h; ++y, ++ys.y, ++yd.y)
     {
         // create x iterators
         DestIterator xd(yd);
         SrcIterator xs(ys);
 
-        for (int x = 0; x < w; ++x, ++xs.x, ++xd.x)
+        for(int x = 0; x < w; ++x, ++xs.x, ++xd.x)
         {
             // init the sum
             SumType sum = NumericTraits<SumType>::zero();
             KernelIterator ykernel = ki + klr;
 
-            if (x >= klr.x && y >= klr.y && x < w + kul.x && y < h + kul.y)
+            if(x >= klr.x && y >= klr.y && x < w + kul.x && y < h + kul.y)
             {
                 // kernel is entirely inside the image
                 SrcIterator yys = xs - klr;
                 SrcIterator yyend = xs - kul;
 
-                for (; yys.y <= yyend.y; ++yys.y, --ykernel.y)
+                for(; yys.y <= yyend.y; ++yys.y, --ykernel.y)
                 {
                     typename SrcIterator::row_iterator xxs = yys.rowIterator();
                     typename SrcIterator::row_iterator xxe = xxs + kernel_width;
                     typename KernelIterator::row_iterator xkernel = ykernel.rowIterator();
 
-                    for (; xxs < xxe; ++xxs, --xkernel)
+                    for(; xxs < xxe; ++xxs, --xkernel)
                     {
                         sum += ak(xkernel) * src_acc(xxs);
                     }
                 }
             }
-            else if (border == BORDER_TREATMENT_REPEAT)
+            else if(border == BORDER_TREATMENT_REPEAT)
             {
                 Diff2D diff;
-                for (int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
+                for(int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
                 {
                     diff.y = std::min(std::max(y - yk, 0), h - 1);
                     typename KernelIterator::row_iterator xkernel = ykernel.rowIterator();
 
-                    for (int xk = klr.x; xk >= kul.x; --xk, --xkernel)
+                    for(int xk = klr.x; xk >= kul.x; --xk, --xkernel)
                     {
                         diff.x = std::min(std::max(x - xk, 0), w - 1);
                         sum += ak(xkernel) * src_acc(src_ul, diff);
                     }
                 }
             }
-            else if (border == BORDER_TREATMENT_REFLECT)
+            else if(border == BORDER_TREATMENT_REFLECT)
             {
                 Diff2D diff;
-                for (int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
+                for(int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
                 {
                     diff.y = abs(y - yk);
-                    if (diff.y >= h)
+                    if(diff.y >= h)
                         diff.y = 2 * h - 2 - diff.y;
                     typename KernelIterator::row_iterator xkernel = ykernel.rowIterator();
 
-                    for (int xk = klr.x; xk >= kul.x; --xk, --xkernel)
+                    for(int xk = klr.x; xk >= kul.x; --xk, --xkernel)
                     {
                         diff.x = abs(x - xk);
-                        if (diff.x >= w)
+                        if(diff.x >= w)
                             diff.x = 2 * w - 2 - diff.x;
                         sum += ak(xkernel) * src_acc(src_ul, diff);
                     }
                 }
             }
-            else if (border == BORDER_TREATMENT_WRAP)
+            else if(border == BORDER_TREATMENT_WRAP)
             {
                 Diff2D diff;
-                for (int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
+                for(int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
                 {
                     diff.y = (y - yk + h) % h;
                     typename KernelIterator::row_iterator xkernel = ykernel.rowIterator();
 
-                    for (int xk = klr.x; xk >= kul.x; --xk, --xkernel)
+                    for(int xk = klr.x; xk >= kul.x; --xk, --xkernel)
                     {
                         diff.x = (x - xk + w) % w;
                         sum += ak(xkernel) * src_acc(src_ul, diff);
                     }
                 }
             }
-            else if (border == BORDER_TREATMENT_CLIP)
+            else if(border == BORDER_TREATMENT_CLIP)
             {
                 KernelSumType ksum = NumericTraits<KernelSumType>::zero();
                 Diff2D diff;
-                for (int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
+                for(int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
                 {
                     diff.y = y - yk;
-                    if (diff.y < 0 || diff.y >= h)
+                    if(diff.y < 0 || diff.y >= h)
                         continue;
                     typename KernelIterator::row_iterator xkernel = ykernel.rowIterator();
 
-                    for (int xk = klr.x; xk >= kul.x; --xk, --xkernel)
+                    for(int xk = klr.x; xk >= kul.x; --xk, --xkernel)
                     {
                         diff.x = x - xk;
-                        if (diff.x < 0 || diff.x >= w)
+                        if(diff.x < 0 || diff.x >= w)
                             continue;
                         ksum += ak(xkernel);
                         sum += ak(xkernel) * src_acc(src_ul, diff);
@@ -230,26 +230,26 @@ convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
 
                 sum *= norm / ksum;
             }
-            else if (border == BORDER_TREATMENT_ZEROPAD)
+            else if(border == BORDER_TREATMENT_ZEROPAD)
             {
                 Diff2D diff;
-                for (int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
+                for(int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
                 {
                     diff.y = y - yk;
-                    if (diff.y < 0 || diff.y >= h)
+                    if(diff.y < 0 || diff.y >= h)
                         continue;
                     typename KernelIterator::row_iterator xkernel = ykernel.rowIterator();
 
-                    for (int xk = klr.x; xk >= kul.x; --xk, --xkernel)
+                    for(int xk = klr.x; xk >= kul.x; --xk, --xkernel)
                     {
                         diff.x = x - xk;
-                        if (diff.x < 0 || diff.x >= w)
+                        if(diff.x < 0 || diff.x >= w)
                             continue;
                         sum += ak(xkernel) * src_acc(src_ul, diff);
                     }
                 }
             }
-            else if (border == BORDER_TREATMENT_AVOID)
+            else if(border == BORDER_TREATMENT_AVOID)
             {
                 continue;
             }
@@ -260,9 +260,9 @@ convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class KernelIterator, class KernelAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class KernelIterator, class KernelAccessor>
 inline void
 convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
               pair<DestIterator, DestAccessor> dest,
@@ -276,9 +276,9 @@ convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                   kernel.fourth, kernel.fifth);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class T3>
+template <class T1, class S1,
+          class T2, class S2,
+          class T3>
 inline void
     convolveImage(MultiArrayView<2, T1, S1> const& src,
                   MultiArrayView<2, T2, S2> dest,
@@ -452,12 +452,12 @@ inline void
     <li> <tt>border == BORDER_TREATMENT_CLIP || border == BORDER_TREATMENT_AVOID</tt>
     </ul>
 */
-doxygen_overloaded_function(template<...> void normalizedConvolveImage)
+doxygen_overloaded_function(template <...> void normalizedConvolveImage)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class MaskIterator, class MaskAccessor,
-             class KernelIterator, class KernelAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class MaskIterator, class MaskAccessor,
+              class KernelIterator, class KernelAccessor>
     void normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
                                  MaskIterator mul, MaskAccessor am,
                                  DestIterator dest_ul, DestAccessor dest_acc,
@@ -499,11 +499,11 @@ doxygen_overloaded_function(template<...> void normalizedConvolveImage)
     KSumType norm = ak(ki);
     int xx, yy;
     KernelIterator yk = ki + klr;
-    for (yy = 0; yy < kernel_height; ++yy, --yk.y)
+    for(yy = 0; yy < kernel_height; ++yy, --yk.y)
     {
         KernelIterator xk = yk;
 
-        for (xx = 0; xx < kernel_width; ++xx, --xk.x)
+        for(xx = 0; xx < kernel_width; ++xx, --xk.x)
         {
             norm += ak(xk);
         }
@@ -511,14 +511,14 @@ doxygen_overloaded_function(template<...> void normalizedConvolveImage)
     norm -= ak(ki);
 
 
-    for (y = ystart; y < yend; ++y, ++ys.y, ++yd.y, ++ym.y)
+    for(y = ystart; y < yend; ++y, ++ys.y, ++yd.y, ++ym.y)
     {
         // create x iterators
         DestIterator xd(yd);
         SrcIterator xs(ys);
         MaskIterator xm(ym);
 
-        for (x = xstart; x < xend; ++x, ++xs.x, ++xd.x, ++xm.x)
+        for(x = xstart; x < xend; ++x, ++xs.x, ++xd.x, ++xm.x)
         {
             // how much of the kernel fits into the image ?
             int x0, y0, x1, y1;
@@ -540,19 +540,19 @@ doxygen_overloaded_function(template<...> void normalizedConvolveImage)
             int kernel_width, kernel_height;
             kernel_width = x1 - x0 + 1;
             kernel_height = y1 - y0 + 1;
-            for (yy = 0; yy < kernel_height; ++yy, ++yys.y, --yk.y, ++yym.y)
+            for(yy = 0; yy < kernel_height; ++yy, ++yys.y, --yk.y, ++yym.y)
             {
                 typename SrcIterator::row_iterator xxs = yys.rowIterator();
                 typename SrcIterator::row_iterator xxend = xxs + kernel_width;
                 typename MaskIterator::row_iterator xxm = yym.rowIterator();
                 typename KernelIterator::row_iterator xk = yk.rowIterator();
 
-                for (xx = 0; xxs < xxend; ++xxs, --xk, ++xxm)
+                for(xx = 0; xxs < xxend; ++xxs, --xk, ++xxm)
                 {
-                    if (!am(xxm))
+                    if(!am(xxm))
                         continue;
 
-                    if (first)
+                    if(first)
                     {
                         sum = detail::RequiresExplicitCast<SumType>::cast(ak(xk) * src_acc(xxs));
                         ksum = ak(xk);
@@ -566,7 +566,7 @@ doxygen_overloaded_function(template<...> void normalizedConvolveImage)
                 }
             }
             // store average in destination pixel
-            if (ksum != NumericTraits<KSumType>::zero())
+            if(ksum != NumericTraits<KSumType>::zero())
             {
                 dest_acc.set(DestTraits::fromRealPromote(
                                  detail::RequiresExplicitCast<SumType>::cast((norm / ksum) * sum)),
@@ -577,10 +577,10 @@ doxygen_overloaded_function(template<...> void normalizedConvolveImage)
 }
 
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class MaskIterator, class MaskAccessor,
-         class KernelIterator, class KernelAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class MaskIterator, class MaskAccessor,
+          class KernelIterator, class KernelAccessor>
 inline void
 normalizedConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         pair<MaskIterator, MaskAccessor> mask,
@@ -596,10 +596,10 @@ normalizedConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             kernel.fourth, kernel.fifth);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class TM, class SM,
-         class T3>
+template <class T1, class S1,
+          class T2, class S2,
+          class TM, class SM,
+          class T3>
 inline void
     normalizedConvolveImage(MultiArrayView<2, T1, S1> const& src,
                             MultiArrayView<2, TM, SM> const& mask,
@@ -668,12 +668,12 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void convolveImageWithMask)
+doxygen_overloaded_function(template <...> void convolveImageWithMask)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class MaskIterator, class MaskAccessor,
-             class KernelIterator, class KernelAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class MaskIterator, class MaskAccessor,
+              class KernelIterator, class KernelAccessor>
     inline void convolveImageWithMask(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
                                       MaskIterator mul, MaskAccessor am,
                                       DestIterator dest_ul, DestAccessor dest_acc,
@@ -686,10 +686,10 @@ doxygen_overloaded_function(template<...> void convolveImageWithMask)
                             ki, ak, kul, klr, border);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class MaskIterator, class MaskAccessor,
-         class KernelIterator, class KernelAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class MaskIterator, class MaskAccessor,
+          class KernelIterator, class KernelAccessor>
 inline void
 convolveImageWithMask(
     triple<SrcIterator, SrcIterator, SrcAccessor> src,
@@ -756,7 +756,7 @@ convolveImageWithMask(
 
     See also the init functions.
 */
-template<class ARITHTYPE = double>
+template <class ARITHTYPE = double>
 class Kernel2D
 {
 public:
@@ -805,7 +805,7 @@ public:
 
         InitProxy& operator,(value_type const& v)
         {
-            if (count_ == sum_)
+            if(count_ == sum_)
                 norm_ = *iter_;
 
             --count_;
@@ -859,7 +859,7 @@ public:
          */
     Kernel2D& operator=(Kernel2D const& k)
     {
-        if (this != &k)
+        if(this != &k)
         {
             kernel_ = k.kernel_;
             left_ = k.left_;
@@ -935,11 +935,11 @@ public:
         KIter kiy = ky.center() + left_.y;
         Iterator iy = center() + left_;
 
-        for (int y = left_.y; y <= right_.y; ++y, ++kiy, ++iy.y)
+        for(int y = left_.y; y <= right_.y; ++y, ++kiy, ++iy.y)
         {
             KIter kix = kx.center() + left_.x;
             Iterator ix = iy;
-            for (int x = left_.x; x <= right_.x; ++x, ++kix, ++ix.x)
+            for(int x = left_.x; x <= right_.x; ++x, ++kix, ++ix.x)
             {
                 *ix = ka(kix) * ka(kiy);
             }
@@ -969,7 +969,7 @@ public:
             yright >= 0;
             \endcode
         */
-    template<class KernelIterator>
+    template <class KernelIterator>
     void initSeparable(KernelIterator kxcenter, int xleft, int xright,
                        KernelIterator kycenter, int yleft, int yright)
     {
@@ -988,11 +988,11 @@ public:
         KernelIterator kiy = kycenter + left_.y;
         Iterator iy = center() + left_;
 
-        for (int y = left_.y; y <= right_.y; ++y, ++kiy, ++iy.y)
+        for(int y = left_.y; y <= right_.y; ++y, ++kiy, ++iy.y)
         {
             KernelIterator kix = kxcenter + left_.x;
             Iterator ix = iy;
-            for (int x = left_.x; x <= right_.x; ++x, ++kix, ++ix.x)
+            for(int x = left_.x; x <= right_.x; ++x, ++kix, ++ix.x)
             {
                 *ix = *kix * *kiy;
             }
@@ -1003,7 +1003,7 @@ public:
         norm_ = *i;
         ++i;
 
-        for (; i != iend; ++i)
+        for(; i != iend; ++i)
         {
             norm_ += *i;
         }
@@ -1073,11 +1073,11 @@ public:
         double r2 = (double)radius * radius;
 
         int i;
-        for (i = 0; i <= radius; ++i)
+        for(i = 0; i <= radius; ++i)
         {
             double r = (double)i - 0.5;
             int w = (int)(VIGRA_CSTD::sqrt(r2 - r * r) + 0.5);
-            for (int j = -w; j <= w; ++j)
+            for(int j = -w; j <= w; ++j)
             {
                 k(j, i) = NumericTraits<value_type>::one();
                 k(j, -i) = NumericTraits<value_type>::one();
@@ -1087,9 +1087,9 @@ public:
 
         count = 1.0 / count;
 
-        for (int y = -radius; y <= radius; ++y)
+        for(int y = -radius; y <= radius; ++y)
         {
-            for (int x = -radius; x <= radius; ++x)
+            for(int x = -radius; x <= radius; ++x)
             {
                 k(x, y) = count * k(x, y);
             }
@@ -1174,7 +1174,7 @@ public:
         right_ = Point2D((image.width() - 1) / 2, (image.height() - 1) / 2);
 
         norm_ = 0;
-        for (auto iter = image.begin(); iter != image.end(); ++iter)
+        for(auto iter = image.begin(); iter != image.end(); ++iter)
         {
             norm_ += *iter;
         }
@@ -1297,14 +1297,14 @@ public:
         typename NumericTraits<value_type>::RealPromote sum = *i;
         ++i;
 
-        for (; i != iend; ++i)
+        for(; i != iend; ++i)
         {
             sum += *i;
         }
 
         sum = norm / sum;
         i = kernel_.begin();
-        for (; i != iend; ++i)
+        for(; i != iend; ++i)
         {
             *i = *i * sum;
         }
@@ -1364,7 +1364,7 @@ private:
 /*                                                            */
 /**************************************************************/
 
-template<class KernelIterator, class KernelAccessor>
+template <class KernelIterator, class KernelAccessor>
 inline tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D, BorderTreatmentMode>
 kernel2d(KernelIterator ik, KernelAccessor ak, Diff2D kul, Diff2D klr,
          BorderTreatmentMode border)
@@ -1374,7 +1374,7 @@ kernel2d(KernelIterator ik, KernelAccessor ak, Diff2D kul, Diff2D klr,
         ik, ak, kul, klr, border);
 }
 
-template<class T>
+template <class T>
 inline tuple5<typename Kernel2D<T>::ConstIterator,
               typename Kernel2D<T>::ConstAccessor,
               Diff2D, Diff2D, BorderTreatmentMode>
@@ -1390,7 +1390,7 @@ kernel2d(Kernel2D<T> const& k)
         k.borderTreatment());
 }
 
-template<class T>
+template <class T>
 inline tuple5<typename Kernel2D<T>::ConstIterator,
               typename Kernel2D<T>::ConstAccessor,
               Diff2D, Diff2D, BorderTreatmentMode>

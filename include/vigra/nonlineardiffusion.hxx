@@ -46,8 +46,8 @@
 namespace vigra
 {
 
-template<class SrcIterator, class SrcAccessor,
-         class CoeffIterator, class DestIterator>
+template <class SrcIterator, class SrcAccessor,
+          class CoeffIterator, class DestIterator>
 void
 internalNonlinearDiffusionDiagonalSolver(
     SrcIterator sbegin, SrcIterator send, SrcAccessor sa,
@@ -58,7 +58,7 @@ internalNonlinearDiffusionDiagonalSolver(
 
     int i;
 
-    for (i = 0; i < w; ++i)
+    for(i = 0; i < w; ++i)
     {
         lower[i] = lower[i] / diag[i];
 
@@ -67,23 +67,23 @@ internalNonlinearDiffusionDiagonalSolver(
 
     dbegin[0] = sa(sbegin);
 
-    for (i = 1; i <= w; ++i)
+    for(i = 1; i <= w; ++i)
     {
         dbegin[i] = sa(sbegin, i) - lower[i - 1] * dbegin[i - 1];
     }
 
     dbegin[w] = dbegin[w] / diag[w];
 
-    for (i = w - 1; i >= 0; --i)
+    for(i = w - 1; i >= 0; --i)
     {
         dbegin[i] = (dbegin[i] - upper[i] * dbegin[i + 1]) / diag[i];
     }
 }
 
 
-template<class SrcIterator, class SrcAccessor,
-         class WeightIterator, class WeightAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class WeightIterator, class WeightAccessor,
+          class DestIterator, class DestAccessor>
 void
 internalNonlinearDiffusionAOSStep(
     SrcIterator sul, SrcIterator slr, SrcAccessor as,
@@ -114,7 +114,7 @@ internalNonlinearDiffusionAOSStep(
     DestIterator yd = dul;
 
     // x-direction
-    for (y = 0; y < h; ++y, ++ys.y, ++yd.y, ++yw.y)
+    for(y = 0; y < h; ++y, ++ys.y, ++yd.y, ++yw.y)
     {
         typename SrcIterator::row_iterator xs = ys.rowIterator();
         typename WeightIterator::row_iterator xw = yw.rowIterator();
@@ -123,13 +123,13 @@ internalNonlinearDiffusionAOSStep(
         // fill 3-diag matrix
 
         diag[0] = one + timestep * (aw(xw) + aw(xw, 1));
-        for (x = 1; x < w - 1; ++x)
+        for(x = 1; x < w - 1; ++x)
         {
             diag[x] = one + timestep * (2.0 * aw(xw, x) + aw(xw, x + 1) + aw(xw, x - 1));
         }
         diag[w - 1] = one + timestep * (aw(xw, w - 1) + aw(xw, w - 2));
 
-        for (x = 0; x < w - 1; ++x)
+        for(x = 0; x < w - 1; ++x)
         {
             lower[x] = -timestep * (aw(xw, x) + aw(xw, x + 1));
             upper[x] = lower[x];
@@ -138,7 +138,7 @@ internalNonlinearDiffusionAOSStep(
         internalNonlinearDiffusionDiagonalSolver(xs, xs + w, as,
                                                  diag.begin(), upper.begin(), lower.begin(), res.begin());
 
-        for (x = 0; x < w; ++x, ++xd)
+        for(x = 0; x < w; ++x, ++xd)
         {
             ad.set(res[x], xd);
         }
@@ -149,7 +149,7 @@ internalNonlinearDiffusionAOSStep(
     yw = wul;
     yd = dul;
 
-    for (x = 0; x < w; ++x, ++ys.x, ++yd.x, ++yw.x)
+    for(x = 0; x < w; ++x, ++ys.x, ++yd.x, ++yw.x)
     {
         typename SrcIterator::column_iterator xs = ys.columnIterator();
         typename WeightIterator::column_iterator xw = yw.columnIterator();
@@ -158,13 +158,13 @@ internalNonlinearDiffusionAOSStep(
         // fill 3-diag matrix
 
         diag[0] = one + timestep * (aw(xw) + aw(xw, 1));
-        for (y = 1; y < h - 1; ++y)
+        for(y = 1; y < h - 1; ++y)
         {
             diag[y] = one + timestep * (2.0 * aw(xw, y) + aw(xw, y + 1) + aw(xw, y - 1));
         }
         diag[h - 1] = one + timestep * (aw(xw, h - 1) + aw(xw, h - 2));
 
-        for (y = 0; y < h - 1; ++y)
+        for(y = 0; y < h - 1; ++y)
         {
             lower[y] = -timestep * (aw(xw, y) + aw(xw, y + 1));
             upper[y] = lower[y];
@@ -173,7 +173,7 @@ internalNonlinearDiffusionAOSStep(
         internalNonlinearDiffusionDiagonalSolver(xs, xs + h, as,
                                                  diag.begin(), upper.begin(), lower.begin(), res.begin());
 
-        for (y = 0; y < h; ++y, ++xd)
+        for(y = 0; y < h; ++y, ++xd)
         {
             ad.set(0.5 * (ad(xd) + res[y]), xd);
         }
@@ -328,11 +328,11 @@ internalNonlinearDiffusionAOSStep(
     
     \see vigra::DiffusivityFunctor
 */
-doxygen_overloaded_function(template<...> void nonlinearDiffusion)
+doxygen_overloaded_function(template <...> void nonlinearDiffusion)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class DiffusivityFunc>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class DiffusivityFunc>
     void nonlinearDiffusion(SrcIterator sul, SrcIterator slr, SrcAccessor as,
                             DestIterator dul, DestAccessor ad,
                             DiffusivityFunc const& weight, double scale)
@@ -366,7 +366,7 @@ doxygen_overloaded_function(template<...> void nonlinearDiffusion)
 
     internalNonlinearDiffusionAOSStep(sul, slr, as, wi, wa, s1, a, rest_time);
 
-    for (int i = 0; i < number_of_steps; ++i)
+    for(int i = 0; i < number_of_steps; ++i)
     {
         gradientBasedTransform(s1, s1 + size, a, wi, wa, weight);
 
@@ -378,9 +378,9 @@ doxygen_overloaded_function(template<...> void nonlinearDiffusion)
     copyImage(s1, s1 + size, a, dul, ad);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class DiffusivityFunc>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class DiffusivityFunc>
 inline void
 nonlinearDiffusion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
@@ -391,9 +391,9 @@ nonlinearDiffusion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        weight, scale);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class DiffusivityFunc>
+template <class T1, class S1,
+          class T2, class S2,
+          class DiffusivityFunc>
 inline void
     nonlinearDiffusion(MultiArrayView<2, T1, S1> const& src,
                        MultiArrayView<2, T2, S2> dest,
@@ -408,9 +408,9 @@ inline void
 
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor,
-         class WeightIterator, class WeightAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class WeightIterator, class WeightAccessor,
+          class DestIterator, class DestAccessor>
 void
 internalNonlinearDiffusionExplicitStep(
     SrcIterator sul, SrcIterator slr, SrcAccessor as,
@@ -465,7 +465,7 @@ internalNonlinearDiffusionExplicitStep(
 
     ad.set(sum, xd);
 
-    for (x = 2, ++xs.x, ++xd.x, ++xw.x; x < w; ++x, ++xs.x, ++xd.x, ++xw.x)
+    for(x = 2, ++xs.x, ++xd.x, ++xw.x; x < w; ++x, ++xs.x, ++xd.x, ++xw.x)
     {
         gt = (aw(xw) + aw(xw, bottom)) * time_step;
         gb = (aw(xw) + aw(xw, bottom)) * time_step;
@@ -496,7 +496,7 @@ internalNonlinearDiffusionExplicitStep(
 
     ad.set(sum, xd);
 
-    for (y = 2, ++ys.y, ++yd.y, ++yw.y; y < h; ++y, ++ys.y, ++yd.y, ++yw.y)
+    for(y = 2, ++ys.y, ++yd.y, ++yw.y; y < h; ++y, ++ys.y, ++yd.y, ++yw.y)
     {
         xs = ys;
         xd = yd;
@@ -516,7 +516,7 @@ internalNonlinearDiffusionExplicitStep(
 
         ad.set(sum, xd);
 
-        for (x = 2, ++xs.x, ++xd.x, ++xw.x; x < w; ++x, ++xs.x, ++xd.x, ++xw.x)
+        for(x = 2, ++xs.x, ++xd.x, ++xw.x; x < w; ++x, ++xs.x, ++xd.x, ++xw.x)
         {
             gt = (aw(xw) + aw(xw, top)) * time_step;
             gb = (aw(xw) + aw(xw, bottom)) * time_step;
@@ -566,7 +566,7 @@ internalNonlinearDiffusionExplicitStep(
 
     ad.set(sum, xd);
 
-    for (x = 2, ++xs.x, ++xd.x, ++xw.x; x < w; ++x, ++xs.x, ++xd.x, ++xw.x)
+    for(x = 2, ++xs.x, ++xd.x, ++xw.x; x < w; ++x, ++xs.x, ++xd.x, ++xw.x)
     {
         gt = (aw(xw) + aw(xw, top)) * time_step;
         gb = (aw(xw) + aw(xw, top)) * time_step;
@@ -602,11 +602,11 @@ internalNonlinearDiffusionExplicitStep(
 
     See \ref nonlinearDiffusion().
 */
-doxygen_overloaded_function(template<...> void nonlinearDiffusionExplicit)
+doxygen_overloaded_function(template <...> void nonlinearDiffusionExplicit)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class DiffusivityFunc>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class DiffusivityFunc>
     void nonlinearDiffusionExplicit(SrcIterator sul, SrcIterator slr, SrcAccessor as,
                                     DestIterator dul, DestAccessor ad,
                                     DiffusivityFunc const& weight, double scale)
@@ -640,7 +640,7 @@ doxygen_overloaded_function(template<...> void nonlinearDiffusionExplicit)
 
     internalNonlinearDiffusionExplicitStep(sul, slr, as, wi, wa, s1, a, rest_time);
 
-    for (int i = 0; i < number_of_steps; ++i)
+    for(int i = 0; i < number_of_steps; ++i)
     {
         gradientBasedTransform(s1, s1 + size, a, wi, wa, weight);
 
@@ -652,9 +652,9 @@ doxygen_overloaded_function(template<...> void nonlinearDiffusionExplicit)
     copyImage(s1, s1 + size, a, dul, ad);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class DiffusivityFunc>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class DiffusivityFunc>
 inline void
 nonlinearDiffusionExplicit(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                            pair<DestIterator, DestAccessor> dest,
@@ -665,9 +665,9 @@ nonlinearDiffusionExplicit(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                weight, scale);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class DiffusivityFunc>
+template <class T1, class S1,
+          class T2, class S2,
+          class DiffusivityFunc>
 inline void
     nonlinearDiffusionExplicit(MultiArrayView<2, T1, S1> const& src,
                                MultiArrayView<2, T2, S2> dest,
@@ -700,7 +700,7 @@ inline void
     magnitude is interpreted as a significant edge (above the threshold)
     or as noise. It is meant to be used with \ref nonlinearDiffusion().
 */
-template<class Value>
+template <class Value>
 class DiffusivityFunctor
 {
 public:
@@ -762,7 +762,7 @@ public:
     result_type zero_;
 };
 
-template<class ValueType>
+template <class ValueType>
 class FunctorTraits<DiffusivityFunctor<ValueType>>
     : public FunctorTraitsBase<DiffusivityFunctor<ValueType>>
 {

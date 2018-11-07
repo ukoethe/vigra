@@ -197,7 +197,7 @@ ExrDecoderImpl::nextScanline()
     scanline++;
     // convert scanline to float
     float* dest = bands.begin();
-    for (int i = 0; i < width; i++)
+    for(int i = 0; i < width; i++)
     {
         *dest++ = pixels[i].r;
         *dest++ = pixels[i].g;
@@ -355,7 +355,7 @@ ExrEncoderImpl::ExrEncoderImpl(const std::string& filename)
 
 ExrEncoderImpl::~ExrEncoderImpl()
 {
-    if (file)
+    if(file)
         delete file;
 }
 
@@ -368,8 +368,8 @@ ExrEncoderImpl::finalize()
 
     // set proper position
     Imath::Box2i displayWindow;
-    if (canvasSize.x < width + position.x ||
-        canvasSize.y < height + position.y)
+    if(canvasSize.x < width + position.x ||
+       canvasSize.y < height + position.y)
     {
         displayWindow.min.x = 0;
         displayWindow.min.y = 0;
@@ -395,10 +395,10 @@ void
 ExrEncoderImpl::nextScanline()
 {
     // check if there are scanlines left at all, eventually write one
-    if (scanline < height)
+    if(scanline < height)
     {
         float* src = bands.data();
-        for (int i = 0; i < width; i++)
+        for(int i = 0; i < width; i++)
         {
             // convert to half
             pixels[i].r = *src++;
@@ -415,20 +415,20 @@ ExrEncoderImpl::nextScanline()
 void
 ExrEncoderImpl::setCompressionType(const std::string& comp, int quality)
 {
-    if (comp == "NONE")
+    if(comp == "NONE")
         exrcomp = NO_COMPRESSION;
-    else if (comp == "ZIP")
+    else if(comp == "ZIP")
         exrcomp = ZIP_COMPRESSION;
-    else if (comp == "RLE" || comp == "RunLength")
+    else if(comp == "RLE" || comp == "RunLength")
         exrcomp = RLE_COMPRESSION;
-    else if (comp == "PIZ")
+    else if(comp == "PIZ")
         exrcomp = PIZ_COMPRESSION;
-    else if (comp == "PXR24")
+    else if(comp == "PXR24")
         exrcomp = PXR24_COMPRESSION;
 #if defined(IMF_B44_COMPRESSION) && defined(IMF_B44A_COMPRESSION)
-    else if (comp == "B44")
+    else if(comp == "B44")
         exrcomp = B44_COMPRESSION;
-    else if (comp == "B44A")
+    else if(comp == "B44A")
         exrcomp = B44A_COMPRESSION;
 #endif
 }
@@ -474,7 +474,7 @@ ExrEncoder::setHeight(unsigned int height)
 void
 ExrEncoder::setNumBands(unsigned int bands)
 {
-    if (bands != 4)
+    if(bands != 4)
         vigra_fail("internal error: number of components not supported.");
     pimpl->components = bands;
 }
@@ -519,7 +519,7 @@ void
 ExrEncoder::setPixelType(const std::string& pixelType)
 {
     VIGRA_IMPEX_FINALIZED(pimpl->finalized);
-    if (pixelType != "FLOAT")
+    if(pixelType != "FLOAT")
         vigra_fail("internal error: pixeltype not supported.");
 }
 

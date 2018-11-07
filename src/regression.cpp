@@ -11,9 +11,9 @@ main()
     int ss = 0;
     Matrix<double> resp(100, 1);
     Matrix<double> resp2(100, 1);
-    for (int ii = 0; ii < 10; ++ii)
+    for(int ii = 0; ii < 10; ++ii)
     {
-        for (int jj = 0; jj < 10; ++jj)
+        for(int jj = 0; jj < 10; ++jj)
         {
             feat(ss, 0) = ii;
             feat(ss, 1) = jj;
@@ -23,7 +23,7 @@ main()
     }
     rf.learn(feat, resp, create_visitor(testVisitor), RegressionSplit());
     rf.predictRaw(feat, resp2);
-    for (int ii = 0; ii < 100; ++ii)
+    for(int ii = 0; ii < 100; ++ii)
     {
         std::cerr << resp(ii, 0) << " " << resp2(ii, 0) << std::endl;
     }

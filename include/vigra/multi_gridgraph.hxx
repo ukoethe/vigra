@@ -41,13 +41,13 @@
 #include "multi_fwd.hxx"
 #include "multi_iterator.hxx"
 
-template<unsigned int N>
+template <unsigned int N>
 struct NeighborhoodTests;
 
 namespace vigra
 {
 
-template<unsigned int N, class T, class Stride>
+template <unsigned int N, class T, class Stride>
 inline
     typename vigra::MultiArrayView<N, T, Stride>::const_reference
     get(vigra::MultiArrayView<N, T, Stride> const& pmap,
@@ -81,7 +81,7 @@ and to reconstruct the corresponding source/target nodes.
 
 FIXME: store edge index in (*this)[0] ??
 */
-template<unsigned int N>
+template <unsigned int N>
 class GridGraphArcDescriptor
     : public MultiArrayShape<N + 1>::type
 {
@@ -127,7 +127,7 @@ public:
 
     void increment(GridGraphArcDescriptor const& diff, bool opposite = false)
     {
-        if (diff.is_reversed_)
+        if(diff.is_reversed_)
         {
             is_reversed_ = !opposite;
             this->template subarray<0, N>() += diff.template subarray<0, N>();
@@ -166,29 +166,29 @@ gridGraphMaxDegree(unsigned int N, NeighborhoodType t)
                : pow(3.0, (int)N) - 1;
 }
 
-template<unsigned int N, NeighborhoodType>
+template <unsigned int N, NeighborhoodType>
 struct GridGraphMaxDegree;
 
-template<unsigned int N>
+template <unsigned int N>
 struct GridGraphMaxDegree<N, DirectNeighborhood>
 {
     static const MultiArrayIndex value = 2 * N;
 };
 
-template<unsigned int N>
+template <unsigned int N>
 struct GridGraphMaxDegree<N, IndirectNeighborhood>
 {
     static const MultiArrayIndex value = MetaPow<3, N>::value - 1;
 };
 
-template<class Shape>
+template <class Shape>
 MultiArrayIndex
 gridGraphEdgeCount(Shape const& shape, NeighborhoodType t, bool directed)
 {
     int res = 0;
-    if (t == DirectNeighborhood)
+    if(t == DirectNeighborhood)
     {
-        for (unsigned int k = 0; k < shape.size(); ++k)
+        for(unsigned int k = 0; k < shape.size(); ++k)
             res += 2 * prod(shape - Shape::unitVector(k));
     }
     else
@@ -203,7 +203,7 @@ gridGraphEdgeCount(Shape const& shape, NeighborhoodType t, bool directed)
 namespace detail
 {
 
-template<class Shape>
+template <class Shape>
 void
 computeNeighborOffsets(ArrayVector<Shape> const& neighborOffsets,
                        ArrayVector<ArrayVector<bool>> const& neighborExists,
@@ -221,18 +221,18 @@ computeNeighborOffsets(ArrayVector<Shape> const& neighborOffsets,
     indices.resize(borderTypeCount);
     backIndices.resize(borderTypeCount);
 
-    for (unsigned int k = 0; k < borderTypeCount; ++k)
+    for(unsigned int k = 0; k < borderTypeCount; ++k)
     {
         incrementOffsets[k].clear();
         edgeDescriptorOffsets[k].clear();
         indices[k].clear();
         backIndices[k].clear();
 
-        for (unsigned int j = 0; j < neighborOffsets.size(); ++j)
+        for(unsigned int j = 0; j < neighborOffsets.size(); ++j)
         {
-            if (neighborExists[k][j])
+            if(neighborExists[k][j])
             {
-                if (incrementOffsets[k].size() == 0)
+                if(incrementOffsets[k].size() == 0)
                 {
                     incrementOffsets[k].push_back(neighborOffsets[j]);
                 }
@@ -241,11 +241,11 @@ computeNeighborOffsets(ArrayVector<Shape> const& neighborOffsets,
                     incrementOffsets[k].push_back(neighborOffsets[j] - neighborOffsets[indices[k].back()]);
                 }
 
-                if (directed || j < neighborOffsets.size() / 2) // directed or backward edge
+                if(directed || j < neighborOffsets.size() / 2) // directed or backward edge
                 {
                     edgeDescriptorOffsets[k].push_back(EdgeDescriptor(Shape(), j));
                 }
-                else if (edgeDescriptorOffsets[k].size() == 0 || !edgeDescriptorOffsets[k].back().isReversed()) // the first forward edge
+                else if(edgeDescriptorOffsets[k].size() == 0 || !edgeDescriptorOffsets[k].back().isReversed()) // the first forward edge
                 {
                     edgeDescriptorOffsets[k].push_back(EdgeDescriptor(neighborOffsets[j], neighborOffsets.size() - j - 1, true));
                 }
@@ -256,7 +256,7 @@ computeNeighborOffsets(ArrayVector<Shape> const& neighborOffsets,
                 }
 
                 indices[k].push_back(j);
-                if (j < neighborOffsets.size() / 2)
+                if(j < neighborOffsets.size() / 2)
                     backIndices[k].push_back(j);
             }
         }
@@ -265,7 +265,7 @@ computeNeighborOffsets(ArrayVector<Shape> const& neighborOffsets,
 
 } // namespace detail
 
-template<unsigned int N, bool BackEdgesOnly>
+template <unsigned int N, bool BackEdgesOnly>
 class GridGraphNeighborIterator
 {
 public:
@@ -290,7 +290,7 @@ public:
     {
     }
 
-    template<class DirectedTag>
+    template <class DirectedTag>
     GridGraphNeighborIterator(GridGraph<N, DirectedTag> const& g, typename GridGraph<N, DirectedTag>::Node const& v)
         : neighborOffsets_(0),
           neighborIndices_(0),
@@ -303,7 +303,7 @@ public:
         updateTarget();
     }
 
-    template<class DirectedTag>
+    template <class DirectedTag>
     GridGraphNeighborIterator(GridGraph<N, DirectedTag> const& g, typename GridGraph<N, DirectedTag>::NodeIt const& v)
         : neighborOffsets_(0),
           neighborIndices_(0),
@@ -407,7 +407,7 @@ protected:
 
     void updateTarget()
     {
-        if (isValid())
+        if(isValid())
             target_ += (*neighborOffsets_)[index_];
     }
 
@@ -417,7 +417,7 @@ protected:
     MultiArrayIndex index_;
 };
 
-template<unsigned int N, bool BackEdgesOnly>
+template <unsigned int N, bool BackEdgesOnly>
 class GridGraphOutEdgeIterator
 {
 public:
@@ -442,7 +442,7 @@ public:
     {
     }
 
-    template<class DirectedTag>
+    template <class DirectedTag>
     GridGraphOutEdgeIterator(GridGraph<N, DirectedTag> const& g,
                              typename GridGraph<N, DirectedTag>::NodeIt const& v,
                              bool opposite = false)
@@ -451,7 +451,7 @@ public:
           edge_descriptor_(),
           index_(0)
     {
-        if (v.isValid())
+        if(v.isValid())
         {
             unsigned int nbtype = g.get_border_type(v);
             init(&(*g.edgeIncrementArray())[nbtype], &(*g.neighborIndexArray(BackEdgesOnly))[nbtype], *v, opposite);
@@ -462,7 +462,7 @@ public:
         }
     }
 
-    template<class DirectedTag>
+    template <class DirectedTag>
     GridGraphOutEdgeIterator(GridGraph<N, DirectedTag> const& g,
                              typename GridGraph<N, DirectedTag>::Node const& v,
                              bool opposite = false)
@@ -471,7 +471,7 @@ public:
           edge_descriptor_(),
           index_(0)
     {
-        if (isInside(g, v))
+        if(isInside(g, v))
         {
             unsigned int nbtype = g.get_border_type(v);
             init(&(*g.edgeIncrementArray())[nbtype], &(*g.neighborIndexArray(BackEdgesOnly))[nbtype], v, opposite);
@@ -586,7 +586,7 @@ protected:
 
     void updateEdgeDescriptor(bool opposite)
     {
-        if (isValid())
+        if(isValid())
             edge_descriptor_.increment((*neighborOffsets_)[index_], opposite);
     }
 
@@ -596,7 +596,7 @@ protected:
     index_type index_;
 };
 
-template<unsigned int N, bool BackEdgesOnly>
+template <unsigned int N, bool BackEdgesOnly>
 class GridGraphOutArcIterator
     : public GridGraphOutEdgeIterator<N, BackEdgesOnly>
 {
@@ -625,13 +625,13 @@ public:
     {
     }
 
-    template<class DirectedTag>
+    template <class DirectedTag>
     GridGraphOutArcIterator(GridGraph<N, DirectedTag> const& g, typename GridGraph<N, DirectedTag>::NodeIt const& v)
         : base_type(g, v)
     {
     }
 
-    template<class DirectedTag>
+    template <class DirectedTag>
     GridGraphOutArcIterator(GridGraph<N, DirectedTag> const& g, typename GridGraph<N, DirectedTag>::Node const& v)
         : base_type(g, v)
     {
@@ -681,7 +681,7 @@ protected:
     }
 };
 
-template<unsigned int N, bool BackEdgesOnly>
+template <unsigned int N, bool BackEdgesOnly>
 class GridGraphInArcIterator
     : public GridGraphOutEdgeIterator<N, BackEdgesOnly>
 {
@@ -709,13 +709,13 @@ public:
     {
     }
 
-    template<class DirectedTag>
+    template <class DirectedTag>
     GridGraphInArcIterator(GridGraph<N, DirectedTag> const& g, typename GridGraph<N, DirectedTag>::NodeIt const& v)
         : base_type(g, v, true)
     {
     }
 
-    template<class DirectedTag>
+    template <class DirectedTag>
     GridGraphInArcIterator(GridGraph<N, DirectedTag> const& g, typename GridGraph<N, DirectedTag>::Node const& v)
         : base_type(g, v, true)
     {
@@ -757,7 +757,7 @@ public:
 
 // Edge iterator for directed and undirected graphs.
 // Composed of a vertex_iterator and an out_edge_iterator.
-template<unsigned int N, bool BackEdgesOnly>
+template <unsigned int N, bool BackEdgesOnly>
 class GridGraphEdgeIterator
 {
 public:
@@ -784,41 +784,41 @@ public:
     {
     }
 
-    template<class DirectedTag>
+    template <class DirectedTag>
     GridGraphEdgeIterator(GridGraph<N, DirectedTag> const& g)
         : neighborOffsets_(g.edgeIncrementArray()),
           neighborIndices_(g.neighborIndexArray(BackEdgesOnly)),
           vertexIterator_(g),
           outEdgeIterator_(g, vertexIterator_)
     {
-        if (outEdgeIterator_.atEnd()) // in a undirected graph, the first point stores no edges
+        if(outEdgeIterator_.atEnd()) // in a undirected graph, the first point stores no edges
         {
             ++vertexIterator_;
-            if (vertexIterator_.isValid())
+            if(vertexIterator_.isValid())
                 outEdgeIterator_ = out_edge_iterator(g, vertexIterator_);
         }
     }
 
 
 
-    template<class DirectedTag>
+    template <class DirectedTag>
     GridGraphEdgeIterator(GridGraph<N, DirectedTag> const& g, const typename GridGraph<N, DirectedTag>::Edge& edge)
         : neighborOffsets_(g.edgeIncrementArray()),
           neighborIndices_(g.neighborIndexArray(BackEdgesOnly)),
           vertexIterator_(g, g.u(edge)),
           outEdgeIterator_(g, vertexIterator_)
     {
-        if (vertexIterator_.isValid())
+        if(vertexIterator_.isValid())
         {
             // vigra_precondition(edge!=lemon::INVALID,"no invalid edges here");
             // vigra_precondition( allLess(*vertexIterator_,g.shape()), "fixme1");
             // vigra_precondition( allGreaterEqual(*vertexIterator_,shape_type() ), "fixme2");
 
 
-            if (edge[N] >= 0 && edge[N] < g.maxUniqueDegree() &&
-                (*(g.neighborExistsArray()))[vertexIterator_.borderType()][edge[N]])
+            if(edge[N] >= 0 && edge[N] < g.maxUniqueDegree() &&
+               (*(g.neighborExistsArray()))[vertexIterator_.borderType()][edge[N]])
             {
-                while (*outEdgeIterator_ != edge)
+                while(*outEdgeIterator_ != edge)
                 {
                     ++outEdgeIterator_;
                 }
@@ -839,10 +839,10 @@ public:
     GridGraphEdgeIterator& operator++()
     {
         ++outEdgeIterator_;
-        if (outEdgeIterator_.atEnd())
+        if(outEdgeIterator_.atEnd())
         {
             ++vertexIterator_;
-            if (vertexIterator_.isValid())
+            if(vertexIterator_.isValid())
             {
                 unsigned int borderType = vertexIterator_.borderType();
                 outEdgeIterator_.init(&(*neighborOffsets_)[borderType], &(*neighborIndices_)[borderType], *vertexIterator_);
@@ -923,10 +923,10 @@ protected:
                            neighborIndices[vertexIterator_.borderType()],
                            backIndices[vertexIterator_.borderType()], shape_type())
     {
-        if (outEdgeIterator_.atEnd()) // in a undirected graph, the first point stores no edges
+        if(outEdgeIterator_.atEnd()) // in a undirected graph, the first point stores no edges
         {
             ++vertexIterator_;
-            if (vertexIterator_.isValid())
+            if(vertexIterator_.isValid())
             {
                 unsigned int borderType = vertexIterator_.borderType();
                 outEdgeIterator_.init(&(*neighborOffsets_)[borderType], &(*neighborIndices_)[borderType], *vertexIterator_);
@@ -940,7 +940,7 @@ protected:
     out_edge_iterator outEdgeIterator_;
 };
 
-template<unsigned int N, bool BackEdgesOnly>
+template <unsigned int N, bool BackEdgesOnly>
 class GridGraphArcIterator
     : public GridGraphEdgeIterator<N, BackEdgesOnly>
 {
@@ -973,7 +973,7 @@ public:
     {
     }
 
-    template<class DirectedTag>
+    template <class DirectedTag>
     GridGraphArcIterator(GridGraph<N, DirectedTag> const& g)
         : base_type(g)
     {
@@ -1023,28 +1023,28 @@ protected:
     }
 };
 
-template<unsigned int N>
+template <unsigned int N>
 inline bool
 operator==(MultiCoordinateIterator<N> const& i, lemon::Invalid)
 {
     return i.atEnd();
 }
 
-template<unsigned int N>
+template <unsigned int N>
 inline bool
 operator!=(MultiCoordinateIterator<N> const& i, lemon::Invalid)
 {
     return i.isValid();
 }
 
-template<unsigned int N>
+template <unsigned int N>
 inline bool
 operator==(lemon::Invalid, MultiCoordinateIterator<N> const& i)
 {
     return i.atEnd();
 }
 
-template<unsigned int N>
+template <unsigned int N>
 inline bool
 operator!=(lemon::Invalid, MultiCoordinateIterator<N> const& i)
 {
@@ -1052,22 +1052,22 @@ operator!=(lemon::Invalid, MultiCoordinateIterator<N> const& i)
 }
 
 #define VIGRA_LEMON_INVALID_COMPARISON(type)                                \
-    template<unsigned int N, bool BackEdgesOnly>                            \
+    template <unsigned int N, bool BackEdgesOnly>                           \
     inline bool operator==(type<N, BackEdgesOnly> const& i, lemon::Invalid) \
     {                                                                       \
         return i.atEnd();                                                   \
     }                                                                       \
-    template<unsigned int N, bool BackEdgesOnly>                            \
+    template <unsigned int N, bool BackEdgesOnly>                           \
     inline bool operator!=(type<N, BackEdgesOnly> const& i, lemon::Invalid) \
     {                                                                       \
         return i.isValid();                                                 \
     }                                                                       \
-    template<unsigned int N, bool BackEdgesOnly>                            \
+    template <unsigned int N, bool BackEdgesOnly>                           \
     inline bool operator==(lemon::Invalid, type<N, BackEdgesOnly> const& i) \
     {                                                                       \
         return i.atEnd();                                                   \
     }                                                                       \
-    template<unsigned int N, bool BackEdgesOnly>                            \
+    template <unsigned int N, bool BackEdgesOnly>                           \
     inline bool operator!=(lemon::Invalid, type<N, BackEdgesOnly> const& i) \
     {                                                                       \
         return i.isValid();                                                 \
@@ -1088,13 +1088,13 @@ using boost_graph::undirected_tag;
 namespace detail
 {
 
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 struct GridGraphBase;
 
-template<unsigned int N>
+template <unsigned int N>
 struct GridGraphBase<N, directed_tag>
 {
-    template<class T>
+    template <class T>
     class ArcMap
         : public MultiArray<N + 1, Multiband<T>>
     {
@@ -1159,12 +1159,12 @@ struct GridGraphBase<N, directed_tag>
     };
 };
 
-template<unsigned int N>
+template <unsigned int N>
 struct GridGraphBase<N, undirected_tag>
 {
     typedef lemon::True UndirectedTag;
 
-    template<class T>
+    template <class T>
     class ArcMap
         : public MultiArray<N + 1, Multiband<T>>
     {
@@ -1214,7 +1214,7 @@ struct GridGraphBase<N, undirected_tag>
 
         reference operator[](difference_type const& s)
         {
-            if (s.isReversed())
+            if(s.isReversed())
             {
                 return base_type::operator[](graph_->directedArc(s));
             }
@@ -1226,7 +1226,7 @@ struct GridGraphBase<N, undirected_tag>
 
         const_reference operator[](difference_type const& s) const
         {
-            if (s.isReversed())
+            if(s.isReversed())
             {
                 return base_type::operator[](graph_->directedArc(s));
             }
@@ -1457,7 +1457,7 @@ struct GridGraphBase<N, undirected_tag>
     A slightly enhanced version of this code is actually used to implement this
     functionality in VIGRA.
 */
-template<unsigned int N, class DirectedTag = undirected_tag>
+template <unsigned int N, class DirectedTag = undirected_tag>
 class GridGraph
     : public detail::GridGraphBase<N, DirectedTag>
 {
@@ -1650,7 +1650,7 @@ public:
     /** \brief Type of a node property map that maps node descriptor objects 
             onto property values of type <tt>T</tt> (API: LEMON).
         */
-    template<class T>
+    template <class T>
     class NodeMap
         : public MultiArray<N, T>
     {
@@ -1743,7 +1743,7 @@ public:
     /** \brief Type of an edge property map that maps edge descriptor objects 
             onto property values of type <tt>T</tt> (API: LEMON).
         */
-    template<class T>
+    template <class T>
     class EdgeMap
         : public MultiArray<N + 1, Multiband<T>>
     {
@@ -1836,7 +1836,7 @@ public:
     /** \brief Type of an arc property map that maps arc descriptor objects 
             onto property values of type <tt>T</tt> (API: LEMON).
         */
-    template<class T>
+    template <class T>
     class ArcMap
         : public MultiArray<N + 1, Multiband<T>>
     {
@@ -2038,7 +2038,7 @@ public:
         */
     Node nodeFromId(index_type i) const
     {
-        if (i < 0 || i > maxNodeId())
+        if(i < 0 || i > maxNodeId())
             return Node(lemon::INVALID);
 
         Node res(SkipInitialization);
@@ -2172,14 +2172,14 @@ public:
         */
     Edge edgeFromId(index_type i) const
     {
-        if (i < 0 || i > maxEdgeId())
+        if(i < 0 || i > maxEdgeId())
             return Edge(lemon::INVALID);
 
         Edge res(SkipInitialization);
         detail::ScanOrderToCoordinate<N + 1>::exec(i, edge_propmap_shape(), res);
 
         unsigned int b = detail::BorderTypeImpl<N>::exec(res.template subarray<0, N>(), shape());
-        if (neighborExists_[b][res[N]])
+        if(neighborExists_[b][res[N]])
             return res;
         else
             return Edge(lemon::INVALID);
@@ -2189,7 +2189,7 @@ public:
         */
     index_type maxEdgeId() const
     {
-        if (max_edge_id_ == -2) // -2 means uninitialized
+        if(max_edge_id_ == -2) // -2 means uninitialized
             const_cast<GridGraph*>(this)->computeMaxEdgeAndArcId();
         return max_edge_id_;
     }
@@ -2199,7 +2199,7 @@ public:
         */
     void computeMaxEdgeAndArcId()
     {
-        if (edgeNum() == 0)
+        if(edgeNum() == 0)
         {
             max_arc_id_ = -1;
             max_edge_id_ = -1;
@@ -2211,7 +2211,7 @@ public:
             Arc a(neighbor(lastNode, n), oppositeIndex(n), false);
             max_arc_id_ = detail::CoordinateToScanOrder<N + 1>::exec(arc_propmap_shape(), a);
 
-            if (is_directed)
+            if(is_directed)
             {
                 max_edge_id_ = max_arc_id_;
             }
@@ -2253,13 +2253,13 @@ public:
         */
     Arc arcFromId(index_type i) const
     {
-        if (i < 0 || i > maxArcId())
+        if(i < 0 || i > maxArcId())
             return Arc(lemon::INVALID);
 
         Arc res;
         detail::ScanOrderToCoordinate<N + 1>::exec(i, arc_propmap_shape(), res);
         unsigned int b = detail::BorderTypeImpl<N>::exec(res.template subarray<0, N>(), shape());
-        if (neighborExists_[b][res[N]])
+        if(neighborExists_[b][res[N]])
             return undirectedArc(res);
         else
             return Arc(lemon::INVALID);
@@ -2269,7 +2269,7 @@ public:
         */
     index_type maxArcId() const
     {
-        if (max_arc_id_ == -2) // -2 means uninitialized
+        if(max_arc_id_ == -2) // -2 means uninitialized
             const_cast<GridGraph*>(this)->computeMaxEdgeAndArcId();
         return max_arc_id_;
     }
@@ -2288,7 +2288,7 @@ public:
         */
     Arc direct(Edge const& e, bool forward) const
     {
-        if (!is_directed || forward)
+        if(!is_directed || forward)
             return Arc(e, !forward);
         else
             return Arc(v(e), oppositeIndex(e[N]), true);
@@ -2300,9 +2300,9 @@ public:
         */
     Arc direct(Edge const& e, Node const& n) const
     {
-        if (u(e) == n)
+        if(u(e) == n)
             return direct(e, true);
-        if (v(e) == n)
+        if(v(e) == n)
             return direct(e, false);
         return Arc(lemon::INVALID);
     }
@@ -2314,9 +2314,9 @@ public:
     Node oppositeNode(Node const& n, Edge const& e) const
     {
         Node start(u(e)), end(v(e));
-        if (n == start)
+        if(n == start)
             return end;
-        if (n == end)
+        if(n == end)
             return start;
         return Node(lemon::INVALID);
     }
@@ -2595,9 +2595,9 @@ public:
 
         neighbor_vertex_iterator i = get_neighbor_vertex_iterator(u),
                                  end = i.getEndIterator();
-        for (; i != end; ++i)
+        for(; i != end; ++i)
         {
-            if (*i == v)
+            if(*i == v)
             {
                 res.first = make_edge_descriptor(u, i.neighborIndex());
                 res.second = true;
@@ -2694,7 +2694,7 @@ public:
     edge_descriptor make_edge_descriptor(vertex_descriptor const& v,
                                          index_type neighborIndex) const
     {
-        if (neighborIndex < maxUniqueDegree())
+        if(neighborIndex < maxUniqueDegree())
             return edge_descriptor(v, neighborIndex, false);
         else
             return edge_descriptor(neighbor(v, neighborIndex), oppositeIndex(neighborIndex), true);
@@ -2715,8 +2715,8 @@ public:
     {
         // source is always the attached node (first coords) unless the
         // edge has been reversed.
-        if ((return_source && e.isReversed()) ||
-            (!return_source && !e.isReversed()))
+        if((return_source && e.isReversed()) ||
+           (!return_source && !e.isReversed()))
         {
             return neighbor(e.vertexDescriptor(), e.edgeIndex());
         }
@@ -2764,7 +2764,7 @@ protected:
     NeighborhoodType neighborhoodType_;
 };
 
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 inline bool
 isInside(GridGraph<N, DirectedTag> const& g,
          typename GridGraph<N, DirectedTag>::vertex_descriptor const& v)
@@ -2790,7 +2790,7 @@ namespace boost_graph
 
 
 
-template<unsigned int N, class T, class Acc>
+template <unsigned int N, class T, class Acc>
 struct property_traits<vigra::MultiArray<N, T, Acc>>
 {
     typedef vigra::MultiArray<N, T, Acc> type;
@@ -2800,7 +2800,7 @@ struct property_traits<vigra::MultiArray<N, T, Acc>>
     typedef read_write_property_map_tag category;
 };
 
-template<unsigned int N, class T, class Acc>
+template <unsigned int N, class T, class Acc>
 struct property_traits<vigra::MultiArray<N, T, Acc> const>
 {
     typedef vigra::MultiArray<N, T, Acc> const type;
@@ -2810,7 +2810,7 @@ struct property_traits<vigra::MultiArray<N, T, Acc> const>
     typedef readable_property_map_tag category;
 };
 
-template<unsigned int N, class T, class Stride>
+template <unsigned int N, class T, class Stride>
 struct property_traits<vigra::MultiArrayView<N, T, Stride>>
 {
     typedef vigra::MultiArrayView<N, T, Stride> type;
@@ -2820,7 +2820,7 @@ struct property_traits<vigra::MultiArrayView<N, T, Stride>>
     typedef read_write_property_map_tag category;
 };
 
-template<unsigned int N, class T, class Stride>
+template <unsigned int N, class T, class Stride>
 struct property_traits<vigra::MultiArrayView<N, T, Stride> const>
 {
     typedef vigra::MultiArrayView<N, T, Stride> const type;
@@ -2849,7 +2849,7 @@ namespace boost_graph
 
 /** \brief Return number of outgoing edges of vertex \a v (API: boost).
     */
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 inline
     typename vigra::GridGraph<N, DirectedTag>::degree_size_type
     out_degree(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const& v,
@@ -2860,7 +2860,7 @@ inline
 
 /** \brief Return number of incoming edges of vertex \a v (API: boost).
     */
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 inline
     typename vigra::GridGraph<N, DirectedTag>::degree_size_type
     in_degree(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const& v,
@@ -2871,7 +2871,7 @@ inline
 
 /** \brief Return total number of edges (incoming and outgoing) of vertex \a v (API: boost).
     */
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 inline
     typename vigra::GridGraph<N, DirectedTag>::degree_size_type
     degree(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const& v,
@@ -2882,7 +2882,7 @@ inline
 
 /** \brief Get a (begin, end) iterator pair for the vertices of graph \a g (API: boost).
     */
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 inline std::pair<typename vigra::GridGraph<N, DirectedTag>::vertex_iterator,
                  typename vigra::GridGraph<N, DirectedTag>::vertex_iterator>
 vertices(vigra::GridGraph<N, DirectedTag> const& g)
@@ -2893,7 +2893,7 @@ vertices(vigra::GridGraph<N, DirectedTag> const& g)
 
 /** \brief Return the number of vertices in graph \a g (API: boost).
     */
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 inline
     typename vigra::GridGraph<N, DirectedTag>::vertices_size_type
     num_vertices(vigra::GridGraph<N, DirectedTag> const& g)
@@ -2904,7 +2904,7 @@ inline
 /** \brief Get a (begin, end) iterator pair for the neighbor vertices of 
                vertex \a v in graph \a g (API: boost).
     */
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 inline std::pair<typename vigra::GridGraph<N, DirectedTag>::adjacency_iterator,
                  typename vigra::GridGraph<N, DirectedTag>::adjacency_iterator>
 adjacent_vertices(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const& v,
@@ -2917,7 +2917,7 @@ adjacent_vertices(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor c
 /** \brief Get a (begin, end) iterator pair for only thise neighbor vertices of 
                vertex \a v that have smaller ID than \a v (API: VIGRA).
     */
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 inline std::pair<typename vigra::GridGraph<N, DirectedTag>::back_neighbor_vertex_iterator,
                  typename vigra::GridGraph<N, DirectedTag>::back_neighbor_vertex_iterator>
 back_adjacent_vertices(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const& v,
@@ -2928,7 +2928,7 @@ back_adjacent_vertices(typename vigra::GridGraph<N, DirectedTag>::vertex_descrip
 }
 
 // adjacent_vertices variant in vigra namespace: allows to call adjacent_vertices with vertex_iterator argument
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 inline std::pair<typename vigra::GridGraph<N, DirectedTag>::adjacency_iterator,
                  typename vigra::GridGraph<N, DirectedTag>::adjacency_iterator>
 adjacent_vertices_at_iterator(typename vigra::GridGraph<N, DirectedTag>::vertex_iterator const& v,
@@ -2941,7 +2941,7 @@ adjacent_vertices_at_iterator(typename vigra::GridGraph<N, DirectedTag>::vertex_
 /** \brief Get a (begin, end) iterator pair for the outgoing edges of 
                vertex \a v in graph \a g (API: boost).
     */
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 inline std::pair<typename vigra::GridGraph<N, DirectedTag>::out_edge_iterator,
                  typename vigra::GridGraph<N, DirectedTag>::out_edge_iterator>
 out_edges(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const& v,
@@ -2954,7 +2954,7 @@ out_edges(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const& v,
 /** \brief Get a (begin, end) iterator pair for only those outgoing edges of 
                vertex \a v whose ID is smaller than that of \a v (API: VIGRA).
     */
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 inline std::pair<typename vigra::GridGraph<N, DirectedTag>::out_back_edge_iterator,
                  typename vigra::GridGraph<N, DirectedTag>::out_back_edge_iterator>
 out_back_edges(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const& v,
@@ -2967,7 +2967,7 @@ out_back_edges(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor cons
 /** \brief Get a (begin, end) iterator pair for the incoming edges of 
                vertex \a v in graph \a g (API: boost).
     */
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 inline std::pair<typename vigra::GridGraph<N, DirectedTag>::in_edge_iterator,
                  typename vigra::GridGraph<N, DirectedTag>::in_edge_iterator>
 in_edges(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const& v,
@@ -2979,7 +2979,7 @@ in_edges(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const& v,
 
 /** \brief Get a vertex descriptor for the start vertex of edge \a e in graph \a g (API: boost).
     */
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 inline
     typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor
     source(typename vigra::GridGraph<N, DirectedTag>::edge_descriptor const& e,
@@ -2990,7 +2990,7 @@ inline
 
 /** \brief Get a vertex descriptor for the end vertex of edge \a e in graph \a g (API: boost).
     */
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 inline
     typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor
     target(typename vigra::GridGraph<N, DirectedTag>::edge_descriptor const& e,
@@ -3001,7 +3001,7 @@ inline
 
 /** \brief Get a (begin, end) iterator pair for the edges of graph \a g (API: boost).
     */
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 inline std::pair<typename vigra::GridGraph<N, DirectedTag>::edge_iterator,
                  typename vigra::GridGraph<N, DirectedTag>::edge_iterator>
 edges(vigra::GridGraph<N, DirectedTag> const& g)
@@ -3011,7 +3011,7 @@ edges(vigra::GridGraph<N, DirectedTag> const& g)
 
 /** \brief Return the number of edges in graph \a g (API: boost).
     */
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 inline
     typename vigra::GridGraph<N, DirectedTag>::edges_size_type
     num_edges(vigra::GridGraph<N, DirectedTag> const& g)
@@ -3026,7 +3026,7 @@ inline
 /** \brief Return the pair (edge_descriptor, true) when an edge between vertices 
                \a u and \a v exists, or (lemon::INVALID, false) otherwise (API: boost).
     */
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 std::pair<typename vigra::GridGraph<N, DirectedTag>::edge_descriptor, bool>
 edge(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const& u,
      typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const& v,
@@ -3040,7 +3040,7 @@ edge(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const& u,
 // FIXME: place this into multi_array.hxx ?
 /** \brief Put value \a val at key \a k in the property map \a pmap (API: boost).
     */
-template<unsigned int N, class T, class Stride, class U>
+template <unsigned int N, class T, class Stride, class U>
 inline void
 put(vigra::MultiArrayView<N, T, Stride>& pmap,
     typename vigra::MultiArrayView<N, T, Stride>::difference_type const& k,
@@ -3068,11 +3068,11 @@ put(vigra::MultiArrayView<N, T, Stride>& pmap,
 namespace lemon
 {
 
-template<typename GR>
+template <typename GR>
 class InDegMap;
 
 // LEMON-compatible property map for the in-degree of the nodes
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 class InDegMap<vigra::GridGraph<N, DirectedTag>>
     : public vigra::GridGraph<N, DirectedTag>::InDegMap
 {
@@ -3085,11 +3085,11 @@ public:
     }
 };
 
-template<typename GR>
+template <typename GR>
 class OutDegMap;
 
 // LEMON-compatible property map for the out-degree of the nodes
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 class OutDegMap<vigra::GridGraph<N, DirectedTag>>
     : public vigra::GridGraph<N, DirectedTag>::OutDegMap
 {
@@ -3108,7 +3108,7 @@ public:
 namespace std
 {
 
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 ostream&
 operator<<(ostream& out,
            typename vigra::GridGraph<N, DirectedTag>::vertex_iterator const& arg)
@@ -3117,7 +3117,7 @@ operator<<(ostream& out,
     return out;
 }
 
-template<unsigned int N, class DirectedTag>
+template <unsigned int N, class DirectedTag>
 ostream&
 operator<<(ostream& out,
            typename vigra::GridGraph<N, DirectedTag>::adjacency_iterator const& arg)

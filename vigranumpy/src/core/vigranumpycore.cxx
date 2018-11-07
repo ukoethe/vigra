@@ -57,7 +57,7 @@ pychecksum(python::str const& s)
 #if PY_MAJOR_VERSION < 3
     unsigned int size = len(s);
     return checksum(PyString_AsString(s.ptr()), size);
-#elif (PY_MAJOR_VERSION == 3) && (PY_MINOR_VERSION < 3)
+#elif(PY_MAJOR_VERSION == 3) && (PY_MINOR_VERSION < 3)
     Py_ssize_t size = PyUnicode_GET_DATA_SIZE(s.ptr());
     const char* data = PyUnicode_AS_DATA(s.ptr());
     return checksum(data, size);
@@ -79,7 +79,7 @@ using namespace vigra;
 
 BOOST_PYTHON_MODULE_INIT(vigranumpycore)
 {
-    if (_import_array() < 0)
+    if(_import_array() < 0)
         pythonToCppException(0);
     registerNumpyArrayConverters();
     defineAxisTags();

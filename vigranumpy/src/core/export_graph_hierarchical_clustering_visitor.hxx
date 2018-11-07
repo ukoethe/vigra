@@ -23,7 +23,6 @@
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/python_graph.hxx>
 #include <vigra/timing.hxx>
-#include "export_graph_visitor.hxx"
 
 namespace python = boost::python;
 
@@ -32,7 +31,7 @@ namespace vigra
 
 
 
-template<class GRAPH>
+template <class GRAPH>
 class LemonGraphHierachicalClusteringVisitor
     : public boost::python::def_visitor<LemonGraphHierachicalClusteringVisitor<GRAPH>>
 {
@@ -184,7 +183,7 @@ public:
         }
     }
 
-    template<class CLUSTER_OPERATOR>
+    template <class CLUSTER_OPERATOR>
     void exportHierarchicalClustering(const std::string& opClsName) const
     {
         typedef CLUSTER_OPERATOR ClusterOperator;
@@ -218,7 +217,7 @@ public:
     }
 
 
-    template<class MG>
+    template <class MG>
     static NumpyAnyArray pyCurrentLabeling(
         const MG& mergeGraph,
         UInt32NodeArray resultArray)
@@ -231,7 +230,7 @@ public:
         //USETICTOC;
 
         //TIC;
-        for (NodeIt iter(mergeGraph.graph()); iter != lemon::INVALID; ++iter)
+        for(NodeIt iter(mergeGraph.graph()); iter != lemon::INVALID; ++iter)
         {
             resultArrayMap[*iter] = mergeGraph.reprNodeId(mergeGraph.graph().id(*iter));
         }
@@ -240,7 +239,7 @@ public:
     }
 
 
-    template<class classT>
+    template <class classT>
     void visit(classT& /*c*/) const
     {
         // the merge graph itself and factory functions to get a merge graph
@@ -304,7 +303,7 @@ public:
 
 
 
-    template<class CLUSTER_OP>
+    template <class CLUSTER_OP>
     static HierarchicalClusteringImpl<CLUSTER_OP>* pyHierarchicalClusteringConstructor(
         CLUSTER_OP& clusterOp,
         const size_t nodeNumStopCond,
@@ -367,17 +366,17 @@ public:
 
 
 
-    template<class HCLUSTER>
+    template <class HCLUSTER>
     static void pyReprNodeIds(
         const HCLUSTER& hcluster,
         NumpyArray<1, UInt32> labels)
     {
-        for (MultiArrayIndex i = 0; i < labels.shape(0); ++i)
+        for(MultiArrayIndex i = 0; i < labels.shape(0); ++i)
             labels(i) = hcluster.reprNodeId(labels(i));
     }
 
 
-    template<class HCLUSTER>
+    template <class HCLUSTER>
     static NumpyAnyArray pyResultLabels(
         const HCLUSTER& hcluster,
         UInt32NodeArray resultArray)
@@ -390,7 +389,7 @@ public:
         //USETICTOC;
 
         //TIC;
-        for (NodeIt iter(hcluster.graph()); iter != lemon::INVALID; ++iter)
+        for(NodeIt iter(hcluster.graph()); iter != lemon::INVALID; ++iter)
         {
             resultArrayMap[*iter] = hcluster.mergeGraph().reprNodeId(hcluster.graph().id(*iter));
         }
@@ -398,7 +397,7 @@ public:
         return resultArray;
     }
 
-    template<class HCLUSTER>
+    template <class HCLUSTER>
     static void pyUcmTransform(
         const HCLUSTER& hcluster,
         FloatEdgeArray inputArray)
@@ -408,7 +407,7 @@ public:
     }
 
 
-    template<class HCLUSTER>
+    template <class HCLUSTER>
     static python::tuple mergeTreeEncodingAsNumpyArray(const HCLUSTER& hcluster)
     {
         typedef typename HCLUSTER::MergeTreeEncoding MergeTreeEncoding;
@@ -419,7 +418,7 @@ public:
         //CPP BUG?!?
         NumpyArray<1, ValueType> w = NumpyArray<1, ValueType>(typename NumpyArray<1, ValueType>::difference_type(numMerges));
         NumpyArray<2, MergeGraphIndexType> indices = NumpyArray<2, MergeGraphIndexType>(typename NumpyArray<2, MergeGraphIndexType>::difference_type(numMerges, 3));
-        for (MergeGraphIndexType m = 0; m < numMerges; ++m)
+        for(MergeGraphIndexType m = 0; m < numMerges; ++m)
         {
             w(int(m)) = encoding[m].w_;
             indices(m, 0) = encoding[m].a_;
@@ -430,14 +429,14 @@ public:
     }
 
 
-    template<class HCLUSTER>
+    template <class HCLUSTER>
     static python::tuple leafNodeIdsAsNumpyArray(
         const HCLUSTER& hcluster,
         const typename HCLUSTER::MergeGraphIndexType treeNodeId,
         NumpyArray<1, UInt32> leafes = (NumpyArray<1, UInt32>()))
     {
         leafes.reshapeIfEmpty(typename NumpyArray<1, UInt32>::difference_type(hcluster.graph().nodeNum()));
-        if (leafes.shape(0) != hcluster.graph().nodeNum())
+        if(leafes.shape(0) != hcluster.graph().nodeNum())
         {
             throw std::runtime_error("out.shape(0) must be equal nodeNum");
         }

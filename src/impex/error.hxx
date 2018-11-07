@@ -40,7 +40,7 @@
 
 #define VIGRA_IMPEX_FINALIZED(p)                                                  \
     {                                                                             \
-        if (p)                                                                    \
+        if(p)                                                                     \
             vigra_precondition(false, "encoder settings were already finalized"); \
     }
 

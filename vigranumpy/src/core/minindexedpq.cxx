@@ -45,7 +45,7 @@ namespace vigra
 
 
 
-template<class T>
+template <class T>
 void
 defineMinIndexedPqT(const std::string name)
 {

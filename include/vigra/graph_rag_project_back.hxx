@@ -65,7 +65,7 @@ namespace vigra
 namespace detail_rag_project_back
 {
 
-template<
+template <
     class BASE_GRAPH,
     class BASE_GRAPH_LABELS,
     class RAG_FEATURES,
@@ -86,9 +86,9 @@ struct RagProjectBack
         typedef typename Bg::NodeIt BgNodeIt;
         typedef typename Bg::Node BgNode;
 
-        if (ignoreLabel == -1)
+        if(ignoreLabel == -1)
         {
-            for (BgNodeIt iter(bg); iter != lemon::INVALID; ++iter)
+            for(BgNodeIt iter(bg); iter != lemon::INVALID; ++iter)
             {
                 const BgNode bgNode(*iter);
                 bgFeatures[bgNode] = ragFeatures[rag.nodeFromId(bgLabels[bgNode])];
@@ -96,10 +96,10 @@ struct RagProjectBack
         }
         else
         {
-            for (BgNodeIt iter(bg); iter != lemon::INVALID; ++iter)
+            for(BgNodeIt iter(bg); iter != lemon::INVALID; ++iter)
             {
                 const BgNode bgNode(*iter);
-                if (static_cast<Int64>(bgLabels[bgNode]) != ignoreLabel)
+                if(static_cast<Int64>(bgLabels[bgNode]) != ignoreLabel)
                     bgFeatures[bgNode] = ragFeatures[rag.nodeFromId(bgLabels[bgNode])];
             }
         }
@@ -107,7 +107,7 @@ struct RagProjectBack
 };
 
 
-template<
+template <
     class BASE_GRAPH_LABELS,
     class RAG_FEATURES,
     class BASE_GRAPH_FEATURES>
@@ -134,16 +134,16 @@ struct RagProjectBack<
         vigra::TinyVector<Int64, 3> shape = bg.shape();
 
 
-        if (ignoreLabel == -1)
+        if(ignoreLabel == -1)
         {
 
             // FIXME: replace with threadpool                #pragma omp parallel for
-            for (Int64 z = 0; z < shape[2]; ++z)
+            for(Int64 z = 0; z < shape[2]; ++z)
             {
                 BgNode node;
                 node[2] = z;
-                for (node[1] = 0; node[1] < shape[1]; ++node[1])
-                    for (node[0] = 0; node[0] < shape[0]; ++node[0])
+                for(node[1] = 0; node[1] < shape[1]; ++node[1])
+                    for(node[0] = 0; node[0] < shape[0]; ++node[0])
                     {
                         bgFeatures[node] = ragFeatures[rag.nodeFromId(bgLabels[node])];
                     }
@@ -152,14 +152,14 @@ struct RagProjectBack<
         else
         {
             // FIXME: replace with threadpool                #pragma omp parallel for
-            for (Int64 z = 0; z < shape[2]; ++z)
+            for(Int64 z = 0; z < shape[2]; ++z)
             {
                 BgNode node;
                 node[2] = z;
-                for (node[1] = 0; node[1] < shape[1]; ++node[1])
-                    for (node[0] = 0; node[0] < shape[0]; ++node[0])
+                for(node[1] = 0; node[1] < shape[1]; ++node[1])
+                    for(node[0] = 0; node[0] < shape[0]; ++node[0])
                     {
-                        if (static_cast<Int64>(bgLabels[node]) != ignoreLabel)
+                        if(static_cast<Int64>(bgLabels[node]) != ignoreLabel)
                             bgFeatures[node] = ragFeatures[rag.nodeFromId(bgLabels[node])];
                     }
             }
@@ -177,10 +177,10 @@ struct RagProjectBack<
 ///
 /// This function can be used to show a segmentation
 /// or node features of RAG on pixel / voxel level
-template<class BASE_GRAPH,
-         class BASE_GRAPH_LABELS,
-         class RAG_FEATURES,
-         class BASE_GRAPH_FEATURES>
+template <class BASE_GRAPH,
+          class BASE_GRAPH_LABELS,
+          class RAG_FEATURES,
+          class BASE_GRAPH_FEATURES>
 inline void
 projectBack(
     const AdjacencyListGraph& rag,

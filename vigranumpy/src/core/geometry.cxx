@@ -48,7 +48,7 @@ namespace python = boost::python;
 namespace vigra
 {
 
-template<class Coordinate>
+template <class Coordinate>
 NumpyAnyArray
     pyconvexHull(NumpyArray<1, TinyVector<Coordinate, 2>, UnstridedArrayTag> points)
 {
@@ -60,7 +60,7 @@ NumpyAnyArray
     }
 
     NumpyArray<1, TinyVector<Coordinate, 2>> result(MultiArrayShape<1>::type(hull.size()));
-    for (MultiArrayIndex i = 0; i < result.shape(0); ++i)
+    for(MultiArrayIndex i = 0; i < result.shape(0); ++i)
         result(i) = hull[i];
 
     return result;

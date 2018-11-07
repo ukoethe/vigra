@@ -117,7 +117,7 @@ struct ArrayVectorTest
         int k;
 
         VectorComponentAccessor<Vector> vca(0);
-        for (k = 0; k < 2; ++k, vca.setIndex(k))
+        for(k = 0; k < 2; ++k, vca.setIndex(k))
         {
             shouldEqual(vca(v), 6 + k);
             shouldEqual(vca(v + 1), 6 + k);
@@ -134,7 +134,7 @@ struct ArrayVectorTest
         }
 
         VectorComponentValueAccessor<Vector> vcva(0);
-        for (k = 0; k < 2; ++k, vcva.setIndex(k))
+        for(k = 0; k < 2; ++k, vcva.setIndex(k))
         {
             shouldEqual(vcva(v), 3 + k);
             shouldEqual(vcva(v + 1), 3 + k);
@@ -152,7 +152,7 @@ struct ArrayVectorTest
 
         VectorAccessor<Vector> va;
         VectorElementAccessor<VectorAccessor<Vector>> vea(0, va);
-        for (k = 0; k < 2; ++k, vea.setIndex(k))
+        for(k = 0; k < 2; ++k, vea.setIndex(k))
         {
             shouldEqual(vea(v), 6 + k);
             shouldEqual(vea(v + 1), 6 + k);
@@ -168,7 +168,7 @@ struct ArrayVectorTest
             shouldEqual(v[2][k], 3 + k);
         }
 
-        for (k = 0; k < 2; ++k)
+        for(k = 0; k < 2; ++k)
         {
             shouldEqual(va.getComponent(v, k), 3 + k);
             shouldEqual(va.getComponent(v + 1, k), 3 + k);
@@ -198,7 +198,7 @@ struct ArrayVectorTest
         should(sqca.end(cv) == cv[0].end());
         should(sqca.end(cv + 1) == cv[1].end());
         should(sqca.end(cv, 2) == cv[2].end());
-        for (k = 0; k < 2; ++k)
+        for(k = 0; k < 2; ++k)
         {
             shouldEqual(sqa.begin(v)[k], 6 + k);
             shouldEqual(sqa.begin(v + 1)[k], 6 + k);
@@ -289,7 +289,7 @@ struct BucketQueueTest
         std::priority_queue<int> queue;
         BucketQueue<int> bqueue;
 
-        for (unsigned int k = 0; k < idata.size(); ++k)
+        for(unsigned int k = 0; k < idata.size(); ++k)
         {
             queue.push(idata[k]);
             bqueue.push(idata[k], idata[k]);
@@ -298,7 +298,7 @@ struct BucketQueueTest
         shouldEqual(idata.size(), bqueue.size());
         shouldEqual(false, bqueue.empty());
 
-        for (unsigned int k = 0; k < idata.size(); ++k)
+        for(unsigned int k = 0; k < idata.size(); ++k)
         {
             shouldEqual(queue.top(), bqueue.top());
             queue.pop();
@@ -314,7 +314,7 @@ struct BucketQueueTest
         std::priority_queue<int, std::vector<int>, std::greater<int>> queue;
         BucketQueue<int, true> bqueue;
 
-        for (unsigned int k = 0; k < idata.size(); ++k)
+        for(unsigned int k = 0; k < idata.size(); ++k)
         {
             queue.push(idata[k]);
             bqueue.push(idata[k], idata[k]);
@@ -323,7 +323,7 @@ struct BucketQueueTest
         shouldEqual(idata.size(), bqueue.size());
         shouldEqual(false, bqueue.empty());
 
-        for (unsigned int k = 0; k < idata.size(); ++k)
+        for(unsigned int k = 0; k < idata.size(); ++k)
         {
             shouldEqual(queue.top(), bqueue.top());
             queue.pop();
@@ -340,7 +340,7 @@ struct BucketQueueTest
         std::priority_queue<int> queue;
         MappedBucketQueue<double, Priority> bqueue;
 
-        for (unsigned int k = 0; k < data.size(); ++k)
+        for(unsigned int k = 0; k < data.size(); ++k)
         {
             queue.push(idata[k]);
             bqueue.push(data[k]);
@@ -349,10 +349,10 @@ struct BucketQueueTest
         shouldEqual(data.size(), bqueue.size());
         shouldEqual(false, bqueue.empty());
 
-        for (unsigned int k = 0; k < data.size(); ++k)
+        for(unsigned int k = 0; k < data.size(); ++k)
         {
             shouldEqual(queue.top(), priority(bqueue.top()));
-            switch (k)
+            switch(k)
             {
                 case 1:
                     shouldEqual(4.4, bqueue.top());
@@ -375,7 +375,7 @@ struct BucketQueueTest
         std::priority_queue<int, std::vector<int>, std::greater<int>> queue;
         MappedBucketQueue<double, Priority, true> bqueue;
 
-        for (unsigned int k = 0; k < data.size(); ++k)
+        for(unsigned int k = 0; k < data.size(); ++k)
         {
             queue.push(idata[k]);
             bqueue.push(data[k]);
@@ -384,10 +384,10 @@ struct BucketQueueTest
         shouldEqual(data.size(), bqueue.size());
         shouldEqual(false, bqueue.empty());
 
-        for (unsigned int k = 0; k < data.size(); ++k)
+        for(unsigned int k = 0; k < data.size(); ++k)
         {
             shouldEqual(queue.top(), priority(bqueue.top()));
-            switch (k)
+            switch(k)
             {
                 case 3:
                     shouldEqual(4.4, bqueue.top());
@@ -1194,7 +1194,7 @@ struct MetaprogrammingTest
 
             VIGRA_FINALLY(v = 3);
         }
-        catch (std::runtime_error&)
+        catch(std::runtime_error&)
         {
         }
         shouldEqual(v, 2);
@@ -1246,7 +1246,7 @@ struct CompressionTest
             compress(data.begin(), data.size(), compressed, ZLIB);
             failTest("missing ZLIB did not throw exception.");
         }
-        catch (ContractViolation& c)
+        catch(ContractViolation& c)
         {
             std::string expected("\nPrecondition violation!\ncompress(): VIGRA was compiled without ZLIB compression.");
             std::string message(c.what());
@@ -1459,7 +1459,7 @@ struct AnyTest
             a.get<float>();
             failTest("no exception thrown");
         }
-        catch (std::exception& e)
+        catch(std::exception& e)
         {
             std::string expected("\nPrecondition violation!\nAny::get(): object is not an instance of the target type.");
             std::string message(e.what());
@@ -1471,7 +1471,7 @@ struct AnyTest
             b.get<int>();
             failTest("no exception thrown");
         }
-        catch (std::exception& e)
+        catch(std::exception& e)
         {
             std::string expected("\nPrecondition violation!\nAny::get(): object empty.");
             std::string message(e.what());
@@ -1493,7 +1493,7 @@ struct AnyTest
             a.get<int>();
             failTest("no exception thrown");
         }
-        catch (std::exception& e)
+        catch(std::exception& e)
         {
             std::string expected("\nPrecondition violation!\nAny::get(): object is not an instance of the target type.");
             std::string message(e.what());
@@ -1517,7 +1517,7 @@ struct AnyTest
             s.read<int>();
             failTest("no exception thrown");
         }
-        catch (std::exception& e)
+        catch(std::exception& e)
         {
             std::string expected("\nPrecondition violation!\nAny::read(): object is not covertible to the target type.");
             std::string message(e.what());

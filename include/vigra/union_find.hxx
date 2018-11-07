@@ -52,7 +52,7 @@ namespace vigra
 namespace detail
 {
 
-template<class T, class IsSigned = VigraFalseType>
+template <class T, class IsSigned = VigraFalseType>
 struct UnionFindAccessorImpl
 {
     static const T max_label = NumericTraits<T>::maxConst >> 1;
@@ -94,7 +94,7 @@ struct UnionFindAccessorImpl
     }
 };
 
-template<class T>
+template <class T>
 struct UnionFindAccessorImpl<T, VigraTrueType>
 {
     static T max()
@@ -133,7 +133,7 @@ struct UnionFindAccessorImpl<T, VigraTrueType>
     }
 };
 
-template<class Array, class LabelAccessor>
+template <class Array, class LabelAccessor>
 class UnionFindIteratorPolicy
 {
 public:
@@ -181,8 +181,8 @@ public:
 
     static void advanceToAnchor(BaseType& d)
     {
-        while (d.index_ < (value_type)d.array_.size() - 1 &&
-               !LabelAccessor::isValidAnchor(d.array_[d.index_]))
+        while(d.index_ < (value_type)d.array_.size() - 1 &&
+              !LabelAccessor::isValidAnchor(d.array_[d.index_]))
         {
             ++d.index_;
         }
@@ -191,7 +191,7 @@ public:
 
 } // namespace detail
 
-template<class T>
+template <class T>
 class UnionFindArray
 {
     typedef ArrayVector<T> LabelArray;
@@ -212,7 +212,7 @@ public:
                            "UnionFindArray(): Need more labels than can be represented"
                            "in the destination type.");
 
-        for (T k = 0; k < next_free_label; ++k)
+        for(T k = 0; k < next_free_label; ++k)
             labels_.push_back(LabelAccessor::toAnchor(k));
         labels_.push_back(LabelAccessor::toAnchor(next_free_label));
     }
@@ -235,10 +235,10 @@ public:
     T findIndex(T index) const
     {
         IndexType root = index;
-        while (LabelAccessor::notAnchor(labels_[root]))
+        while(LabelAccessor::notAnchor(labels_[root]))
             root = (IndexType)labels_[root];
         // path compression
-        while ((IndexType)index != root)
+        while((IndexType)index != root)
         {
             T next = labels_[(IndexType)index];
             labels_[(IndexType)index] = root;
@@ -262,11 +262,11 @@ public:
     {
         IndexType i1 = findIndex(l1);
         IndexType i2 = findIndex(l2);
-        if (i1 == i2)
+        if(i1 == i2)
         {
             return i1;
         }
-        else if (i1 < i2)
+        else if(i1 < i2)
         {
             labels_[i2] = i1;
             return (T)i1;
@@ -280,7 +280,7 @@ public:
 
     T finalizeIndex(T index)
     {
-        if (index == (T)labels_.size() - 1)
+        if(index == (T)labels_.size() - 1)
         {
             // indeed a new region
             vigra_invariant(index < LabelAccessor::max(),
@@ -309,9 +309,9 @@ public:
     {
         // compress trees
         unsigned int count = 0;
-        for (IndexType i = 0; i < (IndexType)(labels_.size() - 1); ++i)
+        for(IndexType i = 0; i < (IndexType)(labels_.size() - 1); ++i)
         {
-            if (LabelAccessor::isValidAnchor(labels_[i]))
+            if(LabelAccessor::isValidAnchor(labels_[i]))
             {
                 labels_[i] = LabelAccessor::toAnchor((T)count++);
             }

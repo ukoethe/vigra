@@ -46,7 +46,7 @@ namespace vigra
 {
 
 
-template<unsigned int DIM, class T_DATA, unsigned int CHANNELS, class T_HIST>
+template <unsigned int DIM, class T_DATA, unsigned int CHANNELS, class T_HIST>
 void
 multiGaussianHistogram(
     const MultiArrayView<DIM, TinyVector<T_DATA, CHANNELS>>& image,
@@ -67,7 +67,7 @@ multiGaussianHistogram(
     const ChannelsVals nBins(bins);
     histogram.init(1.0);
     // iterate over all nodes (i.e. pixels)
-    for (graph_scanner n(g); n != lemon::INVALID; ++n)
+    for(graph_scanner n(g); n != lemon::INVALID; ++n)
     {
         const Node node(*n);
         ChannelsVals binIndex = image[node];
@@ -75,11 +75,11 @@ multiGaussianHistogram(
         binIndex /= maxVals;
         binIndex *= nBins;
         HistCoord histCoord;
-        for (size_t d = 0; d < DIM; ++d)
+        for(size_t d = 0; d < DIM; ++d)
         {
             histCoord[d] = node[d];
         }
-        for (size_t c = 0; c < CHANNELS; ++c)
+        for(size_t c = 0; c < CHANNELS; ++c)
         {
             const float fi = binIndex[c];
             const size_t bi = std::floor(fi + 0.5);
@@ -93,7 +93,7 @@ multiGaussianHistogram(
     Kernel1D<float> gauss, gaussBin;
     gauss.initGaussian(sigma);
     gaussBin.initGaussian(sigmaBin);
-    for (size_t c = 0; c < CHANNELS; ++c)
+    for(size_t c = 0; c < CHANNELS; ++c)
     {
 
         // histogram for one channel
@@ -110,7 +110,7 @@ multiGaussianHistogram(
     }
 }
 
-template<unsigned int DIM, class T_DATA, class T_HIST>
+template <unsigned int DIM, class T_DATA, class T_HIST>
 void
 multiGaussianCoHistogram(
     const MultiArrayView<DIM, T_DATA>& imageA,
@@ -128,7 +128,7 @@ multiGaussianCoHistogram(
     const Graph g(imageA.shape());
     histogram.init(0.0);
     // iterate over all nodes (i.e. pixels)
-    for (graph_scanner n(g); n != lemon::INVALID; ++n)
+    for(graph_scanner n(g); n != lemon::INVALID; ++n)
     {
 
         const Node node(*n);
@@ -144,7 +144,7 @@ multiGaussianCoHistogram(
         binIndexB *= nBins[1];
 
         HistCoord histCoord;
-        for (size_t d = 0; d < DIM; ++d)
+        for(size_t d = 0; d < DIM; ++d)
             histCoord[d] = node[d];
 
         histCoord[DIM] = binIndexA;
@@ -164,14 +164,14 @@ multiGaussianCoHistogram(
     gaussA.initGaussian(sigma[1]);
     gaussB.initGaussian(sigma[2]);
 
-    if (DIM == 2)
+    if(DIM == 2)
     {
         convolveMultiArrayOneDimension(srcMultiArrayRange(histogram), destMultiArray(histogramBuffer), 0, gaussS);
         convolveMultiArrayOneDimension(srcMultiArrayRange(histogramBuffer), destMultiArray(histogram), 1, gaussS);
         convolveMultiArrayOneDimension(srcMultiArrayRange(histogram), destMultiArray(histogramBuffer), 2, gaussA);
         convolveMultiArrayOneDimension(srcMultiArrayRange(histogramBuffer), destMultiArray(histogram), 3, gaussB);
     }
-    else if (DIM == 3)
+    else if(DIM == 3)
     {
         convolveMultiArrayOneDimension(srcMultiArrayRange(histogram), destMultiArray(histogramBuffer), 0, gaussS);
         convolveMultiArrayOneDimension(srcMultiArrayRange(histogramBuffer), destMultiArray(histogram), 1, gaussS);
@@ -180,7 +180,7 @@ multiGaussianCoHistogram(
         convolveMultiArrayOneDimension(srcMultiArrayRange(histogram), destMultiArray(histogramBuffer), 4, gaussB);
         histogram = histogramBuffer;
     }
-    else if (DIM == 4)
+    else if(DIM == 4)
     {
         convolveMultiArrayOneDimension(srcMultiArrayRange(histogram), destMultiArray(histogramBuffer), 0, gaussS);
         convolveMultiArrayOneDimension(srcMultiArrayRange(histogramBuffer), destMultiArray(histogram), 1, gaussS);
@@ -197,7 +197,7 @@ multiGaussianCoHistogram(
 
 
 
-template<unsigned int DIM, class T, class V, class U>
+template <unsigned int DIM, class T, class V, class U>
 void
 multiGaussianRankOrder(
     const MultiArrayView<DIM, T>& image,
@@ -230,7 +230,7 @@ multiGaussianRankOrder(
     HistCoord histCoord, nextHistCoord;
     {
         MultiCoordinateIterator<DIM> iter(image.shape());
-        for (std::ptrdiff_t i = 0; i < image.size(); ++i, ++iter)
+        for(std::ptrdiff_t i = 0; i < image.size(); ++i, ++iter)
         {
             const ImgCoord imgCoord(*iter);
             std::copy(imgCoord.begin(), imgCoord.end(), histCoord.begin());
@@ -241,7 +241,7 @@ multiGaussianRankOrder(
             const int floorBin = static_cast<int>(fFloorBin);
             const int ceilBin = static_cast<int>(std::ceil(fbinIndex));
 
-            if (floorBin == ceilBin)
+            if(floorBin == ceilBin)
             {
                 histCoord[DIM] = floorBin;
                 histA[histCoord] += 1.0;
@@ -273,7 +273,7 @@ multiGaussianRankOrder(
     //std::cout<<"normalize and compute ranks\n";
     {
         MultiCoordinateIterator<DIM> iter(image.shape());
-        for (std::ptrdiff_t i = 0; i < image.size(); ++i, ++iter)
+        for(std::ptrdiff_t i = 0; i < image.size(); ++i, ++iter)
         {
 
             // normalize
@@ -284,19 +284,19 @@ multiGaussianRankOrder(
             nextHistCoord = histCoord;
             std::copy(imgCoord.begin(), imgCoord.end(), outCoord.begin());
             double sum = 0;
-            for (size_t bi = 0; bi < bins; ++bi)
+            for(size_t bi = 0; bi < bins; ++bi)
             {
                 histCoord[DIM] = bi;
                 sum += histA[histCoord];
             }
-            for (size_t bi = 0; bi < bins; ++bi)
+            for(size_t bi = 0; bi < bins; ++bi)
             {
                 histCoord[DIM] = bi;
                 histA[histCoord] /= sum;
             }
             histCoord[DIM] = 0;
             histBuffer[0] = histA[histCoord];
-            for (size_t bi = 1; bi < bins; ++bi)
+            for(size_t bi = 1; bi < bins; ++bi)
             {
 
                 double prevVal = histA[histCoord];
@@ -308,7 +308,7 @@ multiGaussianRankOrder(
 
 
             size_t bi = 0;
-            for (std::ptrdiff_t r = 0; r < ranks.size(); ++r)
+            for(std::ptrdiff_t r = 0; r < ranks.size(); ++r)
             {
                 outCoord[DIM] = r;
                 const V rank = ranks[r];
@@ -316,9 +316,9 @@ multiGaussianRankOrder(
                 nextHistCoord[DIM] = bi + 1;
                 //std::cout<<"    bi "<<bi<<" rank "<<rank<<" "<<histA[histCoord]<<"\n";
                 // corner cases
-                if (rank < histA[histCoord] ||
-                    std::abs(rank - histA[histCoord]) < 0.0000001 ||
-                    bi == bins - 1)
+                if(rank < histA[histCoord] ||
+                   std::abs(rank - histA[histCoord]) < 0.0000001 ||
+                   bi == bins - 1)
                 {
                     out[outCoord] = static_cast<U>((maxVal - minVal) * bi * bins + minVal);
                     break;

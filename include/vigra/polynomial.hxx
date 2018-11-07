@@ -49,9 +49,9 @@
 namespace vigra
 {
 
-template<class T>
+template <class T>
 class Polynomial;
-template<unsigned int MAXORDER, class T>
+template <unsigned int MAXORDER, class T>
 class StaticPolynomial;
 
 /*****************************************************************/
@@ -72,7 +72,7 @@ class StaticPolynomial;
     
     \ingroup Polynomials
 */
-template<class T>
+template <class T>
 class PolynomialView
 {
 public:
@@ -145,7 +145,7 @@ public:
             If both <tt>V</tt> and <tt>V</tt> are scalar, the result will
             be a scalar, otherwise it will be complex.
         */
-    template<class V>
+    template <class V>
     typename PromoteTraits<T, V>::Promote
     operator()(V v) const;
 
@@ -284,13 +284,13 @@ protected:
     double epsilon_;
 };
 
-template<class T>
-template<class U>
+template <class T>
+template <class U>
 typename PromoteTraits<T, U>::Promote
 PolynomialView<T>::operator()(U v) const
 {
     typename PromoteTraits<T, U>::Promote p(coeffs_[order_]);
-    for (int i = order_ - 1; i >= 0; --i)
+    for(int i = order_ - 1; i >= 0; --i)
     {
         p = v * p + coeffs_[i];
     }
@@ -311,33 +311,33 @@ PolynomialView<T>::operator()(Complex const & v) const
 }
 */
 
-template<class T>
+template <class T>
 void
 PolynomialView<T>::differentiate(unsigned int n)
 {
-    if (n == 0)
+    if(n == 0)
         return;
-    if (order_ == 0)
+    if(order_ == 0)
     {
         coeffs_[0] = 0.0;
         return;
     }
-    for (unsigned int i = 1; i <= order_; ++i)
+    for(unsigned int i = 1; i <= order_; ++i)
     {
         coeffs_[i - 1] = double(i) * coeffs_[i];
     }
     --order_;
-    if (n > 1)
+    if(n > 1)
         differentiate(n - 1);
 }
 
-template<class T>
+template <class T>
 void
 PolynomialView<T>::deflate(T const& v, unsigned int multiplicity)
 {
     vigra_precondition(order_ > 0,
                        "PolynomialView<T>::deflate(): cannot deflate 0th order polynomial.");
-    if (v == 0.0)
+    if(v == 0.0)
     {
         ++coeffs_;
         --order_;
@@ -349,15 +349,15 @@ PolynomialView<T>::deflate(T const& v, unsigned int multiplicity)
         // a root with magnitude near the median among all roots
         forwardBackwardDeflate(v);
     }
-    if (multiplicity > 1)
+    if(multiplicity > 1)
         deflate(v, multiplicity - 1);
 }
 
-template<class T>
+template <class T>
 void
 PolynomialView<T>::forwardDeflate(T const& v)
 {
-    for (int i = order_ - 1; i > 0; --i)
+    for(int i = order_ - 1; i > 0; --i)
     {
         coeffs_[i] += v * coeffs_[i + 1];
     }
@@ -365,13 +365,13 @@ PolynomialView<T>::forwardDeflate(T const& v)
     --order_;
 }
 
-template<class T>
+template <class T>
 void
 PolynomialView<T>::forwardBackwardDeflate(T v)
 {
     unsigned int order2 = order_ / 2;
     T tmp = coeffs_[order_];
-    for (unsigned int i = order_ - 1; i >= order2; --i)
+    for(unsigned int i = order_ - 1; i >= order2; --i)
     {
         T tmp1 = coeffs_[i];
         coeffs_[i] = tmp;
@@ -379,27 +379,27 @@ PolynomialView<T>::forwardBackwardDeflate(T v)
     }
     v = -1.0 / v;
     coeffs_[0] *= v;
-    for (unsigned int i = 1; i < order2; ++i)
+    for(unsigned int i = 1; i < order2; ++i)
     {
         coeffs_[i] = v * (coeffs_[i] - coeffs_[i - 1]);
     }
     --order_;
 }
 
-template<class T>
+template <class T>
 void
 PolynomialView<T>::backwardDeflate(T v)
 {
     v = -1.0 / v;
     coeffs_[0] *= v;
-    for (unsigned int i = 1; i < order_; ++i)
+    for(unsigned int i = 1; i < order_; ++i)
     {
         coeffs_[i] = v * (coeffs_[i] - coeffs_[i - 1]);
     }
     --order_;
 }
 
-template<class T>
+template <class T>
 void
 PolynomialView<T>::deflateConjugatePair(Complex const& v)
 {
@@ -409,7 +409,7 @@ PolynomialView<T>::deflateConjugatePair(Complex const& v)
     Real a = 2.0 * v.real();
     Real b = -sq(v.real()) - sq(v.imag());
     coeffs_[order_ - 1] += a * coeffs_[order_];
-    for (int i = order_ - 2; i > 1; --i)
+    for(int i = order_ - 2; i > 1; --i)
     {
         coeffs_[i] += a * coeffs_[i + 1] + b * coeffs_[i + 2];
     }
@@ -417,24 +417,24 @@ PolynomialView<T>::deflateConjugatePair(Complex const& v)
     order_ -= 2;
 }
 
-template<class T>
+template <class T>
 void
 PolynomialView<T>::minimizeOrder(double epsilon)
 {
-    while (std::abs(coeffs_[order_]) <= epsilon && order_ > 0)
+    while(std::abs(coeffs_[order_]) <= epsilon && order_ > 0)
         --order_;
 }
 
-template<class T>
+template <class T>
 void
 PolynomialView<T>::normalize()
 {
-    for (unsigned int i = 0; i < order_; ++i)
+    for(unsigned int i = 0; i < order_; ++i)
         coeffs_[i] /= coeffs_[order_];
     coeffs_[order_] = T(1.0);
 }
 
-template<class T>
+template <class T>
 void
 PolynomialView<T>::balance()
 {
@@ -442,7 +442,7 @@ PolynomialView<T>::balance()
     Real norm = (p0 > 0.0)
                     ? VIGRA_CSTD::sqrt(p0 * po)
                     : po;
-    for (unsigned int i = 0; i <= order_; ++i)
+    for(unsigned int i = 0; i <= order_; ++i)
         coeffs_[i] /= norm;
 }
 
@@ -463,7 +463,7 @@ PolynomialView<T>::balance()
     
     \ingroup Polynomials
 */
-template<class T>
+template <class T>
 class Polynomial
     : public PolynomialView<T>
 {
@@ -503,7 +503,7 @@ public:
 
     /** Construct polynomial by copying the given coefficient sequence.
         */
-    template<class ITER>
+    template <class ITER>
     Polynomial(ITER i, unsigned int order)
         : BaseType(),
           polynomial_(i, i + order + 1)
@@ -516,7 +516,7 @@ public:
             the precision of subsequent algorithms (especially root finding) 
             performed on the polynomial.
         */
-    template<class ITER>
+    template <class ITER>
     Polynomial(ITER i, unsigned int order, double epsilon)
         : BaseType(epsilon),
           polynomial_(i, i + order + 1)
@@ -528,7 +528,7 @@ public:
         */
     Polynomial& operator=(Polynomial const& p)
     {
-        if (this == &p)
+        if(this == &p)
             return *this;
         ArrayVector<T> tmp(p.begin(), p.end());
         polynomial_.swap(tmp);
@@ -595,7 +595,7 @@ protected:
     
     \ingroup Polynomials
 */
-template<unsigned int MAXORDER, class T>
+template <unsigned int MAXORDER, class T>
 class StaticPolynomial
     : public PolynomialView<T>
 {
@@ -639,7 +639,7 @@ public:
     /** Construct polynomial by copying the given coefficient sequence.
             <tt>order <= MAXORDER</tt> is required.
         */
-    template<class ITER>
+    template <class ITER>
     StaticPolynomial(ITER i, unsigned int order)
         : BaseType()
     {
@@ -654,7 +654,7 @@ public:
             the precision of subsequent algorithms (especially root finding) 
             performed on the polynomial.
         */
-    template<class ITER>
+    template <class ITER>
     StaticPolynomial(ITER i, unsigned int order, double epsilon)
         : BaseType(epsilon)
     {
@@ -668,7 +668,7 @@ public:
         */
     StaticPolynomial& operator=(StaticPolynomial const& p)
     {
-        if (this == &p)
+        if(this == &p)
             return *this;
         std::copy(p.begin(), p.end(), polynomial_);
         this->setCoeffs(polynomial_, p.order());
@@ -728,17 +728,17 @@ namespace detail
 
 // replacement for complex division (some compilers have numerically
 // less stable implementations); code from python complexobject.c
-template<class T>
+template <class T>
 std::complex<T>
 complexDiv(std::complex<T> const& a, std::complex<T> const& b)
 {
     const double abs_breal = b.real() < 0 ? -b.real() : b.real();
     const double abs_bimag = b.imag() < 0 ? -b.imag() : b.imag();
 
-    if (abs_breal >= abs_bimag)
+    if(abs_breal >= abs_bimag)
     {
         /* divide tops and bottom by b.real() */
-        if (abs_breal == 0.0)
+        if(abs_breal == 0.0)
         {
             return std::complex<T>(a.real() / abs_breal, a.imag() / abs_breal);
         }
@@ -760,7 +760,7 @@ complexDiv(std::complex<T> const& a, std::complex<T> const& b)
     }
 }
 
-template<class T>
+template <class T>
 std::complex<T>
 deleteBelowEpsilon(std::complex<T> const& x, double eps)
 {
@@ -771,7 +771,7 @@ deleteBelowEpsilon(std::complex<T> const& x, double eps)
                      : x;
 }
 
-template<class POLYNOMIAL>
+template <class POLYNOMIAL>
 typename POLYNOMIAL::value_type
 laguerreStartingGuess(POLYNOMIAL const& p)
 {
@@ -781,7 +781,7 @@ laguerreStartingGuess(POLYNOMIAL const& p)
     return centroid + dist;
 }
 
-template<class POLYNOMIAL, class Complex>
+template <class POLYNOMIAL, class Complex>
 int
 laguerre1Root(POLYNOMIAL const& p, Complex& x, unsigned int multiplicity)
 {
@@ -794,12 +794,12 @@ laguerre1Root(POLYNOMIAL const& p, Complex& x, unsigned int multiplicity)
     double eps = p.epsilon(),
            eps2 = VIGRA_CSTD::sqrt(eps);
 
-    if (multiplicity == 0)
+    if(multiplicity == 0)
         x = laguerreStartingGuess(p);
 
     bool mayTryDerivative = true; // try derivative for multiple roots
 
-    for (count = 0; count < maxiter; ++count)
+    for(count = 0; count < maxiter; ++count)
     {
         // Horner's algorithm to calculate values of polynomial and its
         // first two derivatives and estimate error for current x
@@ -808,7 +808,7 @@ laguerre1Root(POLYNOMIAL const& p, Complex& x, unsigned int multiplicity)
         Complex p2(0.0);
         Real ax = std::abs(x);
         Real err = std::abs(p0);
-        for (int i = p.order() - 1; i >= 0; --i)
+        for(int i = p.order() - 1; i >= 0; --i)
         {
             p2 = p2 * x + p1;
             p1 = p1 * x + p0;
@@ -818,7 +818,7 @@ laguerre1Root(POLYNOMIAL const& p, Complex& x, unsigned int multiplicity)
         p2 *= 2.0;
         err *= eps;
         Real ap0 = std::abs(p0);
-        if (ap0 <= err)
+        if(ap0 <= err)
         {
             break; // converged
         }
@@ -826,22 +826,22 @@ laguerre1Root(POLYNOMIAL const& p, Complex& x, unsigned int multiplicity)
         Complex g2 = g * g;
         Complex h = g2 - complexDiv(p2, p0);
         // estimate root multiplicity according to Tien Chen
-        if (g2 != 0.0)
+        if(g2 != 0.0)
         {
             multiplicity = (unsigned int)VIGRA_CSTD::floor(N /
                                                                (std::abs(N * complexDiv(h, g2) - 1.0) + 1.0) +
                                                            0.5);
-            if (multiplicity < 1)
+            if(multiplicity < 1)
                 multiplicity = 1;
         }
         // improve accuracy of multiple roots on the derivative, as suggested by C. Bond
         // (do this only if we are already near the root, otherwise we may converge to
         //  a different root of the derivative polynomial)
-        if (mayTryDerivative && multiplicity > 1 && ap0 < eps2)
+        if(mayTryDerivative && multiplicity > 1 && ap0 < eps2)
         {
             Complex x1 = x;
             int derivativeMultiplicity = laguerre1Root(p.getDerivative(), x1, multiplicity - 1);
-            if (derivativeMultiplicity && std::abs(p(x1)) < std::abs(p(x)))
+            if(derivativeMultiplicity && std::abs(p(x1)) < std::abs(p(x)))
             {
                 // successful search on derivative
                 x = x1;
@@ -856,10 +856,10 @@ laguerre1Root(POLYNOMIAL const& p, Complex& x, unsigned int multiplicity)
         Complex sq = VIGRA_CSTD::sqrt((N - 1.0) * (N * h - g2));
         Complex gp = g + sq;
         Complex gm = g - sq;
-        if (std::abs(gp) < std::abs(gm))
+        if(std::abs(gp) < std::abs(gm))
             gp = gm;
         Complex dx;
-        if (gp != 0.0)
+        if(gp != 0.0)
         {
             dx = complexDiv(Complex(N), gp);
         }
@@ -870,11 +870,11 @@ laguerre1Root(POLYNOMIAL const& p, Complex& x, unsigned int multiplicity)
         }
         Complex x1 = x - dx;
 
-        if (x1 - x == 0.0)
+        if(x1 - x == 0.0)
         {
             break; // converged
         }
-        if ((count + 1) % 10)
+        if((count + 1) % 10)
             x = x1;
         else
             // cycle breaking trick according to Numerical Recipes
@@ -883,7 +883,7 @@ laguerre1Root(POLYNOMIAL const& p, Complex& x, unsigned int multiplicity)
     return count < maxiter ? multiplicity : 0;
 }
 
-template<class Real>
+template <class Real>
 struct PolynomialRootCompare
 {
     Real epsilon;
@@ -893,7 +893,7 @@ struct PolynomialRootCompare
     {
     }
 
-    template<class T>
+    template <class T>
     bool operator()(T const& l, T const& r)
     {
         return closeAtTolerance(l.real(), r.real(), epsilon)
@@ -964,7 +964,7 @@ struct PolynomialRootCompare
 
     \see polynomialRootsEigenvalueMethod()
 */
-template<class POLYNOMIAL, class VECTOR>
+template <class POLYNOMIAL, class VECTOR>
 bool
 polynomialRoots(POLYNOMIAL const& poriginal, VECTOR& roots, bool polishRoots)
 {
@@ -976,7 +976,7 @@ polynomialRoots(POLYNOMIAL const& poriginal, VECTOR& roots, bool polishRoots)
 
     WorkPolynomial p(poriginal.begin(), poriginal.order(), eps);
     p.minimizeOrder();
-    if (p.order() == 0)
+    if(p.order() == 0)
         return true;
 
     Complex x = detail::laguerreStartingGuess(p);
@@ -985,7 +985,7 @@ polynomialRoots(POLYNOMIAL const& poriginal, VECTOR& roots, bool polishRoots)
     bool triedConjugate = false;
 
     // handle the high order cases
-    while (p.order() > 2)
+    while(p.order() > 2)
     {
         p.balance();
 
@@ -993,17 +993,17 @@ polynomialRoots(POLYNOMIAL const& poriginal, VECTOR& roots, bool polishRoots)
         // zero return indicates failure to converge
         multiplicity = detail::laguerre1Root(p, x, multiplicity);
 
-        if (multiplicity == 0)
+        if(multiplicity == 0)
             return false;
         // polish root on original polynomial poriginal;
         // zero return indicates failure to converge
-        if (polishRoots && !detail::laguerre1Root(poriginal, x, multiplicity))
+        if(polishRoots && !detail::laguerre1Root(poriginal, x, multiplicity))
             return false;
         x = detail::deleteBelowEpsilon(x, eps);
         roots.push_back(x);
         p.deflate(x);
         // determine the next starting guess
-        if (multiplicity > 1)
+        if(multiplicity > 1)
         {
             // probably multiple root => keep current root as starting guess
             --multiplicity;
@@ -1012,7 +1012,7 @@ polynomialRoots(POLYNOMIAL const& poriginal, VECTOR& roots, bool polishRoots)
         else
         {
             // need a new starting guess
-            if (x.imag() != 0.0 && !triedConjugate)
+            if(x.imag() != 0.0 && !triedConjugate)
             {
                 // if the root is complex and we don't already have
                 // the conjugate root => try the conjugate as starting guess
@@ -1029,30 +1029,30 @@ polynomialRoots(POLYNOMIAL const& poriginal, VECTOR& roots, bool polishRoots)
     }
 
     // handle the low order cases
-    if (p.order() == 2)
+    if(p.order() == 2)
     {
         Complex a = p[2];
         Complex b = p[1];
         Complex c = p[0];
         Complex b2 = std::sqrt(b * b - 4.0 * a * c);
         Complex q;
-        if ((conj(b) * b2).real() >= 0.0)
+        if((conj(b) * b2).real() >= 0.0)
             q = -0.5 * (b + b2);
         else
             q = -0.5 * (b - b2);
         x = detail::complexDiv(q, a);
-        if (polishRoots)
+        if(polishRoots)
             detail::laguerre1Root(poriginal, x, 1);
         roots.push_back(detail::deleteBelowEpsilon(x, eps));
         x = detail::complexDiv(c, q);
-        if (polishRoots)
+        if(polishRoots)
             detail::laguerre1Root(poriginal, x, 1);
         roots.push_back(detail::deleteBelowEpsilon(x, eps));
     }
-    else if (p.order() == 1)
+    else if(p.order() == 1)
     {
         x = detail::complexDiv(-p[0], p[1]);
-        if (polishRoots)
+        if(polishRoots)
             detail::laguerre1Root(poriginal, x, 1);
         roots.push_back(detail::deleteBelowEpsilon(x, eps));
     }
@@ -1060,7 +1060,7 @@ polynomialRoots(POLYNOMIAL const& poriginal, VECTOR& roots, bool polishRoots)
     return true;
 }
 
-template<class POLYNOMIAL, class VECTOR>
+template <class POLYNOMIAL, class VECTOR>
 inline bool
 polynomialRoots(POLYNOMIAL const& poriginal, VECTOR& roots)
 {
@@ -1102,21 +1102,21 @@ polynomialRoots(POLYNOMIAL const& poriginal, VECTOR& roots)
 
     \see polynomialRealRootsEigenvalueMethod()
 */
-template<class POLYNOMIAL, class VECTOR>
+template <class POLYNOMIAL, class VECTOR>
 bool
 polynomialRealRoots(POLYNOMIAL const& p, VECTOR& roots, bool polishRoots)
 {
     typedef typename NumericTraits<typename VECTOR::value_type>::ComplexPromote Complex;
     ArrayVector<Complex> croots;
-    if (!polynomialRoots(p, croots, polishRoots))
+    if(!polynomialRoots(p, croots, polishRoots))
         return false;
-    for (unsigned int i = 0; i < croots.size(); ++i)
-        if (croots[i].imag() == 0.0)
+    for(unsigned int i = 0; i < croots.size(); ++i)
+        if(croots[i].imag() == 0.0)
             roots.push_back(croots[i].real());
     return true;
 }
 
-template<class POLYNOMIAL, class VECTOR>
+template <class POLYNOMIAL, class VECTOR>
 inline bool
 polynomialRealRoots(POLYNOMIAL const& poriginal, VECTOR& roots)
 {
@@ -1130,11 +1130,11 @@ polynomialRealRoots(POLYNOMIAL const& poriginal, VECTOR& roots)
 namespace std
 {
 
-template<class T>
+template <class T>
 ostream&
 operator<<(ostream& o, vigra::PolynomialView<T> const& p)
 {
-    for (unsigned int k = 0; k < p.order(); ++k)
+    for(unsigned int k = 0; k < p.order(); ++k)
         o << p[k] << " ";
     o << p[p.order()];
     return o;

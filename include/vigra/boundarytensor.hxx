@@ -57,7 +57,7 @@ namespace detail
 
 typedef ArrayVector<Kernel1D<double>> KernelArray;
 
-template<class KernelArray>
+template <class KernelArray>
 void
 initGaussianPolarFilters1(double std_dev, KernelArray& k)
 {
@@ -78,7 +78,7 @@ initGaussianPolarFilters1(double std_dev, KernelArray& k)
     double sigma22 = -0.5 / std_dev / std_dev;
 
 
-    for (unsigned int i = 0; i < k.size(); ++i)
+    for(unsigned int i = 0; i < k.size(); ++i)
     {
         k[i].initExplicitly(-radius, radius);
         k[i].setBorderTreatment(BORDER_TREATMENT_REFLECT);
@@ -86,14 +86,14 @@ initGaussianPolarFilters1(double std_dev, KernelArray& k)
 
     int ix;
     iterator c = k[0].center();
-    for (ix = -radius; ix <= radius; ++ix)
+    for(ix = -radius; ix <= radius; ++ix)
     {
         double x = (double)ix;
         c[ix] = f * VIGRA_CSTD::exp(sigma22 * x * x);
     }
 
     c = k[1].center();
-    for (ix = -radius; ix <= radius; ++ix)
+    for(ix = -radius; ix <= radius; ++ix)
     {
         double x = (double)ix;
         c[ix] = f * x * VIGRA_CSTD::exp(sigma22 * x * x);
@@ -101,21 +101,21 @@ initGaussianPolarFilters1(double std_dev, KernelArray& k)
 
     c = k[2].center();
     double b2 = b / 3.0;
-    for (ix = -radius; ix <= radius; ++ix)
+    for(ix = -radius; ix <= radius; ++ix)
     {
         double x = (double)ix;
         c[ix] = f * (b2 + a * x * x) * VIGRA_CSTD::exp(sigma22 * x * x);
     }
 
     c = k[3].center();
-    for (ix = -radius; ix <= radius; ++ix)
+    for(ix = -radius; ix <= radius; ++ix)
     {
         double x = (double)ix;
         c[ix] = f * x * (b + a * x * x) * VIGRA_CSTD::exp(sigma22 * x * x);
     }
 }
 
-template<class KernelArray>
+template <class KernelArray>
 void
 initGaussianPolarFilters2(double std_dev, KernelArray& k)
 {
@@ -133,7 +133,7 @@ initGaussianPolarFilters2(double std_dev, KernelArray& k)
     double sigma2 = std_dev * std_dev;
     double sigma22 = -0.5 / sigma2;
 
-    for (unsigned int i = 0; i < k.size(); ++i)
+    for(unsigned int i = 0; i < k.size(); ++i)
     {
         k[i].initExplicitly(-radius, radius);
         k[i].setBorderTreatment(BORDER_TREATMENT_REFLECT);
@@ -141,7 +141,7 @@ initGaussianPolarFilters2(double std_dev, KernelArray& k)
 
     int ix;
     iterator c = k[0].center();
-    for (ix = -radius; ix <= radius; ++ix)
+    for(ix = -radius; ix <= radius; ++ix)
     {
         double x = (double)ix;
         c[ix] = f * VIGRA_CSTD::exp(sigma22 * x * x);
@@ -149,7 +149,7 @@ initGaussianPolarFilters2(double std_dev, KernelArray& k)
 
     c = k[1].center();
     double f1 = f / sigma2;
-    for (ix = -radius; ix <= radius; ++ix)
+    for(ix = -radius; ix <= radius; ++ix)
     {
         double x = (double)ix;
         c[ix] = f1 * x * VIGRA_CSTD::exp(sigma22 * x * x);
@@ -157,14 +157,14 @@ initGaussianPolarFilters2(double std_dev, KernelArray& k)
 
     c = k[2].center();
     double f2 = f / (sigma2 * sigma2);
-    for (ix = -radius; ix <= radius; ++ix)
+    for(ix = -radius; ix <= radius; ++ix)
     {
         double x = (double)ix;
         c[ix] = f2 * (x * x - sigma2) * VIGRA_CSTD::exp(sigma22 * x * x);
     }
 }
 
-template<class KernelArray>
+template <class KernelArray>
 void
 initGaussianPolarFilters3(double std_dev, KernelArray& k)
 {
@@ -183,7 +183,7 @@ initGaussianPolarFilters3(double std_dev, KernelArray& k)
     double f = 1.0 / VIGRA_CSTD::sqrt(2.0 * M_PI) / std_dev; // norm
     double a = 0.883887052922 / VIGRA_CSTD::pow(std_dev, 5);
 
-    for (unsigned int i = 0; i < k.size(); ++i)
+    for(unsigned int i = 0; i < k.size(); ++i)
     {
         k[i].initExplicitly(-radius, radius);
         k[i].setBorderTreatment(BORDER_TREATMENT_REFLECT);
@@ -193,14 +193,14 @@ initGaussianPolarFilters3(double std_dev, KernelArray& k)
 
     int ix;
     iterator c = k[0].center();
-    for (ix = -radius; ix <= radius; ++ix)
+    for(ix = -radius; ix <= radius; ++ix)
     {
         double x = (double)ix;
         c[ix] = f * VIGRA_CSTD::exp(sigma22 * x * x);
     }
 
     c = k[1].center();
-    for (ix = -radius; ix <= radius; ++ix)
+    for(ix = -radius; ix <= radius; ++ix)
     {
         double x = (double)ix;
         c[ix] = f * x * VIGRA_CSTD::exp(sigma22 * x * x);
@@ -208,22 +208,22 @@ initGaussianPolarFilters3(double std_dev, KernelArray& k)
 
     c = k[2].center();
     double a2 = 3.0 * a;
-    for (ix = -radius; ix <= radius; ++ix)
+    for(ix = -radius; ix <= radius; ++ix)
     {
         double x = (double)ix;
         c[ix] = f * a2 * x * x * VIGRA_CSTD::exp(sigma22 * x * x);
     }
 
     c = k[3].center();
-    for (ix = -radius; ix <= radius; ++ix)
+    for(ix = -radius; ix <= radius; ++ix)
     {
         double x = (double)ix;
         c[ix] = f * a * x * x * x * VIGRA_CSTD::exp(sigma22 * x * x);
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 evenPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
                  DestIterator dupperleft, DestAccessor dest,
@@ -257,14 +257,14 @@ evenPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sr
     // create even tensor from filter responses
     TmpTraverser tul(t.upperLeft());
     TmpTraverser tlr(t.lowerRight());
-    for (; tul.y != tlr.y; ++tul.y, ++dupperleft.y)
+    for(; tul.y != tlr.y; ++tul.y, ++dupperleft.y)
     {
         typename TmpTraverser::row_iterator tr = tul.rowIterator();
         typename TmpTraverser::row_iterator trend = tr + w;
         typename DestIterator::row_iterator d = dupperleft.rowIterator();
-        if (noLaplacian)
+        if(noLaplacian)
         {
-            for (; tr != trend; ++tr, ++d)
+            for(; tr != trend; ++tr, ++d)
             {
                 TmpType v = detail::RequiresExplicitCast<TmpType>::cast(0.5 * sq((*tr)[0] - (*tr)[2]) + 2.0 * sq((*tr)[1]));
                 dest.setComponent(v, d, 0);
@@ -274,7 +274,7 @@ evenPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sr
         }
         else
         {
-            for (; tr != trend; ++tr, ++d)
+            for(; tr != trend; ++tr, ++d)
             {
                 dest.setComponent(sq((*tr)[0]) + sq((*tr)[1]), d, 0);
                 dest.setComponent(-(*tr)[1] * ((*tr)[0] + (*tr)[2]), d, 1);
@@ -284,8 +284,8 @@ evenPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sr
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
                 DestIterator dupperleft, DestAccessor dest,
@@ -322,14 +322,14 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
     // create odd tensor from filter responses
     TmpTraverser tul(t.upperLeft());
     TmpTraverser tlr(t.lowerRight());
-    for (; tul.y != tlr.y; ++tul.y, ++dupperleft.y)
+    for(; tul.y != tlr.y; ++tul.y, ++dupperleft.y)
     {
         typename TmpTraverser::row_iterator tr = tul.rowIterator();
         typename TmpTraverser::row_iterator trend = tr + w;
         typename DestIterator::row_iterator d = dupperleft.rowIterator();
-        if (addResult)
+        if(addResult)
         {
-            for (; tr != trend; ++tr, ++d)
+            for(; tr != trend; ++tr, ++d)
             {
                 TmpType d0 = (*tr)[0] + (*tr)[2];
                 TmpType d1 = -(*tr)[1] - (*tr)[3];
@@ -341,7 +341,7 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
         }
         else
         {
-            for (; tr != trend; ++tr, ++d)
+            for(; tr != trend; ++tr, ++d)
             {
                 TmpType d0 = (*tr)[0] + (*tr)[2];
                 TmpType d1 = -(*tr)[1] - (*tr)[3];
@@ -431,10 +431,10 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
     rieszTransformOfLOG(impulse, res, 2.0, 1, 0);
     \endcode
 */
-doxygen_overloaded_function(template<...> void rieszTransformOfLOG)
+doxygen_overloaded_function(template <...> void rieszTransformOfLOG)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void rieszTransformOfLOG(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
                              DestIterator dupperleft, DestAccessor dest,
                              double scale, unsigned int xorder, unsigned int yorder)
@@ -452,7 +452,7 @@ doxygen_overloaded_function(template<...> void rieszTransformOfLOG)
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
     typedef BasicImage<TmpType> TmpImage;
 
-    switch (order)
+    switch(order)
     {
         case 0:
         {
@@ -476,7 +476,7 @@ doxygen_overloaded_function(template<...> void rieszTransformOfLOG)
 
             TmpImage t1(w, h), t2(w, h);
 
-            if (xorder == 1)
+            if(xorder == 1)
             {
                 convolveImage(srcIterRange(supperleft, slowerright, src),
                               destImage(t1), k1[3], k1[0]);
@@ -511,7 +511,7 @@ doxygen_overloaded_function(template<...> void rieszTransformOfLOG)
 
             TmpImage t1(w, h), t2(w, h);
 
-            if (xorder == 3)
+            if(xorder == 3)
             {
                 convolveImage(srcIterRange(supperleft, slowerright, src),
                               destImage(t1), k3[3], k3[0]);
@@ -532,8 +532,8 @@ doxygen_overloaded_function(template<...> void rieszTransformOfLOG)
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     pair<DestIterator, DestAccessor> dest,
@@ -543,8 +543,8 @@ rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         scale, xorder, yorder);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     rieszTransformOfLOG(MultiArrayView<2, T1, S1> const& src,
                         MultiArrayView<2, T2, S2> dest,
@@ -634,10 +634,10 @@ inline void
     boundaryTensor(img, bt, 2.0);
     \endcode
 */
-doxygen_overloaded_function(template<...> void boundaryTensor)
+doxygen_overloaded_function(template <...> void boundaryTensor)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void boundaryTensor(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
                         DestIterator dupperleft, DestAccessor dest,
                         double scale)
@@ -653,8 +653,8 @@ doxygen_overloaded_function(template<...> void boundaryTensor)
                             dupperleft, dest, scale, true);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 boundaryTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                pair<DestIterator, DestAccessor> dest,
@@ -664,8 +664,8 @@ boundaryTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    dest.first, dest.second, scale);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     boundaryTensor(MultiArrayView<2, T1, S1> const& src,
                    MultiArrayView<2, T2, S2> dest,
@@ -724,10 +724,10 @@ inline void
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void boundaryTensor1)
+doxygen_overloaded_function(template <...> void boundaryTensor1)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void boundaryTensor1(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
                          DestIterator dupperleft, DestAccessor dest,
                          double scale)
@@ -743,8 +743,8 @@ doxygen_overloaded_function(template<...> void boundaryTensor1)
                             dupperleft, dest, scale, true);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 boundaryTensor1(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                 pair<DestIterator, DestAccessor> dest,
@@ -754,8 +754,8 @@ boundaryTensor1(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     dest.first, dest.second, scale);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     boundaryTensor1(MultiArrayView<2, T1, S1> const& src,
                     MultiArrayView<2, T2, S2> dest,
@@ -776,9 +776,9 @@ inline void
 /*  Add 3rd order Riesz transform to boundary tensor
     ??? Does not work -- bug or too coarse approximation for 3rd order ???
 */
-template<class SrcIterator, class SrcAccessor,
-         class DestIteratorEven, class DestAccessorEven,
-         class DestIteratorOdd, class DestAccessorOdd>
+template <class SrcIterator, class SrcAccessor,
+          class DestIteratorEven, class DestAccessorEven,
+          class DestIteratorOdd, class DestAccessorOdd>
 void
 boundaryTensor3(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa,
                 DestIteratorEven dupperleft_even, DestAccessorEven even,
@@ -836,13 +836,13 @@ boundaryTensor3(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa,
     TmpTraverser tul1(t1.upperLeft());
     TmpTraverser tlr1(t1.lowerRight());
     TmpTraverser tul2(t2.upperLeft());
-    for (; tul1.y != tlr1.y; ++tul1.y, ++tul2.y, ++dupperleft_odd.y)
+    for(; tul1.y != tlr1.y; ++tul1.y, ++tul2.y, ++dupperleft_odd.y)
     {
         typename TmpTraverser::row_iterator tr1 = tul1.rowIterator();
         typename TmpTraverser::row_iterator trend1 = tr1 + w;
         typename TmpTraverser::row_iterator tr2 = tul2.rowIterator();
         typename DestIteratorOdd::row_iterator o = dupperleft_odd.rowIterator();
-        for (; tr1 != trend1; ++tr1, ++tr2, ++o)
+        for(; tr1 != trend1; ++tr1, ++tr2, ++o)
         {
             TmpType d11 = (*tr1)[0] + (*tr1)[2];
             TmpType d12 = -(*tr1)[1] - (*tr1)[3];
@@ -862,9 +862,9 @@ boundaryTensor3(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa,
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIteratorEven, class DestAccessorEven,
-         class DestIteratorOdd, class DestAccessorOdd>
+template <class SrcIterator, class SrcAccessor,
+          class DestIteratorEven, class DestAccessorEven,
+          class DestIteratorOdd, class DestAccessorOdd>
 inline void
 boundaryTensor3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                 pair<DestIteratorEven, DestAccessorEven> even,
@@ -875,9 +875,9 @@ boundaryTensor3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     even.first, even.second, odd.first, odd.second, scale);
 }
 
-template<class T1, class S1,
-         class T2E, class S2Even,
-         class T2O, class S2Odd>
+template <class T1, class S1,
+          class T2E, class S2Even,
+          class T2O, class S2Odd>
 inline void boundaryTensor3(MultiArrayView<2, T1, S1> const& src,
                             MultiArrayView<2, T2E, S2Even> even,
                             MultiArrayView<2, T2O, S2Odd> odd,

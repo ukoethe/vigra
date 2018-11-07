@@ -360,28 +360,28 @@ tic_toc_diff(std::vector<timeval>& tic)
 //  outputting the final minimal average to std::cerr
 // We enclose the loop in a dummy do { ... } while(false) in order to make this a true single statement
 //  (instead of just a scope).
-#define TICTOCLOOP_BEGIN(inner_repetitions, outer_repetitions)                                                       \
-    do                                                                                                               \
-    {                                                                                                                \
-        USETICTOC                                                                                                    \
-        double tictoc_best_, tictoc_inner_repetitions_ = inner_repetitions;                                          \
-        size_t tictoc_outer_repetitions_ = outer_repetitions;                                                        \
-        for (size_t tictoccounter_ = 0; tictoccounter_ < tictoc_outer_repetitions_; ++tictoccounter_)                \
-        {                                                                                                            \
-            TIC for (size_t tictocinnercounter_ = 0; tictocinnercounter_ < inner_repetitions; ++tictocinnercounter_) \
+#define TICTOCLOOP_BEGIN(inner_repetitions, outer_repetitions)                                                      \
+    do                                                                                                              \
+    {                                                                                                               \
+        USETICTOC                                                                                                   \
+        double tictoc_best_, tictoc_inner_repetitions_ = inner_repetitions;                                         \
+        size_t tictoc_outer_repetitions_ = outer_repetitions;                                                       \
+        for(size_t tictoccounter_ = 0; tictoccounter_ < tictoc_outer_repetitions_; ++tictoccounter_)                \
+        {                                                                                                           \
+            TIC for(size_t tictocinnercounter_ = 0; tictocinnercounter_ < inner_repetitions; ++tictocinnercounter_) \
             {
 
 
 #define TICTOCLOOP_END                                                               \
     }                                                                                \
     const double tictoc_cur_ = TOCN;                                                 \
-    if ((tictoccounter_ == 0) || (tictoc_cur_ < tictoc_best_))                       \
+    if((tictoccounter_ == 0) || (tictoc_cur_ < tictoc_best_))                        \
         tictoc_best_ = tictoc_cur_;                                                  \
     }                                                                                \
     std::cerr << tictoc_best_ / tictoc_inner_repetitions_                            \
               << " msec (best-of-" << tictoc_outer_repetitions_ << ")" << std::endl; \
     }                                                                                \
-    while (false)                                                                    \
+    while(false)                                                                     \
         ;
 
 
@@ -400,7 +400,7 @@ tic_toc_diff(std::vector<timeval>& tic)
     {
 #define TICTOCLOOP_END \
     }                  \
-    while (false)      \
+    while(false)       \
         ;
 #endif // NDEBUG
 

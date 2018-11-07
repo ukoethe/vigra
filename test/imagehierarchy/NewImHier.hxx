@@ -41,7 +41,7 @@ public:
     }
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION ////AEND_1////////
-    template<int N>
+    template <int N>
     ConstVectorProxy(TinyVector<value_type, N> const& v)
         : data_(const_cast<TinyVector<value_type, N>&>(v).begin()), size_(N)
     {
@@ -77,7 +77,7 @@ public:
 
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION /////////////AEND_2//////////
-    template<int N>
+    template <int N>
     void reset(TinyVector<value_type, N> const& v)
     {
         data_ = const_cast<TinyVector<value_type, N>&>(v).begin();
@@ -146,7 +146,7 @@ public:
     }
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION ///////////AEND_3///////////
-    template<int N>
+    template <int N>
     operator TinyVector<value_type, N>() const
     {
         vigra_precondition(size_ == N,
@@ -191,10 +191,10 @@ public:
 
     bool operator==(ConstVectorProxy const& o) const
     {
-        if (size() != o.size())
+        if(size() != o.size())
             return false;
-        for (int i = 0; i < size(); ++i)
-            if ((*this)[i] != o[i])
+        for(int i = 0; i < size(); ++i)
+            if((*this)[i] != o[i])
                 return false;
         return true;
     }
@@ -209,7 +209,7 @@ protected:
 
     ConstVectorProxy& operator=(value_type const& f);
 
-    template<int N>
+    template <int N>
     ConstVectorProxy& operator=(TinyVector<value_type, N> const& v);
 
     value_type* data_;
@@ -242,7 +242,7 @@ public:
     }
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION ////AEND_1////////
-    template<int N>
+    template <int N>
     VectorProxy(TinyVector<value_type, N> const& v)
         : ConstVectorProxy(v)
     {
@@ -265,12 +265,12 @@ public:
 #endif //////AEND_1//////////////
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION /////////AEND_4////////////
-    template<int N>
+    template <int N>
     VectorProxy& operator=(TinyVector<value_type, N> const& v)
     {
         vigra_precondition(size_ == N,
                            "VectorProxy::operator=(): size mismatch.");
-        for (int i = 0; i < N; ++i)
+        for(int i = 0; i < N; ++i)
             data_[i] = v[i];
         return *this;
     }
@@ -279,7 +279,7 @@ public:
     {
         vigra_precondition(size_ == 2,
                            "VectorProxy::operator=(): size mismatch.");
-        for (int i = 0; i < 2; ++i)
+        for(int i = 0; i < 2; ++i)
             data_[i] = v[i];
         return *this;
     }
@@ -288,7 +288,7 @@ public:
     {
         vigra_precondition(size_ == 3,
                            "VectorProxy::operator=(): size mismatch.");
-        for (int i = 0; i < 3; ++i)
+        for(int i = 0; i < 3; ++i)
             data_[i] = v[i];
         return *this;
     }
@@ -297,7 +297,7 @@ public:
     {
         vigra_precondition(size_ == 4,
                            "VectorProxy::operator=(): size mismatch.");
-        for (int i = 0; i < 4; ++i)
+        for(int i = 0; i < 4; ++i)
             data_[i] = v[i];
         return *this;
     }
@@ -316,7 +316,7 @@ public:
     {
         vigra_precondition(size_ == v.size(),
                            "VectorProxy::operator=(): size mismatch.");
-        for (int i = 0; i < size_; ++i)
+        for(int i = 0; i < size_; ++i)
             data_[i] = v[i];
         return *this;
     }
@@ -325,7 +325,7 @@ public:
     {
         vigra_precondition(size_ == v.size(),
                            "VectorProxy::operator=(): size mismatch.");
-        for (int i = 0; i < size_; ++i)
+        for(int i = 0; i < size_; ++i)
             data_[i] = v[i];
         return *this;
     }
@@ -361,14 +361,14 @@ public:
     }
 };
 
-template<int N>
+template <int N>
 inline bool
 operator==(TinyVector<GrayValue, N> const& l, ConstVectorProxy const& r)
 {
     return r == l;
 }
 
-template<class IMAGEITERATOR>
+template <class IMAGEITERATOR>
 class MultibandRowColumnIteratorPolicy
 {
 public:
@@ -437,7 +437,7 @@ public:
     }
 };
 
-template<class PIXELTYPE, class ITERATOR>
+template <class PIXELTYPE, class ITERATOR>
 class VariableBandsIteratorBase
 {
 protected:
@@ -676,7 +676,7 @@ public:
 * den gewoehnte ScanOrderIterator zu sehen bekommen!!! (IteratorAdapter ist die stellt die Schnittstelle zu Verfuegung
 * um Mehrdimensionale Sequenzen als eine 1D-Sequenz zu behandeln). 
 */
-template<class ImageIterator>
+template <class ImageIterator>
 class ScanOrderIteratorPolicy
 {
 public:
@@ -758,7 +758,7 @@ public:
     static void increment(ROI& r)
     {
         ++r.current.x;
-        if (r.current.x == r.lowerRight.x)
+        if(r.current.x == r.lowerRight.x)
         {
             r.current.x -= r.width;
             ++r.current.y;
@@ -771,7 +771,7 @@ public:
     static void decrement(ROI& r)
     {
         --r.current.x;
-        if (r.current.x + r.width == r.lowerRight.x)
+        if(r.current.x + r.width == r.lowerRight.x)
         {
             r.current.x += r.width;
             --r.current.y;
@@ -785,11 +785,11 @@ public:
      */
     static void advance(ROI& r, difference_type n) //n kann aber Diff2D sein; sollte es nicht int sein
     {
-        if (n > 0) //ist n positiv so wird so wird die aktuelle Zeigerposition nach "rechts" verschoben
+        if(n > 0) //ist n positiv so wird so wird die aktuelle Zeigerposition nach "rechts" verschoben
         {
-            difference_type dy = (n) / r.width;     // dabei ist dy der Wert um den der Zeiger "in einer Matrix" nach unten verschoben werden soll
-            difference_type dx = (n) % r.width;     // entsprechend ist dx um den der Zeiger nach rechts verschoben werden soll, wobei dx kann ueber die MAtrix hinausragen
-            if (dx >= r.lowerRight.x - r.current.x) // laeuft dx ueber die "Matrix" hinaus so werden dx und dy korrigiert
+            difference_type dy = (n) / r.width;    // dabei ist dy der Wert um den der Zeiger "in einer Matrix" nach unten verschoben werden soll
+            difference_type dx = (n) % r.width;    // entsprechend ist dx um den der Zeiger nach rechts verschoben werden soll, wobei dx kann ueber die MAtrix hinausragen
+            if(dx >= r.lowerRight.x - r.current.x) // laeuft dx ueber die "Matrix" hinaus so werden dx und dy korrigiert
             {
                 ++dy;          // der y-Wert wird einfach erhoeht
                 dx -= r.width; // und es wird dann um Anzahl der Zeilenelemente nach LINKS (zurueck) gelaufen
@@ -797,13 +797,13 @@ public:
             r.current.x += dx; // jetzt enthalten dx und dy korrekte Werte bezueglich denen kann die
             r.current.y += dy; // aktuelle Zeigerposition verschoben werden
         }
-        else if (n < 0) // ist n negativ so wird die aktuelle Zeigerposition nach "links" verschoben
+        else if(n < 0) // ist n negativ so wird die aktuelle Zeigerposition nach "links" verschoben
         {
             n = -n;                           // laesst sich mit positiver Zahl leichter rechnen
             difference_type dy = n / r.width; // dabei ist dy der Wert um den der Zeiger "in einer Matrix" nach "oben" verschoben werden soll
             difference_type dx = n % r.width; // entsprechend ist dx um den der Zeiger nach "links" verschoben werden soll, wobei dx kann ueber die Matrix hinausragen
 
-            if ((r.current.x - r.lowerRight.x) + r.width < dx) // laeuft dx ueber die Kante (r.lowerRight.x - width)(entspricht der upperLeft.x in der Matrix)
+            if((r.current.x - r.lowerRight.x) + r.width < dx) // laeuft dx ueber die Kante (r.lowerRight.x - width)(entspricht der upperLeft.x in der Matrix)
             {
                 // dx und dy beduerfen die Korrektur weil es durchaus sein kann dass dx < width ist, aber es kann nicht so viele Schritte nach links gegangen werden
                 ++dy; // so werden die Differenzen um die die aktuelle Position veraendert werden soll korrigiert
@@ -816,34 +816,34 @@ public:
 }; // end of ScanOrderIteratorPolicy
 
 
-template<class T>
+template <class T>
 struct BandsForPixelType;
 
-template<>
+template <>
 struct BandsForPixelType<GrayValue>
 {
     static const int bands = 1;
 };
 
-template<>
+template <>
 struct BandsForPixelType<RGBValue<GrayValue>>
 {
     static const int bands = 3;
 };
 
-template<>
+template <>
 struct BandsForPixelType<TinyVector<GrayValue, 2>>
 {
     static const int bands = 2;
 };
 
-template<>
+template <>
 struct BandsForPixelType<TinyVector<GrayValue, 3>>
 {
     static const int bands = 3;
 };
 
-template<>
+template <>
 struct BandsForPixelType<TinyVector<GrayValue, 4>>
 {
     static const int bands = 4;
@@ -1162,7 +1162,7 @@ protected:
 
     /** Liefert den Zeiger auf GrayValue,                                                            
     */
-    template<class T>
+    template <class T>
     static GrayValue* getDataPtr(T* p)
     {
         BOOST_STATIC_ASSERT(sizeof(T) ==
@@ -1191,7 +1191,7 @@ protected:
 
 class SelectBandImage;
 
-template<class IMAGE, class ACCESSOR = typename IMAGE::Accessor>
+template <class IMAGE, class ACCESSOR = typename IMAGE::Accessor>
 class FixedBandsImage
     : public VariableBandsImage
 {
@@ -1271,7 +1271,7 @@ public:
 
     FixedBandsImage& operator=(FixedBandsImage const& s)
     {
-        if (this != &s)
+        if(this != &s)
         {
             image_ = s.image_;
             VariableBandsImage::operator=(s);
@@ -1392,7 +1392,7 @@ protected:
     boost::shared_ptr<InnerImage> image_; // shared_ptr verwaltet selber Referenzen und gibt den Speicherplatz frei
 };
 
-template<class IMAGE>
+template <class IMAGE>
 class FixedRGBImage : public FixedBandsImage<IMAGE, VectorAccessor<TinyVector<GrayValue, 3>>>
 {
 public:
@@ -1569,7 +1569,7 @@ typedef FixedRGBImage<BasicImage<RGBValue<GrayValue>>> RGBImage;
 typedef RGBImage::BaseType Vector3Image;
 typedef FixedBandsImage<BasicImage<TinyVector<GrayValue, 4>>> Vector4Image;
 
-template<class PIXELTYPE>
+template <class PIXELTYPE>
 class ConstSelectBandIterator
     : public VariableBandsIteratorBase<PIXELTYPE, ConstSelectBandIterator<PIXELTYPE>>
 {
@@ -1649,7 +1649,7 @@ public:
     }
 };
 
-template<class PIXELTYPE>
+template <class PIXELTYPE>
 class SelectBandIterator
     : public VariableBandsIteratorBase<PIXELTYPE, SelectBandIterator<PIXELTYPE>>
 {
@@ -1943,7 +1943,7 @@ public:
 
     GrayImage& operator=(GrayImage const& s)
     {
-        if (this != &s)
+        if(this != &s)
         {
             image_ = s.image_;
             SingleBandImage::operator=(s);
@@ -2078,7 +2078,7 @@ class SelectBandImage
         } /////////das verstehe ich nicht
     };
 
-    template<class IMAGE>
+    template <class IMAGE>
     class ImageHandleImpl
         : public ImageHandle
     {
@@ -2101,7 +2101,7 @@ public:
     typedef CloneType ShallowCopyType;
 #endif
 
-    template<class IMAGE>
+    template <class IMAGE>
     SelectBandImage(IMAGE const& s, int band)
         : imageHandle_(new ImageHandleImpl<typename IMAGE::InnerImage>(s.image_)),
           band_(band)
@@ -2109,7 +2109,7 @@ public:
         vigra_precondition(band >= 0 && band < s.actualBands(),
                            "SelectBandImage(): band out of range.");
         initAdministrationData(getDataPtr(s.image_->begin()) + band, s.actualSize(), s.actualBands(), 1);
-        if (s.width() * s.height() > 0)
+        if(s.width() * s.height() > 0)
             setROI(s.roiUpperLeft(), s.size());
     }
 
@@ -2122,7 +2122,7 @@ public:
 
     SelectBandImage& operator=(SelectBandImage const& s)
     {
-        if (this != &s)
+        if(this != &s)
         {
             imageHandle_ = s.imageHandle_;
             band_ = s.band_;
@@ -2190,7 +2190,7 @@ private:
 #if 0 // this didn't work with MSVC
 
 #define defineArgumentFactories(Image)                                                   \
-    template<class Accessor>                                                             \
+    template <class Accessor>                                                            \
     inline triple<Image::ConstIterator, Image::ConstIterator, Accessor>                  \
     srcImageRange(Image const& img, Accessor a)                                          \
     {                                                                                    \
@@ -2198,7 +2198,7 @@ private:
             img.upperLeft(), img.lowerRight(), a);                                       \
     }                                                                                    \
                                                                                          \
-    template<class Accessor>                                                             \
+    template <class Accessor>                                                            \
     inline pair<Image::ConstIterator, Accessor>                                          \
     srcImage(Image const& img, Accessor a)                                               \
     {                                                                                    \
@@ -2206,7 +2206,7 @@ private:
             img.upperLeft(), a);                                                         \
     }                                                                                    \
                                                                                          \
-    template<class Accessor>                                                             \
+    template <class Accessor>                                                            \
     inline triple<Image::Iterator, Image::Iterator, Accessor>                            \
     destImageRange(Image& img, Accessor a)                                               \
     {                                                                                    \
@@ -2214,7 +2214,7 @@ private:
             img.upperLeft(), img.lowerRight(), a);                                       \
     }                                                                                    \
                                                                                          \
-    template<class Accessor>                                                             \
+    template <class Accessor>                                                            \
     inline pair<Image::Iterator, Accessor>                                               \
     destImage(Image& img, Accessor a)                                                    \
     {                                                                                    \
@@ -2222,7 +2222,7 @@ private:
             img.upperLeft(), a);                                                         \
     }                                                                                    \
                                                                                          \
-    template<class Accessor>                                                             \
+    template <class Accessor>                                                            \
     inline pair<Image::ConstIterator, Accessor>                                          \
     maskImage(Image const& img, Accessor a)                                              \
     {                                                                                    \
@@ -2277,7 +2277,7 @@ defineArgumentFactories(SingleBandImage)
 #endif
 ////////////////////////////////////////ab hier bis Markierung soll eine Anpassung an den Kompiler sein
 #define defineArgumentFactories(Image)                                                   \
-    template<class Accessor>                                                             \
+    template <class Accessor>                                                            \
     inline triple<Image::ConstIterator, Image::ConstIterator, Accessor>                  \
     srcImageRange(Image const& img, Accessor a)                                          \
     {                                                                                    \
@@ -2285,7 +2285,7 @@ defineArgumentFactories(SingleBandImage)
             img.upperLeft(), img.lowerRight(), a);                                       \
     }                                                                                    \
                                                                                          \
-    template<class Accessor>                                                             \
+    template <class Accessor>                                                            \
     inline pair<Image::ConstIterator, Accessor>                                          \
     srcImage(Image const& img, Accessor a)                                               \
     {                                                                                    \
@@ -2293,7 +2293,7 @@ defineArgumentFactories(SingleBandImage)
             img.upperLeft(), a);                                                         \
     }                                                                                    \
                                                                                          \
-    template<class Accessor>                                                             \
+    template <class Accessor>                                                            \
     inline triple<Image::Iterator, Image::Iterator, Accessor>                            \
     destImageRange(Image& img, Accessor a)                                               \
     {                                                                                    \
@@ -2301,7 +2301,7 @@ defineArgumentFactories(SingleBandImage)
             img.upperLeft(), img.lowerRight(), a);                                       \
     }                                                                                    \
                                                                                          \
-    template<class Accessor>                                                             \
+    template <class Accessor>                                                            \
     inline pair<Image::Iterator, Accessor>                                               \
     destImage(Image& img, Accessor a)                                                    \
     {                                                                                    \
@@ -2309,7 +2309,7 @@ defineArgumentFactories(SingleBandImage)
             img.upperLeft(), a);                                                         \
     }                                                                                    \
                                                                                          \
-    template<class Accessor>                                                             \
+    template <class Accessor>                                                            \
     inline pair<Image::ConstIterator, Accessor>                                          \
     maskImage(Image const& img, Accessor a)                                              \
     {                                                                                    \
@@ -2353,7 +2353,7 @@ defineArgumentFactories(SingleBandImage)
     }
 
 #define defineArgumentFactories2(Image, BaseImage)                                               \
-    template<class Accessor>                                                                     \
+    template <class Accessor>                                                                    \
     inline triple<BaseImage::ConstIterator, BaseImage::ConstIterator, Accessor>                  \
     srcImageRange(Image const& img, Accessor a)                                                  \
     {                                                                                            \
@@ -2361,7 +2361,7 @@ defineArgumentFactories(SingleBandImage)
             img.upperLeft(), img.lowerRight(), a);                                               \
     }                                                                                            \
                                                                                                  \
-    template<class Accessor>                                                                     \
+    template <class Accessor>                                                                    \
     inline pair<BaseImage::ConstIterator, Accessor>                                              \
     srcImage(Image const& img, Accessor a)                                                       \
     {                                                                                            \
@@ -2369,7 +2369,7 @@ defineArgumentFactories(SingleBandImage)
             img.upperLeft(), a);                                                                 \
     }                                                                                            \
                                                                                                  \
-    template<class Accessor>                                                                     \
+    template <class Accessor>                                                                    \
     inline triple<BaseImage::Iterator, BaseImage::Iterator, Accessor>                            \
     destImageRange(Image& img, Accessor a)                                                       \
     {                                                                                            \
@@ -2377,7 +2377,7 @@ defineArgumentFactories(SingleBandImage)
             img.upperLeft(), img.lowerRight(), a);                                               \
     }                                                                                            \
                                                                                                  \
-    template<class Accessor>                                                                     \
+    template <class Accessor>                                                                    \
     inline pair<BaseImage::Iterator, Accessor>                                                   \
     destImage(Image& img, Accessor a)                                                            \
     {                                                                                            \
@@ -2385,7 +2385,7 @@ defineArgumentFactories(SingleBandImage)
             img.upperLeft(), a);                                                                 \
     }                                                                                            \
                                                                                                  \
-    template<class Accessor>                                                                     \
+    template <class Accessor>                                                                    \
     inline pair<BaseImage::ConstIterator, Accessor>                                              \
     maskImage(Image const& img, Accessor a)                                                      \
     {                                                                                            \
@@ -2438,25 +2438,25 @@ defineArgumentFactories(VariableBandsImage)
                     defineArgumentFactories(SingleBandImage)
     ////////////////////////////////////////
 
-    template<>
+    template <>
     struct IteratorTraits<VariableBandsIterator>
 {
     typedef StandardValueAccessor<VectorProxy> DefaultAccessor;
 };
 
-template<>
+template <>
 struct IteratorTraits<ConstVariableBandsIterator>
 {
     typedef StandardConstValueAccessor<ConstVectorProxy> DefaultAccessor;
 };
 
-template<>
+template <>
 struct IteratorTraits<SelectBandIterator<GrayValue>>
 {
     typedef StandardAccessor<GrayValue> DefaultAccessor;
 };
 
-template<>
+template <>
 struct IteratorTraits<ConstSelectBandIterator<GrayValue>>
 {
     typedef StandardConstAccessor<GrayValue> DefaultAccessor;

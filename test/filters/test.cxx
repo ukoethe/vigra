@@ -18,13 +18,13 @@
 
 using namespace vigra;
 
-template<class T>
+template <class T>
 void
 printBasicImage(const BasicImage<T>& img)
 {
-    for (int y = 0; y < img.height(); ++y)
+    for(int y = 0; y < img.height(); ++y)
     {
-        for (int x = 0; x < img.width(); ++x)
+        for(int x = 0; x < img.width(); ++x)
         {
             std::printf("img(%d,%d) = %10.3f; ", x, y, img(x, y));
         }
@@ -106,22 +106,22 @@ struct MedianFilterEssentialTest
 
     void border_zero_checker(const FImage& result, float value, bool corners_only = false)
     {
-        for (int y = 0; y != result.height(); ++y)
+        for(int y = 0; y != result.height(); ++y)
         {
             bool top = y == 0, bottom = y == result.height() - 1;
 
-            for (int x = 0; x != result.width(); ++x)
+            for(int x = 0; x != result.width(); ++x)
             {
                 bool left = x == 0, right = x == result.width() - 1;
 
                 //std::cerr << "(" << x << ", " << y << ") -> "<< result(x,y) << std::endl;
-                if (left || right || top || bottom)
+                if(left || right || top || bottom)
                 {
-                    if (corners_only && (left || right) && (top || bottom))
+                    if(corners_only && (left || right) && (top || bottom))
                     {
                         shouldEqual(result(x, y), 0);
                     }
-                    else if (!corners_only)
+                    else if(!corners_only)
                     {
                         shouldEqual(result(x, y), 0);
                     }

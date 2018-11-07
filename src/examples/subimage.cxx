@@ -44,7 +44,7 @@ using namespace vigra;
 int
 main(int argc, char** argv)
 {
-    if (argc != 3)
+    if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
@@ -63,7 +63,7 @@ main(int argc, char** argv)
         int sub_x1 = info.width() - sub_x0;
         int sub_y1 = info.height() - sub_y0;
 
-        if (info.isGrayscale())
+        if(info.isGrayscale())
         {
             MultiArray<2, UInt8> in(info.width(), info.height());
 
@@ -86,7 +86,7 @@ main(int argc, char** argv)
             exportImage(out, ImageExportInfo(argv[2]));
         }
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         std::cout << e.what() << std::endl;
         return 1;

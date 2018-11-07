@@ -79,21 +79,21 @@ enum RandomEngineTag
 };
 
 
-template<RandomEngineTag EngineTag>
+template <RandomEngineTag EngineTag>
 struct RandomState;
 
-template<RandomEngineTag EngineTag>
+template <RandomEngineTag EngineTag>
 void
 seed(UInt32 theSeed, RandomState<EngineTag>& engine)
 {
     engine.state_[0] = theSeed;
-    for (UInt32 i = 1; i < RandomState<EngineTag>::N; ++i)
+    for(UInt32 i = 1; i < RandomState<EngineTag>::N; ++i)
     {
         engine.state_[i] = 1812433253U * (engine.state_[i - 1] ^ (engine.state_[i - 1] >> 30)) + i;
     }
 }
 
-template<class Iterator, RandomEngineTag EngineTag>
+template <class Iterator, RandomEngineTag EngineTag>
 void
 seed(Iterator init, UInt32 key_length, RandomState<EngineTag>& engine)
 {
@@ -101,30 +101,30 @@ seed(Iterator init, UInt32 key_length, RandomState<EngineTag>& engine)
     int k = static_cast<int>(std::max(N, key_length));
     UInt32 i = 1, j = 0;
     Iterator data = init;
-    for (; k; --k)
+    for(; k; --k)
     {
         engine.state_[i] = (engine.state_[i] ^ ((engine.state_[i - 1] ^ (engine.state_[i - 1] >> 30)) * 1664525U)) + *data + j; /* non linear */
         ++i;
         ++j;
         ++data;
 
-        if (i >= N)
+        if(i >= N)
         {
             engine.state_[0] = engine.state_[N - 1];
             i = 1;
         }
-        if (j >= key_length)
+        if(j >= key_length)
         {
             j = 0;
             data = init;
         }
     }
 
-    for (k = N - 1; k; --k)
+    for(k = N - 1; k; --k)
     {
         engine.state_[i] = (engine.state_[i] ^ ((engine.state_[i - 1] ^ (engine.state_[i - 1] >> 30)) * 1566083941U)) - i; /* non linear */
         ++i;
-        if (i >= N)
+        if(i >= N)
         {
             engine.state_[0] = engine.state_[N - 1];
             i = 1;
@@ -134,7 +134,7 @@ seed(Iterator init, UInt32 key_length, RandomState<EngineTag>& engine)
     engine.state_[0] = 0x80000000U; /* MSB is 1; assuring non-zero initial array */
 }
 
-template<RandomEngineTag EngineTag>
+template <RandomEngineTag EngineTag>
 void
 seed(RandomSeedTag, RandomState<EngineTag>& engine)
 {
@@ -180,7 +180,7 @@ seed(RandomSeedTag, RandomState<EngineTag>& engine)
 }
 
 /* Tempered twister TT800 by M. Matsumoto */
-template<>
+template <>
 struct RandomState<TT800>
 {
     static const UInt32 N = 25, M = 7;
@@ -198,14 +198,14 @@ struct RandomState<TT800>
             0x8121da71, 0x8b823ecb, 0x885d05f5, 0x4e20cd47, 0x5a9ad5d9,
             0x512c0c03, 0xea857ccd, 0x4cc1d30f, 0x8891a8a1, 0xa6b7aadb};
 
-        for (UInt32 i = 0; i < N; ++i)
+        for(UInt32 i = 0; i < N; ++i)
             state_[i] = seeds[i];
     }
 
 protected:
     UInt32 get() const
     {
-        if (current_ == N)
+        if(current_ == N)
             generateNumbers<void>();
 
         UInt32 y = state_[current_++];
@@ -214,7 +214,7 @@ protected:
         return y ^ (y >> 16);
     }
 
-    template<class DUMMY>
+    template <class DUMMY>
     void generateNumbers() const;
 
     void seedImpl(RandomSeedTag)
@@ -227,24 +227,24 @@ protected:
         seed(theSeed, *this);
     }
 
-    template<class Iterator>
+    template <class Iterator>
     void seedImpl(Iterator init, UInt32 length)
     {
         seed(init, length, *this);
     }
 };
 
-template<class DUMMY>
+template <class DUMMY>
 void
 RandomState<TT800>::generateNumbers() const
 {
     UInt32 mag01[2] = {0x0, 0x8ebfd028};
 
-    for (UInt32 i = 0; i < N - M; ++i)
+    for(UInt32 i = 0; i < N - M; ++i)
     {
         state_[i] = state_[i + M] ^ (state_[i] >> 1) ^ mag01[state_[i] % 2];
     }
-    for (UInt32 i = N - M; i < N; ++i)
+    for(UInt32 i = N - M; i < N; ++i)
     {
         state_[i] = state_[i + (M - N)] ^ (state_[i] >> 1) ^ mag01[state_[i] % 2];
     }
@@ -252,7 +252,7 @@ RandomState<TT800>::generateNumbers() const
 }
 
 /* Mersenne twister MT19937 by M. Matsumoto */
-template<>
+template <>
 struct RandomState<MT19937>
 {
     static const UInt32 N = 624, M = 397;
@@ -269,7 +269,7 @@ struct RandomState<MT19937>
 protected:
     UInt32 get() const
     {
-        if (current_ == N)
+        if(current_ == N)
             generateNumbers<void>();
 
         UInt32 x = state_[current_++];
@@ -279,7 +279,7 @@ protected:
         return x ^ (x >> 18);
     }
 
-    template<class DUMMY>
+    template <class DUMMY>
     void generateNumbers() const;
 
     static UInt32 twiddle(UInt32 u, UInt32 v)
@@ -299,7 +299,7 @@ protected:
         generateNumbers<void>();
     }
 
-    template<class Iterator>
+    template <class Iterator>
     void seedImpl(Iterator init, UInt32 length)
     {
         seed(19650218U, *this);
@@ -308,15 +308,15 @@ protected:
     }
 };
 
-template<class DUMMY>
+template <class DUMMY>
 void
 RandomState<MT19937>::generateNumbers() const
 {
-    for (unsigned int i = 0; i < (N - M); ++i)
+    for(unsigned int i = 0; i < (N - M); ++i)
     {
         state_[i] = state_[i + M] ^ twiddle(state_[i], state_[i + 1]);
     }
-    for (unsigned int i = N - M; i < (N - 1); ++i)
+    for(unsigned int i = N - M; i < (N - 1); ++i)
     {
         state_[i] = state_[i + M - N] ^ twiddle(state_[i], state_[i + 1]);
     }
@@ -349,7 +349,7 @@ RandomState<MT19937>::generateNumbers() const
     \verbatim FunctorTraits<RandomNumberGenerator<Engine> >::isInitializer \endverbatim
     is true (<tt>VigraTrueType</tt>).
 */
-template<class Engine = detail::RandomState<detail::MT19937>>
+template <class Engine = detail::RandomState<detail::MT19937>>
 class RandomNumberGenerator
     : public Engine
 {
@@ -398,7 +398,7 @@ public:
         : normalCached_(0.0),
           normalCachedValid_(false)
     {
-        if (ignoreSeed)
+        if(ignoreSeed)
             this->seedImpl(RandomSeed);
         else
             this->seedImpl(theSeed);
@@ -409,7 +409,7 @@ public:
             Longer seed sequences lead to better initialization in the sense that the generator's
             state space is covered much better than is possible with 32-bit seeds alone.
         */
-    template<class Iterator>
+    template <class Iterator>
     RandomNumberGenerator(Iterator init, UInt32 length)
         : normalCached_(0.0),
           normalCachedValid_(false)
@@ -446,7 +446,7 @@ public:
         */
     void seed(UInt32 theSeed, bool ignoreSeed = false)
     {
-        if (ignoreSeed)
+        if(ignoreSeed)
             this->seedImpl(RandomSeed);
         else
             this->seedImpl(theSeed);
@@ -458,7 +458,7 @@ public:
             Longer seed sequences lead to better initialization in the sense that the generator's
             state space is covered much better than is possible with 32-bit seeds alone.
         */
-    template<class Iterator>
+    template <class Iterator>
     void seed(Iterator init, UInt32 length)
     {
         this->seedImpl(init, length);
@@ -510,7 +510,7 @@ public:
     {
         // in [0,beyond) -- simple implementation when low bits are sufficiently random, which is
         // the case for TT800 and MT19937
-        if (beyond < 2)
+        if(beyond < 2)
             return 0;
 
         UInt32 remainder = (NumericTraits<UInt32>::max() - beyond + 1) % beyond;
@@ -519,7 +519,7 @@ public:
 
         // Use rejection method to avoid quantization bias.
         // We will need two raw random numbers in amortized worst case.
-        while (res > lastSafeValue)
+        while(res > lastSafeValue)
             res = this->get();
         return res % beyond;
     }
@@ -595,15 +595,15 @@ public:
     static RandomNumberGenerator global_;
 };
 
-template<class Engine>
+template <class Engine>
 RandomNumberGenerator<Engine> RandomNumberGenerator<Engine>::global_(RandomSeed);
 
 
-template<class Engine>
+template <class Engine>
 double
 RandomNumberGenerator<Engine>::normal() const
 {
-    if (normalCachedValid_)
+    if(normalCachedValid_)
     {
         normalCachedValid_ = false;
         return normalCached_;
@@ -616,7 +616,7 @@ RandomNumberGenerator<Engine>::normal() const
             x1 = uniform(-1.0, 1.0);
             x2 = uniform(-1.0, 1.0);
             w = x1 * x1 + x2 * x2;
-        } while (w > 1.0 || w == 0.0);
+        } while(w > 1.0 || w == 0.0);
 
         w = std::sqrt(-2.0 * std::log(w) / w);
 
@@ -659,7 +659,7 @@ randomMT19937()
     return RandomMT19937::global();
 }
 
-template<class Engine>
+template <class Engine>
 class FunctorTraits<RandomNumberGenerator<Engine>>
 {
 public:
@@ -690,7 +690,7 @@ public:
     \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isUnaryFunctor \endverbatim
     are true (<tt>VigraTrueType</tt>).
 */
-template<class Engine = MersenneTwister>
+template <class Engine = MersenneTwister>
 class UniformIntRandomFunctor
 {
     UInt32 lower_, difference_, factor_;
@@ -738,9 +738,9 @@ public:
         */
     UInt32 operator()() const
     {
-        if (difference_ == 0xffffffff) // lower_ is necessarily 0
+        if(difference_ == 0xffffffff) // lower_ is necessarily 0
             return generator_();
-        else if (useLowBits_)
+        else if(useLowBits_)
             return generator_.uniformInt(difference_ + 1) + lower_;
         else
         {
@@ -748,7 +748,7 @@ public:
 
             // Use rejection method to avoid quantization bias.
             // On average, we will need two raw random numbers to generate one.
-            while (res > difference_)
+            while(res > difference_)
                 res = generator_() / factor_;
             return res + lower_;
         }
@@ -762,14 +762,14 @@ public:
         */
     UInt32 operator()(UInt32 beyond) const
     {
-        if (beyond < 2)
+        if(beyond < 2)
             return 0;
 
         return generator_.uniformInt(beyond);
     }
 };
 
-template<class Engine>
+template <class Engine>
 class FunctorTraits<UniformIntRandomFunctor<Engine>>
 {
 public:
@@ -797,7 +797,7 @@ public:
     \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isInitializer \endverbatim
     is true (<tt>VigraTrueType</tt>).
 */
-template<class Engine = MersenneTwister>
+template <class Engine = MersenneTwister>
 class UniformRandomFunctor
 {
     double offset_, scale_;
@@ -841,7 +841,7 @@ public:
     }
 };
 
-template<class Engine>
+template <class Engine>
 class FunctorTraits<UniformRandomFunctor<Engine>>
 {
 public:
@@ -869,7 +869,7 @@ public:
     \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isInitializer \endverbatim
     is true (<tt>VigraTrueType</tt>).
 */
-template<class Engine = MersenneTwister>
+template <class Engine = MersenneTwister>
 class NormalRandomFunctor
 {
     double mean_, stddev_;
@@ -911,7 +911,7 @@ public:
     }
 };
 
-template<class Engine>
+template <class Engine>
 class FunctorTraits<NormalRandomFunctor<Engine>>
 {
 public:

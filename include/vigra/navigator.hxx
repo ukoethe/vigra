@@ -94,7 +94,7 @@ namespace vigra
     }
     \endcode
 */
-template<class MULTI_ITERATOR, unsigned int N>
+template <class MULTI_ITERATOR, unsigned int N>
 class MultiArrayNavigator
 #ifndef DOXYGEN // doxygen doesn't understand this inheritance
     : public MultiArrayNavigator<MULTI_ITERATOR, N - 1>
@@ -135,7 +135,7 @@ public:
     void operator++()
     {
         base_type::operator++();
-        if (this->point_[level - 1] == this->stop_[level - 1])
+        if(this->point_[level - 1] == this->stop_[level - 1])
         {
             base_type::reset();
             ++this->point_[level];
@@ -172,7 +172,7 @@ protected:
     }
 };
 
-template<class MULTI_ITERATOR>
+template <class MULTI_ITERATOR>
 class MultiArrayNavigator<MULTI_ITERATOR, 1>
 {
 public:
@@ -189,7 +189,7 @@ public:
           inner_shape_(stop_[inner_dimension] - start_[inner_dimension]),
           i_(i + start_)
     {
-        if (stop_[inner_dimension] > start_[inner_dimension])
+        if(stop_[inner_dimension] > start_[inner_dimension])
             stop_[inner_dimension] = start_[inner_dimension] + 1;
     }
 
@@ -200,7 +200,7 @@ public:
           inner_shape_(stop_[inner_dimension] - start_[inner_dimension]),
           i_(i + start_)
     {
-        if (stop_[inner_dimension] > start_[inner_dimension])
+        if(stop_[inner_dimension] > start_[inner_dimension])
             stop_[inner_dimension] = start_[inner_dimension] + 1;
     }
 
@@ -301,7 +301,7 @@ protected:
     }
     \endcode
 */
-template<unsigned int Dimensions, unsigned int N = Dimensions>
+template <unsigned int Dimensions, unsigned int N = Dimensions>
 class MultiCoordinateNavigator
 #ifndef DOXYGEN // doxygen doesn't understand this inheritance
     : public MultiCoordinateNavigator<Dimensions, N - 1>
@@ -336,10 +336,10 @@ public:
     void operator++()
     {
         base_type::operator++();
-        if (base_type::atEnd() && this->i_[level] < this->end_[level])
+        if(base_type::atEnd() && this->i_[level] < this->end_[level])
         {
             ++this->i_[level];
-            if (this->i_[level] < this->end_[level])
+            if(this->i_[level] < this->end_[level])
                 base_type::reset();
         }
     }
@@ -381,7 +381,7 @@ protected:
     }
 };
 
-template<unsigned int Dimensions>
+template <unsigned int Dimensions>
 class MultiCoordinateNavigator<Dimensions, 1>
 {
 public:

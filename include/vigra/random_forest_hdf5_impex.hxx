@@ -69,7 +69,7 @@ VIGRA_EXPORT void dt_import_HDF5(HDF5File&, detail::DecisionTree&,
 VIGRA_EXPORT void dt_export_HDF5(HDF5File&, const detail::DecisionTree&,
                                  const std::string&);
 
-template<class X>
+template <class X>
 void
 rf_import_HDF5_to_map(HDF5File& h5context, X& param,
                       const char* const ignored_label = 0)
@@ -85,9 +85,9 @@ rf_import_HDF5_to_map(HDF5File& h5context, X& param,
 
     std::vector<std::string> names = h5context.ls();
     std::vector<std::string>::const_iterator j;
-    for (j = names.begin(); j != names.end(); ++j)
+    for(j = names.begin(); j != names.end(); ++j)
     {
-        if (ignored_label && *j == ignored_label)
+        if(ignored_label && *j == ignored_label)
         {
             ignored_seen = true;
             continue;
@@ -102,7 +102,7 @@ rf_import_HDF5_to_map(HDF5File& h5context, X& param,
     param.make_from_map(serialized_param);
 }
 
-template<class T>
+template <class T>
 void
 problemspec_import_HDF5(HDF5File& h5context, ProblemSpec<T>& param,
                         const std::string& name)
@@ -116,7 +116,7 @@ problemspec_import_HDF5(HDF5File& h5context, ProblemSpec<T>& param,
     h5context.cd_up();
 }
 
-template<class X>
+template <class X>
 void
 rf_export_map_to_HDF5(HDF5File& h5context, const X& param)
 {
@@ -125,11 +125,11 @@ rf_export_map_to_HDF5(HDF5File& h5context, const X& param)
     // get a map containing all the double fields
     param.make_map(serialized_param);
     typename map_type::const_iterator j;
-    for (j = serialized_param.begin(); j != serialized_param.end(); ++j)
+    for(j = serialized_param.begin(); j != serialized_param.end(); ++j)
         h5context.write(j->first, j->second);
 }
 
-template<class T>
+template <class T>
 void
 problemspec_export_HDF5(HDF5File& h5context, ProblemSpec<T> const& param,
                         const std::string& name)
@@ -178,14 +178,14 @@ get_cwd(HDF5File& h5context)
                      new-created group specified by the path name, which may
                      be either relative or absolute.
 */
-template<class T, class Tag>
+template <class T, class Tag>
 void
 rf_export_HDF5(const RandomForest<T, Tag>& rf,
                HDF5File& h5context,
                const std::string& pathname = "")
 {
     std::string cwd;
-    if (pathname.size())
+    if(pathname.size())
     {
         cwd = detail::get_cwd(h5context);
         h5context.cd_mk(pathname);
@@ -201,11 +201,11 @@ rf_export_HDF5(const RandomForest<T, Tag>& rf,
     // save trees
     int tree_count = rf.options_.tree_count_;
     detail::padded_number_string tree_number(tree_count);
-    for (int i = 0; i < tree_count; ++i)
+    for(int i = 0; i < tree_count; ++i)
         detail::dt_export_HDF5(h5context, rf.tree(i),
                                rf_hdf5_tree + tree_number(i));
 
-    if (pathname.size())
+    if(pathname.size())
         h5context.cd(cwd);
 }
 
@@ -223,7 +223,7 @@ rf_export_HDF5(const RandomForest<T, Tag>& rf,
                     new-created group specified by the path name (relative
                     to the root group).
 */
-template<class T, class Tag>
+template <class T, class Tag>
 void
 rf_export_HDF5(const RandomForest<T, Tag>& rf,
                const std::string& filename,
@@ -250,7 +250,7 @@ rf_export_HDF5(const RandomForest<T, Tag>& rf,
                     new-created group specified by the path name (relative
                     to the root group).
 */
-template<class T, class Tag>
+template <class T, class Tag>
 void
 rf_export_HDF5(const RandomForest<T, Tag>& rf,
                hid_t outf_id,
@@ -274,20 +274,20 @@ rf_export_HDF5(const RandomForest<T, Tag>& rf,
                      use the group specified by the path name, which may
                      be either relative or absolute.
 */
-template<class T, class Tag>
+template <class T, class Tag>
 bool
 rf_import_HDF5(RandomForest<T, Tag>& rf,
                HDF5File& h5context,
                const std::string& pathname = "")
 {
     std::string cwd;
-    if (pathname.size())
+    if(pathname.size())
     {
         cwd = detail::get_cwd(h5context);
         h5context.cd(pathname);
     }
     // version attribute
-    if (h5context.existsAttribute(rf_hdf5_version_group, rf_hdf5_version_tag))
+    if(h5context.existsAttribute(rf_hdf5_version_group, rf_hdf5_version_tag))
     {
         double read_version;
         h5context.readAttribute(rf_hdf5_version_group, rf_hdf5_version_tag,
@@ -305,15 +305,15 @@ rf_import_HDF5(RandomForest<T, Tag>& rf,
     // no check for the rf_hdf5_tree prefix...
     std::vector<std::string> names = h5context.ls();
     std::vector<std::string>::const_iterator j;
-    for (j = names.begin(); j != names.end(); ++j)
+    for(j = names.begin(); j != names.end(); ++j)
     {
-        if ((*j->rbegin() == '/') && (*j->begin() != '_')) // skip the above
+        if((*j->rbegin() == '/') && (*j->begin() != '_')) // skip the above
         {
             rf.trees_.push_back(detail::DecisionTree(rf.ext_param_));
             detail::dt_import_HDF5(h5context, rf.trees_.back(), *j);
         }
     }
-    if (pathname.size())
+    if(pathname.size())
         h5context.cd(cwd);
     return true;
 }
@@ -331,7 +331,7 @@ rf_import_HDF5(RandomForest<T, Tag>& rf,
                      use the group specified by the path name, which may
                      be either relative or absolute.
 */
-template<class T, class Tag>
+template <class T, class Tag>
 bool
 rf_import_HDF5(RandomForest<T, Tag>& rf,
                const std::string& filename,
@@ -358,7 +358,7 @@ rf_import_HDF5(RandomForest<T, Tag>& rf,
                      use the group specified by the path name, which may
                      be either relative or absolute.
 */
-template<class T, class Tag>
+template <class T, class Tag>
 bool
 rf_import_HDF5(RandomForest<T, Tag>& rf,
                hid_t inf_id,

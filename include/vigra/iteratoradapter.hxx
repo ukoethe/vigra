@@ -144,7 +144,7 @@ namespace vigra
     Namespace: vigra
 
 */
-template<class Policy>
+template <class Policy>
 class IteratorAdaptor
 {
 public:
@@ -179,7 +179,7 @@ public:
 
     IteratorAdaptor& operator=(BaseType const& o)
     {
-        if (this != &o)
+        if(this != &o)
         {
             adaptee_ = o;
             Policy::initialize(adaptee_);
@@ -189,7 +189,7 @@ public:
 
     IteratorAdaptor& operator=(IteratorAdaptor const& o)
     {
-        if (this != &o)
+        if(this != &o)
             adaptee_ = o.adaptee_;
         return *this;
     }

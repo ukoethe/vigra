@@ -59,7 +59,7 @@ projectEllipse2D_FirstQuad(double& vx, double& vy, double a, double b, const dou
     d2 = b * vy / (tmax + b * b);
     f = d1 * d1 + d2 * d2 - 1;
 
-    for (i = 0; i < iter_max; i++)
+    for(i = 0; i < iter_max; i++)
     {
 
         t = .5 * (tmin + tmax);
@@ -70,11 +70,11 @@ projectEllipse2D_FirstQuad(double& vx, double& vy, double a, double b, const dou
         y1 = b * vy / (t + b * b);
         l = x1 * x1 + y1 * y1 - 1;
 
-        if (fabs(l) < eps)
+        if(fabs(l) < eps)
             break;
-        if (f > 0)
+        if(f > 0)
             tmin = t;
-        else if (f < 0)
+        else if(f < 0)
             tmax = t;
         else
             break;
@@ -97,16 +97,16 @@ projectEllipse2D(double& vx, double& vy, const double _a, const double _b, const
     double a = _a, b = _b;
 
     //check if inside ellipse
-    if (((vx / a) * (vx / a) + (vy / b) * (vy / b)) <= 1)
+    if(((vx / a) * (vx / a) + (vy / b) * (vy / b)) <= 1)
     {
         return;
     }
 
     // special case of a circle
-    if (fabs(a - b) < eps)
+    if(fabs(a - b) < eps)
     {
         double l = sqrt(vx * vx + vy * vy);
-        if (l > (a + b) / 2.)
+        if(l > (a + b) / 2.)
         {
             vx = (a + b) / (2 * l) * vx;
             vy = (a + b) / (2 * l) * vy;
@@ -116,11 +116,11 @@ projectEllipse2D(double& vx, double& vy, const double _a, const double _b, const
 
     // reflect vx -> -vx, if necessary
     bool x_reflect;
-    if (vx > eps)
+    if(vx > eps)
     {
         x_reflect = false;
     }
-    else if (vx < -eps)
+    else if(vx < -eps)
     {
         x_reflect = true;
         vx = -vx;
@@ -132,11 +132,11 @@ projectEllipse2D(double& vx, double& vy, const double _a, const double _b, const
     }
     // reflect vy -> vy = -V if necessary
     bool y_reflect;
-    if (vy > eps)
+    if(vy > eps)
     {
         y_reflect = false;
     }
-    else if (vy < -eps)
+    else if(vy < -eps)
     {
         y_reflect = true;
         vy = -vy;
@@ -149,7 +149,7 @@ projectEllipse2D(double& vx, double& vy, const double _a, const double _b, const
 
     // swap axes if necessary
     bool swapped;
-    if (a >= b)
+    if(a >= b)
     {
         swapped = false;
     }
@@ -159,15 +159,15 @@ projectEllipse2D(double& vx, double& vy, const double _a, const double _b, const
         std::swap(a, b);
         std::swap(vx, vy);
     }
-    if (vx != 0.0)
+    if(vx != 0.0)
     {
-        if (vy != 0.0)
+        if(vy != 0.0)
         {
             projectEllipse2D_FirstQuad(vx, vy, a, b, eps, max_iter);
         }
         else
         {
-            if (vx < a - b * b / a)
+            if(vx < a - b * b / a)
             {
                 double vx_temp = vx;
                 vx = a * a * vx / (a * a - b * b);
@@ -185,15 +185,15 @@ projectEllipse2D(double& vx, double& vy, const double _a, const double _b, const
         vx = 0.0;
         vy = b;
     }
-    if (swapped)
+    if(swapped)
     {
         std::swap(vx, vy);
     }
-    if (y_reflect)
+    if(y_reflect)
     {
         vy = -vy;
     }
-    if (x_reflect)
+    if(x_reflect)
     {
         vx = -vx;
     }

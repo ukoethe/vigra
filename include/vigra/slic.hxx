@@ -108,10 +108,10 @@ namespace vigra
 
     For more details and examples see slicSuperpixels().
 */
-doxygen_overloaded_function(template<...> unsigned int generateSlicSeeds)
+doxygen_overloaded_function(template <...> unsigned int generateSlicSeeds)
 
-    template<unsigned int N, class T, class S1,
-             class Label, class S2>
+    template <unsigned int N, class T, class S1,
+              class Label, class S2>
     unsigned int generateSlicSeeds(MultiArrayView<N, T, S1> const& boundaryIndicatorImage,
                                    MultiArrayView<N, Label, S2> seeds,
                                    unsigned int seedDist,
@@ -127,7 +127,7 @@ doxygen_overloaded_function(template<...> unsigned int generateSlicSeeds)
     unsigned int label = 0;
     MultiCoordinateIterator<N> iter(seedShape),
         end = iter.getEndIterator();
-    for (; iter != end; ++iter)
+    for(; iter != end; ++iter)
     {
         // define search window around current seed center
         Shape center = (*iter) * seedDist + offset;
@@ -143,7 +143,7 @@ doxygen_overloaded_function(template<...> unsigned int generateSlicSeeds)
 
         // add seed at minimum position, if not already occupied
         Shape minCoord = get<Coord<ArgMinWeight>>(a) + startCoord;
-        if (seeds[minCoord] == 0)
+        if(seeds[minCoord] == 0)
             seeds[minCoord] = ++label;
     }
     return label;
@@ -196,7 +196,7 @@ struct SlicOptions
 namespace detail
 {
 
-template<unsigned int N, class T, class Label>
+template <unsigned int N, class T, class Label>
 class Slic
 {
 public:
@@ -237,7 +237,7 @@ private:
 
 
 
-template<unsigned int N, class T, class Label>
+template <unsigned int N, class T, class Label>
 Slic<N, T, Label>::Slic(
     DataImageType dataImage,
     LabelImageType labelImage,
@@ -255,12 +255,12 @@ Slic<N, T, Label>::Slic(
     clusters_.ignoreLabel(0);
 }
 
-template<unsigned int N, class T, class Label>
+template <unsigned int N, class T, class Label>
 unsigned int
 Slic<N, T, Label>::execute()
 {
     // Do SLIC
-    for (size_t i = 0; i < options_.iter; ++i)
+    for(size_t i = 0; i < options_.iter; ++i)
     {
         // update mean for each cluster
         clusters_.reset();
@@ -273,15 +273,15 @@ Slic<N, T, Label>::execute()
     return postProcessing();
 }
 
-template<unsigned int N, class T, class Label>
+template <unsigned int N, class T, class Label>
 void
 Slic<N, T, Label>::updateAssigments()
 {
     using namespace acc;
     distance_.init(NumericTraits<DistanceType>::max());
-    for (unsigned int c = 1; c <= clusters_.maxRegionLabel(); ++c)
+    for(unsigned int c = 1; c <= clusters_.maxRegionLabel(); ++c)
     {
-        if (get<Count>(clusters_, c) == 0) // label doesn't exist
+        if(get<Count>(clusters_, c) == 0) // label doesn't exist
             continue;
 
         typedef typename LookupTag<RegionCenter, RegionFeatures>::value_type CenterType;
@@ -299,14 +299,14 @@ Slic<N, T, Label>::updateAssigments()
                  end = iter.getEndIterator();
 
         // only pixels within the ROI can be assigned to a cluster
-        for (; iter != end; ++iter)
+        for(; iter != end; ++iter)
         {
             // compute distance between cluster center and pixel
             DistanceType spatialDist = squaredNorm(center - iter.point());
             DistanceType colorDist = squaredNorm(get<Mean>(clusters_, c) - iter.template get<1>());
             DistanceType dist = colorDist + normalization_ * spatialDist;
             // update label?
-            if (dist < iter.template get<3>())
+            if(dist < iter.template get<3>())
             {
                 iter.template get<2>() = static_cast<Label>(c);
                 iter.template get<3>() = dist;
@@ -315,7 +315,7 @@ Slic<N, T, Label>::updateAssigments()
     }
 }
 
-template<unsigned int N, class T, class Label>
+template <unsigned int N, class T, class Label>
 unsigned int
 Slic<N, T, Label>::postProcessing()
 {
@@ -326,7 +326,7 @@ Slic<N, T, Label>::postProcessing()
     unsigned int sizeLimit = options_.sizeLimit == 0
                                  ? (unsigned int)(0.25 * labelImage_.size() / maxLabel)
                                  : options_.sizeLimit;
-    if (sizeLimit == 1)
+    if(sizeLimit == 1)
         return maxLabel;
 
     // determine region size
@@ -344,20 +344,20 @@ Slic<N, T, Label>::postProcessing()
     ArrayVector<unsigned char> done(maxLabel + 1, false);
 
     // make sure that all regions exceed the sizeLimit
-    for (graph_scanner node(graph); node != lemon::INVALID; ++node)
+    for(graph_scanner node(graph); node != lemon::INVALID; ++node)
     {
         Label label = labelImage_[*node];
 
-        if (done[label])
+        if(done[label])
             continue; // already processed
 
-        if (get<Count>(sizes, label) < sizeLimit)
+        if(get<Count>(sizes, label) < sizeLimit)
         {
             // region is too small => merge into a neighbor
-            for (neighbor_iterator arc(graph, node); arc != lemon::INVALID; ++arc)
+            for(neighbor_iterator arc(graph, node); arc != lemon::INVALID; ++arc)
             {
                 Label other = labelImage_[graph.target(*arc)];
-                if (label != other)
+                if(label != other)
                 {
                     regions.makeUnion(label, other);
                     done[label] = true;
@@ -373,7 +373,7 @@ Slic<N, T, Label>::postProcessing()
 
     // make labels contiguous after possible merging
     Label newMaxLabel = regions.makeContiguous();
-    for (graph_scanner node(graph); node != lemon::INVALID; ++node)
+    for(graph_scanner node(graph); node != lemon::INVALID; ++node)
     {
         labelImage_[*node] = regions.findLabel(labelImage_[*node]);
     }
@@ -457,18 +457,18 @@ Slic<N, T, Label>::postProcessing()
 
     This works for arbitrary-dimensional arrays.
 */
-doxygen_overloaded_function(template<...> unsigned int slicSuperpixels)
+doxygen_overloaded_function(template <...> unsigned int slicSuperpixels)
 
-    template<unsigned int N, class T, class S1,
-             class Label, class S2,
-             class DistanceType>
+    template <unsigned int N, class T, class S1,
+              class Label, class S2,
+              class DistanceType>
     unsigned int slicSuperpixels(MultiArrayView<N, T, S1> const& src,
                                  MultiArrayView<N, Label, S2> labels,
                                  DistanceType intensityScaling,
                                  unsigned int seedDistance,
                                  SlicOptions const& options = SlicOptions())
 {
-    if (!labels.any())
+    if(!labels.any())
     {
         typedef typename NormTraits<T>::NormType TmpType;
         MultiArray<N, TmpType> grad(src.shape());

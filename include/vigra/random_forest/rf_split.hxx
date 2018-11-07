@@ -61,25 +61,25 @@ class CompileTimeError;
 
 namespace detail
 {
-template<class Tag>
+template <class Tag>
 class Normalise
 {
 public:
-    template<class Iter>
+    template <class Iter>
     static void exec(Iter /*begin*/, Iter /*end*/)
     {
     }
 };
 
-template<>
+template <>
 class Normalise<ClassificationTag>
 {
 public:
-    template<class Iter>
+    template <class Iter>
     static void exec(Iter begin, Iter end)
     {
         double bla = std::accumulate(begin, end, 0.0);
-        for (int ii = 0; ii < end - begin; ++ii)
+        for(int ii = 0; ii < end - begin; ++ii)
             begin[ii] = begin[ii] / bla;
     }
 };
@@ -89,7 +89,7 @@ public:
 /** Base Class for all SplitFunctors used with the \ref RandomForest class
     defines the interface used while learning a tree.
 **/
-template<class Tag>
+template <class Tag>
 class SplitBase
 {
 public:
@@ -108,7 +108,7 @@ public:
         \ref SplitBase::findBestSplit() or \ref SplitBase::makeTerminalNode().
     **/
 
-    template<class T>
+    template <class T>
     void set_external_parameters(ProblemSpec<T> const& in)
     {
         ext_param_ = in;
@@ -146,7 +146,7 @@ public:
         if no such method was defined.
     **/
 
-    template<class T, class C, class T2, class C2, class Region, class Random>
+    template <class T, class C, class T2, class C2, class Region, class Random>
     int findBestSplit(MultiArrayView<2, T, C> /*features*/,
                       MultiArrayView<2, T2, C2> /*labels*/,
                       Region /*region*/,
@@ -164,7 +164,7 @@ public:
         sets the Class probability of the remaining region according to
         the class histogram
     **/
-    template<class T, class C, class T2, class C2, class Region, class Random>
+    template <class T, class C, class T2, class C2, class Region, class Random>
     int makeTerminalNode(MultiArrayView<2, T, C> /* features */,
                          MultiArrayView<2, T2, C2> /* labels */,
                          Region& region,
@@ -172,7 +172,7 @@ public:
     {
         Node<e_ConstProbNode> ret(t_data, p_data);
         node_ = ret;
-        if (ext_param_.class_weights_.size() != region.classCounts().size())
+        if(ext_param_.class_weights_.size() != region.classCounts().size())
         {
             std::copy(region.classCounts().begin(),
                       region.classCounts().end(),
@@ -195,7 +195,7 @@ public:
 
 /** Functor to sort the indices of a feature Matrix by a certain dimension
 **/
-template<class DataMatrix>
+template <class DataMatrix>
 class SortSamplesByDimensions
 {
     DataMatrix const& data_;
@@ -231,7 +231,7 @@ public:
     }
 };
 
-template<class DataMatrix>
+template <class DataMatrix>
 class DimensionNotEqual
 {
     DataMatrix const& data_;
@@ -256,7 +256,7 @@ public:
     }
 };
 
-template<class DataMatrix>
+template <class DataMatrix>
 class SortSamplesByHyperplane
 {
     DataMatrix const& data_;
@@ -275,7 +275,7 @@ public:
     double operator[](MultiArrayIndex l) const
     {
         double result_l = -1 * node_.intercept();
-        for (int ii = 0; ii < node_.columns_size(); ++ii)
+        for(int ii = 0; ii < node_.columns_size(); ++ii)
         {
             result_l += rowVector(data_, l)[node_.columns_begin()[ii]] * node_.weights()[ii];
         }
@@ -297,7 +297,7 @@ public:
  *      Container<int> indices = getSomeIndices()
  *      std::for_each(indices, counter);
  */
-template<class DataSource, class CountArray>
+template <class DataSource, class CountArray>
 class RandomForestClassCounter
 {
     DataSource const& labels_;
@@ -330,7 +330,7 @@ public:
 
 namespace detail
 {
-template<int N>
+template <int N>
 class ConstArr
 {
 public:
@@ -353,7 +353,7 @@ public:
     /**calculate the weighted gini impurity based on class histogram
      * and class weights
      */
-    template<class Array, class Array2>
+    template <class Array, class Array2>
     double operator()(Array const& hist,
                       Array2 const& weights,
                       double total = 1.0) const
@@ -363,7 +363,7 @@ public:
 
     /** calculate the gini based impurity based on class histogram
      */
-    template<class Array>
+    template <class Array>
     double operator()(Array const& hist, double total = 1.0) const
     {
         return impurity(hist, total);
@@ -371,7 +371,7 @@ public:
 
     /** static version of operator(hist total)
      */
-    template<class Array>
+    template <class Array>
     static double impurity(Array const& hist, double total)
     {
         return impurity(hist, detail::ConstArr<1>(), total);
@@ -379,7 +379,7 @@ public:
 
     /** static version of operator(hist, weights, total)
      */
-    template<class Array, class Array2>
+    template <class Array, class Array2>
     static double impurity(Array const& hist,
                            Array2 const& weights,
                            double total)
@@ -387,7 +387,7 @@ public:
 
         int class_count = hist.size();
         double entropy = 0.0;
-        if (class_count == 2)
+        if(class_count == 2)
         {
             double p0 = (hist[0] / total);
             double p1 = (hist[1] / total);
@@ -395,7 +395,7 @@ public:
         }
         else
         {
-            for (int ii = 0; ii < class_count; ++ii)
+            for(int ii = 0; ii < class_count; ++ii)
             {
                 double w = weights[ii];
                 double pii = hist[ii] / total;
@@ -415,7 +415,7 @@ public:
     /**calculate the weighted gini impurity based on class histogram
      * and class weights
      */
-    template<class Array, class Array2>
+    template <class Array, class Array2>
     double operator()(Array const& hist,
                       Array2 const& weights,
                       double total = 1.0) const
@@ -425,7 +425,7 @@ public:
 
     /** calculate the gini based impurity based on class histogram
      */
-    template<class Array>
+    template <class Array>
     double operator()(Array const& hist, double total = 1.0) const
     {
         return impurity(hist, total);
@@ -433,7 +433,7 @@ public:
 
     /** static version of operator(hist total)
      */
-    template<class Array>
+    template <class Array>
     static double impurity(Array const& hist, double total)
     {
         return impurity(hist, detail::ConstArr<1>(), total);
@@ -441,7 +441,7 @@ public:
 
     /** static version of operator(hist, weights, total)
      */
-    template<class Array, class Array2>
+    template <class Array, class Array2>
     static double impurity(Array const& hist,
                            Array2 const& weights,
                            double total)
@@ -449,14 +449,14 @@ public:
 
         int class_count = hist.size();
         double gini = 0.0;
-        if (class_count == 2)
+        if(class_count == 2)
         {
             double w = weights[0] * weights[1];
             gini = w * (hist[0] * hist[1] / total);
         }
         else
         {
-            for (int ii = 0; ii < class_count; ++ii)
+            for(int ii = 0; ii < class_count; ++ii)
             {
                 double w = weights[ii];
                 gini += w * (hist[ii] * (1.0 - w * hist[ii] / total));
@@ -467,7 +467,7 @@ public:
 };
 
 
-template<class DataSource, class Impurity = GiniCriterion>
+template <class DataSource, class Impurity = GiniCriterion>
 class ImpurityLoss
 {
 
@@ -478,7 +478,7 @@ class ImpurityLoss
     Impurity impurity_;
 
 public:
-    template<class T>
+    template <class T>
     ImpurityLoss(DataSource const& labels,
                  ProblemSpec<T> const& ext_)
         : labels_(labels),
@@ -494,7 +494,7 @@ public:
         total_counts_ = 0.0;
     }
 
-    template<class Counts>
+    template <class Counts>
     double increment_histogram(Counts const& counts)
     {
         std::transform(counts.begin(), counts.end(),
@@ -506,7 +506,7 @@ public:
         return impurity_(counts_, class_weights_, total_counts_);
     }
 
-    template<class Counts>
+    template <class Counts>
     double decrement_histogram(Counts const& counts)
     {
         std::transform(counts.begin(), counts.end(),
@@ -518,10 +518,10 @@ public:
         return impurity_(counts_, class_weights_, total_counts_);
     }
 
-    template<class Iter>
+    template <class Iter>
     double increment(Iter begin, Iter end)
     {
-        for (Iter iter = begin; iter != end; ++iter)
+        for(Iter iter = begin; iter != end; ++iter)
         {
             counts_[labels_(*iter, 0)] += 1.0;
             total_counts_ += 1.0;
@@ -529,10 +529,10 @@ public:
         return impurity_(counts_, class_weights_, total_counts_);
     }
 
-    template<class Iter>
+    template <class Iter>
     double decrement(Iter const& begin, Iter const& end)
     {
-        for (Iter iter = begin; iter != end; ++iter)
+        for(Iter iter = begin; iter != end; ++iter)
         {
             counts_[labels_(*iter, 0)] -= 1.0;
             total_counts_ -= 1.0;
@@ -540,7 +540,7 @@ public:
         return impurity_(counts_, class_weights_, total_counts_);
     }
 
-    template<class Iter, class Resp_t>
+    template <class Iter, class Resp_t>
     double init(Iter /*begin*/, Iter /*end*/, Resp_t resp)
     {
         reset();
@@ -557,7 +557,7 @@ public:
 
 
 
-template<class DataSource>
+template <class DataSource>
 class RegressionForestCounter
 {
 public:
@@ -569,7 +569,7 @@ public:
     size_t count_;
     int* end_;
 
-    template<class T>
+    template <class T>
     RegressionForestCounter(DataSource const& labels,
                             ProblemSpec<T> const& ext_)
         : labels_(labels),
@@ -580,19 +580,19 @@ public:
     {
     }
 
-    template<class Iter>
+    template <class Iter>
     double increment(Iter begin, Iter end)
     {
-        for (Iter iter = begin; iter != end; ++iter)
+        for(Iter iter = begin; iter != end; ++iter)
         {
             ++count_;
-            for (unsigned int ii = 0; ii < mean_.size(); ++ii)
+            for(unsigned int ii = 0; ii < mean_.size(); ++ii)
                 tmp_[ii] = labels_(*iter, ii) - mean_[ii];
             double f = 1.0 / count_,
                    f1 = 1.0 - f;
-            for (unsigned int ii = 0; ii < mean_.size(); ++ii)
+            for(unsigned int ii = 0; ii < mean_.size(); ++ii)
                 mean_[ii] += f * tmp_[ii];
-            for (unsigned int ii = 0; ii < mean_.size(); ++ii)
+            for(unsigned int ii = 0; ii < mean_.size(); ++ii)
                 variance_[ii] += f1 * sq(tmp_[ii]);
         }
         double res = std::accumulate(variance_.begin(),
@@ -603,10 +603,10 @@ public:
         return res;
     }
 
-    template<class Iter> //This is BROKEN
+    template <class Iter> //This is BROKEN
     double decrement(Iter begin, Iter end)
     {
-        for (Iter iter = begin; iter != end; ++iter)
+        for(Iter iter = begin; iter != end; ++iter)
         {
             --count_;
         }
@@ -615,16 +615,16 @@ public:
         end = end + count_;
 
 
-        for (unsigned int ii = 0; ii < mean_.size(); ++ii)
+        for(unsigned int ii = 0; ii < mean_.size(); ++ii)
         {
             mean_[ii] = 0;
-            for (Iter iter = begin; iter != end; ++iter)
+            for(Iter iter = begin; iter != end; ++iter)
             {
                 mean_[ii] += labels_(*iter, ii);
             }
             mean_[ii] /= count_;
             variance_[ii] = 0;
-            for (Iter iter = begin; iter != end; ++iter)
+            for(Iter iter = begin; iter != end; ++iter)
             {
                 variance_[ii] += (labels_(*iter, ii) - mean_[ii]) * (labels_(*iter, ii) - mean_[ii]);
             }
@@ -638,7 +638,7 @@ public:
     }
 
 
-    template<class Iter, class Resp_t>
+    template <class Iter, class Resp_t>
     double init(Iter begin, Iter end, Resp_t /*resp*/)
     {
         reset();
@@ -660,7 +660,7 @@ public:
 };
 
 
-template<class DataSource>
+template <class DataSource>
 class RegressionForestCounter2
 {
 public:
@@ -671,7 +671,7 @@ public:
     ArrayVector<double> tmp_;
     size_t count_;
 
-    template<class T>
+    template <class T>
     RegressionForestCounter2(DataSource const& labels,
                              ProblemSpec<T> const& ext_)
         : labels_(labels),
@@ -682,19 +682,19 @@ public:
     {
     }
 
-    template<class Iter>
+    template <class Iter>
     double increment(Iter begin, Iter end)
     {
-        for (Iter iter = begin; iter != end; ++iter)
+        for(Iter iter = begin; iter != end; ++iter)
         {
             ++count_;
-            for (int ii = 0; ii < mean_.size(); ++ii)
+            for(int ii = 0; ii < mean_.size(); ++ii)
                 tmp_[ii] = labels_(*iter, ii) - mean_[ii];
             double f = 1.0 / count_,
                    f1 = 1.0 - f;
-            for (int ii = 0; ii < mean_.size(); ++ii)
+            for(int ii = 0; ii < mean_.size(); ++ii)
                 mean_[ii] += f * tmp_[ii];
-            for (int ii = 0; ii < mean_.size(); ++ii)
+            for(int ii = 0; ii < mean_.size(); ++ii)
                 variance_[ii] += f1 * sq(tmp_[ii]);
         }
         double res = std::accumulate(variance_.begin(),
@@ -706,16 +706,16 @@ public:
         return res;
     }
 
-    template<class Iter> //This is BROKEN
+    template <class Iter> //This is BROKEN
     double decrement(Iter begin, Iter end)
     {
-        for (Iter iter = begin; iter != end; ++iter)
+        for(Iter iter = begin; iter != end; ++iter)
         {
             double f = 1.0 / count_,
                    f1 = 1.0 - f;
-            for (int ii = 0; ii < mean_.size(); ++ii)
+            for(int ii = 0; ii < mean_.size(); ++ii)
                 mean_[ii] = (mean_[ii] - f * labels_(*iter, ii)) / (1 - f);
-            for (int ii = 0; ii < mean_.size(); ++ii)
+            for(int ii = 0; ii < mean_.size(); ++ii)
                 variance_[ii] -= f1 * sq(labels_(*iter, ii) - mean_[ii]);
             --count_;
         }
@@ -773,7 +773,7 @@ public:
                 /(count_ -1);
     }*/
 
-    template<class Iter, class Resp_t>
+    template <class Iter, class Resp_t>
     double init(Iter begin, Iter end, Resp_t resp)
     {
         reset();
@@ -794,26 +794,26 @@ public:
     }
 };
 
-template<class Tag, class Datatyp>
+template <class Tag, class Datatyp>
 struct LossTraits;
 
 struct LSQLoss
 {
 };
 
-template<class Datatype>
+template <class Datatype>
 struct LossTraits<GiniCriterion, Datatype>
 {
     typedef ImpurityLoss<Datatype, GiniCriterion> type;
 };
 
-template<class Datatype>
+template <class Datatype>
 struct LossTraits<EntropyCriterion, Datatype>
 {
     typedef ImpurityLoss<Datatype, EntropyCriterion> type;
 };
 
-template<class Datatype>
+template <class Datatype>
 struct LossTraits<LSQLoss, Datatype>
 {
     typedef RegressionForestCounter<Datatype> type;
@@ -821,7 +821,7 @@ struct LossTraits<LSQLoss, Datatype>
 
 /** Given a column, choose a split that minimizes some loss
  */
-template<class LineSearchLossTag>
+template <class LineSearchLossTag>
 class BestGiniOfColumn
 {
 public:
@@ -836,7 +836,7 @@ public:
     {
     }
 
-    template<class T>
+    template <class T>
     BestGiniOfColumn(ProblemSpec<T> const& ext)
         : class_weights_(ext.class_weights_),
           ext_param_(ext)
@@ -844,7 +844,7 @@ public:
         bestCurrentCounts[0].resize(ext.class_count_);
         bestCurrentCounts[1].resize(ext.class_count_);
     }
-    template<class T>
+    template <class T>
     void set_external_parameters(ProblemSpec<T> const& ext)
     {
         class_weights_ = ext.class_weights_;
@@ -879,10 +879,10 @@ public:
      *                class histogram of the left and right region of 
      *                the left and right regions. 
      */
-    template<class DataSourceF_t,
-             class DataSource_t,
-             class I_Iter,
-             class Array>
+    template <class DataSourceF_t,
+              class DataSource_t,
+              class I_Iter,
+              class Array>
     void operator()(DataSourceF_t const& column,
                     DataSource_t const& labels,
                     I_Iter& begin,
@@ -905,16 +905,16 @@ public:
         I_Iter iter = begin;
         I_Iter next = std::adjacent_find(iter, end, comp);
         //std::cerr << std::distance(begin, end) << std::endl;
-        while (next != end)
+        while(next != end)
         {
             double lr = right.decrement(iter, next + 1);
             double ll = left.increment(iter, next + 1);
             double loss = lr + ll;
             //std::cerr <<lr << " + "<< ll << " " << loss << " ";
 #ifdef CLASSIFIER_TEST
-            if (loss < min_gini_ && !closeAtTolerance(loss, min_gini_))
+            if(loss < min_gini_ && !closeAtTolerance(loss, min_gini_))
 #else
-            if (loss < min_gini_)
+            if(loss < min_gini_)
 #endif
             {
                 bestCurrentCounts[0] = left.response();
@@ -935,7 +935,7 @@ public:
         //std::cin >> in;
     }
 
-    template<class DataSource_t, class Iter, class Array>
+    template <class DataSource_t, class Iter, class Array>
     double loss_of_region(DataSource_t const& labels,
                           Iter& begin,
                           Iter& end,
@@ -949,23 +949,23 @@ public:
 
 namespace detail
 {
-template<class T>
+template <class T>
 struct Correction
 {
-    template<class Region, class LabelT>
+    template <class Region, class LabelT>
     static void exec(Region& /*in*/, LabelT& /*labels*/)
     {
     }
 };
 
-template<>
+template <>
 struct Correction<ClassificationTag>
 {
-    template<class Region, class LabelT>
+    template <class Region, class LabelT>
     static void exec(Region& region, LabelT& labels)
     {
-        if (std::accumulate(region.classCounts().begin(),
-                            region.classCounts().end(), 0.0) != region.size())
+        if(std::accumulate(region.classCounts().begin(),
+                           region.classCounts().end(), 0.0) != region.size())
         {
             RandomForestClassCounter<LabelT,
                                      ArrayVector<double>>
@@ -980,7 +980,7 @@ struct Correction<ClassificationTag>
 /** Chooses mtry columns and applies ColumnDecisionFunctor to each of the
  * columns. Then Chooses the column that is best
  */
-template<class ColumnDecisionFunctor, class Tag = ClassificationTag>
+template <class ColumnDecisionFunctor, class Tag = ClassificationTag>
 class ThresholdSplit : public SplitBase<Tag>
 {
 public:
@@ -1009,14 +1009,14 @@ public:
         return min_thresholds_[bestSplitIndex];
     }
 
-    template<class T>
+    template <class T>
     void set_external_parameters(ProblemSpec<T> const& in)
     {
         SB::set_external_parameters(in);
         bgfunc.set_external_parameters(SB::ext_param_);
         int featureCount_ = SB::ext_param_.column_count_;
         splitColumns.resize(featureCount_);
-        for (int k = 0; k < featureCount_; ++k)
+        for(int k = 0; k < featureCount_; ++k)
             splitColumns[k] = k;
         min_gini_.resize(featureCount_);
         min_indices_.resize(featureCount_);
@@ -1024,7 +1024,7 @@ public:
     }
 
 
-    template<class T, class C, class T2, class C2, class Region, class Random>
+    template <class T, class C, class T2, class C2, class Region, class Random>
     int findBestSplit(MultiArrayView<2, T, C> features,
                       MultiArrayView<2, T2, C2> labels,
                       Region& region,
@@ -1033,7 +1033,7 @@ public:
     {
 
         typedef typename Region::IndexIterator IndexIterator;
-        if (region.size() == 0)
+        if(region.size() == 0)
         {
             std::cerr << "SplitFunctor::findBestSplit(): stackentry with 0 examples encountered\n"
                          "continuing learning process....";
@@ -1047,11 +1047,11 @@ public:
                                              region.begin(),
                                              region.end(),
                                              region.classCounts());
-        if (region_gini_ <= SB::ext_param_.precision_)
+        if(region_gini_ <= SB::ext_param_.precision_)
             return this->makeTerminalNode(features, labels, region, randint);
 
         // select columns  to be tried.
-        for (int ii = 0; ii < SB::ext_param_.actual_mtry_; ++ii)
+        for(int ii = 0; ii < SB::ext_param_.actual_mtry_; ++ii)
             std::swap(splitColumns[ii],
                       splitColumns[ii + randint(features.shape(1) - ii)]);
 
@@ -1059,7 +1059,7 @@ public:
         bestSplitIndex = 0;
         double current_min_gini = region_gini_;
         int num2try = features.shape(1);
-        for (int k = 0; k < num2try; ++k)
+        for(int k = 0; k < num2try; ++k)
         {
             //this functor does all the work
             bgfunc(columnVector(features, splitColumns[k]),
@@ -1070,9 +1070,9 @@ public:
             min_indices_[k] = bgfunc.min_index_;
             min_thresholds_[k] = bgfunc.min_threshold_;
 #ifdef CLASSIFIER_TEST
-            if (bgfunc.min_gini_ < current_min_gini && !closeAtTolerance(bgfunc.min_gini_, current_min_gini))
+            if(bgfunc.min_gini_ < current_min_gini && !closeAtTolerance(bgfunc.min_gini_, current_min_gini))
 #else
-            if (bgfunc.min_gini_ < current_min_gini)
+            if(bgfunc.min_gini_ < current_min_gini)
 #endif
             {
                 current_min_gini = bgfunc.min_gini_;
@@ -1089,7 +1089,7 @@ public:
         // did not find any suitable split
         // FIXME: this is wrong: sometimes we must execute bad splits to make progress,
         //        especially near the root.
-        if (closeAtTolerance(current_min_gini, region_gini_))
+        if(closeAtTolerance(current_min_gini, region_gini_))
             return this->makeTerminalNode(features, labels, region, randint);
 
         //create a Node for output
@@ -1163,7 +1163,7 @@ public:
     {
     }
 
-    template<class T>
+    template <class T>
     Median(ProblemSpec<T> const& ext)
         : class_weights_(ext.class_weights_),
           ext_param_(ext)
@@ -1172,7 +1172,7 @@ public:
         bestCurrentCounts[1].resize(ext.class_count_);
     }
 
-    template<class T>
+    template <class T>
     void set_external_parameters(ProblemSpec<T> const& ext)
     {
         class_weights_ = ext.class_weights_;
@@ -1181,10 +1181,10 @@ public:
         bestCurrentCounts[1].resize(ext.class_count_);
     }
 
-    template<class DataSourceF_t,
-             class DataSource_t,
-             class I_Iter,
-             class Array>
+    template <class DataSourceF_t,
+              class DataSource_t,
+              class I_Iter,
+              class Array>
     void operator()(DataSourceF_t const& column,
                     DataSource_t const& labels,
                     I_Iter& begin,
@@ -1205,11 +1205,11 @@ public:
             sorter(column, 0, min_threshold_);
         I_Iter part = std::partition(begin, end, sorter);
         DimensionNotEqual<DataSourceF_t> comp(column, 0);
-        if (part == begin)
+        if(part == begin)
         {
             part = std::adjacent_find(part, end, comp) + 1;
         }
-        if (part >= end)
+        if(part >= end)
         {
             return;
         }
@@ -1225,7 +1225,7 @@ public:
         min_index_ = part - begin;
     }
 
-    template<class DataSource_t, class Iter, class Array>
+    template <class DataSource_t, class Iter, class Array>
     double loss_of_region(DataSource_t const& labels,
                           Iter& begin,
                           Iter& end,
@@ -1259,7 +1259,7 @@ public:
     {
     }
 
-    template<class T>
+    template <class T>
     RandomSplitOfColumn(ProblemSpec<T> const& ext)
         : class_weights_(ext.class_weights_),
           ext_param_(ext),
@@ -1269,7 +1269,7 @@ public:
         bestCurrentCounts[1].resize(ext.class_count_);
     }
 
-    template<class T>
+    template <class T>
     RandomSplitOfColumn(ProblemSpec<T> const& ext, Random_t& random_)
         : class_weights_(ext.class_weights_),
           ext_param_(ext),
@@ -1279,7 +1279,7 @@ public:
         bestCurrentCounts[1].resize(ext.class_count_);
     }
 
-    template<class T>
+    template <class T>
     void set_external_parameters(ProblemSpec<T> const& ext)
     {
         class_weights_ = ext.class_weights_;
@@ -1288,10 +1288,10 @@ public:
         bestCurrentCounts[1].resize(ext.class_count_);
     }
 
-    template<class DataSourceF_t,
-             class DataSource_t,
-             class I_Iter,
-             class Array>
+    template <class DataSourceF_t,
+              class DataSource_t,
+              class I_Iter,
+              class Array>
     void operator()(DataSourceF_t const& column,
                     DataSource_t const& labels,
                     I_Iter& begin,
@@ -1314,11 +1314,11 @@ public:
             sorter(column, 0, min_threshold_);
         I_Iter part = std::partition(begin, end, sorter);
         DimensionNotEqual<DataSourceF_t> comp(column, 0);
-        if (part == begin)
+        if(part == begin)
         {
             part = std::adjacent_find(part, end, comp) + 1;
         }
-        if (part >= end)
+        if(part >= end)
         {
             return;
         }
@@ -1334,7 +1334,7 @@ public:
         min_index_ = part - begin;
     }
 
-    template<class DataSource_t, class Iter, class Array>
+    template <class DataSource_t, class Iter, class Array>
     double loss_of_region(DataSource_t const& labels,
                           Iter& begin,
                           Iter& end,

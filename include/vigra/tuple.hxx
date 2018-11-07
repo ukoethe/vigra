@@ -102,7 +102,7 @@ using std::pair;
 /*                                                      */
 /********************************************************/
 
-template<class T1, class T2, class T3>
+template <class T1, class T2, class T3>
 struct triple
 {
     typedef T1 first_type;
@@ -121,7 +121,7 @@ struct triple
     }
 };
 
-template<class T1, class T2, class T3>
+template <class T1, class T2, class T3>
 triple<T1, T2, T3>
 make_triple(T1 t1, T2 t2, T3 t3)
 {
@@ -134,7 +134,7 @@ make_triple(T1 t1, T2 t2, T3 t3)
 /*                                                      */
 /********************************************************/
 
-template<class T1, class T2, class T3, class T4>
+template <class T1, class T2, class T3, class T4>
 struct tuple4
 {
     typedef T1 first_type;
@@ -155,7 +155,7 @@ struct tuple4
     }
 };
 
-template<class T1, class T2, class T3, class T4>
+template <class T1, class T2, class T3, class T4>
 tuple4<T1, T2, T3, T4>
 make_tuple4(T1 t1, T2 t2, T3 t3, T4 t4)
 {
@@ -168,7 +168,7 @@ make_tuple4(T1 t1, T2 t2, T3 t3, T4 t4)
 /*                                                      */
 /********************************************************/
 
-template<class T1, class T2, class T3, class T4, class T5>
+template <class T1, class T2, class T3, class T4, class T5>
 struct tuple5
 {
     typedef T1 first_type;
@@ -191,7 +191,7 @@ struct tuple5
     }
 };
 
-template<class T1, class T2, class T3, class T4, class T5>
+template <class T1, class T2, class T3, class T4, class T5>
 tuple5<T1, T2, T3, T4, T5>
 make_tuple5(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
 {

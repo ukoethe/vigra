@@ -66,7 +66,7 @@ private:
     AnyHandle& operator=(AnyHandle const&);
 };
 
-template<class T>
+template <class T>
 struct TypedAnyHandle
     : public AnyHandle
 {
@@ -97,7 +97,7 @@ struct TypedAnyHandle
 struct ConvertibleAnyHandle
     : public AnyHandle
 {
-    template<class T>
+    template <class T>
     struct TypeTag
     {
     };
@@ -124,7 +124,7 @@ struct ConvertibleAnyHandle
 };
 
 #define VIGRA_ANY_OF_CONVERTIBLE(TYPE)                                          \
-    template<>                                                                  \
+    template <>                                                                 \
     struct TypedAnyHandle<TYPE>                                                 \
         : public ConvertibleAnyHandle                                           \
     {                                                                           \
@@ -280,7 +280,7 @@ public:
 
     /** Construct 'Any' object holding the given value.
         */
-    template<class T>
+    template <class T>
     Any(T const& t)
         : handle_(new detail::TypedAnyHandle<T>(t))
     {
@@ -296,7 +296,7 @@ public:
     /** Assign the given value to this 'Any' object
             (overwrites the old value, regardless of types).
         */
-    template<class T>
+    template <class T>
     Any& operator=(T const& t)
     {
         handle_.reset(new detail::TypedAnyHandle<T>(t));
@@ -308,7 +308,7 @@ public:
         */
     Any& operator=(Any const& other)
     {
-        if (this != &other)
+        if(this != &other)
             handle_.reset(bool(other) ? other.handle_->clone() : (detail::AnyHandle*)0);
         return *this;
     }
@@ -383,7 +383,7 @@ public:
 
     /** Check if this object holds a value of the given type.
         */
-    template<class T>
+    template <class T>
     bool is_type() const
     {
         return dynamic_cast<detail::TypedAnyHandle<T> const*>(handle_.get()) != 0;
@@ -393,7 +393,7 @@ public:
             At present, this only succeeds if <tt>T</tt> matches the stored
             type exactly or is an arithmetic type convertible from the stored type.
         */
-    template<class T>
+    template <class T>
     bool is_readable() const
     {
         return (dynamic_cast<detail::TypedAnyHandle<T> const*>(handle_.get()) != 0) ||
@@ -404,7 +404,7 @@ public:
     /** Read-write access to the contained value. This throws an exception
             if the types don't match.
         */
-    template<class T>
+    template <class T>
     T& get()
     {
         vigra_precondition(bool(*this), "Any::get(): object empty.");
@@ -416,7 +416,7 @@ public:
     /** Read-only access to the contained value. This throws an exception
             if the types don't match.
         */
-    template<class T>
+    template <class T>
     T const& get() const
     {
         vigra_precondition(bool(*this), "Any::get(): object empty.");
@@ -429,12 +429,12 @@ public:
             if the stored type doesn't match <tt>T</tt> and <tt>T</tt> is
             not an arithmetic type.
         */
-    template<class T>
+    template <class T>
     T read() const
     {
         vigra_precondition(bool(*this), "Any::read(): object empty.");
         auto ptr1 = dynamic_cast<detail::TypedAnyHandle<T> const*>(handle_.get());
-        if (ptr1 != 0)
+        if(ptr1 != 0)
             return ptr1->value_;
         auto ptr2 = dynamic_cast<detail::ConvertibleAnyHandle const*>(handle_.get());
         vigra_precondition(ptr2 != 0, "Any::read(): object is not covertible to the target type.");

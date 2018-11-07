@@ -52,7 +52,7 @@ namespace vigra
 namespace detail
 {
 
-template<class COST>
+template <class COST>
 class SeedRgPixel
 {
 public:
@@ -97,9 +97,9 @@ public:
         bool operator()(SeedRgPixel const& l,
                         SeedRgPixel const& r) const
         {
-            if (r.cost_ == l.cost_)
+            if(r.cost_ == l.cost_)
             {
-                if (r.dist_ == l.dist_)
+                if(r.dist_ == l.dist_)
                     return r.count_ < l.count_;
 
                 return r.dist_ < l.dist_;
@@ -110,9 +110,9 @@ public:
         bool operator()(SeedRgPixel const* l,
                         SeedRgPixel const* r) const
         {
-            if (r->cost_ == l->cost_)
+            if(r->cost_ == l->cost_)
             {
-                if (r->dist_ == l->dist_)
+                if(r->dist_ == l->dist_)
                     return r->count_ < l->count_;
 
                 return r->dist_ < l->dist_;
@@ -126,7 +126,7 @@ public:
     {
         ~Allocator()
         {
-            while (!freelist_.empty())
+            while(!freelist_.empty())
             {
                 delete freelist_.top();
                 freelist_.pop();
@@ -137,7 +137,7 @@ public:
         create(Point2D const& location, Point2D const& nearest,
                COST const& cost, int const& count, int const& label)
         {
-            if (!freelist_.empty())
+            if(!freelist_.empty())
             {
                 SeedRgPixel* res = freelist_.top();
                 freelist_.pop();
@@ -415,12 +415,12 @@ enum SRGType
 
     Further requirements are determined by the <TT>RegionStatisticsArray</TT>.
 */
-doxygen_overloaded_function(template<...> void seededRegionGrowing)
+doxygen_overloaded_function(template <...> void seededRegionGrowing)
 
-    template<class SrcIterator, class SrcAccessor,
-             class SeedImageIterator, class SeedAccessor,
-             class DestIterator, class DestAccessor,
-             class RegionStatisticsArray, class Neighborhood>
+    template <class SrcIterator, class SrcAccessor,
+              class SeedImageIterator, class SeedAccessor,
+              class DestIterator, class DestAccessor,
+              class RegionStatisticsArray, class Neighborhood>
     typename SeedAccessor::value_type
     seededRegionGrowing(SrcIterator srcul,
                         SrcIterator srclr, SrcAccessor as,
@@ -465,20 +465,20 @@ doxygen_overloaded_function(template<...> void seededRegionGrowing)
     int directionCount = Neighborhood::DirectionCount;
 
     Point2D pos(0, 0);
-    for (isy = srcul, iry = ir, pos.y = 0; pos.y < h;
-         ++pos.y, ++isy.y, ++iry.y)
+    for(isy = srcul, iry = ir, pos.y = 0; pos.y < h;
+        ++pos.y, ++isy.y, ++iry.y)
     {
-        for (isx = isy, irx = iry, pos.x = 0; pos.x < w;
-             ++pos.x, ++isx.x, ++irx.x)
+        for(isx = isy, irx = iry, pos.x = 0; pos.x < w;
+            ++pos.x, ++isx.x, ++irx.x)
         {
-            if (*irx == 0)
+            if(*irx == 0)
             {
                 // find candidate pixels for growing and fill heap
-                for (int i = 0; i < directionCount; i++)
+                for(int i = 0; i < directionCount; i++)
                 {
                     // cneighbor = irx[dist[i]];
                     cneighbor = irx[Neighborhood::diff((Direction)i)];
-                    if (cneighbor > 0)
+                    if(cneighbor > 0)
                     {
                         CostType cost = stats[cneighbor].cost(as(isx));
 
@@ -492,14 +492,14 @@ doxygen_overloaded_function(template<...> void seededRegionGrowing)
             {
                 vigra_precondition((LabelType)*irx <= (LabelType)stats.maxRegionLabel(),
                                    "seededRegionGrowing(): Largest label exceeds size of RegionStatisticsArray.");
-                if (maxRegionLabel < *irx)
+                if(maxRegionLabel < *irx)
                     maxRegionLabel = *irx;
             }
         }
     }
 
     // perform region growing
-    while (pheap.size() != 0)
+    while(pheap.size() != 0)
     {
         Pixel* pixel = pheap.top();
         pheap.pop();
@@ -511,21 +511,21 @@ doxygen_overloaded_function(template<...> void seededRegionGrowing)
 
         allocator.dismiss(pixel);
 
-        if ((srgType & StopAtThreshold) != 0 && cost > max_cost)
+        if((srgType & StopAtThreshold) != 0 && cost > max_cost)
             break;
 
         irx = ir + pos;
         isx = srcul + pos;
 
-        if (*irx) // already labelled region / watershed?
+        if(*irx) // already labelled region / watershed?
             continue;
 
-        if ((srgType & KeepContours) != 0)
+        if((srgType & KeepContours) != 0)
         {
-            for (int i = 0; i < directionCount; i++)
+            for(int i = 0; i < directionCount; i++)
             {
                 cneighbor = irx[Neighborhood::diff((Direction)i)];
-                if ((cneighbor > 0) && (cneighbor != lab))
+                if((cneighbor > 0) && (cneighbor != lab))
                 {
                     lab = SRGWatershedLabel;
                     break;
@@ -535,16 +535,16 @@ doxygen_overloaded_function(template<...> void seededRegionGrowing)
 
         *irx = lab;
 
-        if ((srgType & KeepContours) == 0 || lab > 0)
+        if((srgType & KeepContours) == 0 || lab > 0)
         {
             // update statistics
             stats[*irx](as(isx));
 
             // search neighborhood
             // second pass: find new candidate pixels
-            for (int i = 0; i < directionCount; i++)
+            for(int i = 0; i < directionCount; i++)
             {
-                if (irx[Neighborhood::diff((Direction)i)] == 0)
+                if(irx[Neighborhood::diff((Direction)i)] == 0)
                 {
                     CostType cost = stats[lab].cost(as(isx, Neighborhood::diff((Direction)i)));
 
@@ -557,7 +557,7 @@ doxygen_overloaded_function(template<...> void seededRegionGrowing)
     }
 
     // free temporary memory
-    while (pheap.size() != 0)
+    while(pheap.size() != 0)
     {
         allocator.dismiss(pheap.top());
         pheap.pop();
@@ -570,10 +570,10 @@ doxygen_overloaded_function(template<...> void seededRegionGrowing)
     return (LabelType)maxRegionLabel;
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class SeedImageIterator, class SeedAccessor,
-         class DestIterator, class DestAccessor,
-         class RegionStatisticsArray, class Neighborhood>
+template <class SrcIterator, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestIterator, class DestAccessor,
+          class RegionStatisticsArray, class Neighborhood>
 inline typename SeedAccessor::value_type
 seededRegionGrowing(SrcIterator srcul,
                     SrcIterator srclr, SrcAccessor as,
@@ -591,10 +591,10 @@ seededRegionGrowing(SrcIterator srcul,
 
 
 
-template<class SrcIterator, class SrcAccessor,
-         class SeedImageIterator, class SeedAccessor,
-         class DestIterator, class DestAccessor,
-         class RegionStatisticsArray>
+template <class SrcIterator, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestIterator, class DestAccessor,
+          class RegionStatisticsArray>
 inline typename SeedAccessor::value_type
 seededRegionGrowing(SrcIterator srcul,
                     SrcIterator srclr, SrcAccessor as,
@@ -609,10 +609,10 @@ seededRegionGrowing(SrcIterator srcul,
                                stats, srgType, FourNeighborCode());
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class SeedImageIterator, class SeedAccessor,
-         class DestIterator, class DestAccessor,
-         class RegionStatisticsArray>
+template <class SrcIterator, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestIterator, class DestAccessor,
+          class RegionStatisticsArray>
 inline typename SeedAccessor::value_type
 seededRegionGrowing(SrcIterator srcul,
                     SrcIterator srclr, SrcAccessor as,
@@ -626,10 +626,10 @@ seededRegionGrowing(SrcIterator srcul,
                                stats, CompleteGrow);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class SeedImageIterator, class SeedAccessor,
-         class DestIterator, class DestAccessor,
-         class RegionStatisticsArray, class Neighborhood>
+template <class SrcIterator, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestIterator, class DestAccessor,
+          class RegionStatisticsArray, class Neighborhood>
 inline typename SeedAccessor::value_type
 seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                     pair<SeedImageIterator, SeedAccessor> img3,
@@ -645,10 +645,10 @@ seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                                stats, srgType, n, max_cost);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class SeedImageIterator, class SeedAccessor,
-         class DestIterator, class DestAccessor,
-         class RegionStatisticsArray>
+template <class SrcIterator, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestIterator, class DestAccessor,
+          class RegionStatisticsArray>
 inline typename SeedAccessor::value_type
 seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                     pair<SeedImageIterator, SeedAccessor> img3,
@@ -662,10 +662,10 @@ seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                                stats, srgType, FourNeighborCode());
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class SeedImageIterator, class SeedAccessor,
-         class DestIterator, class DestAccessor,
-         class RegionStatisticsArray>
+template <class SrcIterator, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestIterator, class DestAccessor,
+          class RegionStatisticsArray>
 inline typename SeedAccessor::value_type
 seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                     pair<SeedImageIterator, SeedAccessor> img3,
@@ -678,10 +678,10 @@ seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                                stats, CompleteGrow);
 }
 
-template<class T1, class S1,
-         class TS, class AS,
-         class T2, class S2,
-         class RegionStatisticsArray, class Neighborhood>
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray, class Neighborhood>
 inline TS
     seededRegionGrowing(MultiArrayView<2, T1, S1> const& img1,
                         MultiArrayView<2, TS, AS> const& img3,
@@ -699,10 +699,10 @@ inline TS
                                stats, srgType, n, max_cost);
 }
 
-template<class T1, class S1,
-         class TS, class AS,
-         class T2, class S2,
-         class RegionStatisticsArray>
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray>
 inline TS
     seededRegionGrowing(MultiArrayView<2, T1, S1> const& img1,
                         MultiArrayView<2, TS, AS> const& img3,
@@ -718,10 +718,10 @@ inline TS
                                stats, srgType, FourNeighborCode());
 }
 
-template<class T1, class S1,
-         class TS, class AS,
-         class T2, class S2,
-         class RegionStatisticsArray>
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray>
 inline TS
     seededRegionGrowing(MultiArrayView<2, T1, S1> const& img1,
                         MultiArrayView<2, TS, AS> const& img3,
@@ -742,9 +742,9 @@ inline TS
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class RegionStatisticsArray, class Neighborhood>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class RegionStatisticsArray, class Neighborhood>
 typename DestAccessor::value_type
 fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                         DestIterator destul, DestAccessor ad,
@@ -769,32 +769,32 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
     LabelType maxRegionLabel = 0;
 
     Point2D pos(0, 0);
-    for (isy = srcul, idy = destul, pos.y = 0; pos.y < h; ++pos.y, ++isy.y, ++idy.y)
+    for(isy = srcul, idy = destul, pos.y = 0; pos.y < h; ++pos.y, ++isy.y, ++idy.y)
     {
-        for (isx = isy, idx = idy, pos.x = 0; pos.x < w; ++pos.x, ++isx.x, ++idx.x)
+        for(isx = isy, idx = idy, pos.x = 0; pos.x < w; ++pos.x, ++isx.x, ++idx.x)
         {
             LabelType label = ad(idx);
-            if (label != 0)
+            if(label != 0)
             {
                 vigra_precondition(label <= stats.maxRegionLabel(),
                                    "fastSeededRegionGrowing(): Largest label exceeds size of RegionStatisticsArray.");
 
-                if (maxRegionLabel < label)
+                if(maxRegionLabel < label)
                     maxRegionLabel = label;
 
                 AtImageBorder atBorder = isAtImageBorder(pos.x, pos.y, w, h);
-                if (atBorder == NotAtBorder)
+                if(atBorder == NotAtBorder)
                 {
                     NeighborhoodCirculator<DestIterator, Neighborhood> c(idx), cend(c);
                     do
                     {
-                        if (ad(c) == 0)
+                        if(ad(c) == 0)
                         {
                             std::ptrdiff_t priority = (std::ptrdiff_t)stats[label].cost(as(isx));
                             pqueue.push(pos, priority);
                             break;
                         }
-                    } while (++c != cend);
+                    } while(++c != cend);
                 }
                 else
                 {
@@ -802,26 +802,26 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                         c(idx, atBorder), cend(c);
                     do
                     {
-                        if (ad(c) == 0)
+                        if(ad(c) == 0)
                         {
                             std::ptrdiff_t priority = (std::ptrdiff_t)stats[label].cost(as(isx));
                             pqueue.push(pos, priority);
                             break;
                         }
-                    } while (++c != cend);
+                    } while(++c != cend);
                 }
             }
         }
     }
 
     // perform region growing
-    while (!pqueue.empty())
+    while(!pqueue.empty())
     {
         Point2D pos = pqueue.top();
         std::ptrdiff_t cost = pqueue.topPriority();
         pqueue.pop();
 
-        if ((srgType & StopAtThreshold) != 0 && cost > max_cost)
+        if((srgType & StopAtThreshold) != 0 && cost > max_cost)
             break;
 
         idx = destul + pos;
@@ -830,21 +830,21 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
         std::ptrdiff_t label = ad(idx);
 
         AtImageBorder atBorder = isAtImageBorder(pos.x, pos.y, w, h);
-        if (atBorder == NotAtBorder)
+        if(atBorder == NotAtBorder)
         {
             NeighborhoodCirculator<DestIterator, Neighborhood> c(idx), cend(c);
 
             do
             {
                 std::ptrdiff_t nlabel = ad(c);
-                if (nlabel == 0)
+                if(nlabel == 0)
                 {
                     ad.set(label, idx, c.diff());
                     std::ptrdiff_t priority =
                         std::max((std::ptrdiff_t)stats[label].cost(as(isx, c.diff())), cost);
                     pqueue.push(pos + c.diff(), priority);
                 }
-            } while (++c != cend);
+            } while(++c != cend);
         }
         else
         {
@@ -853,23 +853,23 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
             do
             {
                 std::ptrdiff_t nlabel = ad(c);
-                if (nlabel == 0)
+                if(nlabel == 0)
                 {
                     ad.set(label, idx, c.diff());
                     std::ptrdiff_t priority =
                         std::max((std::ptrdiff_t)stats[label].cost(as(isx, c.diff())), cost);
                     pqueue.push(pos + c.diff(), priority);
                 }
-            } while (++c != cend);
+            } while(++c != cend);
         }
     }
 
     return maxRegionLabel;
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class RegionStatisticsArray, class Neighborhood>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class RegionStatisticsArray, class Neighborhood>
 inline typename DestAccessor::value_type
 fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                         DestIterator destul, DestAccessor ad,
@@ -882,9 +882,9 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                                    stats, srgType, n, NumericTraits<double>::max(), 256);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class RegionStatisticsArray>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class RegionStatisticsArray>
 inline typename DestAccessor::value_type
 fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                         DestIterator destul, DestAccessor ad,
@@ -896,9 +896,9 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                                    stats, srgType, FourNeighborCode());
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class RegionStatisticsArray>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class RegionStatisticsArray>
 inline typename DestAccessor::value_type
 fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                         DestIterator destul, DestAccessor ad,
@@ -909,9 +909,9 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                                    stats, CompleteGrow);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class RegionStatisticsArray, class Neighborhood>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class RegionStatisticsArray, class Neighborhood>
 inline typename DestAccessor::value_type
 fastSeededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         pair<DestIterator, DestAccessor> dest,
@@ -926,9 +926,9 @@ fastSeededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                    stats, srgType, n, max_cost, bucket_count);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class RegionStatisticsArray, class Neighborhood>
+template <class T1, class S1,
+          class T2, class S2,
+          class RegionStatisticsArray, class Neighborhood>
 inline T2
     fastSeededRegionGrowing(MultiArrayView<2, T1, S1> const& src,
                             MultiArrayView<2, T2, S2> dest,
@@ -961,7 +961,7 @@ inline T2
     <b>\#include</b> \<vigra/seededregiongrowing.hxx\><br>
     Namespace: vigra
 */
-template<class Value>
+template <class Value>
 class SeedRgDirectValueFunctor
 {
 public:

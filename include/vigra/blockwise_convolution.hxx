@@ -12,7 +12,7 @@ namespace vigra
 namespace blockwise_convolution_detail
 {
 
-template<class DataArray, class OutputBlocksIterator, class KernelIterator>
+template <class DataArray, class OutputBlocksIterator, class KernelIterator>
 void
 convolveImpl(const Overlaps<DataArray>& overlaps, OutputBlocksIterator output_blocks_begin, KernelIterator kit)
 {
@@ -25,7 +25,7 @@ convolveImpl(const Overlaps<DataArray>& overlaps, OutputBlocksIterator output_bl
 
     MultiCoordinateIterator<N> it(shape);
     MultiCoordinateIterator<N> end = it.getEndIterator();
-    for (; it != end; ++it)
+    for(; it != end; ++it)
     {
         OutputBlock output_block = output_blocks_begin[*it];
         OverlappingBlock<DataArray> data_block = overlaps[*it];
@@ -33,14 +33,14 @@ convolveImpl(const Overlaps<DataArray>& overlaps, OutputBlocksIterator output_bl
     }
 }
 
-template<class Shape, class KernelIterator>
+template <class Shape, class KernelIterator>
 std::pair<Shape, Shape>
 kernelOverlap(KernelIterator kit)
 {
     Shape before;
     Shape after;
 
-    for (unsigned int i = 0; i != Shape::static_size; ++i, ++kit)
+    for(unsigned int i = 0; i != Shape::static_size; ++i, ++kit)
     {
         // FIXME: is this correct?
         before[i] = kit->right();
@@ -52,9 +52,9 @@ kernelOverlap(KernelIterator kit)
 } // namespace blockwise_convolution_detail
 
 
-template<unsigned int N, class T1, class S1,
-         class T2, class S2,
-         class KernelIterator>
+template <unsigned int N, class T1, class S1,
+          class T2, class S2,
+          class KernelIterator>
 void
 separableConvolveBlockwise(MultiArrayView<N, T1, S1> source, MultiArrayView<N, T2, S2> dest, KernelIterator kit,
                            const typename MultiArrayView<N, T1, S1>::difference_type& block_shape =
@@ -74,9 +74,9 @@ separableConvolveBlockwise(MultiArrayView<N, T1, S1> source, MultiArrayView<N, T
 
     convolveImpl(overlaps, destination_blocks.begin(), kit);
 }
-template<unsigned int N, class T1, class S1,
-         class T2, class S2,
-         class T3>
+template <unsigned int N, class T1, class S1,
+          class T2, class S2,
+          class T3>
 void
 separableConvolveBlockwise(MultiArrayView<N, T1, S1> source, MultiArrayView<N, T2, S2> dest, const Kernel1D<T3>& kernel,
                            const typename MultiArrayView<N, T1, S1>::difference_type& block_shape =
@@ -111,9 +111,9 @@ separableConvolveBlockwise(MultiArrayView<N, T1, S1> source, MultiArrayView<N, T
     This function computes a separated convolution for a given \ref ChunkedArray. For infinite precision T1, this is equivalent to
     \ref separableConvolveMultiArray. In practice, floating point inaccuracies will make the result differ slightly.
 */
-doxygen_overloaded_function(template<...> void separableConvolveBlockwise)
+doxygen_overloaded_function(template <...> void separableConvolveBlockwise)
 
-    template<unsigned int N, class T1, class T2, class KernelIterator>
+    template <unsigned int N, class T1, class T2, class KernelIterator>
     void separableConvolveBlockwise(const ChunkedArray<N, T1>& source, ChunkedArray<N, T2>& destination, KernelIterator kit)
 {
     using namespace blockwise_convolution_detail;
@@ -130,7 +130,7 @@ doxygen_overloaded_function(template<...> void separableConvolveBlockwise)
 
     convolveImpl(overlaps, destination.chunk_begin(Shape(0), shape), kit);
 }
-template<unsigned int N, class T1, class T2, class T>
+template <unsigned int N, class T1, class T2, class T>
 void
 separableConvolveBlockwise(const ChunkedArray<N, T1>& source, ChunkedArray<N, T2>& destination, const Kernel1D<T>& kernel)
 {

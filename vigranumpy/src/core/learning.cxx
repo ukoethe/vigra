@@ -48,7 +48,7 @@ namespace python = boost::python;
 namespace vigra
 {
 
-template<class U>
+template <class U>
 python::tuple
     pythonPCA(NumpyArray<2, U> features, int nComponents)
 {
@@ -66,7 +66,7 @@ python::tuple
     return python::make_tuple(fz, zv);
 }
 
-template<class U>
+template <class U>
 python::tuple
     pythonPLSA(NumpyArray<2, U> features,
                int nComponents,

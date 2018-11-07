@@ -40,9 +40,9 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #endif
 
+#include <numpy/arrayobject.h>
 #include <numpy/ndarrayobject.h>
 #include <numpy/ndarraytypes.h>
-#include <numpy/arrayobject.h>
 
 #include "array_vector.hxx"
 #include "axistags.hxx"
@@ -61,7 +61,7 @@ getArrayTypeObject()
 {
     python_ptr arraytype((PyObject*)&PyArray_Type);
     python_ptr vigra(PyImport_ImportModule("vigra"));
-    if (!vigra)
+    if(!vigra)
         PyErr_Clear();
     return pythonGetAttr(vigra, "standardArrayType", arraytype);
 }
@@ -76,7 +76,7 @@ defaultOrder(std::string defaultValue = "C")
 inline python_ptr
 defaultAxistags(int ndim, std::string order = "")
 {
-    if (order == "")
+    if(order == "")
         order = defaultOrder();
     python_ptr arraytype = getArrayTypeObject();
     python_ptr func(pythonFromData("defaultAxistags"));
@@ -84,7 +84,7 @@ defaultAxistags(int ndim, std::string order = "")
     python_ptr o(pythonFromData(order));
     python_ptr axistags(PyObject_CallMethodObjArgs(arraytype, func.get(), d.get(), o.get(), NULL),
                         python_ptr::keep_count);
-    if (axistags)
+    if(axistags)
         return axistags;
     PyErr_Clear();
     return python_ptr();
@@ -98,7 +98,7 @@ emptyAxistags(int ndim)
     python_ptr d(pythonFromData(ndim));
     python_ptr axistags(PyObject_CallMethodObjArgs(arraytype, func.get(), d.get(), NULL),
                         python_ptr::keep_count);
-    if (axistags)
+    if(axistags)
         return axistags;
     PyErr_Clear();
     return python_ptr();
@@ -113,16 +113,16 @@ getAxisPermutationImpl(ArrayVector<npy_intp>& permute,
     python_ptr t(pythonFromData((long)type));
     python_ptr permutation(PyObject_CallMethodObjArgs(object, func.get(), t.get(), NULL),
                            python_ptr::keep_count);
-    if (!permutation && ignoreErrors)
+    if(!permutation && ignoreErrors)
     {
         PyErr_Clear();
         return;
     }
     pythonToCppException(permutation);
 
-    if (!PySequence_Check(permutation))
+    if(!PySequence_Check(permutation))
     {
-        if (ignoreErrors)
+        if(ignoreErrors)
             return;
         std::string message = std::string(name) + "() did not return a sequence.";
         PyErr_SetString(PyExc_ValueError, message.c_str());
@@ -130,16 +130,16 @@ getAxisPermutationImpl(ArrayVector<npy_intp>& permute,
     }
 
     ArrayVector<npy_intp> res(PySequence_Length(permutation));
-    for (int k = 0; k < (int)res.size(); ++k)
+    for(int k = 0; k < (int)res.size(); ++k)
     {
         python_ptr i(PySequence_GetItem(permutation, k), python_ptr::keep_count);
 #if PY_MAJOR_VERSION < 3
-        if (!PyInt_Check(i))
+        if(!PyInt_Check(i))
 #else
-        if (!PyLong_Check(i))
+        if(!PyLong_Check(i))
 #endif
         {
-            if (ignoreErrors)
+            if(ignoreErrors)
                 return;
             std::string message = std::string(name) + "() did not return a sequence of int.";
             PyErr_SetString(PyExc_ValueError, message.c_str());
@@ -183,21 +183,21 @@ public:
 
     PyAxisTags(python_ptr tags = python_ptr(), bool createCopy = false)
     {
-        if (!tags)
+        if(!tags)
             return;
         // FIXME: do a more elaborate type check here?
-        if (!PySequence_Check(tags))
+        if(!PySequence_Check(tags))
         {
             PyErr_SetString(PyExc_TypeError,
                             "PyAxisTags(tags): tags argument must have type 'AxisTags'.");
             pythonToCppException(false);
         }
-        else if (PySequence_Length(tags) == 0)
+        else if(PySequence_Length(tags) == 0)
         {
             return;
         }
 
-        if (createCopy)
+        if(createCopy)
         {
             python_ptr func(pythonFromData("__copy__"));
             axistags = python_ptr(PyObject_CallMethodObjArgs(tags, func.get(), NULL),
@@ -211,9 +211,9 @@ public:
 
     PyAxisTags(PyAxisTags const& other, bool createCopy = false)
     {
-        if (!other.axistags)
+        if(!other.axistags)
             return;
-        if (createCopy)
+        if(createCopy)
         {
             python_ptr func(pythonFromData("__copy__"));
             axistags = python_ptr(PyObject_CallMethodObjArgs(other.axistags, func.get(), NULL),
@@ -227,7 +227,7 @@ public:
 
     PyAxisTags(int ndim, std::string const& order = "")
     {
-        if (order != "")
+        if(order != "")
             axistags = detail::defaultAxistags(ndim, order);
         else
             axistags = detail::emptyAxistags(ndim);
@@ -267,7 +267,7 @@ public:
 
     void setChannelDescription(std::string const& description)
     {
-        if (!axistags)
+        if(!axistags)
             return;
         python_ptr d(pythonFromData(description));
         python_ptr func(pythonFromData("setChannelDescription"));
@@ -278,14 +278,14 @@ public:
 
     double resolution(long index)
     {
-        if (!axistags)
+        if(!axistags)
             return 0.0;
         python_ptr func(pythonFromData("resolution"));
         python_ptr i(pythonFromData(index));
         python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), NULL),
                        python_ptr::keep_count);
         pythonToCppException(res);
-        if (!PyFloat_Check(res))
+        if(!PyFloat_Check(res))
         {
             PyErr_SetString(PyExc_TypeError, "AxisTags.resolution() did not return float.");
             pythonToCppException(false);
@@ -295,7 +295,7 @@ public:
 
     void setResolution(long index, double resolution)
     {
-        if (!axistags)
+        if(!axistags)
             return;
         python_ptr func(pythonFromData("setResolution"));
         python_ptr i(pythonFromData(index));
@@ -307,7 +307,7 @@ public:
 
     void scaleResolution(long index, double factor)
     {
-        if (!axistags)
+        if(!axistags)
             return;
         python_ptr func(pythonFromData("scaleResolution"));
         python_ptr i(pythonFromData(index));
@@ -319,7 +319,7 @@ public:
 
     void toFrequencyDomain(long index, int size, int sign = 1)
     {
-        if (!axistags)
+        if(!axistags)
             return;
         python_ptr func(sign == 1
                             ? pythonFromData("toFrequencyDomain")
@@ -373,7 +373,7 @@ public:
 
     void dropChannelAxis()
     {
-        if (!axistags)
+        if(!axistags)
             return;
         python_ptr func(pythonFromData("dropChannelAxis"));
         python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), NULL),
@@ -383,7 +383,7 @@ public:
 
     void insertChannelAxis()
     {
-        if (!axistags)
+        if(!axistags)
             return;
         python_ptr func(pythonFromData("insertChannelAxis"));
         python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), NULL),
@@ -430,7 +430,7 @@ public:
     {
     }
 
-    template<class U, int N>
+    template <class U, int N>
     TaggedShape(TinyVector<U, N> const& sh, PyAxisTags tags)
         : shape(sh.begin(), sh.end()),
           original_shape(sh.begin(), sh.end()),
@@ -439,7 +439,7 @@ public:
     {
     }
 
-    template<class T>
+    template <class T>
     TaggedShape(ArrayVector<T> const& sh, PyAxisTags tags)
         : shape(sh.begin(), sh.end()),
           original_shape(sh.begin(), sh.end()),
@@ -448,7 +448,7 @@ public:
     {
     }
 
-    template<class U, int N>
+    template <class U, int N>
     explicit TaggedShape(TinyVector<U, N> const& sh)
         : shape(sh.begin(), sh.end()),
           original_shape(sh.begin(), sh.end()),
@@ -456,7 +456,7 @@ public:
     {
     }
 
-    template<class T>
+    template <class T>
     explicit TaggedShape(ArrayVector<T> const& sh)
         : shape(sh.begin(), sh.end()),
           original_shape(sh.begin(), sh.end()),
@@ -464,7 +464,7 @@ public:
     {
     }
 
-    template<class U, int N>
+    template <class U, int N>
     TaggedShape& resize(TinyVector<U, N> const& sh)
     {
         int start = channelAxis == first
@@ -477,10 +477,10 @@ public:
         vigra_precondition(N == stop - start || size() == 0,
                            "TaggedShape.resize(): size mismatch.");
 
-        if (size() == 0)
+        if(size() == 0)
             shape.resize(N);
 
-        for (int k = 0; k < N; ++k)
+        for(int k = 0; k < N; ++k)
             shape[k + start] = sh[k];
 
         return *this;
@@ -530,7 +530,7 @@ public:
             stop = channelAxis == last
                        ? (int)size() - 1
                        : (int)size();
-        for (int k = start; k < stop; ++k)
+        for(int k = start; k < stop; ++k)
             shape[k] += v;
 
         return *this;
@@ -549,7 +549,7 @@ public:
             stop = channelAxis == last
                        ? (int)size() - 1
                        : (int)size();
-        for (int k = start; k < stop; ++k)
+        for(int k = start; k < stop; ++k)
             shape[k] *= factor;
 
         return *this;
@@ -557,17 +557,17 @@ public:
 
     void rotateToNormalOrder()
     {
-        if (axistags && channelAxis == last)
+        if(axistags && channelAxis == last)
         {
             int ndim = (int)size();
 
             npy_intp channelCount = shape[ndim - 1];
-            for (int k = ndim - 1; k > 0; --k)
+            for(int k = ndim - 1; k > 0; --k)
                 shape[k] = shape[k - 1];
             shape[0] = channelCount;
 
             channelCount = original_shape[ndim - 1];
-            for (int k = ndim - 1; k > 0; --k)
+            for(int k = ndim - 1; k > 0; --k)
                 original_shape[k] = original_shape[k - 1];
             original_shape[0] = channelCount;
 
@@ -591,10 +591,10 @@ public:
     }
 
     // transposeShape() means: only shape and resolution are transposed, not the axis keys
-    template<class U, int N>
+    template <class U, int N>
     TaggedShape& transposeShape(TinyVector<U, N> const& p)
     {
-        if (axistags)
+        if(axistags)
         {
             int ntags = axistags.size();
             ArrayVector<npy_intp> permute = axistags.permutationToNormalOrder();
@@ -611,7 +611,7 @@ public:
                                "TaggedShape.transposeShape(): size mismatch.");
 
             PyAxisTags newAxistags(axistags.axistags); // force copy
-            for (int k = 0; k < ndim; ++k)
+            for(int k = 0; k < ndim; ++k)
             {
                 original_shape[k + sstart] = shape[p[k] + sstart];
                 newAxistags.setResolution(permute[k + tstart], axistags.resolution(permute[p[k] + tstart]));
@@ -620,7 +620,7 @@ public:
         }
         else
         {
-            for (int k = 0; k < N; ++k)
+            for(int k = 0; k < N; ++k)
             {
                 original_shape[k] = shape[p[k]];
             }
@@ -632,7 +632,7 @@ public:
 
     TaggedShape& toFrequencyDomain(int sign = 1)
     {
-        if (axistags)
+        if(axistags)
         {
             int ntags = axistags.size();
 
@@ -649,7 +649,7 @@ public:
                            : (int)size();
             int size = send - sstart;
 
-            for (int k = 0; k < size; ++k)
+            for(int k = 0; k < size; ++k)
             {
                 axistags.toFrequencyDomain(permute[k + tstart], shape[k + sstart], sign);
             }
@@ -669,7 +669,7 @@ public:
 
     bool compatible(TaggedShape const& other) const
     {
-        if (channelCount() != other.channelCount())
+        if(channelCount() != other.channelCount())
             return false;
 
         int start = channelAxis == first
@@ -686,21 +686,21 @@ public:
                         : (int)other.size();
 
         int len = stop - start;
-        if (len != ostop - ostart)
+        if(len != ostop - ostart)
             return false;
 
-        for (int k = 0; k < len; ++k)
-            if (shape[k + start] != other.shape[k + ostart])
+        for(int k = 0; k < len; ++k)
+            if(shape[k + start] != other.shape[k + ostart])
                 return false;
         return true;
     }
 
     TaggedShape& setChannelCount(int count)
     {
-        switch (channelAxis)
+        switch(channelAxis)
         {
             case first:
-                if (count > 0)
+                if(count > 0)
                 {
                     shape[0] = count;
                 }
@@ -712,7 +712,7 @@ public:
                 }
                 break;
             case last:
-                if (count > 0)
+                if(count > 0)
                 {
                     shape[size() - 1] = count;
                 }
@@ -724,7 +724,7 @@ public:
                 }
                 break;
             case none:
-                if (count > 0)
+                if(count > 0)
                 {
                     shape.push_back(count);
                     original_shape.push_back(count);
@@ -737,7 +737,7 @@ public:
 
     int channelCount() const
     {
-        switch (channelAxis)
+        switch(channelAxis)
         {
             case first:
                 return shape[0];
@@ -752,7 +752,7 @@ public:
 inline void
 scaleAxisResolution(TaggedShape& tagged_shape)
 {
-    if (tagged_shape.size() != tagged_shape.original_shape.size())
+    if(tagged_shape.size() != tagged_shape.original_shape.size())
         return;
 
     int ntags = tagged_shape.axistags.size();
@@ -767,10 +767,10 @@ scaleAxisResolution(TaggedShape& tagged_shape)
                      : 0;
     int size = (int)tagged_shape.size() - sstart;
 
-    for (int k = 0; k < size; ++k)
+    for(int k = 0; k < size; ++k)
     {
         int sk = k + sstart;
-        if (tagged_shape.shape[sk] == tagged_shape.original_shape[sk])
+        if(tagged_shape.shape[sk] == tagged_shape.original_shape[sk])
             continue;
         double factor = (tagged_shape.original_shape[sk] - 1.0) / (tagged_shape.shape[sk] - 1.0);
         tagged_shape.axistags.scaleResolution(permute[k + tstart], factor);
@@ -788,10 +788,10 @@ unifyTaggedShapeSize(TaggedShape& tagged_shape)
 
     long channelIndex = axistags.channelIndex();
 
-    if (tagged_shape.channelAxis == TaggedShape::none)
+    if(tagged_shape.channelAxis == TaggedShape::none)
     {
         // shape has no channel axis
-        if (channelIndex == ntags)
+        if(channelIndex == ntags)
         {
             // std::cerr << "branch (shape, axitags) 0 0\n";
             // axistags have no channel axis either => sizes should match
@@ -801,7 +801,7 @@ unifyTaggedShapeSize(TaggedShape& tagged_shape)
         else
         {
             // std::cerr << "branch (shape, axitags) 0 1\n";
-            if (ndim + 1 == ntags)
+            if(ndim + 1 == ntags)
             {
                 // std::cerr << "   drop channel axis\n";
                 // axistags have one additional element => drop the channel tag
@@ -818,14 +818,14 @@ unifyTaggedShapeSize(TaggedShape& tagged_shape)
     else
     {
         // shape has a channel axis
-        if (channelIndex == ntags)
+        if(channelIndex == ntags)
         {
             // std::cerr << "branch (shape, axitags) 1 0\n";
             // axistags have no channel axis => should be one element shorter
             vigra_precondition(ndim == ntags + 1,
                                "constructArray(): size mismatch between shape and axistags.");
 
-            if (shape[0] == 1)
+            if(shape[0] == 1)
             {
                 // std::cerr << "   drop channel axis\n";
                 // we have a singleband image => drop the channel axis
@@ -852,7 +852,7 @@ unifyTaggedShapeSize(TaggedShape& tagged_shape)
 inline ArrayVector<npy_intp>
 finalizeTaggedShape(TaggedShape& tagged_shape)
 {
-    if (tagged_shape.axistags)
+    if(tagged_shape.axistags)
     {
         tagged_shape.rotateToNormalOrder();
 
@@ -864,7 +864,7 @@ finalizeTaggedShape(TaggedShape& tagged_shape)
         // shape and original_shape to be still in sync
         unifyTaggedShapeSize(tagged_shape);
 
-        if (tagged_shape.channelDescription != "")
+        if(tagged_shape.channelDescription != "")
             tagged_shape.axistags.setChannelDescription(tagged_shape.channelDescription);
     }
     return tagged_shape.shape;

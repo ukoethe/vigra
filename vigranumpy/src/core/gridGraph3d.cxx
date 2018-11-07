@@ -60,7 +60,7 @@ namespace vigra
 
 
 
-template<unsigned int DIM, class DTAG>
+template <unsigned int DIM, class DTAG>
 NodeHolder<GridGraph<DIM, boost::undirected_tag>>
 pyCoordinateToNode3d(
     const GridGraph<DIM, boost::undirected_tag>& g,
@@ -70,7 +70,7 @@ pyCoordinateToNode3d(
     return NodeHolder<GridGraph<DIM, boost::undirected_tag>>(g, node);
 }
 
-template<unsigned int DIM, class DTAG>
+template <unsigned int DIM, class DTAG>
 GridGraph<DIM, DTAG>*
 pyGridGraphFactory3d(
     typename MultiArray<DIM, int>::difference_type shape,
@@ -81,12 +81,12 @@ pyGridGraphFactory3d(
 
 
 
-template<unsigned int DIM>
+template <unsigned int DIM>
 void defineGridGraphRagSerialization();
 
 
 
-template<unsigned int DIM>
+template <unsigned int DIM>
 void
 defineGridGraphT3d(const std::string& clsName)
 {

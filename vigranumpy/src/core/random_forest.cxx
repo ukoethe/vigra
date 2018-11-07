@@ -54,14 +54,14 @@ namespace python = boost::python;
 namespace vigra
 {
 
-template<class FeatureType>
+template <class FeatureType>
 OnlinePredictionSet<FeatureType>*
     pythonConstructOnlinePredictioSet(NumpyArray<2, FeatureType> features, int num_sets)
 {
     return new OnlinePredictionSet<FeatureType>(features, num_sets);
 }
 
-template<class LabelType, class FeatureType>
+template <class LabelType, class FeatureType>
 RandomForest<LabelType>*
 pythonConstructRandomForest(int treeCount,
                             int mtry,
@@ -82,20 +82,20 @@ pythonConstructRandomForest(int treeCount,
         .min_split_node_size(min_split_node_size);
 
 
-    if (mtry > 0)
+    if(mtry > 0)
         options.features_per_node(mtry);
 
-    if (training_set_size != 0)
+    if(training_set_size != 0)
         options.samples_per_tree(training_set_size);
     else
         options.samples_per_tree(training_set_proportions);
 
-    if (sample_classes_individually)
+    if(sample_classes_individually)
         options.use_stratification(RF_EQUAL);
 
     ProblemSpec<LabelType> ext_param;
 
-    if (labels.size() > 0)
+    if(labels.size() > 0)
     {
         ext_param.classes_(labels.begin(), labels.end());
     }
@@ -106,7 +106,7 @@ pythonConstructRandomForest(int treeCount,
 }
 
 #ifdef HasHDF5
-template<class LabelType>
+template <class LabelType>
 RandomForest<LabelType>*
 pythonImportRandomForestFromHDF5(std::string filename,
                                  std::string pathname = "")
@@ -119,7 +119,7 @@ pythonImportRandomForestFromHDF5(std::string filename,
     return rf.release();
 }
 
-template<class LabelType>
+template <class LabelType>
 RandomForest<LabelType>*
 pythonImportRandomForestFromHDF5id(hid_t inf_id,
                                    std::string pathname = "")
@@ -133,7 +133,7 @@ pythonImportRandomForestFromHDF5id(hid_t inf_id,
 }
 #endif // HasHDF5
 
-template<class LabelType, class FeatureType>
+template <class LabelType, class FeatureType>
 python::tuple
 pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType>& rf,
                                             NumpyArray<2, FeatureType> trainData,
@@ -164,7 +164,7 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType>& rf,
     return python::make_tuple(oob, res);
 }
 
-template<class LabelType, class FeatureType>
+template <class LabelType, class FeatureType>
 double
 pythonLearnRandomForest(RandomForest<LabelType>& rf,
                         NumpyArray<2, FeatureType> trainData,
@@ -195,7 +195,7 @@ pythonLearnRandomForest(RandomForest<LabelType>& rf,
     return oob;
 }
 
-template<class LabelType, class FeatureType>
+template <class LabelType, class FeatureType>
 void
 pythonRFOnlineLearn(RandomForest<LabelType>& rf,
                     NumpyArray<2, FeatureType> trainData,
@@ -215,7 +215,7 @@ pythonRFOnlineLearn(RandomForest<LabelType>& rf,
                    rnd, adjust_thresholds);
 }
 
-template<class LabelType, class FeatureType>
+template <class LabelType, class FeatureType>
 void
 pythonRFReLearnTree(RandomForest<LabelType>& rf,
                     NumpyArray<2, FeatureType> trainData,
@@ -233,7 +233,7 @@ pythonRFReLearnTree(RandomForest<LabelType>& rf,
                    rnd);
 }
 
-template<class LabelType, class FeatureType>
+template <class LabelType, class FeatureType>
 NumpyAnyArray
 pythonRFPredictLabels(RandomForest<LabelType> const& rf,
                       NumpyArray<2, FeatureType> testData,
@@ -249,7 +249,7 @@ pythonRFPredictLabels(RandomForest<LabelType> const& rf,
 
     python::extract<LabelType> nanLabel(pyNaNLabel);
 
-    if (nanLabel.check())
+    if(nanLabel.check())
     {
         LabelType nan_label(nanLabel());
         PyAllowThreads _pythread;
@@ -263,7 +263,7 @@ pythonRFPredictLabels(RandomForest<LabelType> const& rf,
     return res;
 }
 
-template<class LabelType, class FeatureType>
+template <class LabelType, class FeatureType>
 NumpyAnyArray
 pythonRFPredictProbabilities(RandomForest<LabelType>& rf,
                              NumpyArray<2, FeatureType> testData,
@@ -282,7 +282,7 @@ pythonRFPredictProbabilities(RandomForest<LabelType>& rf,
     return res;
 }
 
-template<class LabelType, class FeatureType>
+template <class LabelType, class FeatureType>
 NumpyAnyArray
 pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType>& rf,
                                           OnlinePredictionSet<FeatureType>& predSet,

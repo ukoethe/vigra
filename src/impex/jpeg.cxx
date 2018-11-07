@@ -210,7 +210,7 @@ JPEGDecoderImpl::JPEGDecoderImpl(const std::string& filename)
     err.pub.error_exit = &JPEGCodecLongjumper;
 
     // setup the data source
-    if (setjmp(err.buf))
+    if(setjmp(err.buf))
     {
         vigra_fail("error in jpeg_stdio_src()");
     }
@@ -223,21 +223,21 @@ void
 JPEGDecoderImpl::init()
 {
     // read the header
-    if (setjmp(err.buf))
+    if(setjmp(err.buf))
         vigra_fail("error in jpeg_read_header()");
     jpeg_read_header(&info, TRUE);
 
     // extract ICC profile
     JOCTET* iccBuf;
     unsigned int iccLen;
-    if (read_icc_profile(&info, &iccBuf, &iccLen))
+    if(read_icc_profile(&info, &iccBuf, &iccLen))
     {
         iccProfileLength = iccLen;
         iccProfilePtr = iccBuf;
     }
 
     // start the decompression
-    if (setjmp(err.buf))
+    if(setjmp(err.buf))
         vigra_fail("error in jpeg_start_decompress()");
     jpeg_start_decompress(&info);
 
@@ -255,7 +255,7 @@ JPEGDecoderImpl::init()
 
 JPEGDecoderImpl::~JPEGDecoderImpl()
 {
-    if (iccProfilePtr && iccProfileLength)
+    if(iccProfilePtr && iccProfileLength)
         free((void*)iccProfilePtr);
 }
 
@@ -264,7 +264,7 @@ JPEGDecoder::init(const std::string& filename)
 {
     pimpl = new JPEGDecoderImpl(filename);
     pimpl->init();
-    if (pimpl->iccProfileLength)
+    if(pimpl->iccProfileLength)
     {
         Decoder::ICCProfile iccData(
             pimpl->iccProfilePtr,
@@ -325,9 +325,9 @@ JPEGDecoder::nextScanline()
 {
     // check if there are scanlines left at all, eventually read one
     JSAMPLE* band = pimpl->bands.data();
-    if (pimpl->info.output_scanline < pimpl->info.output_height)
+    if(pimpl->info.output_scanline < pimpl->info.output_height)
     {
-        if (setjmp(pimpl->err.buf))
+        if(setjmp(pimpl->err.buf))
             vigra_fail("error in jpeg_read_scanlines()");
         jpeg_read_scanlines(&pimpl->info, &band, 1);
     }
@@ -337,7 +337,7 @@ void
 JPEGDecoder::close()
 {
     // finish any pending decompression
-    if (setjmp(pimpl->err.buf))
+    if(setjmp(pimpl->err.buf))
         vigra_fail("error in jpeg_finish_decompress()");
     jpeg_finish_decompress(&pimpl->info);
 }
@@ -385,7 +385,7 @@ JPEGEncoderImpl::JPEGEncoderImpl(const std::string& filename)
     err.pub.error_exit = &JPEGCodecLongjumper;
 
     // setup the data dest
-    if (setjmp(err.buf))
+    if(setjmp(err.buf))
     {
         vigra_fail("error in jpeg_stdio_dest()");
     }
@@ -416,20 +416,20 @@ JPEGEncoderImpl::finalize()
     info.Y_density = 100;
 
     // set defaults based upon the set values
-    if (setjmp(err.buf))
+    if(setjmp(err.buf))
         vigra_fail("error in jpeg_set_defaults()");
     jpeg_set_defaults(&info);
 
     // set the quality level
-    if (quality != -1)
+    if(quality != -1)
     {
-        if (setjmp(err.buf))
+        if(setjmp(err.buf))
             vigra_fail("error in jpeg_set_quality()");
         jpeg_set_quality(&info, quality, TRUE);
     }
 
     // enhance the quality a little bit
-    for (unsigned int i = 0; i < MAX_COMPONENTS; ++i)
+    for(unsigned int i = 0; i < MAX_COMPONENTS; ++i)
     {
         info.comp_info[i].h_samp_factor = 1;
         info.comp_info[i].v_samp_factor = 1;
@@ -440,11 +440,11 @@ JPEGEncoderImpl::finalize()
     info.dct_method = JDCT_FLOAT;
 
     // start the compression
-    if (setjmp(err.buf))
+    if(setjmp(err.buf))
         vigra_fail("error in jpeg_start_compress()");
     jpeg_start_compress(&info, TRUE);
 
-    if (iccProfile.size())
+    if(iccProfile.size())
     {
         write_icc_profile(&info, iccProfile.begin(), (unsigned int)iccProfile.size());
     }
@@ -493,9 +493,9 @@ JPEGEncoder::setCompressionType(const std::string& comp,
                                 int quality)
 {
     VIGRA_IMPEX_FINALIZED(pimpl->finalized);
-    if (comp == "LOSSLESS")
+    if(comp == "LOSSLESS")
         vigra_fail("lossless encoding is not supported by your jpeg library.");
-    if (comp == "JPEG_ARITH")
+    if(comp == "JPEG_ARITH")
 #ifdef C_ARITH_CODING_SUPPORTED
         pimpl->info.arith_code = TRUE;
 #else
@@ -508,7 +508,7 @@ void
 JPEGEncoder::setPixelType(const std::string& pixelType)
 {
     VIGRA_IMPEX_FINALIZED(pimpl->finalized);
-    if (pixelType != "UINT8")
+    if(pixelType != "UINT8")
         vigra_precondition(false, "only UINT8 pixels are supported.");
 }
 
@@ -541,9 +541,9 @@ JPEGEncoder::nextScanline()
 {
     // check if there are scanlines left at all, eventually write one
     JSAMPLE* band = pimpl->bands.data();
-    if (pimpl->info.next_scanline < pimpl->info.image_height)
+    if(pimpl->info.next_scanline < pimpl->info.image_height)
     {
-        if (setjmp(pimpl->err.buf))
+        if(setjmp(pimpl->err.buf))
             vigra_fail("error in jpeg_write_scanlines()");
         jpeg_write_scanlines(&pimpl->info, &band, 1);
     }
@@ -553,7 +553,7 @@ void
 JPEGEncoder::close()
 {
     // finish any pending compression
-    if (setjmp(pimpl->err.buf))
+    if(setjmp(pimpl->err.buf))
         vigra_fail("error in jpeg_finish_compress()");
     jpeg_finish_compress(&pimpl->info);
 }

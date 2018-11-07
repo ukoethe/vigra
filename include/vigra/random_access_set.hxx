@@ -55,7 +55,7 @@ namespace vigra
 /// \warning Values in set must not be changend through the mutable iterator
 /// because doing so would potentially change the order of the values
 /// \\ingroup datastructures
-template<class Key, class Compare = std::less<Key>, class Alloc = std::allocator<Key>>
+template <class Key, class Compare = std::less<Key>, class Alloc = std::allocator<Key>>
 class RandomAccessSet
 {
 private:
@@ -95,7 +95,7 @@ public:
     // constructor
     RandomAccessSet(const size_t, const Compare& compare = Compare(), const Alloc& alloc = Alloc());
     RandomAccessSet(const Compare& compare = Compare(), const Alloc& alloc = Alloc());
-    template<class InputIterator>
+    template <class InputIterator>
     RandomAccessSet(InputIterator, InputIterator, const Compare& compare = Compare(), const Alloc& alloc = Alloc());
     RandomAccessSet(const RandomAccessSet&);
 
@@ -117,7 +117,7 @@ public:
     size_type size() const;
     size_type max_size() const;
     std::pair<const_iterator, bool> insert(const value_type&);
-    template<class InputIterator>
+    template <class InputIterator>
     void insert(InputIterator, InputIterator);
     const_iterator insert(const_iterator, const value_type&);
     void erase(iterator position);
@@ -148,7 +148,7 @@ public:
         return vector_.capacity();
     }
 
-    template<class SET>
+    template <class SET>
     void assignFromSet(const SET& set)
     {
         vector_.assign(set.begin(), set.end());
@@ -163,7 +163,7 @@ private:
 /// \param reserveSize reserve /allocate space
 /// \param compare comperator
 /// \param alloc allocator
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline RandomAccessSet<Key, Compare, Alloc>::RandomAccessSet(
     const size_t reserveSize,
     const Compare& compare,
@@ -177,7 +177,7 @@ inline RandomAccessSet<Key, Compare, Alloc>::RandomAccessSet(
 /// const access values
 /// \param index index of the value in the set
 /// \return value / key at the position index
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline const typename RandomAccessSet<Key, Compare, Alloc>::value_type&
     RandomAccessSet<Key, Compare, Alloc>::operator[](
         const typename RandomAccessSet<Key, Compare, Alloc>::size_type index) const
@@ -188,7 +188,7 @@ inline const typename RandomAccessSet<Key, Compare, Alloc>::value_type&
 /// constructor
 /// \param compare comperator
 /// \allloc allocator
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline RandomAccessSet<Key, Compare, Alloc>::RandomAccessSet(
     const Compare& compare,
     const Alloc& alloc)
@@ -201,8 +201,8 @@ inline RandomAccessSet<Key, Compare, Alloc>::RandomAccessSet(
 /// \tparam InputIterator (key/value) input iterator
 /// \param beginInput
 /// \param endInput
-template<class Key, class Compare, class Alloc>
-template<class InputIterator>
+template <class Key, class Compare, class Alloc>
+template <class InputIterator>
 inline RandomAccessSet<Key, Compare, Alloc>::RandomAccessSet(
     InputIterator beginInput,
     InputIterator endInput,
@@ -211,7 +211,7 @@ inline RandomAccessSet<Key, Compare, Alloc>::RandomAccessSet(
     : vector_(alloc),
       compare_(compare)
 {
-    while (beginInput != endInput)
+    while(beginInput != endInput)
     {
         this->insert(*beginInput);
         ++beginInput;
@@ -220,7 +220,7 @@ inline RandomAccessSet<Key, Compare, Alloc>::RandomAccessSet(
 
 /// copy constructor
 /// \param src other random access set
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline RandomAccessSet<Key, Compare, Alloc>::RandomAccessSet(
     const RandomAccessSet<Key, Compare, Alloc>& src)
     : vector_(src.vector_),
@@ -230,12 +230,12 @@ inline RandomAccessSet<Key, Compare, Alloc>::RandomAccessSet(
 
 /// assignment operator
 /// \param src other random access set
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline RandomAccessSet<Key, Compare, Alloc>&
 RandomAccessSet<Key, Compare, Alloc>::operator=(
     const RandomAccessSet<Key, Compare, Alloc>& src)
 {
-    if (this != &src)
+    if(this != &src)
     {
         vector_ = src.vector_;
         compare_ = src.compare_;
@@ -245,7 +245,7 @@ RandomAccessSet<Key, Compare, Alloc>::operator=(
 
 /// const begin iterator
 /// \returns begin iterator
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::const_iterator
 RandomAccessSet<Key, Compare, Alloc>::begin() const
 {
@@ -254,7 +254,7 @@ RandomAccessSet<Key, Compare, Alloc>::begin() const
 
 /// const end iterator
 /// \returns end iterator
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::const_iterator
 RandomAccessSet<Key, Compare, Alloc>::end() const
 {
@@ -262,7 +262,7 @@ RandomAccessSet<Key, Compare, Alloc>::end() const
 }
 /// reverse const begin iterator
 /// \returns reverse begin iterator
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::const_iterator
 RandomAccessSet<Key, Compare, Alloc>::rbegin() const
 {
@@ -271,7 +271,7 @@ RandomAccessSet<Key, Compare, Alloc>::rbegin() const
 
 /// reverse const end iterator
 /// \param reverse end iterator
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::const_iterator
 RandomAccessSet<Key, Compare, Alloc>::rend() const
 {
@@ -280,7 +280,7 @@ RandomAccessSet<Key, Compare, Alloc>::rend() const
 
 /// begin iterator
 /// \param begin iterator
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::iterator
 RandomAccessSet<Key, Compare, Alloc>::begin()
 {
@@ -289,7 +289,7 @@ RandomAccessSet<Key, Compare, Alloc>::begin()
 
 /// end iterator
 /// \param end iterator
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::iterator
 RandomAccessSet<Key, Compare, Alloc>::end()
 {
@@ -298,7 +298,7 @@ RandomAccessSet<Key, Compare, Alloc>::end()
 
 /// reverse  begin iterator
 /// \param reverse begin iterator
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::iterator
 RandomAccessSet<Key, Compare, Alloc>::rbegin()
 {
@@ -307,7 +307,7 @@ RandomAccessSet<Key, Compare, Alloc>::rbegin()
 
 /// reverse end iterator
 /// \param reverse end iterator
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::iterator
 RandomAccessSet<Key, Compare, Alloc>::rend()
 {
@@ -316,7 +316,7 @@ RandomAccessSet<Key, Compare, Alloc>::rend()
 
 /// query if the set is empty
 /// \return true if empty
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline bool
 RandomAccessSet<Key, Compare, Alloc>::empty() const
 {
@@ -325,7 +325,7 @@ RandomAccessSet<Key, Compare, Alloc>::empty() const
 
 /// number of elements of the set
 /// \returns number of elements in the set
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::size_type
 RandomAccessSet<Key, Compare, Alloc>::size() const
 {
@@ -334,7 +334,7 @@ RandomAccessSet<Key, Compare, Alloc>::size() const
 
 /// maximum size of the underlying container
 /// \return the maximum size
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::size_type
 RandomAccessSet<Key, Compare, Alloc>::max_size() const
 {
@@ -348,14 +348,14 @@ RandomAccessSet<Key, Compare, Alloc>::max_size() const
 /// \return pair in which the first entry is an iterator pointing to inserted
 /// value and the second entry is true iff the value had not already been in the
 /// set
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline std::pair<typename RandomAccessSet<Key, Compare, Alloc>::const_iterator, bool>
 RandomAccessSet<Key, Compare, Alloc>::insert(
     const typename RandomAccessSet<Key, Compare, Alloc>::value_type& value)
 {
     bool found(true);
     iterator i(lower_bound(static_cast<Key>(value)));
-    if (i == end() || compare_(static_cast<Key>(value), *i))
+    if(i == end() || compare_(static_cast<Key>(value), *i))
     {
         i = vector_.insert(i, static_cast<Key>(value));
         found = false;
@@ -367,14 +367,14 @@ RandomAccessSet<Key, Compare, Alloc>::insert(
 ///
 /// \param first iterator to the first element
 /// \param last iterator to the last element
-template<class Key, class Compare, class Alloc>
-template<class InputIterator>
+template <class Key, class Compare, class Alloc>
+template <class InputIterator>
 inline void
 RandomAccessSet<Key, Compare, Alloc>::insert(
     InputIterator first,
     InputIterator last)
 {
-    while (first != last)
+    while(first != last)
     {
         this->insert(*first);
         ++first;
@@ -385,13 +385,13 @@ RandomAccessSet<Key, Compare, Alloc>::insert(
 ///
 /// \param position iterator to the position
 /// \param value element to insert
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::const_iterator
 RandomAccessSet<Key, Compare, Alloc>::insert(
     typename RandomAccessSet<Key, Compare, Alloc>::const_iterator position,
     const typename RandomAccessSet<Key, Compare, Alloc>::value_type& value)
 {
-    if ((position == begin() || this->operator()(*(position - 1), value)) && (position == end() || this->operator()(value, *position)))
+    if((position == begin() || this->operator()(*(position - 1), value)) && (position == end() || this->operator()(value, *position)))
     {
         return vector_.insert(position, value);
     }
@@ -400,7 +400,7 @@ RandomAccessSet<Key, Compare, Alloc>::insert(
 
 /// erase an element
 /// \param position iterator to the position
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline void
 RandomAccessSet<Key, Compare, Alloc>::erase(
     typename RandomAccessSet<Key, Compare, Alloc>::iterator position)
@@ -410,13 +410,13 @@ RandomAccessSet<Key, Compare, Alloc>::erase(
 
 /// erease and element
 /// \param x element
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::size_type
 RandomAccessSet<Key, Compare, Alloc>::erase(
     const typename RandomAccessSet<Key, Compare, Alloc>::key_type& x)
 {
     iterator i = find(x);
-    if (i != vector_.end())
+    if(i != vector_.end())
     {
         erase(i);
         return 1;
@@ -427,7 +427,7 @@ RandomAccessSet<Key, Compare, Alloc>::erase(
 /// erase a sequence of elements
 /// \param first iterator to the beginning of the sequence to erase
 /// \param last iterator to the end of the sequence to erase
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline void
 RandomAccessSet<Key, Compare, Alloc>::erase(
     const typename RandomAccessSet<Key, Compare, Alloc>::const_iterator first,
@@ -438,7 +438,7 @@ RandomAccessSet<Key, Compare, Alloc>::erase(
 
 /// swap random access sets
 /// \param rhs set to swap with
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline void
 RandomAccessSet<Key, Compare, Alloc>::swap(
     RandomAccessSet<Key, Compare, Alloc>& rhs)
@@ -450,7 +450,7 @@ RandomAccessSet<Key, Compare, Alloc>::swap(
 /// clear the set
 ///
 /// erases all elements
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline void
 RandomAccessSet<Key, Compare, Alloc>::clear()
 {
@@ -459,7 +459,7 @@ RandomAccessSet<Key, Compare, Alloc>::clear()
 
 /// key comparator
 /// \return key comparator
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::key_compare
 RandomAccessSet<Key, Compare, Alloc>::key_comp() const
 {
@@ -468,7 +468,7 @@ RandomAccessSet<Key, Compare, Alloc>::key_comp() const
 
 /// value comparator
 /// \return value comparator
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::value_compare
 RandomAccessSet<Key, Compare, Alloc>::value_comp() const
 {
@@ -479,13 +479,13 @@ RandomAccessSet<Key, Compare, Alloc>::value_comp() const
 /// \param value element
 /// \return const_iterator to the position where element was found or end
 /// iterator if the element was not found
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::const_iterator
 RandomAccessSet<Key, Compare, Alloc>::find(
     const typename RandomAccessSet<Key, Compare, Alloc>::key_type& value) const
 {
     const_iterator i(lower_bound(value));
-    if (i != end() && compare_(value, *i))
+    if(i != end() && compare_(value, *i))
     {
         i = end();
     }
@@ -496,13 +496,13 @@ RandomAccessSet<Key, Compare, Alloc>::find(
 /// \param value element
 /// \return iterator to the position where the element was found or end
 /// iterator if the element was not found
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::iterator
 RandomAccessSet<Key, Compare, Alloc>::find(
     const typename RandomAccessSet<Key, Compare, Alloc>::key_type& value)
 {
     iterator i(lower_bound(value));
-    if (i != end() && compare_(value, *i))
+    if(i != end() && compare_(value, *i))
     {
         i = end();
     }
@@ -512,7 +512,7 @@ RandomAccessSet<Key, Compare, Alloc>::find(
 /// count elements
 /// \param element
 /// \return zero or one
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::size_type
 RandomAccessSet<Key, Compare, Alloc>::count(
     const typename RandomAccessSet<Key, Compare, Alloc>::key_type& value) const
@@ -523,7 +523,7 @@ RandomAccessSet<Key, Compare, Alloc>::count(
 /// lower bound
 /// \param value
 /// \return iterator to lower bound
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::const_iterator
 RandomAccessSet<Key, Compare, Alloc>::lower_bound(
     const typename RandomAccessSet<Key, Compare, Alloc>::key_type& value) const
@@ -534,7 +534,7 @@ RandomAccessSet<Key, Compare, Alloc>::lower_bound(
 /// lower bound
 /// \param value
 /// \return iterator to lower bound
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::iterator
 RandomAccessSet<Key, Compare, Alloc>::lower_bound(
     const typename RandomAccessSet<Key, Compare, Alloc>::key_type& value)
@@ -545,7 +545,7 @@ RandomAccessSet<Key, Compare, Alloc>::lower_bound(
 /// upper bound
 /// \param value
 /// \return iterator to upper bound
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::const_iterator
 RandomAccessSet<Key, Compare, Alloc>::upper_bound(
     const typename RandomAccessSet<Key, Compare, Alloc>::key_type& value) const
@@ -556,7 +556,7 @@ RandomAccessSet<Key, Compare, Alloc>::upper_bound(
 /// upper bound
 /// \param value
 /// \return iterator to upper bound
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::iterator
 RandomAccessSet<Key, Compare, Alloc>::upper_bound(
     const typename RandomAccessSet<Key, Compare, Alloc>::key_type& value)
@@ -567,7 +567,7 @@ RandomAccessSet<Key, Compare, Alloc>::upper_bound(
 /// equal range
 /// \param value
 /// \return iterator pair to lower equal range
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline std::pair<typename RandomAccessSet<Key, Compare, Alloc>::const_iterator, typename RandomAccessSet<Key, Compare, Alloc>::const_iterator>
 RandomAccessSet<Key, Compare, Alloc>::equal_range(
     const typename RandomAccessSet<Key, Compare, Alloc>::key_type& value) const
@@ -578,7 +578,7 @@ RandomAccessSet<Key, Compare, Alloc>::equal_range(
 /// equal range
 /// \param value
 /// \return iterator pair to lower equal range
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline std::pair<typename RandomAccessSet<Key, Compare, Alloc>::iterator, typename RandomAccessSet<Key, Compare, Alloc>::iterator>
 RandomAccessSet<Key, Compare, Alloc>::equal_range(
     const typename RandomAccessSet<Key, Compare, Alloc>::key_type& value)
@@ -587,7 +587,7 @@ RandomAccessSet<Key, Compare, Alloc>::equal_range(
 }
 /// allocators
 /// \return allocator
-template<class Key, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key, Compare, Alloc>::allocator_type
 RandomAccessSet<Key, Compare, Alloc>::get_allocator() const
 {

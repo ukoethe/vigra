@@ -137,9 +137,9 @@ Input:
     \endcode
 
  */
-doxygen_overloaded_function(template<...> void totalVariationFilter)
+doxygen_overloaded_function(template <...> void totalVariationFilter)
 
-    template<class stride1, class stride2>
+    template <class stride1, class stride2>
     void totalVariationFilter(MultiArrayView<2, double, stride1> data, MultiArrayView<2, double, stride2> out, double alpha, int steps, double eps = 0)
 {
 
@@ -159,7 +159,7 @@ doxygen_overloaded_function(template<...> void totalVariationFilter)
     double tau = 1.0 / std::max(alpha, 1.) / std::sqrt(8.0) * 0.06;
     double sigma = 1.0 / std::sqrt(8.0) / 0.06;
 
-    for (int i = 0; i < steps; i++)
+    for(int i = 0; i < steps; i++)
     {
 
         separableConvolveX(srcImageRange(u_bar), destImage(temp1), kernel1d(Lx));
@@ -170,12 +170,12 @@ doxygen_overloaded_function(template<...> void totalVariationFilter)
         vy += (sigma * temp1);
 
         //project to constraint set
-        for (int y = 0; y < data.shape(1); y++)
+        for(int y = 0; y < data.shape(1); y++)
         {
-            for (int x = 0; x < data.shape(0); x++)
+            for(int x = 0; x < data.shape(0); x++)
             {
                 double l = hypot(vx(x, y), vy(x, y));
-                if (l > 1)
+                if(l > 1)
                 {
                     vx(x, y) /= l;
                     vy(x, y) /= l;
@@ -191,7 +191,7 @@ doxygen_overloaded_function(template<...> void totalVariationFilter)
 
 
         //stopping criterion
-        if (eps > 0)
+        if(eps > 0)
         {
             separableConvolveX(srcImageRange(out), destImage(temp1), kernel1d(Lx));
             setZeroX(temp1);
@@ -199,24 +199,24 @@ doxygen_overloaded_function(template<...> void totalVariationFilter)
             setZeroY(temp2);
 
             double f_primal = 0, f_dual = 0;
-            for (int y = 0; y < data.shape(1); y++)
+            for(int y = 0; y < data.shape(1); y++)
             {
-                for (int x = 0; x < data.shape(0); x++)
+                for(int x = 0; x < data.shape(0); x++)
                 {
                     f_primal += .5 * (out(x, y) - data(x, y)) * (out(x, y) - data(x, y)) + alpha * hypot(temp1(x, y), temp2(x, y));
                 }
             }
             separableConvolveX(srcImageRange(vx), destImage(temp1), kernel1d(LTx));
             separableConvolveY(srcImageRange(vy), destImage(temp2), kernel1d(LTx));
-            for (int y = 0; y < data.shape(1); y++)
+            for(int y = 0; y < data.shape(1); y++)
             {
-                for (int x = 0; x < data.shape(0); x++)
+                for(int x = 0; x < data.shape(0); x++)
                 {
                     double divv = temp1(x, y) + temp2(x, y);
                     f_dual += -.5 * alpha * alpha * (divv * divv) + alpha * data(x, y) * divv;
                 }
             }
-            if (f_primal > 0 && (f_primal - f_dual) / f_primal < eps)
+            if(f_primal > 0 && (f_primal - f_dual) / f_primal < eps)
             {
                 break;
             }
@@ -224,7 +224,7 @@ doxygen_overloaded_function(template<...> void totalVariationFilter)
     }
 }
 
-template<class stride1, class stride2, class stride3>
+template <class stride1, class stride2, class stride3>
 void totalVariationFilter(MultiArrayView<2, double, stride1> data, MultiArrayView<2, double, stride2> weight, MultiArrayView<2, double, stride3> out, double alpha, int steps, double eps = 0)
 {
 
@@ -244,7 +244,7 @@ void totalVariationFilter(MultiArrayView<2, double, stride1> data, MultiArrayVie
     double tau = 1.0 / std::max(alpha, 1.) / std::sqrt(8.0) * 0.06;
     double sigma = 1.0 / std::sqrt(8.0) / 0.06;
 
-    for (int i = 0; i < steps; i++)
+    for(int i = 0; i < steps; i++)
     {
         separableConvolveX(srcImageRange(u_bar), destImage(temp1), kernel1d(Lx));
         setZeroX(temp1);
@@ -254,12 +254,12 @@ void totalVariationFilter(MultiArrayView<2, double, stride1> data, MultiArrayVie
         vy += (sigma * temp1);
 
         //project to constraint set
-        for (int y = 0; y < data.shape(1); y++)
+        for(int y = 0; y < data.shape(1); y++)
         {
-            for (int x = 0; x < data.shape(0); x++)
+            for(int x = 0; x < data.shape(0); x++)
             {
                 double l = hypot(vx(x, y), vy(x, y));
-                if (l > 1)
+                if(l > 1)
                 {
                     vx(x, y) /= l;
                     vy(x, y) /= l;
@@ -275,7 +275,7 @@ void totalVariationFilter(MultiArrayView<2, double, stride1> data, MultiArrayVie
 
 
         //stopping criterion
-        if (eps > 0)
+        if(eps > 0)
         {
             separableConvolveX(srcImageRange(out), destImage(temp1), kernel1d(Lx));
             setZeroX(temp1);
@@ -283,24 +283,24 @@ void totalVariationFilter(MultiArrayView<2, double, stride1> data, MultiArrayVie
             setZeroY(temp2);
 
             double f_primal = 0, f_dual = 0;
-            for (int y = 0; y < data.shape(1); y++)
+            for(int y = 0; y < data.shape(1); y++)
             {
-                for (int x = 0; x < data.shape(0); x++)
+                for(int x = 0; x < data.shape(0); x++)
                 {
                     f_primal += .5 * weight(x, y) * (out(x, y) - data(x, y)) * (out(x, y) - data(x, y)) + alpha * hypot(temp1(x, y), temp2(x, y));
                 }
             }
             separableConvolveX(srcImageRange(vx), destImage(temp1), kernel1d(LTx));
             separableConvolveY(srcImageRange(vy), destImage(temp2), kernel1d(LTx));
-            for (int y = 0; y < data.shape(1); y++)
+            for(int y = 0; y < data.shape(1); y++)
             {
-                for (int x = 0; x < data.shape(0); x++)
+                for(int x = 0; x < data.shape(0); x++)
                 {
                     double divv = temp1(x, y) + temp2(x, y);
                     f_dual += -.5 * alpha * alpha * (weight(x, y) * divv * divv) + alpha * data(x, y) * divv;
                 }
             }
-            if (f_primal > 0 && (f_primal - f_dual) / f_primal < eps)
+            if(f_primal > 0 && (f_primal - f_dual) / f_primal < eps)
             {
                 break;
             }
@@ -366,9 +366,9 @@ Input:
 
 (see \ref anisotropicTotalVariationFilter() and \ref secondOrderTotalVariationFilter() for usage in an application).
 */
-doxygen_overloaded_function(template<...> void getAnisotropy)
+doxygen_overloaded_function(template <...> void getAnisotropy)
 
-    template<class stride1, class stride2, class stride3, class stride4>
+    template <class stride1, class stride2, class stride3, class stride4>
     void getAnisotropy(MultiArrayView<2, double, stride1> data, MultiArrayView<2, double, stride2> phi,
                        MultiArrayView<2, double, stride3> alpha, MultiArrayView<2, double, stride4> beta,
                        double alpha_par, double beta_par, double sigma_par, double rho_par, double K_par)
@@ -399,9 +399,9 @@ doxygen_overloaded_function(template<...> void getAnisotropy)
 
     MultiArray<2, double> matrix(Shape2(2, 2)), ev(Shape2(2, 2)), ew(Shape2(2, 1));
 
-    for (int y = 0; y < data.shape(1); y++)
+    for(int y = 0; y < data.shape(1); y++)
     {
-        for (int x = 0; x < data.shape(0); x++)
+        for(int x = 0; x < data.shape(0); x++)
         {
 
             matrix(0, 0) = stxx(x, y);
@@ -497,9 +497,9 @@ for (int i=0;i<outer_steps;i++){
 
 [1] Frank Lenzen, Florian Becker, Jan Lellmann, Stefania Petra and Christoph Schn&ouml;rr, A Class of Quasi-Variational Inequalities for Adaptive Image Denoising and Decomposition, Computational Optimization and Applications, Springer, 2012.
 */
-doxygen_overloaded_function(template<...> void anisotropicTotalVariationFilter)
+doxygen_overloaded_function(template <...> void anisotropicTotalVariationFilter)
 
-    template<class stride1, class stride2, class stride3, class stride4, class stride5, class stride6>
+    template <class stride1, class stride2, class stride3, class stride4, class stride5, class stride6>
     void anisotropicTotalVariationFilter(MultiArrayView<2, double, stride1> data, MultiArrayView<2, double, stride2> weight,
                                          MultiArrayView<2, double, stride3> phi, MultiArrayView<2, double, stride4> alpha,
                                          MultiArrayView<2, double, stride5> beta, MultiArrayView<2, double, stride6> out,
@@ -521,9 +521,9 @@ doxygen_overloaded_function(template<...> void anisotropicTotalVariationFilter)
     u_bar = out;
 
     double m = 0;
-    for (int y = 0; y < data.shape(1); y++)
+    for(int y = 0; y < data.shape(1); y++)
     {
-        for (int x = 0; x < data.shape(0); x++)
+        for(int x = 0; x < data.shape(0); x++)
         {
             m = std::max(m, alpha(x, y));
             m = std::max(m, beta(x, y));
@@ -534,7 +534,7 @@ doxygen_overloaded_function(template<...> void anisotropicTotalVariationFilter)
     double sigma = .9 / m / std::sqrt(8.) / 0.06;
 
 
-    for (int i = 0; i < steps; i++)
+    for(int i = 0; i < steps; i++)
     {
         separableConvolveX(srcImageRange(u_bar), destImage(temp1), kernel1d(Lx));
         setZeroX(temp1);
@@ -544,9 +544,9 @@ doxygen_overloaded_function(template<...> void anisotropicTotalVariationFilter)
         vy += (sigma * temp1);
 
         //project to constraint set
-        for (int y = 0; y < data.shape(1); y++)
+        for(int y = 0; y < data.shape(1); y++)
         {
-            for (int x = 0; x < data.shape(0); x++)
+            for(int x = 0; x < data.shape(0); x++)
             {
                 double e1, e2, skp1, skp2;
 
@@ -659,9 +659,9 @@ for (int i=0;i<outer_steps;i++){
 
 [1] Frank Lenzen, Florian Becker, Jan Lellmann, Stefania Petra and Christoph Schn&ouml;rr, A Class of Quasi-Variational Inequalities for Adaptive Image Denoising and Decomposition, Computational Optimization and Applications, Springer, 2012.
 */
-doxygen_overloaded_function(template<...> void secondOrderTotalVariationFilter)
+doxygen_overloaded_function(template <...> void secondOrderTotalVariationFilter)
 
-    template<class stride1, class stride2, class stride3, class stride4, class stride5, class stride6, class stride7, class stride8, class stride9>
+    template <class stride1, class stride2, class stride3, class stride4, class stride5, class stride6, class stride7, class stride8, class stride9>
     void secondOrderTotalVariationFilter(MultiArrayView<2, double, stride1> data,
                                          MultiArrayView<2, double, stride2> weight, MultiArrayView<2, double, stride3> phi,
                                          MultiArrayView<2, double, stride4> alpha, MultiArrayView<2, double, stride5> beta,
@@ -688,9 +688,9 @@ doxygen_overloaded_function(template<...> void secondOrderTotalVariationFilter)
     u_bar = out;
 
     double m = 0;
-    for (int y = 0; y < data.shape(1); y++)
+    for(int y = 0; y < data.shape(1); y++)
     {
-        for (int x = 0; x < data.shape(0); x++)
+        for(int x = 0; x < data.shape(0); x++)
         {
             m = std::max(m, alpha(x, y));
             m = std::max(m, beta(x, y));
@@ -703,7 +703,7 @@ doxygen_overloaded_function(template<...> void secondOrderTotalVariationFilter)
 
     //std::cout<<"tau= "<<tau<<std::endl;
 
-    for (int i = 0; i < steps; i++)
+    for(int i = 0; i < steps; i++)
     {
 
         separableConvolveX(srcImageRange(u_bar), destImage(temp1), kernel1d(Lx));
@@ -730,7 +730,7 @@ doxygen_overloaded_function(template<...> void secondOrderTotalVariationFilter)
 
 
 //update wz
-#if (VIGRA_MIXED_2ND_DERIVATIVES)
+#if(VIGRA_MIXED_2ND_DERIVATIVES)
         separableConvolveY(srcImageRange(u_bar), destImage(temp1), kernel1d(Lx));
         setZeroY(temp1);
         temp1 *= yedges;
@@ -747,9 +747,9 @@ doxygen_overloaded_function(template<...> void secondOrderTotalVariationFilter)
 
 
         //project to constraint sets
-        for (int y = 0; y < data.shape(1); y++)
+        for(int y = 0; y < data.shape(1); y++)
         {
-            for (int x = 0; x < data.shape(0); x++)
+            for(int x = 0; x < data.shape(0); x++)
             {
                 double e1, e2, skp1, skp2;
 
@@ -764,11 +764,11 @@ doxygen_overloaded_function(template<...> void secondOrderTotalVariationFilter)
 
                 //project w
                 double l = sqrt(wx(x, y) * wx(x, y) + wy(x, y) * wy(x, y) + wz(x, y) * wz(x, y));
-                if (l > gamma(x, y))
+                if(l > gamma(x, y))
                 {
                     wx(x, y) = gamma(x, y) * wx(x, y) / l;
                     wy(x, y) = gamma(x, y) * wy(x, y) / l;
-#if (VIGRA_MIXED_2ND_DERIVATIVES)
+#if(VIGRA_MIXED_2ND_DERIVATIVES)
                     wz(x, y) = gamma(x, y) * wz(x, y) / l;
 #endif
                 }
@@ -798,7 +798,7 @@ doxygen_overloaded_function(template<...> void secondOrderTotalVariationFilter)
         out += tau * temp2;
 
 //update wz
-#if (VIGRA_MIXED_2ND_DERIVATIVES)
+#if(VIGRA_MIXED_2ND_DERIVATIVES)
 
         separableConvolveY(srcImageRange(wz), destImage(temp1), kernel1d(Lx));
         setZeroY(temp1);

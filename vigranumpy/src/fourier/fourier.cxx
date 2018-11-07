@@ -49,7 +49,7 @@
 namespace vigra
 {
 
-template<>
+template <>
 struct NumpyArrayValuetypeTraits<FFTWComplex<float>>
 {
     static bool isValuetypeCompatible(PyArrayObject const* obj) /* obj must not be NULL */
@@ -76,7 +76,7 @@ struct NumpyArrayValuetypeTraits<FFTWComplex<float>>
     }
 };
 
-template<class T>
+template <class T>
 NumpyAnyArray
     pythonCreateGaborFilter(typename MultiArrayView<2, T>::difference_type shape,
                             double orientation,
@@ -135,7 +135,7 @@ NumpyAnyArray
 // return res;
 // }
 
-template<unsigned int N, int SIGN>
+template <unsigned int N, int SIGN>
 NumpyAnyArray
 pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float>>> in,
                        NumpyArray<N, Multiband<FFTWComplex<float>>> res)
@@ -149,7 +149,7 @@ pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float>>> in,
         PyAllowThreads _pythread;
         FFTWPlan<N - 1, float> plan(in.bindOuter(0), res.bindOuter(0), SIGN);
 
-        for (MultiArrayIndex k = 0; k < in.shape(N - 1); ++k)
+        for(MultiArrayIndex k = 0; k < in.shape(N - 1); ++k)
         {
             plan.execute(in.bindOuter(k), res.bindOuter(k));
         }
@@ -182,7 +182,7 @@ pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float>>> in,
 // FIXME: implement the correct R2C transform (is already provided in multi_fft.hxx)
 // FIXME: numpy arrays are not allocated with fftw_malloc() - will this cause alignment
 //        problems (sudden crashes)?
-template<unsigned int N>
+template <unsigned int N>
 NumpyAnyArray
 pythonFourierTransformR2C(NumpyArray<N, Multiband<float>> in,
                           NumpyArray<N, Multiband<FFTWComplex<float>>> res)
@@ -197,7 +197,7 @@ pythonFourierTransformR2C(NumpyArray<N, Multiband<float>> in,
         res = in;
         FFTWPlan<N - 1, float> plan(res.bindOuter(0), res.bindOuter(0), FFTW_FORWARD);
 
-        for (MultiArrayIndex k = 0; k < res.shape(N - 1); ++k)
+        for(MultiArrayIndex k = 0; k < res.shape(N - 1); ++k)
         {
             plan.execute(res.bindOuter(k), res.bindOuter(k));
         }

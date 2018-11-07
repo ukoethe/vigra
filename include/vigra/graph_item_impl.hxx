@@ -37,7 +37,7 @@ namespace detail
 
 // filter to iterate over neighbor nodes for
 // for a given node
-template<class GRAPH>
+template <class GRAPH>
 struct NeighborNodeFilter
 {
     typedef typename GRAPH::Node ResultType;
@@ -65,7 +65,7 @@ struct NeighborNodeFilter
     static const bool IsFilter = false;
 };
 
-template<class GRAPH>
+template <class GRAPH>
 struct IncEdgeFilter
 {
     typedef typename GRAPH::Edge ResultType;
@@ -92,7 +92,7 @@ struct IncEdgeFilter
     static const bool IsFilter = false;
 };
 
-template<class GRAPH>
+template <class GRAPH>
 struct BackEdgeFilter
 {
     typedef typename GRAPH::Edge ResultType;
@@ -117,7 +117,7 @@ struct BackEdgeFilter
 
     static const bool IsFilter = true;
 };
-template<class GRAPH>
+template <class GRAPH>
 struct IsBackOutFilter
 {
     typedef typename GRAPH::Arc ResultType;
@@ -140,7 +140,7 @@ struct IsBackOutFilter
 
     static const bool IsFilter = true;
 };
-template<class GRAPH>
+template <class GRAPH>
 struct IsOutFilter
 {
     typedef typename GRAPH::Arc ResultType;
@@ -167,7 +167,7 @@ struct IsOutFilter
 
 
 
-template<class GRAPH>
+template <class GRAPH>
 struct IsInFilter
 {
     typedef typename GRAPH::Arc ResultType;
@@ -192,7 +192,7 @@ struct IsInFilter
     static const bool IsFilter = false;
 };
 
-template<class GRAPH, class NODE_IMPL, class FILTER>
+template <class GRAPH, class NODE_IMPL, class FILTER>
 class GenericIncEdgeIt
     : public ForwardIteratorFacade<
           GenericIncEdgeIt<GRAPH, NODE_IMPL, FILTER>,
@@ -225,9 +225,9 @@ public:
           resultItem_(lemon::INVALID)
     {
 
-        if (FILTER::IsFilter)
+        if(FILTER::IsFilter)
         {
-            while (adjIter_ != nodeImpl_->adjacencyEnd() && !FILTER::valid(*graph_, *adjIter_, ownNodeId_))
+            while(adjIter_ != nodeImpl_->adjacencyEnd() && !FILTER::valid(*graph_, *adjIter_, ownNodeId_))
             {
                 ++adjIter_;
             }
@@ -243,9 +243,9 @@ public:
           resultItem_(lemon::INVALID)
     {
 
-        if (FILTER::IsFilter)
+        if(FILTER::IsFilter)
         {
-            while (adjIter_ != nodeImpl_->adjacencyEnd() && !FILTER::valid(*graph_, *adjIter_, ownNodeId_))
+            while(adjIter_ != nodeImpl_->adjacencyEnd() && !FILTER::valid(*graph_, *adjIter_, ownNodeId_))
             {
                 ++adjIter_;
             }
@@ -268,11 +268,11 @@ private:
     }
     bool equal(const GenericIncEdgeIt<GRAPH, NODE_IMPL, FILTER>& other) const
     {
-        if (isEnd() && other.isEnd())
+        if(isEnd() && other.isEnd())
         {
             return true;
         }
-        else if (isEnd() != other.isEnd())
+        else if(isEnd() != other.isEnd())
         {
             return false;
         }
@@ -285,9 +285,9 @@ private:
     void increment()
     {
         ++adjIter_;
-        if (FILTER::IsFilter)
+        if(FILTER::IsFilter)
         {
-            while (adjIter_ != nodeImpl_->adjacencyEnd() && !FILTER::valid(*graph_, *adjIter_, ownNodeId_))
+            while(adjIter_ != nodeImpl_->adjacencyEnd() && !FILTER::valid(*graph_, *adjIter_, ownNodeId_))
             {
                 ++adjIter_;
             }
@@ -314,7 +314,7 @@ private:
 // of adjacency list
 // End users will not notice this class
 // => implementation detail
-template<class T>
+template <class T>
 class Adjacency
 {
 public:
@@ -356,7 +356,7 @@ private:
 // of adjacency list
 // End users will not notice this class
 // => implementation detail
-template<class INDEX_TYPE, bool USE_STL_SET>
+template <class INDEX_TYPE, bool USE_STL_SET>
 class GenericNodeImpl
 {
 
@@ -409,7 +409,7 @@ public:
     std::pair<index_type, bool> findEdge(const index_type nodeId) const
     {
         AdjIt iter = adjacency_.find(AdjacencyElement(nodeId, 0));
-        if (iter == adjacency_.end())
+        if(iter == adjacency_.end())
         {
             return std::pair<index_type, bool>(-1, false);
         }
@@ -458,7 +458,7 @@ public:
     index_type id_;
 };
 
-template<class INDEX_TYPE>
+template <class INDEX_TYPE>
 class GenericEdgeImpl
     : public vigra::TinyVector<INDEX_TYPE, 3>
 {
@@ -494,10 +494,10 @@ private:
 };
 
 
-template<class INDEX_TYPE>
+template <class INDEX_TYPE>
 class GenericEdge;
 
-template<class INDEX_TYPE>
+template <class INDEX_TYPE>
 class GenericArc
 {
 public:
@@ -556,7 +556,7 @@ private:
     index_type edgeId_;
 };
 
-template<class INDEX_TYPE>
+template <class INDEX_TYPE>
 class GenericEdge
 {
 public:
@@ -613,7 +613,7 @@ private:
 };
 
 
-template<class INDEX_TYPE>
+template <class INDEX_TYPE>
 class GenericNode
 {
 public:
@@ -660,7 +660,7 @@ private:
 namespace std
 {
 
-template<class INDEX_TYPE>
+template <class INDEX_TYPE>
 ostream&
 operator<<(ostream& o, vigra::detail::GenericNode<INDEX_TYPE> const& n)
 {
@@ -668,7 +668,7 @@ operator<<(ostream& o, vigra::detail::GenericNode<INDEX_TYPE> const& n)
     return o;
 }
 
-template<class INDEX_TYPE>
+template <class INDEX_TYPE>
 ostream&
 operator<<(ostream& o, vigra::detail::GenericEdge<INDEX_TYPE> const& e)
 {

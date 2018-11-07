@@ -43,7 +43,7 @@ namespace vigra
 {
 
 
-template<unsigned int DIM, class LABEL_TYPE, class LABEL_TYPE_OUT>
+template <unsigned int DIM, class LABEL_TYPE, class LABEL_TYPE_OUT>
 void
 regionShrinking(
     MultiArrayView<DIM, LABEL_TYPE> labels,
@@ -61,14 +61,14 @@ regionShrinking(
     const Graph g(labels.shape());
 
     // INITAL LOOP
-    for (graph_scanner n(g); n != lemon::INVALID; ++n)
+    for(graph_scanner n(g); n != lemon::INVALID; ++n)
     {
         const Node node(*n);
-        for (neighbor_iterator arc(g, node); arc != lemon::INVALID; ++arc)
+        for(neighbor_iterator arc(g, node); arc != lemon::INVALID; ++arc)
         {
             const Node otherNode = g.target(arc);
 
-            if (labels[node] != labels[otherNode])
+            if(labels[node] != labels[otherNode])
             {
                 shrinkedLabels[node] = 0;
                 shrinkedLabels[otherNode] = 0;
@@ -77,15 +77,15 @@ regionShrinking(
     }
 
     MultiArray<DIM, bool> visited(labels.shape());
-    for (size_t r = 0; r < shrinkNpixels - 1; ++r)
+    for(size_t r = 0; r < shrinkNpixels - 1; ++r)
     {
         std::fill(visited.begin(), visited.end(), false);
-        for (graph_scanner n(g); n != lemon::INVALID; ++n)
+        for(graph_scanner n(g); n != lemon::INVALID; ++n)
         {
             const Node node(*n);
-            if (!visited[n] && shrinkedLabels[node] == 0)
+            if(!visited[n] && shrinkedLabels[node] == 0)
             {
-                for (neighbor_iterator arc(g, node); arc != lemon::INVALID; ++arc)
+                for(neighbor_iterator arc(g, node); arc != lemon::INVALID; ++arc)
                 {
                     const Node otherNode = g.target(arc);
                     shrinkedLabels[otherNode] = 0;

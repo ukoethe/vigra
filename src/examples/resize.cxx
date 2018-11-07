@@ -40,7 +40,7 @@
 #include <vigra/resizeimage.hxx>
 #include <vigra/rgbvalue.hxx>
 
-template<class ImageType>
+template <class ImageType>
 bool
 resizeImageFile(const vigra::ImageImportInfo& info, const vigra::Shape2& newSize,
                 int method, const char* outputFilename)
@@ -54,7 +54,7 @@ resizeImageFile(const vigra::ImageImportInfo& info, const vigra::Shape2& newSize
 
     using vigra::BSpline;
 
-    switch (method)
+    switch(method)
     {
         case 0:
             // equiv. to resizeImageSplineInterpolation with BSpline<0, double>:
@@ -104,7 +104,7 @@ main(int argc, char** argv)
 {
     using namespace vigra;
 
-    if ((argc < 3) || (argc > 5))
+    if((argc < 3) || (argc > 5))
     {
         std::cout << "Usage: " << argv[0] << " infile outfile [factor] [method]" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
@@ -120,7 +120,7 @@ main(int argc, char** argv)
         ImageImportInfo info(argv[1]);
 
         double sizefactor;
-        if (argc > 3)
+        if(argc > 3)
         {
             sizefactor = atof(argv[3]);
         }
@@ -131,7 +131,7 @@ main(int argc, char** argv)
         }
 
         int method;
-        if (argc > 4)
+        if(argc > 4)
         {
             method = atoi(argv[4]);
         }
@@ -144,18 +144,18 @@ main(int argc, char** argv)
         // calculate new image size
         Shape2 newSize((info.shape() - Shape2(1, 1)) * sizefactor + Shape2(1, 1));
 
-        if (info.isGrayscale())
+        if(info.isGrayscale())
         {
-            if (!resizeImageFile<MultiArray<2, UInt8>>(info, newSize, method, argv[2]))
+            if(!resizeImageFile<MultiArray<2, UInt8>>(info, newSize, method, argv[2]))
                 return 1;
         }
         else
         {
-            if (!resizeImageFile<MultiArray<2, RGBValue<UInt8>>>(info, newSize, method, argv[2]))
+            if(!resizeImageFile<MultiArray<2, RGBValue<UInt8>>>(info, newSize, method, argv[2]))
                 return 1;
         }
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         // catch any errors that might have occurred and print their reason
         std::cout << e.what() << std::endl;

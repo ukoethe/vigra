@@ -150,7 +150,7 @@ public:
     {
     }
 
-    template<class T>
+    template <class T>
     ContractViolation& operator<<(T const& data)
     {
         std::ostringstream what;
@@ -165,7 +165,7 @@ public:
         {
             return what_.c_str();
         }
-        catch (...)
+        catch(...)
         {
             return "vigra::ContractViolation: error message was lost, sorry.";
         }
@@ -220,42 +220,42 @@ public:
 inline void
 throw_invariant_error(bool predicate, char const* message, char const* file, int line)
 {
-    if (!predicate)
+    if(!predicate)
         throw vigra::InvariantViolation(message, file, line);
 }
 
 inline void
 throw_invariant_error(bool predicate, std::string message, char const* file, int line)
 {
-    if (!predicate)
+    if(!predicate)
         throw vigra::InvariantViolation(message.c_str(), file, line);
 }
 
 inline void
 throw_precondition_error(bool predicate, char const* message, char const* file, int line)
 {
-    if (!predicate)
+    if(!predicate)
         throw vigra::PreconditionViolation(message, file, line);
 }
 
 inline void
 throw_precondition_error(bool predicate, std::string message, char const* file, int line)
 {
-    if (!predicate)
+    if(!predicate)
         throw vigra::PreconditionViolation(message.c_str(), file, line);
 }
 
 inline void
 throw_postcondition_error(bool predicate, char const* message, char const* file, int line)
 {
-    if (!predicate)
+    if(!predicate)
         throw vigra::PostconditionViolation(message, file, line);
 }
 
 inline void
 throw_postcondition_error(bool predicate, std::string message, char const* file, int line)
 {
-    if (!predicate)
+    if(!predicate)
         throw vigra::PostconditionViolation(message.c_str(), file, line);
 }
 

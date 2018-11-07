@@ -48,8 +48,8 @@ namespace vigra
 namespace detail
 {
 
-template<class SrcIterator, class Shape, class SrcAccessor,
-         class DestIterator, class DestAccessor, class Kernel>
+template <class SrcIterator, class Shape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Kernel>
 void
 internalResizeMultiArrayOneDimension(
     SrcIterator si, Shape const& sshape, SrcAccessor src,
@@ -90,12 +90,12 @@ internalResizeMultiArrayOneDimension(
     typename ArrayVector<TmpType>::iterator t = tmp.begin(), tend = tmp.end();
     typename AccessorTraits<TmpType>::default_accessor ta;
 
-    for (; snav.hasMore(); snav++, dnav++)
+    for(; snav.hasMore(); snav++, dnav++)
     {
         // first copy source to temp for maximum cache efficiency
         copyLine(snav.begin(), snav.end(), src, t, ta);
 
-        for (unsigned int b = 0; b < prefilterCoeffs.size(); ++b)
+        for(unsigned int b = 0; b < prefilterCoeffs.size(); ++b)
         {
             recursiveFilterLine(t, tend, ta, t, ta,
                                 prefilterCoeffs[b], BORDER_TREATMENT_REFLECT);
@@ -227,11 +227,11 @@ internalResizeMultiArrayOneDimension(
     types must be models of \ref LinearSpace.
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void resizeMultiArraySplineInterpolation)
+doxygen_overloaded_function(template <...> void resizeMultiArraySplineInterpolation)
 
-    template<class SrcIterator, class Shape, class SrcAccessor,
-             class DestIterator, class DestAccessor,
-             class Kernel>
+    template <class SrcIterator, class Shape, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class Kernel>
     void resizeMultiArraySplineInterpolation(
         SrcIterator si, Shape const& sshape, SrcAccessor src,
         DestIterator di, Shape const& dshape, DestAccessor dest,
@@ -244,7 +244,7 @@ doxygen_overloaded_function(template<...> void resizeMultiArraySplineInterpolati
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
     typedef typename AccessorTraits<TmpType>::default_accessor TmpAccessor;
 
-    if (N == 1)
+    if(N == 1)
     {
         detail::internalResizeMultiArrayOneDimension(si, sshape, src,
                                                      di, dshape, dest, spline, 0);
@@ -260,7 +260,7 @@ doxygen_overloaded_function(template<...> void resizeMultiArraySplineInterpolati
         detail::internalResizeMultiArrayOneDimension(si, sshape, src,
                                                      tmp.traverser_begin(), tmpShape, ta, spline, d);
         d = 1;
-        for (; d < N - 1; ++d)
+        for(; d < N - 1; ++d)
         {
             tmpShape[d] = dshape[d];
             MultiArray<N, TmpType> dtmp(tmpShape);
@@ -274,8 +274,8 @@ doxygen_overloaded_function(template<...> void resizeMultiArraySplineInterpolati
     }
 }
 
-template<class SrcIterator, class Shape, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class Shape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 resizeMultiArraySplineInterpolation(
     SrcIterator si, Shape const& sshape, SrcAccessor src,
@@ -284,9 +284,9 @@ resizeMultiArraySplineInterpolation(
     resizeMultiArraySplineInterpolation(si, sshape, src, di, dshape, dest, BSpline<3, double>());
 }
 
-template<class SrcIterator, class Shape, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class Kernel>
+template <class SrcIterator, class Shape, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Kernel>
 inline void
 resizeMultiArraySplineInterpolation(triple<SrcIterator, Shape, SrcAccessor> src,
                                     triple<DestIterator, Shape, DestAccessor> dest,
@@ -296,8 +296,8 @@ resizeMultiArraySplineInterpolation(triple<SrcIterator, Shape, SrcAccessor> src,
                                         dest.first, dest.second, dest.third, spline);
 }
 
-template<class SrcIterator, class Shape, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class Shape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 resizeMultiArraySplineInterpolation(triple<SrcIterator, Shape, SrcAccessor> src,
                                     triple<DestIterator, Shape, DestAccessor> dest)
@@ -306,9 +306,9 @@ resizeMultiArraySplineInterpolation(triple<SrcIterator, Shape, SrcAccessor> src,
                                         dest.first, dest.second, dest.third);
 }
 
-template<unsigned int N, class T1, class S1,
-         class T2, class S2,
-         class Kernel>
+template <unsigned int N, class T1, class S1,
+          class T2, class S2,
+          class Kernel>
 inline void
 resizeMultiArraySplineInterpolation(MultiArrayView<N, T1, S1> const& source,
                                     MultiArrayView<N, T2, S2> dest,
@@ -318,8 +318,8 @@ resizeMultiArraySplineInterpolation(MultiArrayView<N, T1, S1> const& source,
                                         destMultiArrayRange(dest), spline);
 }
 
-template<unsigned int N, class T1, class S1,
-         class T2, class S2>
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
 inline void
 resizeMultiArraySplineInterpolation(MultiArrayView<N, T1, S1> const& source,
                                     MultiArrayView<N, T2, S2> dest)

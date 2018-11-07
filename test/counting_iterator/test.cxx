@@ -56,7 +56,7 @@ struct CountingIteratorTest
             shouldEqual(std::distance(iter2, iterEnd), 3);
             shouldEqual(std::distance(iter3, iterEnd), 3);
 
-            for (int i = 0; i < 3; ++i)
+            for(int i = 0; i < 3; ++i)
             {
                 shouldEqual(iter1[i], 3 * i);
                 shouldEqual(iter2[i], 3 * i);
@@ -64,7 +64,7 @@ struct CountingIteratorTest
                 shouldEqual(iterEnd[-i], 9 - 3 * i);
             }
 
-            for (int i = 0; i < 6; ++i)
+            for(int i = 0; i < 6; ++i)
             {
 
                 shouldEqual(std::distance(iter1, iterEnd), 3 - i);
@@ -76,7 +76,7 @@ struct CountingIteratorTest
                 shouldNot(iter1 != iter2);
                 shouldNot(iter1 != iter3);
 
-                if (i != 3)
+                if(i != 3)
                 {
                     should(iter1 != iterEnd);
                     shouldNot(iter1 == iterEnd);
@@ -86,7 +86,7 @@ struct CountingIteratorTest
                     shouldNot(iter1 != iterEnd);
                     should(iter1 == iterEnd);
                 }
-                if (i < 3)
+                if(i < 3)
                 {
                     should(iter1 < iterEnd);
                     shouldNot(iter1 >= iterEnd);
@@ -98,7 +98,7 @@ struct CountingIteratorTest
                     should(iter1 >= iterEnd);
                     should(iter1.empty());
                 }
-                if (i < 4)
+                if(i < 4)
                 {
                     should(iter1 <= iterEnd);
                     shouldNot(iter1 > iterEnd);
@@ -136,14 +136,14 @@ struct CountingIteratorTest
             shouldEqual(std::distance(iter1, iterEnd), 5);
             shouldEqual(std::distance(iter2, iterEnd), 5);
 
-            for (int i = 0; i < 5; ++i)
+            for(int i = 0; i < 5; ++i)
             {
                 shouldEqual(iter1[i], 10 - 2 * i);
                 shouldEqual(iter2[i], 10 - 2 * i);
                 shouldEqual(iterEnd[-i], 2 * i);
             }
 
-            for (int i = 0; i < 5; ++i)
+            for(int i = 0; i < 5; ++i)
             {
 
                 shouldEqual(std::distance(iter1, iterEnd), 5 - i);
@@ -170,13 +170,13 @@ struct CountingIteratorTest
         }
 
         int count = 0;
-        for (auto i : range(0, 19, 2))
+        for(auto i : range(0, 19, 2))
         {
             shouldEqual(i, count);
             count += 2;
         }
         shouldEqual(20, count);
-        for (auto i : range(20, 0, -2))
+        for(auto i : range(20, 0, -2))
         {
             shouldEqual(i, count);
             count -= 2;
@@ -191,7 +191,7 @@ struct CountingIteratorTest
 
         {
             double c = 1.0;
-            for (auto i : range(1.0, 1.6, 0.1)) // 1.6 is excluded
+            for(auto i : range(1.0, 1.6, 0.1)) // 1.6 is excluded
             {
                 shouldEqualTolerance(c, i, 1e-15);
                 c += 0.1;
@@ -199,7 +199,7 @@ struct CountingIteratorTest
             shouldEqualTolerance(c, 1.6, 1e-15);
 
             c = 1.0;
-            for (auto i : range(1.0, 1.61, 0.1)) // 1.6 is included
+            for(auto i : range(1.0, 1.61, 0.1)) // 1.6 is included
             {
                 shouldEqualTolerance(c, i, 1e-15);
                 c += 0.1;
@@ -210,9 +210,9 @@ struct CountingIteratorTest
                  end = iter.end();
             shouldEqual(end - iter, 6);
             c = 1.0;
-            for (int i = 0; i < 9; ++i, ++iter)
+            for(int i = 0; i < 9; ++i, ++iter)
             {
-                if (i != 6)
+                if(i != 6)
                 {
                     should(iter != end);
                     shouldNot(iter == end);
@@ -222,7 +222,7 @@ struct CountingIteratorTest
                     should(iter == end);
                     shouldNot(iter != end);
                 }
-                if (i < 6)
+                if(i < 6)
                 {
                     should(iter < end);
                     shouldNot(iter >= end);
@@ -234,7 +234,7 @@ struct CountingIteratorTest
                     should(iter >= end);
                     should(iter.empty());
                 }
-                if (i < 7)
+                if(i < 7)
                 {
                     should(iter <= end);
                     shouldNot(iter > end);
@@ -252,7 +252,7 @@ struct CountingIteratorTest
             c = 1.6;
             iter = range(1.6, 1.0, -0.1);
             end = iter.end();
-            for (; iter <= end; ++iter)
+            for(; iter <= end; ++iter)
             {
                 shouldEqual(*iter, c);
                 c -= 0.1;

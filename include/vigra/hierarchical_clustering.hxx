@@ -59,7 +59,7 @@ namespace vigra
 namespace cluster_operators
 {
 
-template<
+template <
     class MERGE_GRAPH,
     class EDGE_INDICATOR_MAP,
     class EDGE_SIZE_MAP,
@@ -120,7 +120,7 @@ public:
         mergeGraph_.registerMergeEdgeCallBack(cbMe);
         mergeGraph_.registerEraseEdgeCallBack(cbEe);
 
-        for (EdgeIt e(mergeGraph_); e != lemon::INVALID; ++e)
+        for(EdgeIt e(mergeGraph_); e != lemon::INVALID; ++e)
         {
             const Edge edge = *e;
             const BaseGraphEdge graphEdge = EdgeHelper::itemToGraphItem(mergeGraph_, edge);
@@ -149,7 +149,7 @@ public:
         mergeGraph_.registerEraseEdgeCallBack(cbEe);
 
         pq_.reset();
-        for (EdgeIt e(mergeGraph_); e != lemon::INVALID; ++e)
+        for(EdgeIt e(mergeGraph_); e != lemon::INVALID; ++e)
         {
             const Edge edge = *e;
             const BaseGraphEdge graphEdge = EdgeHelper::itemToGraphItem(mergeGraph_, edge);
@@ -201,7 +201,7 @@ public:
         //std::cout<<"new node "<<mergeGraph_.id(newNode)<<"\n";
 
         // iterate over all edges of this node
-        for (IncEdgeIt e(mergeGraph_, newNode); e != lemon::INVALID; ++e)
+        for(IncEdgeIt e(mergeGraph_, newNode); e != lemon::INVALID; ++e)
         {
             //std::cout<<"get inc edge\n";
             const Edge incEdge(*e);
@@ -225,7 +225,7 @@ public:
     Edge contractionEdge()
     {
         index_type minLabel = pq_.top();
-        while (mergeGraph_.hasEdgeId(minLabel) == false)
+        while(mergeGraph_.hasEdgeId(minLabel) == false)
         {
             eraseEdge(Edge(minLabel));
             minLabel = pq_.top();
@@ -237,7 +237,7 @@ public:
     WeightType contractionWeight()
     {
         index_type minLabel = pq_.top();
-        while (mergeGraph_.hasEdgeId(minLabel) == false)
+        while(mergeGraph_.hasEdgeId(minLabel) == false)
         {
             eraseEdge(Edge(minLabel));
             minLabel = pq_.top();
@@ -256,7 +256,7 @@ public:
     {
 
         index_type minLabel = pq_.top();
-        while (mergeGraph_.hasEdgeId(minLabel) == false)
+        while(mergeGraph_.hasEdgeId(minLabel) == false)
         {
             eraseEdge(Edge(minLabel));
             minLabel = pq_.top();
@@ -325,7 +325,7 @@ private:
 /// it is not guaranteed that they will merge. But a certain prior / multiplier
 /// must be specified. The total weight of an edge where the u/v node have
 /// the same label is multiplied with this very multiplier.
-template<
+template <
     class MERGE_GRAPH,
     class EDGE_INDICATOR_MAP,
     class EDGE_SIZE_MAP,
@@ -410,7 +410,7 @@ public:
 
 
 
-        for (EdgeIt e(mergeGraph); e != lemon::INVALID; ++e)
+        for(EdgeIt e(mergeGraph); e != lemon::INVALID; ++e)
         {
             const Edge edge = *e;
             const BaseGraphEdge graphEdge = EdgeHelper::itemToGraphItem(mergeGraph_, edge);
@@ -428,18 +428,18 @@ public:
         bool done = false;
         const BaseGraphEdge aa = EdgeHelper::itemToGraphItem(mergeGraph_, a);
         const BaseGraphEdge bb = EdgeHelper::itemToGraphItem(mergeGraph_, b);
-        if (!isLifted_.empty())
+        if(!isLifted_.empty())
         {
             const bool isLiftedA = isLifted_[mergeGraph_.graph().id(aa)];
             const bool isLiftedB = isLifted_[mergeGraph_.graph().id(bb)];
-            if (isLiftedA && isLiftedB)
+            if(isLiftedA && isLiftedB)
             {
                 pq_.deleteItem(b.id());
                 done = true;
             }
             isLifted_[mergeGraph_.graph().id(aa)] = isLiftedA && isLiftedB;
         }
-        if (!done)
+        if(!done)
         {
 
             EdgeIndicatorReference va = edgeIndicatorMap_[aa];
@@ -475,7 +475,7 @@ public:
         const UInt32 labelA = nodeLabelMap_[aa];
         const UInt32 labelB = nodeLabelMap_[bb];
 
-        if (labelA != 0 && labelB != 0 && labelA != labelB)
+        if(labelA != 0 && labelB != 0 && labelA != labelB)
         {
             throw std::runtime_error("both nodes have labels");
         }
@@ -501,7 +501,7 @@ public:
 
 
         // iterate over all edges of this node
-        for (IncEdgeIt e(mergeGraph_, newNode); e != lemon::INVALID; ++e)
+        for(IncEdgeIt e(mergeGraph_, newNode); e != lemon::INVALID; ++e)
         {
 
             //std::cout<<"get inc edge\n";
@@ -529,15 +529,15 @@ public:
     Edge contractionEdge()
     {
         index_type minLabel = pq_.top();
-        while (mergeGraph_.hasEdgeId(minLabel) == false)
+        while(mergeGraph_.hasEdgeId(minLabel) == false)
         {
             pq_.deleteItem(minLabel);
             minLabel = pq_.top();
         }
         //std::cout<<"mg e"<<mergeGraph_.edgeNum()<<" mg n"<<mergeGraph_.nodeNum()<<" cw"<< this->contractionWeight()<<"\n";
-        if (!isLifted_.empty())
+        if(!isLifted_.empty())
         {
-            if (isLifted_[minLabel])
+            if(isLifted_[minLabel])
                 throw std::runtime_error("use lifted edges only if you are DerThorsten or know what you are doing\n");
         }
         return Edge(minLabel);
@@ -547,7 +547,7 @@ public:
     WeightType contractionWeight()
     {
         index_type minLabel = pq_.top();
-        while (mergeGraph_.hasEdgeId(minLabel) == false)
+        while(mergeGraph_.hasEdgeId(minLabel) == false)
         {
             pq_.deleteItem(minLabel);
             minLabel = pq_.top();
@@ -565,15 +565,15 @@ public:
     bool done()
     {
         index_type minLabel = pq_.top();
-        while (mergeGraph_.hasEdgeId(minLabel) == false)
+        while(mergeGraph_.hasEdgeId(minLabel) == false)
         {
             pq_.deleteItem(minLabel);
             minLabel = pq_.top();
         }
         const ValueType p = pq_.topPriority();
-        if (useStopWeight_)
+        if(useStopWeight_)
         {
-            if (p >= stopWeight_)
+            if(p >= stopWeight_)
             {
                 return true;
             }
@@ -581,15 +581,15 @@ public:
         return p >= gamma_;
     }
 
-    template<class ITER>
+    template <class ITER>
     void setLiftedEdges(ITER idsBegin, ITER idsEnd)
     {
-        if (isLifted_.size() < std::size_t(mergeGraph_.graph().maxEdgeId() + 1))
+        if(isLifted_.size() < std::size_t(mergeGraph_.graph().maxEdgeId() + 1))
         {
             isLifted_.resize(mergeGraph_.graph().maxEdgeId() + 1, false);
             std::fill(isLifted_.begin(), isLifted_.end(), false);
         }
-        while (idsBegin != idsEnd)
+        while(idsBegin != idsEnd)
         {
             isLifted_[*idsBegin] = true;
 
@@ -610,7 +610,7 @@ private:
     ValueType getEdgeWeight(const Edge& e)
     {
         const BaseGraphEdge ee = EdgeHelper::itemToGraphItem(mergeGraph_, e);
-        if (!isLifted_.empty() && isLifted_[mergeGraph_.graph().id(ee)])
+        if(!isLifted_.empty() && isLifted_[mergeGraph_.graph().id(ee)])
         {
             //std::cout<<"found lifted edge\n";
             return 10000000.0; // std::numeric_limits<ValueType>::infinity();
@@ -635,9 +635,9 @@ private:
         const UInt32 labelA = nodeLabelMap_[uu];
         const UInt32 labelB = nodeLabelMap_[vv];
 
-        if (labelA != 0 && labelB != 0)
+        if(labelA != 0 && labelB != 0)
         {
-            if (labelA == labelB)
+            if(labelA == labelB)
             {
                 totalWeight *= sameLabelMultiplier_;
             }
@@ -783,7 +783,7 @@ public:
 };
 
 // \brief  do hierarchical clustering with a given cluster operator
-template<class CLUSTER_OPERATOR>
+template <class CLUSTER_OPERATOR>
 class HierarchicalClusteringImpl
 {
 public:
@@ -830,14 +830,14 @@ public:
           timeStampIndexToMergeIndex_(),
           mergeTreeEndcoding_()
     {
-        if (param_.buildMergeTreeEncoding_)
+        if(param_.buildMergeTreeEncoding_)
         {
             // this can be be made smater since user can pass
             // stoping condition based on nodeNum
             mergeTreeEndcoding_.reserve(graph_.nodeNum() * 2);
             toTimeStamp_.resize(graph_.maxNodeId() + 1);
             timeStampIndexToMergeIndex_.resize(graph_.maxNodeId() + 1);
-            for (MergeGraphIndexType nodeId = 0; nodeId <= mergeGraph_.maxNodeId(); ++nodeId)
+            for(MergeGraphIndexType nodeId = 0; nodeId <= mergeGraph_.maxNodeId(); ++nodeId)
             {
                 toTimeStamp_[nodeId] = nodeId;
             }
@@ -847,13 +847,13 @@ public:
     /// \brief start the clustering
     void cluster()
     {
-        if (param_.verbose_)
+        if(param_.verbose_)
             std::cout << "\n";
-        while (mergeGraph_.nodeNum() > param_.nodeNumStopCond_ && mergeGraph_.edgeNum() > 0 && !clusterOperator_.done())
+        while(mergeGraph_.nodeNum() > param_.nodeNumStopCond_ && mergeGraph_.edgeNum() > 0 && !clusterOperator_.done())
         {
 
             const Edge edgeToRemove = clusterOperator_.contractionEdge();
-            if (param_.buildMergeTreeEncoding_)
+            if(param_.buildMergeTreeEncoding_)
             {
                 const MergeGraphIndexType uid = mergeGraph_.id(mergeGraph_.u(edgeToRemove));
                 const MergeGraphIndexType vid = mergeGraph_.id(mergeGraph_.v(edgeToRemove));
@@ -873,12 +873,12 @@ public:
                 // do the merge
                 mergeGraph_.contractEdge(edgeToRemove);
             }
-            if (param_.verbose_ && mergeGraph_.nodeNum() % 1 == 0)
+            if(param_.verbose_ && mergeGraph_.nodeNum() % 1 == 0)
             {
                 std::cout << "\rNodes: " << std::setw(10) << mergeGraph_.nodeNum() << std::flush;
             }
         }
-        if (param_.verbose_)
+        if(param_.verbose_)
             std::cout << "\n";
     }
 
@@ -888,12 +888,12 @@ public:
         return mergeTreeEndcoding_;
     }
 
-    template<class EDGE_MAP>
+    template <class EDGE_MAP>
     void ucmTransform(EDGE_MAP& edgeMap) const
     {
         typedef typename Graph::EdgeIt BaseGraphEdgeIt;
 
-        for (BaseGraphEdgeIt iter(graph()); iter != lemon::INVALID; ++iter)
+        for(BaseGraphEdgeIt iter(graph()); iter != lemon::INVALID; ++iter)
         {
             const BaseGraphEdge edge = *iter;
             edgeMap[edge] = edgeMap[mergeGraph().reprGraphEdge(edge)];
@@ -901,10 +901,10 @@ public:
     }
 
     /// \brief get the node id's which are the leafes of a treeNodeId
-    template<class OUT_ITER>
+    template <class OUT_ITER>
     size_t leafNodeIds(const MergeGraphIndexType treeNodeId, OUT_ITER begin) const
     {
-        if (treeNodeId <= graph_.maxNodeId())
+        if(treeNodeId <= graph_.maxNodeId())
         {
             *begin = treeNodeId;
             ++begin;
@@ -916,7 +916,7 @@ public:
             std::queue<MergeGraphIndexType> queue;
             queue.push(treeNodeId);
 
-            while (!queue.empty())
+            while(!queue.empty())
             {
 
                 const MergeGraphIndexType id = queue.front();
@@ -924,9 +924,9 @@ public:
                 const MergeGraphIndexType mergeIndex = timeStampToMergeIndex(id);
                 const MergeGraphIndexType ab[] = {mergeTreeEndcoding_[mergeIndex].a_, mergeTreeEndcoding_[mergeIndex].b_};
 
-                for (size_t i = 0; i < 2; ++i)
+                for(size_t i = 0; i < 2; ++i)
                 {
-                    if (ab[i] <= graph_.maxNodeId())
+                    if(ab[i] <= graph_.maxNodeId())
                     {
                         *begin = ab[i];
                         ++begin;
@@ -1083,12 +1083,12 @@ private:
 
     A fully worked example can be found in <a href="graph_agglomerative_clustering_8cxx-example.html">graph_agglomerative_clustering.cxx</a>
 */
-doxygen_overloaded_function(template<...> void hierarchicalClustering)
+doxygen_overloaded_function(template <...> void hierarchicalClustering)
 
-    template<class GRAPH,
-             class EDGE_WEIGHT_MAP, class EDGE_LENGTH_MAP,
-             class NODE_FEATURE_MAP, class NOSE_SIZE_MAP,
-             class NODE_LABEL_MAP>
+    template <class GRAPH,
+              class EDGE_WEIGHT_MAP, class EDGE_LENGTH_MAP,
+              class NODE_FEATURE_MAP, class NOSE_SIZE_MAP,
+              class NODE_LABEL_MAP>
     void hierarchicalClustering(GRAPH const& graph,
                                 EDGE_WEIGHT_MAP const& edgeWeights, EDGE_LENGTH_MAP const& edgeLengths,
                                 NODE_FEATURE_MAP const& nodeFeatures, NOSE_SIZE_MAP const& nodeSizes,
@@ -1134,7 +1134,7 @@ doxygen_overloaded_function(template<...> void hierarchicalClustering)
     Clustering clustering(mergeOperator, options);
     clustering.cluster();
 
-    for (typename GRAPH::NodeIt node(graph); node != lemon::INVALID; ++node)
+    for(typename GRAPH::NodeIt node(graph); node != lemon::INVALID; ++node)
     {
         labelMap[*node] = mergeGraph.reprNodeId(graph.id(*node));
     }

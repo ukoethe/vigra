@@ -3,7 +3,7 @@
 
 #include "basic_image_test.hxx"
 
-template<class Policy>
+template <class Policy>
 class RGBBasicImageTest
     : public BasicImageTest<Policy>
 {
@@ -39,7 +39,7 @@ public:
 };
 
 
-template<class Policy>
+template <class Policy>
 class RGBBasicImgTestSuite
     : public BasicImageTestSuite<Policy>
 {

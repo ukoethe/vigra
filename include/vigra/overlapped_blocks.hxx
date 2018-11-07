@@ -48,39 +48,39 @@ namespace vigra
 namespace overlapped_blocks_detail
 {
 
-template<class Shape>
+template <class Shape>
 std::pair<Shape, Shape>
 blockBoundsAt(const Shape& coordinates, const Shape& global_shape, const Shape& block_shape)
 {
     Shape block_begin;
-    for (int i = 0; i != Shape::static_size; ++i)
+    for(int i = 0; i != Shape::static_size; ++i)
     {
         block_begin[i] = coordinates[i] * block_shape[i];
         vigra_assert(block_begin[i] < global_shape[i], "block coordinates out of bounds");
     }
     Shape block_end;
-    for (int i = 0; i != Shape::static_size; ++i)
+    for(int i = 0; i != Shape::static_size; ++i)
     {
         block_end[i] = std::min(block_begin[i] + block_shape[i], global_shape[i]);
     }
     return std::make_pair(block_begin, block_end);
 }
 
-template<class Shape>
+template <class Shape>
 std::pair<Shape, Shape>
 overlapBoundsAt(const std::pair<Shape, Shape>& block_bounds, const Shape& global_shape,
                 const Shape& overlap_before, const Shape& overlap_after)
 {
     Shape overlapped_block_begin = block_bounds.first;
     Shape overlapped_block_end = block_bounds.second;
-    for (int i = 0; i != Shape::static_size; ++i)
+    for(int i = 0; i != Shape::static_size; ++i)
     {
-        if (overlapped_block_begin[i] >= overlap_before[i])
+        if(overlapped_block_begin[i] >= overlap_before[i])
             overlapped_block_begin[i] -= overlap_before[i];
         else
             overlapped_block_begin[i] = 0;
 
-        if (overlapped_block_end[i] <= global_shape[i] - overlap_after[i])
+        if(overlapped_block_end[i] <= global_shape[i] - overlap_after[i])
             overlapped_block_end[i] += overlap_after[i];
         else
             overlapped_block_end[i] = global_shape[i];
@@ -88,15 +88,15 @@ overlapBoundsAt(const std::pair<Shape, Shape>& block_bounds, const Shape& global
     return std::make_pair(overlapped_block_begin, overlapped_block_end);
 }
 
-template<class Shape>
+template <class Shape>
 Shape
 blocksShape(const Shape& global_shape, const Shape& block_shape)
 {
     Shape result;
-    for (int i = 0; i != Shape::static_size; ++i)
+    for(int i = 0; i != Shape::static_size; ++i)
     {
         result[i] = global_shape[i] / block_shape[i];
-        if (block_shape[i] * result[i] != global_shape[i])
+        if(block_shape[i] * result[i] != global_shape[i])
             ++result[i];
     }
     return result;
@@ -104,20 +104,20 @@ blocksShape(const Shape& global_shape, const Shape& block_shape)
 
 } // namespace overlapped_blocks_detail
 
-template<class Shape>
+template <class Shape>
 inline bool
 within(const Shape& coordinates, const std::pair<Shape, Shape>& bounds)
 {
     return allLessEqual(bounds.first, coordinates) && allLess(coordinates, bounds.second);
 }
 
-template<class ArrayType>
+template <class ArrayType>
 struct OverlappingBlock;
 
-template<class ArrayType>
+template <class ArrayType>
 class Overlaps;
 
-template<unsigned int N, class T, class S>
+template <unsigned int N, class T, class S>
 struct OverlappingBlock<MultiArrayView<N, T, S>>
 {
     typedef typename MultiArrayView<N, T, S>::difference_type Shape;
@@ -126,7 +126,7 @@ struct OverlappingBlock<MultiArrayView<N, T, S>>
     std::pair<Shape, Shape> inner_bounds;
 };
 
-template<unsigned int N, class T, class S>
+template <unsigned int N, class T, class S>
 class Overlaps<MultiArrayView<N, T, S>>
 {
 private:
@@ -164,7 +164,7 @@ public:
     }
 };
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 struct OverlappingBlock<ChunkedArray<N, T>>
 {
     typedef typename MultiArrayShape<N>::type Shape;
@@ -173,7 +173,7 @@ struct OverlappingBlock<ChunkedArray<N, T>>
     std::pair<Shape, Shape> inner_bounds;
 };
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 class Overlaps<ChunkedArray<N, T>>
 {
 private:

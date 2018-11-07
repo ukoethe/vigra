@@ -73,7 +73,7 @@ namespace vigra
     <b>\#include</b> \<vigra/basicimageview.hxx\> <br/>
     Namespace: vigra
 */
-template<class PIXELTYPE>
+template <class PIXELTYPE>
 class BasicImageView
 {
 public:
@@ -470,7 +470,7 @@ private:
 /*                                                      */
 /********************************************************/
 
-template<class PixelType, class Accessor>
+template <class PixelType, class Accessor>
 inline triple<typename BasicImageView<PixelType>::const_traverser,
               typename BasicImageView<PixelType>::const_traverser, Accessor>
 srcImageRange(BasicImageView<PixelType> const& img, Accessor a)
@@ -482,7 +482,7 @@ srcImageRange(BasicImageView<PixelType> const& img, Accessor a)
                             a);
 }
 
-template<class PixelType, class Accessor>
+template <class PixelType, class Accessor>
 inline triple<typename BasicImageView<PixelType>::const_traverser,
               typename BasicImageView<PixelType>::const_traverser, Accessor>
 srcImageRange(BasicImageView<PixelType> const& img, Rect2D const& roi, Accessor a)
@@ -497,7 +497,7 @@ srcImageRange(BasicImageView<PixelType> const& img, Rect2D const& roi, Accessor 
                             a);
 }
 
-template<class PixelType, class Accessor>
+template <class PixelType, class Accessor>
 inline pair<typename BasicImageView<PixelType>::const_traverser, Accessor>
 srcImage(BasicImageView<PixelType> const& img, Accessor a)
 {
@@ -505,7 +505,7 @@ srcImage(BasicImageView<PixelType> const& img, Accessor a)
                 Accessor>(img.upperLeft(), a);
 }
 
-template<class PixelType, class Accessor>
+template <class PixelType, class Accessor>
 inline pair<typename BasicImageView<PixelType>::const_traverser, Accessor>
 srcImage(BasicImageView<PixelType> const& img, Point2D const& ul, Accessor a)
 {
@@ -515,7 +515,7 @@ srcImage(BasicImageView<PixelType> const& img, Point2D const& ul, Accessor a)
                 Accessor>(img.upperLeft() + ul, a);
 }
 
-template<class PixelType, class Accessor>
+template <class PixelType, class Accessor>
 inline triple<typename BasicImageView<PixelType>::traverser,
               typename BasicImageView<PixelType>::traverser, Accessor>
 destImageRange(BasicImageView<PixelType>& img, Accessor a)
@@ -527,7 +527,7 @@ destImageRange(BasicImageView<PixelType>& img, Accessor a)
                             a);
 }
 
-template<class PixelType, class Accessor>
+template <class PixelType, class Accessor>
 inline triple<typename BasicImageView<PixelType>::traverser,
               typename BasicImageView<PixelType>::traverser, Accessor>
 destImageRange(BasicImageView<PixelType>& img, Rect2D const& roi, Accessor a)
@@ -542,7 +542,7 @@ destImageRange(BasicImageView<PixelType>& img, Rect2D const& roi, Accessor a)
                             a);
 }
 
-template<class PixelType, class Accessor>
+template <class PixelType, class Accessor>
 inline pair<typename BasicImageView<PixelType>::traverser, Accessor>
 destImage(BasicImageView<PixelType>& img, Accessor a)
 {
@@ -550,7 +550,7 @@ destImage(BasicImageView<PixelType>& img, Accessor a)
                 Accessor>(img.upperLeft(), a);
 }
 
-template<class PixelType, class Accessor>
+template <class PixelType, class Accessor>
 inline pair<typename BasicImageView<PixelType>::traverser, Accessor>
 destImage(BasicImageView<PixelType>& img, Point2D const& ul, Accessor a)
 {
@@ -560,7 +560,7 @@ destImage(BasicImageView<PixelType>& img, Point2D const& ul, Accessor a)
                 Accessor>(img.upperLeft() + ul, a);
 }
 
-template<class PixelType, class Accessor>
+template <class PixelType, class Accessor>
 inline pair<typename BasicImageView<PixelType>::const_traverser, Accessor>
 maskImage(BasicImageView<PixelType> const& img, Accessor a)
 {
@@ -568,7 +568,7 @@ maskImage(BasicImageView<PixelType> const& img, Accessor a)
                 Accessor>(img.upperLeft(), a);
 }
 
-template<class PixelType, class Accessor>
+template <class PixelType, class Accessor>
 inline pair<typename BasicImageView<PixelType>::const_traverser, Accessor>
 maskImage(BasicImageView<PixelType> const& img, Point2D const& ul, Accessor a)
 {
@@ -580,7 +580,7 @@ maskImage(BasicImageView<PixelType> const& img, Point2D const& ul, Accessor a)
 
 /****************************************************************/
 
-template<class PixelType>
+template <class PixelType>
 inline triple<typename BasicImageView<PixelType>::const_traverser,
               typename BasicImageView<PixelType>::const_traverser,
               typename BasicImageView<PixelType>::ConstAccessor>
@@ -593,7 +593,7 @@ srcImageRange(BasicImageView<PixelType> const& img)
                                                                      img.accessor());
 }
 
-template<class PixelType>
+template <class PixelType>
 inline triple<typename BasicImageView<PixelType>::const_traverser,
               typename BasicImageView<PixelType>::const_traverser,
               typename BasicImageView<PixelType>::ConstAccessor>
@@ -609,7 +609,7 @@ srcImageRange(BasicImageView<PixelType> const& img, Rect2D const& roi)
                                                                      img.accessor());
 }
 
-template<class PixelType>
+template <class PixelType>
 inline pair<typename BasicImageView<PixelType>::const_traverser,
             typename BasicImageView<PixelType>::ConstAccessor>
 srcImage(BasicImageView<PixelType> const& img)
@@ -619,7 +619,7 @@ srcImage(BasicImageView<PixelType> const& img)
                                                                    img.accessor());
 }
 
-template<class PixelType>
+template <class PixelType>
 inline pair<typename BasicImageView<PixelType>::const_traverser,
             typename BasicImageView<PixelType>::ConstAccessor>
 srcImage(BasicImageView<PixelType> const& img, Point2D const& ul)
@@ -631,7 +631,7 @@ srcImage(BasicImageView<PixelType> const& img, Point2D const& ul)
                                                                    img.accessor());
 }
 
-template<class PixelType>
+template <class PixelType>
 inline triple<typename BasicImageView<PixelType>::traverser,
               typename BasicImageView<PixelType>::traverser,
               typename BasicImageView<PixelType>::Accessor>
@@ -644,7 +644,7 @@ destImageRange(BasicImageView<PixelType>& img)
                                                                 img.accessor());
 }
 
-template<class PixelType>
+template <class PixelType>
 inline triple<typename BasicImageView<PixelType>::traverser,
               typename BasicImageView<PixelType>::traverser,
               typename BasicImageView<PixelType>::Accessor>
@@ -660,7 +660,7 @@ destImageRange(BasicImageView<PixelType>& img, Rect2D const& roi)
                                                                 img.accessor());
 }
 
-template<class PixelType>
+template <class PixelType>
 inline pair<typename BasicImageView<PixelType>::traverser,
             typename BasicImageView<PixelType>::Accessor>
 destImage(BasicImageView<PixelType>& img)
@@ -670,7 +670,7 @@ destImage(BasicImageView<PixelType>& img)
                                                               img.accessor());
 }
 
-template<class PixelType>
+template <class PixelType>
 inline pair<typename BasicImageView<PixelType>::traverser,
             typename BasicImageView<PixelType>::Accessor>
 destImage(BasicImageView<PixelType>& img, Point2D const& ul)
@@ -682,7 +682,7 @@ destImage(BasicImageView<PixelType>& img, Point2D const& ul)
                                                               img.accessor());
 }
 
-template<class PixelType>
+template <class PixelType>
 inline pair<typename BasicImageView<PixelType>::const_traverser,
             typename BasicImageView<PixelType>::ConstAccessor>
 maskImage(BasicImageView<PixelType> const& img)
@@ -692,7 +692,7 @@ maskImage(BasicImageView<PixelType> const& img)
                                                                    img.accessor());
 }
 
-template<class PixelType>
+template <class PixelType>
 inline pair<typename BasicImageView<PixelType>::const_traverser,
             typename BasicImageView<PixelType>::ConstAccessor>
 maskImage(BasicImageView<PixelType> const& img, Point2D const& ul)

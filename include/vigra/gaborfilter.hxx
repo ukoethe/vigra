@@ -134,9 +134,9 @@ namespace vigra
     \endcode
     \deprecatedEnd
 */
-doxygen_overloaded_function(template<...> void createGaborFilter)
+doxygen_overloaded_function(template <...> void createGaborFilter)
 
-    template<class DestImageIterator, class DestAccessor>
+    template <class DestImageIterator, class DestAccessor>
     void createGaborFilter(DestImageIterator destUpperLeft,
                            DestImageIterator destLowerRight, DestAccessor da,
                            double orientation, double centerFrequency,
@@ -158,12 +158,12 @@ doxygen_overloaded_function(template<...> void createGaborFilter)
     int dcX = (w + 1) / 2, dcY = (h + 1) / 2;
 
     double u, v;
-    for (int y = 0; y < h; y++, destUpperLeft.y++)
+    for(int y = 0; y < h; y++, destUpperLeft.y++)
     {
         typename DestImageIterator::row_iterator dix = destUpperLeft.rowIterator();
 
         v = hscale * ((h - (y - dcY)) % h - dcY);
-        for (int x = 0; x < w; x++, dix++)
+        for(int x = 0; x < w; x++, dix++)
         {
             u = wscale * ((x - dcX + w) % w - dcX);
 
@@ -185,18 +185,18 @@ doxygen_overloaded_function(template<...> void createGaborFilter)
 
     // normalize energy to one
     double factor = VIGRA_CSTD::sqrt(squaredSum);
-    for (int y = 0; y < h; y++, destUpperLeft.y++)
+    for(int y = 0; y < h; y++, destUpperLeft.y++)
     {
         typename DestImageIterator::row_iterator dix = destUpperLeft.rowIterator();
 
-        for (int x = 0; x < w; x++, dix++)
+        for(int x = 0; x < w; x++, dix++)
         {
             da.set(da(dix) / factor, dix);
         }
     }
 }
 
-template<class DestImageIterator, class DestAccessor>
+template <class DestImageIterator, class DestAccessor>
 inline void
 createGaborFilter(triple<DestImageIterator, DestImageIterator, DestAccessor> dest,
                   double orientation, double centerFrequency,
@@ -207,7 +207,7 @@ createGaborFilter(triple<DestImageIterator, DestImageIterator, DestAccessor> des
                       angularSigma, radialSigma);
 }
 
-template<class T, class S>
+template <class T, class S>
 inline void
     createGaborFilter(MultiArrayView<2, T, S> dest,
                       double orientation, double centerFrequency,
@@ -313,8 +313,8 @@ angularGaborSigma(int directionCount, double centerFrequency)
     <b>\#include</b> \<vigra/gaborfilter.hxx\><br/>
     Namespace: vigra
 */
-template<class ImageType,
-         class Alloc = typename ImageType::allocator_type::template rebind<ImageType>::other>
+template <class ImageType,
+          class Alloc = typename ImageType::allocator_type::template rebind<ImageType>::other>
 class GaborFilterFamily
     : public ImageArray<ImageType, Alloc>
 {
@@ -325,8 +325,8 @@ class GaborFilterFamily
 protected:
     void initFilters()
     {
-        for (int direction = 0; direction < directionCount_; direction++)
-            for (int scale = 0; scale < scaleCount_; scale++)
+        for(int direction = 0; direction < directionCount_; direction++)
+            for(int scale = 0; scale < scaleCount_; scale++)
             {
                 double angle = direction * M_PI / directionCount();
                 double centerFrequency =

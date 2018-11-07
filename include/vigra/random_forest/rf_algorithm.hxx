@@ -55,9 +55,9 @@ namespace detail
 /** create a MultiArray containing only columns supplied between iterators
         b and e
     */
-template<class OrigMultiArray,
-         class Iter,
-         class DestMultiArray>
+template <class OrigMultiArray,
+          class Iter,
+          class DestMultiArray>
 void
 choose(OrigMultiArray const& in,
        Iter const& b,
@@ -68,7 +68,7 @@ choose(OrigMultiArray const& in,
     int rowCount = in.shape(0);
     out.reshape(MultiArrayShape<2>::type(rowCount, columnCount));
     int ii = 0;
-    for (Iter iter = b; iter != e; ++iter, ++ii)
+    for(Iter iter = b; iter != e; ++iter, ++ii)
     {
         columnVector(out, ii) = columnVector(in, *iter);
     }
@@ -99,7 +99,7 @@ public:
     /** returns the RF OOB error estimate given features and 
      * labels
      */
-    template<class Feature_t, class Response_t>
+    template <class Feature_t, class Response_t>
     double operator()(Feature_t const& features,
                       Response_t const& response)
     {
@@ -153,10 +153,10 @@ public:
      */
     double no_features;
 
-    template<class FeatureT,
-             class ResponseT,
-             class Iter,
-             class ErrorRateCallBack>
+    template <class FeatureT,
+              class ResponseT,
+              class Iter,
+              class ErrorRateCallBack>
     bool init(FeatureT const& all_features,
               ResponseT const& response,
               Iter b,
@@ -164,7 +164,7 @@ public:
               ErrorRateCallBack errorcallback)
     {
         bool ret_ = init(all_features, response, errorcallback);
-        if (!ret_)
+        if(!ret_)
             return false;
         vigra_precondition(std::distance(b, e) == static_cast<std::ptrdiff_t>(selected.size()),
                            "Number of features in ranking != number of features matrix");
@@ -172,9 +172,9 @@ public:
         return true;
     }
 
-    template<class FeatureT,
-             class ResponseT,
-             class Iter>
+    template <class FeatureT,
+              class ResponseT,
+              class Iter>
     bool init(FeatureT const& all_features,
               ResponseT const& response,
               Iter b,
@@ -185,8 +185,8 @@ public:
     }
 
 
-    template<class FeatureT,
-             class ResponseT>
+    template <class FeatureT,
+              class ResponseT>
     bool init(FeatureT const& all_features,
               ResponseT const& response)
     {
@@ -202,21 +202,21 @@ public:
      * returns true if initialization was successful and false if 
      * the object was already initialized before.
      */
-    template<class FeatureT,
-             class ResponseT,
-             class ErrorRateCallBack>
+    template <class FeatureT,
+              class ResponseT,
+              class ErrorRateCallBack>
     bool init(FeatureT const& all_features,
               ResponseT const& response,
               ErrorRateCallBack errorcallback)
     {
-        if (initialized)
+        if(initialized)
         {
             return false;
         }
         initialized = true;
         // calculate error with all features
         selected.resize(all_features.shape(1), 0);
-        for (unsigned int ii = 0; ii < selected.size(); ++ii)
+        for(unsigned int ii = 0; ii < selected.size(); ++ii)
             selected[ii] = ii;
         errors.resize(all_features.shape(1), -1);
         errors.back() = errorcallback(all_features, response);
@@ -226,9 +226,9 @@ public:
         std::map<typename ResponseT::value_type, int> res_map;
         std::vector<int> cts;
         int counter = 0;
-        for (int ii = 0; ii < response.shape(0); ++ii)
+        for(int ii = 0; ii < response.shape(0); ++ii)
         {
-            if (res_map.find(response(ii, 0)) == res_map.end())
+            if(res_map.find(response(ii, 0)) == res_map.end())
             {
                 res_map[response(ii, 0)] = counter;
                 ++counter;
@@ -293,7 +293,7 @@ public:
  * \sa VariableSelectionResult
  *
  */
-template<class FeatureT, class ResponseT, class ErrorRateCallBack>
+template <class FeatureT, class ResponseT, class ErrorRateCallBack>
 void
 forward_selection(FeatureT const& features,
                   ResponseT const& response,
@@ -305,7 +305,7 @@ forward_selection(FeatureT const& features,
     VariableSelectionResult::Pivot_t& pivot = result.pivot;
     int featureCount = features.shape(1);
     // initialize result struct if in use for the first time
-    if (!result.init(features, response, errorcallback))
+    if(!result.init(features, response, errorcallback))
     {
         //result is being reused just ensure that the number of features is
         //the same.
@@ -317,11 +317,11 @@ forward_selection(FeatureT const& features,
 
 
     int not_selected_size = std::distance(pivot, selected.end());
-    while (not_selected_size > 1)
+    while(not_selected_size > 1)
     {
         std::vector<double> current_errors;
         VariableSelectionResult::Pivot_t next = pivot;
-        for (int ii = 0; ii < not_selected_size; ++ii, ++next)
+        for(int ii = 0; ii < not_selected_size; ++ii, ++next)
         {
             std::swap(*pivot, *next);
             MultiArray<2, double> cur_feats;
@@ -348,7 +348,7 @@ forward_selection(FeatureT const& features,
         not_selected_size = std::distance(pivot, selected.end());
     }
 }
-template<class FeatureT, class ResponseT>
+template <class FeatureT, class ResponseT>
 void
 forward_selection(FeatureT const& features,
                   ResponseT const& response,
@@ -397,7 +397,7 @@ forward_selection(FeatureT const& features,
  * \sa VariableSelectionResult
  *
  */
-template<class FeatureT, class ResponseT, class ErrorRateCallBack>
+template <class FeatureT, class ResponseT, class ErrorRateCallBack>
 void
 backward_elimination(FeatureT const& features,
                      ResponseT const& response,
@@ -410,7 +410,7 @@ backward_elimination(FeatureT const& features,
     VariableSelectionResult::Pivot_t& pivot = result.pivot;
 
     // initialize result struct if in use for the first time
-    if (!result.init(features, response, errorcallback))
+    if(!result.init(features, response, errorcallback))
     {
         //result is being reused just ensure that the number of features is
         //the same.
@@ -422,11 +422,11 @@ backward_elimination(FeatureT const& features,
     pivot = selected.end() - 1;
 
     int selected_size = std::distance(selected.begin(), pivot);
-    while (selected_size > 1)
+    while(selected_size > 1)
     {
         VariableSelectionResult::Pivot_t next = selected.begin();
         std::vector<double> current_errors;
-        for (int ii = 0; ii < selected_size; ++ii, ++next)
+        for(int ii = 0; ii < selected_size; ++ii, ++next)
         {
             std::swap(*pivot, *next);
             MultiArray<2, double> cur_feats;
@@ -455,7 +455,7 @@ backward_elimination(FeatureT const& features,
     }
 }
 
-template<class FeatureT, class ResponseT>
+template <class FeatureT, class ResponseT>
 void
 backward_elimination(FeatureT const& features,
                      ResponseT const& response,
@@ -496,7 +496,7 @@ backward_elimination(FeatureT const& features,
  * \sa VariableSelectionResult
  *
  */
-template<class FeatureT, class ResponseT, class ErrorRateCallBack>
+template <class FeatureT, class ResponseT, class ErrorRateCallBack>
 void
 rank_selection(FeatureT const& features,
                ResponseT const& response,
@@ -508,7 +508,7 @@ rank_selection(FeatureT const& features,
     VariableSelectionResult::Pivot_t& iter = result.pivot;
     int featureCount = features.shape(1);
     // initialize result struct if in use for the first time
-    if (!result.init(features, response, errorcallback))
+    if(!result.init(features, response, errorcallback))
     {
         //result is being reused just ensure that the number of features is
         //the same.
@@ -519,7 +519,7 @@ rank_selection(FeatureT const& features,
     }
 
     int ii = 0;
-    for (; iter != selected.end(); ++iter)
+    for(; iter != selected.end(); ++iter)
     {
         ++ii;
         MultiArray<2, double> cur_feats;
@@ -536,7 +536,7 @@ rank_selection(FeatureT const& features,
     }
 }
 
-template<class FeatureT, class ResponseT>
+template <class FeatureT, class ResponseT>
 void
 rank_selection(FeatureT const& features,
                ResponseT const& response,
@@ -576,7 +576,7 @@ public:
     {
         status() = 0;
         BT::column_data()[0] = nCol;
-        if (nCol == 1)
+        if(nCol == 1)
             BT::typeID() = c_Leaf;
         else
             BT::typeID() = c_Node;
@@ -667,19 +667,19 @@ public:
     /** Visit each node with a Functor 
      * in creation order (should be depth first)
      */
-    template<class Functor>
+    template <class Functor>
     void iterate(Functor& tester)
     {
 
         std::vector<int> stack;
         stack.push_back(begin_addr);
-        while (!stack.empty())
+        while(!stack.empty())
         {
             ClusterNode node(topology_, parameters_, stack.back());
             stack.pop_back();
-            if (!tester(node))
+            if(!tester(node))
             {
-                if (node.columns_size() != 1)
+                if(node.columns_size() != 1)
                 {
                     stack.push_back(node.child(0));
                     stack.push_back(node.child(1));
@@ -690,7 +690,7 @@ public:
 
     /** Perform breadth first traversal of hierarchical cluster tree
      */
-    template<class Functor>
+    template <class Functor>
     void breadth_first_traversal(Functor& tester)
     {
 
@@ -700,7 +700,7 @@ public:
         int addr = -1;
         bool infm = false;
         queue.push(HC_Entry(parent, level, begin_addr, infm));
-        while (!queue.empty())
+        while(!queue.empty())
         {
             level = queue.front().level;
             parent = queue.front().parent;
@@ -708,13 +708,13 @@ public:
             infm = queue.front().infm;
             ClusterNode node(topology_, parameters_, queue.front().addr);
             ClusterNode parnt;
-            if (parent != -1)
+            if(parent != -1)
             {
                 parnt = ClusterNode(topology_, parameters_, parent);
             }
             queue.pop();
             bool istrue = tester(node, level, parnt, infm);
-            if (node.columns_size() != 1)
+            if(node.columns_size() != 1)
             {
                 queue.push(HC_Entry(addr, level + 1, node.child(0), istrue));
                 queue.push(HC_Entry(addr, level + 1, node.child(1), istrue));
@@ -743,13 +743,13 @@ public:
     /**Perform single linkage clustering
      * \param distance distance matrix used. \sa CorrelationVisitor
      */
-    template<class T, class C>
+    template <class T, class C>
     void cluster(MultiArrayView<2, T, C> distance)
     {
         MultiArray<2, T> dist(distance);
         std::vector<std::pair<int, int>> addr;
         int index = 0;
-        for (int ii = 0; ii < distance.shape(0); ++ii)
+        for(int ii = 0; ii < distance.shape(0); ++ii)
         {
             addr.push_back(std::make_pair(topology_.size(), ii));
             ClusterNode leaf(1, topology_, parameters_);
@@ -758,20 +758,20 @@ public:
             leaf.columns_begin()[0] = ii;
         }
 
-        while (addr.size() != 1)
+        while(addr.size() != 1)
         {
             //find the two nodes with the smallest distance
             int ii_min = 0;
             int jj_min = 1;
             double min_dist = dist((addr.begin() + ii_min)->second,
                                    (addr.begin() + jj_min)->second);
-            for (unsigned int ii = 0; ii < addr.size(); ++ii)
+            for(unsigned int ii = 0; ii < addr.size(); ++ii)
             {
-                for (unsigned int jj = ii + 1; jj < addr.size(); ++jj)
+                for(unsigned int jj = ii + 1; jj < addr.size(); ++jj)
                 {
-                    if (dist((addr.begin() + ii_min)->second,
-                             (addr.begin() + jj_min)->second) > dist((addr.begin() + ii)->second,
-                                                                     (addr.begin() + jj)->second))
+                    if(dist((addr.begin() + ii_min)->second,
+                            (addr.begin() + jj_min)->second) > dist((addr.begin() + ii)->second,
+                                                                    (addr.begin() + jj)->second))
                     {
                         min_dist = dist((addr.begin() + ii)->second,
                                         (addr.begin() + jj)->second);
@@ -815,7 +815,7 @@ public:
             //merge nodes in addr
             int to_desc;
             int ii_keep;
-            if (*parent.columns_begin() == *firstChild.columns_begin())
+            if(*parent.columns_begin() == *firstChild.columns_begin())
             {
                 parent.child(0) = (addr.begin() + ii_min)->first;
                 parent.child(1) = (addr.begin() + jj_min)->first;
@@ -835,9 +835,9 @@ public:
             }
             //update distances;
 
-            for (int jj = 0; jj < static_cast<int>(addr.size()); ++jj)
+            for(int jj = 0; jj < static_cast<int>(addr.size()); ++jj)
             {
-                if (jj == ii_keep)
+                if(jj == ii_keep)
                     continue;
                 double bla = dist_func(
                     dist(to_desc, (addr.begin() + jj)->second),
@@ -867,7 +867,7 @@ public:
         : n(m)
     {
     }
-    template<class Node>
+    template <class Node>
     bool operator()(Node& node)
     {
         node.status() /= n;
@@ -881,7 +881,7 @@ public:
  * see the basic idea. (Just that we apply the permutation not only to
  * variables but also to clusters))
  */
-template<class Iter, class DT>
+template <class Iter, class DT>
 class PermuteCluster
 {
 public:
@@ -896,7 +896,7 @@ public:
     int index;
     int oob_size;
 
-    template<class Feat_T, class Label_T>
+    template <class Feat_T, class Label_T>
     PermuteCluster(Iter a,
                    Iter b,
                    Feat_T const& feats,
@@ -925,30 +925,30 @@ public:
                     labels_);
     }
 
-    template<class Node>
+    template <class Node>
     bool operator()(Node& node)
     {
         tmp_mem_ = feats_;
         RandomMT19937 random;
         int class_count = perm_imp.shape(1) - 1;
         //permute columns together
-        for (int kk = 0; kk < nPerm; ++kk)
+        for(int kk = 0; kk < nPerm; ++kk)
         {
             tmp_mem_ = feats_;
-            for (int ii = 0; ii < rowCount(feats_); ++ii)
+            for(int ii = 0; ii < rowCount(feats_); ++ii)
             {
                 int index = random.uniformInt(rowCount(feats_) - ii) + ii;
-                for (int jj = 0; jj < node.columns_size(); ++jj)
+                for(int jj = 0; jj < node.columns_size(); ++jj)
                 {
-                    if (node.columns_begin()[jj] != feats_.shape(1))
+                    if(node.columns_begin()[jj] != feats_.shape(1))
                         tmp_mem_(ii, node.columns_begin()[jj]) = tmp_mem_(index, node.columns_begin()[jj]);
                 }
             }
 
-            for (int ii = 0; ii < rowCount(tmp_mem_); ++ii)
+            for(int ii = 0; ii < rowCount(tmp_mem_); ++ii)
             {
-                if (dt
-                        .predictLabel(rowVector(tmp_mem_, ii)) == labels_(ii, 0))
+                if(dt
+                       .predictLabel(rowVector(tmp_mem_, ii)) == labels_(ii, 0))
                 {
                     //per class
                     ++perm_imp(index, labels_(ii, 0));
@@ -991,10 +991,10 @@ public:
     }
 #endif
 
-    template<class Node>
+    template <class Node>
     bool operator()(Node& node)
     {
-        for (int ii = 0; ii < node.columns_size(); ++ii)
+        for(int ii = 0; ii < node.columns_size(); ++ii)
             variables(index, ii) = node.columns_begin()[ii];
         ++index;
         return false;
@@ -1008,10 +1008,10 @@ public:
 class CorrectStatus
 {
 public:
-    template<class Nde>
+    template <class Nde>
     bool operator()(Nde& cur, int /*level*/, Nde parent, bool /*infm*/)
     {
-        if (parent.hasData_)
+        if(parent.hasData_)
             cur.status() = std::min(parent.status(), cur.status());
         return true;
     }
@@ -1029,10 +1029,10 @@ public:
  *      linkage.breadth_first_traversal(draw);
  * \endcode 
  */
-template<class T1,
-         class T2,
-         class C1 = UnstridedArrayTag,
-         class C2 = UnstridedArrayTag>
+template <class T1,
+          class T2,
+          class C1 = UnstridedArrayTag,
+          class C2 = UnstridedArrayTag>
 class Draw
 {
 public:
@@ -1056,19 +1056,19 @@ public:
         graphviz.close();
     }
 
-    template<class Nde>
+    template <class Nde>
     bool operator()(Nde& cur, int /*level*/, Nde parent, bool /*infm*/)
     {
         graphviz << "node" << cur.index() << " [style=\"filled\"][label = \" #Feats: " << cur.columns_size() << "\\n";
         graphviz << " status: " << cur.status() << "\\n";
-        for (int kk = 0; kk < cur.columns_size(); ++kk)
+        for(int kk = 0; kk < cur.columns_size(); ++kk)
         {
             graphviz << cur.columns_begin()[kk] << " ";
-            if (kk % 15 == 14)
+            if(kk % 15 == 14)
                 graphviz << "\\n";
         }
         graphviz << "\"] [color = \"" << cur.status() << " 1.000 1.000\"];\n";
-        if (parent.hasData_)
+        if(parent.hasData_)
             graphviz << "\"node" << parent.index() << "\" -> \"node" << cur.index() << "\";\n";
         return true;
     }
@@ -1115,7 +1115,7 @@ public:
 
     /** Allocate enough memory 
      */
-    template<class RF, class PR>
+    template <class RF, class PR>
     void visit_at_beginning(RF const& rf, PR const& /*pr*/)
     {
         Int32 const class_count = rf.ext_param_.class_count_;
@@ -1140,7 +1140,7 @@ public:
      * 
      * \sa FieldProxy
      */
-    template<class RF, class PR, class SM, class ST>
+    template <class RF, class PR, class SM, class ST>
     void after_tree_ip_impl(RF& rf, PR& pr, SM& sm, ST& /*st*/, int index)
     {
         typedef MultiArrayShape<2>::type Shp_t;
@@ -1156,16 +1156,16 @@ public:
         ArrayVector<Int32>::iterator
             iter;
 
-        if (rf.ext_param_.actual_msample_ < pr.features().shape(0) - 10000)
+        if(rf.ext_param_.actual_msample_ < pr.features().shape(0) - 10000)
         {
             ArrayVector<int> cts(2, 0);
             ArrayVector<Int32> indices(pr.features().shape(0));
-            for (int ii = 0; ii < pr.features().shape(0); ++ii)
+            for(int ii = 0; ii < pr.features().shape(0); ++ii)
                 indices.push_back(ii);
             std::random_shuffle(indices.begin(), indices.end());
-            for (int ii = 0; ii < rf.ext_param_.row_count_; ++ii)
+            for(int ii = 0; ii < rf.ext_param_.row_count_; ++ii)
             {
-                if (!sm.is_used()[indices[ii]] && cts[pr.response()(indices[ii], 0)] < 3000)
+                if(!sm.is_used()[indices[ii]] && cts[pr.response()(indices[ii], 0)] < 3000)
                 {
                     oob_indices.push_back(indices[ii]);
                     ++cts[pr.response()(indices[ii], 0)];
@@ -1174,8 +1174,8 @@ public:
         }
         else
         {
-            for (int ii = 0; ii < rf.ext_param_.row_count_; ++ii)
-                if (!sm.is_used()[ii])
+            for(int ii = 0; ii < rf.ext_param_.row_count_; ++ii)
+                if(!sm.is_used()[ii])
                     oob_indices.push_back(ii);
         }
 
@@ -1189,12 +1189,12 @@ public:
             oob_right(Shp_t(1, class_count + 1));
 
         // get the oob success rate with the original samples
-        for (iter = oob_indices.begin();
-             iter != oob_indices.end();
-             ++iter)
+        for(iter = oob_indices.begin();
+            iter != oob_indices.end();
+            ++iter)
         {
-            if (rf.tree(index)
-                    .predictLabel(rowVector(features, *iter)) == pr.response()(*iter, 0))
+            if(rf.tree(index)
+                   .predictLabel(rowVector(features, *iter)) == pr.response()(*iter, 0))
             {
                 //per class
                 ++oob_right[pr.response()(*iter, 0)];
@@ -1217,7 +1217,7 @@ public:
         clustering.iterate(pc);
 
         perm_oob_right /= repetition_count_;
-        for (int ii = 0; ii < rowCount(perm_oob_right); ++ii)
+        for(int ii = 0; ii < rowCount(perm_oob_right); ++ii)
             rowVector(perm_oob_right, ii) -= oob_right;
 
         perm_oob_right *= -1;
@@ -1230,7 +1230,7 @@ public:
      * If you have very big data sets and want to avoid copying of data 
      * set the in_place_ flag to true. 
      */
-    template<class RF, class PR, class SM, class ST>
+    template <class RF, class PR, class SM, class ST>
     void visit_after_tree(RF& rf, PR& pr, SM& sm, ST& st, int index)
     {
         after_tree_ip_impl(rf, pr, sm, st, index);
@@ -1238,7 +1238,7 @@ public:
 
     /** Normalise variable importance after the number of trees is known.
      */
-    template<class RF, class PR>
+    template <class RF, class PR>
     void visit_at_end(RF& rf, PR& /*pr*/)
     {
         NormalizeStatus nrm(rf.tree_count());
@@ -1278,7 +1278,7 @@ public:
  *
  *
  */
-template<class FeatureT, class ResponseT>
+template <class FeatureT, class ResponseT>
 void
 cluster_permutation_importance(FeatureT const& features,
                                ResponseT const& response,
@@ -1288,7 +1288,7 @@ cluster_permutation_importance(FeatureT const& features,
 
     RandomForestOptions opt;
     opt.tree_count(100);
-    if (features.shape(0) > 40000)
+    if(features.shape(0) > 40000)
         opt.samples_per_tree(20000).use_stratification(RF_EQUAL);
 
 
@@ -1323,7 +1323,7 @@ cluster_permutation_importance(FeatureT const& features,
 }
 
 
-template<class FeatureT, class ResponseT>
+template <class FeatureT, class ResponseT>
 void
 cluster_permutation_importance(FeatureT const& features,
                                ResponseT const& response,
@@ -1334,14 +1334,14 @@ cluster_permutation_importance(FeatureT const& features,
 }
 
 
-template<class Array1, class Vector1>
+template <class Array1, class Vector1>
 void
 get_ranking(Array1 const& in, Vector1& out)
 {
     std::map<double, int> mymap;
-    for (int ii = 0; ii < in.size(); ++ii)
+    for(int ii = 0; ii < in.size(); ++ii)
         mymap[in[ii]] = ii;
-    for (std::map<double, int>::reverse_iterator iter = mymap.rbegin(); iter != mymap.rend(); ++iter)
+    for(std::map<double, int>::reverse_iterator iter = mymap.rbegin(); iter != mymap.rend(); ++iter)
     {
         out.push_back(iter->second);
     }

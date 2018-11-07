@@ -52,7 +52,7 @@ using namespace matlab;
 
 //#define RN_DEBUG
 #define cP3_(a, b, c) cP3<a, b, c>::value
-template<class T>
+template <class T>
 void
 vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
 {
@@ -77,9 +77,9 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
     Methods method = UNION;
     MultiArrayView<3, seedType> seed3D = inputs.getMultiArray<3, seedType>("seeds", v_optional());
     BasicImageView<seedType> seed = makeBasicImageView(seed3D.bindOuter(0));
-    if (seed3D.data() != 0 && !(seed3D.shape() == in3D.shape()))
+    if(seed3D.data() != 0 && !(seed3D.shape() == in3D.shape()))
         mexErrMsgTxt("Seed Array and Input Array Dimension/ Number of Value Mismatch");
-    if (seed3D.data() != 0)
+    if(seed3D.data() != 0)
         method = SEED;
 
 
@@ -104,7 +104,7 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
 
 
     double CostThreshold = inputs.getScalar<double>("CostThreshold", v_default(-1.0));
-    if (CostThreshold >= 0.0)
+    if(CostThreshold >= 0.0)
         SRGcrack = (SRGType)(SRGcrack | StopAtThreshold);
 
     //Allocate space for outputArray.
@@ -119,7 +119,7 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
     **              CODE PART                                                                         **
     ****************************************************************************************************/
     // contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function)
-    switch (cantorPair(method, numOfDim, connectivity))
+    switch(cantorPair(method, numOfDim, connectivity))
     {
         //cP is the templated version o f the cantorPair function first value is Dimension of Inputimage, second the connectivity setting
         //Code is basically the code on the VIGRA-reference page
@@ -199,7 +199,7 @@ void
 vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
     //Add classes as you feel
-    switch (inputs.typeOf(0))
+    switch(inputs.typeOf(0))
     {
         ALLOW_FD;
         ALLOW_UINT;

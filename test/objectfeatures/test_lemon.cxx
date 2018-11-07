@@ -45,11 +45,11 @@
 namespace std
 {
 
-template<unsigned int N, class T, class Stride>
+template <unsigned int N, class T, class Stride>
 ostream&
 operator<<(ostream& o, vigra::MultiArrayView<N, T, Stride> const& m)
 {
-    for (vigra::MultiArrayIndex k = 0; k < m.size(); ++k)
+    for(vigra::MultiArrayIndex k = 0; k < m.size(); ++k)
         o << m[k] << " ";
     return o;
 }
@@ -152,7 +152,7 @@ struct AccumulatorTest
 
         int size = 5;
         MultiArray<3, int> mask(vigra::Shape3(size, size, size), 0);
-        for (int i = 0; i < 9; i++)
+        for(int i = 0; i < 9; i++)
         {
             mask(i / 3 + 1, i % 3 + 1, 1) = 1;
             mask(i / 3 + 1, i % 3 + 1, 3) = 1;

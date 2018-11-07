@@ -98,9 +98,9 @@ namespace vigra
     The image must be larger than the window size of the filter.
 */
 
-doxygen_overloaded_function(template<...> void medianFilter)
+doxygen_overloaded_function(template <...> void medianFilter)
 
-    template<class VALUETYPE>
+    template <class VALUETYPE>
     class MedianFunctor
 {
 public:
@@ -110,7 +110,7 @@ public:
     {
     }
 
-    template<class SrcIterator, class SrcAccessor, class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor, class DestIterator, class DestAccessor>
     void operator()(SrcIterator s, SrcAccessor s_acc, DestIterator d, DestAccessor d_acc)
     {
         SrcIterator s_ul = s - m_window_shape / 2,
@@ -124,9 +124,9 @@ public:
         typename std::vector<VALUETYPE>::iterator iter = m_buffer.begin(),
                                                   median_iter = m_buffer.begin() + m_buffer.size() / 2;
 
-        for (; ys.y != s_lr.y; ys.y++)
+        for(; ys.y != s_lr.y; ys.y++)
         {
-            for (xs = ys; xs.x != s_lr.x; xs.x++, iter++)
+            for(xs = ys; xs.x != s_lr.x; xs.x++, iter++)
             {
                 *iter = s_acc(xs);
             }
@@ -147,8 +147,8 @@ private:
 };
 
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 medianFilter(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
              DestIterator d_ul, DestAccessor d_acc,
@@ -159,8 +159,8 @@ medianFilter(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
     applyWindowFunction(s_ul, s_lr, s_acc, d_ul, d_acc, func, border);
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 medianFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
              pair<DestIterator, DestAccessor> d,
@@ -173,8 +173,8 @@ medianFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                  border);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void medianFilter(MultiArrayView<2, T1, S1> const& src,
                          MultiArrayView<2, T2, S2> dest,
                          Diff2D window_shape,

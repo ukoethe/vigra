@@ -42,11 +42,11 @@ namespace vigra
 #else
 #define VIGRA_DELEGATE_CLASS_NAME VIGRA_DELEGATE_JOIN_MACRO(delegate, VIGRA_DELEGATE_PARAM_COUNT)
 #define VIGRA_DELEGATE_INVOKER_CLASS_NAME VIGRA_DELEGATE_JOIN_MACRO(delegate_invoker, VIGRA_DELEGATE_PARAM_COUNT)
-template<typename R VIGRA_DELEGATE_SEPARATOR VIGRA_DELEGATE_TEMPLATE_PARAMS>
+template <typename R VIGRA_DELEGATE_SEPARATOR VIGRA_DELEGATE_TEMPLATE_PARAMS>
 class VIGRA_DELEGATE_INVOKER_CLASS_NAME;
 #endif
 
-template<typename R VIGRA_DELEGATE_SEPARATOR VIGRA_DELEGATE_TEMPLATE_PARAMS>
+template <typename R VIGRA_DELEGATE_SEPARATOR VIGRA_DELEGATE_TEMPLATE_PARAMS>
 #ifdef VIGRA_DELEGATE_PREFERRED_SYNTAX
 class VIGRA_DELEGATE_CLASS_NAME<R(VIGRA_DELEGATE_TEMPLATE_ARGS)>
 #else
@@ -67,19 +67,19 @@ public:
     {
     }
 
-    template<return_type (*TMethod)(VIGRA_DELEGATE_TEMPLATE_ARGS)>
+    template <return_type (*TMethod)(VIGRA_DELEGATE_TEMPLATE_ARGS)>
     static VIGRA_DELEGATE_CLASS_NAME from_function()
     {
         return from_stub(0, &function_stub<TMethod>);
     }
 
-    template<class T, return_type (T::*TMethod)(VIGRA_DELEGATE_TEMPLATE_ARGS)>
+    template <class T, return_type (T::*TMethod)(VIGRA_DELEGATE_TEMPLATE_ARGS)>
     static VIGRA_DELEGATE_CLASS_NAME from_method(T* object_ptr)
     {
         return from_stub(object_ptr, &method_stub<T, TMethod>);
     }
 
-    template<class T, return_type (T::*TMethod)(VIGRA_DELEGATE_TEMPLATE_ARGS) const>
+    template <class T, return_type (T::*TMethod)(VIGRA_DELEGATE_TEMPLATE_ARGS) const>
     static VIGRA_DELEGATE_CLASS_NAME from_const_method(T const* object_ptr)
     {
         return from_stub(const_cast<T*>(object_ptr), &const_method_stub<T, TMethod>);
@@ -114,20 +114,20 @@ private:
         return d;
     }
 
-    template<return_type (*TMethod)(VIGRA_DELEGATE_TEMPLATE_ARGS)>
+    template <return_type (*TMethod)(VIGRA_DELEGATE_TEMPLATE_ARGS)>
     static return_type VIGRA_DELEGATE_CALLTYPE function_stub(void* VIGRA_DELEGATE_SEPARATOR VIGRA_DELEGATE_PARAMS)
     {
         return (TMethod)(VIGRA_DELEGATE_ARGS);
     }
 
-    template<class T, return_type (T::*TMethod)(VIGRA_DELEGATE_TEMPLATE_ARGS)>
+    template <class T, return_type (T::*TMethod)(VIGRA_DELEGATE_TEMPLATE_ARGS)>
     static return_type VIGRA_DELEGATE_CALLTYPE method_stub(void* object_ptr VIGRA_DELEGATE_SEPARATOR VIGRA_DELEGATE_PARAMS)
     {
         T* p = static_cast<T*>(object_ptr);
         return (p->*TMethod)(VIGRA_DELEGATE_ARGS);
     }
 
-    template<class T, return_type (T::*TMethod)(VIGRA_DELEGATE_TEMPLATE_ARGS) const>
+    template <class T, return_type (T::*TMethod)(VIGRA_DELEGATE_TEMPLATE_ARGS) const>
     static return_type VIGRA_DELEGATE_CALLTYPE const_method_stub(void* object_ptr VIGRA_DELEGATE_SEPARATOR VIGRA_DELEGATE_PARAMS)
     {
         T const* p = static_cast<T*>(object_ptr);
@@ -135,7 +135,7 @@ private:
     }
 };
 
-template<typename R VIGRA_DELEGATE_SEPARATOR VIGRA_DELEGATE_TEMPLATE_PARAMS>
+template <typename R VIGRA_DELEGATE_SEPARATOR VIGRA_DELEGATE_TEMPLATE_PARAMS>
 #ifdef VIGRA_DELEGATE_PREFERRED_SYNTAX
 class VIGRA_DELEGATE_INVOKER_CLASS_NAME<R(VIGRA_DELEGATE_TEMPLATE_ARGS)>
 #else
@@ -153,7 +153,7 @@ public:
     {
     }
 
-    template<class TDelegate>
+    template <class TDelegate>
     R operator()(TDelegate d) const
     {
         return d(VIGRA_DELEGATE_ARGS);

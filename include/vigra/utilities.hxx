@@ -56,7 +56,7 @@ namespace vigra
 /** Convert a value to a string. Available for integral and floating point types
     and void *.
 */
-doxygen_overloaded_function(template<class T> std::string asString(T t))
+doxygen_overloaded_function(template <class T> std::string asString(T t))
 
 #define VIGRA_AS_STRING(T)           \
     inline std::string asString(T t) \
@@ -84,7 +84,7 @@ doxygen_overloaded_function(template<class T> std::string asString(T t))
 
 #undef VIGRA_AS_STRING
 
-                                                                template<class T>
+                                                                template <class T>
                                                                 std::string
                                                                 operator<<(std::string const& s, T const& t)
 {
@@ -98,7 +98,7 @@ doxygen_overloaded_function(template<class T> std::string asString(T t))
 inline std::string
 tolower(std::string s)
 {
-    for (unsigned int k = 0; k < s.size(); ++k)
+    for(unsigned int k = 0; k < s.size(); ++k)
         s[k] = (std::string::value_type)std::tolower(s[k]);
     return s;
 }
@@ -116,9 +116,9 @@ normalizeString(std::string const& s)
 {
     std::string res;
 
-    for (unsigned int k = 0; k < s.size(); ++k)
+    for(unsigned int k = 0; k < s.size(); ++k)
     {
-        if (std::isspace(s[k]))
+        if(std::isspace(s[k]))
             continue;
         res += (std::string::value_type)std::tolower(s[k]);
     }
@@ -134,7 +134,7 @@ normalizeString(const char* s)
 namespace detail
 {
 
-template<class T>
+template <class T>
 struct FinallyImpl
 {
     T& destructor_;
@@ -218,7 +218,7 @@ struct FinallyImpl
 namespace std
 {
 
-template<class T1, class T2>
+template <class T1, class T2>
 ostream&
 operator<<(ostream& s, std::pair<T1, T2> const& p)
 {
@@ -232,7 +232,7 @@ namespace vigra
 {
 namespace detail
 {
-template<typename TPL, size_t N, typename FUNCTOR>
+template <typename TPL, size_t N, typename FUNCTOR>
 struct for_each_in_tuple_impl
 {
     typedef for_each_in_tuple_impl<TPL, N - 1, FUNCTOR> ForEachRecursion;
@@ -244,7 +244,7 @@ struct for_each_in_tuple_impl
     }
 };
 
-template<typename TPL, typename FUNCTOR>
+template <typename TPL, typename FUNCTOR>
 struct for_each_in_tuple_impl<TPL, 0, FUNCTOR>
 {
     void operator()(TPL&&, FUNCTOR&&) const
@@ -289,7 +289,7 @@ struct for_each_in_tuple_impl<TPL, 0, FUNCTOR>
  * }
  * \endcode
  */
-template<typename TPL, typename FUNCTOR>
+template <typename TPL, typename FUNCTOR>
 void
 for_each_in_tuple(TPL&& t, FUNCTOR&& f)
 {

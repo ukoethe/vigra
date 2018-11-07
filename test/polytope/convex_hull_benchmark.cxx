@@ -53,13 +53,13 @@ struct ConvexHullBenchmark
 
     typedef chrono::steady_clock clock_type;
 
-    template<unsigned int N>
+    template <unsigned int N>
     void testTypical()
     {
         std::cout << "# Benchmark for typical case with dim = " << N << ". ";
         std::cout << "All time measures in ms." << std::endl;
         std::cout << "# size, min, mean, max, std" << std::endl;
-        for (int size = 1; size < 10000; size *= 2)
+        for(int size = 1; size < 10000; size *= 2)
         {
             ArrayVector<double> times = constructPolytopeTypical<N>(size, 32);
             AccumulatorChain<
@@ -76,13 +76,13 @@ struct ConvexHullBenchmark
         }
     }
 
-    template<unsigned int N>
+    template <unsigned int N>
     void testWorst()
     {
         std::cout << "# Benchmark for worst case with dim = " << N << ". ";
         std::cout << "All time measures in ms." << std::endl;
         std::cout << "# size, min, mean, max, std" << std::endl;
-        for (int size = 1; size < 10000; size *= 2)
+        for(int size = 1; size < 10000; size *= 2)
         {
             ArrayVector<double> times = constructPolytopeWorst<N>(size, 32);
             AccumulatorChain<
@@ -99,18 +99,18 @@ struct ConvexHullBenchmark
         }
     }
 
-    template<unsigned int N>
+    template <unsigned int N>
     ArrayVector<double> constructPolytopeTypical(int size, int iterations) const
     {
         ArrayVector<double> ret;
-        for (int iteration = 0; iteration < iterations; iteration++)
+        for(int iteration = 0; iteration < iterations; iteration++)
         {
             ret.push_back(constructPolytopeTypical<N>(size));
         }
         return ret;
     }
 
-    template<unsigned int N>
+    template <unsigned int N>
     double constructPolytopeTypical(int size) const
     {
         clock_type::time_point start = clock_type::now();
@@ -118,10 +118,10 @@ struct ConvexHullBenchmark
         ConvexPolytope<N, double> poly;
         TinyVector<double, N> vec;
         poly.addVertex(vec);
-        for (int n = 0; n < N; n++)
+        for(int n = 0; n < N; n++)
         {
             vec[n] = 1.;
-            if (n > 0)
+            if(n > 0)
             {
                 vec[n - 1] = 0.;
             }
@@ -130,33 +130,33 @@ struct ConvexHullBenchmark
         poly.close();
 
         // Add the vertices
-        for (int n = 0; n < size; n++)
+        for(int n = 0; n < size; n++)
         {
             do
             {
-                for (int dim = 0; dim < N; dim++)
+                for(int dim = 0; dim < N; dim++)
                 {
                     vec[dim] = (2 * rand() - 1) / static_cast<double>(RAND_MAX);
                 }
-            } while (vec.magnitude() > 1.);
+            } while(vec.magnitude() > 1.);
             poly.addExtremeVertex(vec);
         }
         clock_type::time_point stop = clock_type::now();
         return chrono::duration_cast<chrono::microseconds>(stop - start).count();
     }
 
-    template<unsigned int N>
+    template <unsigned int N>
     ArrayVector<double> constructPolytopeWorst(int size, int iterations) const
     {
         ArrayVector<double> ret;
-        for (int iteration = 0; iteration < iterations; iteration++)
+        for(int iteration = 0; iteration < iterations; iteration++)
         {
             ret.push_back(constructPolytopeWorst<N>(size));
         }
         return ret;
     }
 
-    template<unsigned int N>
+    template <unsigned int N>
     double constructPolytopeWorst(int size) const
     {
         clock_type::time_point start = clock_type::now();
@@ -164,10 +164,10 @@ struct ConvexHullBenchmark
         ConvexPolytope<N, double> poly;
         TinyVector<double, N> vec;
         poly.addVertex(vec);
-        for (int n = 0; n < N; n++)
+        for(int n = 0; n < N; n++)
         {
             vec[n] = 1.;
-            if (n > 0)
+            if(n > 0)
             {
                 vec[n - 1] = 0.;
             }
@@ -176,9 +176,9 @@ struct ConvexHullBenchmark
         poly.close();
 
         // Add the vertices
-        for (int n = 0; n < size; n++)
+        for(int n = 0; n < size; n++)
         {
-            for (int dim = 0; dim < N; dim++)
+            for(int dim = 0; dim < N; dim++)
             {
                 vec[dim] = (2 * rand() - 1) / static_cast<double>(RAND_MAX);
             }

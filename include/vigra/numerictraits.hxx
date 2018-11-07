@@ -463,32 +463,32 @@ namespace vigra
 {
 namespace detail
 {
-template<typename s, typename t>
+template <typename s, typename t>
 inline static t
 clamp_integer_to_unsigned(s value, t maximum)
 {
     return value <= s() ? t() : (value >= static_cast<s>(maximum) ? maximum : static_cast<t>(value));
 }
 
-template<typename s, typename t>
+template <typename s, typename t>
 inline static t
 clamp_integer_to_signed(s value, t minimum, t maximum)
 {
     return value <= static_cast<s>(minimum) ? minimum : (value >= static_cast<s>(maximum) ? maximum : static_cast<t>(value));
 }
 
-template<typename s, typename t>
+template <typename s, typename t>
 inline static t
 clamp_float_to_unsigned(s value, t maximum)
 {
     return value <= s() ? t() : (value >= static_cast<s>(maximum) ? maximum : static_cast<t>(value + 0.5));
 }
 
-template<typename s, typename t>
+template <typename s, typename t>
 inline static t
 clamp_float_to_signed(s value, t minimum, t maximum)
 {
-    if (value >= s())
+    if(value >= s())
     {
         return value >= static_cast<s>(maximum) ? maximum : static_cast<t>(value + 0.5);
     }
@@ -506,7 +506,7 @@ struct Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsign
 {
 };
 
-template<class A>
+template <class A>
 struct NumericTraits
 {
     typedef Error_NumericTraits_not_specialized_for_this_case Type;
@@ -523,7 +523,7 @@ struct NumericTraits
     typedef Error_NumericTraits_not_specialized_for_this_case isComplex;
 };
 
-template<>
+template <>
 struct NumericTraits<char>
 {
     typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char Type;
@@ -541,7 +541,7 @@ struct NumericTraits<char>
 };
 
 #ifndef NO_BOOL
-template<>
+template <>
 struct NumericTraits<bool>
 {
     typedef bool Type;
@@ -604,7 +604,7 @@ struct NumericTraits<bool>
 };
 #endif
 
-template<>
+template <>
 struct NumericTraits<signed char>
 {
     typedef signed char Type;
@@ -666,7 +666,7 @@ struct NumericTraits<signed char>
     }
 };
 
-template<>
+template <>
 struct NumericTraits<unsigned char>
 {
     typedef unsigned char Type;
@@ -728,7 +728,7 @@ struct NumericTraits<unsigned char>
     }
 };
 
-template<>
+template <>
 struct NumericTraits<short int>
 {
     typedef short int Type;
@@ -790,7 +790,7 @@ struct NumericTraits<short int>
     }
 };
 
-template<>
+template <>
 struct NumericTraits<short unsigned int>
 {
     typedef short unsigned int Type;
@@ -852,7 +852,7 @@ struct NumericTraits<short unsigned int>
     }
 };
 
-template<>
+template <>
 struct NumericTraits<int>
 {
     typedef int Type;
@@ -914,7 +914,7 @@ struct NumericTraits<int>
     }
 };
 
-template<>
+template <>
 struct NumericTraits<unsigned int>
 {
     typedef unsigned int Type;
@@ -976,7 +976,7 @@ struct NumericTraits<unsigned int>
     }
 };
 
-template<>
+template <>
 struct NumericTraits<long>
 {
     typedef long Type;
@@ -1038,7 +1038,7 @@ struct NumericTraits<long>
     }
 };
 
-template<>
+template <>
 struct NumericTraits<unsigned long>
 {
     typedef unsigned long Type;
@@ -1101,7 +1101,7 @@ struct NumericTraits<unsigned long>
 };
 
 #ifdef LLONG_MAX
-template<>
+template <>
 struct NumericTraits<long long>
 {
     typedef long long Type;
@@ -1163,7 +1163,7 @@ struct NumericTraits<long long>
     }
 };
 
-template<>
+template <>
 struct NumericTraits<unsigned long long>
 {
     typedef unsigned long long Type;
@@ -1226,7 +1226,7 @@ struct NumericTraits<unsigned long long>
 };
 #endif // LLONG_MAX
 
-template<>
+template <>
 struct NumericTraits<float>
 {
     typedef float Type;
@@ -1289,7 +1289,7 @@ struct NumericTraits<float>
     }
 };
 
-template<>
+template <>
 struct NumericTraits<double>
 {
     typedef double Type;
@@ -1352,7 +1352,7 @@ struct NumericTraits<double>
     }
 };
 
-template<>
+template <>
 struct NumericTraits<long double>
 {
     typedef long double Type;
@@ -1417,7 +1417,7 @@ struct NumericTraits<long double>
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template<class T>
+template <class T>
 struct NumericTraits<std::complex<T>>
 {
     typedef std::complex<T> Type;
@@ -1476,7 +1476,7 @@ struct NumericTraits<std::complex<T>>
 /*                                                      */
 /********************************************************/
 
-template<class T>
+template <class T>
 struct SquareRootTraits
 {
     typedef T Type;
@@ -1495,7 +1495,7 @@ struct Error_NormTraits_not_specialized_for_this_case
 {
 };
 
-template<class T>
+template <class T>
 struct NormTraits
 {
     typedef T Type;
@@ -1504,7 +1504,7 @@ struct NormTraits
 };
 
 #define VIGRA_DEFINE_NORM_TRAITS(T)                        \
-    template<>                                             \
+    template <>                                            \
     struct NormTraits<T>                                   \
     {                                                      \
         typedef T Type;                                    \
@@ -1534,7 +1534,7 @@ VIGRA_DEFINE_NORM_TRAITS(unsigned long long)
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template<class T>
+template <class T>
 struct NormTraits<std::complex<T>>
 {
     typedef std::complex<T> Type;
@@ -1553,7 +1553,7 @@ struct NormTraits<std::complex<T>>
 namespace detail
 {
 
-template<class T, class U>
+template <class T, class U>
 struct PromoteType
 {
     static T& t();
@@ -1571,7 +1571,7 @@ struct PromoteType
 };
 
 
-template<class T>
+template <class T>
 struct PromoteType<T, T>
 {
     static T& t();
@@ -1589,7 +1589,7 @@ struct Error_PromoteTraits_not_specialized_for_this_case
 {
 };
 
-template<class A, class B>
+template <class A, class B>
 struct PromoteTraits
 {
     typedef Error_PromoteTraits_not_specialized_for_this_case Promote;
@@ -1599,7 +1599,7 @@ struct PromoteTraits
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template<class T>
+template <class T>
 struct PromoteTraits<std::complex<T>, std::complex<T>>
 {
     typedef std::complex<typename PromoteTraits<T, T>::Promote> Promote;
@@ -1609,7 +1609,7 @@ struct PromoteTraits<std::complex<T>, std::complex<T>>
     }
 };
 
-template<class T1, class T2>
+template <class T1, class T2>
 struct PromoteTraits<std::complex<T1>, std::complex<T2>>
 {
     typedef std::complex<typename PromoteTraits<T1, T2>::Promote> Promote;
@@ -1623,7 +1623,7 @@ struct PromoteTraits<std::complex<T1>, std::complex<T2>>
     }
 };
 
-template<class T1, class T2>
+template <class T1, class T2>
 struct PromoteTraits<std::complex<T1>, T2>
 {
     typedef std::complex<typename PromoteTraits<T1, T2>::Promote> Promote;
@@ -1637,7 +1637,7 @@ struct PromoteTraits<std::complex<T1>, T2>
     }
 };
 
-template<class T1, class T2>
+template <class T1, class T2>
 struct PromoteTraits<T1, std::complex<T2>>
 {
     typedef std::complex<typename PromoteTraits<T1, T2>::Promote> Promote;
@@ -1656,10 +1656,10 @@ struct PromoteTraits<T1, std::complex<T2>>
 namespace detail
 {
 
-template<class T>
+template <class T>
 struct RequiresExplicitCast
 {
-    template<class U>
+    template <class U>
     static U const& cast(U const& v)
     {
         return v;
@@ -1668,7 +1668,7 @@ struct RequiresExplicitCast
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1300
 #define VIGRA_SPECIALIZED_CAST(type)                        \
-    template<>                                              \
+    template <>                                             \
     struct RequiresExplicitCast<type>                       \
     {                                                       \
         static type cast(float v)                           \
@@ -1683,7 +1683,7 @@ struct RequiresExplicitCast
         {                                                   \
             return v;                                       \
         }                                                   \
-        template<class U>                                   \
+        template <class U>                                  \
         static type cast(U v)                               \
         {                                                   \
             return static_cast<type>(v);                    \
@@ -1691,7 +1691,7 @@ struct RequiresExplicitCast
     };
 #else
 #define VIGRA_SPECIALIZED_CAST(type)                        \
-    template<>                                              \
+    template <>                                             \
     struct RequiresExplicitCast<type>                       \
     {                                                       \
         static type cast(float v)                           \
@@ -1747,10 +1747,10 @@ VIGRA_SPECIALIZED_CAST(unsigned int)
 VIGRA_SPECIALIZED_CAST(long)
 VIGRA_SPECIALIZED_CAST(unsigned long)
 
-template<>
+template <>
 struct RequiresExplicitCast<bool>
 {
-    template<class U>
+    template <class U>
     static bool cast(U v)
     {
         return v == NumericTraits<U>::zero()
@@ -1759,7 +1759,7 @@ struct RequiresExplicitCast<bool>
     }
 };
 
-template<>
+template <>
 struct RequiresExplicitCast<float>
 {
     static float cast(int v)
@@ -1802,14 +1802,14 @@ struct RequiresExplicitCast<float>
         return (float)v;
     }
 
-    template<class U>
+    template <class U>
     static U cast(U v)
     {
         return v;
     }
 };
 
-template<>
+template <>
 struct RequiresExplicitCast<double>
 {
     static double cast(Int64 v)
@@ -1822,7 +1822,7 @@ struct RequiresExplicitCast<double>
         return (double)v;
     }
 
-    template<class U>
+    template <class U>
     static U cast(U v)
     {
         return v;

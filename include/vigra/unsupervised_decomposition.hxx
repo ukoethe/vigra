@@ -115,7 +115,7 @@ namespace vigra
         double meanSquaredError = squaredNorm(data - model) / numSamples;
         \endcode
    */
-template<class T, class C1, class C2, class C3>
+template <class T, class C1, class C2, class C3>
 void
     principalComponents(MultiArrayView<2, T, C1> const& features,
                         MultiArrayView<2, T, C2> fz,
@@ -138,7 +138,7 @@ void
     Matrix<T> U(numSamples, numFeatures), S(numFeatures, 1), V(numFeatures, numFeatures);
     singularValueDecomposition(features.transpose(), U, S, V);
 
-    for (int k = 0; k < numComponents; ++k)
+    for(int k = 0; k < numComponents; ++k)
     {
         rowVector(zv, k) = columnVector(U, k).transpose() * S(k, 0);
         columnVector(fz, k) = columnVector(V, k);
@@ -286,10 +286,10 @@ public:
         double meanSquaredError = (words - model).squaredNorm() / numDocuments;
         \endcode
    */
-doxygen_overloaded_function(template<...> void pLSA)
+doxygen_overloaded_function(template <...> void pLSA)
 
 
-    template<class U, class C1, class C2, class C3, class Random>
+    template <class U, class C1, class C2, class C3, class Random>
     void pLSA(MultiArrayView<2, U, C1> const& features,
               MultiArrayView<2, U, C2> fz,
               MultiArrayView<2, U, C3> zv,
@@ -327,7 +327,7 @@ doxygen_overloaded_function(template<...> void pLSA)
     features.sum(columnSums);
     Matrix<U> expandedSums = ones<U>(numFeatures, 1) * columnSums;
 
-    while (iteration < options.max_iterations && (lastChange > options.min_rel_gain))
+    while(iteration < options.max_iterations && (lastChange > options.min_rel_gain))
     {
         Matrix<U> fzv = fz * zv;
 
@@ -356,15 +356,15 @@ doxygen_overloaded_function(template<...> void pLSA)
     //std::cout << "Terminated after " << iteration << " iterations." << std::endl;
     //std::cout << "Last relative change was " << lastChange << "." << std::endl;
 
-    if (!options.normalized_component_weights)
+    if(!options.normalized_component_weights)
     {
         // undo the normalization
-        for (int k = 0; k < numSamples; ++k)
+        for(int k = 0; k < numSamples; ++k)
             columnVector(zv, k) *= columnSums(0, k);
     }
 }
 
-template<class U, class C1, class C2, class C3>
+template <class U, class C1, class C2, class C3>
 inline void
     pLSA(MultiArrayView<2, U, C1> const& features,
          MultiArrayView<2, U, C2>& fz,

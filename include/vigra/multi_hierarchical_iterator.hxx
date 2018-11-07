@@ -55,9 +55,9 @@ namespace vigra
 /*                                                      */
 /********************************************************/
 
-template<unsigned int N,
-         class HANDLES,
-         int DIMENSION = N - 1>
+template <unsigned int N,
+          class HANDLES,
+          int DIMENSION = N - 1>
 class HierarchicalIterator
 #ifndef DOXYGEN // doxygen doesn't understand this inheritance
     : public HierarchicalIterator<N, HANDLES, DIMENSION - 1>
@@ -208,14 +208,14 @@ public:
     // return iterator(this->m_ptr, stride_traits::shift(m_stride, d), 0);
     // }
 
-    template<int K>
+    template <int K>
     HierarchicalIterator<N, HANDLES, K>&
     dim()
     {
         return *this;
     }
 
-    template<int K>
+    template <int K>
     HierarchicalIterator<N, HANDLES, K> const&
     dim() const
     {
@@ -225,8 +225,8 @@ public:
 
 /********************************************************/
 
-template<unsigned int N,
-         class HANDLES>
+template <unsigned int N,
+          class HANDLES>
 class HierarchicalIterator<N, HANDLES, 0>
 {
 public:
@@ -350,14 +350,14 @@ public:
         return HandleTraits::dereference(handles_);
     }
 
-    template<unsigned int TARGET_INDEX>
+    template <unsigned int TARGET_INDEX>
     typename CoupledHandleCast<TARGET_INDEX, HANDLES>::reference
     get()
     {
         return handles_.template get<TARGET_INDEX>();
     }
 
-    template<unsigned int TARGET_INDEX>
+    template <unsigned int TARGET_INDEX>
     typename CoupledHandleCast<TARGET_INDEX, HANDLES>::const_reference
     get() const
     {
@@ -437,14 +437,14 @@ public:
         return handles_;
     }
 
-    template<int K>
+    template <int K>
     HierarchicalIterator<N, HANDLES, 0>&
     dim()
     {
         return *this;
     }
 
-    template<int K>
+    template <int K>
     HierarchicalIterator<N, HANDLES, 0> const&
     dim() const
     {
@@ -462,7 +462,7 @@ public:
 
 /** Helper class to easliy get the type of a CoupledScanOrderIterator (and corresponding CoupledHandle) for up to five arrays of dimension N with element types T1,...,T5.
  */
-template<unsigned int N, class T1 = void, class T2 = void, class T3 = void, class T4 = void, class T5 = void>
+template <unsigned int N, class T1 = void, class T2 = void, class T3 = void, class T4 = void, class T5 = void>
 struct HierarchicalIteratorType
 {
     /** Type of the CoupledHandle.*/
@@ -482,7 +482,7 @@ struct HierarchicalIteratorType
 
 /** Returns a HierarchicalIterator from shape to iterate over coordinates. 
  */
-template<int N>
+template <int N>
 typename HierarchicalIteratorType<N>::type
 createHierarchicalIterator(TinyVector<MultiArrayIndex, N> const& shape)
 {
@@ -494,7 +494,7 @@ createHierarchicalIterator(TinyVector<MultiArrayIndex, N> const& shape)
 
 /** Returns a HierarchicalIterator to simultaneously iterate over image m1 and its coordinates. 
  */
-template<unsigned int N1, class T1, class S1>
+template <unsigned int N1, class T1, class S1>
 typename HierarchicalIteratorType<N1, T1>::type
 createHierarchicalIterator(MultiArrayView<N1, T1, S1> const& m1)
 {
@@ -508,8 +508,8 @@ createHierarchicalIterator(MultiArrayView<N1, T1, S1> const& m1)
 
 /** Returns a HierarchicalIterator to simultaneously iterate over images m1, m2 and their coordinates. 
  */
-template<unsigned int N1, class T1, class S1,
-         unsigned int N2, class T2, class S2>
+template <unsigned int N1, class T1, class S1,
+          unsigned int N2, class T2, class S2>
 typename HierarchicalIteratorType<N1, T1, T2>::type
 createHierarchicalIterator(MultiArrayView<N1, T1, S1> const& m1,
                            MultiArrayView<N2, T2, S2> const& m2)
@@ -526,9 +526,9 @@ createHierarchicalIterator(MultiArrayView<N1, T1, S1> const& m1,
 
 /** Returns a HierarchicalIterator to simultaneously iterate over images m1, m2, m3 and their coordinates. 
  */
-template<unsigned int N1, class T1, class S1,
-         unsigned int N2, class T2, class S2,
-         unsigned int N3, class T3, class S3>
+template <unsigned int N1, class T1, class S1,
+          unsigned int N2, class T2, class S2,
+          unsigned int N3, class T3, class S3>
 typename HierarchicalIteratorType<N1, T1, T2, T3>::type
 createHierarchicalIterator(MultiArrayView<N1, T1, S1> const& m1,
                            MultiArrayView<N2, T2, S2> const& m2,
@@ -548,10 +548,10 @@ createHierarchicalIterator(MultiArrayView<N1, T1, S1> const& m1,
 
 /** Returns a HierarchicalIterator to simultaneously iterate over images m1, m2, m3, m4 and their coordinates. 
  */
-template<unsigned int N1, class T1, class S1,
-         unsigned int N2, class T2, class S2,
-         unsigned int N3, class T3, class S3,
-         unsigned int N4, class T4, class S4>
+template <unsigned int N1, class T1, class S1,
+          unsigned int N2, class T2, class S2,
+          unsigned int N3, class T3, class S3,
+          unsigned int N4, class T4, class S4>
 typename HierarchicalIteratorType<N1, T1, T2, T3, T4>::type
 createHierarchicalIterator(MultiArrayView<N1, T1, S1> const& m1,
                            MultiArrayView<N2, T2, S2> const& m2,
@@ -574,11 +574,11 @@ createHierarchicalIterator(MultiArrayView<N1, T1, S1> const& m1,
 
 /** Returns a HierarchicalIterator to simultaneously iterate over images m1, m2, m3, m4, m5 and their coordinates. 
  */
-template<unsigned int N1, class T1, class S1,
-         unsigned int N2, class T2, class S2,
-         unsigned int N3, class T3, class S3,
-         unsigned int N4, class T4, class S4,
-         unsigned int N5, class T5, class S5>
+template <unsigned int N1, class T1, class S1,
+          unsigned int N2, class T2, class S2,
+          unsigned int N3, class T3, class S3,
+          unsigned int N4, class T4, class S4,
+          unsigned int N5, class T5, class S5>
 typename HierarchicalIteratorType<N1, T1, T2, T3, T4, T5>::type
 createHierarchicalIterator(MultiArrayView<N1, T1, S1> const& m1,
                            MultiArrayView<N2, T2, S2> const& m2,
@@ -603,7 +603,7 @@ createHierarchicalIterator(MultiArrayView<N1, T1, S1> const& m1,
 }
 
 
-template<unsigned int N, class A, class B>
+template <unsigned int N, class A, class B>
 HierarchicalIterator<N, typename ZipCoupledHandles<A, B>::type>
 zip(HierarchicalIterator<N, A> const& a, HierarchicalIterator<N, B> const& b)
 {

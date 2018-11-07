@@ -68,14 +68,14 @@ public:
     void_vector_base(size_type size)
         : m_data(0), m_size(size), m_capacity(size)
     {
-        if (m_capacity)
+        if(m_capacity)
             m_data = ::operator new(m_capacity);
     }
 
     void_vector_base(size_type size, size_t capacity)
         : m_data(0), m_size(size), m_capacity(capacity)
     {
-        if (m_capacity)
+        if(m_capacity)
             m_data = ::operator new(m_capacity);
     }
 
@@ -88,13 +88,13 @@ public:
 
     ~void_vector_base()
     {
-        if (m_data)
+        if(m_data)
             ::operator delete(m_data);
     }
 
     this_type& operator=(this_type const& rhs)
     {
-        if (this == &rhs)
+        if(this == &rhs)
             return *this;
         ::operator delete(m_data);
         m_capacity = rhs.m_capacity;
@@ -107,7 +107,7 @@ public:
     void append(this_type const& rhs)
     {
         size_type new_size = m_size + rhs.m_size;
-        if (m_capacity < new_size)
+        if(m_capacity < new_size)
             reserve(m_capacity + rhs.m_capacity);
         VIGRA_CSTD::memcpy(static_cast<unsigned char*>(m_data) + m_size, rhs.m_data, rhs.m_size);
         m_size = new_size;
@@ -120,7 +120,7 @@ public:
 
     void reserve(size_type new_capacity)
     {
-        if (new_capacity <= m_capacity)
+        if(new_capacity <= m_capacity)
             return;
         void* new_data = ::operator new(new_capacity);
         VIGRA_CSTD::memcpy(new_data, m_data, m_size);
@@ -162,7 +162,7 @@ public:
 };
 
 
-template<class T>
+template <class T>
 class void_vector : public void_vector_base
 {
     typedef void_vector<T> this_type;
@@ -221,7 +221,7 @@ public:
 
     void push_back(value_type const& t)
     {
-        if (size() == capacity())
+        if(size() == capacity())
             reserve();
         data()[m_size++] = t;
     }

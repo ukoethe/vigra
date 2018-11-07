@@ -73,7 +73,7 @@ cantorPair(int x, int y, int z)
     return cantorPair(cantorPair(x, y), z);
 }
 
-template<int x, int y>
+template <int x, int y>
 struct cP
 {
     enum
@@ -82,7 +82,7 @@ struct cP
     };
 };
 
-template<int x, int y, int z>
+template <int x, int y, int z>
 struct cP3
 {
     enum
@@ -91,31 +91,31 @@ struct cP3
     };
 };
 
-template<class T>
+template <class T>
 inline bool
 is_in_range(T in, T min, T max)
 {
     return (in >= min && in <= max);
 }
-template<class T>
+template <class T>
 inline bool
 is_in_range(T in, std::string min, T max)
 {
     return (in <= max);
 }
 
-template<class T>
+template <class T>
 inline bool
 is_in_range(T in, T min, std::string max)
 {
     return (in >= min);
 }
 
-template<class T>
+template <class T>
 struct ValueType;
 
 #define VIGRA_MATLAB_VALUETYPE_UTIL(type, functionName, typeID, matTypeName) \
-    template<>                                                               \
+    template <>                                                              \
     struct ValueType<type>                                                   \
     {                                                                        \
         static bool check(mxArray const* t)                                  \
@@ -190,17 +190,17 @@ public:
     ConstStructArray(const mxArray* matPointer = 0)
         : matPointer_(const_cast<mxArray*>(matPointer))
     {
-        if (matPointer != 0 && !mxIsStruct(matPointer))
+        if(matPointer != 0 && !mxIsStruct(matPointer))
             mexErrMsgTxt("StructArray(mxArray *): Argument must be a Matlab struct array.");
     }
 
     Proxy operator[](const char* field_name) const
     {
-        if (matPointer_ == 0)
+        if(matPointer_ == 0)
             mexErrMsgTxt("StructArray::operator[]: Cannot access uninitialized struct array.");
 
         int i = mxGetFieldNumber(matPointer_, field_name);
-        if (i == -1)
+        if(i == -1)
             mexErrMsgTxt("StructArray::operator[]: Unknown field name.");
 
         return Proxy(matPointer_, i);
@@ -255,9 +255,9 @@ public:
         : matPointer_(const_cast<mxArray*>(matPointer)),
           size_(0)
     {
-        if (matPointer != 0 && !mxIsCell(matPointer))
+        if(matPointer != 0 && !mxIsCell(matPointer))
             mexErrMsgTxt("CellArray(mxArray *): Argument must be a Matlab cell array.");
-        if (matPointer != 0)
+        if(matPointer != 0)
             size_ = static_cast<int>(mxGetNumberOfElements(matPointer));
         else
             size_ = -1;
@@ -265,7 +265,7 @@ public:
 
     Proxy operator[](int i) const
     {
-        if (!isValid(i))
+        if(!isValid(i))
             mexErrMsgTxt("CellArray::operator[]: Index out of range.");
         return Proxy(matPointer_, i);
     }
@@ -307,14 +307,14 @@ public:
 
     Proxy operator[](int i)
     {
-        if (!isValid(i))
+        if(!isValid(i))
             mexErrMsgTxt("CellArray::operator[]: Index out of range.");
         return Proxy(matPointer_, i);
     }
 
     ConstCellArray::Proxy operator[](int i) const
     {
-        if (!isValid(i))
+        if(!isValid(i))
             mexErrMsgTxt("CellArray::operator[]: Index out of range.");
         return ConstCellArray::Proxy(matPointer_, i);
     }
@@ -322,17 +322,17 @@ public:
 
 
 
-template<class T, unsigned int SIZE>
+template <class T, unsigned int SIZE>
 TinyVectorView<T, SIZE>
 getTinyVector(mxArray const* t)
 {
-    if (!ValueType<T>::check(t))
+    if(!ValueType<T>::check(t))
     {
         std::string msg = std::string("Input array must have type ") +
                           ValueType<T>::typeName() + ".";
         mexErrMsgTxt(msg.c_str());
     }
-    if (SIZE != mxGetNumberOfElements(t))
+    if(SIZE != mxGetNumberOfElements(t))
     {
         mexErrMsgTxt("getTinyVector(): Input array has wrong number of elements.");
     }
@@ -340,16 +340,16 @@ getTinyVector(mxArray const* t)
     return TinyVectorView<T, SIZE>((T*)mxGetData(t));
 }
 
-template<unsigned int SIZE>
+template <unsigned int SIZE>
 typename MultiArrayShape<SIZE>::type
 getShape(mxArray const* t)
 {
-    if (!ValueType<Int32>::check(t))
+    if(!ValueType<Int32>::check(t))
     {
         std::string msg = std::string("Input array must have type 'int32'.");
         mexErrMsgTxt(msg.c_str());
     }
-    if (SIZE != mxGetNumberOfElements(t))
+    if(SIZE != mxGetNumberOfElements(t))
     {
         mexErrMsgTxt("getShape(): Input array has wrong number of elements.");
     }
@@ -357,13 +357,13 @@ getShape(mxArray const* t)
     return typename MultiArrayShape<SIZE>::type(res);
 }
 
-template<int DIM, class T>
+template <int DIM, class T>
 MultiArrayView<DIM, T>
 getMultiArray(mxArray const* t)
 {
     typedef typename MultiArrayView<DIM, T>::difference_type Shape;
 
-    if (!ValueType<T>::check(t))
+    if(!ValueType<T>::check(t))
     {
         std::string msg = std::string("getMultiArray(): Input array must have type ") +
                           ValueType<T>::typeName() + ".";
@@ -371,19 +371,19 @@ getMultiArray(mxArray const* t)
     }
 
     Shape shape;
-    if (DIM > 1)
+    if(DIM > 1)
     {
         int mdim = mxGetNumberOfDimensions(t);
-        if (DIM < mdim)
+        if(DIM < mdim)
         {
             mexErrMsgTxt("getMultiArray(): Input array has too many dimensions.");
         }
         const mwSize* matlabShape = mxGetDimensions(t);
-        for (int k = 0; k < mdim; ++k)
+        for(int k = 0; k < mdim; ++k)
         {
             shape[k] = static_cast<typename Shape::value_type>(matlabShape[k]);
         }
-        for (int k = mdim; k < DIM; ++k)
+        for(int k = mdim; k < DIM; ++k)
         {
             shape[k] = 1;
         }
@@ -395,65 +395,65 @@ getMultiArray(mxArray const* t)
     return MultiArrayView<DIM, T>(shape, (T*)mxGetData(t));
 }
 
-template<int DIM, class T>
+template <int DIM, class T>
 MultiArrayView<DIM, T>
 createMultiArray(typename MultiArrayShape<DIM>::type const& shape, mxArray*& t)
 {
     mwSize matlabShape[DIM];
-    for (int k = 0; k < DIM; ++k)
+    for(int k = 0; k < DIM; ++k)
         matlabShape[k] = static_cast<mwSize>(shape[k]);
     t = mxCreateNumericArray(DIM, matlabShape, ValueType<T>::classID, mxREAL);
 
     return MultiArrayView<DIM, T>(shape, (T*)mxGetData(t));
 }
 
-template<int DIM, class T>
+template <int DIM, class T>
 MultiArrayView<DIM, T>
 createMultiArray(typename MultiArrayShape<DIM>::type const& shape, CellArray::Proxy t)
 {
     mwSize matlabShape[DIM];
-    for (int k = 0; k < DIM; ++k)
+    for(int k = 0; k < DIM; ++k)
         matlabShape[k] = static_cast<mwSize>(shape[k]);
     t = mxCreateNumericArray(DIM, matlabShape, ValueType<T>::classID, mxREAL);
 
     return MultiArrayView<DIM, T>(shape, (T*)mxGetData(t));
 }
 
-template<class T>
+template <class T>
 inline MultiArrayView<1, T>
 getArray(mxArray const* t)
 {
     return getMultiArray<1, T>(t);
 }
 
-template<class T>
+template <class T>
 inline MultiArrayView<1, T>
 createArray(MultiArrayIndex size, mxArray*& t)
 {
     return createMultiArray<1, T>(MultiArrayShape<1>::type(size), t);
 }
 
-template<class T>
+template <class T>
 inline MultiArrayView<1, T>
 createArray(MultiArrayIndex size, CellArray::Proxy t)
 {
     return createMultiArray<1, T>(MultiArrayShape<1>::type(size), t);
 }
 
-template<class T>
+template <class T>
 MultiArrayView<2, T>
 getMatrix(mxArray const* t)
 {
     typedef typename MultiArrayView<2, T>::difference_type Shape;
 
-    if (!ValueType<T>::check(t))
+    if(!ValueType<T>::check(t))
     {
         std::string msg = std::string("getMatrix(): Input matrix must have type ") +
                           ValueType<T>::typeName() + ".";
         mexErrMsgTxt(msg.c_str());
     }
 
-    if (2 != mxGetNumberOfDimensions(t))
+    if(2 != mxGetNumberOfDimensions(t))
         mexErrMsgTxt("getMatrix(): Input matrix must have 2 dimensions.");
 
     const mwSize* matlabShape = mxGetDimensions(t);
@@ -463,7 +463,7 @@ getMatrix(mxArray const* t)
     return MultiArrayView<2, T>(shape, (T*)mxGetData(t));
 }
 
-template<class T>
+template <class T>
 MultiArrayView<2, T>
 createMatrix(mwSize rowCount, mwSize columnCount, mxArray*& t)
 {
@@ -475,7 +475,7 @@ createMatrix(mwSize rowCount, mwSize columnCount, mxArray*& t)
     return MultiArrayView<2, T>(shape, (T*)mxGetData(t));
 }
 
-template<class T>
+template <class T>
 MultiArrayView<2, T>
 createMatrix(mwSize rowCount, mwSize columnCount, CellArray::Proxy t)
 {
@@ -487,18 +487,18 @@ createMatrix(mwSize rowCount, mwSize columnCount, CellArray::Proxy t)
     return MultiArrayView<2, T>(shape, (T*)mxGetData(t));
 }
 
-template<class T>
+template <class T>
 BasicImageView<T>
 getImage(mxArray const* t)
 {
-    if (!ValueType<T>::check(t))
+    if(!ValueType<T>::check(t))
     {
         std::string msg = std::string("getImage(): Input matrix must have type ") +
                           ValueType<T>::typeName() + ".";
         mexErrMsgTxt(msg.c_str());
     }
 
-    if (2 != mxGetNumberOfDimensions(t))
+    if(2 != mxGetNumberOfDimensions(t))
         mexErrMsgTxt("getImage(): Input matrix must have 2 dimensions.");
 
     const mwSize* matlabShape = mxGetDimensions(t);
@@ -506,7 +506,7 @@ getImage(mxArray const* t)
                              static_cast<int>(matlabShape[1]));
 }
 
-template<class T>
+template <class T>
 BasicImageView<T>
 createImage(mwSize width, mwSize height, mxArray*& t)
 {
@@ -515,7 +515,7 @@ createImage(mwSize width, mwSize height, mxArray*& t)
     return BasicImageView<T>((T*)mxGetData(t), width, height);
 }
 
-template<class T>
+template <class T>
 BasicImageView<T>
 createImage(mwSize width, mwSize height, CellArray::Proxy t)
 {
@@ -554,18 +554,18 @@ getStructArray(mxArray const* t)
     return ConstStructArray(t);
 }
 
-template<class T>
+template <class T>
 T
 getScalar(mxArray const* t)
 {
-    if (mxIsEmpty(t))
+    if(mxIsEmpty(t))
         mexErrMsgTxt("getScalar() on empty input.");
-    if (!mxIsNumeric(t) && !mxIsLogical(t))
+    if(!mxIsNumeric(t) && !mxIsLogical(t))
         mexErrMsgTxt("getScalar(): argument is not numeric.");
     return static_cast<T>(mxGetScalar(t));
 }
 
-template<class T>
+template <class T>
 mxArray*
 createScalar(T v)
 {
@@ -577,9 +577,9 @@ createScalar(T v)
 inline std::string
 getString(mxArray const* t)
 {
-    if (mxIsEmpty(t))
+    if(mxIsEmpty(t))
         mexErrMsgTxt("getString() on empty input.");
-    if (!mxIsChar(t))
+    if(!mxIsChar(t))
         mexErrMsgTxt("getString(): argument is not a string.");
     int size = static_cast<int>(mxGetNumberOfElements(t) + 1);
     ArrayVector<char> buf(size);
@@ -603,7 +603,7 @@ public:
 };
 
 
-template<class T>
+template <class T>
 class DefaultImpl
 {
 public:
@@ -614,13 +614,13 @@ public:
         : defaultValue_(v),
           argumentWasProvided_(argFlag)
     {
-        if (argumentWasProvided_ != 0)
+        if(argumentWasProvided_ != 0)
             *argumentWasProvided_ = false;
     }
 
     void argumentWasProvided() const
     {
-        if (argumentWasProvided_ != 0)
+        if(argumentWasProvided_ != 0)
             *argumentWasProvided_ = true;
     }
 };
@@ -633,13 +633,13 @@ public:
     OptionalImpl(bool* argFlag = 0)
         : argumentWasProvided_(argFlag)
     {
-        if (argumentWasProvided_ != 0)
+        if(argumentWasProvided_ != 0)
             *argumentWasProvided_ = false;
     }
 
     void argumentWasProvided() const
     {
-        if (argumentWasProvided_ != 0)
+        if(argumentWasProvided_ != 0)
             *argumentWasProvided_ = true;
     }
 };
@@ -652,14 +652,14 @@ v_required()
     return detail::Required();
 }
 
-template<class T>
+template <class T>
 inline detail::DefaultImpl<T>
 v_default(T in)
 {
     return detail::DefaultImpl<T>(in);
 }
 
-template<class T>
+template <class T>
 inline detail::DefaultImpl<T>
 v_default(T in, bool& argFlag)
 {
@@ -728,7 +728,7 @@ public:
     /*Operators*/
     const_reference operator[](difference_type i) const
     {
-        if (!isValid(i))
+        if(!isValid(i))
             mexErrMsgTxt("Too few input arguments.");
         return data_[i];
     }
@@ -736,7 +736,7 @@ public:
     value_type operator[](std::string name) const
     {
         std::string errMsg = "Not Found " + name + " in OptionStruct or OptionStruct not set";
-        if (!isValid(name))
+        if(!isValid(name))
             mexErrMsgTxt(errMsg.c_str());
         return options_[name];
     }
@@ -778,26 +778,26 @@ public:
         return isValid(name) && !isEmpty(name);
     }
 
-    template<class Place>
+    template <class Place>
     mxClassID typeOf(Place posOrName)
     {
         return mxGetClassID((*this)[posOrName]);
     }
 
     /*Action to take if value not set*/
-    template<class T, class U, class Place>
+    template <class T, class U, class Place>
     T errorOrDefault(detail::DefaultImpl<U> const& o, Place posOrName)
     {
         return o.defaultValue_;
     }
 
-    template<class T, class Place>
+    template <class T, class Place>
     T errorOrDefault(detail::OptionalImpl, Place posOrName)
     {
         return T();
     }
 
-    template<class T, class Place>
+    template <class T, class Place>
     T errorOrDefault(detail::Required r, Place posOrName)
     {
         std::string a = createErrMsg(posOrName);
@@ -806,16 +806,16 @@ public:
     }
 
     /*getter Func*/
-    template<class Place, class ReqType>
+    template <class Place, class ReqType>
     int getEnum(Place posOrName, ReqType req, std::map<std::string, int> const& converter)
     {
-        if (!hasData(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<int>(req, posOrName);
         }
         std::string enumAsString = matlab::getString((*this)[posOrName]);
         typename std::map<std::string, int>::const_iterator m = converter.find(enumAsString);
-        if (m == converter.end())
+        if(m == converter.end())
         {
             std::string msg = std::string("Unknown option: ") + enumAsString + ".";
             mexErrMsgTxt(msg.c_str());
@@ -827,10 +827,10 @@ public:
 
 
     /*String Type*/
-    template<class Place, class ReqType>
+    template <class Place, class ReqType>
     std::string getString(Place posOrName, ReqType req)
     {
-        if (!hasData(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<std::string>(req, posOrName);
         }
@@ -842,10 +842,10 @@ public:
     }
 
     /*Scalar Type*/
-    template<class T, class Place, class ReqType>
+    template <class T, class Place, class ReqType>
     T getScalar(Place posOrName, ReqType req)
     {
-        if (!hasData(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<T>(req, posOrName);
         }
@@ -857,22 +857,22 @@ public:
     }
 
 
-    template<class T, class Place, class ReqType, class minClass, class maxClass>
+    template <class T, class Place, class ReqType, class minClass, class maxClass>
     T getScalarMinMax(Place posOrName, ReqType req, minClass min_, maxClass max_)
     {
         T temp = this->getScalar<T>(posOrName, req);
-        if (!is_in_range(temp, min_, max_))
+        if(!is_in_range(temp, min_, max_))
             mexErrMsgTxt("Value out of bounds.");
         return temp;
     }
 
-    template<class T, class Place, class ReqType, class iteratorType>
+    template <class T, class Place, class ReqType, class iteratorType>
     T getScalarVals(Place posOrName, ReqType req, iteratorType begin_, iteratorType end_)
     {
         T temp = this->getScalar<T>(posOrName, req);
-        for (iteratorType iter = begin_; iter != end_; ++iter)
+        for(iteratorType iter = begin_; iter != end_; ++iter)
         {
-            if ((*iter) == temp)
+            if((*iter) == temp)
                 return temp;
         }
         mexErrMsgTxt("Value not allowed");
@@ -880,25 +880,25 @@ public:
 
 
 
-    template<class T, class Place, class ReqType, class iteratorType>
+    template <class T, class Place, class ReqType, class iteratorType>
     T getScalarVals2D3D(Place posOrName, ReqType req, iteratorType begin2D_, iteratorType end2D_,
                         iteratorType begin3D_, iteratorType end3D_,
                         int dimVar)
     {
         T temp = this->getScalar<T>(posOrName, req);
-        switch (dimVar)
+        switch(dimVar)
         {
             case 2:
-                for (iteratorType iter = begin2D_; iter != end2D_; ++iter)
+                for(iteratorType iter = begin2D_; iter != end2D_; ++iter)
                 {
-                    if ((*iter) == temp)
+                    if((*iter) == temp)
                         return temp;
                 }
                 break;
             case 3:
-                for (iteratorType iter = begin3D_; iter != end3D_; ++iter)
+                for(iteratorType iter = begin3D_; iter != end3D_; ++iter)
                 {
-                    if ((*iter) == temp)
+                    if((*iter) == temp)
                         return temp;
                 }
                 break;
@@ -908,17 +908,17 @@ public:
         mexErrMsgTxt("Value not allowed");
     }
 
-    template<class Place, class ReqType>
+    template <class Place, class ReqType>
     bool getBool(Place posOrName, ReqType req)
     {
         return this->getScalarMinMax<int>(posOrName, req, 0, 1) != 0;
     }
 
     /*Array Type*/
-    template<unsigned int N, class T, class Place, class ReqType>
+    template <unsigned int N, class T, class Place, class ReqType>
     MultiArrayView<N, T> getMultiArray(Place posOrName, ReqType req)
     {
-        if (!hasData(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<MultiArrayView<N, T>>(req, posOrName);
         }
@@ -930,10 +930,10 @@ public:
         }
     }
 
-    template<class T, class Place, class ReqType>
+    template <class T, class Place, class ReqType>
     BasicImageView<T> getImage(Place posOrName, ReqType req)
     {
-        if (!hasData(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<BasicImageView<T>>(req, posOrName);
         }
@@ -945,10 +945,10 @@ public:
         }
     }
 
-    template<class T, unsigned int sze, class Place, class ReqType>
+    template <class T, unsigned int sze, class Place, class ReqType>
     TinyVectorView<T, sze> getTinyVector(Place posOrName, ReqType req)
     {
-        if (!hasData(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<TinyVectorView<T, sze>>(req, posOrName);
         }
@@ -960,10 +960,10 @@ public:
         }
     }
 
-    template<unsigned int sze, class Place, class ReqType>
+    template <unsigned int sze, class Place, class ReqType>
     TinyVectorView<MultiArrayIndex, sze> getShape(Place posOrName, ReqType req)
     {
-        if (!hasData(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<TinyVectorView<MultiArrayIndex, sze>>(req, posOrName);
         }
@@ -976,10 +976,10 @@ public:
     }
 
 
-    template<class Place, class ReqType>
+    template <class Place, class ReqType>
     int getDimOfInput(Place posOrName, ReqType req)
     {
-        if (!hasData(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<int>(req, posOrName);
         }
@@ -990,10 +990,10 @@ public:
         }
     }
 
-    template<class ReqType>
+    template <class ReqType>
     ConstCellArray getCellArray(int posOrName, ReqType req)
     {
-        if (!hasData(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<ConstCellArray>(req, posOrName);
         }
@@ -1005,7 +1005,7 @@ public:
         }
     }
 
-    template<class ReqType>
+    template <class ReqType>
     ConstCellArray getCellArray(std::string posOrName, ReqType req)
     {
         CompileTimeError ERROR__Const_Cell_Array_May_Not_Be_In_Option_Struct;
@@ -1042,14 +1042,14 @@ public:
 
     reference operator[](difference_type i)
     {
-        if (!isValid(i))
+        if(!isValid(i))
             mexErrMsgTxt("Too few output arguments.");
         return data_[i];
     }
 
     const_reference operator[](difference_type i) const
     {
-        if (!isValid(i))
+        if(!isValid(i))
             mexErrMsgTxt("Too few output arguments.");
         return data_[i];
     }
@@ -1069,13 +1069,13 @@ public:
         return mxIsEmpty(data_[i]);
     }
 
-    template<class T>
+    template <class T>
     T errorOrDefault(detail::OptionalImpl const& o, int Pos)
     {
         return T();
     }
 
-    template<class T>
+    template <class T>
     T errorOrDefault(detail::Required r, int Pos)
     {
         mexErrMsgTxt(createErrMsgOut(Pos).c_str());
@@ -1083,47 +1083,47 @@ public:
     }
 
     /* creating func */
-    template<unsigned int DIM, class T, class ReqType>
+    template <unsigned int DIM, class T, class ReqType>
     MultiArrayView<DIM, T> createMultiArray(int pos, ReqType req,
                                             const TinyVector<int, DIM>& shape)
     {
-        if (!isValid(pos))
+        if(!isValid(pos))
             return errorOrDefault<MultiArrayView<DIM, T>>(req, pos);
         req.argumentWasProvided();
         return matlab::createMultiArray<DIM, T>(shape, (*this)[pos]);
     }
 
-    template<class T, class ReqType>
+    template <class T, class ReqType>
     BasicImageView<T> createImage(int pos, ReqType req,
                                   mwSize width, mwSize height)
     {
-        if (!isValid(pos))
+        if(!isValid(pos))
             return errorOrDefault<BasicImageView<T>>(req, pos);
         req.argumentWasProvided();
         return matlab::createImage<T>(width, height, (*this)[pos]);
     }
 
-    template<class T, class ReqType>
+    template <class T, class ReqType>
     BasicImageView<T> createImage(int pos, ReqType req,
                                   typename MultiArrayShape<2>::type const& shape)
     {
         return createImage<T>(pos, req, shape[1], shape[0]);
     }
 
-    template<class T, class ReqType>
+    template <class T, class ReqType>
     T* createScalar(int pos, ReqType req)
     {
-        if (!isValid(pos))
+        if(!isValid(pos))
             return errorOrDefault<T*>(req, pos);
         req.argumentWasProvided();
         BasicImageView<T> temp = matlab::createImage<T>(1, 1, (*this)[pos]);
         return &temp(0, 0);
     }
 
-    template<class T, class ReqType>
+    template <class T, class ReqType>
     void createScalar(int pos, ReqType req, T val)
     {
-        if (!isValid(pos))
+        if(!isValid(pos))
         {
             errorOrDefault<T>(req, pos);
             return;
@@ -1133,10 +1133,10 @@ public:
         temp(0, 0) = val;
     }
 
-    template<class ReqType>
+    template <class ReqType>
     ConstCellArray createCellArray(int pos, ReqType req, mwSize sze)
     {
-        if (!isValid(pos))
+        if(!isValid(pos))
             return errorOrDefault<ConstCellArray>(req, pos);
         return matlab::createCellArray(sze, (*this)[pos]);
     }
@@ -1157,7 +1157,7 @@ struct ShapeCmp
 {
     bool operator()(TinyVector<int, 2> s1, TinyVector<int, 2> s2) const
     {
-        if (s1[0] != s2[0])
+        if(s1[0] != s2[0])
         {
             return (s1[0] < s2[0]);
         }
@@ -1168,7 +1168,7 @@ struct ShapeCmp
     }
 };
 
-template<class T>
+template <class T>
 class SparseArray
 {
 
@@ -1189,7 +1189,7 @@ public:
 
     //Any better idea? i would like to unify the get and operator() functions.
     // Problem is that  operator() always passes a reference or creates one.
-    template<class indexType>
+    template <class indexType>
     T& operator()(indexType i_, indexType j_)
     {
         Int32 i = static_cast<Int32>(i_);
@@ -1200,13 +1200,13 @@ public:
         return data[newShapew];
     }
 
-    template<class indexType>
+    template <class indexType>
     const T get(indexType i_, indexType j_)
     {
         Int32 i = static_cast<Int32>(i_);
         Int32 j = static_cast<Int32>(j_);
         TinyVector<int, 2> newShape(i, j);
-        if (data.find(newShape) == data.end())
+        if(data.find(newShape) == data.end())
             return 0;
         else
             return data.find(newShape)->second;
@@ -1221,7 +1221,7 @@ public:
         int* jc = mxGetJc(in);
         int* ir = mxGetIr(in);
         double* pr = mxGetPr(in);
-        if (len == 0)
+        if(len == 0)
         {
             jc[0] = 1;
             return;
@@ -1231,12 +1231,12 @@ public:
         int ii = 0;
         int jj = 0;
         int curjc = -1;
-        for (iter = data.begin(); iter != data.end(); ++iter)
+        for(iter = data.begin(); iter != data.end(); ++iter)
         {
             newShape = iter->first;
             ir[ii] = newShape[1];
             pr[ii] = iter->second;
-            if (newShape[0] != curjc)
+            if(newShape[0] != curjc)
             {
                 curjc = newShape[0];
                 jc[jj] = ii;
@@ -1279,7 +1279,7 @@ mexFunction(int nlhs, mxArray* plhs[],
 
         vigraMexFunction(outputs, inputs);
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         mexErrMsgTxt(e.what());
     }

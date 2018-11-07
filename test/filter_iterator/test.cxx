@@ -42,7 +42,7 @@ using namespace vigra;
 
 struct FilterIteratorTests
 {
-    template<typename ITER0, typename ITER1>
+    template <typename ITER0, typename ITER1>
     void test_filter_read_mod2(ITER0 in_begin, ITER0 in_end, ITER1 expected_begin)
     {
         typedef typename std::iterator_traits<ITER0>::value_type value_type;
@@ -50,14 +50,14 @@ struct FilterIteratorTests
         auto filter = [](int x) { return x % 2 == 0; };
         auto begin = make_filter_iterator(filter, in_begin, in_end);
         auto end = make_filter_iterator(filter, in_end, in_end);
-        for (auto it = begin; it != end; ++it)
+        for(auto it = begin; it != end; ++it)
         {
             out.push_back(*it);
         }
         shouldEqualSequence(out.begin(), out.end(), expected_begin);
     }
 
-    template<typename ITER0, typename ITER1>
+    template <typename ITER0, typename ITER1>
     void test_filter_write_mod2(ITER0 in_begin, ITER0 in_end, ITER1 expected_begin)
     {
         typedef typename std::iterator_traits<ITER0>::value_type value_type;
@@ -65,7 +65,7 @@ struct FilterIteratorTests
         auto filter = [](int x) { return x % 2 == 0; };
         auto begin = make_filter_iterator(filter, out.begin(), out.end());
         auto end = make_filter_iterator(filter, out.end(), out.end());
-        for (auto it = begin; it != end; ++it)
+        for(auto it = begin; it != end; ++it)
         {
             *it += 100;
         }

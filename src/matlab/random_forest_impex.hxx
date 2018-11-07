@@ -47,7 +47,7 @@ namespace vigra
 namespace matlab
 {
 
-template<class T>
+template <class T>
 void
 importRandomForest(vigra::RandomForest<T>& rf, ConstCellArray cells)
 {
@@ -61,7 +61,7 @@ importRandomForest(vigra::RandomForest<T>& rf, ConstCellArray cells)
 
     rf.trees_.resize(rf.options_.tree_count_, rf.ext_param_);
     // for all decision trees
-    for (UInt32 k = 0; k < rf.options_.tree_count_; ++k)
+    for(UInt32 k = 0; k < rf.options_.tree_count_; ++k)
     {
 
         // read int tree array
@@ -78,7 +78,7 @@ importRandomForest(vigra::RandomForest<T>& rf, ConstCellArray cells)
     }
 }
 
-template<class T>
+template <class T>
 void
 exportRandomForest(RandomForest<T> const& rf, CellArray cells)
 {
@@ -93,7 +93,7 @@ exportRandomForest(RandomForest<T> const& rf, CellArray cells)
     rf.options_.serialize(opt.data(), opt.data() + optCount);
 
     // for all decision trees
-    for (int k = 0; k < rf.options_.tree_count_; ++k)
+    for(int k = 0; k < rf.options_.tree_count_; ++k)
     {
         // write int topology array
         MultiArrayView<1, Int32> tree =

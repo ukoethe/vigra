@@ -193,16 +193,16 @@ winErrorToException(std::string message = "")
 inline std::string
 winTempFileName(std::string path = "")
 {
-    if (path == "")
+    if(path == "")
     {
         TCHAR default_path[MAX_PATH];
-        if (!GetTempPath(MAX_PATH, default_path))
+        if(!GetTempPath(MAX_PATH, default_path))
             winErrorToException("winTempFileName(): ");
         path = default_path;
     }
 
     TCHAR name[MAX_PATH];
-    if (!GetTempFileName(path.c_str(), TEXT("vigra"), 0, name))
+    if(!GetTempFileName(path.c_str(), TEXT("vigra"), 0, name))
         winErrorToException("winTempFileName(): ");
 
     return std::string(name);
@@ -229,16 +229,16 @@ std::size_t mmap_alignment = sysconf(_SC_PAGE_SIZE);
 
 } // anonymous namespace
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 class IteratorChunkHandle;
 
 namespace detail
 {
 
-template<unsigned int N>
+template <unsigned int N>
 struct ChunkIndexing
 {
-    template<class T, int M>
+    template <class T, int M>
     static void chunkIndex(TinyVector<T, M> const& p,
                            TinyVector<T, M> const& bits,
                            TinyVector<T, M>& index)
@@ -248,7 +248,7 @@ struct ChunkIndexing
         index[N - 1] = (UI)p[N - 1] >> bits[N - 1];
     }
 
-    template<class T, int M>
+    template <class T, int M>
     static std::size_t chunkOffset(TinyVector<T, M> const& p,
                                    TinyVector<T, M> const& bits,
                                    TinyVector<T, M> const& strides)
@@ -258,7 +258,7 @@ struct ChunkIndexing
                ((UI)p[N - 1] >> bits[N - 1]) * strides[N - 1];
     }
 
-    template<class T, int M>
+    template <class T, int M>
     static std::size_t offsetInChunk(TinyVector<T, M> const& p,
                                      TinyVector<T, M> const& mask,
                                      TinyVector<T, M> const& strides)
@@ -269,10 +269,10 @@ struct ChunkIndexing
     }
 };
 
-template<>
+template <>
 struct ChunkIndexing<1>
 {
-    template<class T, int M>
+    template <class T, int M>
     static void chunkIndex(TinyVector<T, M> const& p,
                            TinyVector<T, M> const& bits,
                            TinyVector<T, M>& index)
@@ -281,7 +281,7 @@ struct ChunkIndexing<1>
         index[0] = (UI)p[0] >> bits[0];
     }
 
-    template<class T, int M>
+    template <class T, int M>
     static std::size_t chunkOffset(TinyVector<T, M> const& p,
                                    TinyVector<T, M> const& bits,
                                    TinyVector<T, M> const& strides)
@@ -290,7 +290,7 @@ struct ChunkIndexing<1>
         return ((UI)p[0] >> bits[0]) * strides[0];
     }
 
-    template<class T, int M>
+    template <class T, int M>
     static std::size_t offsetInChunk(TinyVector<T, M> const& p,
                                      TinyVector<T, M> const& mask,
                                      TinyVector<T, M> const& strides)
@@ -300,31 +300,31 @@ struct ChunkIndexing<1>
     }
 };
 
-template<class T, int M>
+template <class T, int M>
 inline TinyVector<T, M>
 computeChunkArrayShape(TinyVector<T, M> shape,
                        TinyVector<T, M> const& bits,
                        TinyVector<T, M> const& mask)
 {
-    for (int k = 0; k < M; ++k)
+    for(int k = 0; k < M; ++k)
         shape[k] = (shape[k] + mask[k]) >> bits[k];
     return shape;
 }
 
-template<class T, int M>
+template <class T, int M>
 inline T
 defaultCacheSize(TinyVector<T, M> const& shape)
 {
     T res = max(shape);
-    for (int k = 0; k < M - 1; ++k)
-        for (int j = k + 1; j < M; ++j)
+    for(int k = 0; k < M - 1; ++k)
+        for(int j = k + 1; j < M; ++j)
             res = std::max(res, shape[k] * shape[j]);
     return res + 1;
 }
 
 } // namespace detail
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 class ChunkBase
 {
 public:
@@ -346,7 +346,7 @@ public:
     T* pointer_;
 };
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 class SharedChunkHandle
 {
 public:
@@ -381,7 +381,7 @@ private:
     SharedChunkHandle& operator=(SharedChunkHandle const& rhs);
 };
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 class ChunkedArrayBase
 {
 public:
@@ -455,8 +455,8 @@ public:
 
     bool isInside(shape_type const& p) const
     {
-        for (unsigned d = 0; d < N; ++d)
-            if (p[d] < 0 || p[d] >= shape_[d])
+        for(unsigned d = 0; d < N; ++d)
+            if(p[d] < 0 || p[d] >= shape_[d])
                 return false;
         return true;
     }
@@ -464,7 +464,7 @@ public:
     shape_type shape_, chunk_shape_;
 };
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 class ChunkedArray;
 
 struct ChunkUnrefProxyBase
@@ -474,7 +474,7 @@ struct ChunkUnrefProxyBase
     }
 };
 
-template<unsigned int N, class T_MaybeConst>
+template <unsigned int N, class T_MaybeConst>
 class MultiArrayView<N, T_MaybeConst, ChunkedArrayTag>
     : public ChunkedArrayBase<N, typename UnqualifiedType<T_MaybeConst>::type>
 {
@@ -515,7 +515,7 @@ public:
 
         ~UnrefProxy()
         {
-            if (array_)
+            if(array_)
                 array_->unrefChunks(chunks_);
         }
 
@@ -561,7 +561,7 @@ public:
     {
         shape_type global_point = point + h->offset_;
 
-        if (!this->isInside(global_point))
+        if(!this->isInside(global_point))
         {
             upper_bound = point + this->chunk_shape_;
             return 0;
@@ -595,9 +595,9 @@ public:
 
     MultiArrayView& operator=(MultiArrayView const& rhs)
     {
-        if (this != &rhs)
+        if(this != &rhs)
         {
-            if (!hasData())
+            if(!hasData())
             {
                 ChunkedArrayBase<N, T>::operator=(rhs);
                 chunks_ = rhs.chunks_;
@@ -612,7 +612,7 @@ public:
                                    "MultiArrayView::operator=(): shape mismatch.");
                 iterator i = begin(), ie = end();
                 const_iterator j = rhs.begin();
-                for (; i != ie; ++i, ++j)
+                for(; i != ie; ++i, ++j)
                     *i = *j;
             }
         }
@@ -620,24 +620,24 @@ public:
     }
 
 #define VIGRA_CHUNKED_ARRAY_VIEW_ASSIGN(op)                                       \
-    template<class U, class C1>                                                   \
+    template <class U, class C1>                                                  \
     MultiArrayView& operator op(MultiArrayView<N, U, C1> const& rhs)              \
     {                                                                             \
         vigra_precondition(this->shape() == rhs.shape(),                          \
                            "MultiArrayView::operator" #op "(): shape mismatch."); \
         iterator i = begin(), ie = end();                                         \
         typename MultiArrayView<N, U, C1>::const_iterator j = rhs.begin();        \
-        for (; i != ie; ++i, ++j)                                                 \
+        for(; i != ie; ++i, ++j)                                                  \
             *i op detail::RequiresExplicitCast<value_type>::cast(*j);             \
         return *this;                                                             \
     }                                                                             \
                                                                                   \
     MultiArrayView& operator op(value_type const& v)                              \
     {                                                                             \
-        if (hasData())                                                            \
+        if(hasData())                                                             \
         {                                                                         \
             iterator i = begin(), ie = end();                                     \
-            for (; i != ie; ++i)                                                  \
+            for(; i != ie; ++i)                                                   \
                 *i op v;                                                          \
         }                                                                         \
         return *this;                                                             \
@@ -713,7 +713,7 @@ public:
         return const_cast<MultiArrayView*>(this)->operator[](point);
     }
 
-    template<int M>
+    template <int M>
     MultiArrayView<N - M, T, ChunkedArrayTag>
     operator[](const TinyVector<MultiArrayIndex, M>& d) const
     {
@@ -828,38 +828,38 @@ public:
     // return m_ptr [m_stride[0]*x + m_stride[1]*y + m_stride[2]*z + m_stride[3]*u + m_stride[4]*v];
     // }
 
-    template<class U>
+    template <class U>
     MultiArrayView& init(const U& init)
     {
         return operator=(init);
     }
 
-    template<class U, class CN>
+    template <class U, class CN>
     void copy(const MultiArrayView<N, U, CN>& rhs)
     {
         operator=(rhs);
     }
 
-    template<class T2, class C2>
+    template <class T2, class C2>
     void swapData(MultiArrayView<N, T2, C2> rhs)
     {
-        if (this == &rhs)
+        if(this == &rhs)
             return;
         vigra_precondition(this->shape() == rhs.shape(),
                            "MultiArrayView::swapData(): shape mismatch.");
         iterator i = begin(), ie = end();
         typename MultiArrayView<N, T2, C2>::iterator j = rhs.begin();
-        for (; i != ie; ++i, ++j)
+        for(; i != ie; ++i, ++j)
             std::swap(*i, *j);
     }
 
     bool isUnstrided(unsigned int dimension = N - 1) const
     {
-        if (chunks_.size() > 1)
+        if(chunks_.size() > 1)
             return false;
         difference_type s = vigra::detail::defaultStride<actual_dimension>(this->shape());
-        for (unsigned int k = 0; k <= dimension; ++k)
-            if (chunks_.data()->strides_[k] != s[k])
+        for(unsigned int k = 0; k <= dimension; ++k)
+            if(chunks_.data()->strides_[k] != s[k])
                 return false;
         return true;
     }
@@ -882,7 +882,7 @@ public:
         MultiArrayView<N - 1, Chunk> view(chunks_.bindAt(m, chunk_start));
         MultiCoordinateIterator<N - 1> i(view.shape()),
             end(i.getEndIterator());
-        for (; i != end; ++i)
+        for(; i != end; ++i)
         {
             res.chunks_[*i].pointer_ = view[*i].pointer_ + startInChunk * view[*i].strides_[m];
             res.chunks_[*i].strides_ = view[*i].strides_.dropIndex(m);
@@ -891,7 +891,7 @@ public:
         return res;
     }
 
-    template<unsigned int M>
+    template <unsigned int M>
     MultiArrayView<N - 1, value_type, ChunkedArrayTag>
     bind(difference_type_1 d) const
     {
@@ -904,14 +904,14 @@ public:
         return bindAt(N - 1, d);
     }
 
-    template<int M, class Index>
+    template <int M, class Index>
     MultiArrayView<N - M, value_type, ChunkedArrayTag>
     bindOuter(const TinyVector<Index, M>& d) const
     {
         return bindAt(N - 1, d[M - 1]).bindOuter(d.dropIndex(M - 1));
     }
 
-    template<class Index>
+    template <class Index>
     MultiArrayView<N - 1, value_type, ChunkedArrayTag>
     bindOuter(const TinyVector<Index, 1>& d) const
     {
@@ -924,14 +924,14 @@ public:
         return bindAt(0, d);
     }
 
-    template<int M, class Index>
+    template <int M, class Index>
     MultiArrayView<N - M, value_type, ChunkedArrayTag>
     bindInner(const TinyVector<Index, M>& d) const
     {
         return bindAt(0, d[0]).bindInner(d.dropIndex(0));
     }
 
-    template<class Index>
+    template <class Index>
     MultiArrayView<N - 1, value_type, ChunkedArrayTag>
     bindInner(const TinyVector<Index, 1>& d) const
     {
@@ -1024,7 +1024,7 @@ public:
         view.unref_ = unref_;
         typename MultiArray<N, Chunk>::iterator i = view.chunks_.begin(),
                                                 iend = view.chunks_.end();
-        for (; i != iend; ++i)
+        for(; i != iend; ++i)
             i->strides_ = vigra::transpose(i->strides_, permutation);
         return view;
     }
@@ -1059,20 +1059,20 @@ public:
     // */
     // static difference_type strideOrdering(difference_type strides);
 
-    template<class U, class C1>
+    template <class U, class C1>
     bool operator==(MultiArrayView<N, U, C1> const& rhs) const
     {
-        if (this->shape() != rhs.shape())
+        if(this->shape() != rhs.shape())
             return false;
         const_iterator i = begin(), ie = end();
         typename MultiArrayView<N, U, C1>::const_iterator j = rhs.begin();
-        for (; i != ie; ++i, ++j)
-            if (*i != *j)
+        for(; i != ie; ++i, ++j)
+            if(*i != *j)
                 return false;
         return true;
     }
 
-    template<class U, class C1>
+    template <class U, class C1>
     bool operator!=(MultiArrayView<N, U, C1> const& rhs) const
     {
         return !operator==(rhs);
@@ -1246,7 +1246,7 @@ public:
     VIGRA_SHARED_PTR<ChunkUnrefProxyBase> unref_;
 };
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 typename MultiArrayView<N, T, ChunkedArrayTag>::iterator
 createCoupledIterator(MultiArrayView<N, T, ChunkedArrayTag>& m)
 {
@@ -1258,7 +1258,7 @@ createCoupledIterator(MultiArrayView<N, T, ChunkedArrayTag>& m)
                            P0(m.shape())));
 }
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 typename MultiArrayView<N, T, ChunkedArrayTag>::const_iterator
 createCoupledIterator(MultiArrayView<N, T, ChunkedArrayTag> const& m)
 {
@@ -1532,7 +1532,7 @@ be slower than an ordinary MultiArrayView. Second, all chunks intersected
 by the view must remain active throughout the view's lifetime, which
 may require a big chunk cache and thus keeps many chunks in memory.
 */
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 class ChunkedArray
     : public ChunkedArrayBase<N, T>
 {
@@ -1648,7 +1648,7 @@ public:
     static shape_type initBitMask(shape_type const& chunk_shape)
     {
         shape_type res;
-        for (unsigned int k = 0; k < N; ++k)
+        for(unsigned int k = 0; k < N; ++k)
         {
             UInt32 bits = log2i(chunk_shape[k]);
             vigra_precondition(chunk_shape[k] == MultiArrayIndex(1 << bits),
@@ -1784,22 +1784,22 @@ public:
 
     /** \brief Check if two arrays are elementwise equal.
     */
-    template<class U, class C1>
+    template <class U, class C1>
     bool operator==(MultiArrayView<N, U, C1> const& rhs) const
     {
-        if (this->shape() != rhs.shape())
+        if(this->shape() != rhs.shape())
             return false;
         const_iterator i = begin(), ie = end();
         typename MultiArrayView<N, U, C1>::const_iterator j = rhs.begin();
-        for (; i != ie; ++i, ++j)
-            if (*i != *j)
+        for(; i != ie; ++i, ++j)
+            if(*i != *j)
                 return false;
         return true;
     }
 
     /** \brief Check if two arrays differ in at least one element.
     */
-    template<class U, class C1>
+    template <class U, class C1>
     bool operator!=(MultiArrayView<N, U, C1> const& rhs) const
     {
         return !operator==(rhs);
@@ -1813,7 +1813,7 @@ public:
     // returns true if the chunk was deleted, false otherwise
     virtual bool unloadHandle(Handle* handle, bool destroy = false)
     {
-        if (handle == &fill_value_handle_)
+        if(handle == &fill_value_handle_)
             return false;
         return unloadChunk(handle->pointer_, destroy);
     }
@@ -1836,7 +1836,7 @@ public:
     // Likewise
     void unrefChunk(Handle* chunk) const
     {
-        if (chunk)
+        if(chunk)
         {
             long rc = chunk->chunk_state_.fetch_sub(1);
             ignore_argument(rc);
@@ -1850,10 +1850,10 @@ public:
     // Decrease the reference counter of several chunks simultaneously.
     void unrefChunks(ArrayVector<Handle*> const& chunks)
     {
-        for (unsigned int k = 0; k < chunks.size(); ++k)
+        for(unsigned int k = 0; k < chunks.size(); ++k)
             unrefChunk(chunks[k]);
 
-        if (cacheMaxSize() > 0)
+        if(cacheMaxSize() > 0)
         {
             threading::lock_guard<threading::mutex> guard(*chunk_lock_);
             cleanCache(cache_.size());
@@ -1871,29 +1871,29 @@ public:
         //
         // the function returns the old value of chunk_state_
         long rc = handle->chunk_state_.load(threading::memory_order_acquire);
-        while (true)
+        while(true)
         {
-            if (rc >= 0)
+            if(rc >= 0)
             {
-                if (handle->chunk_state_.compare_exchange_weak(rc, rc + 1, threading::memory_order_seq_cst))
+                if(handle->chunk_state_.compare_exchange_weak(rc, rc + 1, threading::memory_order_seq_cst))
                 {
                     return rc;
                 }
             }
             else
             {
-                if (rc == chunk_failed)
+                if(rc == chunk_failed)
                 {
                     vigra_precondition(false,
                                        "ChunkedArray::acquireRef() attempt to access failed chunk.");
                 }
-                else if (rc == chunk_locked)
+                else if(rc == chunk_locked)
                 {
                     // cache management in progress => try again later
                     threading::this_thread::yield();
                     rc = handle->chunk_state_.load(threading::memory_order_acquire);
                 }
-                else if (handle->chunk_state_.compare_exchange_weak(rc, chunk_locked, threading::memory_order_seq_cst))
+                else if(handle->chunk_state_.compare_exchange_weak(rc, chunk_locked, threading::memory_order_seq_cst))
                 {
                     return rc;
                 }
@@ -1907,7 +1907,7 @@ public:
         ChunkedArray* self = const_cast<ChunkedArray*>(this);
 
         long rc = acquireRef(handle);
-        if (rc >= 0)
+        if(rc >= 0)
             return handle->pointer_->pointer_;
 
         threading::lock_guard<threading::mutex> guard(*chunk_lock_);
@@ -1915,12 +1915,12 @@ public:
         {
             T* p = self->loadChunk(&handle->pointer_, chunk_index);
             Chunk* chunk = handle->pointer_;
-            if (!isConst && rc == chunk_uninitialized)
+            if(!isConst && rc == chunk_uninitialized)
                 std::fill(p, p + prod(chunkShape(chunk_index)), this->fill_value_);
 
             self->data_bytes_ += dataBytes(chunk);
 
-            if (cacheMaxSize() > 0 && insertInCache)
+            if(cacheMaxSize() > 0 && insertInCache)
             {
                 // insert in queue of mapped chunks
                 self->cache_.push(handle);
@@ -1932,7 +1932,7 @@ public:
             handle->chunk_state_.store(1, threading::memory_order_release);
             return p;
         }
-        catch (...)
+        catch(...)
         {
             handle->chunk_state_.store(chunk_failed);
             throw;
@@ -1953,7 +1953,7 @@ public:
 
         shape_type global_point = point + h->offset_;
 
-        if (!this->isInside(global_point))
+        if(!this->isInside(global_point))
         {
             upper_bound = point + this->chunk_shape_;
             return 0;
@@ -1963,7 +1963,7 @@ public:
 
         bool insertInCache = true;
         Handle* handle = self->lookupHandle(chunkIndex);
-        if (isConst && handle->chunk_state_.load() == chunk_uninitialized)
+        if(isConst && handle->chunk_state_.load() == chunk_uninitialized)
         {
             handle = &self->fill_value_handle_;
             insertInCache = false;
@@ -1999,12 +1999,12 @@ public:
     {
         long rc = 0;
         bool mayUnload = handle->chunk_state_.compare_exchange_strong(rc, chunk_locked);
-        if (!mayUnload && destroy)
+        if(!mayUnload && destroy)
         {
             rc = chunk_asleep;
             mayUnload = handle->chunk_state_.compare_exchange_strong(rc, chunk_locked);
         }
-        if (mayUnload)
+        if(mayUnload)
         {
             // refcount was zero or chunk_asleep => can unload
             try
@@ -2015,12 +2015,12 @@ public:
                 this->data_bytes_ -= dataBytes(chunk);
                 int didDestroy = unloadChunk(chunk, destroy);
                 this->data_bytes_ += dataBytes(chunk);
-                if (didDestroy)
+                if(didDestroy)
                     handle->chunk_state_.store(chunk_uninitialized);
                 else
                     handle->chunk_state_.store(chunk_asleep);
             }
-            catch (...)
+            catch(...)
             {
                 handle->chunk_state_.store(chunk_failed);
                 throw;
@@ -2032,14 +2032,14 @@ public:
     // NOTE: this function must only be called while we hold the chunk_lock_
     void cleanCache(int how_many = -1)
     {
-        if (how_many == -1)
+        if(how_many == -1)
             how_many = cache_.size();
-        for (; cache_.size() > cacheMaxSize() && how_many > 0; --how_many)
+        for(; cache_.size() > cacheMaxSize() && how_many > 0; --how_many)
         {
             Handle* handle = cache_.front();
             cache_.pop();
             long rc = releaseChunk(handle);
-            if (rc > 0) // refcount was positive => chunk is still needed
+            if(rc > 0) // refcount was positive => chunk is still needed
                 cache_.push(handle);
         }
     }
@@ -2058,11 +2058,11 @@ public:
 
         MultiCoordinateIterator<N> i(chunkStart(start), chunkStop(stop)),
             end(i.getEndIterator());
-        for (; i != end; ++i)
+        for(; i != end; ++i)
         {
             shape_type chunkOffset = *i * this->chunk_shape_;
-            if (!allLessEqual(start, chunkOffset) ||
-                !allLessEqual(min(chunkOffset + this->chunk_shape_, this->shape()), stop))
+            if(!allLessEqual(start, chunkOffset) ||
+               !allLessEqual(min(chunkOffset + this->chunk_shape_, this->shape()), stop))
             {
                 // chunk is only partially covered by the ROI
                 continue;
@@ -2076,11 +2076,11 @@ public:
         // remove all chunks from the cache that are asleep or unitialized
         threading::lock_guard<threading::mutex> guard(*chunk_lock_);
         int cache_size = cache_.size();
-        for (int k = 0; k < cache_size; ++k)
+        for(int k = 0; k < cache_size; ++k)
         {
             Handle* handle = cache_.front();
             cache_.pop();
-            if (handle->chunk_state_.load() >= 0)
+            if(handle->chunk_state_.load() >= 0)
                 cache_.push(handle);
         }
     }
@@ -2091,7 +2091,7 @@ public:
         is 'start + subarray.shape()'. Chunks in the ROI are only activated while
         the read is in progress.
     */
-    template<class U, class Stride>
+    template <class U, class Stride>
     void
     checkoutSubarray(shape_type const& start,
                      MultiArrayView<N, U, Stride>& subarray) const
@@ -2101,7 +2101,7 @@ public:
         checkSubarrayBounds(start, stop, "ChunkedArray::checkoutSubarray()");
 
         chunk_const_iterator i = chunk_cbegin(start, stop);
-        for (; i.isValid(); ++i)
+        for(; i.isValid(); ++i)
         {
             subarray.subarray(i.chunkStart() - start, i.chunkStop() - start) = *i;
         }
@@ -2113,7 +2113,7 @@ public:
         is 'start + subarray.shape()'. Chunks in the ROI are only activated while
         the write is in progress.
     */
-    template<class U, class Stride>
+    template <class U, class Stride>
     void
     commitSubarray(shape_type const& start,
                    MultiArrayView<N, U, Stride> const& subarray)
@@ -2125,14 +2125,14 @@ public:
         checkSubarrayBounds(start, stop, "ChunkedArray::commitSubarray()");
 
         chunk_iterator i = chunk_begin(start, stop);
-        for (; i.isValid(); ++i)
+        for(; i.isValid(); ++i)
         {
             *i = subarray.subarray(i.chunkStart() - start, i.chunkStop() - start);
         }
     }
 
     // helper function for subarray()
-    template<class View>
+    template <class View>
     void subarrayImpl(shape_type const& start, shape_type const& stop,
                       View& view,
                       bool isConst) const
@@ -2156,11 +2156,11 @@ public:
 
         MultiCoordinateIterator<N> i(chunk_start, chunk_stop),
             end(i.getEndIterator());
-        for (; i != end; ++i)
+        for(; i != end; ++i)
         {
             Handle* handle = self->lookupHandle(*i);
 
-            if (isConst && handle->chunk_state_.load() == chunk_uninitialized)
+            if(isConst && handle->chunk_state_.load() == chunk_uninitialized)
                 handle = &self->fill_value_handle_;
 
             // This potentially acquires the chunk_lock_ in each iteration.
@@ -2230,7 +2230,7 @@ public:
         ChunkedArray* self = const_cast<ChunkedArray*>(this);
         shape_type chunk_index(chunkStart(point));
         Handle* handle = self->lookupHandle(chunk_index);
-        if (handle->chunk_state_.load() == chunk_uninitialized)
+        if(handle->chunk_state_.load() == chunk_uninitialized)
             return fill_value_;
         pointer p = self->getChunk(handle, true, false, chunk_index);
         value_type res = *(p +
@@ -2280,7 +2280,7 @@ public:
         all other dimensions remain unchanged. All chunks intersecting the
         view remain active throughout the view's lifetime.
     */
-    template<unsigned int M>
+    template <unsigned int M>
     MultiArrayView<N - 1, T, ChunkedArrayTag>
     bind(difference_type_1 index) const
     {
@@ -2304,7 +2304,7 @@ public:
         The M rightmost dimensions are bound to the indices given in 'd'.
         All chunks intersecting the view remain active throughout the view's lifetime.
     */
-    template<int M, class Index>
+    template <int M, class Index>
     MultiArrayView<N - M, T, ChunkedArrayTag>
     bindOuter(const TinyVector<Index, M>& d) const
     {
@@ -2312,7 +2312,7 @@ public:
     }
 
     // terminate the recursion of the above function
-    template<class Index>
+    template <class Index>
     MultiArrayView<N - 1, T, ChunkedArrayTag>
     bindOuter(const TinyVector<Index, 1>& d) const
     {
@@ -2336,7 +2336,7 @@ public:
         The M leftmost dimensions are bound to the indices given in 'd'.
         All chunks intersecting the view remain active throughout the view's lifetime.
     */
-    template<int M, class Index>
+    template <int M, class Index>
     MultiArrayView<N - M, T, ChunkedArrayTag>
     bindInner(const TinyVector<Index, M>& d) const
     {
@@ -2344,7 +2344,7 @@ public:
     }
 
     // terminate the recursion of the above function
-    template<class Index>
+    template <class Index>
     MultiArrayView<N - 1, T, ChunkedArrayTag>
     bindInner(const TinyVector<Index, 1>& d) const
     {
@@ -2360,7 +2360,7 @@ public:
     */
     std::size_t cacheMaxSize() const
     {
-        if (cache_max_size_ < 0)
+        if(cache_max_size_ < 0)
             const_cast<int&>(cache_max_size_) = detail::defaultCacheSize(this->chunkArrayShape());
         return cache_max_size_;
     }
@@ -2373,7 +2373,7 @@ public:
     void setCacheMaxSize(std::size_t c)
     {
         cache_max_size_ = c;
-        if (c < cache_.size())
+        if(c < cache_.size())
         {
             threading::lock_guard<threading::mutex> guard(*chunk_lock_);
             cleanCache();
@@ -2491,7 +2491,7 @@ public:
 
 /** Returns a CoupledScanOrderIterator to simultaneously iterate over image m1 and its coordinates.
  */
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 typename ChunkedArray<N, T>::iterator
 createCoupledIterator(ChunkedArray<N, T>& m)
 {
@@ -2503,7 +2503,7 @@ createCoupledIterator(ChunkedArray<N, T>& m)
                            P0(m.shape())));
 }
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 typename ChunkedArray<N, T>::const_iterator
 createCoupledIterator(ChunkedArray<N, T> const& m)
 {
@@ -2524,7 +2524,7 @@ createCoupledIterator(ChunkedArray<N, T> const& m)
     <b>\#include</b> \<vigra/multi_array_chunked.hxx\> <br/>
     Namespace: vigra
 */
-template<unsigned int N, class T, class Alloc = std::allocator<T>>
+template <unsigned int N, class T, class Alloc = std::allocator<T>>
 class ChunkedArrayFull
     : public ChunkedArray<N, T>,
       public MultiArray<N, T, Alloc>
@@ -2549,7 +2549,7 @@ public:
 
     static shape_type computeChunkShape(shape_type s)
     {
-        for (unsigned k = 0; k < N; ++k)
+        for(unsigned k = 0; k < N; ++k)
             s[k] = ceilPower2(s[k]);
         return s;
     }
@@ -2599,7 +2599,7 @@ public:
 
     ChunkedArrayFull& operator=(ChunkedArrayFull const& rhs)
     {
-        if (this != &rhs)
+        if(this != &rhs)
         {
             ChunkedArray<N, T>::operator=(rhs);
             Storage::operator=(rhs);
@@ -2643,7 +2643,7 @@ public:
     {
         shape_type global_point = point + h->offset_;
 
-        if (!this->isInside(global_point))
+        if(!this->isInside(global_point))
         {
             upper_bound = point + this->chunk_shape_;
             return 0;
@@ -2660,7 +2660,7 @@ public:
     {
         shape_type global_point = point + h->offset_;
 
-        if (!this->isInside(global_point))
+        if(!this->isInside(global_point))
         {
             upper_bound = point + this->chunk_shape_;
             return 0;
@@ -2693,7 +2693,7 @@ public:
     <b>\#include</b> \<vigra/multi_array_chunked.hxx\> <br/>
     Namespace: vigra
 */
-template<unsigned int N, class T, class Alloc = std::allocator<T>>
+template <unsigned int N, class T, class Alloc = std::allocator<T>>
 class ChunkedArrayLazy
     : public ChunkedArray<N, T>
 {
@@ -2719,7 +2719,7 @@ public:
 
         pointer allocate()
         {
-            if (this->pointer_ == 0)
+            if(this->pointer_ == 0)
                 this->pointer_ = detail::alloc_initialize_n<T>(size_, T(), alloc_);
             return this->pointer_;
         }
@@ -2758,9 +2758,9 @@ public:
     {
         typename ChunkStorage::iterator i = this->handle_array_.begin(),
                                         end = this->handle_array_.end();
-        for (; i != end; ++i)
+        for(; i != end; ++i)
         {
-            if (i->pointer_)
+            if(i->pointer_)
                 delete static_cast<Chunk*>(i->pointer_);
             i->pointer_ = 0;
         }
@@ -2768,7 +2768,7 @@ public:
 
     virtual pointer loadChunk(ChunkBase<N, T>** p, shape_type const& index)
     {
-        if (*p == 0)
+        if(*p == 0)
         {
             *p = new Chunk(this->chunkShape(index));
             this->overhead_bytes_ += sizeof(Chunk);
@@ -2778,7 +2778,7 @@ public:
 
     virtual bool unloadChunk(ChunkBase<N, T>* chunk, bool destroy)
     {
-        if (destroy)
+        if(destroy)
             static_cast<Chunk*>(chunk)->deallocate();
         return destroy;
     }
@@ -2817,7 +2817,7 @@ public:
     <b>\#include</b> \<vigra/multi_array_chunked.hxx\> <br/>
     Namespace: vigra
 */
-template<unsigned int N, class T, class Alloc = std::allocator<T>>
+template <unsigned int N, class T, class Alloc = std::allocator<T>>
 class ChunkedArrayCompressed
     : public ChunkedArray<N, T>
 {
@@ -2843,7 +2843,7 @@ public:
 
         pointer allocate()
         {
-            if (this->pointer_ == 0)
+            if(this->pointer_ == 0)
                 this->pointer_ = detail::alloc_initialize_n<T>(size_, T(), alloc_);
             return this->pointer_;
         }
@@ -2857,7 +2857,7 @@ public:
 
         void compress(CompressionMethod method)
         {
-            if (this->pointer_ != 0)
+            if(this->pointer_ != 0)
             {
                 vigra_invariant(compressed_.size() == 0,
                                 "ChunkedArrayCompressed::Chunk::compress(): compressed and uncompressed pointer are both non-zero.");
@@ -2872,9 +2872,9 @@ public:
 
         pointer uncompress(CompressionMethod method)
         {
-            if (this->pointer_ == 0)
+            if(this->pointer_ == 0)
             {
-                if (compressed_.size())
+                if(compressed_.size())
                 {
                     this->pointer_ = alloc_.allocate((typename Alloc::size_type)size_);
 
@@ -2927,7 +2927,7 @@ public:
         : ChunkedArray<N, T>(shape, chunk_shape, options),
           compression_method_(options.compression_method)
     {
-        if (compression_method_ == DEFAULT_COMPRESSION)
+        if(compression_method_ == DEFAULT_COMPRESSION)
             compression_method_ = LZ4;
     }
 
@@ -2935,9 +2935,9 @@ public:
     {
         typename ChunkStorage::iterator i = this->handle_array_.begin(),
                                         end = this->handle_array_.end();
-        for (; i != end; ++i)
+        for(; i != end; ++i)
         {
-            if (i->pointer_)
+            if(i->pointer_)
                 delete static_cast<Chunk*>(i->pointer_);
             i->pointer_ = 0;
         }
@@ -2945,7 +2945,7 @@ public:
 
     virtual pointer loadChunk(ChunkBase<N, T>** p, shape_type const& index)
     {
-        if (*p == 0)
+        if(*p == 0)
         {
             *p = new Chunk(this->chunkShape(index));
             this->overhead_bytes_ += sizeof(Chunk);
@@ -2955,7 +2955,7 @@ public:
 
     virtual bool unloadChunk(ChunkBase<N, T>* chunk, bool destroy)
     {
-        if (destroy)
+        if(destroy)
             static_cast<Chunk*>(chunk)->deallocate();
         else
             static_cast<Chunk*>(chunk)->compress(compression_method_);
@@ -2964,7 +2964,7 @@ public:
 
     virtual std::string backend() const
     {
-        switch (compression_method_)
+        switch(compression_method_)
         {
             case ZLIB:
                 return "ChunkedArrayCompressed<ZLIB>";
@@ -3018,7 +3018,7 @@ public:
     something is still written, or cleanup takes considerable time.)
     On Linux, automated deletion is achieved via <tt>fileno(tmpfile())</tt>.
 */
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 class ChunkedArrayTmpFile
     : public ChunkedArray<N, T>
 {
@@ -3064,19 +3064,19 @@ public:
 
         pointer map()
         {
-            if (this->pointer_ == 0)
+            if(this->pointer_ == 0)
             {
 #ifdef _WIN32
                 static const std::size_t bits = sizeof(DWORD) * 8,
                                          mask = (std::size_t(1) << bits) - 1;
                 this->pointer_ = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
                                                         std::size_t(offset_) >> bits, offset_ & mask, alloc_size_);
-                if (this->pointer_ == 0)
+                if(this->pointer_ == 0)
                     winErrorToException("ChunkedArrayChunk::map(): ");
 #else
                 this->pointer_ = (pointer)mmap(0, alloc_size_, PROT_READ | PROT_WRITE, MAP_SHARED,
                                                file_, offset_);
-                if (this->pointer_ == 0)
+                if(this->pointer_ == 0)
                     throw std::runtime_error("ChunkedArrayChunk::map(): mmap() failed.");
 #endif
             }
@@ -3085,7 +3085,7 @@ public:
 
         void unmap()
         {
-            if (this->pointer_ != 0)
+            if(this->pointer_ != 0)
             {
 #ifdef _WIN32
                 ::UnmapViewOfFile(this->pointer_);
@@ -3143,7 +3143,7 @@ public:
         typename OffsetStorage::iterator i = offset_array_.begin(),
                                          end = offset_array_.end();
         std::size_t size = 0;
-        for (; i != end; ++i)
+        for(; i != end; ++i)
         {
             *i = size;
             size += computeAllocSize(this->chunkShape(i.point()));
@@ -3157,12 +3157,12 @@ public:
         // create a temp file
         file_ = ::CreateFile(winTempFileName(path).c_str(), GENERIC_READ | GENERIC_WRITE,
                              0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, NULL);
-        if (file_ == INVALID_HANDLE_VALUE)
+        if(file_ == INVALID_HANDLE_VALUE)
             winErrorToException("ChunkedArrayTmpFile(): ");
 
         // make it a sparse file
         DWORD dwTemp;
-        if (!::DeviceIoControl(file_, FSCTL_SET_SPARSE, NULL, 0, NULL, 0, &dwTemp, NULL))
+        if(!::DeviceIoControl(file_, FSCTL_SET_SPARSE, NULL, 0, NULL, 0, &dwTemp, NULL))
             winErrorToException("ChunkedArrayTmpFile(): ");
 
         // place the data in the swap file
@@ -3172,14 +3172,14 @@ public:
         static const std::size_t bits = sizeof(LONG) * 8, mask = (std::size_t(1) << bits) - 1;
         mappedFile_ = CreateFileMapping(file_, NULL, PAGE_READWRITE,
                                         file_capacity_ >> bits, file_capacity_ & mask, NULL);
-        if (!mappedFile_)
+        if(!mappedFile_)
             winErrorToException("ChunkedArrayTmpFile(): ");
 #else
         mappedFile_ = file_ = fileno(tmpfile());
-        if (file_ == -1)
+        if(file_ == -1)
             throw std::runtime_error("ChunkedArrayTmpFile(): unable to open file.");
         lseek(file_, file_capacity_ - 1, SEEK_SET);
-        if (write(file_, "0", 1) == -1)
+        if(write(file_, "0", 1) == -1)
             throw std::runtime_error("ChunkedArrayTmpFile(): unable to resize file.");
 #endif
     }
@@ -3188,9 +3188,9 @@ public:
     {
         typename ChunkStorage::iterator i = this->handle_array_.begin(),
                                         end = this->handle_array_.end();
-        for (; i != end; ++i)
+        for(; i != end; ++i)
         {
-            if (i->pointer_)
+            if(i->pointer_)
                 delete static_cast<Chunk*>(i->pointer_);
             i->pointer_ = 0;
         }
@@ -3204,18 +3204,18 @@ public:
 
     virtual pointer loadChunk(ChunkBase<N, T>** p, shape_type const& index)
     {
-        if (*p == 0)
+        if(*p == 0)
         {
             shape_type shape = this->chunkShape(index);
             std::size_t chunk_size = computeAllocSize(shape);
 #ifdef VIGRA_NO_SPARSE_FILE
             std::size_t offset = file_size_;
-            if (offset + chunk_size > file_capacity_)
+            if(offset + chunk_size > file_capacity_)
             {
                 file_capacity_ = max<std::size_t>(offset + chunk_size, file_capacity_ * 120 / 100); // extend file by 20%
-                if (lseek(file_, file_capacity_ - 1, SEEK_SET) == -1)
+                if(lseek(file_, file_capacity_ - 1, SEEK_SET) == -1)
                     throw std::runtime_error("ChunkedArrayTmpFile(): unable to reset file size.");
-                if (write(file_, "0", 1) == -1)
+                if(write(file_, "0", 1) == -1)
                     throw std::runtime_error("ChunkedArrayTmpFile(): unable to resize file.");
             }
             file_size_ += chunk_size;
@@ -3262,7 +3262,7 @@ public:
     std::size_t file_size_, file_capacity_;
 };
 
-template<unsigned int N, class U>
+template <unsigned int N, class U>
 class ChunkIterator
     : public MultiCoordinateIterator<N>,
       private MultiArrayView<N, typename UnqualifiedType<U>::type>
@@ -3311,7 +3311,7 @@ public:
 
     ChunkIterator& operator=(ChunkIterator const& rhs)
     {
-        if (this != &rhs)
+        if(this != &rhs)
         {
             base_type::operator=(rhs);
             array_ = rhs.array_;
@@ -3356,7 +3356,7 @@ public:
 
     void getChunk()
     {
-        if (array_)
+        if(array_)
         {
             shape_type array_point = max(start_, this->point() * chunk_shape_),
                        upper_bound(SkipInitialization);

@@ -56,7 +56,7 @@ namespace vigra
 namespace blockwise_watersheds_detail
 {
 
-template<class DataArray, class DirectionsBlocksIterator>
+template <class DataArray, class DirectionsBlocksIterator>
 void
 prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
                            DirectionsBlocksIterator directions_blocks_begin,
@@ -84,9 +84,9 @@ prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
                          typedef typename Graph::OutArcIt NeighborIterator;
 
                          Graph graph(data_block.block.shape(), options.getNeighborhood());
-                         for (GraphScanner node(graph); node != lemon::INVALID; ++node)
+                         for(GraphScanner node(graph); node != lemon::INVALID; ++node)
                          {
-                             if (within(*node, data_block.inner_bounds))
+                             if(within(*node, data_block.inner_bounds))
                              {
                                  typedef typename DataArray::value_type Data;
                                  Data lowest_neighbor = data_block.block[*node];
@@ -94,11 +94,11 @@ prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
                                  typedef typename DirectionsBlock::value_type Direction;
                                  Direction lowest_neighbor_direction = std::numeric_limits<unsigned short>::max();
 
-                                 for (NeighborIterator arc(graph, *node); arc != lemon::INVALID; ++arc)
+                                 for(NeighborIterator arc(graph, *node); arc != lemon::INVALID; ++arc)
                                  {
                                      Shape neighbor_coordinates = graph.target(*arc);
                                      Data neighbor_data = data_block.block[neighbor_coordinates];
-                                     if (neighbor_data < lowest_neighbor)
+                                     if(neighbor_data < lowest_neighbor)
                                      {
                                          lowest_neighbor = neighbor_data;
                                          lowest_neighbor_direction = arc.neighborIndex();
@@ -110,14 +110,14 @@ prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
                      });
 }
 
-template<unsigned int N>
+template <unsigned int N>
 struct UnionFindWatershedsEquality
 {
     // FIXME: this graph object shouldn't be necessary, most functions (and state) of graph are not used
     // this probably needs some refactoring in GridGraph
     GridGraph<N, undirected_tag>* graph;
 
-    template<class Shape>
+    template <class Shape>
     bool operator()(unsigned short u, const unsigned short v, const Shape& diff) const
     {
         static const unsigned short plateau_id = std::numeric_limits<unsigned short>::max();
@@ -195,10 +195,10 @@ struct UnionFindWatershedsEquality
     unionFindWatershedsBlockwise(data, labels, IndirectNeighborhood);
     \endcode
     */
-doxygen_overloaded_function(template<...> unsigned int unionFindWatershedsBlockwise)
+doxygen_overloaded_function(template <...> unsigned int unionFindWatershedsBlockwise)
 
-    template<unsigned int N, class Data, class S1,
-             class Label, class S2>
+    template <unsigned int N, class Data, class S1,
+              class Label, class S2>
     Label unionFindWatershedsBlockwise(MultiArrayView<N, Data, S1> data,
                                        MultiArrayView<N, Label, S2> labels,
                                        BlockwiseLabelOptions const& options = BlockwiseLabelOptions())
@@ -221,7 +221,7 @@ doxygen_overloaded_function(template<...> unsigned int unionFindWatershedsBlockw
     return labelMultiArrayBlockwise(directions, labels, options, equal);
 }
 
-template<unsigned int N, class Data, class Label>
+template <unsigned int N, class Data, class Label>
 Label
 unionFindWatershedsBlockwise(const ChunkedArray<N, Data>& data,
                              ChunkedArray<N, Label>& labels,
@@ -247,8 +247,8 @@ unionFindWatershedsBlockwise(const ChunkedArray<N, Data>& data,
     return labelMultiArrayBlockwise(directions, labels, options, equal);
 }
 
-template<unsigned int N, class Data,
-         class Label>
+template <unsigned int N, class Data,
+          class Label>
 inline Label
 unionFindWatershedsBlockwise(const ChunkedArray<N, Data>& data,
                              ChunkedArray<N, Label>& labels,

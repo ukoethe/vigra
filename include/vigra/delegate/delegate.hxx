@@ -29,9 +29,9 @@ http://www.codeproject.com/Articles/11015/The-Impossibly-Fast-C-Delegates
 namespace vigra
 {
 #ifdef VIGRA_DELEGATE_PREFERRED_SYNTAX
-template<typename TSignature>
+template <typename TSignature>
 class delegate;
-template<typename TSignature>
+template <typename TSignature>
 class delegate_invoker;
 #endif
 } // namespace vigra

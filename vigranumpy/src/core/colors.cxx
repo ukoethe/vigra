@@ -48,7 +48,7 @@ namespace python = boost::python;
 namespace vigra
 {
 
-template<class ValueType>
+template <class ValueType>
 struct BrightnessFunctor
 {
     double factor, min, max, diff;
@@ -79,7 +79,7 @@ struct BrightnessFunctor
     }
 };
 
-template<class ValueType>
+template <class ValueType>
 struct ContrastFunctor
 {
     double factor, min, max, diff, offset;
@@ -113,24 +113,24 @@ inline bool
 parseRange(python::object range, double* min, double* max,
            const char* message)
 {
-    if (!range)
+    if(!range)
     {
         return false;
     }
     python::extract<std::string> isString(range);
-    if (isString.check())
+    if(isString.check())
     {
         std::string text(isString());
-        if (text == "" || text == "auto")
+        if(text == "" || text == "auto")
             return false;
         vigra_precondition(false, message);
     }
     python::extract<python::tuple> isTuple(range);
-    if (isTuple.check())
+    if(isTuple.check())
     {
         python::extract<double> arg1(isTuple()[0]),
             arg2(isTuple()[1]);
-        if (arg1.check() && arg2.check())
+        if(arg1.check() && arg2.check())
         {
             *min = arg1();
             *max = arg2();
@@ -141,7 +141,7 @@ parseRange(python::object range, double* min, double* max,
     return false;
 }
 
-template<class PixelType, unsigned int N>
+template <class PixelType, unsigned int N>
 NumpyAnyArray
 pythonBrightnessTransform(NumpyArray<N, Multiband<PixelType>> image,
                           double factor,
@@ -156,7 +156,7 @@ pythonBrightnessTransform(NumpyArray<N, Multiband<PixelType>> image,
 
     {
         PyAllowThreads _pythread;
-        if (computeRange)
+        if(computeRange)
         {
             FindMinMax<PixelType> minmax;
             inspectMultiArray(srcMultiArrayRange(image), minmax);
@@ -173,7 +173,7 @@ pythonBrightnessTransform(NumpyArray<N, Multiband<PixelType>> image,
     return res;
 }
 
-template<class PixelType, unsigned int N>
+template <class PixelType, unsigned int N>
 NumpyAnyArray
 pythonContrastTransform(NumpyArray<N, Multiband<PixelType>> image,
                         double factor,
@@ -187,7 +187,7 @@ pythonContrastTransform(NumpyArray<N, Multiband<PixelType>> image,
     bool computeRange = !parseRange(range, &min, &max, "contrast(): Invalid range argument.");
     {
         PyAllowThreads _pythread;
-        if (computeRange)
+        if(computeRange)
         {
             FindMinMax<PixelType> minmax;
             inspectMultiArray(srcMultiArrayRange(image), minmax);
@@ -204,7 +204,7 @@ pythonContrastTransform(NumpyArray<N, Multiband<PixelType>> image,
     return res;
 }
 
-template<class PixelType, unsigned int N>
+template <class PixelType, unsigned int N>
 NumpyAnyArray
 pythonGammaTransform(NumpyArray<N, Multiband<PixelType>> image,
                      double gamma,
@@ -218,7 +218,7 @@ pythonGammaTransform(NumpyArray<N, Multiband<PixelType>> image,
     bool computeRange = !parseRange(range, &min, &max, "gamma_correction(): Invalid range argument.");
     {
         PyAllowThreads _pythread;
-        if (computeRange)
+        if(computeRange)
         {
             FindMinMax<PixelType> minmax;
             inspectMultiArray(srcMultiArrayRange(image), minmax);
@@ -235,7 +235,7 @@ pythonGammaTransform(NumpyArray<N, Multiband<PixelType>> image,
     return res;
 }
 
-template<class SrcPixelType, class DestPixelType, unsigned int N>
+template <class SrcPixelType, class DestPixelType, unsigned int N>
 NumpyAnyArray
 pythonLinearRangeMapping(NumpyArray<N, Multiband<SrcPixelType>> image,
                          python::object oldRange,
@@ -249,7 +249,7 @@ pythonLinearRangeMapping(NumpyArray<N, Multiband<SrcPixelType>> image,
            newMin = 0.0, newMax = 0.0;
     bool computeRange = !parseRange(oldRange, &oldMin, &oldMax,
                                     "linearRangeMapping(): Argument 'oldRange' is invalid.");
-    if (!parseRange(newRange, &newMin, &newMax, "linearRangeMapping(): Argument 'newRange' is invalid."))
+    if(!parseRange(newRange, &newMin, &newMax, "linearRangeMapping(): Argument 'newRange' is invalid."))
     {
         newMin = 0.0;
         newMax = 255.0;
@@ -257,7 +257,7 @@ pythonLinearRangeMapping(NumpyArray<N, Multiband<SrcPixelType>> image,
 
     {
         PyAllowThreads _pythread;
-        if (computeRange)
+        if(computeRange)
         {
             FindMinMax<SrcPixelType> minmax;
             inspectMultiArray(srcMultiArrayRange(image), minmax);
@@ -275,7 +275,7 @@ pythonLinearRangeMapping(NumpyArray<N, Multiband<SrcPixelType>> image,
     return res;
 }
 
-template<class SrcPixelType>
+template <class SrcPixelType>
 inline NumpyAnyArray
     pythonLinearRangeMapping2D(NumpyArray<3, Multiband<SrcPixelType>> image,
                                python::object oldRange,
@@ -287,7 +287,7 @@ inline NumpyAnyArray
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyLinearRangeMapping2D, pythonLinearRangeMapping2D)
 
-template<class PixelType, unsigned int N, class Functor>
+template <class PixelType, unsigned int N, class Functor>
 NumpyAnyArray
     pythonColorTransform(NumpyArray<N, TinyVector<PixelType, 3>> image,
                          NumpyArray<N, TinyVector<PixelType, 3>> res)
@@ -309,7 +309,7 @@ NumpyAnyArray
         "\n"                                                                                           \
         "For details see " #name "Functor_ in the C++ documentation.\n")
 
-template<class T>
+template <class T>
 NumpyAnyArray
 pythonApplyColortable(const NumpyArray<2, Singleband<T>>& valueImage,
                       const NumpyArray<2, UInt8>& colortable,
@@ -331,20 +331,20 @@ pythonApplyColortable(const NumpyArray<2, Singleband<T>>& valueImage,
 
     bool startsWithTransparent = (colortable(0, 3) == 0);
 
-    for (MultiArrayIndex c = 0; c < colortable.shape(1); ++c)
+    for(MultiArrayIndex c = 0; c < colortable.shape(1); ++c)
     {
         MultiArrayView<2, UInt8>::iterator channelIter = res.bind<2>(c).begin();
 
         //make an unstrided copy of the current column of the colortable
         ArrayVector<UInt8> ctable(colortable.bind<1>(c).begin(), colortable.bind<1>(c).end());
 
-        for (typename InputType::const_iterator v = valueImage.begin(); v != valueImage.end(); ++v, ++channelIter)
+        for(typename InputType::const_iterator v = valueImage.begin(); v != valueImage.end(); ++v, ++channelIter)
         {
-            if (*v == 0)
+            if(*v == 0)
             {
                 *channelIter = ctable[0];
             }
-            else if (startsWithTransparent)
+            else if(startsWithTransparent)
             {
                 // Special behavior: If the colortable has too few values for the image,
                 // we simply repeat the table for the higher indexes (see below).
@@ -365,7 +365,7 @@ pythonApplyColortable(const NumpyArray<2, Singleband<T>>& valueImage,
 }
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyApplyColortable, pythonApplyColortable)
 
-template<class T>
+template <class T>
 void
 pythonGray2QImage_ARGB32Premultiplied(
     const NumpyArray<2, Singleband<T>>& image,
@@ -383,7 +383,7 @@ pythonGray2QImage_ARGB32Premultiplied(
     TmpType pixelF;
 
     TmpType normalizeLow, normalizeHigh;
-    if (normalize.pyObject() != Py_None)
+    if(normalize.pyObject() != Py_None)
     {
         vigra_precondition(normalize.shape(0) == 2,
                            "gray2qimage_ARGB32Premultiplied(): normalize.shape[0] == 2 required.");
@@ -397,15 +397,15 @@ pythonGray2QImage_ARGB32Premultiplied(
 
         const TmpType f = TmpType(255) / static_cast<TmpType>(normalizeHigh - normalizeLow);
 
-        while (data < dataEnd)
+        while(data < dataEnd)
         {
             pixelF = detail::RequiresExplicitCast<TmpType>::cast(*data);
 
-            if (pixelF < normalizeLow)
+            if(pixelF < normalizeLow)
             {
                 pixel = 0;
             }
-            else if (pixelF > normalizeHigh)
+            else if(pixelF > normalizeHigh)
             {
                 pixel = 255;
             }
@@ -426,7 +426,7 @@ pythonGray2QImage_ARGB32Premultiplied(
     }
     else
     {
-        while (data < dataEnd)
+        while(data < dataEnd)
         {
             pixel = detail::RequiresExplicitCast<UInt8>::cast(*data);
             *imgData = pixel;
@@ -443,7 +443,7 @@ pythonGray2QImage_ARGB32Premultiplied(
 }
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyGray2QImage_ARGB32Premultiplied, pythonGray2QImage_ARGB32Premultiplied)
 
-template<class T>
+template <class T>
 void
 pythonAlphaModulated2QImage_ARGB32Premultiplied(
     const NumpyArray<2, Singleband<T>>& image,
@@ -475,14 +475,14 @@ pythonAlphaModulated2QImage_ARGB32Premultiplied(
     unsigned char* imgData = qimageView.data();
     TmpType pixelF;
     const TmpType f = TmpType(255) / static_cast<TmpType>(h - l);
-    while (data < dataEnd)
+    while(data < dataEnd)
     {
         pixelF = detail::RequiresExplicitCast<TmpType>::cast(*data);
-        if (pixelF < l)
+        if(pixelF < l)
         {
             pixelF = TmpType();
         }
-        else if (pixelF > h)
+        else if(pixelF > h)
         {
             pixelF = TmpType(255);
         }

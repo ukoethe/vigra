@@ -56,7 +56,7 @@ main(int argc, char** argv)
         MultiArray<2, float> in(size, size);
 
         MersenneTwister random;
-        for (int i = 1; i <= number_of_points; ++i)
+        for(int i = 1; i <= number_of_points; ++i)
         {
             // mark a number of points
             int x = random.uniformInt(size);
@@ -98,7 +98,7 @@ main(int argc, char** argv)
         exportImage(out, ImageExportInfo("voronoi.gif"));
         std::cout << "Wrote voronoi diagram (voronoi.gif)" << std::endl;
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         std::cout << e.what() << std::endl;
         return 1;

@@ -84,14 +84,14 @@ vigra_print_backtrace(int sig)
     trace_size = backtrace(stack_traces, BACKTRACE_SIZE);
     messages = backtrace_symbols(stack_traces, trace_size);
 
-    for (i = 0; i < trace_size; ++i)
+    for(i = 0; i < trace_size; ++i)
     {
-        if (vigra_addr2line(stack_traces[i]) != 0)
+        if(vigra_addr2line(stack_traces[i]) != 0)
         {
             fprintf(stderr, "  error determining line # for: %sn", messages[i]);
         }
     }
-    if (messages)
+    if(messages)
     {
         free(messages);
     }

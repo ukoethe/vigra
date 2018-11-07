@@ -45,7 +45,7 @@
 
 using namespace vigra;
 
-template<class Real>
+template <class Real>
 struct ComplexRealFunctor
 {
     Real operator()(std::complex<Real> const& c) const
@@ -54,7 +54,7 @@ struct ComplexRealFunctor
     }
 };
 
-template<class Real>
+template <class Real>
 struct ComplexImagFunctor
 {
     Real operator()(std::complex<Real> const& c) const
@@ -95,7 +95,7 @@ struct InvariantFeaturesTest
                    M(29, 29, wignerRef14),
                    M(31, 31, wignerRef15)};
 
-        for (int l = 1; l <= l_max; ++l)
+        for(int l = 1; l <= l_max; ++l)
         {
             wigner.compute_D(l);
 
@@ -119,7 +119,7 @@ struct InvariantFeaturesTest
         }
 
         WignerMatrix<float> wigner2(l_max);
-        for (int l = 1; l <= l_max; ++l)
+        for(int l = 1; l <= l_max; ++l)
         {
             wigner2.compute_D(l, 0.0f, float(M_PI / 2.0), 0.0f);
 

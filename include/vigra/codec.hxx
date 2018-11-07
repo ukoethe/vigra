@@ -71,7 +71,7 @@
 
 namespace vigra
 {
-template<class T>
+template <class T>
 struct TypeAsString
 {
     static std::string result()
@@ -80,7 +80,7 @@ struct TypeAsString
     }
 };
 
-template<>
+template <>
 struct TypeAsString<Int8>
 {
     static std::string result()
@@ -89,7 +89,7 @@ struct TypeAsString<Int8>
     }
 };
 
-template<>
+template <>
 struct TypeAsString<UInt8>
 {
     static std::string result()
@@ -98,7 +98,7 @@ struct TypeAsString<UInt8>
     }
 };
 
-template<>
+template <>
 struct TypeAsString<Int16>
 {
     static std::string result()
@@ -107,7 +107,7 @@ struct TypeAsString<Int16>
     }
 };
 
-template<>
+template <>
 struct TypeAsString<UInt16>
 {
     static std::string result()
@@ -116,7 +116,7 @@ struct TypeAsString<UInt16>
     }
 };
 
-template<>
+template <>
 struct TypeAsString<Int32>
 {
     static std::string result()
@@ -125,7 +125,7 @@ struct TypeAsString<Int32>
     }
 };
 
-template<>
+template <>
 struct TypeAsString<UInt32>
 {
     static std::string result()
@@ -134,7 +134,7 @@ struct TypeAsString<UInt32>
     }
 };
 
-template<>
+template <>
 struct TypeAsString<float>
 {
     static std::string result()
@@ -143,7 +143,7 @@ struct TypeAsString<float>
     }
 };
 
-template<>
+template <>
 struct TypeAsString<double>
 {
     static std::string result()

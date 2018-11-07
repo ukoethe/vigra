@@ -100,7 +100,7 @@ public:
  *      Value_Chooser choose_val<Type, Default_Type>
  *\endcode
  */
-template<class T, class C>
+template <class T, class C>
 class Value_Chooser
 {
 public:
@@ -111,7 +111,7 @@ public:
     }
 };
 
-template<class C>
+template <class C>
 class Value_Chooser<detail::RF_DEFAULT, C>
 {
 public:
@@ -238,7 +238,7 @@ public:
     {
         return !(*this == rhs_);
     }
-    template<class Iter>
+    template <class Iter>
     void unserialize(Iter const& begin, Iter const& end)
     {
         Iter iter = begin;
@@ -262,7 +262,7 @@ public:
         PULL(predict_weighted_, 0 !=);
 #undef PULL
     }
-    template<class Iter>
+    template <class Iter>
     void serialize(Iter const& begin, Iter const& end) const
     {
         Iter iter = begin;
@@ -274,7 +274,7 @@ public:
     ++iter;
         PUSH(training_set_proportion_);
         PUSH(training_set_size_);
-        if (training_set_func_ != 0)
+        if(training_set_func_ != 0)
         {
             PUSH(1);
         }
@@ -287,7 +287,7 @@ public:
         PUSH(stratification_method_);
         PUSH(mtry_switch_);
         PUSH(mtry_);
-        if (mtry_func_ != 0)
+        if(mtry_func_ != 0)
         {
             PUSH(1);
         }
@@ -550,7 +550,7 @@ enum Problem_t
  * if needed usage is similar to that of RandomForestOptions
  */
 
-template<class LabelType = double>
+template <class LabelType = double>
 class ProblemSpec
 {
 
@@ -579,12 +579,12 @@ public:
     double precision_;                  // termination criterion for regression loss
     int response_size_;
 
-    template<class T>
+    template <class T>
     void to_classlabel(int index, T& out) const
     {
         out = T(classes[index]);
     }
-    template<class T>
+    template <class T>
     int to_classIndex(T index) const
     {
         return std::find(classes.begin(), classes.end(), index) - classes.begin();
@@ -610,7 +610,7 @@ public:
     }
 #undef EQUALS
 #define EQUALS(field) field(rhs.field)
-    template<class T>
+    template <class T>
     ProblemSpec(ProblemSpec<T> const& rhs)
         : EQUALS(column_count_),
           EQUALS(class_count_),
@@ -654,7 +654,7 @@ public:
         return *this;
     }
 
-    template<class T>
+    template <class T>
     ProblemSpec<Label_t>& operator=(ProblemSpec<T> const& rhs)
     {
         EQUALS(column_count_);
@@ -679,7 +679,7 @@ public:
     }
 #undef EQUALS
 
-    template<class T>
+    template <class T>
     bool operator==(ProblemSpec<T> const& rhs)
     {
         bool result = true;
@@ -712,7 +712,7 @@ public:
     }
 
 
-    template<class Iter>
+    template <class Iter>
     void unserialize(Iter const& begin, Iter const& end)
     {
         Iter iter = begin;
@@ -735,7 +735,7 @@ public:
         PULL(used_, int);
         PULL(precision_, double);
         PULL(response_size_, int);
-        if (is_weighted_)
+        if(is_weighted_)
         {
             vigra_precondition(end - begin == 10 + 2 * class_count_,
                                "ProblemSpec::unserialize(): 2");
@@ -749,7 +749,7 @@ public:
     }
 
 
-    template<class Iter>
+    template <class Iter>
     void serialize(Iter const& begin, Iter const& end) const
     {
         Iter iter = begin;
@@ -769,7 +769,7 @@ public:
         PUSH(used_);
         PUSH(precision_);
         PUSH(response_size_);
-        if (is_weighted_)
+        if(is_weighted_)
         {
             std::copy(class_weights_.begin(),
                       class_weights_.end(),
@@ -842,12 +842,12 @@ public:
      *
      * the preprocessor will not calculate the labels needed in this case.
      */
-    template<class C_Iter>
+    template <class C_Iter>
     ProblemSpec& classes_(C_Iter begin, C_Iter end)
     {
         classes.clear();
         int size = end - begin;
-        for (int k = 0; k < size; ++k, ++begin)
+        for(int k = 0; k < size; ++k, ++begin)
             classes.push_back(detail::RequiresExplicitCast<LabelType>::cast(*begin));
         class_count_ = size;
         return *this;
@@ -858,7 +858,7 @@ public:
      * this is the only case where you would really have to
      * create a ProblemSpec object.
      */
-    template<class W_Iter>
+    template <class W_Iter>
     ProblemSpec& class_weights(W_Iter begin, W_Iter end)
     {
         class_weights_.clear();
@@ -904,24 +904,24 @@ class EarlyStoppStd
 public:
     int min_split_node_size_;
 
-    template<class Opt>
+    template <class Opt>
     EarlyStoppStd(Opt opt)
         : min_split_node_size_(opt.min_split_node_size_)
     {
     }
 
-    template<class T>
+    template <class T>
     void set_external_parameters(ProblemSpec<T> const&, int /* tree_count */ = 0, bool /* is_weighted_ */ = false)
     {
     }
 
-    template<class Region>
+    template <class Region>
     bool operator()(Region& region)
     {
         return region.size() < min_split_node_size_;
     }
 
-    template<class WeightIter, class T, class C>
+    template <class WeightIter, class T, class C>
     bool after_prediction(WeightIter, int /* k */, MultiArrayView<2, T, C> /* prob */, double /* totalCt */)
     {
         return false;

@@ -155,7 +155,7 @@ struct PnmDecoderImpl
 void
 PnmDecoderImpl::skip_whitespace()
 {
-    while (std::isspace(stream.peek()))
+    while(std::isspace(stream.peek()))
         stream.get();
 }
 
@@ -166,10 +166,10 @@ PnmDecoderImpl::skip()
     skip_whitespace();
 
     // skip comments
-    while (stream.peek() == '#')
+    while(stream.peek() == '#')
     {
         // skip line
-        while (stream.peek() != '\n')
+        while(stream.peek() != '\n')
             stream.get();
         // skip whitespace
         skip_whitespace();
@@ -184,7 +184,7 @@ PnmDecoderImpl::read_bilevel_ascii_scanline()
     vector_type& cbands = static_cast<vector_type&>(bands);
 
     // read and store
-    for (unsigned int i = 0; i < width * components; ++i)
+    for(unsigned int i = 0; i < width * components; ++i)
     {
         skip_whitespace();
         cbands[i] = (stream.get() - '0') * 255;
@@ -202,7 +202,7 @@ PnmDecoderImpl::read_ascii_scanline()
 
     // read and store
     int x;
-    for (unsigned int i = 0; i < width * components; ++i)
+    for(unsigned int i = 0; i < width * components; ++i)
     {
         skip_whitespace();
         stream >> x;
@@ -220,10 +220,10 @@ PnmDecoderImpl::read_bilevel_raw_scanline()
     // read and store
     UInt8 buf = 0;
     const unsigned int size = width / 8; // XXX wrong assumption
-    for (unsigned int i = 0; i < size; ++i)
+    for(unsigned int i = 0; i < size; ++i)
     {
         stream.read(reinterpret_cast<char*>(&buf), 1);
-        for (unsigned int j = 0; j < 8; ++j)
+        for(unsigned int j = 0; j < 8; ++j)
             cbands[8 * i + j] = ((buf >> j) & 1) * 255;
     }
 }
@@ -231,15 +231,15 @@ PnmDecoderImpl::read_bilevel_raw_scanline()
 void
 PnmDecoderImpl::read_raw_scanline()
 {
-    if (pixeltype == std::string("UINT8"))
+    if(pixeltype == std::string("UINT8"))
     {
         read_raw_scanline_uchar();
     }
-    if (pixeltype == std::string("UINT16"))
+    if(pixeltype == std::string("UINT16"))
     {
         read_raw_scanline_ushort();
     }
-    if (pixeltype == std::string("UINT32"))
+    if(pixeltype == std::string("UINT32"))
     {
         read_raw_scanline_uint();
     }
@@ -293,7 +293,7 @@ PnmDecoderImpl::PnmDecoderImpl(const std::string& filename)
     long maxval = 1;
     char type;
 
-    if (!stream.good())
+    if(!stream.good())
     {
         std::string msg("Unable to open file '");
         msg += filename;
@@ -307,7 +307,7 @@ PnmDecoderImpl::PnmDecoderImpl(const std::string& filename)
     // read the type, find out if the file is raw or ascii
     type = stream.get();
 
-    switch (type)
+    switch(type)
     {
         case '1': // plain bitmap
             raw = false;
@@ -358,7 +358,7 @@ PnmDecoderImpl::PnmDecoderImpl(const std::string& filename)
     stream >> height;
 
     // bitmaps implicitly have maxval 1
-    if (type != '1' && type != '4')
+    if(type != '1' && type != '4')
     {
         skip();
         stream >> maxval;
@@ -370,25 +370,25 @@ PnmDecoderImpl::PnmDecoderImpl(const std::string& filename)
     {
         ++bits;
         maxval >>= 1;
-    } while (maxval > 0);
+    } while(maxval > 0);
 
     vigra_precondition(bits >= 0, "the file's maxval field is corrupt");
-    if (bits <= 8)
+    if(bits <= 8)
         pixeltype = "UINT8";
-    else if (bits <= 16)
+    else if(bits <= 16)
         pixeltype = "UINT16";
-    else if (bits <= 32)
+    else if(bits <= 32)
         pixeltype = "UINT32";
     else
         vigra_precondition(false,
                            "the file's maxval field is too large");
 
     // adjust the buffer size
-    if (pixeltype == "UINT8")
+    if(pixeltype == "UINT8")
         bands.resize(width * components);
-    else if (pixeltype == "UINT16")
+    else if(pixeltype == "UINT16")
         bands.resize(width * components * 2);
-    else if (pixeltype == "UINT32")
+    else if(pixeltype == "UINT32")
         bands.resize(width * components * 4);
 
 #ifdef DEBUG
@@ -398,7 +398,7 @@ PnmDecoderImpl::PnmDecoderImpl(const std::string& filename)
 #endif
 
     // advance to the beginning of the "data section"
-    if (raw == false)
+    if(raw == false)
         skip();
     else
     {
@@ -409,11 +409,11 @@ PnmDecoderImpl::PnmDecoderImpl(const std::string& filename)
 #endif
         {
             UInt32 seekOffset = width * height * components;
-            if (pixeltype == "UINT8")
+            if(pixeltype == "UINT8")
                 seekOffset *= 1;
-            else if (pixeltype == "UINT16")
+            else if(pixeltype == "UINT16")
                 seekOffset *= 2;
-            else if (pixeltype == "UINT32")
+            else if(pixeltype == "UINT32")
                 seekOffset *= 4;
 
             stream.seekg(-static_cast<streamOffset>(seekOffset), std::ios::end);
@@ -471,19 +471,19 @@ PnmDecoder::getOffset() const
 const void*
 PnmDecoder::currentScanlineOfBand(unsigned int band) const
 {
-    if (pimpl->pixeltype == "UINT8")
+    if(pimpl->pixeltype == "UINT8")
     {
         typedef void_vector<UInt8> bands_type;
         const bands_type& bands = static_cast<const bands_type&>(pimpl->bands);
         return bands.data() + band;
     }
-    else if (pimpl->pixeltype == "UINT16")
+    else if(pimpl->pixeltype == "UINT16")
     {
         typedef void_vector<UInt16> bands_type;
         const bands_type& bands = static_cast<const bands_type&>(pimpl->bands);
         return bands.data() + band;
     }
-    else if (pimpl->pixeltype == "UINT32")
+    else if(pimpl->pixeltype == "UINT32")
     {
         typedef void_vector<UInt32> bands_type;
         const bands_type& bands = static_cast<const bands_type&>(pimpl->bands);
@@ -496,16 +496,16 @@ PnmDecoder::currentScanlineOfBand(unsigned int band) const
 void
 PnmDecoder::nextScanline()
 {
-    if (pimpl->raw)
+    if(pimpl->raw)
     {
-        if (pimpl->bilevel)
+        if(pimpl->bilevel)
             pimpl->read_bilevel_raw_scanline();
         else
             pimpl->read_raw_scanline();
     }
     else
     {
-        if (pimpl->bilevel)
+        if(pimpl->bilevel)
             pimpl->read_bilevel_ascii_scanline();
         else
             pimpl->read_ascii_scanline();
@@ -564,7 +564,7 @@ PnmEncoderImpl::PnmEncoderImpl(const std::string& filename)
 #endif
       raw(true), bilevel(false), finalized(false), scanline(0)
 {
-    if (!stream.good())
+    if(!stream.good())
     {
         std::string msg("Unable to open file '");
         msg += filename;
@@ -615,11 +615,11 @@ void
 PnmEncoder::setCompressionType(const std::string& comp, int /* quality */)
 {
     VIGRA_IMPEX_FINALIZED(pimpl->finalized);
-    if (comp == "ASCII")
+    if(comp == "ASCII")
         pimpl->raw = false;
-    else if (comp == "RAW")
+    else if(comp == "RAW")
         pimpl->raw = true;
-    else if (comp == "BILEVEL")
+    else if(comp == "BILEVEL")
         pimpl->bilevel = true;
 }
 
@@ -642,14 +642,14 @@ PnmEncoder::finalizeSettings()
     VIGRA_IMPEX_FINALIZED(pimpl->finalized);
     pimpl->finalized = true;
 
-    if (pimpl->pixeltype == "INT32")
+    if(pimpl->pixeltype == "INT32")
         pimpl->raw = false;
 
     // write magic number
     pimpl->stream << "P";
-    if (pimpl->components == 1)
+    if(pimpl->components == 1)
     {
-        if (pimpl->bilevel)
+        if(pimpl->bilevel)
         {
             // bitmap
             pimpl->stream << (pimpl->raw ? "4" : "1");
@@ -660,7 +660,7 @@ PnmEncoder::finalizeSettings()
             pimpl->stream << (pimpl->raw ? "5" : "2");
         }
     }
-    else if (pimpl->components == 3)
+    else if(pimpl->components == 3)
     {
         // pixmap
         pimpl->stream << (pimpl->raw ? "6" : "3");
@@ -676,11 +676,11 @@ PnmEncoder::finalizeSettings()
     pimpl->stream << pimpl->width << " " << pimpl->height << std::endl;
 
     // allocate image memory
-    if (pimpl->pixeltype == "UINT8")
+    if(pimpl->pixeltype == "UINT8")
         pimpl->bands.resize(pimpl->height * pimpl->width * pimpl->components);
-    else if (pimpl->pixeltype == "UINT16")
+    else if(pimpl->pixeltype == "UINT16")
         pimpl->bands.resize(2 * pimpl->height * pimpl->width * pimpl->components);
-    else if (pimpl->pixeltype == "UINT32")
+    else if(pimpl->pixeltype == "UINT32")
         pimpl->bands.resize(4 * pimpl->height * pimpl->width * pimpl->components);
 }
 
@@ -688,19 +688,19 @@ void*
 PnmEncoder::currentScanlineOfBand(unsigned int band)
 {
     const unsigned int row_stride = pimpl->width * pimpl->components;
-    if (pimpl->pixeltype == "UINT8")
+    if(pimpl->pixeltype == "UINT8")
     {
         typedef void_vector<UInt8> bands_type;
         bands_type& bands = static_cast<bands_type&>(pimpl->bands);
         return bands.data() + pimpl->scanline * row_stride + band;
     }
-    else if (pimpl->pixeltype == "UINT16")
+    else if(pimpl->pixeltype == "UINT16")
     {
         typedef void_vector<UInt16> bands_type;
         bands_type& bands = static_cast<bands_type&>(pimpl->bands);
         return bands.data() + pimpl->scanline * row_stride + band;
     }
-    else if (pimpl->pixeltype == "UINT32")
+    else if(pimpl->pixeltype == "UINT32")
     {
         typedef void_vector<UInt32> bands_type;
         bands_type& bands = static_cast<bands_type&>(pimpl->bands);
@@ -719,11 +719,11 @@ PnmEncoderImpl::write_bilevel_ascii()
 
     // write and store
     UInt8* iter = cbands.data();
-    for (unsigned int i = 0; i < height; ++i)
+    for(unsigned int i = 0; i < height; ++i)
     {
-        for (unsigned int j = 0; j < width; ++j)
+        for(unsigned int j = 0; j < width; ++j)
         {
-            for (unsigned int k = 0; k < components; ++k)
+            for(unsigned int k = 0; k < components; ++k)
             {
                 const int value = *iter / 255;
                 ++iter;
@@ -738,17 +738,17 @@ PnmEncoderImpl::write_bilevel_ascii()
 void
 PnmEncoderImpl::write_ascii()
 {
-    if (pixeltype == "UINT8")
+    if(pixeltype == "UINT8")
     {
 
         typedef void_vector<UInt8> vector_type;
         vector_type& cbands = static_cast<vector_type&>(bands);
         UInt8* iter = cbands.data();
-        for (unsigned int i = 0; i < height; ++i)
+        for(unsigned int i = 0; i < height; ++i)
         {
-            for (unsigned int j = 0; j < width; ++j)
+            for(unsigned int j = 0; j < width; ++j)
             {
-                for (unsigned int k = 0; k < components; ++k)
+                for(unsigned int k = 0; k < components; ++k)
                 {
                     const int value = *iter;
                     ++iter;
@@ -759,17 +759,17 @@ PnmEncoderImpl::write_ascii()
             stream << std::endl; // separate lines with a newline
         }
     }
-    else if (pixeltype == "UINT16")
+    else if(pixeltype == "UINT16")
     {
 
         typedef void_vector<UInt16> vector_type;
         vector_type& cbands = static_cast<vector_type&>(bands);
         UInt16* iter = cbands.data();
-        for (unsigned int i = 0; i < height; ++i)
+        for(unsigned int i = 0; i < height; ++i)
         {
-            for (unsigned int j = 0; j < width; ++j)
+            for(unsigned int j = 0; j < width; ++j)
             {
-                for (unsigned int k = 0; k < components; ++k)
+                for(unsigned int k = 0; k < components; ++k)
                 {
                     const int value = *iter;
                     ++iter;
@@ -780,17 +780,17 @@ PnmEncoderImpl::write_ascii()
             stream << std::endl; // separate lines with a newline
         }
     }
-    else if (pixeltype == "UINT32")
+    else if(pixeltype == "UINT32")
     {
 
         typedef void_vector<UInt32> vector_type;
         vector_type& cbands = static_cast<vector_type&>(bands);
         UInt32* iter = cbands.data();
-        for (unsigned int i = 0; i < height; ++i)
+        for(unsigned int i = 0; i < height; ++i)
         {
-            for (unsigned int j = 0; j < width; ++j)
+            for(unsigned int j = 0; j < width; ++j)
             {
-                for (unsigned int k = 0; k < components; ++k)
+                for(unsigned int k = 0; k < components; ++k)
                 {
                     const int value = *iter;
                     ++iter;
@@ -808,7 +808,7 @@ PnmEncoderImpl::write_ascii()
 
     // write and store
     int x;
-    for (unsigned int i = 0; i < width * components; ++i)
+    for(unsigned int i = 0; i < width * components; ++i)
     {
         x = cbands[i];
         stream << x << " ";
@@ -825,7 +825,7 @@ PnmEncoderImpl::write_bilevel_raw()
 void
 PnmEncoderImpl::write_raw()
 {
-    if (pixeltype == "UINT8")
+    if(pixeltype == "UINT8")
     {
 
         // cast the bands to the correct type
@@ -836,7 +836,7 @@ PnmEncoderImpl::write_raw()
         stream.write(reinterpret_cast<char*>(cbands.data()),
                      height * width * components);
     }
-    else if (pixeltype == "UINT16")
+    else if(pixeltype == "UINT16")
     {
 
         // cast the bands to the correct type
@@ -864,39 +864,39 @@ PnmEncoder::nextScanline()
 void
 PnmEncoder::close()
 {
-    if (!pimpl->bilevel)
+    if(!pimpl->bilevel)
     {
 
         // find out maxval and print it into the stream
         UInt32 maxval = 0;
-        if (pimpl->pixeltype == "UINT8")
+        if(pimpl->pixeltype == "UINT8")
         {
             void_vector<UInt8>& cbands = static_cast<void_vector<UInt8>&>(pimpl->bands);
-            for (UInt8* iter = cbands.begin();
-                 iter < cbands.end(); ++iter)
-                if (*iter > maxval)
+            for(UInt8* iter = cbands.begin();
+                iter < cbands.end(); ++iter)
+                if(*iter > maxval)
                     maxval = *iter;
         }
-        else if (pimpl->pixeltype == "UINT16")
+        else if(pimpl->pixeltype == "UINT16")
         {
             void_vector<UInt16>& cbands = static_cast<void_vector<UInt16>&>(pimpl->bands);
-            for (UInt16* iter = cbands.begin();
-                 iter < cbands.end(); ++iter)
-                if (*iter > maxval)
+            for(UInt16* iter = cbands.begin();
+                iter < cbands.end(); ++iter)
+                if(*iter > maxval)
                     maxval = *iter;
         }
-        else if (pimpl->pixeltype == "UINT32")
+        else if(pimpl->pixeltype == "UINT32")
         {
             void_vector<UInt32>& cbands = static_cast<void_vector<UInt32>&>(pimpl->bands);
-            for (UInt32* iter = cbands.begin();
-                 iter < cbands.end(); ++iter)
-                if (*iter > maxval)
+            for(UInt32* iter = cbands.begin();
+                iter < cbands.end(); ++iter)
+                if(*iter > maxval)
                     maxval = *iter;
         }
         pimpl->stream << maxval << std::endl;
 
         // print the data
-        if (pimpl->raw)
+        if(pimpl->raw)
             pimpl->write_raw();
         else
             pimpl->write_ascii();
@@ -905,7 +905,7 @@ PnmEncoder::close()
     {
 
         // print the data
-        if (pimpl->raw)
+        if(pimpl->raw)
             pimpl->write_bilevel_raw();
         else
             pimpl->write_bilevel_ascii();

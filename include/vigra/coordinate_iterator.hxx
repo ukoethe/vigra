@@ -48,7 +48,7 @@
 namespace vigra
 {
 
-template<unsigned N>
+template <unsigned N>
 struct StridePair
 {
     typedef typename MultiArrayShape<N>::type index_type;
@@ -145,13 +145,13 @@ struct StridePair
     }
 };
 
-template<unsigned M>
+template <unsigned M>
 struct NumericTraits<StridePair<M>>
     : public NumericTraits<typename StridePair<M>::index_type>
 {
 };
 
-template<unsigned N>
+template <unsigned N>
 struct StridePairCoord : public TinyVector<double, N>
 {
     typedef TinyVector<double, N> entry_type;
@@ -173,13 +173,13 @@ struct StridePairCoord : public TinyVector<double, N>
         return (*this)[0];
     }
 };
-template<unsigned M>
+template <unsigned M>
 struct NumericTraits<StridePairCoord<M>>
     : public NumericTraits<typename StridePairCoord<M>::entry_type>
 {
 };
 
-template<unsigned N>
+template <unsigned N>
 struct StridePairDiff : public StridePairCoord<N>
 {
     MultiArrayIndex c;
@@ -218,13 +218,13 @@ struct StridePairDiff : public StridePairCoord<N>
     }
 };
 
-template<unsigned M>
+template <unsigned M>
 struct NumericTraits<StridePairDiff<M>>
     : public NumericTraits<StridePairCoord<M>>
 {
 };
 
-template<unsigned N, class T>
+template <unsigned N, class T>
 struct StridePairPointer : public StridePairCoord<N>
 {
     typedef const T* index_type;
@@ -278,7 +278,7 @@ struct StridePairPointer : public StridePairCoord<N>
     }
 };
 
-template<unsigned M, class T>
+template <unsigned M, class T>
 struct NumericTraits<StridePairPointer<M, T>>
     : public NumericTraits<typename StridePairPointer<M, T>::coord_type>
 {
@@ -287,8 +287,8 @@ struct NumericTraits<StridePairPointer<M, T>>
 namespace detail
 {
 
-template<class T, bool is_complex = NumericTraits<T>::isComplex::value,
-         bool is_vector = !NumericTraits<T>::isScalar::value>
+template <class T, bool is_complex = NumericTraits<T>::isComplex::value,
+          bool is_vector = !NumericTraits<T>::isScalar::value>
 struct weighted_abs
 {
     static double get(const T& x)
@@ -297,7 +297,7 @@ struct weighted_abs
     }
 };
 
-template<class T>
+template <class T>
 struct weighted_abs<T, true, false>
 {
     static double get(const T& x)
@@ -307,7 +307,7 @@ struct weighted_abs<T, true, false>
     }
 };
 
-template<class T, bool is_complex>
+template <class T, bool is_complex>
 struct weighted_abs<T, is_complex, true>
 {
     static double get(const T& x)
@@ -316,14 +316,14 @@ struct weighted_abs<T, is_complex, true>
     }
 };
 
-template<class T>
+template <class T>
 struct accumulable_coord_access;
-template<class T>
+template <class T>
 struct accumulable_value_access;
-template<class T>
+template <class T>
 struct accumulable_weighted_access;
 
-template<unsigned N, class T>
+template <unsigned N, class T>
 struct accumulable_coord_access<StridePairPointer<N, T>>
 {
     typedef StridePairPointer<N, T> accumulable_type;
@@ -334,7 +334,7 @@ struct accumulable_coord_access<StridePairPointer<N, T>>
     }
 };
 
-template<unsigned N, class T>
+template <unsigned N, class T>
 struct accumulable_value_access<StridePairPointer<N, T>>
 {
     typedef StridePairPointer<N, T> accumulable_type;
@@ -345,7 +345,7 @@ struct accumulable_value_access<StridePairPointer<N, T>>
     }
 };
 
-template<unsigned N, class T>
+template <unsigned N, class T>
 struct accumulable_weighted_access<StridePairPointer<N, T>>
 {
     typedef StridePairPointer<N, T> accumulable_type;
@@ -356,43 +356,43 @@ struct accumulable_weighted_access<StridePairPointer<N, T>>
     }
 };
 
-template<class X>
+template <class X>
 void
 dismember(X& r, const X& x, unsigned i)
 {
     r[i] = x[i];
 }
-template<unsigned N>
+template <unsigned N>
 void
 dismember(StridePair<N>& r, const StridePair<N>& x, unsigned i)
 {
     r.index[i] = x.index[i];
     r.coord[i] = x.coord[i];
 }
-template<unsigned N>
+template <unsigned N>
 void
 dismember(StridePairDiff<N>& r, const StridePairDiff<N>& x, unsigned i)
 {
     r.c = static_cast<MultiArrayIndex>(r[i] = x[i]);
 }
 
-template<unsigned N, class X>
+template <unsigned N, class X>
 TinyVector<X, N>
 dismember(const X& x)
 {
     TinyVector<X, N> ret;
-    for (unsigned i = 0; i != N; ++i)
+    for(unsigned i = 0; i != N; ++i)
         dismember(ret[i], x, i);
     return ret;
 }
-template<unsigned N>
+template <unsigned N>
 TinyVector<StridePairDiff<N>, N>
 dismember(const TinyVector<MultiArrayIndex, N>& x,
           const StridePairCoord<N>& y)
 {
     typedef StridePairDiff<N> type;
     TinyVector<type, N> ret;
-    for (unsigned i = 0; i != N; ++i)
+    for(unsigned i = 0; i != N; ++i)
     {
         ret[i].c = x[i];
         ret[i][i] = y[i];
@@ -408,7 +408,7 @@ dismember(const TinyVector<MultiArrayIndex, N>& x,
 // iterator comparison is done via via '<' or '!='. Class CoordinateStride
 // thus forwards iterator comparison to the index or pointer part
 // of its template parameter S.
-template<unsigned N, class S = StridePair<N>>
+template <unsigned N, class S = StridePair<N>>
 class CoordinateStride : protected S
 {
 public:
@@ -482,7 +482,7 @@ public:
     }
     bool operator==(const CoordinateStride& y) const
     {
-        if (stride_0 != y.stride_0)
+        if(stride_0 != y.stride_0)
             return false;
         return idx() == y.idx();
     }
@@ -493,7 +493,7 @@ public:
 
     bool operator<=(const CoordinateStride& y) const
     {
-        if (stride_0 == y.stride_0)
+        if(stride_0 == y.stride_0)
             return true;
         return *this < y;
     }
@@ -503,7 +503,7 @@ public:
     }
     bool operator>=(const CoordinateStride& y) const
     {
-        if (stride_0 == y.stride_0)
+        if(stride_0 == y.stride_0)
             return true;
         return operator>(y);
     }
@@ -519,7 +519,7 @@ public:
         iterator_type;
 };
 
-template<unsigned N, class S>
+template <unsigned N, class S>
 struct MultiIteratorStrideTraits<CoordinateStride<N, S>>
 {
     typedef typename S::stride_type stride_type;
@@ -528,13 +528,13 @@ struct MultiIteratorStrideTraits<CoordinateStride<N, S>>
     static stride_array_type shift(const stride_array_type& s, unsigned d)
     {
         stride_array_type ret;
-        for (unsigned i = d; i != N; ++i)
+        for(unsigned i = d; i != N; ++i)
             ret[i - d] = s[i];
         return ret;
     }
 };
 
-template<unsigned N>
+template <unsigned N>
 struct CoordinateMultiIterator : public CoordinateStride<N>::iterator_type
 {
     typedef CoordinateStride<N> ptr_type;
@@ -563,7 +563,7 @@ struct CoordinateMultiIterator : public CoordinateStride<N>::iterator_type
 namespace detail
 {
 
-template<unsigned N>
+template <unsigned N>
 struct CoordinateMultiRangeReturns
 {
     typedef CoordinateMultiIterator<N> iterator_type;
@@ -579,7 +579,7 @@ struct CoordinateMultiRangeReturns
 
 } // namespace detail
 
-template<unsigned N>
+template <unsigned N>
 typename detail::CoordinateMultiRangeReturns<N>::type
 coordinateMultiRange(const typename MultiArrayShape<N>::type& shape,
                      const TinyVector<double, N>& stride = TinyVector<double, N>(1.0),
@@ -595,7 +595,7 @@ coordinateMultiRange(const typename MultiArrayShape<N>::type& shape,
                                                                  access_type());
 }
 
-template<unsigned N, class T>
+template <unsigned N, class T>
 struct CombinedMultiIterator
     : public CoordinateStride<N, StridePairPointer<N, T>>::iterator_type
 {
@@ -624,7 +624,7 @@ struct CombinedMultiIterator
     }
 };
 
-template<unsigned N, class T>
+template <unsigned N, class T>
 struct SrcCoordinateMultiArrayRangeReturns
 {
     typedef CombinedMultiIterator<N, T> iterator_type;
@@ -642,13 +642,13 @@ struct SrcCoordinateMultiArrayRangeReturns
 };
 
 // work around GCC 4.4.3 template argument deduction bug:
-template<unsigned N>
+template <unsigned N>
 struct CoordinateSteps
 {
     typedef const TinyVector<double, N>& type;
 };
 
-template<unsigned int N, class T, class StrideTag>
+template <unsigned int N, class T, class StrideTag>
 inline typename SrcCoordinateMultiArrayRangeReturns<N, T>::type
 srcCoordinateMultiArrayRange(const MultiArrayView<N, T, StrideTag>& array,
                              typename CoordinateSteps<N>::type stride = TinyVector<double, N>(1.0),
@@ -671,7 +671,7 @@ srcCoordinateMultiArrayRange(const MultiArrayView<N, T, StrideTag>& array,
                 access_type());
 }
 
-template<class VALUETYPE, class COORD>
+template <class VALUETYPE, class COORD>
 struct AccessorCoordinatePair
 {
     typedef VALUETYPE value_type;
@@ -706,7 +706,7 @@ struct AccessorCoordinatePair
     <b>\#include</b> \<vigra/coordinate_iterator.hxx\><br>
     Namespace: vigra
 */
-template<class Accessor, class COORD>
+template <class Accessor, class COORD>
 class CoordinateConstValueAccessor
 {
 public:
@@ -719,7 +719,7 @@ public:
     }
     /** Read the current data item.
         */
-    template<class ITERATOR>
+    template <class ITERATOR>
     value_type operator()(ITERATOR const& i) const
     {
         const typename ITERATOR::value_type& x = *i;
@@ -727,7 +727,7 @@ public:
     }
     /** Read the data item at an offset.
         */
-    template<class ITERATOR, class DIFFERENCE>
+    template <class ITERATOR, class DIFFERENCE>
     value_type operator()(ITERATOR const& i, DIFFERENCE const& diff) const
     {
         const typename ITERATOR::value_type& x = i[diff];
@@ -735,7 +735,7 @@ public:
     }
 };
 
-template<unsigned N, class T, class Accessor>
+template <unsigned N, class T, class Accessor>
 struct SrcCoordinateMultiArrayRangeAccessorReturns
 {
     typedef CombinedMultiIterator<N, T> iterator_type;
@@ -751,7 +751,7 @@ struct SrcCoordinateMultiArrayRangeAccessorReturns
     typedef triple<iterator_type, stride_array_type, access_type> type;
 };
 
-template<unsigned int N, class T, class StrideTag, class Access>
+template <unsigned int N, class T, class StrideTag, class Access>
 inline typename SrcCoordinateMultiArrayRangeAccessorReturns<N, T, Access>::type
 srcCoordinateMultiArrayRangeAccessor(const MultiArrayView<N, T, StrideTag>&
                                          array,
@@ -781,7 +781,7 @@ srcCoordinateMultiArrayRangeAccessor(const MultiArrayView<N, T, StrideTag>&
 namespace std
 {
 
-template<unsigned N>
+template <unsigned N>
 ostream&
 operator<<(ostream& os, const vigra::StridePair<N>& x)
 {
@@ -789,7 +789,7 @@ operator<<(ostream& os, const vigra::StridePair<N>& x)
     return os;
 }
 
-template<unsigned N>
+template <unsigned N>
 ostream&
 operator<<(ostream& os, const vigra::StridePairDiff<N>& x)
 {
@@ -798,7 +798,7 @@ operator<<(ostream& os, const vigra::StridePairDiff<N>& x)
     return os;
 }
 
-template<unsigned N, class T>
+template <unsigned N, class T>
 ostream&
 operator<<(ostream& os, const vigra::StridePairPointer<N, T>& x)
 {
@@ -806,7 +806,7 @@ operator<<(ostream& os, const vigra::StridePairPointer<N, T>& x)
     return os;
 }
 
-template<class VALUETYPE, class COORD>
+template <class VALUETYPE, class COORD>
 ostream&
 operator<<(ostream& os,
            const vigra::AccessorCoordinatePair<VALUETYPE, COORD>& x)

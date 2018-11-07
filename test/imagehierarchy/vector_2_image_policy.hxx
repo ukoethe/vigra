@@ -4,7 +4,7 @@
 #include "test_policy_parent.hxx"
 #include <unittest.hxx>
 
-template<class Vector2ImageP> // bei dem template handelt es sich um Vector2Image, der einer der folgenden Varianten einnehmen kann: FVector2Image, DVector2Image, Vector2Image
+template <class Vector2ImageP> // bei dem template handelt es sich um Vector2Image, der einer der folgenden Varianten einnehmen kann: FVector2Image, DVector2Image, Vector2Image
 class Vector2ImagePolicy
     : public TestPolicy<Vector2ImageP>
 {
@@ -24,7 +24,7 @@ public:
         type frgb = 0.1;
         static value_type data[15];
 
-        for (int i = 0; i <= 14; i++)
+        for(int i = 0; i <= 14; i++)
         {
             data[i] = value_type((i + frgb), (2 * i + frgb));
         }

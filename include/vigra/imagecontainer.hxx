@@ -68,8 +68,8 @@ namespace vigra
     <b>\#include</b> \<vigra/imagecontainer.hxx\> <br/>
     Namespace: vigra
 */
-template<class ImageType,
-         class Alloc = typename ImageType::allocator_type::template rebind<ImageType>::other>
+template <class ImageType,
+          class Alloc = typename ImageType::allocator_type::template rebind<ImageType>::other>
 class ImageArray
 {
     Size2D imageSize_;
@@ -102,7 +102,7 @@ public:
         : imageSize_(imageSize),
           images_(numImages, ImageType(), alloc)
     {
-        for (unsigned int i = 0; i < numImages; i++)
+        for(unsigned int i = 0; i < numImages; i++)
             images_[i].resize(Size2D(imageSize));
     }
 
@@ -130,7 +130,7 @@ public:
             same size, see \ref imageSize(). (STL-Sequence interface);
             use the specified allocator.
          */
-    template<class InputIterator>
+    template <class InputIterator>
     ImageArray(InputIterator begin, InputIterator end, Alloc const& alloc = Alloc())
         : imageSize_(begin != end ? (*begin).size() : Size2D(0, 0)),
           images_(begin, end, alloc)
@@ -275,7 +275,7 @@ public:
     /** Insert copies of images from [begin, end) at/before
             pos. (STL-Sequence interface)
          */
-    template<class InputIterator>
+    template <class InputIterator>
     void insert(iterator pos, InputIterator begin, InputIterator end)
     {
         images_.insert(pos, begin, end);
@@ -311,11 +311,11 @@ public:
         */
     void resize(size_type newSize)
     {
-        if (newSize != size())
+        if(newSize != size())
         {
             size_type oldSize = size();
             images_.resize(newSize);
-            for (size_type i = oldSize; i < newSize; i++)
+            for(size_type i = oldSize; i < newSize; i++)
                 images_[i].resize(imageSize());
         }
     }
@@ -328,7 +328,7 @@ public:
         */
     void resize(size_type newSize, ImageType& image)
     {
-        if (newSize != size())
+        if(newSize != size())
         {
             vigra_precondition(image.size() == imageSize(),
                                "trying to append images of wrong size to ImageArray with resize()");
@@ -421,9 +421,9 @@ public:
         */
     virtual void resizeImages(const Diff2D& newSize)
     {
-        if (newSize != imageSize())
+        if(newSize != imageSize())
         {
-            for (unsigned int i = 0; i < size(); i++)
+            for(unsigned int i = 0; i < size(); i++)
                 images_[i].resize(Size2D(newSize));
             imageSize_ = newSize;
         }
@@ -467,8 +467,8 @@ public:
     <b>\#include</b> \<vigra/imagecontainer.hxx\> <br/>
     Namespace: vigra
 */
-template<class ImageType,
-         class Alloc = typename ImageType::allocator_type::template rebind<ImageType>::other>
+template <class ImageType,
+          class Alloc = typename ImageType::allocator_type::template rebind<ImageType>::other>
 class ImagePyramid
 {
     int lowestLevel_, highestLevel_;
@@ -547,7 +547,7 @@ public:
          * resizable.  sizeAppliesToLevel must be the in range
          * lowestLevel..highestLevel (inclusive).
          */
-    template<class SrcIterator, class SrcAccessor>
+    template <class SrcIterator, class SrcAccessor>
     ImagePyramid(int lowestLevel, int highestLevel,
                  SrcIterator ul, SrcIterator lr, SrcAccessor src,
                  int copyImageToLevel = 0,
@@ -721,13 +721,13 @@ public:
         ImageVector images(highestLevel - lowestLevel + 1, ImageType());
 
         images[sizeAppliesToLevel - lowestLevel].resize(imageSize);
-        for (int i = sizeAppliesToLevel + 1; i <= highestLevel; ++i)
+        for(int i = sizeAppliesToLevel + 1; i <= highestLevel; ++i)
         {
             unsigned int w = (images[i - 1 - lowestLevel].width() + 1) / 2;
             unsigned int h = (images[i - 1 - lowestLevel].height() + 1) / 2;
             images[i - lowestLevel].resize(w, h);
         }
-        for (int i = sizeAppliesToLevel - 1; i >= lowestLevel; --i)
+        for(int i = sizeAppliesToLevel - 1; i >= lowestLevel; --i)
         {
             unsigned int w = 2 * images[i + 1 - lowestLevel].width() - 1;
             unsigned int h = 2 * images[i + 1 - lowestLevel].height() - 1;

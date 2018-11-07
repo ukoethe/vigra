@@ -57,7 +57,7 @@ namespace vigra
 namespace detail
 {
 
-template<class Value>
+template <class Value>
 struct DistParabolaStackEntry
 {
     double left, center, right;
@@ -77,15 +77,15 @@ struct DistParabolaStackEntry
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
              DestIterator id, DestAccessor da, double sigma)
 {
     // We assume that the data in the input is distance squared and treat it as such
     double w = iend - is;
-    if (w <= 0)
+    if(w <= 0)
         return;
 
     double sigma2 = sigma * sigma;
@@ -98,25 +98,25 @@ distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     ++is;
     double current = 1.0;
-    for (; current < w; ++is, ++current)
+    for(; current < w; ++is, ++current)
     {
         double intersection;
 
-        while (true)
+        while(true)
         {
             Influence& s = _stack.back();
             double diff = current - s.center;
             intersection = current + (sa(is) - s.apex_height - sigma2 * sq(diff)) / (sigma22 * diff);
 
-            if (intersection < s.left) // previous point has no influence
+            if(intersection < s.left) // previous point has no influence
             {
                 _stack.pop_back();
-                if (!_stack.empty())
+                if(!_stack.empty())
                     continue; // try new top of stack without advancing current
                 else
                     intersection = 0.0;
             }
-            else if (intersection < s.right)
+            else if(intersection < s.right)
             {
                 s.right = intersection;
             }
@@ -129,16 +129,16 @@ distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     // closest to) which row. We can go through the stack and calculate the
     // distance squared for each element of the column.
     typename std::vector<Influence>::iterator it = _stack.begin();
-    for (current = 0.0; current < w; ++current, ++id)
+    for(current = 0.0; current < w; ++current, ++id)
     {
-        while (current >= it->right)
+        while(current >= it->right)
             ++it;
         da.set(sigma2 * sq(current - it->center) + it->apex_height, id);
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 distParabola(triple<SrcIterator, SrcIterator, SrcAccessor> src,
              pair<DestIterator, DestAccessor> dest, double sigma)
@@ -153,8 +153,8 @@ distParabola(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator, class SrcShape, class SrcAccessor,
-         class DestIterator, class DestAccessor, class Array>
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Array>
 void
 internalSeparableMultiArrayDistTmp(
     SrcIterator si, SrcShape const& shape, SrcAccessor src,
@@ -184,11 +184,11 @@ internalSeparableMultiArrayDistTmp(
 
     using namespace vigra::functor;
 
-    for (; snav.hasMore(); snav++, dnav++)
+    for(; snav.hasMore(); snav++, dnav++)
     {
         // first copy source to temp for maximum cache efficiency
         // Invert the values if necessary. Only needed for grayscale morphology
-        if (invert)
+        if(invert)
             transformLine(snav.begin(), snav.end(), src, tmp.begin(),
                           typename AccessorTraits<TmpType>::default_accessor(),
                           Param(NumericTraits<TmpType>::zero()) - Arg1());
@@ -202,14 +202,14 @@ internalSeparableMultiArrayDistTmp(
     }
 
     // operate on further dimensions
-    for (int d = 1; d < N; ++d)
+    for(int d = 1; d < N; ++d)
     {
         DNavigator dnav(di, shape, d);
 
         tmp.resize(shape[d]);
 
 
-        for (; dnav.hasMore(); dnav++)
+        for(; dnav.hasMore(); dnav++)
         {
             // first copy source to temp for maximum cache efficiency
             copyLine(dnav.begin(), dnav.end(), dest,
@@ -220,12 +220,12 @@ internalSeparableMultiArrayDistTmp(
                                  destIter(dnav.begin(), dest), sigmas[d]);
         }
     }
-    if (invert)
+    if(invert)
         transformMultiArray(di, shape, dest, di, dest, -Arg1());
 }
 
-template<class SrcIterator, class SrcShape, class SrcAccessor,
-         class DestIterator, class DestAccessor, class Array>
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Array>
 inline void
 internalSeparableMultiArrayDistTmp(SrcIterator si, SrcShape const& shape, SrcAccessor src,
                                    DestIterator di, DestAccessor dest, Array const& sigmas)
@@ -233,8 +233,8 @@ internalSeparableMultiArrayDistTmp(SrcIterator si, SrcShape const& shape, SrcAcc
     internalSeparableMultiArrayDistTmp(si, shape, src, di, dest, sigmas, false);
 }
 
-template<class SrcIterator, class SrcShape, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 internalSeparableMultiArrayDistTmp(SrcIterator si, SrcShape const& shape, SrcAccessor src,
                                    DestIterator di, DestAccessor dest)
@@ -370,10 +370,10 @@ internalSeparableMultiArrayDistTmp(SrcIterator si, SrcShape const& shape, SrcAcc
 
     \see vigra::distanceTransform(), vigra::separableMultiDistance()
 */
-doxygen_overloaded_function(template<...> void separableMultiDistSquared)
+doxygen_overloaded_function(template <...> void separableMultiDistSquared)
 
-    template<class SrcIterator, class SrcShape, class SrcAccessor,
-             class DestIterator, class DestAccessor, class Array>
+    template <class SrcIterator, class SrcShape, class SrcAccessor,
+              class DestIterator, class DestAccessor, class Array>
     void separableMultiDistSquared(SrcIterator s, SrcShape const& shape, SrcAccessor src,
                                    DestIterator d, DestAccessor dest, bool background,
                                    Array const& pixelPitch)
@@ -388,21 +388,21 @@ doxygen_overloaded_function(template<...> void separableMultiDistSquared)
 
     double dmax = 0.0;
     bool pixelPitchIsReal = false;
-    for (int k = 0; k < N; ++k)
+    for(int k = 0; k < N; ++k)
     {
-        if (int(pixelPitch[k]) != pixelPitch[k])
+        if(int(pixelPitch[k]) != pixelPitch[k])
             pixelPitchIsReal = true;
         dmax += sq(pixelPitch[k] * shape[k]);
     }
 
     using namespace vigra::functor;
 
-    if (dmax > NumericTraits<DestType>::toRealPromote(NumericTraits<DestType>::max()) || pixelPitchIsReal) // need a temporary array to avoid overflows
+    if(dmax > NumericTraits<DestType>::toRealPromote(NumericTraits<DestType>::max()) || pixelPitchIsReal) // need a temporary array to avoid overflows
     {
         // Threshold the values so all objects have infinity value in the beginning
         Real maxDist = (Real)dmax, rzero = (Real)0.0;
         MultiArray<SrcShape::static_size, Real> tmpArray(shape);
-        if (background == true)
+        if(background == true)
             transformMultiArray(s, shape, src,
                                 tmpArray.traverser_begin(), typename AccessorTraits<Real>::default_accessor(),
                                 ifThenElse(Arg1() == Param(zero), Param(maxDist), Param(rzero)));
@@ -422,7 +422,7 @@ doxygen_overloaded_function(template<...> void separableMultiDistSquared)
     {
         // Threshold the values so all objects have infinity value in the beginning
         DestType maxDist = DestType(std::ceil(dmax)), rzero = (DestType)0;
-        if (background == true)
+        if(background == true)
             transformMultiArray(s, shape, src, d, dest,
                                 ifThenElse(Arg1() == Param(zero), Param(maxDist), Param(rzero)));
         else
@@ -433,8 +433,8 @@ doxygen_overloaded_function(template<...> void separableMultiDistSquared)
     }
 }
 
-template<class SrcIterator, class SrcShape, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 separableMultiDistSquared(SrcIterator s, SrcShape const& shape, SrcAccessor src,
                           DestIterator d, DestAccessor dest, bool background)
@@ -443,8 +443,8 @@ separableMultiDistSquared(SrcIterator s, SrcShape const& shape, SrcAccessor src,
     separableMultiDistSquared(s, shape, src, d, dest, background, pixelPitch);
 }
 
-template<class SrcIterator, class SrcShape, class SrcAccessor,
-         class DestIterator, class DestAccessor, class Array>
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Array>
 inline void
 separableMultiDistSquared(triple<SrcIterator, SrcShape, SrcAccessor> const& source,
                           pair<DestIterator, DestAccessor> const& dest, bool background,
@@ -454,8 +454,8 @@ separableMultiDistSquared(triple<SrcIterator, SrcShape, SrcAccessor> const& sour
                               dest.first, dest.second, background, pixelPitch);
 }
 
-template<class SrcIterator, class SrcShape, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 separableMultiDistSquared(triple<SrcIterator, SrcShape, SrcAccessor> const& source,
                           pair<DestIterator, DestAccessor> const& dest, bool background)
@@ -464,9 +464,9 @@ separableMultiDistSquared(triple<SrcIterator, SrcShape, SrcAccessor> const& sour
                               dest.first, dest.second, background);
 }
 
-template<unsigned int N, class T1, class S1,
-         class T2, class S2,
-         class Array>
+template <unsigned int N, class T1, class S1,
+          class T2, class S2,
+          class Array>
 inline void
 separableMultiDistSquared(MultiArrayView<N, T1, S1> const& source,
                           MultiArrayView<N, T2, S2> dest, bool background,
@@ -478,8 +478,8 @@ separableMultiDistSquared(MultiArrayView<N, T1, S1> const& source,
                               destMultiArray(dest), background, pixelPitch);
 }
 
-template<unsigned int N, class T1, class S1,
-         class T2, class S2>
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
 inline void
 separableMultiDistSquared(MultiArrayView<N, T1, S1> const& source,
                           MultiArrayView<N, T2, S2> dest, bool background)
@@ -591,10 +591,10 @@ separableMultiDistSquared(MultiArrayView<N, T1, S1> const& source,
 
     \see vigra::distanceTransform(), vigra::separableMultiDistSquared()
 */
-doxygen_overloaded_function(template<...> void separableMultiDistance)
+doxygen_overloaded_function(template <...> void separableMultiDistance)
 
-    template<class SrcIterator, class SrcShape, class SrcAccessor,
-             class DestIterator, class DestAccessor, class Array>
+    template <class SrcIterator, class SrcShape, class SrcAccessor,
+              class DestIterator, class DestAccessor, class Array>
     void separableMultiDistance(SrcIterator s, SrcShape const& shape, SrcAccessor src,
                                 DestIterator d, DestAccessor dest, bool background,
                                 Array const& pixelPitch)
@@ -607,8 +607,8 @@ doxygen_overloaded_function(template<...> void separableMultiDistance)
     transformMultiArray(d, shape, dest, d, dest, sqrt(Arg1()));
 }
 
-template<class SrcIterator, class SrcShape, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 separableMultiDistance(SrcIterator s, SrcShape const& shape, SrcAccessor src,
                        DestIterator d, DestAccessor dest, bool background)
@@ -621,8 +621,8 @@ separableMultiDistance(SrcIterator s, SrcShape const& shape, SrcAccessor src,
     transformMultiArray(d, shape, dest, d, dest, sqrt(Arg1()));
 }
 
-template<class SrcIterator, class SrcShape, class SrcAccessor,
-         class DestIterator, class DestAccessor, class Array>
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Array>
 inline void
 separableMultiDistance(triple<SrcIterator, SrcShape, SrcAccessor> const& source,
                        pair<DestIterator, DestAccessor> const& dest, bool background,
@@ -632,8 +632,8 @@ separableMultiDistance(triple<SrcIterator, SrcShape, SrcAccessor> const& source,
                            dest.first, dest.second, background, pixelPitch);
 }
 
-template<class SrcIterator, class SrcShape, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 separableMultiDistance(triple<SrcIterator, SrcShape, SrcAccessor> const& source,
                        pair<DestIterator, DestAccessor> const& dest, bool background)
@@ -642,8 +642,8 @@ separableMultiDistance(triple<SrcIterator, SrcShape, SrcAccessor> const& source,
                            dest.first, dest.second, background);
 }
 
-template<unsigned int N, class T1, class S1,
-         class T2, class S2, class Array>
+template <unsigned int N, class T1, class S1,
+          class T2, class S2, class Array>
 inline void
 separableMultiDistance(MultiArrayView<N, T1, S1> const& source,
                        MultiArrayView<N, T2, S2> dest,
@@ -656,8 +656,8 @@ separableMultiDistance(MultiArrayView<N, T1, S1> const& source,
                            destMultiArray(dest), background, pixelPitch);
 }
 
-template<unsigned int N, class T1, class S1,
-         class T2, class S2>
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
 inline void
 separableMultiDistance(MultiArrayView<N, T1, S1> const& source,
                        MultiArrayView<N, T2, S2> dest,
@@ -675,7 +675,7 @@ separableMultiDistance(MultiArrayView<N, T1, S1> const& source,
 namespace lemon_graph
 {
 
-template<class Graph, class T1Map, class T2Map>
+template <class Graph, class T1Map, class T2Map>
 void
 markRegionBoundaries(Graph const& g,
                      T1Map const& labels,
@@ -685,14 +685,14 @@ markRegionBoundaries(Graph const& g,
     typedef typename Graph::OutBackArcIt neighbor_iterator;
 
     //find faces
-    for (graph_scanner node(g); node != INVALID; ++node)
+    for(graph_scanner node(g); node != INVALID; ++node)
     {
         typename T1Map::value_type center = labels[*node];
 
-        for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
+        for(neighbor_iterator arc(g, node); arc != INVALID; ++arc)
         {
             // set adjacent nodes with different labels to 1
-            if (center != labels[g.target(*arc)])
+            if(center != labels[g.target(*arc)])
             {
                 out[*node] = 1;
                 out[g.target(*arc)] = 1;
@@ -703,10 +703,10 @@ markRegionBoundaries(Graph const& g,
 
 } // namespace lemon_graph
 
-doxygen_overloaded_function(template<...> unsigned int markRegionBoundaries)
+doxygen_overloaded_function(template <...> unsigned int markRegionBoundaries)
 
-    template<unsigned int N, class T1, class S1,
-             class T2, class S2>
+    template <unsigned int N, class T1, class S1,
+              class T2, class S2>
     inline void markRegionBoundaries(MultiArrayView<N, T1, S1> const& labels,
                                      MultiArrayView<N, T2, S2> out,
                                      NeighborhoodType neighborhood = DirectNeighborhood)
@@ -730,7 +730,7 @@ namespace detail
 /*                                                      */
 /********************************************************/
 
-template<class DestIterator, class LabelIterator>
+template <class DestIterator, class LabelIterator>
 void
 boundaryDistParabola(DestIterator is, DestIterator iend,
                      LabelIterator ilabels,
@@ -739,7 +739,7 @@ boundaryDistParabola(DestIterator is, DestIterator iend,
 {
     // We assume that the data in the input is distance squared and treat it as such
     double w = iend - is;
-    if (w <= 0)
+    if(w <= 0)
         return;
 
     DestIterator id = is;
@@ -753,7 +753,7 @@ boundaryDistParabola(DestIterator is, DestIterator iend,
                              : dmax;
     Stack _stack(1, Influence(apex_height, 0.0, -1.0, w));
     LabelType current_label = *ilabels;
-    for (double begin = 0.0, current = 0.0; current <= w; ++ilabels, ++is, ++current)
+    for(double begin = 0.0, current = 0.0; current <= w; ++ilabels, ++is, ++current)
     {
         apex_height = (current < w)
                           ? (current_label == *ilabels)
@@ -762,38 +762,38 @@ boundaryDistParabola(DestIterator is, DestIterator iend,
                           : array_border_is_active
                                 ? 0.0
                                 : dmax;
-        while (true)
+        while(true)
         {
             Influence& s = _stack.back();
             double diff = current - s.center;
             double intersection = current + (apex_height - s.apex_height - sq(diff)) / (2.0 * diff);
 
-            if (intersection < s.left) // previous parabola has no influence
+            if(intersection < s.left) // previous parabola has no influence
             {
                 _stack.pop_back();
-                if (_stack.empty())
+                if(_stack.empty())
                     intersection = begin; // new parabola is valid for entire present segment
                 else
                     continue; // try new top of stack without advancing to next pixel
             }
-            else if (intersection < s.right)
+            else if(intersection < s.right)
             {
                 s.right = intersection;
             }
-            if (intersection < w)
+            if(intersection < w)
                 _stack.push_back(Influence(apex_height, intersection, current, w));
-            if (current < w && current_label == *ilabels)
+            if(current < w && current_label == *ilabels)
                 break; // finished present pixel, advance to next one
 
             // label changed => finalize the current segment
             typename Stack::iterator it = _stack.begin();
-            for (double c = begin; c < current; ++c, ++id)
+            for(double c = begin; c < current; ++c, ++id)
             {
-                while (c >= it->right)
+                while(c >= it->right)
                     ++it;
                 *id = sq(c - it->center) + it->apex_height;
             }
-            if (current == w)
+            if(current == w)
                 break; // stop when this was the last segment
 
             // initialize the new segment
@@ -813,8 +813,8 @@ boundaryDistParabola(DestIterator is, DestIterator iend,
 /*                                                      */
 /********************************************************/
 
-template<unsigned int N, class T1, class S1,
-         class T2, class S2>
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
 void
 internalBoundaryMultiArrayDist(
     MultiArrayView<N, T1, S1> const& labels,
@@ -827,12 +827,12 @@ internalBoundaryMultiArrayDist(
     typedef MultiArrayNavigator<DestIterator, N> DNavigator;
 
     dest = dmax;
-    for (unsigned d = 0; d < N; ++d)
+    for(unsigned d = 0; d < N; ++d)
     {
         LabelNavigator lnav(labels.traverser_begin(), labels.shape(), d);
         DNavigator dnav(dest.traverser_begin(), dest.shape(), d);
 
-        for (; dnav.hasMore(); dnav++, lnav++)
+        for(; dnav.hasMore(); dnav++, lnav++)
         {
             boundaryDistParabola(dnav.begin(), dnav.end(),
                                  lnav.begin(),
@@ -916,10 +916,10 @@ enum BoundaryDistanceTag
 
     \see vigra::distanceTransform(), vigra::separableMultiDistance()
 */
-doxygen_overloaded_function(template<...> void boundaryMultiDistance)
+doxygen_overloaded_function(template <...> void boundaryMultiDistance)
 
-    template<unsigned int N, class T1, class S1,
-             class T2, class S2>
+    template <unsigned int N, class T1, class S1,
+              class T2, class S2>
     void boundaryMultiDistance(MultiArrayView<N, T1, S1> const& labels,
                                MultiArrayView<N, T2, S2> dest,
                                bool array_border_is_active = false,
@@ -930,12 +930,12 @@ doxygen_overloaded_function(template<...> void boundaryMultiDistance)
 
     using namespace vigra::functor;
 
-    if (boundary == InnerBoundary)
+    if(boundary == InnerBoundary)
     {
         MultiArray<N, unsigned char> boundaries(labels.shape());
 
         markRegionBoundaries(labels, boundaries, IndirectNeighborhood);
-        if (array_border_is_active)
+        if(array_border_is_active)
             initMultiArrayBorder(boundaries, 1, 1);
         separableMultiDistance(boundaries, dest, true);
     }
@@ -943,14 +943,14 @@ doxygen_overloaded_function(template<...> void boundaryMultiDistance)
     {
         T2 offset = 0.0;
 
-        if (boundary == InterpixelBoundary)
+        if(boundary == InterpixelBoundary)
         {
             vigra_precondition(!NumericTraits<T2>::isIntegral::value,
                                "boundaryMultiDistance(..., InterpixelBoundary): output pixel type must be float or double.");
             offset = T2(0.5);
         }
         double dmax = squaredNorm(labels.shape()) + N;
-        if (dmax > double(NumericTraits<T2>::max()))
+        if(dmax > double(NumericTraits<T2>::max()))
         {
             // need a temporary array to avoid overflows
             typedef typename NumericTraits<T2>::RealPromote Real;

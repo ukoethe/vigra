@@ -53,7 +53,7 @@ vectorToArray(std::vector<TinyVector<double, 2>>& result)
 {
     NumpyArray<2, double> res(MultiArrayShape<2>::type(result.size(), 2));
 
-    for (size_t ii = 0; ii < result.size(); ++ii)
+    for(size_t ii = 0; ii < result.size(); ++ii)
     {
         res(ii, 0) = result[ii][0];
         res(ii, 1) = result[ii][1];
@@ -61,7 +61,7 @@ vectorToArray(std::vector<TinyVector<double, 2>>& result)
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonNoiseVarianceEstimation(NumpyArray<2, Singleband<PixelType>> image,
                                   bool useGradient = true,
@@ -91,7 +91,7 @@ NumpyAnyArray
     return vectorToArray(result);
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonNoiseVarianceClustering(NumpyArray<2, Singleband<PixelType>> image,
                                   bool useGradient = true,
@@ -121,7 +121,7 @@ NumpyAnyArray
     return vectorToArray(result);
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonNonparametricNoiseNormalization(NumpyArray<3, Multiband<PixelType>> image,
                                           bool useGradient = true,
@@ -146,7 +146,7 @@ NumpyAnyArray
 
     {
         PyAllowThreads _pythread;
-        for (int k = 0; k < image.shape(2); ++k)
+        for(int k = 0; k < image.shape(2); ++k)
         {
             nonparametricNoiseNormalization(srcImageRange(image),
                                             destImage(res), noiseNormalizationOptions);
@@ -155,7 +155,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonQuadraticNoiseNormalizationEstimated(NumpyArray<3, Multiband<PixelType>> image,
                                                bool useGradient = true,
@@ -180,7 +180,7 @@ NumpyAnyArray
 
     {
         PyAllowThreads _pythread;
-        for (int k = 0; k < image.shape(2); ++k)
+        for(int k = 0; k < image.shape(2); ++k)
         {
             MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
             MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
@@ -191,7 +191,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonLinearNoiseNormalizationEstimated(NumpyArray<3, Multiband<PixelType>> image,
                                             bool useGradient = true,
@@ -216,7 +216,7 @@ NumpyAnyArray
 
     {
         PyAllowThreads _pythread;
-        for (int k = 0; k < image.shape(2); ++k)
+        for(int k = 0; k < image.shape(2); ++k)
         {
             MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
             MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
@@ -228,7 +228,7 @@ NumpyAnyArray
 }
 
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonQuadraticNoiseNormalization(NumpyArray<3, Multiband<PixelType>> image,
                                       double a0, double a1, double a2,
@@ -239,7 +239,7 @@ NumpyAnyArray
 
     {
         PyAllowThreads _pythread;
-        for (int k = 0; k < image.shape(2); ++k)
+        for(int k = 0; k < image.shape(2); ++k)
         {
             MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
             MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
@@ -250,7 +250,7 @@ NumpyAnyArray
     return res;
 }
 
-template<class PixelType>
+template <class PixelType>
 NumpyAnyArray
     pythonLinearNoiseNormalization(NumpyArray<3, Multiband<PixelType>> image,
                                    double a0, double a1,
@@ -261,7 +261,7 @@ NumpyAnyArray
 
     {
         PyAllowThreads _pythread;
-        for (int k = 0; k < image.shape(2); ++k)
+        for(int k = 0; k < image.shape(2); ++k)
         {
             MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
             MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);

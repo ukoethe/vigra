@@ -178,7 +178,7 @@
 namespace vigra
 {
 
-template<class T1, class T2>
+template <class T1, class T2>
 class colormap
 {
 public:
@@ -236,7 +236,7 @@ public:
     {
         vigra_precondition(index < m_numTableElements,
                            "index out of range");
-        if (m_numTables == 1)
+        if(m_numTables == 1)
         {
             // map bands with a single (interleaved or not) table
             vigra_precondition(band < m_numTableBands,
@@ -255,7 +255,7 @@ public:
 
 
 // this function encapsulates the colormap functor
-template<class storage_type, class map_storage_type>
+template <class storage_type, class map_storage_type>
 void
 map_multiband(void_vector<map_storage_type>& dest,
               unsigned int& dest_bands,
@@ -273,25 +273,25 @@ map_multiband(void_vector<map_storage_type>& dest,
     // build the color map
     const unsigned int map_band_size = map_width * map_height;
     colormap_type colormap(map_height, map_bands, map_width);
-    for (unsigned int i = 0; i < map_bands; ++i)
+    for(unsigned int i = 0; i < map_bands; ++i)
         colormap.initialize(maps.data() + map_band_size * i, i);
 
     // map each pixel
     const unsigned int band_size = src_width * src_height;
     dest_bands = map_bands * map_width;
     dest.resize(band_size * dest_bands);
-    if (map_width > 1)
+    if(map_width > 1)
     {
         // interleaved maps => there is only one band in the image
-        for (unsigned int bandnum = 0; bandnum < dest_bands; ++bandnum)
-            for (unsigned int i = 0; i < num_pixels; ++i)
+        for(unsigned int bandnum = 0; bandnum < dest_bands; ++bandnum)
+            for(unsigned int i = 0; i < num_pixels; ++i)
                 dest[bandnum * band_size + i] = colormap(src[i], bandnum);
     }
     else
     {
         // non-interleaved bands => map can be used per band
-        for (unsigned int bandnum = 0; bandnum < dest_bands; ++bandnum)
-            for (unsigned int i = 0; i < num_pixels; ++i)
+        for(unsigned int bandnum = 0; bandnum < dest_bands; ++bandnum)
+            for(unsigned int i = 0; i < num_pixels; ++i)
                 dest[bandnum * band_size + i] = colormap(src[bandnum * band_size + i], bandnum);
     }
 }
@@ -375,9 +375,9 @@ ViffHeader::from_stream(std::ifstream& stream, byteorder& bo)
 
     // check the endianness
     const char machine_dep = stream.get();
-    if (machine_dep == VFF_DEP_BIGENDIAN)
+    if(machine_dep == VFF_DEP_BIGENDIAN)
         bo.set("big endian");
-    else if (machine_dep == VFF_DEP_LITENDIAN)
+    else if(machine_dep == VFF_DEP_LITENDIAN)
         bo.set("little endian");
     else
         vigra_fail("endianness unsupported");
@@ -425,7 +425,7 @@ ViffHeader::from_stream(std::ifstream& stream, byteorder& bo)
                        "map cycling unsupported");
 
     // only read the map fields if mapping is actually used
-    if (map_scheme != VFF_MS_NONE)
+    if(map_scheme != VFF_MS_NONE)
     {
 
         read_field(stream, bo, map_storage_type);
@@ -466,7 +466,7 @@ ViffHeader::to_stream(std::ofstream& stream, byteorder& bo) const
     stream.put(XV_IMAGE_VER_NUM);
 
     // set the byte order
-    if (bo.get_host_byteorder() == "big endian")
+    if(bo.get_host_byteorder() == "big endian")
     {
         bo.set("big endian");
         stream.put(VFF_DEP_BIGENDIAN);
@@ -479,7 +479,7 @@ ViffHeader::to_stream(std::ofstream& stream, byteorder& bo) const
 
     // pad, then zero out the comments
     unsigned int i;
-    for (i = 0; i < 515; ++i)
+    for(i = 0; i < 515; ++i)
         stream.put(0);
 
     // image size
@@ -487,7 +487,7 @@ ViffHeader::to_stream(std::ofstream& stream, byteorder& bo) const
     write_field(stream, bo, col_size);
 
     // zero out five fields
-    for (i = 0; i < 20; ++i)
+    for(i = 0; i < 20; ++i)
         stream.put(0);
 
     // using implicit locations
@@ -509,7 +509,7 @@ ViffHeader::to_stream(std::ofstream& stream, byteorder& bo) const
     write_field(stream, bo, scratch = VFF_MAPTYP_NONE);
 
     // zero out five fields
-    for (i = 0; i < 20; ++i)
+    for(i = 0; i < 20; ++i)
         stream.put(0);
 
     // colorspace
@@ -520,7 +520,7 @@ ViffHeader::to_stream(std::ofstream& stream, byteorder& bo) const
     int offset = 1024 - stream.tellp();
     vigra_precondition(offset >= 0,
                        "machine is incapable to read viff");
-    for (int j = 0; j < offset; ++j)
+    for(int j = 0; j < offset; ++j)
         stream.put(0);
 }
 
@@ -550,7 +550,7 @@ ViffDecoderImpl::ViffDecoderImpl(const std::string& filename)
     std::ifstream stream(filename.c_str());
 #endif
 
-    if (!stream.good())
+    if(!stream.good())
     {
         std::string msg("Unable to open file '");
         msg += filename;
@@ -566,10 +566,10 @@ ViffDecoderImpl::ViffDecoderImpl(const std::string& filename)
     components = header.num_data_bands;
 
     // read data and eventually map it
-    if (header.map_scheme != VFF_MS_NONE)
+    if(header.map_scheme != VFF_MS_NONE)
         read_maps(stream, bo);
     read_bands(stream, bo);
-    if (header.map_scheme != VFF_MS_NONE)
+    if(header.map_scheme != VFF_MS_NONE)
         color_map();
 }
 
@@ -582,28 +582,28 @@ ViffDecoderImpl::read_maps(std::ifstream& stream, byteorder& bo)
     map_height = header.map_col_size;
     const unsigned int maps_size = map_width * map_height * num_maps;
 
-    if (header.map_storage_type == VFF_MAPTYP_1_BYTE)
+    if(header.map_storage_type == VFF_MAPTYP_1_BYTE)
     {
         typedef void_vector<UInt8> maps_type;
         maps_type& castmaps = static_cast<maps_type&>(maps);
         castmaps.resize(maps_size);
         read_array(stream, bo, castmaps.data(), maps_size);
     }
-    else if (header.map_storage_type == VFF_MAPTYP_2_BYTE)
+    else if(header.map_storage_type == VFF_MAPTYP_2_BYTE)
     {
         typedef void_vector<Int16> maps_type;
         maps_type& castmaps = static_cast<maps_type&>(maps);
         castmaps.resize(maps_size);
         read_array(stream, bo, castmaps.data(), maps_size);
     }
-    else if (header.map_storage_type == VFF_MAPTYP_4_BYTE)
+    else if(header.map_storage_type == VFF_MAPTYP_4_BYTE)
     {
         typedef void_vector<Int32> maps_type;
         maps_type& castmaps = static_cast<maps_type&>(maps);
         castmaps.resize(maps_size);
         read_array(stream, bo, castmaps.data(), maps_size);
     }
-    else if (header.map_storage_type == VFF_MAPTYP_FLOAT)
+    else if(header.map_storage_type == VFF_MAPTYP_FLOAT)
     {
         typedef void_vector<float> maps_type;
         maps_type& castmaps = static_cast<maps_type&>(maps);
@@ -619,7 +619,7 @@ ViffDecoderImpl::read_bands(std::ifstream& stream, byteorder& bo)
 {
     const unsigned int bands_size = width * height * components;
 
-    if (header.data_storage_type == VFF_TYP_1_BYTE)
+    if(header.data_storage_type == VFF_TYP_1_BYTE)
     {
         typedef void_vector<UInt8> bands_type;
         bands_type& castbands = static_cast<bands_type&>(bands);
@@ -627,7 +627,7 @@ ViffDecoderImpl::read_bands(std::ifstream& stream, byteorder& bo)
         read_array(stream, bo, castbands.data(), bands_size);
         pixelType = "UINT8";
     }
-    else if (header.data_storage_type == VFF_TYP_2_BYTE)
+    else if(header.data_storage_type == VFF_TYP_2_BYTE)
     {
         typedef void_vector<Int16> bands_type;
         bands_type& castbands = static_cast<bands_type&>(bands);
@@ -635,7 +635,7 @@ ViffDecoderImpl::read_bands(std::ifstream& stream, byteorder& bo)
         read_array(stream, bo, castbands.data(), bands_size);
         pixelType = "INT16";
     }
-    else if (header.data_storage_type == VFF_TYP_4_BYTE)
+    else if(header.data_storage_type == VFF_TYP_4_BYTE)
     {
         typedef void_vector<Int32> bands_type;
         bands_type& castbands = static_cast<bands_type&>(bands);
@@ -643,7 +643,7 @@ ViffDecoderImpl::read_bands(std::ifstream& stream, byteorder& bo)
         read_array(stream, bo, castbands.data(), bands_size);
         pixelType = "INT32";
     }
-    else if (header.data_storage_type == VFF_TYP_FLOAT)
+    else if(header.data_storage_type == VFF_TYP_FLOAT)
     {
         typedef void_vector<float> bands_type;
         bands_type& castbands = static_cast<bands_type&>(bands);
@@ -651,7 +651,7 @@ ViffDecoderImpl::read_bands(std::ifstream& stream, byteorder& bo)
         read_array(stream, bo, castbands.data(), bands_size);
         pixelType = "FLOAT";
     }
-    else if (header.data_storage_type == VFF_TYP_DOUBLE)
+    else if(header.data_storage_type == VFF_TYP_DOUBLE)
     {
         typedef void_vector<double> bands_type;
         bands_type& castbands = static_cast<bands_type&>(bands);
@@ -669,11 +669,11 @@ ViffDecoderImpl::color_map()
     void_vector_base temp_bands;
     unsigned int temp_num_bands = 0;
 
-    if (header.map_storage_type == VFF_MAPTYP_1_BYTE)
+    if(header.map_storage_type == VFF_MAPTYP_1_BYTE)
     {
         typedef UInt8 map_storage_type;
 
-        if (header.data_storage_type == VFF_TYP_1_BYTE)
+        if(header.data_storage_type == VFF_TYP_1_BYTE)
         {
             typedef UInt8 storage_type;
             typedef void_vector<storage_type> bands_type;
@@ -685,7 +685,7 @@ ViffDecoderImpl::color_map()
                           static_cast<const maps_type&>(maps),
                           num_maps, map_width, map_height);
         }
-        else if (header.data_storage_type == VFF_TYP_2_BYTE)
+        else if(header.data_storage_type == VFF_TYP_2_BYTE)
         {
             typedef UInt16 storage_type;
             typedef void_vector<storage_type> bands_type;
@@ -697,7 +697,7 @@ ViffDecoderImpl::color_map()
                           static_cast<const maps_type&>(maps),
                           num_maps, map_width, map_height);
         }
-        else if (header.data_storage_type == VFF_TYP_4_BYTE)
+        else if(header.data_storage_type == VFF_TYP_4_BYTE)
         {
             typedef UInt32 storage_type;
             typedef void_vector<storage_type> bands_type;
@@ -714,11 +714,11 @@ ViffDecoderImpl::color_map()
 
         pixelType = "UINT8";
     }
-    else if (header.map_storage_type == VFF_MAPTYP_2_BYTE)
+    else if(header.map_storage_type == VFF_MAPTYP_2_BYTE)
     {
         typedef UInt16 map_storage_type;
 
-        if (header.data_storage_type == VFF_TYP_1_BYTE)
+        if(header.data_storage_type == VFF_TYP_1_BYTE)
         {
             typedef UInt8 storage_type;
             typedef void_vector<storage_type> bands_type;
@@ -730,7 +730,7 @@ ViffDecoderImpl::color_map()
                           static_cast<const maps_type&>(maps),
                           num_maps, map_width, map_height);
         }
-        else if (header.data_storage_type == VFF_TYP_2_BYTE)
+        else if(header.data_storage_type == VFF_TYP_2_BYTE)
         {
             typedef UInt16 storage_type;
             typedef void_vector<storage_type> bands_type;
@@ -742,7 +742,7 @@ ViffDecoderImpl::color_map()
                           static_cast<const maps_type&>(maps),
                           num_maps, map_width, map_height);
         }
-        else if (header.data_storage_type == VFF_TYP_4_BYTE)
+        else if(header.data_storage_type == VFF_TYP_4_BYTE)
         {
             typedef UInt32 storage_type;
             typedef void_vector<storage_type> bands_type;
@@ -759,11 +759,11 @@ ViffDecoderImpl::color_map()
 
         pixelType = "INT16";
     }
-    else if (header.map_storage_type == VFF_MAPTYP_4_BYTE)
+    else if(header.map_storage_type == VFF_MAPTYP_4_BYTE)
     {
         typedef UInt32 map_storage_type;
 
-        if (header.data_storage_type == VFF_TYP_1_BYTE)
+        if(header.data_storage_type == VFF_TYP_1_BYTE)
         {
             typedef UInt8 storage_type;
             typedef void_vector<storage_type> bands_type;
@@ -775,7 +775,7 @@ ViffDecoderImpl::color_map()
                           static_cast<const maps_type&>(maps),
                           num_maps, map_width, map_height);
         }
-        else if (header.data_storage_type == VFF_TYP_2_BYTE)
+        else if(header.data_storage_type == VFF_TYP_2_BYTE)
         {
             typedef UInt16 storage_type;
             typedef void_vector<storage_type> bands_type;
@@ -787,7 +787,7 @@ ViffDecoderImpl::color_map()
                           static_cast<const maps_type&>(maps),
                           num_maps, map_width, map_height);
         }
-        else if (header.data_storage_type == VFF_TYP_4_BYTE)
+        else if(header.data_storage_type == VFF_TYP_4_BYTE)
         {
             typedef UInt32 storage_type;
             typedef void_vector<storage_type> bands_type;
@@ -804,11 +804,11 @@ ViffDecoderImpl::color_map()
 
         pixelType = "INT32";
     }
-    else if (header.map_storage_type == VFF_MAPTYP_FLOAT)
+    else if(header.map_storage_type == VFF_MAPTYP_FLOAT)
     {
         typedef float map_storage_type;
 
-        if (header.data_storage_type == VFF_TYP_1_BYTE)
+        if(header.data_storage_type == VFF_TYP_1_BYTE)
         {
             typedef UInt8 storage_type;
             typedef void_vector<storage_type> bands_type;
@@ -820,7 +820,7 @@ ViffDecoderImpl::color_map()
                           static_cast<const maps_type&>(maps),
                           num_maps, map_width, map_height);
         }
-        else if (header.data_storage_type == VFF_TYP_2_BYTE)
+        else if(header.data_storage_type == VFF_TYP_2_BYTE)
         {
             typedef UInt16 storage_type;
             typedef void_vector<storage_type> bands_type;
@@ -832,7 +832,7 @@ ViffDecoderImpl::color_map()
                           static_cast<const maps_type&>(maps),
                           num_maps, map_width, map_height);
         }
-        else if (header.data_storage_type == VFF_TYP_4_BYTE)
+        else if(header.data_storage_type == VFF_TYP_4_BYTE)
         {
             typedef UInt32 storage_type;
             typedef void_vector<storage_type> bands_type;
@@ -907,31 +907,31 @@ const void*
 ViffDecoder::currentScanlineOfBand(unsigned int band) const
 {
     const unsigned int index = pimpl->width * (pimpl->height * band + pimpl->current_scanline);
-    if (pimpl->pixelType == "UINT8")
+    if(pimpl->pixelType == "UINT8")
     {
         typedef void_vector<UInt8> bands_type;
         const bands_type& bands = static_cast<const bands_type&>(pimpl->bands);
         return bands.data() + index;
     }
-    else if (pimpl->pixelType == "INT16")
+    else if(pimpl->pixelType == "INT16")
     {
         typedef void_vector<Int16> bands_type;
         const bands_type& bands = static_cast<const bands_type&>(pimpl->bands);
         return bands.data() + index;
     }
-    else if (pimpl->pixelType == "INT32")
+    else if(pimpl->pixelType == "INT32")
     {
         typedef void_vector<Int32> bands_type;
         const bands_type& bands = static_cast<const bands_type&>(pimpl->bands);
         return bands.data() + index;
     }
-    else if (pimpl->pixelType == "FLOAT")
+    else if(pimpl->pixelType == "FLOAT")
     {
         typedef void_vector<float> bands_type;
         const bands_type& bands = static_cast<const bands_type&>(pimpl->bands);
         return bands.data() + index;
     }
-    else if (pimpl->pixelType == "DOUBLE")
+    else if(pimpl->pixelType == "DOUBLE")
     {
         typedef void_vector<double> bands_type;
         const bands_type& bands = static_cast<const bands_type&>(pimpl->bands);
@@ -981,7 +981,7 @@ struct ViffEncoderImpl
           bo("big endian"),
           pixelType("undefined"), current_scanline(0), finalized(false)
     {
-        if (!stream.good())
+        if(!stream.good())
         {
             std::string msg("Unable to open file '");
             msg += filename;
@@ -1040,15 +1040,15 @@ ViffEncoder::setPixelType(const std::string& pixelType)
 {
     VIGRA_IMPEX_FINALIZED(pimpl->finalized);
     pimpl->pixelType = pixelType;
-    if (pixelType == "UINT8")
+    if(pixelType == "UINT8")
         pimpl->header.data_storage_type = VFF_TYP_1_BYTE;
-    else if (pixelType == "INT16")
+    else if(pixelType == "INT16")
         pimpl->header.data_storage_type = VFF_TYP_2_BYTE;
-    else if (pixelType == "INT32")
+    else if(pixelType == "INT32")
         pimpl->header.data_storage_type = VFF_TYP_4_BYTE;
-    else if (pixelType == "FLOAT")
+    else if(pixelType == "FLOAT")
         pimpl->header.data_storage_type = VFF_TYP_FLOAT;
-    else if (pixelType == "DOUBLE")
+    else if(pixelType == "DOUBLE")
         pimpl->header.data_storage_type = VFF_TYP_DOUBLE;
 }
 
@@ -1065,31 +1065,31 @@ ViffEncoder::finalizeSettings()
 
     const unsigned int bands_size = pimpl->header.row_size * pimpl->header.col_size * pimpl->header.num_data_bands;
 
-    if (pimpl->header.data_storage_type == VFF_TYP_1_BYTE)
+    if(pimpl->header.data_storage_type == VFF_TYP_1_BYTE)
     {
         typedef void_vector<UInt8> bands_type;
         bands_type& castbands = static_cast<bands_type&>(pimpl->bands);
         castbands.resize(bands_size);
     }
-    else if (pimpl->header.data_storage_type == VFF_TYP_2_BYTE)
+    else if(pimpl->header.data_storage_type == VFF_TYP_2_BYTE)
     {
         typedef void_vector<Int16> bands_type;
         bands_type& castbands = static_cast<bands_type&>(pimpl->bands);
         castbands.resize(bands_size);
     }
-    else if (pimpl->header.data_storage_type == VFF_TYP_4_BYTE)
+    else if(pimpl->header.data_storage_type == VFF_TYP_4_BYTE)
     {
         typedef void_vector<Int32> bands_type;
         bands_type& castbands = static_cast<bands_type&>(pimpl->bands);
         castbands.resize(bands_size);
     }
-    else if (pimpl->header.data_storage_type == VFF_TYP_FLOAT)
+    else if(pimpl->header.data_storage_type == VFF_TYP_FLOAT)
     {
         typedef void_vector<float> bands_type;
         bands_type& castbands = static_cast<bands_type&>(pimpl->bands);
         castbands.resize(bands_size);
     }
-    else if (pimpl->header.data_storage_type == VFF_TYP_DOUBLE)
+    else if(pimpl->header.data_storage_type == VFF_TYP_DOUBLE)
     {
         typedef void_vector<double> bands_type;
         bands_type& castbands = static_cast<bands_type&>(pimpl->bands);
@@ -1105,31 +1105,31 @@ void*
 ViffEncoder::currentScanlineOfBand(unsigned int band)
 {
     const unsigned int index = pimpl->header.row_size * (pimpl->header.col_size * band + pimpl->current_scanline);
-    if (pimpl->pixelType == "UINT8")
+    if(pimpl->pixelType == "UINT8")
     {
         typedef void_vector<UInt8> bands_type;
         bands_type& bands = static_cast<bands_type&>(pimpl->bands);
         return bands.data() + index;
     }
-    else if (pimpl->pixelType == "INT16")
+    else if(pimpl->pixelType == "INT16")
     {
         typedef void_vector<Int16> bands_type;
         bands_type& bands = static_cast<bands_type&>(pimpl->bands);
         return bands.data() + index;
     }
-    else if (pimpl->pixelType == "INT32")
+    else if(pimpl->pixelType == "INT32")
     {
         typedef void_vector<Int32> bands_type;
         bands_type& bands = static_cast<bands_type&>(pimpl->bands);
         return bands.data() + index;
     }
-    else if (pimpl->pixelType == "FLOAT")
+    else if(pimpl->pixelType == "FLOAT")
     {
         typedef void_vector<float> bands_type;
         bands_type& bands = static_cast<bands_type&>(pimpl->bands);
         return bands.data() + index;
     }
-    else if (pimpl->pixelType == "DOUBLE")
+    else if(pimpl->pixelType == "DOUBLE")
     {
         typedef void_vector<double> bands_type;
         bands_type& bands = static_cast<bands_type&>(pimpl->bands);
@@ -1154,35 +1154,35 @@ ViffEncoder::close()
     // write bands to disk
     const unsigned int bands_size = pimpl->header.row_size * pimpl->header.col_size * pimpl->header.num_data_bands;
 
-    if (pimpl->header.data_storage_type == VFF_TYP_1_BYTE)
+    if(pimpl->header.data_storage_type == VFF_TYP_1_BYTE)
     {
         typedef void_vector<UInt8> bands_type;
         bands_type& castbands = static_cast<bands_type&>(pimpl->bands);
         write_array(pimpl->stream, pimpl->bo,
                     castbands.data(), bands_size);
     }
-    else if (pimpl->header.data_storage_type == VFF_TYP_2_BYTE)
+    else if(pimpl->header.data_storage_type == VFF_TYP_2_BYTE)
     {
         typedef void_vector<Int16> bands_type;
         bands_type& castbands = static_cast<bands_type&>(pimpl->bands);
         write_array(pimpl->stream, pimpl->bo,
                     castbands.data(), bands_size);
     }
-    else if (pimpl->header.data_storage_type == VFF_TYP_4_BYTE)
+    else if(pimpl->header.data_storage_type == VFF_TYP_4_BYTE)
     {
         typedef void_vector<Int32> bands_type;
         bands_type& castbands = static_cast<bands_type&>(pimpl->bands);
         write_array(pimpl->stream, pimpl->bo,
                     castbands.data(), bands_size);
     }
-    else if (pimpl->header.data_storage_type == VFF_TYP_FLOAT)
+    else if(pimpl->header.data_storage_type == VFF_TYP_FLOAT)
     {
         typedef void_vector<float> bands_type;
         bands_type& castbands = static_cast<bands_type&>(pimpl->bands);
         write_array(pimpl->stream, pimpl->bo,
                     castbands.data(), bands_size);
     }
-    else if (pimpl->header.data_storage_type == VFF_TYP_DOUBLE)
+    else if(pimpl->header.data_storage_type == VFF_TYP_DOUBLE)
     {
         typedef void_vector<double> bands_type;
         bands_type& castbands = static_cast<bands_type&>(pimpl->bands);

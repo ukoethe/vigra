@@ -5,7 +5,7 @@
 #include <unittest.hxx>
 
 // bei dem template handelt es sich um ein RGBImage
-template<class ImageP>
+template <class ImageP>
 class RGBImagePolicy
     : public TestPolicy<ImageP>
 {
@@ -27,7 +27,7 @@ public:
 
         static value_type data[15];
 
-        for (int i = 0; i <= 14; i++)
+        for(int i = 0; i <= 14; i++)
         {
             data[i] = value_type((i + variable), (2 * i), (2 * i + variable));
         }

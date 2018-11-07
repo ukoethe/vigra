@@ -47,34 +47,34 @@ namespace vigra
 namespace staticAssert
 {
 
-template<bool Predicate>
+template <bool Predicate>
 struct AssertBool;
 
-template<>
+template <>
 struct AssertBool<true>
 {
     typedef int type;
     typedef void* not_type;
 };
 
-template<>
+template <>
 struct AssertBool<false>
 {
     typedef void* type;
     typedef int not_type;
 };
 
-template<class T>
+template <class T>
 struct Assert;
 
-template<>
+template <>
 struct Assert<VigraTrueType>
 {
     typedef int type;
     typedef void* not_type;
 };
 
-template<>
+template <>
 struct Assert<VigraFalseType>
 {
     typedef void* type;
@@ -92,11 +92,11 @@ inline int check(success)
     return 0;
 }
 
-template<typename Predicate>
+template <typename Predicate>
 failure************(Predicate::************
                         assertImpl(void (*)(Predicate), typename Predicate::not_type));
 
-template<typename Predicate>
+template <typename Predicate>
 success
 assertImpl(void (*)(Predicate), typename Predicate::type);
 

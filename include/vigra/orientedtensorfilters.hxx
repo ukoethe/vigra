@@ -150,10 +150,10 @@ namespace vigra
     
     \see vectorToTensor()
 */
-doxygen_overloaded_function(template<...> void hourGlassFilter)
+doxygen_overloaded_function(template <...> void hourGlassFilter)
 
-    template<class SrcIterator, class SrcAccessor,
-             class DestIterator, class DestAccessor>
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
     void hourGlassFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                          DestIterator dul, DestAccessor dest,
                          double sigma, double rho)
@@ -177,11 +177,11 @@ doxygen_overloaded_function(template<...> void hourGlassFilter)
 
     initImage(dul, dul + Diff2D(w, h), dest, NumericTraits<typename DestAccessor::value_type>::zero());
 
-    for (int y = 0; y < h; ++y, ++sul.y, ++dul.y)
+    for(int y = 0; y < h; ++y, ++sul.y, ++dul.y)
     {
         SrcIterator s = sul;
         DestIterator d = dul;
-        for (int x = 0; x < w; ++x, ++s.x, ++d.x)
+        for(int x = 0; x < w; ++x, ++s.x, ++d.x)
         {
             double phi = 0.5 * VIGRA_CSTD::atan2(
                                    2.0 * src.getComponent(s, 1),
@@ -196,10 +196,10 @@ doxygen_overloaded_function(template<...> void hourGlassFilter)
 
             DestIterator dwul = d + Diff2D((int)x0, (int)y0);
 
-            for (double yy = y0; yy <= y1; ++yy, ++dwul.y)
+            for(double yy = y0; yy <= y1; ++yy, ++dwul.y)
             {
                 typename DestIterator::row_iterator dw = dwul.rowIterator();
-                for (double xx = x0; xx <= x1; ++xx, ++dw)
+                for(double xx = x0; xx <= x1; ++xx, ++dw)
                 {
                     double r2 = xx * xx + yy * yy;
                     double p = u * xx - v * yy;
@@ -212,8 +212,8 @@ doxygen_overloaded_function(template<...> void hourGlassFilter)
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 hourGlassFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                 pair<DestIterator, DestAccessor> d,
@@ -222,8 +222,8 @@ hourGlassFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     hourGlassFilter(s.first, s.second, s.third, d.first, d.second, sigma, rho);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     hourGlassFilter(MultiArrayView<2, T1, S1> const& src,
                     MultiArrayView<2, T2, S2> dest,
@@ -240,8 +240,8 @@ inline void
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void
 ellipticGaussian(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                  DestIterator dul, DestAccessor dest,
@@ -260,11 +260,11 @@ ellipticGaussian(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
     initImage(dul, dul + Diff2D(w, h), dest, NumericTraits<typename DestAccessor::value_type>::zero());
 
-    for (int y = 0; y < h; ++y, ++sul.y, ++dul.y)
+    for(int y = 0; y < h; ++y, ++sul.y, ++dul.y)
     {
         SrcIterator s = sul;
         DestIterator d = dul;
-        for (int x = 0; x < w; ++x, ++s.x, ++d.x)
+        for(int x = 0; x < w; ++x, ++s.x, ++d.x)
         {
             typedef typename NumericTraits<typename SrcAccessor::component_type>::RealPromote TmpType;
             TmpType d1 = src.getComponent(s, 0) + src.getComponent(s, 2);
@@ -285,10 +285,10 @@ ellipticGaussian(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
             DestIterator dwul = d + Diff2D((int)x0, (int)y0);
 
-            for (double yy = y0; yy <= y1; ++yy, ++dwul.y)
+            for(double yy = y0; yy <= y1; ++yy, ++dwul.y)
             {
                 typename DestIterator::row_iterator dw = dwul.rowIterator();
-                for (double xx = x0; xx <= x1; ++xx, ++dw)
+                for(double xx = x0; xx <= x1; ++xx, ++dw)
                 {
                     double p = u * xx - v * yy;
                     double q = v * xx + u * yy;
@@ -300,8 +300,8 @@ ellipticGaussian(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
 ellipticGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                  pair<DestIterator, DestAccessor> dest,
@@ -310,8 +310,8 @@ ellipticGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     ellipticGaussian(src.first, src.second, src.third, dest.first, dest.second, sigmax, sigmin);
 }
 
-template<class T1, class S1,
-         class T2, class S2>
+template <class T1, class S1,
+          class T2, class S2>
 inline void
     ellipticGaussian(MultiArrayView<2, T1, S1> const& src,
                      MultiArrayView<2, T2, S2> dest,
@@ -344,9 +344,9 @@ public:
         double norm = 1.0 / (2.0 * M_PI * scale * scale);
         double s2 = -0.5 / scale / scale;
 
-        for (int y = -radius_; y <= radius_; ++y)
+        for(int y = -radius_; y <= radius_; ++y)
         {
-            for (int x = -radius_; x <= radius_; ++x)
+            for(int x = -radius_; x <= radius_; ++x)
             {
                 double d2 = x * x + y * y;
                 double d = VIGRA_CSTD::sqrt(d2);
@@ -392,7 +392,7 @@ public:
 
     ResultType operator()(int x, int y, VectorType const& v) const
     {
-        if (x == 0 && y == 0)
+        if(x == 0 && y == 0)
             return weights_(radius_, radius_);
         double d = dot(vectors_(x + radius_, y + radius_), v);
         return d * d * weights_(x + radius_, y + radius_);
@@ -414,7 +414,7 @@ public:
 
     ResultType operator()(int x, int y, VectorType const& v) const
     {
-        if (x == 0 && y == 0)
+        if(x == 0 && y == 0)
             return weights_(radius_, radius_);
         double d = dot(vectors_(x + radius_, y + radius_), v);
         return d * d * weights_(x + radius_, y + radius_);
@@ -436,7 +436,7 @@ public:
 
     ResultType operator()(int x, int y, VectorType const& v) const
     {
-        if (x == 0 && y == 0)
+        if(x == 0 && y == 0)
             return weights_(radius_, radius_);
         double d = dot(vectors_(x + radius_, y + radius_), v);
         return (1.0 - d * d) * weights_(x + radius_, y + radius_);
@@ -458,7 +458,7 @@ public:
 
     ResultType operator()(int x, int y, VectorType const& v) const
     {
-        if (x == 0 && y == 0)
+        if(x == 0 && y == 0)
             return weights_(radius_, radius_);
         double d = dot(vectors_(x + radius_, y + radius_), v);
         return (1.0 - d * d) * weights_(x + radius_, y + radius_);
@@ -480,7 +480,7 @@ public:
 
     ResultType operator()(int x, int y, VectorType const& v) const
     {
-        if (x == 0 && y == 0)
+        if(x == 0 && y == 0)
             return weights_(radius_, radius_);
         double d = dot(vectors_(x + radius_, y + radius_), v);
         return VIGRA_CSTD::pow(1.0 - d * d, 3) * weights_(x + radius_, y + radius_);
@@ -502,7 +502,7 @@ public:
 
     ResultType operator()(int x, int y, VectorType const& v) const
     {
-        if (x == 0 && y == 0)
+        if(x == 0 && y == 0)
             return weights_(radius_, radius_);
         double d = dot(vectors_(x + radius_, y + radius_), v);
         return VIGRA_CSTD::pow(1.0 - d * d, 3) * weights_(x + radius_, y + radius_);
@@ -524,7 +524,7 @@ public:
 
     ResultType operator()(int x, int y, VectorType const& v) const
     {
-        if (x == 0 && y == 0)
+        if(x == 0 && y == 0)
             return weights_(radius_, radius_);
         double d = dot(vectors_(x + radius_, y + radius_), v);
         return (1.0 - VIGRA_CSTD::pow(1.0 - d * d, 3)) * weights_(x + radius_, y + radius_);
@@ -546,7 +546,7 @@ public:
 
     ResultType operator()(int x, int y, VectorType const& v) const
     {
-        if (x == 0 && y == 0)
+        if(x == 0 && y == 0)
             return weights_(radius_, radius_);
         double d = dot(vectors_(x + radius_, y + radius_), v);
         return (1.0 - VIGRA_CSTD::pow(1.0 - d * d, 3)) * weights_(x + radius_, y + radius_);
@@ -559,9 +559,9 @@ public:
 /*                                                      */
 /********************************************************/
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class Kernel>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Kernel>
 void
 orientedTrigonometricFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                             DestIterator dul, DestAccessor dest,
@@ -581,11 +581,11 @@ orientedTrigonometricFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
     initImage(dul, dul + Diff2D(w, h), dest, NumericTraits<TensorType>::zero());
 
-    for (int y = 0; y < h; ++y, ++sul.y, ++dul.y)
+    for(int y = 0; y < h; ++y, ++sul.y, ++dul.y)
     {
         SrcIterator s = sul;
         DestIterator d = dul;
-        for (int x = 0; x < w; ++x, ++s.x, ++d.x)
+        for(int x = 0; x < w; ++x, ++s.x, ++d.x)
         {
             int x0 = x - radius < 0 ? -x : -radius;
             int y0 = y - radius < 0 ? -y : -radius;
@@ -596,14 +596,14 @@ orientedTrigonometricFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
             TensorType t(sq(v[0]), v[0] * v[1], sq(v[1]));
             double sqMag = t[0] + t[2];
             double mag = VIGRA_CSTD::sqrt(sqMag);
-            if (mag != 0.0)
+            if(mag != 0.0)
                 v /= mag;
             else
                 v *= 0.0;
             Diff2D dd;
-            for (dd.y = y0; dd.y <= y1; ++dd.y)
+            for(dd.y = y0; dd.y <= y1; ++dd.y)
             {
-                for (dd.x = x0; dd.x <= x1; ++dd.x)
+                for(dd.x = x0; dd.x <= x1; ++dd.x)
                 {
                     dest.set(dest(d, dd) + kernel(dd.x, dd.y, v) * t, d, dd);
                 }
@@ -612,9 +612,9 @@ orientedTrigonometricFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     }
 }
 
-template<class SrcIterator, class SrcAccessor,
-         class DestIterator, class DestAccessor,
-         class Kernel>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Kernel>
 inline void
 orientedTrigonometricFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<DestIterator, DestAccessor> dest,
@@ -623,9 +623,9 @@ orientedTrigonometricFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     orientedTrigonometricFilter(src.first, src.second, src.third, dest.first, dest.second, kernel);
 }
 
-template<class T1, class S1,
-         class T2, class S2,
-         class Kernel>
+template <class T1, class S1,
+          class T2, class S2,
+          class Kernel>
 inline void
     orientedTrigonometricFilter(MultiArrayView<2, T1, S1> const& src,
                                 MultiArrayView<2, T2, S2> dest,

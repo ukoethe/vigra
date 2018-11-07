@@ -55,12 +55,12 @@ using namespace vigra::functor;
 #define shouldEqualIndexing(N, a, b)                                                            \
     {                                                                                           \
         MultiCoordinateIterator<N> cccccccc(a.shape()), ccccccccend(cccccccc.getEndIterator()); \
-        for (; cccccccc != ccccccccend; ++cccccccc)                                             \
-            if (a[*cccccccc] != b[*cccccccc])                                                   \
+        for(; cccccccc != ccccccccend; ++cccccccc)                                              \
+            if(a[*cccccccc] != b[*cccccccc])                                                    \
                 shouldEqual(a[*cccccccc], b[*cccccccc]);                                        \
     }
 
-template<class Array>
+template <class Array>
 class ChunkedMultiArrayTest
 {
 public:
@@ -154,7 +154,7 @@ public:
         shouldEqual(array->shape(1), ref.shape(1));
         shouldEqual(array->shape(2), ref.shape(2));
 
-        if (isFullArray)
+        if(isFullArray)
             shouldEqual(array->chunkArrayShape(), Shape3(1));
         else
             shouldEqual(array->chunkArrayShape(), Shape3(3));
@@ -172,7 +172,7 @@ public:
         array->setItem(ref.shape() - Shape3(1), ref[ref.size() - 1]);
         should(*array == ref);
 
-        if (isFullArray)
+        if(isFullArray)
             shouldEqual(empty_array->dataBytes(), ref.size() * sizeof(T));
         else
             shouldEqual(empty_array->dataBytes(), 0);
@@ -180,14 +180,14 @@ public:
         PlainArray empty(shape, T(fill_value));
         // const_iterator should simply use the fill_value_chunk_
         shouldEqualSequence(empty_array->cbegin(), empty_array->cend(), empty.begin());
-        if (isFullArray)
+        if(isFullArray)
             shouldEqual(empty_array->dataBytes(), ref.size() * sizeof(T));
         else
             shouldEqual(empty_array->dataBytes(), 0);
 
         // non-const iterator should allocate the array and initialize with fill_value_
         shouldEqualSequence(empty_array->begin(), empty_array->end(), empty.begin());
-        if (IsSameType<Array, ChunkedArrayTmpFile<3, T>>::value)
+        if(IsSameType<Array, ChunkedArrayTmpFile<3, T>>::value)
             should(empty_array->dataBytes() >= ref.size() * sizeof(T)); // must pad to a full memory page
         else
             shouldEqual(empty_array->dataBytes(), ref.size() * sizeof(T));
@@ -196,11 +196,11 @@ public:
         array->getItem(Shape3(10, 10, 10));
         int dataBytesBefore = array->dataBytes();
         array->releaseChunks(Shape3(5, 0, 3), Shape3(shape[0], shape[1], shape[2] - 3), true);
-        if (!isFullArray)
+        if(!isFullArray)
             should(array->dataBytes() < (unsigned)dataBytesBefore);
 
-        if (IsSameType<Array, ChunkedArrayLazy<3, T>>::value ||
-            IsSameType<Array, ChunkedArrayCompressed<3, T>>::value)
+        if(IsSameType<Array, ChunkedArrayLazy<3, T>>::value ||
+           IsSameType<Array, ChunkedArrayCompressed<3, T>>::value)
         {
             ref.subarray(Shape3(8, 0, 8), Shape3(shape[0], shape[1], 16)) = T(fill_value);
         }
@@ -260,7 +260,7 @@ public:
             vc = vs;
             failTest("shape mismatch in assignment failed to throw exception");
         }
-        catch (PreconditionViolation& e)
+        catch(PreconditionViolation& e)
         {
             std::string expected("\nPrecondition violation!\nMultiArrayView::operator=(): shape mismatch.\n"),
                 actual(e.what());
@@ -396,7 +396,7 @@ public:
             MultiArray<3, T> c(stop - start);
             empty_array->checkoutSubarray(start, c);
 
-            if (isFullArray)
+            if(isFullArray)
                 shouldEqual(empty_array->dataBytes(), ref.size() * sizeof(T));
             else
                 shouldEqual(empty_array->dataBytes(), 0);
@@ -406,7 +406,7 @@ public:
             shouldEqualSequence(c.begin(), c.end(), empty.begin());
 
             MultiArrayView<3, T, ChunkedArrayTag> v(empty_array->subarray(start, stop));
-            if (IsSameType<Array, ChunkedArrayTmpFile<3, T>>::value)
+            if(IsSameType<Array, ChunkedArrayTmpFile<3, T>>::value)
                 should(empty_array->dataBytes() >= ref.size() * sizeof(T)); // must pad to a full memory page
             else
                 shouldEqual(empty_array->dataBytes(), ref.size() * sizeof(T));
@@ -562,13 +562,13 @@ public:
         should(i2.getEndIterator() == iend);
         shouldEqual(i2.point(), Shape3(19, 20, 21));
         shouldEqual(&*i2, &v[Shape3(19, 20, 21)]);
-        for (int k = 0; k < 20; ++k)
+        for(int k = 0; k < 20; ++k)
             --i2;
         should(i2.isValid() && !i2.atEnd());
         should(i2.getEndIterator() == iend);
         shouldEqual(i2.point(), Shape3(19, 19, 21));
         shouldEqual(&*i2, &v[Shape3(19, 19, 21)]);
-        for (int k = 0; k < 420; ++k)
+        for(int k = 0; k < 420; ++k)
             --i2;
         should(i2.isValid() && !i2.atEnd());
         should(i2.getEndIterator() == iend);
@@ -593,17 +593,17 @@ public:
         Iterator i5 = array->begin();
         Iterator i6 = array->begin();
 
-        for (p[2] = 0, i3.resetDim(2), i4.setDim(2, 0), i5.template dim<2>() = 0, i6.resetDim(2);
-             i3.point(2) != s[2];
-             i3.incDim(2), i4.addDim(2, 1), ++i5.template dim<2>(), i6.template dim<2>() += 1, ++p[2])
+        for(p[2] = 0, i3.resetDim(2), i4.setDim(2, 0), i5.template dim<2>() = 0, i6.resetDim(2);
+            i3.point(2) != s[2];
+            i3.incDim(2), i4.addDim(2, 1), ++i5.template dim<2>(), i6.template dim<2>() += 1, ++p[2])
         {
-            for (p[1] = 0, i3.resetDim(1), i4.setDim(1, 0), i5.template dim<1>() = 0, i6.resetDim(1);
-                 i3.point(1) != s[1];
-                 i3.incDim(1), i4.addDim(1, 1), ++i5.template dim<1>(), i6.template dim<1>() += 1, ++p[1])
+            for(p[1] = 0, i3.resetDim(1), i4.setDim(1, 0), i5.template dim<1>() = 0, i6.resetDim(1);
+                i3.point(1) != s[1];
+                i3.incDim(1), i4.addDim(1, 1), ++i5.template dim<1>(), i6.template dim<1>() += 1, ++p[1])
             {
-                for (p[0] = 0, i3.resetDim(0), i4.setDim(0, 0), i5.template dim<0>() = 0, i6.resetDim(0);
-                     i3.point(0) != s[0];
-                     i3.incDim(0), i4.addDim(0, 1), ++i5.template dim<0>(), i6.template dim<0>() += 1, ++p[0], ++i1, ++c, i2 += 1, ++count)
+                for(p[0] = 0, i3.resetDim(0), i4.setDim(0, 0), i5.template dim<0>() = 0, i6.resetDim(0);
+                    i3.point(0) != s[0];
+                    i3.incDim(0), i4.addDim(0, 1), ++i5.template dim<0>(), i6.template dim<0>() += 1, ++p[0], ++i1, ++c, i2 += 1, ++count)
                 {
                     shouldEqual(&*i1, &v[p]);
                     shouldEqual(&*i2, &v[p]);
@@ -659,7 +659,7 @@ public:
 
                     bool atBorder = p[0] == 0 || p[0] == s[0] - 1 || p[1] == 0 || p[1] == s[1] - 1 ||
                                     p[2] == 0 || p[2] == s[2] - 1;
-                    if (!atBorder)
+                    if(!atBorder)
                     {
                         should(!i1.atBorder());
                         should(!i2.atBorder());
@@ -709,7 +709,7 @@ public:
             vi = v.chunk_cbegin(start, stop),
             vend = v.chunk_cend(start, stop);
         int count = -1;
-        for (; i != end; ++i, ++vi, --count)
+        for(; i != end; ++i, ++vi, --count)
         {
             shouldEqual(i->data(), i[0].data());
             shouldEqual(i->data(), vi->data());
@@ -721,7 +721,7 @@ public:
         should(vi == vend);
         shouldEqualSequence(array->cbegin(), array->cend(), ref.begin());
 
-        for (;;)
+        for(;;)
         {
             --i;
             --vi;
@@ -730,7 +730,7 @@ public:
             shouldEqual(i->data(), vi->data());
             shouldEqual((*i)[Shape3()], T(count));
             *i = T(fill_value);
-            if (i.scanOrderIndex() == 0)
+            if(i.scanOrderIndex() == 0)
                 break;
         }
         ref.subarray(start, stop) = T(fill_value);
@@ -740,7 +740,7 @@ public:
     static void testMultiThreadedRun(BaseArray* v, int startIndex, int d,
                                      threading::atomic_long* go)
     {
-        while (go->load() == 0)
+        while(go->load() == 0)
             threading::this_thread::yield();
 
         Shape3 s = v->shape();
@@ -748,9 +748,9 @@ public:
 
         Iterator bi(v->begin());
         T count(startIndex * sliceSize), start((d - 1) * sliceSize), inc(1);
-        for (bi.setDim(2, startIndex); bi.coord(2) < s[2]; bi.addDim(2, d), count += start)
-            for (bi.setDim(1, 0); bi.coord(1) < s[1]; bi.incDim(1))
-                for (bi.setDim(0, 0); bi.coord(0) < s[0]; bi.incDim(0), count += inc)
+        for(bi.setDim(2, startIndex); bi.coord(2) < s[2]; bi.addDim(2, d), count += start)
+            for(bi.setDim(1, 0); bi.coord(1) < s[1]; bi.incDim(1))
+                for(bi.setDim(0, 0); bi.coord(0) < s[0]; bi.incDim(0), count += inc)
                 {
                     *bi = count;
                 }
@@ -1347,7 +1347,7 @@ public:
 // }
 // };
 
-template<class Array>
+template <class Array>
 class ChunkedMultiArraySpeedTest
 {
 public:
@@ -1413,8 +1413,8 @@ public:
         USETICTOC;
         T count = 0;
         TIC;
-        for (; i != end; ++i, ++count)
-            if (count != *i)
+        for(; i != end; ++i, ++count)
+            if(count != *i)
             {
                 shouldEqual(*i, count);
             }
@@ -1429,9 +1429,9 @@ public:
         USETICTOC;
         T count = 0;
         TIC;
-        for (; i != end; ++i, ++count)
+        for(; i != end; ++i, ++count)
         {
-            if (count != *i)
+            if(count != *i)
             {
                 shouldEqual(*i, count);
             }
@@ -1447,11 +1447,11 @@ public:
         USETICTOC;
         T count = 0;
         TIC;
-        for (i.setDim(2, 0); i.coord(2) < shape[2]; i.incDim(2))
-            for (i.setDim(1, 0); i.coord(1) < shape[1]; i.incDim(1))
-                for (i.setDim(0, 0); i.coord(0) < shape[0]; i.incDim(0), ++count)
+        for(i.setDim(2, 0); i.coord(2) < shape[2]; i.incDim(2))
+            for(i.setDim(1, 0); i.coord(1) < shape[1]; i.incDim(1))
+                for(i.setDim(0, 0); i.coord(0) < shape[0]; i.incDim(0), ++count)
                 {
-                    if (count != *i)
+                    if(count != *i)
                     {
                         shouldEqual(*i, count);
                     }
@@ -1480,8 +1480,8 @@ public:
         USETICTOC;
         T count = 0;
         TIC;
-        for (; i != end; ++i, ++count)
-            if (count != a[*i])
+        for(; i != end; ++i, ++count)
+            if(count != a[*i])
             {
                 shouldEqual(a[*i], count);
             }
@@ -1497,9 +1497,9 @@ public:
         USETICTOC;
         T count = 0;
         TIC;
-        for (; i != end; ++i, ++count)
+        for(; i != end; ++i, ++count)
         {
-            if (count != sub[*i])
+            if(count != sub[*i])
             {
                 shouldEqual(sub[*i], count);
             }
@@ -1512,7 +1512,7 @@ public:
 struct ChunkedMultiArrayTestSuite
     : public vigra::test_suite
 {
-    template<class Array>
+    template <class Array>
     void testImpl()
     {
         add(testCase(&ChunkedMultiArrayTest<Array>::test_construction));
@@ -1526,7 +1526,7 @@ struct ChunkedMultiArrayTestSuite
         add(testCase(&ChunkedMultiArrayTest<Array>::testMultiThreaded));
     }
 
-    template<class T>
+    template <class T>
     void testSpeedImpl()
     {
         add(testCase((&ChunkedMultiArraySpeedTest<ChunkedArrayFull<3, T>>::testBaselineSpeed)));
@@ -1542,7 +1542,7 @@ struct ChunkedMultiArrayTestSuite
 #endif
     }
 
-    template<class T>
+    template <class T>
     void testIndexingSpeedImpl()
     {
         add(testCase((&ChunkedMultiArraySpeedTest<ChunkedArrayFull<3, T>>::testIndexingBaselineSpeed)));

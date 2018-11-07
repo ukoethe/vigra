@@ -130,7 +130,7 @@ typedef typename AccessorTraits<typename Image::value_type>::default_const_acces
     <b>\#include</b> \<vigra/accessor.hxx\><br>
     Namespace: vigra
 */
-template<class VALUETYPE>
+template <class VALUETYPE>
 class StandardAccessor
 {
 public:
@@ -140,7 +140,7 @@ public:
 
     /** read the current data item
         */
-    template<class ITERATOR>
+    template <class ITERATOR>
     VALUETYPE const& operator()(ITERATOR const& i) const
     {
         return *i;
@@ -153,7 +153,7 @@ public:
 
     /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
-    template<class ITERATOR, class OFFSET>
+    template <class ITERATOR, class OFFSET>
     VALUETYPE const& operator()(ITERATOR const& i, OFFSET const& diff) const
     {
         return i[diff];
@@ -163,14 +163,14 @@ public:
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class V, class ITERATOR>
+    template <class V, class ITERATOR>
     void set(V const& value, ITERATOR const& i) const
     {
         *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value);
     }
 
     /* This overload is needed to make the accessor work with a std::back_inserter */
-    template<class V, class ITERATOR>
+    template <class V, class ITERATOR>
     void set(V const& value, ITERATOR& i) const
     {
         *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value);
@@ -181,7 +181,7 @@ public:
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class V, class ITERATOR, class OFFSET>
+    template <class V, class ITERATOR, class OFFSET>
     void set(V const& value, ITERATOR const& i, OFFSET const& diff) const
     {
         i[diff] = detail::RequiresExplicitCast<VALUETYPE>::cast(value);
@@ -205,7 +205,7 @@ public:
     <b>\#include</b> \<vigra/accessor.hxx\><br>
     Namespace: vigra
 */
-template<class VALUETYPE>
+template <class VALUETYPE>
 class StandardValueAccessor
 {
 public:
@@ -217,7 +217,7 @@ public:
             is automatically converted to <TT>VALUETYPE</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class ITERATOR>
+    template <class ITERATOR>
     VALUETYPE operator()(ITERATOR const& i) const
     {
         return detail::RequiresExplicitCast<VALUETYPE>::cast(*i);
@@ -228,7 +228,7 @@ public:
             is automatically converted to <TT>VALUETYPE</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class ITERATOR, class OFFSET>
+    template <class ITERATOR, class OFFSET>
     VALUETYPE operator()(ITERATOR const& i, OFFSET const& diff) const
     {
         return detail::RequiresExplicitCast<VALUETYPE>::cast(i[diff]);
@@ -237,14 +237,14 @@ public:
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class V, class ITERATOR>
+    template <class V, class ITERATOR>
     void set(V value, ITERATOR const& i) const
     {
         *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value);
     }
 
     /* This overload is needed to make the accessor work with a std::back_inserter */
-    template<class V, class ITERATOR>
+    template <class V, class ITERATOR>
     void set(V value, ITERATOR& i) const
     {
         *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value);
@@ -255,7 +255,7 @@ public:
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class V, class ITERATOR, class OFFSET>
+    template <class V, class ITERATOR, class OFFSET>
     void set(V value, ITERATOR const& i, OFFSET const& diff) const
     {
         i[diff] = detail::RequiresExplicitCast<VALUETYPE>::cast(value);
@@ -282,7 +282,7 @@ public:
     <b>\#include</b> \<vigra/accessor.hxx\><br>
     Namespace: vigra
 */
-template<class VALUETYPE>
+template <class VALUETYPE>
 class StandardConstAccessor
 {
 public:
@@ -290,7 +290,7 @@ public:
 
     /** read the current data item
         */
-    template<class ITERATOR>
+    template <class ITERATOR>
     VALUETYPE const& operator()(ITERATOR const& i) const
     {
         return *i;
@@ -298,7 +298,7 @@ public:
 
     /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
-    template<class ITERATOR, class OFFSET>
+    template <class ITERATOR, class OFFSET>
     VALUETYPE const& operator()(ITERATOR const& i, OFFSET const& diff) const
     {
         return i[diff];
@@ -322,7 +322,7 @@ public:
     <b>\#include</b> \<vigra/accessor.hxx\><br>
     Namespace: vigra
 */
-template<class VALUETYPE>
+template <class VALUETYPE>
 class StandardConstValueAccessor
 {
 public:
@@ -332,7 +332,7 @@ public:
             is automatically converted to <TT>VALUETYPE</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class ITERATOR>
+    template <class ITERATOR>
     VALUETYPE operator()(ITERATOR const& i) const
     {
         return detail::RequiresExplicitCast<VALUETYPE>::cast(*i);
@@ -343,7 +343,7 @@ public:
             is automatically converted to <TT>VALUETYPE</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class ITERATOR, class OFFSET>
+    template <class ITERATOR, class OFFSET>
     VALUETYPE operator()(ITERATOR const& i, OFFSET const& diff) const
     {
         return detail::RequiresExplicitCast<VALUETYPE>::cast(i[diff]);
@@ -382,7 +382,7 @@ public:
     Namespace: vigra
 
 */
-template<class VECTORTYPE>
+template <class VECTORTYPE>
 class VectorComponentAccessor
 {
     int index_;
@@ -401,7 +401,7 @@ public:
 
     /** read the current data item
         */
-    template<class ITERATOR>
+    template <class ITERATOR>
     value_type const& operator()(ITERATOR const& i) const
     {
         return (*i)[index_];
@@ -409,7 +409,7 @@ public:
 
     /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
-    template<class ITERATOR, class OFFSET>
+    template <class ITERATOR, class OFFSET>
     value_type const& operator()(ITERATOR const& i, OFFSET const& diff) const
     {
         return i[diff][index_];
@@ -419,7 +419,7 @@ public:
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class V, class ITERATOR>
+    template <class V, class ITERATOR>
     void set(V const& value, ITERATOR const& i) const
     {
         (*i)[index_] = detail::RequiresExplicitCast<value_type>::cast(value);
@@ -430,7 +430,7 @@ public:
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class V, class ITERATOR, class OFFSET>
+    template <class V, class ITERATOR, class OFFSET>
     void set(V const& value, ITERATOR const& i, OFFSET const& diff) const
     {
         i[diff][index_] = detail::RequiresExplicitCast<value_type>::cast(value);
@@ -470,7 +470,7 @@ public:
     Namespace: vigra
 
 */
-template<class VECTORTYPE>
+template <class VECTORTYPE>
 class VectorComponentValueAccessor
 {
     int index_;
@@ -492,7 +492,7 @@ public:
             is automatically converted to <TT>value_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class ITERATOR>
+    template <class ITERATOR>
     value_type operator()(ITERATOR const& i) const
     {
         return detail::RequiresExplicitCast<value_type>::cast((*i)[index_]);
@@ -503,7 +503,7 @@ public:
             is automatically converted to <TT>value_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class ITERATOR, class OFFSET>
+    template <class ITERATOR, class OFFSET>
     value_type operator()(ITERATOR const& i, OFFSET const& diff) const
     {
         return detail::RequiresExplicitCast<value_type>::cast(i[diff][index_]);
@@ -513,7 +513,7 @@ public:
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class V, class ITERATOR>
+    template <class V, class ITERATOR>
     void set(V value, ITERATOR const& i) const
     {
         (*i)[index_] = detail::RequiresExplicitCast<value_type>::cast(value);
@@ -524,7 +524,7 @@ public:
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class V, class ITERATOR, class OFFSET>
+    template <class V, class ITERATOR, class OFFSET>
     void set(V value, ITERATOR const& i, OFFSET const& diff) const
     {
         i[diff][index_] = detail::RequiresExplicitCast<value_type>::cast(value);
@@ -564,7 +564,7 @@ public:
     Namespace: vigra
     
 */
-template<class ACCESSOR>
+template <class ACCESSOR>
 class VectorElementAccessor
 {
     int index_;
@@ -585,7 +585,7 @@ public:
 
     /** read the current data item
         */
-    template<class ITERATOR>
+    template <class ITERATOR>
     value_type const& operator()(ITERATOR const& i) const
     {
         return a_.getComponent(i, index_);
@@ -593,7 +593,7 @@ public:
 
     /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
-    template<class ITERATOR, class OFFSET>
+    template <class ITERATOR, class OFFSET>
     value_type const& operator()(ITERATOR const& i, OFFSET const& diff) const
     {
         return a_.getComponent(i, diff, index_);
@@ -603,7 +603,7 @@ public:
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class V, class ITERATOR>
+    template <class V, class ITERATOR>
     void set(V const& value, ITERATOR const& i) const
     {
         a_.setComponent(detail::RequiresExplicitCast<value_type>::cast(value), i, index_);
@@ -614,7 +614,7 @@ public:
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class V, class ITERATOR, class OFFSET>
+    template <class V, class ITERATOR, class OFFSET>
     void set(V const& value, ITERATOR const& i, OFFSET const& diff) const
     {
         a_.setComponent(detail::RequiresExplicitCast<value_type>::cast(value), i, diff, index_);
@@ -661,7 +661,7 @@ public:
     }
     \endcode
 */
-template<class SEQUENCE>
+template <class SEQUENCE>
 class SequenceAccessor
     : public StandardAccessor<SEQUENCE>
 {
@@ -683,7 +683,7 @@ public:
 
     /** get begin iterator for sequence at given iterator position
         */
-    template<class ITERATOR>
+    template <class ITERATOR>
     iterator begin(ITERATOR const& i) const
     {
         return (*i).begin();
@@ -691,7 +691,7 @@ public:
 
     /** get end iterator for sequence at given iterator position
         */
-    template<class ITERATOR>
+    template <class ITERATOR>
     iterator end(ITERATOR const& i) const
     {
         return (*i).end();
@@ -700,7 +700,7 @@ public:
     /** get begin iterator for sequence at an offset
             of given iterator position
         */
-    template<class ITERATOR, class OFFSET>
+    template <class ITERATOR, class OFFSET>
     iterator begin(ITERATOR const& i, OFFSET const& diff) const
     {
         return i[diff].begin();
@@ -709,7 +709,7 @@ public:
     /** get end iterator for sequence at a 2D difference vector
             of given iterator position
         */
-    template<class ITERATOR, class OFFSET>
+    template <class ITERATOR, class OFFSET>
     iterator end(ITERATOR const& i, OFFSET const& diff) const
     {
         return i[diff].end();
@@ -717,7 +717,7 @@ public:
 
     /** get size of sequence at given iterator position
         */
-    template<class ITERATOR>
+    template <class ITERATOR>
     unsigned int size(ITERATOR const& i) const
     {
         return (*i).size();
@@ -725,7 +725,7 @@ public:
 
     /** get size of sequence at 2D difference vector of given iterator position
         */
-    template<class ITERATOR, class OFFSET>
+    template <class ITERATOR, class OFFSET>
     unsigned int size(ITERATOR const& i, OFFSET const& diff) const
     {
         return i[diff].size();
@@ -804,7 +804,7 @@ public:
     v.size();
     \endcode
 */
-template<class VECTOR>
+template <class VECTOR>
 class VectorAccessor
     : public SequenceAccessor<VECTOR>
 {
@@ -821,7 +821,7 @@ public:
     /** Read the component data at given vector index
             at given iterator position
         */
-    template<class ITERATOR>
+    template <class ITERATOR>
     component_type const& getComponent(ITERATOR const& i, int idx) const
     {
         return (*i)[idx];
@@ -832,7 +832,7 @@ public:
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template<class V, class ITERATOR>
+    template <class V, class ITERATOR>
     void setComponent(V const& value, ITERATOR const& i, int idx) const
     {
         (*i)[idx] = detail::RequiresExplicitCast<component_type>::cast(value);
@@ -841,7 +841,7 @@ public:
     /** Read the component data at given vector index
             at an offset of given iterator position
         */
-    template<class ITERATOR, class OFFSET>
+    template <class ITERATOR, class OFFSET>
     component_type const& getComponent(ITERATOR const& i, OFFSET const& diff, int idx) const
     {
         return i[diff][idx];
@@ -852,7 +852,7 @@ public:
         in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
     */
-    template<class V, class ITERATOR, class OFFSET>
+    template <class V, class ITERATOR, class OFFSET>
     void
     setComponent(V const& value, ITERATOR const& i, OFFSET const& diff, int idx) const
     {
@@ -904,7 +904,7 @@ public:
     \endcode
 */
 
-template<class Iter1, class Acc1, class Iter2, class Acc2>
+template <class Iter1, class Acc1, class Iter2, class Acc2>
 class MultiImageAccessor2
 {
 public:
@@ -923,7 +923,7 @@ public:
 
     /** read the current data item
         */
-    template<class OFFSET>
+    template <class OFFSET>
     value_type operator()(OFFSET const& d) const
     {
         return std::make_pair(a1_(i1_, d), a2_(i2_, d));
@@ -931,7 +931,7 @@ public:
 
     /** read the data item at an offset
         */
-    template<class OFFSET1, class OFFSET2>
+    template <class OFFSET1, class OFFSET2>
     value_type operator()(OFFSET1 d1, OFFSET2 const& d2) const
     {
         d1 += d2;
@@ -947,7 +947,7 @@ private:
 
 //@}
 
-template<class T>
+template <class T>
 struct AccessorTraits
 {
     typedef StandardAccessor<T> default_accessor;
@@ -955,7 +955,7 @@ struct AccessorTraits
 };
 
 #define VIGRA_DEFINE_ACCESSOR_TRAITS(VALUE, ACCESSOR, CONST_ACCESSOR) \
-    template<>                                                        \
+    template <>                                                       \
     struct AccessorTraits<VALUE>                                      \
     {                                                                 \
         typedef ACCESSOR<VALUE> default_accessor;                     \
@@ -973,23 +973,23 @@ VIGRA_DEFINE_ACCESSOR_TRAITS(unsigned long, StandardValueAccessor, StandardConst
 VIGRA_DEFINE_ACCESSOR_TRAITS(float, StandardValueAccessor, StandardConstValueAccessor)
 VIGRA_DEFINE_ACCESSOR_TRAITS(double, StandardValueAccessor, StandardConstValueAccessor)
 
-template<class T, unsigned int RED_IDX, unsigned int GREEN_IDX, unsigned int BLUE_IDX>
+template <class T, unsigned int RED_IDX, unsigned int GREEN_IDX, unsigned int BLUE_IDX>
 class RGBValue;
-template<class T>
+template <class T>
 class RGBAccessor;
-template<class T, int SIZE>
+template <class T, int SIZE>
 class TinyVector;
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template<class T, unsigned int RED_IDX, unsigned int GREEN_IDX, unsigned int BLUE_IDX>
+template <class T, unsigned int RED_IDX, unsigned int GREEN_IDX, unsigned int BLUE_IDX>
 struct AccessorTraits<RGBValue<T, RED_IDX, GREEN_IDX, BLUE_IDX>>
 {
     typedef RGBAccessor<RGBValue<T, RED_IDX, GREEN_IDX, BLUE_IDX>> default_accessor;
     typedef RGBAccessor<RGBValue<T, RED_IDX, GREEN_IDX, BLUE_IDX>> default_const_accessor;
 };
 
-template<class T, int SIZE>
+template <class T, int SIZE>
 struct AccessorTraits<TinyVector<T, SIZE>>
 {
     typedef VectorAccessor<TinyVector<T, SIZE>> default_accessor;

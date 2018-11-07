@@ -93,11 +93,11 @@ CodecManager::~CodecManager()
     // release previously allocated codecs
     // (use erase ideom similar to
     // S. Meyers' "Effective STL", Item 9)
-    for (std::map<std::string, CodecFactory*>::iterator i = factoryMap.begin();
-         i != factoryMap.end();
-         /* nothing */)
+    for(std::map<std::string, CodecFactory*>::iterator i = factoryMap.begin();
+        i != factoryMap.end();
+        /* nothing */)
     {
-        delete (*i).second;
+        delete(*i).second;
         factoryMap.erase(i++);
     }
 }
@@ -111,11 +111,11 @@ CodecManager::import(CodecFactory* cf)
     // fill extension map
     const std::vector<std::string>& ext = desc.fileExtensions;
     typedef std::vector<std::string>::const_iterator iter_type;
-    for (iter_type iter = ext.begin(); iter < ext.end(); ++iter)
+    for(iter_type iter = ext.begin(); iter < ext.end(); ++iter)
         extensionMap[*iter] = desc.fileType;
 
     // fill magic vector
-    for (VIGRA_CSTD::size_t i = 0; i < desc.magicStrings.size(); ++i)
+    for(VIGRA_CSTD::size_t i = 0; i < desc.magicStrings.size(); ++i)
         magicStrings.push_back(std::pair<std::vector<char>, std::string>(desc.magicStrings[i], desc.fileType));
     // fill factory map
     factoryMap[desc.fileType] = cf;
@@ -158,7 +158,7 @@ CodecManager::supportedFileTypes()
 {
     std::vector<std::string> fileTypes;
     std::map<std::string, CodecFactory*>::const_iterator iter = factoryMap.begin();
-    while (iter != factoryMap.end())
+    while(iter != factoryMap.end())
     {
         fileTypes.push_back(iter->first);
         ++iter;
@@ -173,7 +173,7 @@ CodecManager::supportedFileExtensions()
 {
     std::vector<std::string> fileExtensions;
     std::map<std::string, std::string>::const_iterator iter = extensionMap.begin();
-    while (iter != extensionMap.end())
+    while(iter != extensionMap.end())
     {
         fileExtensions.push_back(iter->first);
         ++iter;
@@ -197,7 +197,7 @@ CodecManager::getFileTypeByMagicString(const std::string& filename)
 #else
     std::ifstream stream(filename.c_str());
 #endif
-    if (!stream.good())
+    if(!stream.good())
     {
         std::string msg("Unable to open file '");
         msg += filename;
@@ -210,11 +210,11 @@ CodecManager::getFileTypeByMagicString(const std::string& filename)
     // compare with the known magic strings
     typedef std::vector<std::pair<std::vector<char>, std::string>>
         magic_type;
-    for (magic_type::const_iterator iter = magicStrings.begin();
-         iter < magicStrings.end(); ++iter)
+    for(magic_type::const_iterator iter = magicStrings.begin();
+        iter < magicStrings.end(); ++iter)
     {
         const std::vector<char>& magic = iter->first;
-        if (std::equal(magic.begin(), magic.end(), fmagic))
+        if(std::equal(magic.begin(), magic.end(), fmagic))
             return iter->second;
     }
 
@@ -230,7 +230,7 @@ CodecManager::getDecoder(const std::string& filename,
 {
     std::string fileType = filetype;
 
-    if (fileType == "undefined")
+    if(fileType == "undefined")
     {
 
         fileType = getFileTypeByMagicString(filename);
@@ -263,7 +263,7 @@ CodecManager::getEncoderType(const std::string& filename,
 {
     std::string fileType = fType;
 
-    if (fileType == "" || fileType == "undefined")
+    if(fileType == "" || fileType == "undefined")
     {
         // look up the file type by the file extension
         std::string ext = filename.substr(filename.find_last_of(".") + 1);
@@ -333,10 +333,10 @@ negotiatePixelType(std::string const& codecname,
     std::vector<std::string> ptypes = codecManager().queryCodecPixelTypes(codecname);
 
     std::vector<std::string>::iterator pend;
-    if (destPixeltype != "")
+    if(destPixeltype != "")
     {
         pend = std::find(ptypes.begin(), ptypes.end(), destPixeltype);
-        if (pend == ptypes.end())
+        if(pend == ptypes.end())
         {
             std::string msg("exportImage(): file type ");
             msg += codecname + " does not support requested pixel type " + destPixeltype + ".";
@@ -351,16 +351,16 @@ negotiatePixelType(std::string const& codecname,
 
     std::vector<std::string>::const_iterator result = std::find(ptypes.begin(), pend, srcPixeltype);
 
-    if (result == pend)
+    if(result == pend)
     {
-        if (destPixeltype == "")
+        if(destPixeltype == "")
             destPixeltype = "UINT8";
         // must always downcast
         return true;
     }
     else
     {
-        if (destPixeltype == "")
+        if(destPixeltype == "")
             destPixeltype = srcPixeltype;
         // don't downcast
         return false;
@@ -381,7 +381,7 @@ isBandNumberSupported(const std::string& codecname,
                       int bands)
 {
     std::vector<int> bandNumbers = codecManager().queryCodecBandNumbers(codecname);
-    if (bandNumbers[0] == 0)
+    if(bandNumbers[0] == 0)
         return true; // any band number supported
     std::vector<int>::const_iterator result = std::find(bandNumbers.begin(), bandNumbers.end(), bands);
     return (result != bandNumbers.end());

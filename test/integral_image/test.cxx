@@ -216,7 +216,7 @@ struct IntegralImageTest
             Vector2Image2 result(in.shape());
 
             integralMultiArray(in, result);
-            for (int c = 0; c < 2; ++c)
+            for(int c = 0; c < 2; ++c)
             {
                 MultiArrayView<2, int> band = result.bindElementChannel(c);
                 shouldEqualSequence(band.begin(), band.end(), desired);

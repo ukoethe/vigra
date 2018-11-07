@@ -8,7 +8,7 @@ using namespace vigra;
 int
 main(int argc, char** argv)
 {
-    if (argc != 3)
+    if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(grayscale only, supported formats: " << impexListFormats() << ")" << std::endl;
@@ -35,7 +35,7 @@ main(int argc, char** argv)
         importImage(in_filename, imageArray);
 
         // set every second horizontal line to black
-        for (int i = 0; i < imageInfo.height(); i += 2)
+        for(int i = 0; i < imageInfo.height(); i += 2)
         {
             imageArray.bind<1>(i) = 0;
         }
@@ -43,7 +43,7 @@ main(int argc, char** argv)
         // write image data to the file given as second argument
         exportImage(imageArray, ImageExportInfo(out_filename));
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         // catch any errors that might have occurred and print their reason
         std::cout << e.what() << std::endl;

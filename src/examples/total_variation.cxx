@@ -55,12 +55,12 @@ read_string(FILE* file, const char* name, char* out)
 {
     char dummy[80];
     int s = fscanf(file, "%s %s ", dummy, out);
-    if (s == EOF || s < 2)
+    if(s == EOF || s < 2)
     {
         std::cout << "Could not read from file.\n";
         exit(0);
     }
-    else if (strcasecmp(name, dummy) != 0)
+    else if(strcasecmp(name, dummy) != 0)
     {
         std::cout << "Found parameter " << dummy << " instead of " << name << "\n";
         exit(0);
@@ -80,12 +80,12 @@ read_value(FILE* file, const char* name)
     int s = fscanf(file, "%s %s ", dummy, dummy2);
 
 
-    if (s == EOF || s < 2)
+    if(s == EOF || s < 2)
     {
         std::cout << "Could not read from file.\n";
         exit(0);
     }
-    else if (strcasecmp(name, dummy) != 0)
+    else if(strcasecmp(name, dummy) != 0)
     {
         std::cout << "Found parameter " << dummy << " instead of " << name << "\n";
         exit(0);
@@ -105,7 +105,7 @@ main(int argc, char** argv)
 
     using namespace multi_math;
 
-    if (argc < 2)
+    if(argc < 2)
     {
         std::cout << "Usage: " << argv[0] << " parameterfile" << std::endl;
         std::cout << "(supported formats for images: " << impexListFormats() << ")" << std::endl;
@@ -120,7 +120,7 @@ main(int argc, char** argv)
         int mode, inner_steps = 200, outer_steps = 5, write_steps = 0;
 
         FILE* file = fopen(argv[1], "r"); // open parameter file
-        if (!file)
+        if(!file)
         {
             std::cout << "Cannot open file " << argv[1] << std::endl;
             return 1;
@@ -132,7 +132,7 @@ main(int argc, char** argv)
         //             3- Anisotropic Total Variation with Higher Order term
 
         // further parameters depend on mode
-        switch (mode)
+        switch(mode)
         {
             case 1:
             case 2:
@@ -173,16 +173,16 @@ main(int argc, char** argv)
 
 
 
-        if (info.isGrayscale())
+        if(info.isGrayscale())
         {
             MultiArray<2, double> data(info.shape());
             MultiArray<2, double> out(info.shape());
             MultiArray<2, double> weight(info.shape());
 
 
-            for (int y = 0; y < data.shape(1); y++)
+            for(int y = 0; y < data.shape(1); y++)
             {
-                for (int x = 0; x < data.shape(0); x++)
+                for(int x = 0; x < data.shape(0); x++)
                 {
                     weight(x, y) = 1; // set weight to 1 (needed for anisotropicTotalVariationFilter and
                     // higherOrderTotalVariationFilter
@@ -194,7 +194,7 @@ main(int argc, char** argv)
             //------------------------------------
             //     Choose specific TV Filter
             //------------------------------------
-            switch (mode)
+            switch(mode)
             {
                 case 1:
                     std::cout << "Standard TV filter" << std::endl;
@@ -214,19 +214,19 @@ main(int argc, char** argv)
 
                     out = data; //'data' serves as initial value
 
-                    for (int i = 0; i < outer_steps; i++)
+                    for(int i = 0; i < outer_steps; i++)
                     { // Outer loop to update anisotropic data
                         std::cout << "outer step " << i << "\n";
 
                         getAnisotropy(out, phi, alpha, beta, alpha0, beta0, sigma, rho, K);                // get anisotropic data
                         anisotropicTotalVariationFilter(data, weight, phi, alpha, beta, out, inner_steps); //perform smoothing
 
-                        if (write_steps)
+                        if(write_steps)
                         {
                             char dummy[80];
                             sprintf(dummy, "output_step_%03d.png", i);
                             std::cout << "Writing temp file\n";
-                            if (stretch)
+                            if(stretch)
                                 exportImage(out, ImageExportInfo(dummy)); //exportImage performes histogramm stretching
                             else
                             {
@@ -250,9 +250,9 @@ main(int argc, char** argv)
                     MultiArray<2, double> xedges(info.shape());
                     MultiArray<2, double> yedges(info.shape());
 
-                    for (int y = 0; y < data.shape(1); y++)
+                    for(int y = 0; y < data.shape(1); y++)
                     { // set data needed for second order term
-                        for (int x = 0; x < data.shape(0); x++)
+                        for(int x = 0; x < data.shape(0); x++)
                         {
                             gamma(x, y) = gamma0;
                             xedges(x, y) = 1;
@@ -262,19 +262,19 @@ main(int argc, char** argv)
 
                     out = data; //'data' serves as initial value
 
-                    for (int i = 0; i < outer_steps; i++)
+                    for(int i = 0; i < outer_steps; i++)
                     { // Outer loop to update anisotropic data
                         std::cout << "outer step " << i << "\n";
 
                         getAnisotropy(out, phi, alpha, beta, alpha0, beta0, sigma, rho, K);                                       // get anisotropic data
                         secondOrderTotalVariationFilter(data, weight, phi, alpha, beta, gamma, xedges, yedges, out, inner_steps); //perform smoothing
 
-                        if (write_steps)
+                        if(write_steps)
                         {
                             char dummy[80];
                             sprintf(dummy, "output_step_%03d.png", i);
                             std::cout << "Writing temp file\n";
-                            if (stretch)
+                            if(stretch)
                                 exportImage(out, ImageExportInfo(dummy));
                             else
                             {
@@ -287,7 +287,7 @@ main(int argc, char** argv)
                 }
             }
             //-------------------------------------
-            if (stretch)
+            if(stretch)
                 exportImage(out, ImageExportInfo(outfile)); //write result to file
             else
             {
@@ -301,7 +301,7 @@ main(int argc, char** argv)
             std::cout << "Color images are currently not supported !\n";
         }
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         std::cout << e.what() << std::endl;
         return 1;

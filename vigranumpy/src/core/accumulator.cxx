@@ -90,7 +90,7 @@ createTagToAlias(ArrayVector<std::string> const& names)
 {
     const AliasMap aliases = defineAliasMap();
     VIGRA_UNIQUE_PTR<AliasMap> res(new AliasMap());
-    for (unsigned int k = 0; k < names.size(); ++k)
+    for(unsigned int k = 0; k < names.size(); ++k)
     {
         // lookup alias names
         AliasMap::const_iterator a = aliases.find(names[k]);
@@ -100,8 +100,8 @@ createTagToAlias(ArrayVector<std::string> const& names)
 
         // treat FlatScatterMatrix and ScatterMatrixEigensystem as internal,
         // i.e. use names only when they don't contain these strings
-        if (alias.find("ScatterMatrixEigensystem") == std::string::npos &&
-            alias.find("FlatScatterMatrix") == std::string::npos)
+        if(alias.find("ScatterMatrixEigensystem") == std::string::npos &&
+           alias.find("FlatScatterMatrix") == std::string::npos)
             (*res)[names[k]] = alias;
     }
     return res.release();
@@ -111,7 +111,7 @@ AliasMap*
 createAliasToTag(AliasMap const& tagToAlias)
 {
     VIGRA_UNIQUE_PTR<AliasMap> res(new AliasMap());
-    for (AliasMap::const_iterator k = tagToAlias.begin(); k != tagToAlias.end(); ++k)
+    for(AliasMap::const_iterator k = tagToAlias.begin(); k != tagToAlias.end(); ++k)
         (*res)[normalizeString(k->second)] = normalizeString(k->first);
     return res.release();
 }
@@ -120,7 +120,7 @@ ArrayVector<std::string>*
 createSortedNames(AliasMap const& tagToAlias)
 {
     VIGRA_UNIQUE_PTR<ArrayVector<std::string>> res(new ArrayVector<std::string>());
-    for (AliasMap::const_iterator k = tagToAlias.begin(); k != tagToAlias.end(); ++k)
+    for(AliasMap::const_iterator k = tagToAlias.begin(); k != tagToAlias.end(); ++k)
         res->push_back(k->second);
     std::sort(res->begin(), res->end());
     return res.release();

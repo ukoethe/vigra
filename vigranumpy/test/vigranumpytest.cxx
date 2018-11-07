@@ -55,7 +55,7 @@ testAny(NumpyAnyArray array)
     return python::make_tuple(array.shape(), copy, python::object(), python::object());
 }
 
-template<unsigned int N, class T, class Stride>
+template <unsigned int N, class T, class Stride>
 python::tuple
 test(NumpyArray<N, T, Stride> const& array)
 {
@@ -75,7 +75,7 @@ test(NumpyArray<N, T, Stride> const& array)
                               same_shape, same_shape_and_tags);
 }
 
-template<unsigned int N, class T, class Stride>
+template <unsigned int N, class T, class Stride>
 typename MultiArrayShape<N>::type
 testView(MultiArrayView<N, T, Stride> array)
 {
@@ -93,7 +93,7 @@ testMakeReferenceUnsafe()
     python_view.makeUnsafeReference(cpp_memory);
 }
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 python::tuple
 checkTaggedShape(NumpyArray<N, T> in)
 {

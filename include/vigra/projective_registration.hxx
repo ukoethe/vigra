@@ -60,7 +60,7 @@ namespace vigra
     For use with \ref projectiveWarpImage(). Since four corresponding points are needed to be given,
     the matrix will compute a full projective transform.
  */
-template<class SrcPointIterator, class DestPointIterator>
+template <class SrcPointIterator, class DestPointIterator>
 linalg::TemporaryMatrix<double>
 projectiveMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator send, DestPointIterator d)
 {
@@ -74,7 +74,7 @@ projectiveMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
                  "projectiveMatrix2DFromCorrespondingPoints(): need at least four corresponding points.");
 
     vigra::Matrix<double> A(2 * size, 8, 0.0), b(2 * size, 1), res(8, 1);
-    for (int i = 0; i < size; ++i, ++s, ++d)
+    for(int i = 0; i < size; ++i, ++s, ++d)
     {
         //m_00                m_01                m_02                m_10                    m_11                    m_12                m_20                                m_21
         //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -205,11 +205,11 @@ projectiveMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
     <b>See also:</b> Functions to specify projective transformation: \ref translationMatrix2D(), \ref scalingMatrix2D(),
                     \ref shearMatrix2D(), \ref rotationMatrix2DRadians(), \ref rotationMatrix2DDegrees() and \ref projectiveMatrix2DFromCorrespondingPoints()
 */
-doxygen_overloaded_function(template<...> void projectiveWarpImage)
+doxygen_overloaded_function(template <...> void projectiveWarpImage)
 
-    template<int ORDER, class T,
-             class DestIterator, class DestAccessor,
-             class C>
+    template <int ORDER, class T,
+              class DestIterator, class DestAccessor,
+              class C>
     void projectiveWarpImage(SplineImageView<ORDER, T> const& src,
                              DestIterator dul, DestIterator dlr, DestAccessor dest,
                              MultiArrayView<2, double, C> const& projectiveMatrix)
@@ -221,23 +221,23 @@ doxygen_overloaded_function(template<...> void projectiveWarpImage)
     double w = dlr.x - dul.x;
     double h = dlr.y - dul.y;
 
-    for (double y = 0.0; y < h; ++y, ++dul.y)
+    for(double y = 0.0; y < h; ++y, ++dul.y)
     {
         typename DestIterator::row_iterator rd = dul.rowIterator();
-        for (double x = 0.0; x < w; ++x, ++rd)
+        for(double x = 0.0; x < w; ++x, ++rd)
         {
             double fac = 1.0 / (x * projectiveMatrix(2, 0) + y * projectiveMatrix(2, 1) + 1);
             double sx = (x * projectiveMatrix(0, 0) + y * projectiveMatrix(0, 1) + projectiveMatrix(0, 2)) * fac;
             double sy = (x * projectiveMatrix(1, 0) + y * projectiveMatrix(1, 1) + projectiveMatrix(1, 2)) * fac;
-            if (src.isInside(sx, sy))
+            if(src.isInside(sx, sy))
                 dest.set(src(sx, sy), rd);
         }
     }
 }
 
-template<int ORDER, class T,
-         class DestIterator, class DestAccessor,
-         class C>
+template <int ORDER, class T,
+          class DestIterator, class DestAccessor,
+          class C>
 inline void
 projectiveWarpImage(SplineImageView<ORDER, T> const& src,
                     triple<DestIterator, DestIterator, DestAccessor> dest,
@@ -247,9 +247,9 @@ projectiveWarpImage(SplineImageView<ORDER, T> const& src,
 }
 
 
-template<int ORDER, class T,
-         class T2, class S2,
-         class C>
+template <int ORDER, class T,
+          class T2, class S2,
+          class C>
 inline void
 projectiveWarpImage(SplineImageView<ORDER, T> const& src,
                     MultiArrayView<2, T2, S2> dest,

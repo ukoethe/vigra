@@ -181,17 +181,17 @@ BinaryForest::addArc(
     index_type arc_id = 2 * u.id();
 
     // Make sure that the arc is not inserted twice.
-    if (u_node.left_child == v.id())
+    if(u_node.left_child == v.id())
         return Arc(arc_id);
-    if (u_node.right_child == v.id())
+    if(u_node.right_child == v.id())
         return Arc(arc_id + 1);
 
     // Add v as child of u.
-    if (u_node.left_child == -1)
+    if(u_node.left_child == -1)
     {
         u_node.left_child = v.id();
     }
-    else if (u_node.right_child == -1)
+    else if(u_node.right_child == -1)
     {
         u_node.right_child = v.id();
         ++arc_id;
@@ -206,7 +206,7 @@ BinaryForest::addArc(
 
     // If v was a root node, remove it from the list.
     auto it = std::lower_bound(root_nodes_.begin(), root_nodes_.end(), v.id());
-    if (it != root_nodes_.end() && !(v.id() < *it))
+    if(it != root_nodes_.end() && !(v.id() < *it))
         root_nodes_.erase(it);
 
     ++num_arcs_;
@@ -225,14 +225,14 @@ inline bool
 BinaryForest::valid(
     Arc const& arc) const
 {
-    if (arc == lemon::INVALID)
+    if(arc == lemon::INVALID)
         return false;
 
     index_type const uid = arc.id() / 2;
-    if (!valid(Node(uid)))
+    if(!valid(Node(uid)))
         return false;
 
-    if (arc.id() % 2 == 0)
+    if(arc.id() % 2 == 0)
         return nodes_[uid].left_child != -1;
     else
         return nodes_[uid].right_child != -1;
@@ -250,7 +250,7 @@ BinaryForest::target(
     Arc const& arc) const
 {
     NodeT const& u_node = nodes_[arc.id() / 2];
-    if (arc.id() % 2 == 0)
+    if(arc.id() % 2 == 0)
         return Node(u_node.left_child);
     else
         return Node(u_node.right_child);
@@ -312,7 +312,7 @@ inline size_t
 BinaryForest::inDegree(
     Node const& node) const
 {
-    if (nodes_[node.id()].parent == -1)
+    if(nodes_[node.id()].parent == -1)
         return 0;
     else
         return 1;
@@ -323,9 +323,9 @@ BinaryForest::outDegree(
     Node const& node) const
 {
     NodeT const& n = nodes_[node.id()];
-    if (n.left_child == -1 && n.right_child == -1)
+    if(n.left_child == -1 && n.right_child == -1)
         return 0;
-    else if (n.left_child == -1 || n.right_child == -1)
+    else if(n.left_child == -1 || n.right_child == -1)
         return 1;
     else
         return 2;
@@ -355,7 +355,7 @@ inline BinaryForest::Node
 BinaryForest::getNode(
     size_t i) const
 {
-    if (i >= numNodes())
+    if(i >= numNodes())
         return Node(lemon::INVALID);
     else
         return Node(i);
@@ -367,7 +367,7 @@ BinaryForest::getParent(
     size_t i) const
 {
     NodeT const& n = nodes_[node.id()];
-    if (n.parent == -1 || i != 0)
+    if(n.parent == -1 || i != 0)
         return Node(lemon::INVALID);
     else
         return Node(n.parent);
@@ -379,9 +379,9 @@ BinaryForest::getChild(
     size_t i) const
 {
     NodeT const& n = nodes_[node.id()];
-    if (i == 0)
+    if(i == 0)
         return Node(n.left_child);
-    else if (i == 1)
+    else if(i == 1)
         return Node(n.right_child);
     else
         return Node(lemon::INVALID);
@@ -391,7 +391,7 @@ inline BinaryForest::Node
 BinaryForest::getRoot(
     size_t i) const
 {
-    if (i >= root_nodes_.size())
+    if(i >= root_nodes_.size())
         return Node(lemon::INVALID);
     else
         return Node(root_nodes_[i]);
@@ -404,20 +404,20 @@ BinaryForest::merge(
     num_arcs_ += other.num_arcs_;
     size_t const offset = nodes_.size();
     nodes_.insert(nodes_.end(), other.nodes_.begin(), other.nodes_.end());
-    for (size_t i = offset; i < nodes_.size(); ++i)
+    for(size_t i = offset; i < nodes_.size(); ++i)
     {
         NodeT& n = nodes_[i];
-        if (n.parent != -1)
+        if(n.parent != -1)
             n.parent += offset;
-        if (n.left_child != -1)
+        if(n.left_child != -1)
             n.left_child += offset;
-        if (n.right_child != -1)
+        if(n.right_child != -1)
             n.right_child += offset;
     }
 
     size_t const root_offset = root_nodes_.size();
     root_nodes_.insert(root_nodes_.end(), other.root_nodes_.begin(), other.root_nodes_.end());
-    for (size_t i = root_offset; i < root_nodes_.size(); ++i)
+    for(size_t i = root_offset; i < root_nodes_.size(); ++i)
     {
         root_nodes_[i] += offset;
     }

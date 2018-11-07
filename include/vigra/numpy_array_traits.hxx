@@ -53,12 +53,12 @@ namespace vigra
 /*                                                      */
 /********************************************************/
 
-template<class ValueType>
+template <class ValueType>
 struct ERROR_NumpyArrayValuetypeTraits_not_specialized_for_
 {
 };
 
-template<class ValueType>
+template <class ValueType>
 struct NumpyArrayValuetypeTraits
 {
     static bool isValuetypeCompatible(PyArrayObject const*)
@@ -84,11 +84,11 @@ struct NumpyArrayValuetypeTraits
     }
 };
 
-template<class ValueType>
+template <class ValueType>
 ERROR_NumpyArrayValuetypeTraits_not_specialized_for_<ValueType> NumpyArrayValuetypeTraits<ValueType>::typeCode;
 
 #define VIGRA_NUMPY_VALUETYPE_TRAITS(type, typeID, numpyTypeName, impexTypeName)                  \
-    template<>                                                                                    \
+    template <>                                                                                   \
     struct NumpyArrayValuetypeTraits<type>                                                        \
     {                                                                                             \
         static bool isValuetypeCompatible(PyArrayObject const* obj) /* obj must not be NULL */    \
@@ -170,12 +170,12 @@ VIGRA_NUMPY_VALUETYPE_TRAITS(std::complex<npy_longdouble>, NPY_CLONGDOUBLE, clon
 /*                                                      */
 /********************************************************/
 
-template<unsigned int N, class T, class Stride>
+template <unsigned int N, class T, class Stride>
 struct NumpyArrayTraits;
 
 /********************************************************/
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 struct NumpyArrayTraits<N, T, StridedArrayTag>
 {
     typedef T dtype;
@@ -211,7 +211,7 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
 
     // Construct a tagged shape from a 'shape - axistags' pair (called in
     // NumpyArray::taggedShape()).
-    template<class U>
+    template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const& shape, PyAxisTags axistags)
     {
         return TaggedShape(shape, axistags);
@@ -220,7 +220,7 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     // Construct a tagged shape from a 'shape - order' pair by creating
     // the appropriate axistags object for that order and NumpyArray type.
     // (called in NumpyArray constructors via NumpyArray::init())
-    template<class U>
+    template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const& shape,
                                    std::string const& /* order */ = "")
     {
@@ -244,7 +244,7 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     // with a different scale for each axis, 'data' would contains those scales,
     // and permuteLikewise() would make sure that the scales are applied to the right
     // axes, regardless of axis re-ordering.
-    template<class ARRAY>
+    template <class ARRAY>
     static void permuteLikewise(python_ptr array, ARRAY const& data, ARRAY& res)
     {
         vigra_precondition((int)data.size() == N,
@@ -254,7 +254,7 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                        AxisInfo::AllAxes, true);
 
-        if (permute.size() != 0)
+        if(permute.size() != 0)
         {
             applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
         }
@@ -262,13 +262,13 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
 
     // This function is called in NumpyArray::setupArrayView() to determine the
     // desired axis re-ordering.
-    template<class U>
+    template <class U>
     static void permutationToSetupOrder(python_ptr array, ArrayVector<U>& permute)
     {
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                        AxisInfo::AllAxes, true);
 
-        if (permute.size() == 0)
+        if(permute.size() == 0)
         {
             permute.resize(N);
             linearSequence(permute.begin(), permute.end());
@@ -279,7 +279,7 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     // a numpy.ndarray view for a block of memory managed by C++.
     // The term 'unsafe' should remind you that memory management cannot be done
     // automatically, bu must be done explicitly by the programmer.
-    template<class U>
+    template <class U>
     static python_ptr unsafeConstructorFromData(TinyVector<U, N> const& shape,
                                                 T* data, TinyVector<U, N> const& stride)
     {
@@ -291,7 +291,7 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
 
 /********************************************************/
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 struct NumpyArrayTraits<N, T, UnstridedArrayTag>
     : public NumpyArrayTraits<N, T, StridedArrayTag>
 {
@@ -306,12 +306,12 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
         long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
         npy_intp* strides = PyArray_STRIDES(array);
 
-        if (channelIndex < ndim)
+        if(channelIndex < ndim)
         {
             // When we have a channel axis, it will become the innermost dimension
             return (ndim == N && strides[channelIndex] == sizeof(T));
         }
-        else if (majorIndex < ndim)
+        else if(majorIndex < ndim)
         {
             // When we have axistags, but no channel axis, the major spatial
             // axis will be the innermost dimension
@@ -332,7 +332,7 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
 
 /********************************************************/
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
     : public NumpyArrayTraits<N, T, StridedArrayTag>
 {
@@ -347,7 +347,7 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
 
         // If we have no channel axis (because either we don't have axistags,
         // or the tags do not contain a channel axis), ndim must match.
-        if (channelIndex == ndim)
+        if(channelIndex == ndim)
             return ndim == N;
 
         // Otherwise, the channel axis must be a singleton axis that we can drop.
@@ -359,13 +359,13 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
         return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
 
-    template<class U>
+    template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const& shape, PyAxisTags axistags)
     {
         return TaggedShape(shape, axistags).setChannelCount(1);
     }
 
-    template<class U>
+    template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const& shape, std::string const& order = "")
     {
         return TaggedShape(shape,
@@ -375,7 +375,7 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
 
     static void finalizeTaggedShape(TaggedShape& tagged_shape)
     {
-        if (tagged_shape.axistags.hasChannelAxis())
+        if(tagged_shape.axistags.hasChannelAxis())
         {
             tagged_shape.setChannelCount(1);
             vigra_precondition(tagged_shape.size() == N + 1,
@@ -389,7 +389,7 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
         }
     }
 
-    template<class ARRAY>
+    template <class ARRAY>
     static void permuteLikewise(python_ptr array, ARRAY const& data, ARRAY& res)
     {
         vigra_precondition((int)data.size() == N,
@@ -399,7 +399,7 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                        AxisInfo::NonChannel, true);
 
-        if (permute.size() == 0)
+        if(permute.size() == 0)
         {
             permute.resize(N);
             linearSequence(permute.begin(), permute.end());
@@ -408,17 +408,17 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
         applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
     }
 
-    template<class U>
+    template <class U>
     static void permutationToSetupOrder(python_ptr array, ArrayVector<U>& permute)
     {
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                        AxisInfo::AllAxes, true);
-        if (permute.size() == 0)
+        if(permute.size() == 0)
         {
             permute.resize(N);
             linearSequence(permute.begin(), permute.end());
         }
-        else if (permute.size() == N + 1)
+        else if(permute.size() == N + 1)
         {
             permute.erase(permute.begin());
         }
@@ -427,7 +427,7 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
 
 /********************************************************/
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 struct NumpyArrayTraits<N, Singleband<T>, UnstridedArrayTag>
     : public NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
 {
@@ -444,12 +444,12 @@ struct NumpyArrayTraits<N, Singleband<T>, UnstridedArrayTag>
         npy_intp* strides = PyArray_STRIDES(array);
 
         // If we have no axistags, ndim must match, and axis 0 must be unstrided.
-        if (majorIndex == ndim)
+        if(majorIndex == ndim)
             return N == ndim && strides[0] == sizeof(T);
 
         // If we have axistags, but no channel axis, ndim must match,
         // and the major non-channel axis must be unstrided.
-        if (channelIndex == ndim)
+        if(channelIndex == ndim)
             return N == ndim && strides[majorIndex] == sizeof(T);
 
         // Otherwise, the channel axis must be a singleton axis that we can drop,
@@ -466,7 +466,7 @@ struct NumpyArrayTraits<N, Singleband<T>, UnstridedArrayTag>
 
 /********************************************************/
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
     : public NumpyArrayTraits<N, T, StridedArrayTag>
 {
@@ -480,12 +480,12 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
 
-        if (channelIndex < ndim)
+        if(channelIndex < ndim)
         {
             // When we have a channel axis, ndim must match.
             return ndim == N;
         }
-        else if (majorIndex < ndim)
+        else if(majorIndex < ndim)
         {
             // When we have axistags, but no channel axis, we must add a singleton axis.
             return ndim == N - 1;
@@ -502,13 +502,13 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
         return isShapeCompatible(obj) && ValuetypeTraits::isValuetypeCompatible(obj);
     }
 
-    template<class U>
+    template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const& shape, PyAxisTags axistags)
     {
         return TaggedShape(shape, axistags).setChannelIndexLast();
     }
 
-    template<class U>
+    template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const& shape, std::string const& order = "")
     {
         return TaggedShape(shape,
@@ -520,7 +520,7 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
     {
         // When there is only one channel, and the axistags don't enforce an
         // explicit channel axis, we return an array without explicit channel axis.
-        if (tagged_shape.channelCount() == 1 && !tagged_shape.axistags.hasChannelAxis())
+        if(tagged_shape.channelCount() == 1 && !tagged_shape.axistags.hasChannelAxis())
         {
             tagged_shape.setChannelCount(0);
             vigra_precondition(tagged_shape.size() == N - 1,
@@ -533,12 +533,12 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
         }
     }
 
-    template<class ARRAY>
+    template <class ARRAY>
     static void permuteLikewise(python_ptr array, ARRAY const& data, ARRAY& res)
     {
         ArrayVector<npy_intp> permute;
 
-        if ((int)data.size() == N)
+        if((int)data.size() == N)
         {
             vigra_precondition(PyArray_NDIM((PyArrayObject*)array.get()) == N,
                                "NumpyArray::permuteLikewise(): input array has no channel axis.");
@@ -546,7 +546,7 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
             detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                            AxisInfo::AllAxes, true);
 
-            if (permute.size() == 0)
+            if(permute.size() == 0)
             {
                 permute.resize(N);
                 linearSequence(permute.begin(), permute.end());
@@ -555,7 +555,7 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
             {
                 // rotate channel axis to last position
                 int channelIndex = permute[0];
-                for (unsigned k = 1; k < N; ++k)
+                for(unsigned k = 1; k < N; ++k)
                     permute[k - 1] = permute[k];
                 permute[N - 1] = channelIndex;
             }
@@ -568,7 +568,7 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
             detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                            AxisInfo::NonChannel, true);
 
-            if (permute.size() == 0)
+            if(permute.size() == 0)
             {
                 permute.resize(N - 1);
                 linearSequence(permute.begin(), permute.end());
@@ -578,22 +578,22 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
         applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
     }
 
-    template<class U>
+    template <class U>
     static void permutationToSetupOrder(python_ptr array, ArrayVector<U>& permute)
     {
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                        AxisInfo::AllAxes, true);
 
-        if (permute.size() == 0)
+        if(permute.size() == 0)
         {
             permute.resize(PyArray_NDIM((PyArrayObject*)array.get()));
             linearSequence(permute.begin(), permute.end());
         }
-        else if (permute.size() == N)
+        else if(permute.size() == N)
         {
             // if we have a channel axis, rotate it to last position
             int channelIndex = permute[0];
-            for (decltype(permute.size()) k = 1; k < N; ++k)
+            for(decltype(permute.size()) k = 1; k < N; ++k)
                 permute[k - 1] = permute[k];
             permute[N - 1] = channelIndex;
         }
@@ -602,7 +602,7 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
 
 /********************************************************/
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
     : public NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
 {
@@ -617,13 +617,13 @@ struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
         long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
         npy_intp* strides = PyArray_STRIDES(array);
 
-        if (channelIndex < ndim)
+        if(channelIndex < ndim)
         {
             // When we have a channel axis, ndim must match, and the major non-channel
             // axis must be unstrided.
             return ndim == N && strides[majorIndex] == sizeof(T);
         }
-        else if (majorIndex < ndim)
+        else if(majorIndex < ndim)
         {
             // When we have axistags, but no channel axis, we will add a
             // singleton channel axis, and the major non-channel axis must be unstrided.
@@ -645,7 +645,7 @@ struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
 
 /********************************************************/
 
-template<unsigned int N, int M, class T>
+template <unsigned int N, int M, class T>
 struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
 {
     typedef T dtype;
@@ -668,7 +668,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
         PyObject* obj = (PyObject*)array;
 
         // We need an extra channel axis.
-        if (PyArray_NDIM(array) != N + 1)
+        if(PyArray_NDIM(array) != N + 1)
             return false;
 
         // When there are no axistags, we assume that the last axis represents the channels.
@@ -677,14 +677,14 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
 
         // find the non-channel axis with smallest stride
         long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", N + 1);
-        if (majorIndex >= N + 1)
+        if(majorIndex >= N + 1)
         {
             npy_intp smallest = NumericTraits<npy_intp>::max();
-            for (unsigned int k = 0; k < N + 1; ++k)
+            for(unsigned int k = 0; k < N + 1; ++k)
             {
-                if (k == channelIndex)
+                if(k == channelIndex)
                     continue;
-                if (strides[k] < smallest)
+                if(strides[k] < smallest)
                 {
                     smallest = strides[k];
                     majorIndex = k;
@@ -702,13 +702,13 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
         return isShapeCompatible(obj) && ValuetypeTraits::isValuetypeCompatible(obj);
     }
 
-    template<class U>
+    template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const& shape, PyAxisTags axistags)
     {
         return TaggedShape(shape, axistags).setChannelCount(M);
     }
 
-    template<class U>
+    template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const& shape, std::string const& order = "")
     {
         return TaggedShape(shape,
@@ -723,7 +723,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
                            "reshapeIfEmpty(): tagged_shape has wrong size.");
     }
 
-    template<class ARRAY>
+    template <class ARRAY>
     static void permuteLikewise(python_ptr array, ARRAY const& data, ARRAY& res)
     {
         vigra_precondition((int)data.size() == N,
@@ -733,7 +733,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                        AxisInfo::NonChannel, true);
 
-        if (permute.size() == 0)
+        if(permute.size() == 0)
         {
             permute.resize(N);
             linearSequence(permute.begin(), permute.end());
@@ -742,23 +742,23 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
         applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
     }
 
-    template<class U>
+    template <class U>
     static void permutationToSetupOrder(python_ptr array, ArrayVector<U>& permute)
     {
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder",
                                        AxisInfo::AllAxes, true);
-        if (permute.size() == 0)
+        if(permute.size() == 0)
         {
             permute.resize(N);
             linearSequence(permute.begin(), permute.end());
         }
-        else if (permute.size() == N + 1)
+        else if(permute.size() == N + 1)
         {
             permute.erase(permute.begin());
         }
     }
 
-    template<class U>
+    template <class U>
     static python_ptr unsafeConstructorFromData(TinyVector<U, N> const& shape,
                                                 value_type* data, TinyVector<U, N> const& stride)
     {
@@ -779,7 +779,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
 
 /********************************************************/
 
-template<unsigned int N, int M, class T>
+template <unsigned int N, int M, class T>
 struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
     : public NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
 {
@@ -793,17 +793,17 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
         int ndim = PyArray_NDIM(array);
 
         // We need an extra channel axis.
-        if (ndim != N + 1)
+        if(ndim != N + 1)
             return false;
 
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
         npy_intp* strides = PyArray_STRIDES(array);
 
-        if (majorIndex < ndim)
+        if(majorIndex < ndim)
         {
             // We have axistags, but no channel axis => cannot be a TinyVector image
-            if (channelIndex == ndim)
+            if(channelIndex == ndim)
                 return false;
 
             // We have an explicit channel axis => shapes and strides must match
@@ -828,7 +828,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
 
 /********************************************************/
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 struct NumpyArrayTraits<N, RGBValue<T>, StridedArrayTag>
     : public NumpyArrayTraits<N, TinyVector<T, 3>, StridedArrayTag>
 {
@@ -839,7 +839,7 @@ struct NumpyArrayTraits<N, RGBValue<T>, StridedArrayTag>
 
 /********************************************************/
 
-template<unsigned int N, class T>
+template <unsigned int N, class T>
 struct NumpyArrayTraits<N, RGBValue<T>, UnstridedArrayTag>
     : public NumpyArrayTraits<N, RGBValue<T>, StridedArrayTag>
 {

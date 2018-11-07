@@ -3,7 +3,7 @@
 
 #include "test_policy_parent.hxx"
 
-template<class ImageP> // bei dem template handelt es sich um ein EinBandImage, wie FImage, BImage, GrayImage usw.
+template <class ImageP> // bei dem template handelt es sich um ein EinBandImage, wie FImage, BImage, GrayImage usw.
 class OneBandImagePolicy
     : public TestPolicy<ImageP>
 {
@@ -26,7 +26,7 @@ public:
 
         static value_type data[15];
 
-        for (int i = 0; i <= 14; i++)
+        for(int i = 0; i <= 14; i++)
         {
             data[i] = variable + i;
         }

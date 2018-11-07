@@ -42,17 +42,17 @@
 #define NOFLEXIBLETYPE vigraMain(outputs, inputs);
 
 
-#define FLEX_TYPE(inClass, pos, name)                                                                                \
-    std::string name_str(#name);                                                                                     \
-    if ((1##pos##1) != 0 && ((pos < inputs.size() - 1) || pos == (inputs.size() - 1) && !inputs.options_.isValid())) \
-    {                                                                                                                \
-        inClass = mxGetClassID(inputs[pos]);                                                                         \
-    }                                                                                                                \
-    else                                                                                                             \
-    {                                                                                                                \
-        if (!inputs.options_.isValid())                                                                              \
-            mexErrMsgTxt("Input at (Position: pos, Name in Struct: name) not set");                                  \
-        inClass = mxGetClassID(inputs.options_[#name]);                                                              \
+#define FLEX_TYPE(inClass, pos, name)                                                                               \
+    std::string name_str(#name);                                                                                    \
+    if((1##pos##1) != 0 && ((pos < inputs.size() - 1) || pos == (inputs.size() - 1) && !inputs.options_.isValid())) \
+    {                                                                                                               \
+        inClass = mxGetClassID(inputs[pos]);                                                                        \
+    }                                                                                                               \
+    else                                                                                                            \
+    {                                                                                                               \
+        if(!inputs.options_.isValid())                                                                              \
+            mexErrMsgTxt("Input at (Position: pos, Name in Struct: name) not set");                                 \
+        inClass = mxGetClassID(inputs.options_[#name]);                                                             \
     }
 
 #define DEFAULT_ERROR                                                                                                      \
@@ -61,20 +61,20 @@
         mexErrMsgTxt(msg.c_str());
 
 
-#define FLEXIBLE_TYPE_START(pos, name)                                                                               \
-    mxClassID inClass;                                                                                               \
-    std::string name_str(#name);                                                                                     \
-    if ((1##pos##1) != 0 && ((pos < inputs.size() - 1) || pos == (inputs.size() - 1) && !inputs.options_.isValid())) \
-    {                                                                                                                \
-        inClass = mxGetClassID(inputs[pos]);                                                                         \
-    }                                                                                                                \
-    else                                                                                                             \
-    {                                                                                                                \
-        if (!inputs.options_.isValid())                                                                              \
-            mexErrMsgTxt("Input at (Position: pos, Name in Struct: name) not set");                                  \
-        inClass = mxGetClassID(inputs.options_[#name]);                                                              \
-    }                                                                                                                \
-    switch (inClass)                                                                                                 \
+#define FLEXIBLE_TYPE_START(pos, name)                                                                              \
+    mxClassID inClass;                                                                                              \
+    std::string name_str(#name);                                                                                    \
+    if((1##pos##1) != 0 && ((pos < inputs.size() - 1) || pos == (inputs.size() - 1) && !inputs.options_.isValid())) \
+    {                                                                                                               \
+        inClass = mxGetClassID(inputs[pos]);                                                                        \
+    }                                                                                                               \
+    else                                                                                                            \
+    {                                                                                                               \
+        if(!inputs.options_.isValid())                                                                              \
+            mexErrMsgTxt("Input at (Position: pos, Name in Struct: name) not set");                                 \
+        inClass = mxGetClassID(inputs.options_[#name]);                                                             \
+    }                                                                                                               \
+    switch(inClass)                                                                                                 \
     {
 
 

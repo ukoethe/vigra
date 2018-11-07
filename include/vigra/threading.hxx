@@ -45,7 +45,7 @@
 
 #ifndef VIGRA_NO_STD_THREADING
 #if defined(__clang__)
-#if (!__has_include(<thread>) || !__has_include(<mutex>) || !__has_include(<atomic>))
+#if(!__has_include(<thread>) || !__has_include(<mutex>) || !__has_include(<atomic>))
 #define VIGRA_NO_STD_THREADING
 #endif
 #else
@@ -247,7 +247,7 @@ enum memory_order
 
 #ifdef _MSC_VER
 
-template<int SIZE = 4>
+template <int SIZE = 4>
 struct atomic_long_impl
 {
     typedef LONG value_type;
@@ -283,7 +283,7 @@ struct atomic_long_impl
     }
 };
 
-template<>
+template <>
 struct atomic_long_impl<8>
 {
     typedef LONGLONG value_type;
@@ -321,7 +321,7 @@ struct atomic_long_impl<8>
 
 #else
 
-template<int SIZE = 4>
+template <int SIZE = 4>
 struct atomic_long_impl
 {
     typedef long value_type;

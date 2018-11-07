@@ -128,7 +128,7 @@ srcPoints()
 {
     std::vector<TinyVector<double, 2>> result(point_count);
 
-    for (int i = 0; i < pointdata_size; i += 4)
+    for(int i = 0; i < pointdata_size; i += 4)
     {
         result[i / 4][0] = pointdata[i];
         result[i / 4][1] = pointdata[i + 1];
@@ -142,7 +142,7 @@ destPoints()
 {
     std::vector<TinyVector<double, 2>> result(point_count);
 
-    for (int i = 0; i < pointdata_size; i += 4)
+    for(int i = 0; i < pointdata_size; i += 4)
     {
         result[i / 4][0] = pointdata[i + 2];
         result[i / 4][1] = pointdata[i + 3];
@@ -154,9 +154,9 @@ destPoints()
 void
 printMatrix(const Matrix<double>& m)
 {
-    for (int i = 0; i < m.rowCount(); ++i)
+    for(int i = 0; i < m.rowCount(); ++i)
     {
-        for (int j = 0; j < m.columnCount(); ++j)
+        for(int j = 0; j < m.columnCount(); ++j)
         {
             printf("m(%d,%d) = %10.15f;\n", i, j, m(i, j));
         }
@@ -169,9 +169,9 @@ shouldEqualToleranceMatrices(const Matrix<double>& m1, const Matrix<double>& m2,
     should(m1.rowCount() == m2.rowCount());
     should(m1.columnCount() == m2.columnCount());
 
-    for (int i = 0; i < m1.rowCount(); ++i)
+    for(int i = 0; i < m1.rowCount(); ++i)
     {
-        for (int j = 0; j < m1.columnCount(); ++j)
+        for(int j = 0; j < m1.columnCount(); ++j)
         {
             shouldEqualTolerance(m1(i, j), m2(i, j), eps);
         }
@@ -197,8 +197,8 @@ struct EstimateGlobalRotationTranslationTest
         s_img.resize(size, size);
         d_img.resize(size, size);
 
-        for (MultiArrayIndex y = (size - fill_size_v) / 2; y < (MultiArrayIndex)(size + fill_size_v) / 2; ++y)
-            for (MultiArrayIndex x = (size - fill_size_h) / 2; x < (MultiArrayIndex)(size + fill_size_h) / 2; ++x)
+        for(MultiArrayIndex y = (size - fill_size_v) / 2; y < (MultiArrayIndex)(size + fill_size_v) / 2; ++y)
+            for(MultiArrayIndex x = (size - fill_size_h) / 2; x < (MultiArrayIndex)(size + fill_size_h) / 2; ++x)
                 s_img(x, y) = 255;
 
         gaussianSmoothing(srcImageRange(s_img), destImage(s_img), 1.0);
@@ -610,7 +610,7 @@ struct PolynomialRegistrationTestSuite
 };
 
 
-template<class RBF>
+template <class RBF>
 struct RBFNameTraits
 {
     static std::string name()
@@ -619,7 +619,7 @@ struct RBFNameTraits
     }
 };
 
-template<>
+template <>
 struct RBFNameTraits<ThinPlateSplineFunctor>
 {
     static std::string name()
@@ -628,7 +628,7 @@ struct RBFNameTraits<ThinPlateSplineFunctor>
     }
 };
 
-template<int N>
+template <int N>
 struct RBFNameTraits<DistancePowerFunctor<N>>
 {
     static std::string name()
@@ -641,7 +641,7 @@ struct RBFNameTraits<DistancePowerFunctor<N>>
 
 
 
-template<class RadialBasisFunctor>
+template <class RadialBasisFunctor>
 struct RadialBasisRegistrationTest
 {
     BImage s_img;
@@ -687,7 +687,7 @@ struct RadialBasisRegistrationTest
         RadialBasisFunctor rbf;
         Matrix<double> weight_matrix = rbfMatrix2DFromCorrespondingPoints(s_points.begin(), s_points.end(), d_points.begin(), rbf);
 
-        for (decltype(d_points.size()) j = 0; j < d_points.size(); j++)
+        for(decltype(d_points.size()) j = 0; j < d_points.size(); j++)
         {
             double x = d_points[j][0];
             double y = d_points[j][1];
@@ -696,7 +696,7 @@ struct RadialBasisRegistrationTest
                    sy = weight_matrix(point_count, 1) + weight_matrix(point_count + 1, 1) * x + weight_matrix(point_count + 2, 1) * y;
 
             //RBS part
-            for (decltype(d_points.size()) i = 0; i < d_points.size(); i++)
+            for(decltype(d_points.size()) i = 0; i < d_points.size(); i++)
             {
                 double weight = rbf(d_points[i], d_points[j]);
                 sx += weight_matrix(i, 0) * weight;

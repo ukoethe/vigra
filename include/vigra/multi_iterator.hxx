@@ -84,7 +84,7 @@ namespace vigra
         // (2, 1, 0)
         \endcode
     */
-template<unsigned int N>
+template <unsigned int N>
 class MultiCoordinateIterator
     : public CoupledScanOrderIterator<N>
 {
@@ -119,18 +119,18 @@ public:
         this->restrictToSubarray(start, end);
     }
 
-    template<class DirectedTag>
+    template <class DirectedTag>
     explicit MultiCoordinateIterator(GridGraph<N, DirectedTag> const& g)
         : base_type(handle_type(g.shape()))
     {
     }
 
 
-    template<class DirectedTag>
+    template <class DirectedTag>
     explicit MultiCoordinateIterator(GridGraph<N, DirectedTag> const& g, const typename GridGraph<N, DirectedTag>::Node& node)
         : base_type(handle_type(g.shape()))
     {
-        if (isInside(g, node))
+        if(isInside(g, node))
             (*this) += node;
         else
             *this = this->getEndIterator();
@@ -272,7 +272,7 @@ protected:
         <b>\#include</b> \<vigra/multi_iterator.hxx\><br/>
         Namespace: vigra
     */
-template<unsigned int N, class V, class REFERENCE, class POINTER>
+template <unsigned int N, class V, class REFERENCE, class POINTER>
 class StridedScanOrderIterator
     : public CoupledIteratorType<N, V>::type
 {
@@ -297,7 +297,7 @@ public:
     {
     }
 
-    template<class S>
+    template <class S>
     explicit StridedScanOrderIterator(MultiArrayView<N, T, S> const& view)
         : base_type(createCoupledIterator(view))
     {
@@ -741,7 +741,7 @@ but iterator performance will suffer significantly, as is experienced with
 */
 //@{
 
-template<class POINTER>
+template <class POINTER>
 struct MultiIteratorStrideTraits
 {
     typedef MultiArrayIndex stride_type;
@@ -766,7 +766,7 @@ struct MultiIteratorStrideTraits
 /********************************************************/
 
 //
-template<class T, class REFERENCE, class POINTER>
+template <class T, class REFERENCE, class POINTER>
 class MultiIterator<1, T, REFERENCE, POINTER>
 {
 public:
@@ -947,7 +947,7 @@ public:
         return iterator(m_ptr, &stride, 0);
     }
 
-    template<unsigned int K>
+    template <unsigned int K>
     MultiIterator<K + 1, T, REFERENCE, POINTER>&
     dim()
     {
@@ -975,7 +975,7 @@ protected:
 /********************************************************/
 
 //
-template<class T, class REFERENCE, class POINTER>
+template <class T, class REFERENCE, class POINTER>
 class MultiIterator<2, T, REFERENCE, POINTER>
 #ifndef DOXYGEN // doxygen doesn't understand this inheritance
     : public MultiIterator<1, T, REFERENCE, POINTER>
@@ -1132,7 +1132,7 @@ public:
         return iterator(this->m_ptr, stride_traits::shift(m_stride, d), 0);
     }
 
-    template<unsigned int K>
+    template <unsigned int K>
     MultiIterator<K + 1, T, REFERENCE, POINTER>&
     dim()
     {
@@ -1172,7 +1172,7 @@ protected:
     <b>\#include</b> \<vigra/multi_iterator.hxx\> <br>
     Namespace: vigra
 */
-template<unsigned int N, class T, class REFERENCE, class POINTER>
+template <unsigned int N, class T, class REFERENCE, class POINTER>
 class MultiIterator
 #ifndef DOXYGEN // doxygen doesn't understand this inheritance
     : public MultiIterator<N - 1, T, REFERENCE, POINTER>
@@ -1505,7 +1505,7 @@ public:
             i3.dim0()++;  // increment inner dimension
             \endcode
         */
-    template<unsigned int K>
+    template <unsigned int K>
     MultiIterator<K + 1, T, REFERENCE, POINTER>&
     dim()
     {
@@ -1559,7 +1559,7 @@ protected:
 /********************************************************/
 
 //
-template<class T, class REFERENCE, class POINTER>
+template <class T, class REFERENCE, class POINTER>
 class StridedMultiIterator<1, T, REFERENCE, POINTER>
 {
 public:
@@ -1743,7 +1743,7 @@ public:
         return iterator(m_ptr, &stride, 0);
     }
 
-    template<unsigned int K>
+    template <unsigned int K>
     StridedMultiIterator<K + 1, T, REFERENCE, POINTER>&
     dim()
     {
@@ -1771,7 +1771,7 @@ protected:
 /********************************************************/
 
 //
-template<class T, class REFERENCE, class POINTER>
+template <class T, class REFERENCE, class POINTER>
 class StridedMultiIterator<2, T, REFERENCE, POINTER>
 #ifndef DOXYGEN // doxygen doesn't understand this inheritance
     : public StridedMultiIterator<1, T, REFERENCE, POINTER>
@@ -1928,7 +1928,7 @@ public:
         return iterator(this->m_ptr, stride_traits::shift(m_stride, d), 0);
     }
 
-    template<unsigned int K>
+    template <unsigned int K>
     StridedMultiIterator<K + 1, T, REFERENCE, POINTER>&
     dim()
     {
@@ -1968,7 +1968,7 @@ protected:
     <b>\#include</b> \<vigra/multi_iterator.hxx\> <br>
     Namespace: vigra
 */
-template<unsigned int N, class T, class REFERENCE, class POINTER>
+template <unsigned int N, class T, class REFERENCE, class POINTER>
 class StridedMultiIterator
 #ifndef DOXYGEN // doxygen doesn't understand this inheritance
     : public StridedMultiIterator<N - 1, T, REFERENCE, POINTER>
@@ -2300,7 +2300,7 @@ public:
             i3.dim0()++;  // increment inner dimension
             \endcode
         */
-    template<unsigned int K>
+    template <unsigned int K>
     StridedMultiIterator<K + 1, T, REFERENCE, POINTER>&
     dim()
     {
@@ -2350,7 +2350,7 @@ namespace std
 
 // output the current coordinate of the iterator
 // (note: this also works when the iterator is an end-iterator)
-template<unsigned int N, class T, class REFERENCE, class POINTER>
+template <unsigned int N, class T, class REFERENCE, class POINTER>
 ostream&
 operator<<(ostream& o, vigra::StridedScanOrderIterator<N, T, REFERENCE, POINTER> const& i)
 {

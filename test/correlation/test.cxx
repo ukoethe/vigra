@@ -23,9 +23,9 @@ static double test_vs_epsilon = 1.0e-3;
 void
 printMultiArray(const ImageType& img)
 {
-    for (int y = 0; y < img.height(); ++y)
+    for(int y = 0; y < img.height(); ++y)
     {
-        for (int x = 0; x < img.width(); ++x)
+        for(int x = 0; x < img.width(); ++x)
         {
             printf("img(%d,%d) = %1.10f; ", x, y, img(x, y));
         }
@@ -46,12 +46,12 @@ struct FastVsSlowCorrelationTest
     {
         ImageType::iterator iter = img.begin();
 
-        for (; iter != img.end(); ++iter)
+        for(; iter != img.end(); ++iter)
         {
             *iter = rand() % 10 + 1;
         }
 
-        for (iter = mask.begin(); iter != mask.end(); ++iter)
+        for(iter = mask.begin(); iter != mask.end(); ++iter)
         {
             *iter = rand() % 10 + 1;
         }
@@ -63,7 +63,7 @@ struct FastVsSlowCorrelationTest
         ImageType result_slow(10, 10);
         ImageType result_fast(10, 10);
 
-        for (int mask_size = 3; mask_size < 10; mask_size += 2)
+        for(int mask_size = 3; mask_size < 10; mask_size += 2)
         {
             result_fast = 0;
             fastCrossCorrelation(img,
@@ -85,7 +85,7 @@ struct FastVsSlowCorrelationTest
         ImageType result_slow(10, 10);
         ImageType result_fast(10, 10);
 
-        for (int mask_size = 3; mask_size < 10; mask_size += 2)
+        for(int mask_size = 3; mask_size < 10; mask_size += 2)
         {
             result_fast = 0;
             fastNormalizedCrossCorrelation(img,
@@ -113,12 +113,12 @@ struct FastNormalizedCrossCorrelationEssentialTest
     {
         ImageType::iterator iter = img.begin();
 
-        for (; iter != img.end(); ++iter)
+        for(; iter != img.end(); ++iter)
         {
             *iter = rand() % 10 + 1;
         }
 
-        for (iter = mask.begin(); iter != mask.end(); ++iter)
+        for(iter = mask.begin(); iter != mask.end(); ++iter)
         {
             *iter = rand() % 10 + 1;
         }
@@ -128,7 +128,7 @@ struct FastNormalizedCrossCorrelationEssentialTest
     {
         ImageType result(10, 10);
 
-        for (int mask_size = 3; mask_size < 10; mask_size += 2)
+        for(int mask_size = 3; mask_size < 10; mask_size += 2)
         {
             fastNormalizedCrossCorrelation(img,
                                            img.subarray(Shape2(0, 0), Shape2(mask_size, mask_size)),

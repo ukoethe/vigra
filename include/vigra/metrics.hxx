@@ -52,7 +52,7 @@ namespace vigra
 namespace metrics
 {
 
-template<class T>
+template <class T>
 class ChiSquared
 {
 public:
@@ -63,25 +63,25 @@ public:
     {
         return opImpl(&a, &a + 1, &b);
     }
-    template<class A, class B>
+    template <class A, class B>
     T operator()(const A& a, const B& b) const
     {
         return opImpl(a.begin(), a.end(), b.begin());
     }
 
 private:
-    template<class ITER_A, class ITER_B>
+    template <class ITER_A, class ITER_B>
     T opImpl(
         ITER_A iterA, ITER_A endA, ITER_B iterB) const
     {
         T res = 0.0;
-        while (iterA != endA)
+        while(iterA != endA)
         {
             const T aa = static_cast<T>(*iterA);
             const T bb = static_cast<T>(*iterB);
             const T sum = aa + bb;
             const T diff = aa - bb;
-            if (sum > static_cast<T>(0.0000001))
+            if(sum > static_cast<T>(0.0000001))
                 res += (diff * diff) / sum;
             ++iterA;
             ++iterB;
@@ -90,7 +90,7 @@ private:
     }
 };
 
-template<class T>
+template <class T>
 class HellingerDistance
 {
 public:
@@ -101,19 +101,19 @@ public:
     {
         return opImpl(&a, &a + 1, &b);
     }
-    template<class A, class B>
+    template <class A, class B>
     T operator()(const A& a, const B& b) const
     {
         return opImpl(a.begin(), a.end(), b.begin());
     }
 
 private:
-    template<class ITER_A, class ITER_B>
+    template <class ITER_A, class ITER_B>
     T opImpl(
         ITER_A iterA, ITER_A endA, ITER_B iterB) const
     {
         T res = 0.0;
-        while (iterA != endA)
+        while(iterA != endA)
         {
             const T aa = std::sqrt(static_cast<T>(*iterA));
             const T bb = std::sqrt(static_cast<T>(*iterB));
@@ -126,7 +126,7 @@ private:
     }
 };
 
-template<class T, unsigned int NORM, bool TAKE_ROOT = true>
+template <class T, unsigned int NORM, bool TAKE_ROOT = true>
 class PNorm
 {
 public:
@@ -137,19 +137,19 @@ public:
     {
         return opImpl(&a, &a + 1, &b);
     }
-    template<class A, class B>
+    template <class A, class B>
     T operator()(const A& a, const B& b) const
     {
         return opImpl(a.begin(), a.end(), b.begin());
     }
 
 private:
-    template<class ITER_A, class ITER_B>
+    template <class ITER_A, class ITER_B>
     T opImpl(
         ITER_A iterA, ITER_A endA, ITER_B iterB) const
     {
         T res = static_cast<T>(0.0);
-        while (iterA != endA)
+        while(iterA != endA)
         {
             const T aa = static_cast<T>(*iterA);
             const T bb = static_cast<T>(*iterB);
@@ -162,7 +162,7 @@ private:
     }
 };
 
-template<class T>
+template <class T>
 class SquaredNorm
     : public PNorm<T, 2, false>
 {
@@ -173,7 +173,7 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 class Norm
     : public PNorm<T, 2, true>
 {
@@ -184,7 +184,7 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 class Manhattan
     : public PNorm<T, 1, false>
 {
@@ -195,7 +195,7 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 class SymetricKlDivergenz
 {
 public:
@@ -206,24 +206,24 @@ public:
     {
         return opImpl(&a, &a + 1, &b);
     }
-    template<class A, class B>
+    template <class A, class B>
     T operator()(const A& a, const B& b) const
     {
         return opImpl(a.begin(), a.end(), b.begin());
     }
 
 private:
-    template<class ITER_A, class ITER_B>
+    template <class ITER_A, class ITER_B>
     T opImpl(
         ITER_A iterA, ITER_A endA, ITER_B iterB) const
     {
         T res = static_cast<T>(0.0);
-        while (iterA != endA)
+        while(iterA != endA)
         {
             const T aa = static_cast<T>(*iterA);
             const T bb = static_cast<T>(*iterB);
             const T val = std::log(aa / bb) * (aa - bb);
-            if (!isinf(val) && !isnan(val))
+            if(!isinf(val) && !isnan(val))
                 res += val;
             ++iterA;
             ++iterB;
@@ -232,7 +232,7 @@ private:
     }
 };
 
-template<class T>
+template <class T>
 class BhattacharyaDistance
 {
 public:
@@ -243,19 +243,19 @@ public:
     {
         return opImpl(&a, &a + 1, &b);
     }
-    template<class A, class B>
+    template <class A, class B>
     T operator()(const A& a, const B& b) const
     {
         return opImpl(a.begin(), a.end(), b.begin());
     }
 
 private:
-    template<class ITER_A, class ITER_B>
+    template <class ITER_A, class ITER_B>
     T opImpl(
         ITER_A iterA, ITER_A endA, ITER_B iterB) const
     {
         T res = static_cast<T>(0.0);
-        while (iterA != endA)
+        while(iterA != endA)
         {
             const T aa = static_cast<T>(*iterA);
             const T bb = static_cast<T>(*iterB);
@@ -289,7 +289,7 @@ enum MetricType
            metrics are defined in \ref vigra::metrics::MetricType. The functor's argument
            must support <tt>begin()</tt> and <tt>end()</tt> to create an STL range.
         */
-template<class T>
+template <class T>
 class Metric
 {
 public:
@@ -303,10 +303,10 @@ public:
     {
     }
 
-    template<class A, class B>
+    template <class A, class B>
     T operator()(const A& a, const B& b) const
     {
-        switch (static_cast<unsigned int>(metricType_))
+        switch(static_cast<unsigned int>(metricType_))
         {
             case 0:
                 return chiSquared_(a, b);

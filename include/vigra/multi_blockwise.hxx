@@ -86,16 +86,16 @@ public:
             An exception is raised if the stored shape's length is
             incompatible with dimension <tt>N</tt>.
         */
-    template<int N>
+    template <int N>
     TinyVector<MultiArrayIndex, N> getBlockShapeN() const
     {
-        if (blockShape_.size() > 1)
+        if(blockShape_.size() > 1)
         {
             vigra_precondition(blockShape_.size() == (size_t)N,
                                "BlockwiseOptions::getBlockShapeN(): dimension mismatch between N and stored block shape.");
             return TinyVector<MultiArrayIndex, N>(blockShape_.data());
         }
-        else if (blockShape_.size() == 1)
+        else if(blockShape_.size() == 1)
         {
             return TinyVector<MultiArrayIndex, N>(blockShape_[0]);
         }
@@ -126,7 +126,7 @@ public:
 
     /** Specify block shape by a fixed-size shape object.
         */
-    template<class T, int N>
+    template <class T, int N>
     BlockwiseOptions& blockShape(const TinyVector<T, N>& blockShape)
     {
         Shape(blockShape.begin(), blockShape.end()).swap(blockShape_);
@@ -161,7 +161,7 @@ private:
         Simply derives from \ref vigra::BlockwiseOptions and
         \ref vigra::ConvolutionOptions to join their capabilities.
     */
-template<unsigned int N>
+template <unsigned int N>
 class BlockwiseConvolutionOptions
     : public BlockwiseOptions,
       public ConvolutionOptions<N>
@@ -183,7 +183,7 @@ namespace blockwise
         This implementation should be used if the filter functor
         does not support the ROI/sub array options.
     */
-template<
+template <
     unsigned int DIM,
     class T_IN, class ST_IN,
     class T_OUT, class ST_OUT,
@@ -229,7 +229,7 @@ blockwiseCallerNoRoiApi(
         This implementation should be used if the filter functor
         does support the ROI/sub array options.
     */
-template<
+template <
     unsigned int DIM,
     class T_IN, class ST_IN,
     class T_OUT, class ST_OUT,
@@ -270,7 +270,7 @@ blockwiseCaller(
 }
 
 #define CONVOLUTION_FUNCTOR(FUNCTOR_NAME, FUNCTION_NAME)                              \
-    template<unsigned int DIM>                                                        \
+    template <unsigned int DIM>                                                       \
     class FUNCTOR_NAME                                                                \
     {                                                                                 \
     public:                                                                           \
@@ -279,12 +279,12 @@ blockwiseCaller(
             : sharedOpt_(convOpt)                                                     \
         {                                                                             \
         }                                                                             \
-        template<class S, class D>                                                    \
+        template <class S, class D>                                                   \
         void operator()(const S& s, D& d) const                                       \
         {                                                                             \
             FUNCTION_NAME(s, d, sharedOpt_);                                          \
         }                                                                             \
-        template<class S, class D, class SHAPE>                                       \
+        template <class S, class D, class SHAPE>                                      \
         void operator()(const S& s, D& d, const SHAPE& roiBegin, const SHAPE& roiEnd) \
         {                                                                             \
             ConvOpt localOpt(sharedOpt_);                                             \
@@ -308,7 +308,7 @@ CONVOLUTION_FUNCTOR(StructureTensorFunctor, vigra::structureTensorMultiArray);
 
 #undef CONVOLUTION_FUNCTOR
 
-template<unsigned int DIM>
+template <unsigned int DIM>
 class HessianOfGaussianEigenvaluesFunctor
 {
 public:
@@ -317,7 +317,7 @@ public:
         : sharedOpt_(convOpt)
     {
     }
-    template<class S, class D>
+    template <class S, class D>
     void operator()(const S& s, D& d) const
     {
         typedef typename vigra::NumericTraits<typename S::value_type>::RealPromote RealType;
@@ -325,7 +325,7 @@ public:
         vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, sharedOpt_);
         vigra::tensorEigenvaluesMultiArray(hessianOfGaussianRes, d);
     }
-    template<class S, class D, class SHAPE>
+    template <class S, class D, class SHAPE>
     void operator()(const S& s, D& d, const SHAPE& roiBegin, const SHAPE& roiEnd)
     {
         typedef typename vigra::NumericTraits<typename S::value_type>::RealPromote RealType;
@@ -340,7 +340,7 @@ private:
     ConvOpt sharedOpt_;
 };
 
-template<unsigned int DIM, unsigned int EV>
+template <unsigned int DIM, unsigned int EV>
 class HessianOfGaussianSelectedEigenvalueFunctor
 {
 public:
@@ -349,7 +349,7 @@ public:
         : sharedOpt_(convOpt)
     {
     }
-    template<class S, class D>
+    template <class S, class D>
     void operator()(const S& s, D& d) const
     {
         typedef typename vigra::NumericTraits<typename S::value_type>::RealPromote RealType;
@@ -363,7 +363,7 @@ public:
 
         d = allEigenvalues.bindElementChannel(EV);
     }
-    template<class S, class D, class SHAPE>
+    template <class S, class D, class SHAPE>
     void operator()(const S& s, D& d, const SHAPE& roiBegin, const SHAPE& roiEnd)
     {
 
@@ -386,7 +386,7 @@ private:
 };
 
 
-template<unsigned int DIM>
+template <unsigned int DIM>
 class HessianOfGaussianFirstEigenvalueFunctor
     : public HessianOfGaussianSelectedEigenvalueFunctor<DIM, 0>
 {
@@ -398,7 +398,7 @@ public:
     }
 };
 
-template<unsigned int DIM>
+template <unsigned int DIM>
 class HessianOfGaussianLastEigenvalueFunctor
     : public HessianOfGaussianSelectedEigenvalueFunctor<DIM, DIM - 1>
 {
@@ -414,7 +414,7 @@ public:
 
 /// \warning this functions is deprecated
 /// and should not be used from end users
-template<unsigned int N>
+template <unsigned int N>
 vigra::TinyVector<vigra::MultiArrayIndex, N>
 getBorder(
     const BlockwiseConvolutionOptions<N>& opt,
@@ -423,12 +423,12 @@ getBorder(
 {
     vigra::TinyVector<vigra::MultiArrayIndex, N> res(vigra::SkipInitialization);
 
-    if (opt.getFilterWindowSize() <= 0.00001)
+    if(opt.getFilterWindowSize() <= 0.00001)
     {
-        for (size_t d = 0; d < N; ++d)
+        for(size_t d = 0; d < N; ++d)
         {
             double stdDev = opt.getStdDev()[d];
-            if (usesOuterScale)
+            if(usesOuterScale)
                 stdDev += opt.getOuterScale()[d];
             res[d] = static_cast<MultiArrayIndex>(3.0 * stdDev + 0.5 * static_cast<double>(order) + 0.5);
         }
@@ -443,7 +443,7 @@ getBorder(
 } // end namespace blockwise
 
 #define VIGRA_BLOCKWISE(FUNCTOR, FUNCTION, ORDER, USES_OUTER_SCALE)                    \
-    template<unsigned int N, class T1, class S1, class T2, class S2>                   \
+    template <unsigned int N, class T1, class S1, class T2, class S2>                  \
     void FUNCTION(                                                                     \
         MultiArrayView<N, T1, S1> const& source,                                       \
         MultiArrayView<N, T2, S2> dest,                                                \
@@ -474,7 +474,7 @@ VIGRA_BLOCKWISE(StructureTensorFunctor, structureTensorMultiArray, 1, true);
 #undef VIGRA_BLOCKWISE
 
 // alternative name for backward compatibility
-template<unsigned int N, class T1, class S1, class T2, class S2>
+template <unsigned int N, class T1, class S1, class T2, class S2>
 inline void
 gaussianGradientMagnitude(
     MultiArrayView<N, T1, S1> const& source,

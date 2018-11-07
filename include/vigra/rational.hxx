@@ -78,7 +78,7 @@ namespace vigra
     <b>\#include</b> \<vigra/rational.hxx\><br>
     Namespace: vigra
 */
-template<typename IntType>
+template <typename IntType>
 IntType
 gcd(IntType n, IntType m)
 {
@@ -88,20 +88,20 @@ gcd(IntType n, IntType m)
     // This is abs() - given the existence of broken compilers with Koenig
     // lookup issues and other problems, I code this explicitly. (Remember,
     // IntType may be a user-defined type).
-    if (n < zero)
+    if(n < zero)
         n = -n;
-    if (m < zero)
+    if(m < zero)
         m = -m;
 
     // As n and m are now positive, we can be sure that %= returns a
     // positive value (the standard guarantees this for built-in types,
     // and we require it of user-defined types).
-    for (;;)
+    for(;;)
     {
-        if (m == zero)
+        if(m == zero)
             return n;
         n %= m;
-        if (n == zero)
+        if(n == zero)
             return m;
         m %= n;
     }
@@ -121,20 +121,20 @@ gcd(IntType n, IntType m)
     <b>\#include</b> \<vigra/rational.hxx\><br>
     Namespace: vigra
 */
-template<typename IntType>
+template <typename IntType>
 IntType
 lcm(IntType n, IntType m)
 {
     // Avoid repeated construction
     IntType zero(0);
 
-    if (n == zero || m == zero)
+    if(n == zero || m == zero)
         return zero;
 
     n /= gcd(n, m);
     n *= m;
 
-    if (n < zero)
+    if(n < zero)
         n = -n;
     return n;
 }
@@ -150,16 +150,16 @@ public:
     }
 };
 
-template<typename IntType>
+template <typename IntType>
 class Rational;
 
-template<typename IntType>
+template <typename IntType>
 Rational<IntType> abs(const Rational<IntType>& r);
-template<typename IntType>
+template <typename IntType>
 Rational<IntType> pow(const Rational<IntType>& r, int n);
-template<typename IntType>
+template <typename IntType>
 Rational<IntType> floor(const Rational<IntType>& r);
-template<typename IntType>
+template <typename IntType>
 Rational<IntType> ceil(const Rational<IntType>& r);
 
 /********************************************************/
@@ -196,7 +196,7 @@ Rational<IntType> ceil(const Rational<IntType>& r);
     <b>\#include</b> \<vigra/rational.hxx\><br>
     Namespace: vigra
 */
-template<typename IntType>
+template <typename IntType>
 class Rational
 {
 public:
@@ -220,7 +220,7 @@ public:
 
     /** Copy constructor
         */
-    template<class U>
+    template <class U>
     Rational(Rational<U> const& r)
         : num(r.numerator()),
           den(r.denominator())
@@ -247,7 +247,7 @@ public:
         : num(n),
           den(d)
     {
-        if (doNormalize)
+        if(doNormalize)
             normalize();
     }
 
@@ -417,32 +417,32 @@ private:
 };
 
 // Assign in place
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>&
 Rational<IntType>::assign(param_type n, param_type d, bool doNormalize)
 {
     num = n;
     den = d;
-    if (doNormalize)
+    if(doNormalize)
         normalize();
     return *this;
 }
 
 // Arithmetic assignment operators
-template<typename IntType>
+template <typename IntType>
 Rational<IntType>&
 Rational<IntType>::operator+=(const Rational& r)
 {
     IntType zero(0);
 
     // handle the Inf and NaN cases
-    if (den == zero)
+    if(den == zero)
     {
-        if (r.den == zero && sign() * r.sign() < 0)
+        if(r.den == zero && sign() * r.sign() < 0)
             throw bad_rational();
         return *this;
     }
-    if (r.den == zero)
+    if(r.den == zero)
     {
         assign(r.num, zero, false); // Inf or -Inf
         return *this;
@@ -480,20 +480,20 @@ Rational<IntType>::operator+=(const Rational& r)
     return *this;
 }
 
-template<typename IntType>
+template <typename IntType>
 Rational<IntType>&
 Rational<IntType>::operator-=(const Rational& r)
 {
     IntType zero(0);
 
     // handle the Inf and NaN cases
-    if (den == zero)
+    if(den == zero)
     {
-        if (r.den == zero && sign() * r.sign() > 0)
+        if(r.den == zero && sign() * r.sign() > 0)
             throw bad_rational();
         return *this;
     }
-    if (r.den == zero)
+    if(r.den == zero)
     {
         assign(-r.num, zero, false); // Inf or -Inf
         return *this;
@@ -515,23 +515,23 @@ Rational<IntType>::operator-=(const Rational& r)
     return *this;
 }
 
-template<typename IntType>
+template <typename IntType>
 Rational<IntType>&
 Rational<IntType>::operator*=(const Rational& r)
 {
     IntType zero(0);
 
     // handle the Inf and NaN cases
-    if (den == zero)
+    if(den == zero)
     {
-        if (r.num == zero)
+        if(r.num == zero)
             throw bad_rational();
         num *= r.sign();
         return *this;
     }
-    if (r.den == zero)
+    if(r.den == zero)
     {
-        if (num == zero)
+        if(num == zero)
             throw bad_rational();
         num = r.num * sign();
         den = zero;
@@ -550,31 +550,31 @@ Rational<IntType>::operator*=(const Rational& r)
     return *this;
 }
 
-template<typename IntType>
+template <typename IntType>
 Rational<IntType>&
 Rational<IntType>::operator/=(const Rational& r)
 {
     IntType zero(0);
 
     // handle the Inf and NaN cases
-    if (den == zero)
+    if(den == zero)
     {
-        if (r.den == zero)
+        if(r.den == zero)
             throw bad_rational();
-        if (r.num != zero)
+        if(r.num != zero)
             num *= r.sign();
         return *this;
     }
-    if (r.num == zero)
+    if(r.num == zero)
     {
-        if (num == zero)
+        if(num == zero)
             throw bad_rational();
         num = IntType(sign()); // normalized inf!
         den = zero;
         return *this;
     }
 
-    if (num == zero)
+    if(num == zero)
         return *this;
 
     // Protect against self-modification
@@ -587,7 +587,7 @@ Rational<IntType>::operator/=(const Rational& r)
     num = (num / gcd1) * (r_den / gcd2);
     den = (den / gcd2) * (r_num / gcd1);
 
-    if (den < zero)
+    if(den < zero)
     {
         num = -num;
         den = -den;
@@ -596,7 +596,7 @@ Rational<IntType>::operator/=(const Rational& r)
 }
 
 // Mixed-mode operators -- implement explicitly to save gcd() calculations
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>&
 Rational<IntType>::operator+=(param_type i)
 {
@@ -604,7 +604,7 @@ Rational<IntType>::operator+=(param_type i)
     return *this;
 }
 
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>&
 Rational<IntType>::operator-=(param_type i)
 {
@@ -612,16 +612,16 @@ Rational<IntType>::operator-=(param_type i)
     return *this;
 }
 
-template<typename IntType>
+template <typename IntType>
 Rational<IntType>&
 Rational<IntType>::operator*=(param_type i)
 {
-    if (i == IntType(1))
+    if(i == IntType(1))
         return *this;
     IntType zero(0);
-    if (i == zero)
+    if(i == zero)
     {
-        if (den == zero)
+        if(den == zero)
         {
             throw bad_rational();
         }
@@ -639,17 +639,17 @@ Rational<IntType>::operator*=(param_type i)
     return *this;
 }
 
-template<typename IntType>
+template <typename IntType>
 Rational<IntType>&
 Rational<IntType>::operator/=(param_type i)
 {
-    if (i == IntType(1))
+    if(i == IntType(1))
         return *this;
 
     IntType zero(0);
-    if (i == zero)
+    if(i == zero)
     {
-        if (num == zero)
+        if(num == zero)
             throw bad_rational();
         num = IntType(sign()); // normalized inf!
         den = zero;
@@ -657,7 +657,7 @@ Rational<IntType>::operator/=(param_type i)
     }
 
     IntType g = gcd(i, num);
-    if (i < zero)
+    if(i < zero)
     {
         num /= -g;
         den *= -i / g;
@@ -671,7 +671,7 @@ Rational<IntType>::operator/=(param_type i)
 }
 
 // Increment and decrement
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>&
 Rational<IntType>::operator++()
 {
@@ -680,7 +680,7 @@ Rational<IntType>::operator++()
     return *this;
 }
 
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>&
 Rational<IntType>::operator--()
 {
@@ -690,18 +690,18 @@ Rational<IntType>::operator--()
 }
 
 // Normalisation
-template<typename IntType>
+template <typename IntType>
 void
 Rational<IntType>::normalize()
 {
     // Avoid repeated construction
     IntType zero(0);
 
-    if (den == zero)
+    if(den == zero)
     {
-        if (num == zero)
+        if(num == zero)
             throw bad_rational();
-        if (num < zero)
+        if(num < zero)
             num = IntType(-1);
         else
             num = IntType(1);
@@ -709,7 +709,7 @@ Rational<IntType>::normalize()
     }
 
     // Handle the case of zero separately, to avoid division by zero
-    if (num == zero)
+    if(num == zero)
     {
         den = IntType(1);
         return;
@@ -721,7 +721,7 @@ Rational<IntType>::normalize()
     den /= g;
 
     // Ensure that the denominator is positive
-    if (den < zero)
+    if(den < zero)
     {
         num = -num;
         den = -den;
@@ -778,7 +778,7 @@ Rational<IntType>::normalize()
 */
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template<class T>
+template <class T>
 struct NumericTraits<Rational<T>>
 {
     typedef Rational<T> Type;
@@ -826,7 +826,7 @@ struct NumericTraits<Rational<T>>
     }
 };
 
-template<class T>
+template <class T>
 struct NormTraits<Rational<T>>
 {
     typedef Rational<T> Type;
@@ -834,7 +834,7 @@ struct NormTraits<Rational<T>>
     typedef Type NormType;
 };
 
-template<class T>
+template <class T>
 struct PromoteTraits<Rational<T>, Rational<T>>
 {
     typedef Rational<typename PromoteTraits<T, T>::Promote> Promote;
@@ -844,7 +844,7 @@ struct PromoteTraits<Rational<T>, Rational<T>>
     }
 };
 
-template<class T1, class T2>
+template <class T1, class T2>
 struct PromoteTraits<Rational<T1>, Rational<T2>>
 {
     typedef Rational<typename PromoteTraits<T1, T2>::Promote> Promote;
@@ -858,7 +858,7 @@ struct PromoteTraits<Rational<T1>, Rational<T2>>
     }
 };
 
-template<class T1, class T2>
+template <class T1, class T2>
 struct PromoteTraits<Rational<T1>, T2>
 {
     typedef Rational<typename PromoteTraits<T1, T2>::Promote> Promote;
@@ -872,7 +872,7 @@ struct PromoteTraits<Rational<T1>, T2>
     }
 };
 
-template<class T1, class T2>
+template <class T1, class T2>
 struct PromoteTraits<T1, Rational<T2>>
 {
     typedef Rational<typename PromoteTraits<T1, T2>::Promote> Promote;
@@ -913,7 +913,7 @@ struct PromoteTraits<T1, Rational<T2>>
 /********************************************************/
 
 /// unary plus
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>
 operator+(const Rational<IntType>& r)
 {
@@ -921,7 +921,7 @@ operator+(const Rational<IntType>& r)
 }
 
 /// unary minus (negation)
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>
 operator-(const Rational<IntType>& r)
 {
@@ -929,7 +929,7 @@ operator-(const Rational<IntType>& r)
 }
 
 /// addition
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>
 operator+(Rational<IntType> l, Rational<IntType> const& r)
 {
@@ -937,7 +937,7 @@ operator+(Rational<IntType> l, Rational<IntType> const& r)
 }
 
 /// subtraction
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>
 operator-(Rational<IntType> l, Rational<IntType> const& r)
 {
@@ -945,14 +945,14 @@ operator-(Rational<IntType> l, Rational<IntType> const& r)
 }
 
 /// multiplication
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType> operator*(Rational<IntType> l, Rational<IntType> const& r)
 {
     return l *= r;
 }
 
 /// division
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>
 operator/(Rational<IntType> l, Rational<IntType> const& r)
 {
@@ -960,7 +960,7 @@ operator/(Rational<IntType> l, Rational<IntType> const& r)
 }
 
 /// addition of right-hand <tt>IntType</tt> argument
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>
 operator+(Rational<IntType> l, typename Rational<IntType>::param_type r)
 {
@@ -968,7 +968,7 @@ operator+(Rational<IntType> l, typename Rational<IntType>::param_type r)
 }
 
 /// subtraction of right-hand <tt>IntType</tt> argument
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>
 operator-(Rational<IntType> l, typename Rational<IntType>::param_type r)
 {
@@ -976,7 +976,7 @@ operator-(Rational<IntType> l, typename Rational<IntType>::param_type r)
 }
 
 /// multiplication with right-hand <tt>IntType</tt> argument
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>
 operator*(Rational<IntType> l, typename Rational<IntType>::param_type r)
 {
@@ -984,7 +984,7 @@ operator*(Rational<IntType> l, typename Rational<IntType>::param_type r)
 }
 
 /// division by right-hand <tt>IntType</tt> argument
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>
 operator/(Rational<IntType> l, typename Rational<IntType>::param_type r)
 {
@@ -992,7 +992,7 @@ operator/(Rational<IntType> l, typename Rational<IntType>::param_type r)
 }
 
 /// addition of left-hand <tt>IntType</tt> argument
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>
 operator+(typename Rational<IntType>::param_type l, Rational<IntType> r)
 {
@@ -1000,7 +1000,7 @@ operator+(typename Rational<IntType>::param_type l, Rational<IntType> r)
 }
 
 /// subtraction from left-hand <tt>IntType</tt> argument
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>
 operator-(typename Rational<IntType>::param_type l, Rational<IntType> const& r)
 {
@@ -1008,7 +1008,7 @@ operator-(typename Rational<IntType>::param_type l, Rational<IntType> const& r)
 }
 
 /// multiplication with left-hand <tt>IntType</tt> argument
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>
 operator*(typename Rational<IntType>::param_type l, Rational<IntType> r)
 {
@@ -1016,11 +1016,11 @@ operator*(typename Rational<IntType>::param_type l, Rational<IntType> r)
 }
 
 /// division of left-hand <tt>IntType</tt> argument
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>
 operator/(typename Rational<IntType>::param_type l, Rational<IntType> const& r)
 {
-    if (r.numerator() < IntType(0))
+    if(r.numerator() < IntType(0))
         return Rational<IntType>(-r.denominator(), -r.numerator(), false) *= l;
     else
         return Rational<IntType>(r.denominator(), r.numerator(), false) *= l;
@@ -1034,7 +1034,7 @@ operator/(typename Rational<IntType>::param_type l, Rational<IntType> const& r)
 
 
 /// equality
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 inline bool
 operator==(const Rational<IntType1>& l, const Rational<IntType2>& r)
 {
@@ -1044,7 +1044,7 @@ operator==(const Rational<IntType1>& l, const Rational<IntType2>& r)
 }
 
 /// equality with right-hand <tt>IntType2</tt> argument
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 inline bool
 operator==(const Rational<IntType1>& l, IntType2 const& i)
 {
@@ -1052,7 +1052,7 @@ operator==(const Rational<IntType1>& l, IntType2 const& i)
 }
 
 /// equality with left-hand <tt>IntType1</tt> argument
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 inline bool
 operator==(IntType1 const& l, Rational<IntType2> const& r)
 {
@@ -1060,7 +1060,7 @@ operator==(IntType1 const& l, Rational<IntType2> const& r)
 }
 
 /// inequality
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 inline bool
 operator!=(Rational<IntType1> const& l, Rational<IntType2> const& r)
 {
@@ -1070,7 +1070,7 @@ operator!=(Rational<IntType1> const& l, Rational<IntType2> const& r)
 }
 
 /// inequality with right-hand <tt>IntType2</tt> argument
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 inline bool
 operator!=(const Rational<IntType1>& l, IntType2 const& i)
 {
@@ -1078,7 +1078,7 @@ operator!=(const Rational<IntType1>& l, IntType2 const& i)
 }
 
 /// inequality with left-hand <tt>IntType1</tt> argument
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 inline bool
 operator!=(IntType1 const& l, Rational<IntType2> const& r)
 {
@@ -1086,7 +1086,7 @@ operator!=(IntType1 const& l, Rational<IntType2> const& r)
 }
 
 /// less-than
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 bool
 operator<(const Rational<IntType1>& l, const Rational<IntType2>& r)
 {
@@ -1096,9 +1096,9 @@ operator<(const Rational<IntType1>& l, const Rational<IntType2>& r)
 
     // Handle the easy cases. Take advantage of the fact
     // that the denominator is never negative.
-    if (l.denominator() == zero)
+    if(l.denominator() == zero)
     {
-        if (r.denominator() == zero)
+        if(r.denominator() == zero)
             // -inf < inf, !(-inf < -inf), !(inf < -inf), !(inf < inf)
             return l.numerator() < r.numerator();
         else
@@ -1106,15 +1106,15 @@ operator<(const Rational<IntType1>& l, const Rational<IntType2>& r)
             // !(inf < -1), !(inf < 0), !(inf < 1)
             return l.numerator() < zero;
     }
-    if (r.denominator() == zero)
+    if(r.denominator() == zero)
         // -1 < inf, 0 < inf, 1 < inf
         // !(-1 < -inf), !(0 < -inf), !(1 < -inf)
         return r.numerator() > zero;
     // !(1 < -1), !(1 < 0), !(0 < -1), !(0 < 0)
-    if (l.numerator() >= zero && r.numerator() <= zero)
+    if(l.numerator() >= zero && r.numerator() <= zero)
         return false;
     // -1 < 0, -1 < 1, 0 < 1 (note: !(0 < 0) was already handled!)
-    if (l.numerator() <= zero && r.numerator() >= zero)
+    if(l.numerator() <= zero && r.numerator() >= zero)
         return true;
 
     // both numbers have the same sign (and are neither zero or +-infinity)
@@ -1126,7 +1126,7 @@ operator<(const Rational<IntType1>& l, const Rational<IntType2>& r)
 }
 
 /// less-than with right-hand <tt>IntType2</tt> argument
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 bool
 operator<(const Rational<IntType1>& l, IntType2 const& i)
 {
@@ -1136,29 +1136,29 @@ operator<(const Rational<IntType1>& l, IntType2 const& i)
 
     // Handle the easy cases. Take advantage of the fact
     // that the denominator is never negative.
-    if (l.denominator() == zero)
+    if(l.denominator() == zero)
         // -inf < -1, -inf < 0, -inf < 1
         // !(inf < -1), !(inf < 0), !(inf < 1)
         return l.numerator() < zero;
     // !(1 < -1), !(1 < 0), !(0 < -1), !(0 < 0)
-    if (l.numerator() >= zero && i <= zero)
+    if(l.numerator() >= zero && i <= zero)
         return false;
     // -1 < 0, -1 < 1, 0 < 1 (note: !(0 < 0) was already handled!)
-    if (l.numerator() <= zero && i >= zero)
+    if(l.numerator() <= zero && i >= zero)
         return true;
 
     // Now, use the fact that n/d truncates towards zero as long as n and d
     // are both positive.
     // Divide instead of multiplying to avoid overflow issues. Of course,
     // division may be slower, but accuracy is more important than speed...
-    if (l.numerator() > zero)
+    if(l.numerator() > zero)
         return (l.numerator() / l.denominator()) < i;
     else
         return -i < (-l.numerator() / l.denominator());
 }
 
 /// less-than with left-hand <tt>IntType1</tt> argument
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 inline bool
 operator<(IntType1 const& l, Rational<IntType2> const& r)
 {
@@ -1166,7 +1166,7 @@ operator<(IntType1 const& l, Rational<IntType2> const& r)
 }
 
 /// greater-than
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 inline bool
 operator>(Rational<IntType1> const& l, Rational<IntType2> const& r)
 {
@@ -1174,12 +1174,12 @@ operator>(Rational<IntType1> const& l, Rational<IntType2> const& r)
 }
 
 /// greater-than with right-hand <tt>IntType2</tt> argument
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 bool
 operator>(const Rational<IntType1>& l, IntType2 const& i)
 {
     // Trap equality first
-    if (l.numerator() == i && l.denominator() == IntType1(1))
+    if(l.numerator() == i && l.denominator() == IntType1(1))
         return false;
 
     // Otherwise, we can use operator<
@@ -1187,7 +1187,7 @@ operator>(const Rational<IntType1>& l, IntType2 const& i)
 }
 
 /// greater-than with left-hand <tt>IntType1</tt> argument
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 inline bool
 operator>(IntType1 const& l, Rational<IntType2> const& r)
 {
@@ -1195,7 +1195,7 @@ operator>(IntType1 const& l, Rational<IntType2> const& r)
 }
 
 /// less-equal
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 inline bool
 operator<=(Rational<IntType1> const& l, Rational<IntType2> const& r)
 {
@@ -1203,7 +1203,7 @@ operator<=(Rational<IntType1> const& l, Rational<IntType2> const& r)
 }
 
 /// less-equal with right-hand <tt>IntType2</tt> argument
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 inline bool
 operator<=(Rational<IntType1> const& l, IntType2 const& r)
 {
@@ -1211,7 +1211,7 @@ operator<=(Rational<IntType1> const& l, IntType2 const& r)
 }
 
 /// less-equal with left-hand <tt>IntType1</tt> argument
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 inline bool
 operator<=(IntType1 const& l, Rational<IntType2> const& r)
 {
@@ -1219,7 +1219,7 @@ operator<=(IntType1 const& l, Rational<IntType2> const& r)
 }
 
 /// greater-equal
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 inline bool
 operator>=(Rational<IntType1> const& l, Rational<IntType2> const& r)
 {
@@ -1227,7 +1227,7 @@ operator>=(Rational<IntType1> const& l, Rational<IntType2> const& r)
 }
 
 /// greater-equal with right-hand <tt>IntType2</tt> argument
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 inline bool
 operator>=(Rational<IntType1> const& l, IntType2 const& r)
 {
@@ -1235,7 +1235,7 @@ operator>=(Rational<IntType1> const& l, IntType2 const& r)
 }
 
 /// greater-equal with left-hand <tt>IntType1</tt> argument
-template<typename IntType1, typename IntType2>
+template <typename IntType1, typename IntType2>
 inline bool
 operator>=(IntType1 const& l, Rational<IntType2> const& r)
 {
@@ -1249,18 +1249,18 @@ operator>=(IntType1 const& l, Rational<IntType2> const& r)
 /********************************************************/
 
 /// absolute value
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>
 abs(const Rational<IntType>& r)
 {
-    if (r.numerator() >= IntType(0))
+    if(r.numerator() >= IntType(0))
         return r;
 
     return Rational<IntType>(-r.numerator(), r.denominator(), false);
 }
 
 /// norm (same as <tt>abs(r)</tt>)
-template<typename IntType>
+template <typename IntType>
 inline Rational<IntType>
 norm(const Rational<IntType>& r)
 {
@@ -1268,7 +1268,7 @@ norm(const Rational<IntType>& r)
 }
 
 /// squared norm
-template<typename IntType>
+template <typename IntType>
 inline typename NormTraits<Rational<IntType>>::SquaredNormType
 squaredNorm(const Rational<IntType>& r)
 {
@@ -1279,46 +1279,46 @@ squaredNorm(const Rational<IntType>& r)
 
         <tt>throws bad_rational</tt> if indeterminate expression.
     */
-template<typename IntType>
+template <typename IntType>
 Rational<IntType>
 pow(const Rational<IntType>& r, int e)
 {
     IntType zero(0);
     int ae;
-    if (e == 0)
+    if(e == 0)
     {
-        if (r.denominator() == zero)
+        if(r.denominator() == zero)
             throw bad_rational();
         return Rational<IntType>(IntType(1));
     }
-    else if (e < 0)
+    else if(e < 0)
     {
-        if (r.numerator() == zero)
+        if(r.numerator() == zero)
             return Rational<IntType>(IntType(1), zero, false);
-        if (r.denominator() == zero)
+        if(r.denominator() == zero)
             return Rational<IntType>(zero);
         ae = -e;
     }
     else
     {
-        if (r.denominator() == zero || r.numerator() == zero)
+        if(r.denominator() == zero || r.numerator() == zero)
             return r;
         ae = e;
     }
 
     IntType nold = r.numerator(), dold = r.denominator(),
             nnew = IntType(1), dnew = IntType(1);
-    for (; ae != 0; ae >>= 1, nold *= nold, dold *= dold)
+    for(; ae != 0; ae >>= 1, nold *= nold, dold *= dold)
     {
-        if (ae % 2 != 0)
+        if(ae % 2 != 0)
         {
             nnew *= nold;
             dnew *= dold;
         }
     }
-    if (e < 0)
+    if(e < 0)
     {
-        if (nnew < zero)
+        if(nnew < zero)
             return Rational<IntType>(-dnew, -nnew, false);
         else
             return Rational<IntType>(dnew, nnew, false);
@@ -1328,24 +1328,24 @@ pow(const Rational<IntType>& r, int e)
 }
 
 /// largest integer not larger than <tt>r</tt>
-template<typename IntType>
+template <typename IntType>
 Rational<IntType>
 floor(const Rational<IntType>& r)
 {
     IntType zero(0), one(1);
-    if (r.denominator() == zero || r.denominator() == one)
+    if(r.denominator() == zero || r.denominator() == one)
         return r;
     return r.numerator() < zero ? Rational<IntType>(r.numerator() / r.denominator() - one)
                                 : Rational<IntType>(r.numerator() / r.denominator());
 }
 
 /// smallest integer not smaller than <tt>r</tt>
-template<typename IntType>
+template <typename IntType>
 Rational<IntType>
 ceil(const Rational<IntType>& r)
 {
     IntType zero(0), one(1);
-    if (r.denominator() == zero || r.denominator() == one)
+    if(r.denominator() == zero || r.denominator() == one)
         return r;
     return r.numerator() < IntType(0) ? Rational<IntType>(r.numerator() / r.denominator())
                                       : Rational<IntType>(r.numerator() / r.denominator() + one);
@@ -1367,14 +1367,14 @@ ceil(const Rational<IntType>& r)
         r = rational_cast<Rational<int> >(r);   // no change
         \endcode
     */
-template<typename T, typename IntType>
+template <typename T, typename IntType>
 inline T
 rational_cast(const Rational<IntType>& src)
 {
     return static_cast<T>(src.numerator()) / src.denominator();
 }
 
-template<class T>
+template <class T>
 inline T const&
 rational_cast(T const& v)
 {
@@ -1383,7 +1383,7 @@ rational_cast(T const& v)
 
 //@}
 
-template<typename IntType>
+template <typename IntType>
 std::ostream&
 operator<<(std::ostream& os, const vigra::Rational<IntType>& r)
 {

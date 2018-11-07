@@ -88,14 +88,14 @@ struct SeededRegionGrowing3DTest
         IntVolume::iterator end = vol1.end();
         const int* p = in1;
 
-        for (; i != end; ++i, ++p)
+        for(; i != end; ++i, ++p)
         {
             *i = *p;
         }
 
-        for (int z = 0; z < 5; ++z)
-            for (int y = 0; y < 5; ++y)
-                for (int x = 0; x < 5; ++x)
+        for(int z = 0; z < 5; ++z)
+            for(int y = 0; y < 5; ++y)
+                for(int x = 0; x < 5; ++x)
                 {
                     distvol1(x, y, z) = std::min(((x - 2.0) * (x - 2.0) + (y - 2.0) * (y - 2.0) + (z - 0.0) * (z - 0.0)),
                                                  ((x - 2.0) * (x - 2.0) + (y - 2.0) * (y - 2.0) + (z - 4.0) * (z - 4.0)));
@@ -125,14 +125,14 @@ struct SeededRegionGrowing3DTest
         DoubleVolume::iterator endd = vol2.end();
         const double* pd = in2;
 
-        for (; id != endd; ++id, ++pd)
+        for(; id != endd; ++id, ++pd)
         {
             *id = *pd;
         }
 
-        for (int z = 0; z < 4; ++z)
-            for (int y = 0; y < 4; ++y)
-                for (int x = 0; x < 4; ++x)
+        for(int z = 0; z < 4; ++z)
+            for(int y = 0; y < 4; ++y)
+                for(int x = 0; x < 4; ++x)
                 {
                     distvol2(x, y, z) = std::min(((x - 1.0) * (x - 1.0) + (y - 1.0) * (y - 1.0) + (z - 0.0) * (z - 0.0)),
                                                  ((x - 2.0) * (x - 2.0) + (y - 2.0) * (y - 2.0) + (z - 3.0) * (z - 3.0)));
@@ -172,7 +172,7 @@ struct SeededRegionGrowing3DTest
         end = vol3.end();
         p = in3;
 
-        for (; i != end; ++i, ++p)
+        for(; i != end; ++i, ++p)
         {
             *i = *p;
         }
@@ -205,11 +205,11 @@ struct SeededRegionGrowing3DTest
 
         int x, y, z;
 
-        for (z = 0; z < 4; ++z)
+        for(z = 0; z < 4; ++z)
         {
-            for (y = 0; y < 4; ++y)
+            for(y = 0; y < 4; ++y)
             {
-                for (x = 0; x < 4; ++x)
+                for(x = 0; x < 4; ++x)
                 {
                     double dist = *i++;
                     double dist1 = VIGRA_CSTD::sqrt((1.0 - x) * (1.0 - x) +
@@ -222,7 +222,7 @@ struct SeededRegionGrowing3DTest
 
                     double desired = (dist1 <= dist2) ? 1 : 2;
 
-                    if (VIGRA_CSTD::fabs(dist1 - dist2) > 1e-10)
+                    if(VIGRA_CSTD::fabs(dist1 - dist2) > 1e-10)
                         shouldEqual(dist, desired);
                 }
             }

@@ -56,46 +56,46 @@ struct No
     char d[1];
 };
 
-template<size_t>
+template <size_t>
 struct SizeToType;
-template<>
+template <>
 struct SizeToType<sizeof(Yes)>
 {
     typedef VigraTrueType type;
 };
-template<>
+template <>
 struct SizeToType<sizeof(No)>
 {
     typedef VigraFalseType type;
 };
 
-template<class Equal>
+template <class Equal>
 class TakesThreeArguments
 {
 public:
-    template<class T>
+    template <class T>
     static Yes check(typename T::WithDiffTag*);
-    template<class T>
+    template <class T>
     static No check(...);
 
     typedef typename SizeToType<sizeof(check<Equal>(0))>::type type;
     static const unsigned int value = type::asBool;
 };
 
-template<class Equal, class Data, class Shape>
+template <class Equal, class Data, class Shape>
 bool
 callEqualImpl(Equal& equal, const Data& u_data, const Data& v_data, const Shape& diff, VigraTrueType)
 {
     return equal(u_data, v_data, diff);
 }
-template<class Equal, class Data, class Shape>
+template <class Equal, class Data, class Shape>
 bool
 callEqualImpl(Equal& equal, const Data& u_data, const Data& v_data, const Shape&, VigraFalseType)
 {
     return equal(u_data, v_data);
 }
 
-template<class Equal, class Data, class Shape>
+template <class Equal, class Data, class Shape>
 bool
 callEqual(Equal& equal, const Data& u_data, const Data& v_data, const Shape& diff)
 {
@@ -112,7 +112,7 @@ callEqual(Equal& equal, const Data& u_data, const Data& v_data, const Shape& dif
 namespace lemon_graph
 {
 
-template<class Graph, class T1Map, class T2Map, class Equal>
+template <class Graph, class T1Map, class T2Map, class Equal>
 typename T2Map::value_type
 labelGraph(Graph const& g,
            T1Map const& data,
@@ -126,17 +126,17 @@ labelGraph(Graph const& g,
     vigra::UnionFindArray<LabelType> regions;
 
     // pass 1: find connected components
-    for (graph_scanner node(g); node != INVALID; ++node)
+    for(graph_scanner node(g); node != INVALID; ++node)
     {
         typename T1Map::value_type center = data[*node];
 
         // define tentative label for current node
         LabelType currentIndex = regions.nextFreeIndex();
 
-        for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
+        for(neighbor_iterator arc(g, node); arc != INVALID; ++arc)
         {
             // merge regions if colors are equal
-            if (equal(center, data[g.target(*arc)]))
+            if(equal(center, data[g.target(*arc)]))
             {
                 currentIndex = regions.makeUnion(labels[g.target(*arc)], currentIndex);
             }
@@ -148,14 +148,14 @@ labelGraph(Graph const& g,
     LabelType count = regions.makeContiguous();
 
     // pass 2: make component labels contiguous
-    for (graph_scanner node(g); node != INVALID; ++node)
+    for(graph_scanner node(g); node != INVALID; ++node)
     {
         labels[*node] = regions.findLabel(labels[*node]);
     }
     return count;
 }
 
-template<unsigned int N, class DirectedTag, class T1Map, class T2Map, class Equal>
+template <unsigned int N, class DirectedTag, class T1Map, class T2Map, class Equal>
 typename T2Map::value_type
 labelGraph(GridGraph<N, DirectedTag> const& g,
            T1Map const& data,
@@ -171,18 +171,18 @@ labelGraph(GridGraph<N, DirectedTag> const& g,
     vigra::UnionFindArray<LabelType> regions;
 
     // pass 1: find connected components
-    for (graph_scanner node(g); node != INVALID; ++node)
+    for(graph_scanner node(g); node != INVALID; ++node)
     {
         typename T1Map::value_type center = data[*node];
 
         // define tentative label for current node
         LabelType currentIndex = regions.nextFreeIndex();
 
-        for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
+        for(neighbor_iterator arc(g, node); arc != INVALID; ++arc)
         {
             Shape diff = g.neighborOffset(arc.neighborIndex());
             // merge regions if colors are equal
-            if (labeling_equality::callEqual(equal, center, data[g.target(*arc)], diff))
+            if(labeling_equality::callEqual(equal, center, data[g.target(*arc)], diff))
             {
                 currentIndex = regions.makeUnion(labels[g.target(*arc)], currentIndex);
             }
@@ -194,7 +194,7 @@ labelGraph(GridGraph<N, DirectedTag> const& g,
     LabelType count = regions.makeContiguous();
 
     // pass 2: make component labels contiguous
-    for (graph_scanner node(g); node != INVALID; ++node)
+    for(graph_scanner node(g); node != INVALID; ++node)
     {
         labels[*node] = regions.findLabel(labels[*node]);
     }
@@ -202,7 +202,7 @@ labelGraph(GridGraph<N, DirectedTag> const& g,
 }
 
 
-template<class Graph, class T1Map, class T2Map, class Equal>
+template <class Graph, class T1Map, class T2Map, class Equal>
 typename T2Map::value_type
 labelGraphWithBackground(Graph const& g,
                          T1Map const& data,
@@ -217,12 +217,12 @@ labelGraphWithBackground(Graph const& g,
     vigra::UnionFindArray<LabelType> regions;
 
     // pass 1: find connected components
-    for (graph_scanner node(g); node != INVALID; ++node)
+    for(graph_scanner node(g); node != INVALID; ++node)
     {
         typename T1Map::value_type center = data[*node];
 
         // background always gets label zero
-        if (equal(center, backgroundValue))
+        if(equal(center, backgroundValue))
         {
             labels[*node] = 0;
             continue;
@@ -231,10 +231,10 @@ labelGraphWithBackground(Graph const& g,
         // define tentative label for current node
         LabelType currentIndex = regions.nextFreeIndex();
 
-        for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
+        for(neighbor_iterator arc(g, node); arc != INVALID; ++arc)
         {
             // merge regions if colors are equal
-            if (equal(center, data[g.target(*arc)]))
+            if(equal(center, data[g.target(*arc)]))
             {
                 currentIndex = regions.makeUnion(labels[g.target(*arc)], currentIndex);
             }
@@ -246,14 +246,14 @@ labelGraphWithBackground(Graph const& g,
     LabelType count = regions.makeContiguous();
 
     // pass 2: make component labels contiguous
-    for (graph_scanner node(g); node != INVALID; ++node)
+    for(graph_scanner node(g); node != INVALID; ++node)
     {
         labels[*node] = regions.findLabel(labels[*node]);
     }
     return count;
 }
 
-template<unsigned int N, class DirectedTag, class T1Map, class T2Map, class Equal>
+template <unsigned int N, class DirectedTag, class T1Map, class T2Map, class Equal>
 typename T2Map::value_type
 labelGraphWithBackground(GridGraph<N, DirectedTag> const& g,
                          T1Map const& data,
@@ -270,12 +270,12 @@ labelGraphWithBackground(GridGraph<N, DirectedTag> const& g,
     vigra::UnionFindArray<LabelType> regions;
 
     // pass 1: find connected components
-    for (graph_scanner node(g); node != INVALID; ++node)
+    for(graph_scanner node(g); node != INVALID; ++node)
     {
         typename T1Map::value_type center = data[*node];
 
         // background always gets label zero
-        if (labeling_equality::callEqual(equal, center, backgroundValue, Shape()))
+        if(labeling_equality::callEqual(equal, center, backgroundValue, Shape()))
         {
             labels[*node] = 0;
             continue;
@@ -284,11 +284,11 @@ labelGraphWithBackground(GridGraph<N, DirectedTag> const& g,
         // define tentative label for current node
         LabelType currentIndex = regions.nextFreeIndex();
 
-        for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
+        for(neighbor_iterator arc(g, node); arc != INVALID; ++arc)
         {
             // merge regions if colors are equal
             Shape diff = g.neighborOffset(arc.neighborIndex());
-            if (labeling_equality::callEqual(equal, center, data[g.target(*arc)], diff))
+            if(labeling_equality::callEqual(equal, center, data[g.target(*arc)], diff))
             {
                 currentIndex = regions.makeUnion(labels[g.target(*arc)], currentIndex);
             }
@@ -300,7 +300,7 @@ labelGraphWithBackground(GridGraph<N, DirectedTag> const& g,
     LabelType count = regions.makeContiguous();
 
     // pass 2: make component labels contiguous
-    for (graph_scanner node(g); node != INVALID; ++node)
+    for(graph_scanner node(g); node != INVALID; ++node)
     {
         labels[*node] = regions.findLabel(labels[*node]);
     }
@@ -353,7 +353,7 @@ public:
 
             Default: don't ignore any value.
         */
-    template<class T>
+    template <class T>
     LabelOptions& ignoreBackgroundValue(T const& t)
     {
         background_value_ = t;
@@ -372,10 +372,10 @@ public:
             Throws an exception if the stored background value type
             is incompatible to the data array's value type.
         */
-    template<class T>
+    template <class T>
     T getBackgroundValue() const
     {
-        if (background_value_.empty())
+        if(background_value_.empty())
             return T();
         vigra_precondition(background_value_.template is_readable<T>(),
                            "LabelOptions::getBackgroundValue<T>(): stored background value is not convertible to T.");
@@ -473,11 +473,11 @@ public:
     equal(t, t)
     \endcode
 */
-doxygen_overloaded_function(template<...> unsigned int labelMultiArray)
+doxygen_overloaded_function(template <...> unsigned int labelMultiArray)
 
-    template<unsigned int N, class T, class S1,
-             class Label, class S2,
-             class Equal>
+    template <unsigned int N, class T, class S1,
+              class Label, class S2,
+              class Equal>
     inline Label
     labelMultiArray(MultiArrayView<N, T, S1> const& data,
                     MultiArrayView<N, Label, S2> labels,
@@ -491,8 +491,8 @@ doxygen_overloaded_function(template<...> unsigned int labelMultiArray)
     return lemon_graph::labelGraph(graph, data, labels, equal);
 }
 
-template<unsigned int N, class T, class S1,
-         class Label, class S2>
+template <unsigned int N, class T, class S1,
+          class Label, class S2>
 inline Label
 labelMultiArray(MultiArrayView<N, T, S1> const& data,
                 MultiArrayView<N, Label, S2> labels,
@@ -501,30 +501,30 @@ labelMultiArray(MultiArrayView<N, T, S1> const& data,
     return labelMultiArray(data, labels, neighborhood, std::equal_to<T>());
 }
 
-template<unsigned int N, class T, class S1,
-         class Label, class S2>
+template <unsigned int N, class T, class S1,
+          class Label, class S2>
 inline Label
 labelMultiArray(MultiArrayView<N, T, S1> const& data,
                 MultiArrayView<N, Label, S2> labels,
                 LabelOptions const& options)
 {
-    if (options.hasBackgroundValue())
+    if(options.hasBackgroundValue())
         return labelMultiArrayWithBackground(data, labels, options.getNeighborhood(),
                                              options.template getBackgroundValue<T>());
     else
         return labelMultiArray(data, labels, options.getNeighborhood());
 }
 
-template<unsigned int N, class T, class S1,
-         class Label, class S2,
-         class Equal>
+template <unsigned int N, class T, class S1,
+          class Label, class S2,
+          class Equal>
 inline Label
 labelMultiArray(MultiArrayView<N, T, S1> const& data,
                 MultiArrayView<N, Label, S2> labels,
                 LabelOptions const& options,
                 Equal equal)
 {
-    if (options.hasBackgroundValue())
+    if(options.hasBackgroundValue())
         return labelMultiArrayWithBackground(data, labels, options.getNeighborhood(),
                                              options.template getBackgroundValue<T>(),
                                              equal);
@@ -602,11 +602,11 @@ labelMultiArray(MultiArrayView<N, T, S1> const& data,
     equal(t, backgroundValue)
     \endcode
 */
-doxygen_overloaded_function(template<...> unsigned int labelMultiArrayWithBackground)
+doxygen_overloaded_function(template <...> unsigned int labelMultiArrayWithBackground)
 
-    template<unsigned int N, class T, class S1,
-             class Label, class S2,
-             class Equal>
+    template <unsigned int N, class T, class S1,
+              class Label, class S2,
+              class Equal>
     inline Label
     labelMultiArrayWithBackground(MultiArrayView<N, T, S1> const& data,
                                   MultiArrayView<N, Label, S2> labels,
@@ -621,8 +621,8 @@ doxygen_overloaded_function(template<...> unsigned int labelMultiArrayWithBackgr
     return lemon_graph::labelGraphWithBackground(graph, data, labels, backgroundValue, equal);
 }
 
-template<unsigned int N, class T, class S1,
-         class Label, class S2>
+template <unsigned int N, class T, class S1,
+          class Label, class S2>
 inline Label
 labelMultiArrayWithBackground(MultiArrayView<N, T, S1> const& data,
                               MultiArrayView<N, Label, S2> labels,

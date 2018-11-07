@@ -45,7 +45,7 @@ namespace vigra
 {
 
 
-template<unsigned int DIM, unsigned int CHANNELS>
+template <unsigned int DIM, unsigned int CHANNELS>
 NumpyAnyArray
 pyMultiGaussianHistogram(
     NumpyArray<DIM, TinyVector<float, CHANNELS>> image,
@@ -57,7 +57,7 @@ pyMultiGaussianHistogram(
     NumpyArray<DIM + 2, float> histogram = NumpyArray<DIM + 2, float>())
 {
     typename NumpyArray<DIM + 2, float>::difference_type outShape;
-    for (size_t d = 0; d < DIM; ++d)
+    for(size_t d = 0; d < DIM; ++d)
     {
         outShape[d] = image.shape(d);
     }
@@ -73,7 +73,7 @@ pyMultiGaussianHistogram(
 }
 
 
-template<unsigned int DIM>
+template <unsigned int DIM>
 NumpyAnyArray
 pyMultiGaussianCoHistogram(
     NumpyArray<DIM, float> imageA,
@@ -85,7 +85,7 @@ pyMultiGaussianCoHistogram(
     NumpyArray<DIM + 2, float> histogram = NumpyArray<DIM + 2, float>())
 {
     typename NumpyArray<DIM + 2, float>::difference_type outShape;
-    for (size_t d = 0; d < DIM; ++d)
+    for(size_t d = 0; d < DIM; ++d)
     {
         outShape[d] = imageA.shape(d);
     }
@@ -102,7 +102,7 @@ pyMultiGaussianCoHistogram(
 
 
 
-template<unsigned int DIM>
+template <unsigned int DIM>
 NumpyAnyArray
 pyMultiGaussianRankOrder(
     const NumpyArray<DIM, float>& image,
@@ -115,7 +115,7 @@ pyMultiGaussianRankOrder(
 {
     // reshape
     typename NumpyArray<DIM + 1, float>::difference_type outShape;
-    for (size_t d = 0; d < DIM; ++d)
+    for(size_t d = 0; d < DIM; ++d)
     {
         outShape[d] = image.shape(d);
     }
@@ -137,7 +137,7 @@ pyMultiGaussianRankOrder(
 
 
 
-template<unsigned int DIM, unsigned int CHANNELS>
+template <unsigned int DIM, unsigned int CHANNELS>
 void
 defineMultiGaussianHistogram()
 {
@@ -154,7 +154,7 @@ defineMultiGaussianHistogram()
 }
 
 
-template<unsigned int DIM>
+template <unsigned int DIM>
 void
 defineMultiGaussianCoHistogram()
 {
@@ -171,7 +171,7 @@ defineMultiGaussianCoHistogram()
 }
 
 
-template<unsigned int DIM>
+template <unsigned int DIM>
 void
 defineMultiGaussianRank()
 {

@@ -46,7 +46,7 @@ using namespace vigra;
 int
 main(int argc, char** argv)
 {
-    if (argc != 3)
+    if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
@@ -65,7 +65,7 @@ main(int argc, char** argv)
     std::cin >> scale;
 
     double edge_threshold;
-    if (type == 3)
+    if(type == 3)
     {
         std::cout << "Edge threshold ? ";
         std::cin >> edge_threshold;
@@ -75,14 +75,14 @@ main(int argc, char** argv)
     {
         ImageImportInfo info(argv[1]);
 
-        if (info.isGrayscale())
+        if(info.isGrayscale())
         {
             MultiArray<2, UInt8> in(info.width(), info.height());
             MultiArray<2, float> out(info.width(), info.height());
 
             importImage(info, destImage(in));
 
-            switch (type)
+            switch(type)
             {
                 case 2:
                 {
@@ -113,7 +113,7 @@ main(int argc, char** argv)
 
             importImage(info, in);
 
-            switch (type)
+            switch(type)
             {
                 case 2:
                 {
@@ -125,7 +125,7 @@ main(int argc, char** argv)
                 case 3:
                 {
                     // apply nonlinear diffusion to color image, one band at a time
-                    for (int band = 0; band < 3; ++band)
+                    for(int band = 0; band < 3; ++band)
                     {
                         nonlinearDiffusion(in.bindElementChannel(band), out.bindElementChannel(band),
                                            DiffusivityFunctor<float>(edge_threshold), scale);
@@ -141,7 +141,7 @@ main(int argc, char** argv)
             exportImage(out, ImageExportInfo(argv[2]));
         }
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         std::cout << e.what() << std::endl;
         return 1;

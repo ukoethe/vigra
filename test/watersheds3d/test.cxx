@@ -113,18 +113,18 @@ struct Watersheds3dTest
 
     void testDistanceVolumesSix()
     {
-        for (std::list<std::list<IntVec>>::iterator list_iter = pointslists.begin(); list_iter != pointslists.end(); ++list_iter)
+        for(std::list<std::list<IntVec>>::iterator list_iter = pointslists.begin(); list_iter != pointslists.end(); ++list_iter)
         {
             IntVec temp;
-            for (int z = 0; z < DEPTH; ++z)
-                for (int y = 0; y < HEIGHT; ++y)
-                    for (int x = 0; x < WIDTH; ++x)
+            for(int z = 0; z < DEPTH; ++z)
+                for(int y = 0; y < HEIGHT; ++y)
+                    for(int x = 0; x < WIDTH; ++x)
                     {
                         temp = IntVec(x, y, z);
                         int tempVal = 10000000;
-                        for (std::list<IntVec>::iterator iter = (*list_iter).begin(); iter != (*list_iter).end(); ++iter)
+                        for(std::list<IntVec>::iterator iter = (*list_iter).begin(); iter != (*list_iter).end(); ++iter)
                         {
-                            if ((temp - *iter).squaredMagnitude() < tempVal)
+                            if((temp - *iter).squaredMagnitude() < tempVal)
                             {
                                 tempVal = (temp - *iter).squaredMagnitude();
                             }
@@ -143,18 +143,18 @@ struct Watersheds3dTest
 
     void testDistanceVolumesTwentySix()
     {
-        for (std::list<std::list<IntVec>>::iterator list_iter = pointslists.begin(); list_iter != pointslists.end(); ++list_iter)
+        for(std::list<std::list<IntVec>>::iterator list_iter = pointslists.begin(); list_iter != pointslists.end(); ++list_iter)
         {
             IntVec temp;
-            for (int z = 0; z < DEPTH; ++z)
-                for (int y = 0; y < HEIGHT; ++y)
-                    for (int x = 0; x < WIDTH; ++x)
+            for(int z = 0; z < DEPTH; ++z)
+                for(int y = 0; y < HEIGHT; ++y)
+                    for(int x = 0; x < WIDTH; ++x)
                     {
                         temp = IntVec(x, y, z);
                         int tempVal = 10000000;
-                        for (std::list<IntVec>::iterator iter = (*list_iter).begin(); iter != (*list_iter).end(); ++iter)
+                        for(std::list<IntVec>::iterator iter = (*list_iter).begin(); iter != (*list_iter).end(); ++iter)
                         {
-                            if ((temp - *iter).squaredMagnitude() < tempVal)
+                            if((temp - *iter).squaredMagnitude() < tempVal)
                             {
                                 tempVal = (temp - *iter).squaredMagnitude();
                             }
@@ -196,7 +196,7 @@ struct Watersheds3dTest
 
         IntVolume vol(IntVolume::difference_type(4, 4, 4));
         const int* i = data;
-        for (IntVolume::iterator iter = vol.begin(); iter != vol.end(); ++iter, ++i)
+        for(IntVolume::iterator iter = vol.begin(); iter != vol.end(); ++iter, ++i)
         {
             *iter = *i;
         }
@@ -259,7 +259,7 @@ struct Watersheds3dTest
 
         DVolume vol(Shape3(3, 3, 3));
         const double* i = data;
-        for (DVolume::iterator iter = vol.begin(); iter != vol.end(); ++iter, ++i)
+        for(DVolume::iterator iter = vol.begin(); iter != vol.end(); ++iter, ++i)
         {
             *iter = *i;
         }
@@ -336,7 +336,7 @@ struct Watersheds3dTest
             0, 0, 0, 0};
 
         const int* i = data;
-        for (IntVolume::iterator iter = vol.begin(); iter != vol.end(); ++iter, ++i)
+        for(IntVolume::iterator iter = vol.begin(); iter != vol.end(); ++iter, ++i)
         {
             *iter = *i;
         }
@@ -449,7 +449,7 @@ struct Watersheds3dTest
         };
 
         const int* i = data;
-        for (IntVolume::iterator iter = vol.begin(); iter != vol.end(); ++iter, ++i)
+        for(IntVolume::iterator iter = vol.begin(); iter != vol.end(); ++iter, ++i)
         {
             *iter = *i;
         }
@@ -461,11 +461,11 @@ struct Watersheds3dTest
         shouldEqual(8, max_region_label);
 
         // each octand should be one region
-        for (int z = 0; z < d; ++z)
+        for(int z = 0; z < d; ++z)
         {
-            for (int y = 0; y < h; ++y)
+            for(int y = 0; y < h; ++y)
             {
-                for (int x = 0; x < w; ++x)
+                for(int x = 0; x < w; ++x)
                 {
                     shouldEqual(labelVolume(x, y, z) - 1, (((z >= d / 2.0) << 2) | ((y >= h / 2.0) << 1) | ((x >= w / 2.0) << 0)));
                 }
@@ -554,9 +554,9 @@ struct Watersheds3dTest
                 15, 15, 15, 15, 16, 16, 16, 16};
         i = correct_direct_labeling_raw;
         IntVolume correct_direct_labeling(Shape3(w, h, d));
-        for (IntVolume::iterator iter = correct_direct_labeling.begin();
-             iter != correct_direct_labeling.end();
-             ++iter, ++i)
+        for(IntVolume::iterator iter = correct_direct_labeling.begin();
+            iter != correct_direct_labeling.end();
+            ++iter, ++i)
         {
             *iter = *i;
         }

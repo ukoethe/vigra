@@ -49,7 +49,7 @@ namespace vigra
 namespace detail
 {
 
-template<class ValueType>
+template <class ValueType>
 inline ValueType
 gammaCorrection(double value, double gamma)
 {
@@ -61,7 +61,7 @@ gammaCorrection(double value, double gamma)
                 : std::pow(value, gamma)));
 }
 
-template<class ValueType>
+template <class ValueType>
 inline ValueType
 gammaCorrection(double value, double gamma, double norm)
 {
@@ -73,7 +73,7 @@ gammaCorrection(double value, double gamma, double norm)
                 : norm * std::pow(value / norm, gamma)));
 }
 
-template<class ValueType>
+template <class ValueType>
 inline ValueType
 sRGBCorrection(double value, double norm)
 {
@@ -86,7 +86,7 @@ sRGBCorrection(double value, double norm)
                 : norm * (1.055 * std::pow(value, 0.41666666666666667) - 0.055)));
 }
 
-template<class ValueType>
+template <class ValueType>
 inline ValueType
 inverse_sRGBCorrection(double value, double norm)
 {
@@ -278,7 +278,7 @@ inverse_sRGBCorrection(double value, double norm)
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
     */
-template<class From, class To = From>
+template <class From, class To = From>
 class RGB2RGBPrimeFunctor
 {
 public:
@@ -316,7 +316,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& rgb) const
     {
         return TinyVector<To, 3>(
@@ -334,7 +334,7 @@ private:
     component_type max_;
 };
 
-template<>
+template <>
 class RGB2RGBPrimeFunctor<unsigned char, unsigned char>
 {
     unsigned char lut_[256];
@@ -348,7 +348,7 @@ public:
 
     RGB2RGBPrimeFunctor()
     {
-        for (int i = 0; i < 256; ++i)
+        for(int i = 0; i < 256; ++i)
         {
             lut_[i] = detail::gammaCorrection<unsigned char>(i, 0.45, 255.0);
         }
@@ -356,13 +356,13 @@ public:
 
     RGB2RGBPrimeFunctor(double max)
     {
-        for (int i = 0; i < 256; ++i)
+        for(int i = 0; i < 256; ++i)
         {
             lut_[i] = detail::gammaCorrection<unsigned char>(i, 0.45, max);
         }
     }
 
-    template<class V>
+    template <class V>
     TinyVector<unsigned char, 3> operator()(V const& rgb) const
     {
         return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
@@ -374,7 +374,7 @@ public:
     }
 };
 
-template<class From, class To>
+template <class From, class To>
 class FunctorTraits<RGB2RGBPrimeFunctor<From, To>>
     : public FunctorTraitsBase<RGB2RGBPrimeFunctor<From, To>>
 {
@@ -406,7 +406,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
     */
-template<class From, class To = From>
+template <class From, class To = From>
 class RGB2sRGBFunctor
 {
 public:
@@ -444,7 +444,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& rgb) const
     {
         return TinyVector<To, 3>(
@@ -462,7 +462,7 @@ private:
     component_type max_;
 };
 
-template<>
+template <>
 class RGB2sRGBFunctor<unsigned char, unsigned char>
 {
     unsigned char lut_[256];
@@ -476,7 +476,7 @@ public:
 
     RGB2sRGBFunctor()
     {
-        for (int i = 0; i < 256; ++i)
+        for(int i = 0; i < 256; ++i)
         {
             lut_[i] = detail::sRGBCorrection<unsigned char>(i, 255.0);
         }
@@ -484,13 +484,13 @@ public:
 
     RGB2sRGBFunctor(double max)
     {
-        for (int i = 0; i < 256; ++i)
+        for(int i = 0; i < 256; ++i)
         {
             lut_[i] = detail::sRGBCorrection<unsigned char>(i, max);
         }
     }
 
-    template<class V>
+    template <class V>
     TinyVector<unsigned char, 3> operator()(V const& rgb) const
     {
         return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
@@ -502,7 +502,7 @@ public:
     }
 };
 
-template<class From, class To>
+template <class From, class To>
 class FunctorTraits<RGB2sRGBFunctor<From, To>>
     : public FunctorTraitsBase<RGB2sRGBFunctor<From, To>>
 {
@@ -531,7 +531,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class From, class To = From>
+template <class From, class To = From>
 class RGBPrime2RGBFunctor
 {
 public:
@@ -587,7 +587,7 @@ private:
     double gamma_;
 };
 
-template<>
+template <>
 class RGBPrime2RGBFunctor<unsigned char, unsigned char>
 {
     unsigned char lut_[256];
@@ -601,7 +601,7 @@ public:
 
     RGBPrime2RGBFunctor()
     {
-        for (int i = 0; i < 256; ++i)
+        for(int i = 0; i < 256; ++i)
         {
             lut_[i] = detail::gammaCorrection<unsigned char>(i, 1.0 / 0.45, 255.0);
         }
@@ -609,13 +609,13 @@ public:
 
     RGBPrime2RGBFunctor(double max)
     {
-        for (int i = 0; i < 256; ++i)
+        for(int i = 0; i < 256; ++i)
         {
             lut_[i] = detail::gammaCorrection<unsigned char>(i, 1.0 / 0.45, max);
         }
     }
 
-    template<class V>
+    template <class V>
     TinyVector<unsigned char, 3> operator()(V const& rgb) const
     {
         return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
@@ -627,7 +627,7 @@ public:
     }
 };
 
-template<class From, class To>
+template <class From, class To>
 class FunctorTraits<RGBPrime2RGBFunctor<From, To>>
     : public FunctorTraitsBase<RGBPrime2RGBFunctor<From, To>>
 {
@@ -659,7 +659,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class From, class To = From>
+template <class From, class To = From>
 class sRGB2RGBFunctor
 {
 public:
@@ -714,7 +714,7 @@ private:
     component_type max_;
 };
 
-template<>
+template <>
 class sRGB2RGBFunctor<unsigned char, unsigned char>
 {
     unsigned char lut_[256];
@@ -728,7 +728,7 @@ public:
 
     sRGB2RGBFunctor()
     {
-        for (int i = 0; i < 256; ++i)
+        for(int i = 0; i < 256; ++i)
         {
             lut_[i] = detail::inverse_sRGBCorrection<unsigned char>(i, 255.0);
         }
@@ -736,13 +736,13 @@ public:
 
     sRGB2RGBFunctor(double max)
     {
-        for (int i = 0; i < 256; ++i)
+        for(int i = 0; i < 256; ++i)
         {
             lut_[i] = detail::inverse_sRGBCorrection<unsigned char>(i, max);
         }
     }
 
-    template<class V>
+    template <class V>
     TinyVector<unsigned char, 3> operator()(V const& rgb) const
     {
         return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
@@ -754,7 +754,7 @@ public:
     }
 };
 
-template<class From, class To>
+template <class From, class To>
 class FunctorTraits<sRGB2RGBFunctor<From, To>>
     : public FunctorTraitsBase<sRGB2RGBFunctor<From, To>>
 {
@@ -789,7 +789,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class RGB2XYZFunctor
 {
 public:
@@ -849,7 +849,7 @@ private:
     component_type max_;
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<RGB2XYZFunctor<T>>
     : public FunctorTraitsBase<RGB2XYZFunctor<T>>
 {
@@ -875,7 +875,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class RGBPrime2XYZFunctor
 {
 public:
@@ -936,7 +936,7 @@ private:
     component_type max_;
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<RGBPrime2XYZFunctor<T>>
     : public FunctorTraitsBase<RGBPrime2XYZFunctor<T>>
 {
@@ -966,7 +966,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class XYZ2RGBFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -1006,7 +1006,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& xyz) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
@@ -1024,7 +1024,7 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<XYZ2RGBFunctor<T>>
     : public FunctorTraitsBase<XYZ2RGBFunctor<T>>
 {
@@ -1050,7 +1050,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class XYZ2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -1092,7 +1092,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& xyz) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
@@ -1110,7 +1110,7 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<XYZ2RGBPrimeFunctor<T>>
     : public FunctorTraitsBase<XYZ2RGBPrimeFunctor<T>>
 {
@@ -1151,7 +1151,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class XYZ2LuvFunctor
 {
 public:
@@ -1178,11 +1178,11 @@ public:
     {
     }
 
-    template<class V>
+    template <class V>
     result_type operator()(V const& xyz) const
     {
         result_type result;
-        if (xyz[1] == NumericTraits<T>::zero())
+        if(xyz[1] == NumericTraits<T>::zero())
         {
             result[0] = NumericTraits<component_type>::zero();
             result[1] = NumericTraits<component_type>::zero();
@@ -1214,7 +1214,7 @@ private:
     double gamma_, kappa_, epsilon_;
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<XYZ2LuvFunctor<T>>
     : public FunctorTraitsBase<XYZ2LuvFunctor<T>>
 {
@@ -1233,7 +1233,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class Luv2XYZFunctor
 {
 public:
@@ -1261,11 +1261,11 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& luv) const
     {
         result_type result;
-        if (luv[0] == NumericTraits<T>::zero())
+        if(luv[0] == NumericTraits<T>::zero())
         {
             result[0] = NumericTraits<component_type>::zero();
             result[1] = NumericTraits<component_type>::zero();
@@ -1296,7 +1296,7 @@ private:
     double gamma_, ikappa_;
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<Luv2XYZFunctor<T>>
     : public FunctorTraitsBase<Luv2XYZFunctor<T>>
 {
@@ -1334,7 +1334,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class XYZ2LabFunctor
 {
 public:
@@ -1363,7 +1363,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& xyz) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
@@ -1390,7 +1390,7 @@ private:
     double gamma_, kappa_, epsilon_;
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<XYZ2LabFunctor<T>>
     : public FunctorTraitsBase<XYZ2LabFunctor<T>>
 {
@@ -1409,7 +1409,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class Lab2XYZFunctor
 {
 public:
@@ -1439,7 +1439,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& lab) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
@@ -1466,7 +1466,7 @@ private:
     double gamma_, ikappa_;
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<Lab2XYZFunctor<T>>
     : public FunctorTraitsBase<Lab2XYZFunctor<T>>
 {
@@ -1500,7 +1500,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class RGB2LuvFunctor
 {
     /*
@@ -1545,7 +1545,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& rgb) const
     {
         return xyz2luv(rgb2xyz(rgb));
@@ -1561,7 +1561,7 @@ private:
     XYZ2LuvFunctor<component_type> xyz2luv;
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<RGB2LuvFunctor<T>>
     : public FunctorTraitsBase<RGB2LuvFunctor<T>>
 {
@@ -1595,7 +1595,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class RGB2LabFunctor
 {
     /*
@@ -1640,7 +1640,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& rgb) const
     {
         return xyz2lab(rgb2xyz(rgb));
@@ -1656,7 +1656,7 @@ private:
     XYZ2LabFunctor<component_type> xyz2lab;
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<RGB2LabFunctor<T>>
     : public FunctorTraitsBase<RGB2LabFunctor<T>>
 {
@@ -1675,7 +1675,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class Luv2RGBFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -1710,7 +1710,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& luv) const
     {
         return xyz2rgb(luv2xyz(luv));
@@ -1722,7 +1722,7 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<Luv2RGBFunctor<T>>
     : public FunctorTraitsBase<Luv2RGBFunctor<T>>
 {
@@ -1741,7 +1741,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class Lab2RGBFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -1782,7 +1782,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& lab) const
     {
         return xyz2rgb(lab2xyz(lab));
@@ -1794,7 +1794,7 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<Lab2RGBFunctor<T>>
     : public FunctorTraitsBase<Lab2RGBFunctor<T>>
 {
@@ -1828,7 +1828,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class RGBPrime2LuvFunctor
 {
 public:
@@ -1866,7 +1866,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& rgb) const
     {
         return xyz2luv(rgb2xyz(rgb));
@@ -1882,7 +1882,7 @@ private:
     XYZ2LuvFunctor<component_type> xyz2luv;
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<RGBPrime2LuvFunctor<T>>
     : public FunctorTraitsBase<RGBPrime2LuvFunctor<T>>
 {
@@ -1916,7 +1916,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class RGBPrime2LabFunctor
 {
 public:
@@ -1954,7 +1954,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& rgb) const
     {
         return xyz2lab(rgb2xyz(rgb));
@@ -1970,7 +1970,7 @@ private:
     XYZ2LabFunctor<component_type> xyz2lab;
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<RGBPrime2LabFunctor<T>>
     : public FunctorTraitsBase<RGBPrime2LabFunctor<T>>
 {
@@ -1989,7 +1989,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class Luv2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -2030,7 +2030,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& luv) const
     {
         return xyz2rgb(luv2xyz(luv));
@@ -2042,7 +2042,7 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<Luv2RGBPrimeFunctor<T>>
     : public FunctorTraitsBase<Luv2RGBPrimeFunctor<T>>
 {
@@ -2061,7 +2061,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class Lab2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -2102,7 +2102,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& lab) const
     {
         return xyz2rgb(lab2xyz(lab));
@@ -2114,7 +2114,7 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<Lab2RGBPrimeFunctor<T>>
     : public FunctorTraitsBase<Lab2RGBPrimeFunctor<T>>
 {
@@ -2154,7 +2154,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class RGBPrime2YPrimePbPrFunctor
 {
     /*
@@ -2199,7 +2199,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& rgb) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
@@ -2223,7 +2223,7 @@ private:
     component_type max_;
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<RGBPrime2YPrimePbPrFunctor<T>>
     : public FunctorTraitsBase<RGBPrime2YPrimePbPrFunctor<T>>
 {
@@ -2242,7 +2242,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class YPrimePbPr2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -2282,7 +2282,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& ypbpr) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
@@ -2300,7 +2300,7 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<YPrimePbPr2RGBPrimeFunctor<T>>
     : public FunctorTraitsBase<YPrimePbPr2RGBPrimeFunctor<T>>
 {
@@ -2339,7 +2339,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class RGBPrime2YPrimeIQFunctor
 {
     /*
@@ -2384,7 +2384,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& rgb) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
@@ -2408,7 +2408,7 @@ private:
     component_type max_;
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<RGBPrime2YPrimeIQFunctor<T>>
     : public FunctorTraitsBase<RGBPrime2YPrimeIQFunctor<T>>
 {
@@ -2427,7 +2427,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class YPrimeIQ2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -2467,7 +2467,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& yiq) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
@@ -2485,7 +2485,7 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<YPrimeIQ2RGBPrimeFunctor<T>>
     : public FunctorTraitsBase<YPrimeIQ2RGBPrimeFunctor<T>>
 {
@@ -2524,7 +2524,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class RGBPrime2YPrimeUVFunctor
 {
     /*
@@ -2569,7 +2569,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& rgb) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
@@ -2593,7 +2593,7 @@ private:
     component_type max_;
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<RGBPrime2YPrimeUVFunctor<T>>
     : public FunctorTraitsBase<RGBPrime2YPrimeUVFunctor<T>>
 {
@@ -2612,7 +2612,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class YPrimeUV2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -2652,7 +2652,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& yuv) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
@@ -2670,7 +2670,7 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<YPrimeUV2RGBPrimeFunctor<T>>
     : public FunctorTraitsBase<YPrimeUV2RGBPrimeFunctor<T>>
 {
@@ -2699,7 +2699,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class RGBPrime2YPrimeCbCrFunctor
 {
     /*
@@ -2744,7 +2744,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& rgb) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
@@ -2768,7 +2768,7 @@ private:
     component_type max_;
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<RGBPrime2YPrimeCbCrFunctor<T>>
     : public FunctorTraitsBase<RGBPrime2YPrimeCbCrFunctor<T>>
 {
@@ -2787,7 +2787,7 @@ public:
     
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
-template<class T>
+template <class T>
 class YPrimeCbCr2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -2827,7 +2827,7 @@ public:
 
     /** apply the transformation
         */
-    template<class V>
+    template <class V>
     result_type operator()(V const& ycbcr) const
     {
         typedef detail::RequiresExplicitCast<component_type> Convert;
@@ -2849,7 +2849,7 @@ public:
     }
 };
 
-template<class T>
+template <class T>
 class FunctorTraits<YPrimeCbCr2RGBPrimeFunctor<T>>
     : public FunctorTraitsBase<YPrimeCbCr2RGBPrimeFunctor<T>>
 {
@@ -2974,7 +2974,7 @@ polar2Lab(double color, double brightness, double saturation)
 }
 
 
-template<class V>
+template <class V>
 TinyVector<float, 3>
 polar2Lab(V const& polar)
 {
@@ -2997,7 +2997,7 @@ polar2Lab(V const& polar)
     This realizes the inverse of the transformation described in 
     \ref polar2Lab().
 */
-template<class V>
+template <class V>
 TinyVector<float, 3>
 lab2Polar(V const& lab)
 {
@@ -3057,7 +3057,7 @@ polar2Luv(double color, double brightness, double saturation)
     return result;
 }
 
-template<class V>
+template <class V>
 TinyVector<float, 3>
 polar2Luv(V const& polar)
 {
@@ -3080,7 +3080,7 @@ polar2Luv(V const& polar)
     This realizes the inverse of the transformation described in 
     \ref polar2Luv().
 */
-template<class V>
+template <class V>
 TinyVector<float, 3>
 luv2Polar(V const& luv)
 {
@@ -3140,7 +3140,7 @@ polar2YPrimePbPr(double color, double brightness, double saturation)
     return result;
 }
 
-template<class V>
+template <class V>
 TinyVector<float, 3>
 polar2YPrimePbPr(V const& polar)
 {
@@ -3163,7 +3163,7 @@ polar2YPrimePbPr(V const& polar)
     This realizes the inverse of the transformation described in 
     \ref polar2YPrimePbPr().
 */
-template<class V>
+template <class V>
 TinyVector<float, 3>
 yPrimePbPr2Polar(V const& ypbpr)
 {
@@ -3223,7 +3223,7 @@ polar2YPrimeCbCr(double color, double brightness, double saturation)
     return result;
 }
 
-template<class V>
+template <class V>
 TinyVector<float, 3>
 polar2YPrimeCbCr(V const& polar)
 {
@@ -3246,7 +3246,7 @@ polar2YPrimeCbCr(V const& polar)
     This realizes the inverse of the transformation described in 
     \ref polar2YPrimeCbCr().
 */
-template<class V>
+template <class V>
 TinyVector<float, 3>
 yPrimeCbCr2Polar(V const& ycbcr)
 {
@@ -3308,7 +3308,7 @@ polar2YPrimeIQ(double color, double brightness, double saturation)
     return result;
 }
 
-template<class V>
+template <class V>
 TinyVector<float, 3>
 polar2YPrimeIQ(V const& polar)
 {
@@ -3331,7 +3331,7 @@ polar2YPrimeIQ(V const& polar)
     This realizes the inverse of the transformation described in 
     \ref polar2YPrimeIQ().
 */
-template<class V>
+template <class V>
 TinyVector<float, 3>
 yPrimeIQ2Polar(V const& yiq)
 {
@@ -3391,7 +3391,7 @@ polar2YPrimeUV(double color, double brightness, double saturation)
     return result;
 }
 
-template<class V>
+template <class V>
 TinyVector<float, 3>
 polar2YPrimeUV(V const& polar)
 {
@@ -3414,7 +3414,7 @@ polar2YPrimeUV(V const& polar)
     This realizes the inverse of the transformation described in 
     \ref polar2YPrimeUV().
 */
-template<class V>
+template <class V>
 TinyVector<float, 3>
 yPrimeUV2Polar(V const& yuv)
 {

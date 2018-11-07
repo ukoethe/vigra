@@ -45,7 +45,7 @@ using namespace vigra;
 int
 main(int argc, char** argv)
 {
-    if (argc != 3)
+    if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
@@ -57,7 +57,7 @@ main(int argc, char** argv)
     {
         vigra::ImageImportInfo info(argv[1]);
 
-        if (info.isGrayscale())
+        if(info.isGrayscale())
         {
             vigra::BImage in(info.width(), info.height());
             vigra::BImage out(info.width(), info.height());
@@ -77,7 +77,7 @@ main(int argc, char** argv)
             vigra::BImage::Iterator dy = out.upperLeft();
 
             // iterate down the first column of the images
-            for (; sy.y != send.y; ++sy.y, ++dy.y)
+            for(; sy.y != send.y; ++sy.y, ++dy.y)
             {
                 // create image iterator that points to the first
                 // pixel of the current row of the source image
@@ -88,7 +88,7 @@ main(int argc, char** argv)
                 vigra::BImage::Iterator dx = dy;
 
                 // iterate across current row
-                for (; sx.x != send.x; ++sx.x, ++dx.x)
+                for(; sx.x != send.x; ++sx.x, ++dx.x)
                 {
                     // calculate negative gray value
                     *dx = 255 - *sx;
@@ -119,7 +119,7 @@ main(int argc, char** argv)
             vigra::BRGBImage::Iterator dy = out.upperLeft();
 
             // iterate down the first column of the images
-            for (; sy.y != send.y; ++sy.y, ++dy.y)
+            for(; sy.y != send.y; ++sy.y, ++dy.y)
             {
                 // create image iterator that points to the first
                 // pixel of the current row of the source image
@@ -130,7 +130,7 @@ main(int argc, char** argv)
                 vigra::BRGBImage::Iterator dx = dy;
 
                 // iterate across current row
-                for (; sx.x != send.x; ++sx.x, ++dx.x)
+                for(; sx.x != send.x; ++sx.x, ++dx.x)
                 {
                     // calculate negative color
                     *dx = offset - *sx;
@@ -140,7 +140,7 @@ main(int argc, char** argv)
             exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
         }
     }
-    catch (vigra::StdException& e)
+    catch(vigra::StdException& e)
     {
         std::cout << e.what() << std::endl;
         return 1;

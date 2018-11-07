@@ -95,7 +95,7 @@ testData(RGBValue<float>)
     return data;
 }
 
-template<class IMAGE>
+template <class IMAGE>
 struct ImageTest
 {
     typedef IMAGE Image;
@@ -131,7 +131,7 @@ struct ImageTest
         should(i == img.end());
     }
 
-    template<class Iterator>
+    template <class Iterator>
     void scanImage(Iterator ul, Iterator lr)
     {
         Iterator y = ul;
@@ -167,7 +167,7 @@ struct ImageTest
         should(acc(y, vigra::Diff2D(1, 1)) == data[4]);
     }
 
-    template<class Iterator>
+    template <class Iterator>
     void scanRows(Iterator r1, Iterator r2, Iterator r3, int w)
     {
         Iterator end = r1 + w;
@@ -200,7 +200,7 @@ struct ImageTest
         should(r3 == end);
     }
 
-    template<class Iterator>
+    template <class Iterator>
     void scanColumns(Iterator c1, Iterator c2, Iterator c3, int h)
     {
         Iterator end = c1 + h;
@@ -255,9 +255,9 @@ struct ImageTest
 
     void testIndex()
     {
-        for (int y = 0; y < img.height(); ++y)
+        for(int y = 0; y < img.height(); ++y)
         {
-            for (int x = 0; x < img.width(); ++x)
+            for(int x = 0; x < img.width(); ++x)
             {
                 shouldEqual(data[y * img.width() + x], img[Diff2D(x, y)]);
                 shouldEqual(data[y * img.width() + x], img(x, y));
@@ -288,13 +288,13 @@ struct ImageTest
         typename Image::iterator i1 = img1.begin();
         typename Image::Accessor acc = img.accessor();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
         {
             should(acc(i) == acc(i1));
         }
 
         img.init(NumericTraits<Value>::zero());
-        for (; i != img.end(); ++i)
+        for(; i != img.end(); ++i)
         {
             should(acc(i) == NumericTraits<Value>::zero());
         }
@@ -303,7 +303,7 @@ struct ImageTest
         i = img.begin();
         i1 = img1.begin();
 
-        for (; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1)
         {
             should(acc(i) == acc(i1));
         }
@@ -312,7 +312,7 @@ struct ImageTest
     Image img;
 };
 
-template<class IMAGE>
+template <class IMAGE>
 struct BasicImageTest
     : public ImageTest<IMAGE>
 {
@@ -358,7 +358,7 @@ struct BasicImageTest
     }
 };
 
-template<class IMAGE>
+template <class IMAGE>
 struct BasicImageViewTest
     : public ImageTest<IMAGE>
 {
@@ -385,7 +385,7 @@ struct BasicImageViewTest
     }
 };
 
-template<class T>
+template <class T>
 struct StridedImageIteratorTest
 {
     T* data_;
@@ -537,7 +537,7 @@ struct ImageContainerTests
 
         Diff2D newsize(50, 50);
         threeLennas.resizeImages(newsize);
-        for (ImageArray<FImage>::iterator it = threeLennas.begin(); it != threeLennas.end(); it++)
+        for(ImageArray<FImage>::iterator it = threeLennas.begin(); it != threeLennas.end(); it++)
             shouldEqual((*it).size(), newsize);
     }
 
@@ -546,7 +546,7 @@ struct ImageContainerTests
         Diff2D testsize(50, 50);
         ImageArray<FImage> ia(6, testsize);
 
-        for (unsigned int i = 0; i < ia.size(); i++)
+        for(unsigned int i = 0; i < ia.size(); i++)
             shouldEqual(ia[i].size(), testsize);
 
         ImageArray<FImage> ia2(ia.begin(), ia.end());
@@ -587,8 +587,8 @@ struct NeighborhoodCirculatorTest
           eightCirc(img.upperLeft() + vigra::Diff2D(1, 1)),
           fourCirc(img.upperLeft() + vigra::Diff2D(1, 1))
     {
-        for (int y = 0; y < img.height(); y++)
-            for (int x = 0; x < img.width(); x++)
+        for(int y = 0; y < img.height(); y++)
+            for(int x = 0; x < img.width(); x++)
                 img(x, y) = y * img.width() + x;
     }
 
@@ -666,9 +666,9 @@ struct NeighborhoodCirculatorTest
 
     void testIsDiagonal()
     {
-        for (int i = 0; i < 10; i++, eightCirc++, fourCirc++)
+        for(int i = 0; i < 10; i++, eightCirc++, fourCirc++)
         {
-            if (i % 2)
+            if(i % 2)
                 should(eightCirc.isDiagonal());
             else
                 should(!eightCirc.isDiagonal());
@@ -705,14 +705,14 @@ struct NeighborhoodCirculatorTest
 
     void testTurning()
     {
-        for (int i = 0; i < 4; i++)
+        for(int i = 0; i < 4; i++)
         {
             shouldEqual(*fourCirc, *eightCirc);
             fourCirc.turnRight();
             eightCirc.turnRight();
         }
 
-        for (int i = 0; i < 4; i++)
+        for(int i = 0; i < 4; i++)
         {
             shouldEqual(*fourCirc, *eightCirc);
             fourCirc.turnLeft();
@@ -755,7 +755,7 @@ struct NeighborhoodCirculatorTest
 
         // test operator -
         EightCirculator eightCirc2 = eightCirc;
-        for (int i = 0; i < 7; i++, eightCirc2++)
+        for(int i = 0; i < 7; i++, eightCirc2++)
             shouldEqual(eightCirc2 - eightCirc, i);
 
         // test operator[]
@@ -792,7 +792,7 @@ struct CrackContourCirculatorTest
             0, 0, 1, 1, 1, 1, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0};
 
-        for (int i = 0; i < img.width() * img.height(); ++i)
+        for(int i = 0; i < img.width() * img.height(); ++i)
             img.begin()[i] = imdata[i];
     }
 

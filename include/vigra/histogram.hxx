@@ -122,7 +122,7 @@ public:
     }
 };
 
-template<class DataType, class BinType>
+template <class DataType, class BinType>
 class HistogramView
 {
     BinType* bins_;
@@ -151,15 +151,15 @@ public:
 
     HistogramView& reset()
     {
-        if (hasData())
-            for (int k = 0; k < size_; ++k)
+        if(hasData())
+            for(int k = 0; k < size_; ++k)
                 *(bins_ + k * stride_) = BinType();
         return *this;
     }
 
     void getBinCenters(ArrayVector<DataType>* centers) const
     {
-        for (int k = 0; k < size_; ++k)
+        for(int k = 0; k < size_; ++k)
         {
             (*centers)[k] = mapItemInverse(k + 0.5);
         }
@@ -198,15 +198,15 @@ public:
 protected:
     BinType& get(int index)
     {
-        if (index < 0)
+        if(index < 0)
             index = 0;
-        if (index >= size_)
+        if(index >= size_)
             index = size_ - 1;
         return *(bins_ + index * stride_);
     }
 };
 
-template<class T>
+template <class T>
 class TrapezoidKernel
 {
 public:
@@ -214,9 +214,9 @@ public:
 
     T operator[](double f) const
     {
-        if (f < -0.5)
+        if(f < -0.5)
             return 0.5 * (f + 1.5);
-        if (f > 0.5)
+        if(f > 0.5)
             return 0.5 * (1.5 - f);
         return 0.5;
     }
@@ -229,10 +229,10 @@ public:
     T findMaximum(double l, double c, double r) const
     {
         double curv = -2.0 * c + r + l;
-        if (curv == 0.0)
+        if(curv == 0.0)
             return T(-0.5);
         double extr = 0.5 * (l - r) / curv;
-        if (curv < 0.0)
+        if(curv < 0.0)
         {
             return extr < -0.5
                        ? T(-0.5)
@@ -251,16 +251,16 @@ public:
     bool findMode(double l, double c, double r, double* m) const
     {
         double curv = -2.0 * c + r + l;
-        if (curv >= 0.0)
+        if(curv >= 0.0)
             return false;
         *m = 0.5 * (l - r) / curv;
-        if (*m < -0.5 || *m > 0.5)
+        if(*m < -0.5 || *m > 0.5)
             return false;
         return true;
     }
 };
 
-template<class DataType, class KernelType>
+template <class DataType, class KernelType>
 class KernelHistogramView
     : public HistogramView<DataType, typename KernelType::value_type>
 {
@@ -284,7 +284,7 @@ public:
         double f = mapped - std::floor(mapped) - kernel_.radius();
         int center = int(mapped);
 
-        for (int k = center + radius_; k >= center - radius_; --k, f += 1.0)
+        for(int k = center + radius_; k >= center - radius_; --k, f += 1.0)
         {
             this->get(k) += weight * kernel_[f];
         }
@@ -294,7 +294,7 @@ public:
     {
         double mmax = 0, vmax = 0, m;
 
-        for (int k = 0; k < this->size(); ++k)
+        for(int k = 0; k < this->size(); ++k)
         {
             double l = k > 0
                            ? (*this)[k - 1]
@@ -303,10 +303,10 @@ public:
             double r = k < this->size() - 1
                            ? (*this)[k + 1]
                            : 0.0;
-            if (kernel_.findMode(l, c, r, &m))
+            if(kernel_.findMode(l, c, r, &m))
             {
                 double v = l * kernel_[m + 1.0] + c * kernel_[m] + r * kernel_[m - 1.0];
-                if (vmax < v)
+                if(vmax < v)
                 {
                     mmax = m + k + 0.5;
                     vmax = v;
@@ -316,11 +316,11 @@ public:
         return this->mapItemInverse(mmax);
     }
 
-    template<class Array>
+    template <class Array>
     void findModes(Array* modes)
     {
         double m;
-        for (int k = 0; k < this->size(); ++k)
+        for(int k = 0; k < this->size(); ++k)
         {
             double l = k > 0
                            ? (*this)[k - 1]
@@ -329,7 +329,7 @@ public:
             double r = k < this->size() - 1
                            ? (*this)[k + 1]
                            : 0.0;
-            if (kernel_.findMode(l, c, r, &m))
+            if(kernel_.findMode(l, c, r, &m))
             {
                 double v = l * kernel_[m + 1.0] + c * kernel_[m] + r * kernel_[m - 1.0];
                 modes->push_back(std::make_pair(this->mapItemInverse(m + k + 0.5), v));
@@ -338,7 +338,7 @@ public:
     }
 };
 
-template<class DataType, class BinType>
+template <class DataType, class BinType>
 class Histogram
     : public HistogramView<DataType, BinType>
 {

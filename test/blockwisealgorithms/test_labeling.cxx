@@ -51,16 +51,16 @@
 using namespace vigra;
 using namespace std;
 
-template<class DatasIterator, class ShapesIterator>
+template <class DatasIterator, class ShapesIterator>
 void
 testOnData(DatasIterator datas_begin, DatasIterator datas_end,
            ShapesIterator shapes_begin, ShapesIterator shapes_end)
 {
-    for (DatasIterator datas_it = datas_begin; datas_it != datas_end; ++datas_it)
+    for(DatasIterator datas_it = datas_begin; datas_it != datas_end; ++datas_it)
     {
         typedef typename DatasIterator::reference DataRef;
         DataRef data = *datas_it;
-        for (ShapesIterator shapes_it = shapes_begin; shapes_it != shapes_end; ++shapes_it)
+        for(ShapesIterator shapes_it = shapes_begin; shapes_it != shapes_end; ++shapes_it)
         {
             typedef typename ShapesIterator::reference ShapeRef;
             ShapeRef shape = *shapes_it;
@@ -70,9 +70,9 @@ testOnData(DatasIterator datas_begin, DatasIterator datas_end,
             neighborhoods.push_back(IndirectNeighborhood);
             typedef vector<NeighborhoodType>::iterator NeighborhoodIterator;
 
-            for (NeighborhoodIterator neighborhood_it = neighborhoods.begin();
-                 neighborhood_it != neighborhoods.end();
-                 ++neighborhood_it)
+            for(NeighborhoodIterator neighborhood_it = neighborhoods.begin();
+                neighborhood_it != neighborhoods.end();
+                ++neighborhood_it)
             {
                 NeighborhoodType neighborhood = *neighborhood_it;
                 typedef typename DatasIterator::value_type Data;
@@ -80,9 +80,9 @@ testOnData(DatasIterator datas_begin, DatasIterator datas_end,
                 std::vector<bool> with_backgrounds;
                 with_backgrounds.push_back(true);
                 with_backgrounds.push_back(false);
-                for (std::vector<bool>::iterator backgrounds_it = with_backgrounds.begin();
-                     backgrounds_it != with_backgrounds.end();
-                     ++backgrounds_it)
+                for(std::vector<bool>::iterator backgrounds_it = with_backgrounds.begin();
+                    backgrounds_it != with_backgrounds.end();
+                    ++backgrounds_it)
                 {
                     bool with_background = *backgrounds_it;
                     Data correct_labels(data.shape());
@@ -94,7 +94,7 @@ testOnData(DatasIterator datas_begin, DatasIterator datas_end,
 
                     int correct_label_number;
                     int tested_label_number;
-                    if (with_background)
+                    if(with_background)
                     {
                         correct_label_number = labelMultiArrayWithBackground(data, correct_labels, neighborhood, 1u);
                         options.ignoreBackgroundValue(1u);
@@ -106,9 +106,9 @@ testOnData(DatasIterator datas_begin, DatasIterator datas_end,
 
                     tested_label_number = labelMultiArrayBlockwise(data, tested_labels, options);
 
-                    if (!equivalentLabels(correct_labels.begin(), correct_labels.end(),
-                                          tested_labels.begin(), tested_labels.end()) ||
-                        correct_label_number != tested_label_number)
+                    if(!equivalentLabels(correct_labels.begin(), correct_labels.end(),
+                                         tested_labels.begin(), tested_labels.end()) ||
+                       correct_label_number != tested_label_number)
                     {
                         std::ostringstream oss;
                         oss << "labeling not equivalent" << endl;
@@ -117,15 +117,15 @@ testOnData(DatasIterator datas_begin, DatasIterator datas_end,
                         oss << "block shape: " << shape << endl;
                         oss << "neighborhood: " << neighborhood << endl;
                         oss << "data: " << endl;
-                        for (int i = 0; i != data.size(); ++i)
+                        for(int i = 0; i != data.size(); ++i)
                             oss << data[i] << " ";
                         oss << endl;
                         oss << "expected_labels: " << endl;
-                        for (int i = 0; i != correct_labels.size(); ++i)
+                        for(int i = 0; i != correct_labels.size(); ++i)
                             oss << correct_labels[i] << " ";
                         oss << endl;
                         oss << "got" << endl;
-                        for (int i = 0; i != tested_labels.size(); ++i)
+                        for(int i = 0; i != tested_labels.size(); ++i)
                             oss << tested_labels[i] << " ";
                         oss << endl;
                         failTest(oss.str().c_str());
@@ -159,7 +159,7 @@ struct BlockwiseLabelingTest
         array_fives.push_back(Array5(Shape5(1)));
         array_fives.push_back(Array5(Shape5(2, 2, 3, 4, 3)));
         array_fives.push_back(Array5(Shape5(5, 6, 2, 2, 3)));
-        for (decltype(array_fives.size()) i = 0; i != array_fives.size(); ++i)
+        for(decltype(array_fives.size()) i = 0; i != array_fives.size(); ++i)
         {
             fillRandom(array_fives[i].begin(), array_fives[i].end(), 3);
         }
@@ -170,7 +170,7 @@ struct BlockwiseLabelingTest
         array_twos.push_back(Array2(Shape2(4, 4)));
         array_twos.push_back(Array2(Shape2(6, 10)));
         array_twos.push_back(Array2(Shape2(19, 25)));
-        for (decltype(array_twos.size()) i = 0; i != array_twos.size(); ++i)
+        for(decltype(array_twos.size()) i = 0; i != array_twos.size(); ++i)
         {
             fillRandom(array_twos[i].begin(), array_twos[i].end(), 3);
         }
@@ -180,7 +180,7 @@ struct BlockwiseLabelingTest
         array_ones.push_back(Array1(Shape1(47)));
         array_ones.push_back(Array1(Shape1(81)));
         array_ones.push_back(Array1(Shape1(997)));
-        for (decltype(array_ones.size()) i = 0; i != array_ones.size(); ++i)
+        for(decltype(array_ones.size()) i = 0; i != array_ones.size(); ++i)
         {
             fillRandom(array_ones[i].begin(), array_ones[i].end(), 3);
         }

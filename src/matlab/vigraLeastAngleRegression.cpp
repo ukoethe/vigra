@@ -46,7 +46,7 @@ using namespace vigra;
 using namespace matlab;
 using namespace linalg;
 
-template<class T>
+template <class T>
 void
 vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
 {
@@ -85,20 +85,20 @@ vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
                                                                                       MultiArrayShape<2>::type(columnCount(A), numSolutions));
     MultiArrayView<2, OutputType> dense_lasso = outputs.createMultiArray<2, OutputType>(1, v_optional(),
                                                                                         MultiArrayShape<2>::type(columnCount(A), numSolutions));
-    for (MultiArrayIndex k = 0; k < numSolutions; ++k)
+    for(MultiArrayIndex k = 0; k < numSolutions; ++k)
     {
-        for (unsigned int i = 0; i < activeSets[k].size(); ++i)
+        for(unsigned int i = 0; i < activeSets[k].size(); ++i)
         {
             dense_lsq(activeSets[k][i], k) = lsq_solutions[k](i, 0) * scaling(0, activeSets[k][i]);
         }
     }
 
     // Optional Output.
-    if (dense_lasso.data() != 0)
+    if(dense_lasso.data() != 0)
     {
-        for (MultiArrayIndex k = 0; k < numSolutions; ++k)
+        for(MultiArrayIndex k = 0; k < numSolutions; ++k)
         {
-            for (unsigned int i = 0; i < activeSets[k].size(); ++i)
+            for(unsigned int i = 0; i < activeSets[k].size(); ++i)
             {
                 dense_lasso(activeSets[k][i], k) = lasso_solutions[k](i, 0) * scaling(0, activeSets[k][i]);
             }
@@ -113,7 +113,7 @@ void
 vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
     //Add classes as you feel
-    switch (inputs.typeOf(0))
+    switch(inputs.typeOf(0))
     {
         ALLOW_D
         default:

@@ -120,7 +120,7 @@ struct RandomForestTests
         splits.push_back(RF_GINI);
         splits.push_back(RF_ENTROPY);
         splits.push_back(RF_KSD);
-        for (auto split : splits)
+        for(auto split : splits)
         {
             RandomForestOptions const options = RandomForestOptions()
                                                     .tree_count(1)
@@ -143,13 +143,13 @@ struct RandomForestTests
         RandomNumberGenerator<MersenneTwister> rand;
         MultiArray<2, double> train_x(Shape2(nx * ny, 2));
         MultiArray<1, int> train_y(Shape1(nx * ny));
-        for (size_t y = 0; y < ny; ++y)
+        for(size_t y = 0; y < ny; ++y)
         {
-            for (size_t x = 0; x < nx; ++x)
+            for(size_t x = 0; x < nx; ++x)
             {
                 train_x(y * nx + x, 0) = x + 2 * rand.uniform() - 1;
                 train_x(y * nx + x, 1) = y + 2 * rand.uniform() - 1;
-                if ((x / 25 + y / 25) % 2 == 0)
+                if((x / 25 + y / 25) % 2 == 0)
                     train_y(y * nx + x) = 0;
                 else
                     train_y(y * nx + x) = 1;
@@ -174,13 +174,13 @@ struct RandomForestTests
         RandomNumberGenerator<MersenneTwister> rand;
         MultiArray<2, double> train_x(Shape2(nx * ny, 2));
         MultiArray<1, int> train_y(Shape1(nx * ny));
-        for (size_t y = 0; y < ny; ++y)
+        for(size_t y = 0; y < ny; ++y)
         {
-            for (size_t x = 0; x < nx; ++x)
+            for(size_t x = 0; x < nx; ++x)
             {
                 train_x(y * nx + x, 0) = x + 2 * rand.uniform() - 1;
                 train_x(y * nx + x, 1) = y + 2 * rand.uniform() - 1;
-                if (x - nx / 2.0 + 4 * y - 4 * ny / 2.0 < 0)
+                if(x - nx / 2.0 + 4 * y - 4 * ny / 2.0 < 0)
                     train_y(y * nx + x) = 0;
                 else
                     train_y(y * nx + x) = 1;
@@ -196,7 +196,7 @@ struct RandomForestTests
 
         // The permutation importances of feature 1 should be about
         // 10 times as big as the importances of feature 0.
-        for (size_t i = 0; i < 4; ++i)
+        for(size_t i = 0; i < 4; ++i)
         {
             should(var_imp.variable_importance_(1, i) > 5 * var_imp.variable_importance_(0, i));
         }
@@ -230,7 +230,7 @@ struct RandomForestTests
 
         // Use the RF to predict the data.
         rf.predict(test_x, pred_y);
-        for (size_t i = 0; i < (size_t)test_y.size(); ++i)
+        for(size_t i = 0; i < (size_t)test_y.size(); ++i)
             should(test_y(i) == pred_y(i));
     }
 

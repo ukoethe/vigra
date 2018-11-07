@@ -3,7 +3,7 @@
 
 #include "imagehierarchy_test.hxx"
 
-template<class Policy>
+template <class Policy>
 class SingleBandImageTest
     : public ImageHierarchyTest<Policy>
 {
@@ -83,7 +83,7 @@ public:
     }
 };
 
-template<class POLICY>
+template <class POLICY>
 struct SingleBandImageTestSuite
     : vigra::test_suite
 {

@@ -52,7 +52,7 @@ namespace vigra
 namespace detail
 {
 
-template<class REAL>
+template <class REAL>
 int
 msta1(REAL x, int mp)
 {
@@ -64,11 +64,11 @@ msta1(REAL x, int mp)
     f0 = 0.5 * std::log10(6.28 * n0) - n0 * std::log10(1.36 * a0 / n0) - mp;
     n1 = n0 + 5;
     f1 = 0.5 * std::log10(6.28 * n1) - n1 * std::log10(1.36 * a0 / n1) - mp;
-    for (i = 0; i < 20; i++)
+    for(i = 0; i < 20; i++)
     {
         nn = int(n1 - (n1 - n0) / (1.0 - f0 / f1));
         f = 0.5 * std::log10(6.28 * nn) - nn * std::log10(1.36 * a0 / nn) - mp;
-        if (abs(nn - n1) < 1)
+        if(abs(nn - n1) < 1)
             break;
         n0 = n1;
         f0 = f1;
@@ -78,7 +78,7 @@ msta1(REAL x, int mp)
     return nn;
 }
 
-template<class REAL>
+template <class REAL>
 int
 msta2(REAL x, int n, int mp)
 {
@@ -88,11 +88,11 @@ msta2(REAL x, int n, int mp)
     a0 = abs(x);
     hmp = 0.5 * mp;
     ejn = 0.5 * std::log10(6.28 * n) - n * std::log10(1.36 * a0 / n);
-    if (ejn <= hmp)
+    if(ejn <= hmp)
     {
         obj = mp;
         n0 = (int)(1.1 * a0);
-        if (n0 < 1)
+        if(n0 < 1)
             n0 = 1;
     }
     else
@@ -103,11 +103,11 @@ msta2(REAL x, int n, int mp)
     f0 = 0.5 * std::log10(6.28 * n0) - n0 * std::log10(1.36 * a0 / n0) - obj;
     n1 = n0 + 5;
     f1 = 0.5 * std::log10(6.28 * n1) - n1 * std::log10(1.36 * a0 / n1) - obj;
-    for (i = 0; i < 20; i++)
+    for(i = 0; i < 20; i++)
     {
         nn = int(n1 - (n1 - n0) / (1.0 - f0 / f1));
         f = 0.5 * std::log10(6.28 * nn) - nn * std::log10(1.36 * a0 / nn) - obj;
-        if (abs(nn - n1) < 1)
+        if(abs(nn - n1) < 1)
             break;
         n0 = n1;
         f0 = f1;
@@ -134,7 +134,7 @@ msta2(REAL x, int n, int mp)
 // code has been adapted from C.R. Bond's implementation
 // see http://www.crbond.com/math.htm
 //
-template<class REAL>
+template <class REAL>
 void
 bessjyn(int n, REAL x, int& nm, double* jn, double* yn)
 {
@@ -163,9 +163,9 @@ bessjyn(int n, REAL x, int& nm, double* jn, double* yn)
 
     int i, k, m;
     nm = n;
-    if (x < 1e-15)
+    if(x < 1e-15)
     {
-        for (i = 0; i <= n; i++)
+        for(i = 0; i <= n; i++)
         {
             jn[i] = 0.0;
             yn[i] = -1e308;
@@ -173,12 +173,12 @@ bessjyn(int n, REAL x, int& nm, double* jn, double* yn)
         jn[0] = 1.0;
         return;
     }
-    if (x <= 300.0 || n > (int)(0.9 * x))
+    if(x <= 300.0 || n > (int)(0.9 * x))
     {
-        if (n == 0)
+        if(n == 0)
             nm = 1;
         m = msta1(x, 200);
-        if (m < nm)
+        if(m < nm)
             nm = m;
         else
             m = msta2(x, nm, 15);
@@ -187,17 +187,17 @@ bessjyn(int n, REAL x, int& nm, double* jn, double* yn)
         sv = 0.0;
         f2 = 0.0;
         f1 = 1.0e-100;
-        for (k = m; k >= 0; k--)
+        for(k = m; k >= 0; k--)
         {
             f = 2.0 * (k + 1.0) / x * f1 - f2;
-            if (k <= nm)
+            if(k <= nm)
                 jn[k] = f;
-            if ((k == 2 * (int)(k / 2)) && (k != 0))
+            if((k == 2 * (int)(k / 2)) && (k != 0))
             {
                 bs += 2.0 * f;
                 su += (-1) * ((k & 2) - 1) * f / (double)k;
             }
-            else if (k > 1)
+            else if(k > 1)
             {
                 sv += (-1) * ((k & 2) - 1) * (double)k * f / (k * k - 1.0);
             }
@@ -205,7 +205,7 @@ bessjyn(int n, REAL x, int& nm, double* jn, double* yn)
             f1 = f;
         }
         s0 = bs + f;
-        for (k = 0; k <= nm; k++)
+        for(k = 0; k <= nm; k++)
         {
             jn[k] /= s0;
         }
@@ -220,7 +220,7 @@ bessjyn(int n, REAL x, int& nm, double* jn, double* yn)
         t1 = x - M_PI_4;
         p0 = 1.0;
         q0 = -0.125 / x;
-        for (k = 0; k < 4; k++)
+        for(k = 0; k < 4; k++)
         {
             p0 += a[k] * std::pow(x, -2 * k - 2);
             q0 += b[k] * std::pow(x, -2 * k - 3);
@@ -233,7 +233,7 @@ bessjyn(int n, REAL x, int& nm, double* jn, double* yn)
         t2 = x - 0.75 * M_PI;
         p1 = 1.0;
         q1 = 0.375 / x;
-        for (k = 0; k < 4; k++)
+        for(k = 0; k < 4; k++)
         {
             p1 += a1[k] * std::pow(x, -2 * k - 2);
             q1 += b1[k] * std::pow(x, -2 * k - 3);
@@ -242,7 +242,7 @@ bessjyn(int n, REAL x, int& nm, double* jn, double* yn)
         by1 = cu * (p1 * std::sin(t2) + q1 * std::cos(t2));
         jn[1] = bj1;
         yn[1] = by1;
-        for (k = 2; k <= nm; k++)
+        for(k = 2; k <= nm; k++)
         {
             bjk = 2.0 * (k - 1.0) * bj1 / x - bj0;
             jn[k] = bjk;
@@ -250,7 +250,7 @@ bessjyn(int n, REAL x, int& nm, double* jn, double* yn)
             bj1 = bjk;
         }
     }
-    for (k = 2; k <= nm; k++)
+    for(k = 2; k <= nm; k++)
     {
         byk = 2.0 * (k - 1.0) * by1 / x - by0;
         yn[k] = byk;
@@ -279,9 +279,9 @@ bessjyn(int n, REAL x, int& nm, double* jn, double* yn)
 inline double
 besselJ(int n, double x)
 {
-    if (x < 0.0)
+    if(x < 0.0)
         throw std::domain_error("besselJ(n, x): x cannot be negative");
-    if (x < 1e-15)
+    if(x < 1e-15)
         return n == 0 ? 1.0 : 0.0;
 #if defined(HasBoostMath)
     return boost::math::cyl_bessel_j((double)n, x);
@@ -293,7 +293,7 @@ besselJ(int n, double x)
     int an = abs(n), nr = n, s = an + 2;
     ArrayVector<double> t(2 * s);
     detail::bessjyn(an, x, nr, &t[0], &t[s]);
-    if (n < 0 && odd(an))
+    if(n < 0 && odd(an))
         return -t[an];
     else
         return t[an];
@@ -316,9 +316,9 @@ besselJ(int n, double x)
 inline double
 besselY(int n, double x)
 {
-    if (x < 0.0)
+    if(x < 0.0)
         throw std::domain_error("besselY(n, x): x cannot be negative");
-    if (x == 0.0)
+    if(x == 0.0)
         return -std::numeric_limits<double>::infinity();
 #if defined(HasBoostMath)
     return boost::math::cyl_neumann((double)n, x);
@@ -330,7 +330,7 @@ besselY(int n, double x)
     int an = abs(n), nr = n, s = an + 2;
     ArrayVector<double> t(2 * s);
     detail::bessjyn(an, x, nr, &t[0], &t[s]);
-    if (n < 0.0 && odd(n))
+    if(n < 0.0 && odd(n))
         return -t[an + s];
     else
         return t[an + s];

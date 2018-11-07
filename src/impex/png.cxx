@@ -213,7 +213,7 @@ PngDecoderImpl::PngDecoderImpl(const std::string& filename)
     vigra_postcondition(png != 0, "could not create the read struct.");
 
     // create info struct
-    if (setjmp(png_jmpbuf(png)))
+    if(setjmp(png_jmpbuf(png)))
     {
         png_destroy_read_struct(&png, &info, NULL);
         vigra_postcondition(false, png_error_message.insert(0, "error in png_create_info_struct(): ").c_str());
@@ -222,7 +222,7 @@ PngDecoderImpl::PngDecoderImpl(const std::string& filename)
     vigra_postcondition(info != 0, "could not create the info struct.");
 
     // init png i/o
-    if (setjmp(png_jmpbuf(png)))
+    if(setjmp(png_jmpbuf(png)))
     {
         png_destroy_read_struct(&png, &info, NULL);
         vigra_postcondition(false, png_error_message.insert(0, "error in png_init_io(): ").c_str());
@@ -230,7 +230,7 @@ PngDecoderImpl::PngDecoderImpl(const std::string& filename)
     png_init_io(png, file.get());
 
     // specify that the signature was already read
-    if (setjmp(png_jmpbuf(png)))
+    if(setjmp(png_jmpbuf(png)))
     {
         png_destroy_read_struct(&png, &info, NULL);
         vigra_postcondition(false, png_error_message.insert(0, "error in png_set_sig_bytes(): ").c_str());
@@ -247,28 +247,28 @@ void
 PngDecoderImpl::init()
 {
     // read all chunks up to the image data
-    if (setjmp(png_jmpbuf(png)))
+    if(setjmp(png_jmpbuf(png)))
         vigra_postcondition(false, png_error_message.insert(0, "error in png_read_info(): ").c_str());
     png_read_info(png, info);
 
     // pull over the header fields
     int interlace_method, compression_method, filter_method;
-    if (setjmp(png_jmpbuf(png)))
+    if(setjmp(png_jmpbuf(png)))
         vigra_postcondition(false, png_error_message.insert(0, "error in png_get_IHDR(): ").c_str());
     png_get_IHDR(png, info, &width, &height, &bit_depth, &color_type,
                  &interlace_method, &compression_method, &filter_method);
 
     // check whether byteorder must be swapped (png files are big-endian)
     byteorder bo;
-    if (bit_depth == 16 && bo.get_host_byteorder() == "little endian")
+    if(bit_depth == 16 && bo.get_host_byteorder() == "little endian")
     {
         png_set_swap(png);
     }
 
     // transform palette to rgb
-    if (color_type == PNG_COLOR_TYPE_PALETTE)
+    if(color_type == PNG_COLOR_TYPE_PALETTE)
     {
-        if (setjmp(png_jmpbuf(png)))
+        if(setjmp(png_jmpbuf(png)))
             vigra_postcondition(false, png_error_message.insert(0, "error in png_palette_to_rgb(): ").c_str());
         png_set_palette_to_rgb(png);
         color_type = PNG_COLOR_TYPE_RGB;
@@ -276,9 +276,9 @@ PngDecoderImpl::init()
     }
 
     // expand gray values to at least one byte size
-    if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
+    if(color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
     {
-        if (setjmp(png_jmpbuf(png)))
+        if(setjmp(png_jmpbuf(png)))
             vigra_postcondition(false,
                                 png_error_message.insert(0, "error in png_set_expand_gray_1_2_4_to_8(): ").c_str());
         png_set_expand_gray_1_2_4_to_8(png);
@@ -298,7 +298,7 @@ PngDecoderImpl::init()
 
 
     // find out the number of components
-    switch (color_type)
+    switch(color_type)
     {
         case PNG_COLOR_TYPE_GRAY:
             components = 1;
@@ -329,16 +329,16 @@ PngDecoderImpl::init()
     position.y = png_get_y_offset_pixels(png, info);
 
     // read icc profile
-#if (PNG_LIBPNG_VER > 10008) && defined(PNG_READ_iCCP_SUPPORTED)
+#if(PNG_LIBPNG_VER > 10008) && defined(PNG_READ_iCCP_SUPPORTED)
     char* dummyName;
     int dummyCompType;
-#if (PNG_LIBPNG_VER < 10500)
+#if(PNG_LIBPNG_VER < 10500)
     char* profilePtr;
 #else
     png_byte* profilePtr;
 #endif
     png_uint_32 profileLen;
-    if (png_get_valid(png, info, PNG_INFO_iCCP))
+    if(png_get_valid(png, info, PNG_INFO_iCCP))
     {
         png_get_iCCP(png, info, &dummyName, &dummyCompType, &profilePtr, &profileLen);
         iccProfilePtr = (unsigned char*)profilePtr;
@@ -367,20 +367,20 @@ PngDecoderImpl::init()
 #endif
 
     // interlace handling, get number of read passes needed
-    if (setjmp(png_jmpbuf(png)))
+    if(setjmp(png_jmpbuf(png)))
         vigra_postcondition(false, png_error_message.insert(0, "error in png_set_interlace_handling(): ").c_str());
     n_interlace_passes = png_set_interlace_handling(png);
 
     // update png library state to reflect any changes that were made
-    if (setjmp(png_jmpbuf(png)))
+    if(setjmp(png_jmpbuf(png)))
         vigra_postcondition(false, png_error_message.insert(0, "error in png_read_update_info(): ").c_str());
     png_read_update_info(png, info);
 
-    if (setjmp(png_jmpbuf(png)))
+    if(setjmp(png_jmpbuf(png)))
         vigra_postcondition(false, png_error_message.insert(0, "error in png_get_channels(): ").c_str());
     n_channels = png_get_channels(png, info);
 
-    if (setjmp(png_jmpbuf(png)))
+    if(setjmp(png_jmpbuf(png)))
         vigra_postcondition(false, png_error_message.insert(0, "error in png_get_rowbytes(): ").c_str());
     rowsize = png_get_rowbytes(png, info);
 
@@ -391,9 +391,9 @@ PngDecoderImpl::init()
 void
 PngDecoderImpl::nextScanline()
 {
-    if (setjmp(png_jmpbuf(png)))
+    if(setjmp(png_jmpbuf(png)))
         vigra_postcondition(false, png_error_message.insert(0, "error in png_read_row(): ").c_str());
-    for (int i = 0; i < n_interlace_passes; i++)
+    for(int i = 0; i < n_interlace_passes; i++)
     {
         png_read_row(png, row_data.begin(), NULL);
     }
@@ -404,7 +404,7 @@ PngDecoder::init(const std::string& filename)
 {
     pimpl = new PngDecoderImpl(filename);
     pimpl->init();
-    if (pimpl->iccProfileLength)
+    if(pimpl->iccProfileLength)
     {
         Decoder::ICCProfile iccData(
             pimpl->iccProfilePtr,
@@ -469,7 +469,7 @@ PngDecoder::getPosition() const
 std::string
 PngDecoder::getPixelType() const
 {
-    switch (pimpl->bit_depth)
+    switch(pimpl->bit_depth)
     {
         case 8:
             return "UINT8";
@@ -490,7 +490,7 @@ PngDecoder::getOffset() const
 const void*
 PngDecoder::currentScanlineOfBand(unsigned int band) const
 {
-    switch (pimpl->bit_depth)
+    switch(pimpl->bit_depth)
     {
         case 8:
         {
@@ -580,20 +580,20 @@ PngEncoderImpl::PngEncoderImpl(const std::string& filename)
     vigra_postcondition(png != 0, "could not create the write struct.");
 
     // create info struct
-    if (setjmp(png_jmpbuf(png)))
+    if(setjmp(png_jmpbuf(png)))
     {
         png_destroy_write_struct(&png, &info);
         vigra_postcondition(false, png_error_message.insert(0, "error in png_info_struct(): ").c_str());
     }
     info = png_create_info_struct(png);
-    if (!info)
+    if(!info)
     {
         png_destroy_write_struct(&png, &info);
         vigra_postcondition(false, png_error_message.insert(0, "could not create the info struct.: ").c_str());
     }
 
     // init png i/o
-    if (setjmp(png_jmpbuf(png)))
+    if(setjmp(png_jmpbuf(png)))
     {
         png_destroy_write_struct(&png, &info);
         vigra_postcondition(false, png_error_message.insert(0, "error in png_init_io(): ").c_str());
@@ -610,16 +610,16 @@ void
 PngEncoderImpl::finalize()
 {
     // write the IHDR
-    if (setjmp(png_jmpbuf(png)))
+    if(setjmp(png_jmpbuf(png)))
         vigra_postcondition(false, png_error_message.insert(0, "error in png_set_IHDR(): ").c_str());
     png_set_IHDR(png, info, width, height, bit_depth, color_type,
                  PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
                  PNG_FILTER_TYPE_DEFAULT);
 
     // set resolution
-    if (x_resolution > 0 && y_resolution > 0)
+    if(x_resolution > 0 && y_resolution > 0)
     {
-        if (setjmp(png_jmpbuf(png)))
+        if(setjmp(png_jmpbuf(png)))
             vigra_postcondition(false, png_error_message.insert(0, "error in png_set_pHYs(): ").c_str());
         png_set_pHYs(png, info, (png_uint_32)(x_resolution / 0.0254 + 0.5),
                      (png_uint_32)(y_resolution / 0.0254 + 0.5),
@@ -627,19 +627,19 @@ PngEncoderImpl::finalize()
     }
 
     // set offset
-    if (position.x != 0 || position.y != 0)
+    if(position.x != 0 || position.y != 0)
     {
-        if (setjmp(png_jmpbuf(png)))
+        if(setjmp(png_jmpbuf(png)))
             vigra_postcondition(false, png_error_message.insert(0, "error in png_set_oFFs(): ").c_str());
         png_set_oFFs(png, info, position.x, position.y, PNG_OFFSET_PIXEL);
     }
 
-#if (PNG_LIBPNG_VER > 10008) && defined(PNG_WRITE_iCCP_SUPPORTED)
+#if(PNG_LIBPNG_VER > 10008) && defined(PNG_WRITE_iCCP_SUPPORTED)
     // set icc profile
-    if (iccProfile.size() > 0)
+    if(iccProfile.size() > 0)
     {
         png_set_iCCP(png, info, (png_charp)("icc"), 0,
-#if (PNG_LIBPNG_VER < 10500)
+#if(PNG_LIBPNG_VER < 10500)
                      (png_charp)iccProfile.begin(), (png_uint_32)iccProfile.size());
 #else
                      (png_byte*)iccProfile.begin(), (png_uint_32)iccProfile.size());
@@ -648,7 +648,7 @@ PngEncoderImpl::finalize()
 #endif
 
     // write the info struct
-    if (setjmp(png_jmpbuf(png)))
+    if(setjmp(png_jmpbuf(png)))
         vigra_postcondition(false, png_error_message.insert(0, "error in png_write_info(): ").c_str());
     png_write_info(png, info);
 
@@ -668,7 +668,7 @@ PngEncoderImpl::write()
     typedef void_vector<png_byte> vector_type;
     vector_type& cbands = static_cast<vector_type&>(bands);
     png_byte* mover = cbands.data();
-    for (png_uint_32 i = 0; i < height; ++i)
+    for(png_uint_32 i = 0; i < height; ++i)
     {
         row_pointers[i] = mover;
         mover += row_stride;
@@ -676,16 +676,16 @@ PngEncoderImpl::write()
 
     // check whether byteorder must be swapped (png files must be big-endian)
     byteorder bo;
-    if (bit_depth == 16 && bo.get_host_byteorder() == "little endian")
+    if(bit_depth == 16 && bo.get_host_byteorder() == "little endian")
     {
         png_set_swap(png);
     }
 
     // write the whole image
-    if (setjmp(png_jmpbuf(png)))
+    if(setjmp(png_jmpbuf(png)))
         vigra_postcondition(false, png_error_message.insert(0, "error in png_write_image(): ").c_str());
     png_write_image(png, row_pointers.begin());
-    if (setjmp(png_jmpbuf(png)))
+    if(setjmp(png_jmpbuf(png)))
         vigra_postcondition(false, png_error_message.insert(0, "error in png_write_end(): ").c_str());
     png_write_end(png, info);
 }
@@ -725,13 +725,13 @@ void
 PngEncoder::setNumBands(unsigned int bands)
 {
     VIGRA_IMPEX_FINALIZED(pimpl->finalized);
-    if (bands == 1)
+    if(bands == 1)
         pimpl->color_type = PNG_COLOR_TYPE_GRAY;
-    else if (bands == 2)
+    else if(bands == 2)
         pimpl->color_type = PNG_COLOR_TYPE_GRAY_ALPHA;
-    else if (bands == 3)
+    else if(bands == 3)
         pimpl->color_type = PNG_COLOR_TYPE_RGB;
-    else if (bands == 4)
+    else if(bands == 4)
         pimpl->color_type = PNG_COLOR_TYPE_RGB_ALPHA;
     else
         vigra_fail("internal error: number of components not supported.");
@@ -769,9 +769,9 @@ void
 PngEncoder::setPixelType(const std::string& pixelType)
 {
     VIGRA_IMPEX_FINALIZED(pimpl->finalized);
-    if (pixelType == "UINT8")
+    if(pixelType == "UINT8")
         pimpl->bit_depth = 8;
-    else if (pixelType == "UINT16")
+    else if(pixelType == "UINT16")
         pimpl->bit_depth = 16;
     else
         vigra_fail("internal error: pixeltype not supported.");
@@ -800,7 +800,7 @@ void*
 PngEncoder::currentScanlineOfBand(unsigned int band)
 {
     const unsigned int index = pimpl->width * pimpl->components * pimpl->scanline + band;
-    switch (pimpl->bit_depth)
+    switch(pimpl->bit_depth)
     {
         case 8:
         {
