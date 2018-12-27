@@ -1349,7 +1349,7 @@ void defineSegmentation()
          arg("maxLabel"),
          arg("sizeLimit"),
          arg("checkAtBorder") = false),
-        "replace every occurance of each number in the array 'seg' with zeros if this number"
+        "replace every occurrence of each number in the array 'seg' with zeros if this number"
         " occures less than 'sizeLimit' times in the array. If 'checkAtBorder' is false (default) "
         "segments that touch the border of the array will not be changed.\n"
         "'maxLabel' is the maximum label in seg\n"

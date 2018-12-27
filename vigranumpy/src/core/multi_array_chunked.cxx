@@ -955,7 +955,7 @@ void defineChunkedArray()
          "   ``HDF5Mode.ReadWrite:``\n      Open file (create when not existing) and allow creation of new datasets.\n"
          "                                  Contents of existing datasets may be changed, but not their shape.\n"
          "   ``HDF5Mode.ReadOnly:``\n     Open files and datasets read-only, fail when not existing.\n"
-         "   ``HDF5Mode.Replace:``\n      Like ReadWrite, but always replace exising datasets.\n\n")
+         "   ``HDF5Mode.Replace:``\n      Like ReadWrite, but always replace existing datasets.\n\n")
         .value("New", HDF5File::New)
         .value("ReadWrite", HDF5File::ReadWrite)
         .value("ReadOnly", HDF5File::ReadOnly)
