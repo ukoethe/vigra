@@ -8,6 +8,8 @@ cmake_minimum_required(VERSION 2.6)
 
 PROJECT(vigra)
 
+OPTION(BUILD_SHARED_LIBS "Build shared library" ON)
+
 # read the current version from config_version.hxx
 file(READ ${vigra_SOURCE_DIR}/include/vigra/config_version.hxx VIGRA_VERSION_FILE)
 string(REGEX MATCH "VIGRA_VERSION_MAJOR[ \t\n]+[^ \t\n]+" VIGRA_VERSION_MAJOR ${VIGRA_VERSION_FILE})
@@ -31,12 +33,12 @@ if(SUPPRESS_3RD_PARTY_WARNINGS)
     set(SUPPRESS_WARNINGS SYSTEM)
 endif()
 
-IF(VIGRA_STATIC_LIB)
+IF(BUILD_SHARED_LIBS)
+    SET(LIBTYPE SHARED)
+ELSE()
     SET(LIBTYPE STATIC)
     ADD_DEFINITIONS(-DVIGRA_STATIC_LIB)
-ELSE(VIGRA_STATIC_LIB)
-    SET(LIBTYPE SHARED)
-ENDIF(VIGRA_STATIC_LIB)
+ENDIF()
 
 IF (MSVC)
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_DEPRECATE)
@@ -459,10 +461,10 @@ ENDIF()
 
 MESSAGE( STATUS "---------------------------------------------------------" )
 
-IF(VIGRA_STATIC_LIB)
-    MESSAGE( STATUS "  building static lib" )
-ELSE()
+IF(BUILD_SHARED_LIBS)
     MESSAGE( STATUS "  building shared lib" )
+ELSE()
+    MESSAGE(STATUS "  building static lib")
 ENDIF()
 
 MESSAGE( STATUS "  binaries will be generated in: ${CMAKE_CURRENT_BINARY_DIR}")
