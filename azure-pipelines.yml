@@ -43,8 +43,13 @@ jobs:
           echo "Compiling" || exit 1
           make check || exit 1
           echo "Running ctest" || exit 1
-          ctest -V || exit 1
+          ctest -V -T Test|| exit 1
           echo "Completed script successfully" || exit 1
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'CTest'
+          testResultsFiles: '**/Test*.xml'
+        condition: succeededOrFailed()
   - job: macOS
     pool:
       vmImage: 'xcode9-macos10.13'
@@ -110,8 +115,13 @@ jobs:
           echo "Compiling" || exit 1
           make check || exit 1
           echo "Running ctest" || exit 1
-          ctest -V || exit 1
+          ctest -V -T Test || exit 1
           echo "Completed script successfully" || exit 1
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'CTest'
+          testResultsFiles: '**/Test*.xml'
+        condition: succeededOrFailed()
   - job: Windows
     pool:
       vmImage: 'vs2017-win2016'
@@ -162,5 +172,10 @@ jobs:
           echo Compiling || exit 1
           nmake check || exit 1
           echo Running ctest || exit 1
-          ctest -V || exit 1
+          ctest -V -T Test || exit 1
           echo Completed script successfully || exit 1
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'CTest'
+          testResultsFiles: '**/Test*.xml'
+        condition: succeededOrFailed()
