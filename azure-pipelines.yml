@@ -31,7 +31,7 @@ jobs:
           conda create --quiet --yes --mkdir --prefix $AGENT_WORKFOLDER/envs/vigra --channel conda-forge/label/gcc7 \
                 python=$(PY_VERSION) || exit 1
           echo "Activating conda environment" || exit 1
-          source $CONDA/bin/activate $AGENT_WORKFOLDER/envs/vigra || exit 1
+          source activate $AGENT_WORKFOLDER/envs/vigra || exit 1
           echo "Installing prerequisites" || exit 1
           conda install --quiet --yes --mkdir --channel conda-forge/label/gcc7 \
                 jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy h5py nose || exit 1
@@ -86,9 +86,8 @@ jobs:
       # /Applications/Xcode_9.4.app/Contents/Developer
       # /Applications/Xcode_9.4_beta.app/Contents/Developer
       # /Applications/Xcode_9.4_beta_2.app/Contents/Developer
-      - task: CondaEnvironment@1
-        inputs:
-          updateConda: false
+      - bash: echo "##vso[task.prependpath]$CONDA/bin"
+        displayName: Add conda to PATH
       - script: |
           echo "Listing availbale XCode versions:" || exit 1
           ls -lad /Applications/Xcode_*.app/Contents/Developer || exit 1
@@ -98,7 +97,7 @@ jobs:
           conda create --quiet --yes --mkdir --prefix $AGENT_WORKFOLDER/envs/vigra --channel conda-forge \
                 python=$(PY_VERSION) || exit 1
           echo "Activating conda environment" || exit 1
-          source $CONDA/bin/activate $AGENT_WORKFOLDER/envs/vigra || exit 1
+          source activate $AGENT_WORKFOLDER/envs/vigra || exit 1
           echo "Installing prerequisites" || exit 1
           conda install --quiet --yes --mkdir --channel conda-forge/label/gcc7 \
                 jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy h5py nose || exit 1
@@ -164,3 +163,11 @@ jobs:
           echo Running ctest || exit 1
           ctest -V || exit 1
           echo Completed script successfully || exit 1
+
+schedules:
+  - cron: "0 0 * * *"
+    displayName: Daily midnight build
+    branches:
+      include:
+      - master
+    always: true
