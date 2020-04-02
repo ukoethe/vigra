@@ -1119,7 +1119,7 @@ class VigraArray(numpy.ndarray):
                 if slicing[k] == 0 and self.shape[k] != 1:
                     raise RuntimeError("VigraArray.withAxes(): cannot drop non-singleton axis '%s'." % self.axistags[k].key)
             permutation = AxisTags(axisinfo).permutationFromNumpyOrder()
-            res = self[slicing].transposeToNumpyOrder().transpose(permutation)
+            res = self[tuple(slicing)].transposeToNumpyOrder().transpose(permutation)
         else:
             res = self.transposeToOrder(kw.get('order'))
             if kw.get('noChannels'):
@@ -1142,7 +1142,7 @@ class VigraArray(numpy.ndarray):
             except:
                 raise RuntimeError("VigraArray.view5D(): array contains unsuitable axis key '%s'." % tag.key)
         index = [Ellipsis] + [newaxis(eval('AxisInfo.' + k)) for k in stdTags]
-        return self[index].transposeToOrder(order)
+        return self[tuple(index)].transposeToOrder(order)
 
     def permutationToOrder(self, order):
         '''Create the permutation that would transpose this array into
@@ -1265,7 +1265,7 @@ class VigraArray(numpy.ndarray):
             if not isinstance(index, collections.Iterable):
                 raise
             #create temporary index without AxisInfor in order to use np.ndarray.__getitem__
-            tmpindex = [None if isinstance(x, AxisInfo) else x for x in index]
+            tmpindex = tuple(None if isinstance(x, AxisInfo) else x for x in index)
             res = numpy.ndarray.__getitem__(self, tmpindex)
         if res is not self and hasattr(res, 'axistags'):
             if res.base is self or res.base is self.base:
