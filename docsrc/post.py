@@ -167,7 +167,7 @@ def processFile(fileName):
     
     text = insertVersion.sub(sys.argv[2], text)
     text = insertSTLLink.sub(r'http://www.sgi.com/tech/stl/', text)
-    if re.search('.*/index.html', fileName) or re.search('.*\\index.html', fileName):
+    if re.search('.*/index.html', fileName) or re.search(r'.*\\index.html', fileName):
         text = re.sub(r'<h3 (align="center"|class="version")>\d+\.\d+\.\d+ </h3>', '', text)
         text = indexPageHeading.sub(indexPageHeadingReplacement, text)
 
