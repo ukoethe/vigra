@@ -422,7 +422,7 @@ void defineRandomForest()
              (arg("trainData"), arg("trainLabels"), arg("randomSeed")=0),
              "Train a random Forest using 'trainData' and 'trainLabels'.\n\n"
              "and returns the OOB and the Variable importance"
-             "See the vigra documentation for the meaning af the rest of the paremeters.\n")
+             "See the vigra documentation for the meaning af the rest of the parameters.\n")
         .def("onlineLearn",
              registerConverters(&pythonRFOnlineLearn<LabelType,float>),
              (arg("trainData"),arg("trainLabels"),arg("startIndex"),
