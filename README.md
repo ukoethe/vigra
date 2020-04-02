@@ -27,10 +27,14 @@ Installation
 ------------
 
 Installation instructions can be found in the file
-  $VIGRA_PATH/doc/vigra/Installation.html
+```
+$VIGRA_PATH/doc/vigra/Installation.html
+```
 If the documentation has not yet been generated (e.g. when you build from a development
 snapshot), you find these instructions in
-  $VIGRA_PATH/docsrc/installation.dxx
+```
+$VIGRA_PATH/docsrc/installation.dxx
+```
 or online at
   http://ukoethe.github.io/vigra/doc-release/vigra/Installation.html
 
