@@ -62,20 +62,17 @@ class Splice<int>
 {
     int begin_;
     int interval_;
-    int end_;
     int size_;
     public:
     Splice(int begin, int end)
     : begin_(begin), 
       interval_(1),
-      end_(end),
       size_(end - begin)
     {}
 
     Splice(int begin, int interval, int end) 
     : begin_(begin), 
       interval_(interval),
-      end_(end),
       size_(int(std::floor((double(end) -double(begin))/interval)))
     {}
     
