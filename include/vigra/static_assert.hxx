@@ -84,9 +84,8 @@ struct success {};
 inline int check( success ) { return 0; }
 
 template< typename Predicate >
-failure ************ (Predicate::************ 
-      assertImpl( void (*)(Predicate), typename Predicate::not_type )
-    );
+failure ************ Predicate::************ 
+      assertImpl( void (*)(Predicate), typename Predicate::not_type );
 
 template< typename Predicate >
 success
