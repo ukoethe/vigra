@@ -64,6 +64,15 @@ FUNCTION(VIGRA_ADD_NUMPY_MODULE target)
         SET_TARGET_PROPERTIES(vigranumpy PROPERTIES VIGRA_DEPENDS "${VIGRANUMPY_DEPENDS} ${TARGET_NAME}")
     ENDIF()
 
+    ######################################################################
+    #
+    #      find Python EXT SUFFIX for compatibility with PyPy and CPython
+    #
+    ######################################################################
+    execute_process(COMMAND ${Python_EXECUTABLE} -c
+                     "import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX'))"
+                     OUTPUT_VARIABLE EXT_SUFFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
+
     if(DEFINED LIBRARIES)
         TARGET_LINK_LIBRARIES(${TARGET_NAME} ${LIBRARIES})
     endif()
@@ -72,17 +81,17 @@ FUNCTION(VIGRA_ADD_NUMPY_MODULE target)
 
     IF(PYTHON_PLATFORM MATCHES "^windows$")
         SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES OUTPUT_NAME "${LIBRARY_NAME}"
-                                                           PREFIX "" SUFFIX  ".pyd")
+                                                           PREFIX "" SUFFIX  ${EXT_SUFFIX})
     ELSEIF(MACOSX)
         IF(${CMAKE_MAJOR_VERSION} LESS 3)
             SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES OUTPUT_NAME "${LIBRARY_NAME}" PREFIX ""
-                              SUFFIX ".so" INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/${VIGRANUMPY_INSTALL_DIR}/vigra")
+                              SUFFIX ${EXT_SUFFIX} INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/${VIGRANUMPY_INSTALL_DIR}/vigra")
         ELSE()
-            SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES OUTPUT_NAME "${LIBRARY_NAME}" PREFIX ""    SUFFIX ".so" )
+            SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES OUTPUT_NAME "${LIBRARY_NAME}" PREFIX ""    SUFFIX ${EXT_SUFFIX} )
         ENDIF()
     ELSE()
         SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES OUTPUT_NAME "${LIBRARY_NAME}"
-                                                           PREFIX "")
+                                                           PREFIX "" SUFFIX ${EXT_SUFFIX})
     ENDIF()
 
     IF(PART_OF_VIGRANUMPY)
