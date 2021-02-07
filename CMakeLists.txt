@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.12)
 
 ##################################################
 #
@@ -121,7 +121,7 @@ ENDIF()
 SET(DOXYGEN_SKIP_DOT TRUE)
 FIND_PACKAGE(Doxygen)
 
-FIND_PACKAGE(PythonInterp ${PYTHON_VERSION})
+FIND_PACKAGE(Python COMPONENTS Interpreter Development NumPy)
 
 ##################################################
 #
@@ -179,7 +179,7 @@ if(WITH_BOOST AND Boost_FOUND)
     # (default on Windows is a mangled name like 'boost_system-vc110-mt-1_51.lib')
     if((Boost_SYSTEM_LIBRARY MATCHES "boost_system\\.lib") OR
        (Boost_PYTHON_LIBRARY MATCHES "boost_python\\.lib") OR
-       (Boost_PYTHON_LIBRARY MATCHES "boost_python${PYTHON_VERSION_MAJOR}\\.lib"))
+       (Boost_PYTHON_LIBRARY MATCHES "boost_python${Python_VERSION_MAJOR}\\.lib"))
         set(Boost_MANGLED_NAMES 0)
         ADD_DEFINITIONS(-DBOOST_AUTO_LINK_NOMANGLE)
     else()
@@ -449,7 +449,7 @@ ENDIF()
 IF(WITH_VIGRANUMPY)
     IF(VIGRANUMPY_DEPENDENCIES_FOUND)
         MESSAGE( STATUS "  Using Python libraries: ${VIGRANUMPY_LIBRARIES}" )
-        MESSAGE( STATUS "  Using Numpy includes:   ${PYTHON_NUMPY_INCLUDE_DIR}" )
+        MESSAGE( STATUS "  Using Numpy includes:   ${Python_NumPy_INCLUDE_DIRS}" )
     ELSE()
         MESSAGE( STATUS "  Vigranumpy dependencies not found (vigranumpy disabled)" )
     ENDIF()
@@ -466,7 +466,7 @@ ELSE()
 ENDIF()
 
 MESSAGE( STATUS "  binaries will be generated in: ${CMAKE_CURRENT_BINARY_DIR}")
-IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
+IF(DOXYGEN_FOUND AND Python_Interpreter_FOUND)
     MESSAGE( STATUS "  manuals will be generated in: ${DOCDIR}")
 ENDIF()
 
@@ -481,7 +481,7 @@ else()
   MESSAGE( STATUS "  binaries will be installed at: ${CMAKE_INSTALL_PREFIX}/bin")
 endif()
 
-IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
+IF(DOXYGEN_FOUND AND Python_Interpreter_FOUND)
   MESSAGE( STATUS "  vigra manuals will be installed at: "
     "${CMAKE_INSTALL_PREFIX}/${DOCINSTALL}/vigra/index.html")
 ELSE()

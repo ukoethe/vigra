@@ -67,6 +67,8 @@
 
       <li> John Kirkham figured out how to configure Travis to run tests for Python3 and on OS X.
 
+      <li> Mark Harfouche updated CMake configuration to 3.12 enabling compatibility with PyPy.
+
       <li> Philip Schill implemented version 3 of the Random Forest.
 
       <li> David St&ouml;ckel contributed the 3D convex hull functionality.
@@ -76,6 +78,14 @@
 
 Many thanks to all!
 <p>
+
+<b> Changes from Version 1.11.1 to 1.11.2 (unreleased)</b>
+
+<ul>
+      <li> Updated CMake minimum version to 3.12.
+
+      <li> Added support for PyPy as python runtime (Mark Harfouche).
+</ul>
 
 <b> Changes from Version 1.11.0 to 1.11.1</b>
 

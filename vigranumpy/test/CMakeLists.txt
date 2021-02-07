@@ -45,13 +45,10 @@ ELSE()
                vigranumpytest.cxx ${TEST_SUCCESS_FILE} ${TEST_SCRIPTS})
 ENDIF()
 
-IF(PYTHON_PLATFORM MATCHES "^windows$")
-    SET_TARGET_PROPERTIES(vigranumpytest PROPERTIES PREFIX "" SUFFIX  ".pyd")
-ELSEIF(MACOSX)
-    SET_TARGET_PROPERTIES(vigranumpytest PROPERTIES PREFIX "" SUFFIX ".so")
-ELSE()
-    SET_TARGET_PROPERTIES(vigranumpytest PROPERTIES PREFIX "")
-ENDIF()
+execute_process(COMMAND ${Python_EXECUTABLE} -c
+                "import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX'))"
+                OUTPUT_VARIABLE EXT_SUFFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
+SET_TARGET_PROPERTIES(vigranumpytest PROPERTIES PREFIX "" SUFFIX  ${EXT_SUFFIX})
 
 TARGET_LINK_LIBRARIES(vigranumpytest ${VIGRANUMPY_LIBRARIES})
 ADD_DEPENDENCIES(check_python vigranumpytest)
@@ -99,7 +96,7 @@ IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
             COMMENT "Running vigranumpy tests")
     ENDFOREACH(test_script)
 
-    VIGRA_NATIVE_PATH(PYTHON_EXECUTABLE ${PYTHON_EXECUTABLE})
+    VIGRA_NATIVE_PATH(Python_EXECUTABLE ${Python_EXECUTABLE})
 
     # Windows: Set the DLL path to the binaries currently being built
     #          (so that binaries which are already installed are ignored)
@@ -122,8 +119,8 @@ IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
     # properties are only known at generation time (policy CMP0026)
     VIGRA_NATIVE_PATH(VIGRA_CURRENT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
     IF(MSVC OR MINGW)
-        get_filename_component(PYTHON_PATH ${PYTHON_EXECUTABLE} PATH)
-        get_filename_component(PYTHON_EXE  ${PYTHON_EXECUTABLE} NAME)
+        get_filename_component(PYTHON_PATH ${Python_EXECUTABLE} PATH)
+        get_filename_component(PYTHON_EXE  ${Python_EXECUTABLE} NAME)
         SET(EXTRA_PATH  "${PYTHON_PATH}${PATHSEP}${EXTRA_PATH}")
         SET(VIGRA_TEST_EXECUTABLE "${PYTHON_EXE} -c \"import nose; nose.main()\" . %CONFIGURATION%")
         SET(VIGRA_TEST_SCRIPT     "${CMAKE_CURRENT_BINARY_DIR}/run_vigranumpytest.bat")
@@ -133,7 +130,7 @@ IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
         file(GENERATE OUTPUT "${VIGRA_TEST_SCRIPT}"
                       INPUT  "${VIGRA_TEST_SCRIPT}.in")
     ELSE()
-        SET(VIGRA_TEST_EXECUTABLE "${PYTHON_EXECUTABLE} -c \"import nose; nose.main()\" .")
+        SET(VIGRA_TEST_EXECUTABLE "${Python_EXECUTABLE} -c \"import nose; nose.main()\" .")
         SET(VIGRA_TEST_SCRIPT     "${CMAKE_CURRENT_BINARY_DIR}/run_vigranumpytest.sh")
         CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.sh.in
                        ${VIGRA_TEST_SCRIPT}.in
@@ -163,7 +160,7 @@ IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
     # if we configure for Visual Studio, setup the debug command
     if(MSVC AND NOT (MSVC_VERSION VERSION_LESS "11"))
         # FIXME: this may not portable between VC versions (works for 11.0 - 14.0)
-        set(VIGRA_TEST_EXE "${PYTHON_EXECUTABLE}")
+        set(VIGRA_TEST_EXE "${Python_EXECUTABLE}")
         set(VIGRA_TEST_ARGS "-c \"import nose; nose.main()\" . \$(Configuration)")
         configure_file(${CMAKE_SOURCE_DIR}/config/testdebug.vcxproj.user.in
                        ${CMAKE_CURRENT_BINARY_DIR}/vigranumpytest.vcxproj.user
