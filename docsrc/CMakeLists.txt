@@ -1,4 +1,4 @@
-IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
+IF(DOXYGEN_FOUND AND Python_Interpreter_FOUND)
     execute_process(COMMAND ${DOXYGEN_EXECUTABLE} --version
                   OUTPUT_VARIABLE DOXYGEN_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 
@@ -27,10 +27,10 @@ IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
     ADD_CUSTOM_COMMAND(
         TARGET doc_cpp
         POST_BUILD
-        COMMAND ${PYTHON_EXECUTABLE}
+        COMMAND ${Python_EXECUTABLE}
             ${CMAKE_CURRENT_SOURCE_DIR}/makeFunctionIndex.py
             ${DOCDIR}/vigra
-        COMMAND ${PYTHON_EXECUTABLE}
+        COMMAND ${Python_EXECUTABLE}
             ${CMAKE_CURRENT_SOURCE_DIR}/post.py
             ${DOCDIR}/vigra
             ${vigra_version}
