@@ -54,7 +54,7 @@
          <DD> build VIGRA Python bindings (default: 1). Pass -DWITH_VIGRANUMPY=0 to suppress 
          vigranumpy.
     <DT> -DWITH_HDF5=1
-         <DD> build VIGRA with HDF5 support (default: 1). Pass -DDWITH_HDF5=0 to compile without HDF5.
+         <DD> build VIGRA with HDF5 support (default: 1). Pass -DWITH_HDF5=0 to compile without HDF5.
     <DT> -DLIB_SUFFIX=64
          <DD> define suffix of lib directory name (default: empty string, i.e. no suffix). Use 
          -DLIB_SUFFIX=64 when you want to install libraries in $CMAKE_INSTALL_PREFIX/lib64.
