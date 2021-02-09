@@ -93,7 +93,7 @@ jobs:
           echo "Listing availbale XCode versions:" || exit 1
           ls -lad /Applications/Xcode_*.app/Contents/Developer || exit 1
           echo "Selecting XCode version 10.3" || exit 1
-          sudo xcode-select -s /Applications/Xcode_10.1.app/Contents/Developer || exit 1
+          sudo xcode-select -s /Applications/Xcode_10.3.app/Contents/Developer || exit 1
           echo "Creating conda environment for Python $(PY_VERSION)" || exit 1
           conda create --quiet --yes --mkdir --prefix $AGENT_WORKFOLDER/envs/vigra --channel conda-forge \
                 python=$(PY_VERSION) || exit 1
