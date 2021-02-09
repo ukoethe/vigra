@@ -110,6 +110,7 @@ jobs:
           cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DTEST_VIGRANUMPY=1 -DAUTOEXEC_TESTS=0 \
                 -DDEPENDENCY_SEARCH_PREFIX="$CONDA_PREFIX" -DCMAKE_PREFIX_PATH="$CONDA_PREFIX" || exit 1
           echo "Compiling" || exit 1
+          make -j2 || exit 1
           make check || exit 1
           echo "Running ctest" || exit 1
           ctest -V || exit 1
