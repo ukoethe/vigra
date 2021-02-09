@@ -90,7 +90,8 @@ jobs:
         inputs:
           updateConda: false
       - script: |
-          unset SUDO_UID SUDO_GID SUDO_USER || exit 1
+          export CONDA_PKGS_DIRS=`pwd`/conda_pkgs || exit 1
+          echo Using CONDA_PKGS_DIRS=$CONDA_PKGS_DIRS || exit 1
           echo "Listing availbale XCode versions:" || exit 1
           ls -lad /Applications/Xcode_*.app/Contents/Developer || exit 1
           echo "Selecting XCode version 10.3" || exit 1
