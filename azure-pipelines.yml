@@ -90,7 +90,7 @@ jobs:
         inputs:
           updateConda: false
       - script: |
-          export CONDA_PKGS_DIRS=`pwd`/conda_pkgs || exit 1
+          export CONDA_PKGS_DIRS=$AGENT_WORKFOLDER/conda_pkgs || exit 1
           echo Using CONDA_PKGS_DIRS=$CONDA_PKGS_DIRS || exit 1
           echo "Listing availbale XCode versions:" || exit 1
           ls -lad /Applications/Xcode_*.app/Contents/Developer || exit 1
@@ -104,6 +104,7 @@ jobs:
           echo "Installing prerequisites" || exit 1
           conda install --quiet --yes --mkdir --channel conda-forge \
                 jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy h5py nose || exit 1
+          python -c "import nose" || exit 1
           mkdir build || exit 1
           cd build || exit 1
           echo "Starting cmake configuration" || exit 1
