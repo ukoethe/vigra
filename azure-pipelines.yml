@@ -102,7 +102,7 @@ jobs:
           echo "Activating conda environment" || exit 1
           source $CONDA/bin/activate $AGENT_WORKFOLDER/envs/vigra || exit 1
           echo "Installing prerequisites" || exit 1
-          conda install --quiet --yes --mkdir --channel conda-forge/label/gcc7 \
+          conda install --quiet --yes --mkdir --channel conda-forge \
                 jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy h5py nose || exit 1
           mkdir build || exit 1
           cd build || exit 1
