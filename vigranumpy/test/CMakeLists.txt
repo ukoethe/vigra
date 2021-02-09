@@ -133,7 +133,7 @@ IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
         file(GENERATE OUTPUT "${VIGRA_TEST_SCRIPT}"
                       INPUT  "${VIGRA_TEST_SCRIPT}.in")
     ELSE()
-        SET(VIGRA_TEST_EXECUTABLE "${PYTHON_EXECUTABLE} -vv -c \"import nose; nose.main()\" .")
+        SET(VIGRA_TEST_EXECUTABLE "${PYTHON_EXECUTABLE} -c \"import faulthandler; faulthandler.enable(); import nose; nose.main()\" .")
         SET(VIGRA_TEST_SCRIPT     "${CMAKE_CURRENT_BINARY_DIR}/run_vigranumpytest.sh")
         CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.sh.in
                        ${VIGRA_TEST_SCRIPT}.in
