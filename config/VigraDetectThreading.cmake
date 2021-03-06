@@ -3,8 +3,6 @@
 # Source modules should use VIGRA_CONFIGURE_THREADING() from VigraConfigureThreading.cmake to set includes/preprocessor definitions.
 #
 
-cmake_minimum_required(VERSION 2.8)
-
 get_property(THREADING_IMPLEMENTATION GLOBAL PROPERTY THREADING_IMPLEMENTATION)
 if(THREADING_IMPLEMENTATION)
     message(FATAL_ERROR "VigraDetectThreading.cmake should be included exactly once, from the root CMakeLists.txt file.  There should be no need to include it more than once.")
