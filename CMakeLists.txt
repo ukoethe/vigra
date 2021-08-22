@@ -91,6 +91,9 @@ if(MACOSX)
     set(CMAKE_MACOSX_RPATH 1)
 endif()
 
+option(BUILD_DOCS "Build documentation" ON)
+option(BUILD_TESTS "Build test programs" ON)
+
 ##################################################
 #
 #     search for dependencies
@@ -119,9 +122,11 @@ IF(WITH_LEMON)
 ENDIF()
 
 SET(DOXYGEN_SKIP_DOT TRUE)
-FIND_PACKAGE(Doxygen)
 
-FIND_PACKAGE(PythonInterp ${PYTHON_VERSION})
+IF(BUILD_DOCS)
+    FIND_PACKAGE(Doxygen)
+    FIND_PACKAGE(PythonInterp ${PYTHON_VERSION})
+ENDIF()
 
 ##################################################
 #
@@ -269,8 +274,14 @@ ADD_CUSTOM_TARGET(experiments)
 ##################################################
 
 ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(test)
-ADD_SUBDIRECTORY(docsrc)
+
+IF(BUILD_TESTS)
+    ADD_SUBDIRECTORY(test)
+ENDIF()
+
+IF(BUILD_DOCS)
+    ADD_SUBDIRECTORY(docsrc)
+ENDIF()
 
 IF(WITH_VIGRANUMPY)
     ADD_SUBDIRECTORY(vigranumpy)
