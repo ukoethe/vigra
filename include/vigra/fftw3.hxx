@@ -1489,7 +1489,7 @@ class FFTWPhaseAccessor
 
     // do not forget to normalize the result according to the image size
     transformImage(srcImageRange(spatial), destImage(spatial),
-                   std::bind1st(std::multiplies<FFTWComplex>(), 1.0 / width / height));
+                   std::bind(std::multiplies<FFTWComplex>(), 1.0 / width / height, std::placeholders::_1));
     \endcode
 
     Note that in the creation of a plan, the height must be given
@@ -2785,7 +2785,7 @@ fourierTransformRealImpl(
 
     if(norm != 1.0)
         transformImage(srcImageRange(res), destIter(dul, dest),
-                       std::bind1st(std::multiplies<fftw_real>(), 1.0 / norm));
+                       std::bind(std::multiplies<fftw_real>(), 1.0 / norm, std::placeholders::_1));
     else
         copyImage(srcImageRange(res), destIter(dul, dest));
 }
