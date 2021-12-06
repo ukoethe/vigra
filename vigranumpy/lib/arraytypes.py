@@ -39,10 +39,16 @@ import sys
 import copy
 import numpy
 from . import ufunc
-import collections
 import vigra.vigranumpycore as vigranumpycore
 
 from vigra.vigranumpycore import AxisType, AxisInfo, AxisTags
+
+try:
+    from collections.abc import Iterable
+except ImportError:
+    # Python 2.7
+    from collections import Iterable
+
 
 if sys.version_info[0] > 2:
     buffer = memoryview
@@ -1262,7 +1268,7 @@ class VigraArray(numpy.ndarray):
         try:
             res = numpy.ndarray.__getitem__(self, index)
         except:
-            if not isinstance(index, collections.Iterable):
+            if not isinstance(index, Iterable):
                 raise
             #create temporary index without AxisInfor in order to use np.ndarray.__getitem__
             tmpindex = [None if isinstance(x, AxisInfo) else x for x in index]
