@@ -5,7 +5,7 @@
 jobs:
   - job: Linux
     pool:
-      vmImage: 'ubuntu-16.04'
+      vmImage: 'ubuntu-18.04'
     strategy:
       maxParallel: 2
       matrix:
@@ -49,7 +49,7 @@ jobs:
           echo "Completed script successfully" || exit 1
   - job: macOS
     pool:
-      vmImage: 'xcode9-macos10.13'
+      vmImage: 'macOS-10.15'
     strategy:
       maxParallel: 2
       matrix:
@@ -118,7 +118,7 @@ jobs:
           echo "Completed script successfully" || exit 1
   - job: Windows
     pool:
-      vmImage: 'vs2017-win2016'
+      vmImage: 'windows-2019'
     strategy:
       maxParallel: 2
       matrix:
