@@ -129,6 +129,7 @@ jobs:
         # py27:
         #   PY_VERSION: 2.7
     steps:
+      - script: dir "c:\Program Files (x86)"
       # installed compilers:
       # "c:\Program Files (x86)\Microsoft Visual Studio\2017"
       # "c:\Program Files (x86)\Microsoft Visual Studio 10.0"
