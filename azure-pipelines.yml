@@ -9,6 +9,8 @@ jobs:
     strategy:
       maxParallel: 2
       matrix:
+        py310:
+          PY_VERSION: 3.10
         py36:
           PY_VERSION: 3.6
         py27:
@@ -51,6 +53,8 @@ jobs:
     strategy:
       maxParallel: 2
       matrix:
+        py310:
+          PY_VERSION: 3.10
         py36:
           PY_VERSION: 3.6
         py27:
@@ -118,6 +122,9 @@ jobs:
     strategy:
       maxParallel: 2
       matrix:
+        py310:
+          PY_VERSION: 3.10
+          VS_VERSION: 2017
         py36:
           PY_VERSION: 3.6
           VS_VERSION: 2015
