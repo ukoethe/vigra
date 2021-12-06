@@ -25,17 +25,14 @@ jobs:
         inputs:
           updateConda: false
       - script: |
-          echo "Installing gcc-7" || exit 1
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test || exit 1
-          sudo apt-get update || exit 1
-          sudo apt-get --assume-yes install gcc-7 g++-7 || exit 1
           echo "Creating conda environment for Python $(PY_VERSION)" || exit 1
           conda create --quiet --yes --mkdir --prefix $AGENT_WORKFOLDER/envs/vigra --channel conda-forge/label/gcc7 \
                 python=$(PY_VERSION) || exit 1
           echo "Activating conda environment" || exit 1
           source $CONDA/bin/activate $AGENT_WORKFOLDER/envs/vigra || exit 1
           echo "Installing prerequisites" || exit 1
-          conda install --quiet --yes --mkdir --channel conda-forge/label/gcc7 \
+          conda install --quiet --yes --mkdir --channel conda-forge \
+                gxx_linux-64 make cmake \
                 jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy h5py nose || exit 1
           mkdir build || exit 1
           cd build || exit 1
@@ -104,7 +101,8 @@ jobs:
           echo "Activating conda environment" || exit 1
           source $CONDA/bin/activate $AGENT_WORKFOLDER/envs/vigra || exit 1
           echo "Installing prerequisites" || exit 1
-          conda install --quiet --yes --mkdir --channel conda-forge/label/gcc7 \
+          conda install --quiet --yes --mkdir --channel conda-forge  \
+                clangxx_osx-64 cmake\
                 jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy h5py nose || exit 1
           mkdir build || exit 1
           cd build || exit 1
