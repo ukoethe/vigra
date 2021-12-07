@@ -290,6 +290,8 @@ _constructArrayFromAxistags = vigranumpycore.constructArrayFromAxistags
 
 def _constructArrayFromOrder(cls, shape, dtype, order, init):
     axistags = VigraArray.defaultAxistags(len(shape), order)
+    if hasattr(dtype, "type"):
+        dtype = dtype.type
     return _constructArrayFromAxistags(cls, shape, dtype, axistags, init)
 
 def _constructArrayFromArray(cls, obj, dtype, order, init, axistags):
