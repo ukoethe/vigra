@@ -23,7 +23,7 @@ _original_getargspec = inspect.getargspec
 def _getargspec_workaround(*args, **kw):
     try:
         return _original_getargspec(*args, **kw)
-    except TypeError, e:
+    except TypeError as e:
         if str(e).startswith('arg is not a Python function'):
             return inspect.ArgSpec([], None, None, None)
         else:
