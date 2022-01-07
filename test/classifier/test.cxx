@@ -533,7 +533,7 @@ struct ClassifierTest
             totalWeight = std::accumulate(a, a + data.ClassIter(ii).size(),
                                           totalWeight);
             std::transform(tmp.begin(), tmp.end(),tmp.begin(), 
-                           std::bind2nd(std::divides<double>(), totalWeight));
+                           std::bind(std::divides<double>(), totalWeight, std::placeholders::_2));
             MultiArrayView<2, double> 
                 should_resp(Shp(1, data.ClassIter(ii).size()), tmp.data());
 
