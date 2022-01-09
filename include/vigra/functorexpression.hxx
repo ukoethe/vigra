@@ -119,7 +119,7 @@
     
     vigra::transformImage(srcImageRange(src), destImage(dest), 
                    std::compose1(std::ptr_fun(exp),
-                                 std::bind1st(std::multiplies<float>(), -beta)));
+                                 std::bind(std::multiplies<float>(), -beta, std::placeholdes::_1)));
     \endcode
  
     I won't go into details on how this works. Suffice it to say that

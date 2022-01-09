@@ -762,7 +762,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
         TinyVector<npy_intp, N+1> npyStride;
         std::transform(
             stride.begin(), stride.end(), npyStride.begin(),
-            std::bind2nd(std::multiplies<npy_intp>(), sizeof(value_type)));
+            std::bind(std::multiplies<npy_intp>(), sizeof(value_type), std::placeholders::_2));
         npyStride[N] = sizeof(T);
 
         return constructNumpyArrayFromData(npyShape, npyStride.begin(),

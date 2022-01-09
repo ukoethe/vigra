@@ -19,10 +19,10 @@ public:
     void testOperatorAssignmentPixel()
     {
         (*image1_) = data[4];
-        should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[4])));
+        should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind(Pixels_not_equal_to<value_type>(), data[4], std::placeholders::_2)));
         
         (*image0_) = data[5];
-        should(image0_->end() == std::find_if(image0_->begin(), image0_->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[5])));
+        should(image0_->end() == std::find_if(image0_->begin(), image0_->end(), std::bind(Pixels_not_equal_to<value_type>(), data[5], std::placeholders::_2)));
     }
     
     void testResizeInt()
@@ -57,13 +57,13 @@ public:
         should(image1_->height() == 6);
         should(image1_->width() == 4);
         should(image1_->size() == vigra::Diff2D(4,6));
-        should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[9])));
+        should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind(Pixels_not_equal_to<value_type>(), data[9], std::placeholders::_2)));
         
         image0_->resize(1, 4, data[10]);
         should(image0_->height() == 4);
         should(image0_->width() == 1);
         should(image0_->size() == vigra::Diff2D(1,4));
-        should(image0_->end() == std::find_if(image0_->begin(), image0_->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[10])));      
+        should(image0_->end() == std::find_if(image0_->begin(), image0_->end(), std::bind(Pixels_not_equal_to<value_type>(), data[10], std::placeholders::_2)));      
     }
     
     /** testet die Methode resizeCopy(BasicImage img) an Instanzen der Klasse BasicImage.

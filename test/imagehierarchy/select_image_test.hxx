@@ -23,7 +23,7 @@ public:
         should(image1->size() == vigra::Diff2D(2,3));
     
         // Bei SelectBandImage wird nur der selektierte Band mit dem Pixel child_data[0] initialisiert   
-        should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), child_data[0][Policy::n])));
+        should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind(Pixels_not_equal_to<value_type>(), child_data[0][Policy::n], std::placeholders::_2)));
         
         std::auto_ptr<Image> image2(Policy::factory(0, 0, child_data[1]));
         should(image2->height() == 0);
@@ -31,7 +31,7 @@ public:
         should(image2->size() == vigra::Diff2D(0,0));
     
         // Bei SelectBandImage wird nur der selektierte Band mit dem Pixel child_data[1] initialisiert   
-        should(image2->end() == std::find_if(image2->begin(), image2->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), child_data[1][Policy::n])));
+        should(image2->end() == std::find_if(image2->begin(), image2->end(), std::bind(Pixels_not_equal_to<value_type>(), child_data[1][Policy::n], std::placeholders::_2)));
     }
     
     /** Testet den Copy Konstruktor ( Image(Image img) ).
@@ -62,13 +62,13 @@ public:
         should(image1->height() == 4);
         should(image1->width() == 3);
         should(image1->size() == vigra::Diff2D(3,4));
-        should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), child_data[0][Policy::n])));
+        should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind(Pixels_not_equal_to<value_type>(), child_data[0][Policy::n], std::placeholders::_2)));
 
         std::auto_ptr<Image> image2(Policy::factory(new typename ChildImage::InnerImage(0, 0, child_data[1])));
         should(image2->height() == 0);
         should(image2->width() == 0);
         should(image2->size() == vigra::Diff2D(0,0));
-        should(image2->end() == std::find_if(image2->begin(), image2->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), child_data[1][Policy::n])));
+        should(image2->end() == std::find_if(image2->begin(), image2->end(), std::bind(Pixels_not_equal_to<value_type>(), child_data[1][Policy::n], std::placeholders::_2)));
     }
     
     /** testet die clone() Methode der Klasse aus imagehierarchy
@@ -87,11 +87,11 @@ public:
         */
         image1->init(data[5]); 
         should((*image1_->begin()) != static_cast<typename Image::PixelType> (data[5]));
-        should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[5])));
+        should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind(Pixels_not_equal_to<value_type>(), data[5], std::placeholders::_2)));
         
         image1_->init(data[6]);
-        should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[5])));
-        should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[6])));
+        should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind(Pixels_not_equal_to<value_type>(), data[5], std::placeholders::_2)));
+        should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind(Pixels_not_equal_to<value_type>(), data[6], std::placeholders::_2)));
         
         std::auto_ptr<typename Image::CloneType> image0(image0_->clone());
         should(equal(*image0, *image0_));

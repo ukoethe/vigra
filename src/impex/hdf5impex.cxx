@@ -190,7 +190,11 @@ H5O_type_t HDF5_get_type(hid_t loc_id, const char* name)
 {
     // get information about object
     H5O_info_t infobuf;
+#if H5Oget_info_by_name_vers >= 3
+    H5Oget_info_by_name(loc_id, name, &infobuf, H5O_INFO_BASIC, H5P_DEFAULT);
+#else
     H5Oget_info_by_name(loc_id, name, &infobuf, H5P_DEFAULT);
+#endif
     return infobuf.type;
 }
 
