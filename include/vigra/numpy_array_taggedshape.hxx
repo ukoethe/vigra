@@ -204,6 +204,7 @@ class PyAxisTags
         }
     }
 
+    PyAxisTags& operator=(PyAxisTags const & other) = default;
     PyAxisTags(PyAxisTags const & other, bool createCopy = false)
     {
         if(!other.axistags)

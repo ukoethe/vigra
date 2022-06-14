@@ -484,19 +484,12 @@ class Size2D : public Diff2D
 public:
         /** Default Constructor. Init point at position (0,0)
         */
-    Size2D()
-    {}
+    Size2D() = default;
 
         /** Construct point at given position.
         */
     Size2D(int width, int height)
     : Diff2D(width, height)
-    {}
-
-        /** Copy Constructor.
-        */
-    Size2D(Size2D const & v)
-    : Diff2D(v)
     {}
 
         /** Explicit conversion Constructor.
@@ -614,19 +607,12 @@ public:
 
         /** Default Constructor. Init point at position (0,0)
         */
-    Point2D()
-    {}
+    Point2D() = default;
 
         /** Construct point at given position.
         */
     Point2D(int x, int y)
     : Diff2D(x, y)
-    {}
-
-        /** Copy Constructor.
-        */
-    Point2D(Point2D const & v)
-    : Diff2D(v)
     {}
 
         /** Explicit conversion Constructor.
