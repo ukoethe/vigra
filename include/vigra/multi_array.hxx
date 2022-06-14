@@ -904,6 +904,8 @@ public:
             <li> Otherwise, a <tt>PreconditionViolation</tt> exception is thrown.
             </ul>
          */
+    MultiArrayView(MultiArrayView const & rhs) = default;
+
     MultiArrayView & operator=(MultiArrayView const & rhs)
     {
         if(this != &rhs)
