@@ -765,6 +765,11 @@ struct UnaryFunctor<VarFunctor<T> >;
                                  UnaryFunctor<EXPR> const & e) \
         : value_(v.value_), expr_(e) \
         {} \
+        \
+        AssignmentFunctor_##name(AssignmentFunctor_##name const &) = default;\
+        AssignmentFunctor_##name & operator=(AssignmentFunctor_##name const &) = delete;\
+        AssignmentFunctor_##name(AssignmentFunctor_##name &&) = default;\
+        AssignmentFunctor_##name & operator=(AssignmentFunctor_##name &&) = default;\
          \
         V & operator()() const \
         { \
@@ -796,8 +801,6 @@ struct UnaryFunctor<VarFunctor<T> >;
       private: \
         V & value_; \
         UnaryFunctor<EXPR> expr_; \
-        \
-        AssignmentFunctor_##name & operator=(AssignmentFunctor_##name const &);\
     }; 
 
 /************************************************************/
@@ -824,6 +827,11 @@ struct UnaryFunctor<VarFunctor<T> >
     UnaryFunctor(T & v)
     : value_(v)
     {}
+  
+    UnaryFunctor(UnaryFunctor const &) = default;
+    UnaryFunctor & operator=(UnaryFunctor const &) = delete;
+    UnaryFunctor(UnaryFunctor &&) = default;
+    UnaryFunctor & operator=(UnaryFunctor &&) = default;
         
     template <class EXPR>
     UnaryAnalyser< AssignmentFunctor_assign<T, UnaryFunctor<EXPR> > >
@@ -889,9 +897,6 @@ struct UnaryFunctor<VarFunctor<T> >
     }
     
     T & value_;
-  
-  private:
-    UnaryFunctor & operator=(UnaryFunctor const &); // not implemented
 };
 
 template <class T>
@@ -939,6 +944,11 @@ struct IfThenFunctor
     IfThenFunctor(EXPR1 const & e1, EXPR2 const & e2)
     : expr1_(e1), expr2_(e2)
     {}
+  
+    IfThenFunctor(IfThenFunctor const &) = default;
+    IfThenFunctor & operator=(IfThenFunctor const &) = delete;
+    IfThenFunctor(IfThenFunctor &&) = default;
+    IfThenFunctor & operator=(IfThenFunctor &&) = default;
     
     void operator()() const 
     {
@@ -967,9 +977,6 @@ struct IfThenFunctor
   
     EXPR1 expr1_;
     EXPR2 expr2_;
-  
-  private:
-    IfThenFunctor & operator=(IfThenFunctor const &); // not implemented
 };
 
 template <class EXPR1, class EXPR2>
@@ -1374,6 +1381,11 @@ MAKE_FUNCTOR_UNARY_OPERATOR(bitNegate, ~)
         Functor_##function(EXPR1 const & e1, EXPR2 const & e2) \
         : expr1_(e1), expr2_(e2) \
         {} \
+        \
+        Functor_##function(Functor_##function const &) = default; \
+        Functor_##function & operator=(Functor_##function const &) = delete; \
+        Functor_##function(Functor_##function &&) = default; \
+        Functor_##function & operator=(Functor_##function &&) = default; \
          \
         typename ResultTraits0<Functor_##function>::Res \
         operator()() const \
@@ -1406,8 +1418,6 @@ MAKE_FUNCTOR_UNARY_OPERATOR(bitNegate, ~)
          \
         EXPR1 expr1_; \
         EXPR2 expr2_; \
-        \
-        Functor_##function & operator=(Functor_##function const &); \
     }; \
      \
     template <class EXPR1, class EXPR2> \
@@ -1471,6 +1481,11 @@ MAKE_FUNCTOR_BINARY_FUNCTION(fmod)
         Functor_##name(EXPR1 const & e1, EXPR2 const & e2) \
         : expr1_(e1), expr2_(e2) \
         {} \
+        \
+        Functor_##name(Functor_##name const &) = default; \
+        Functor_##name & operator=(Functor_##name const &) = delete; \
+        Functor_##name(Functor_##name &&) = default; \
+        Functor_##name & operator=(Functor_##name &&) = default; \
          \
         typename ResultTraits0<Functor_##name>::Res \
         operator()() const \
@@ -1519,8 +1534,6 @@ MAKE_FUNCTOR_BINARY_FUNCTION(fmod)
          \
         EXPR1 expr1_; \
         EXPR2 expr2_; \
-        \
-        Functor_##name & operator=(Functor_##name const &); \
     }; \
      \
     template <class EXPR1, class EXPR2> \
@@ -1839,6 +1852,11 @@ struct BinaryFctPtrFunctor
                         RES (*f)(ARG1, ARG2))
     : expr1_(e1), expr2_(e2), f_(f)
     {}
+  
+    BinaryFctPtrFunctor(BinaryFctPtrFunctor const &) = default;
+    BinaryFctPtrFunctor & operator=(BinaryFctPtrFunctor const &) = delete;
+    BinaryFctPtrFunctor(BinaryFctPtrFunctor &&) = default;
+    BinaryFctPtrFunctor & operator=(BinaryFctPtrFunctor &&) = default;
     
     RES operator()() const 
     {
@@ -1868,9 +1886,6 @@ struct BinaryFctPtrFunctor
     EXPR1 expr1_;
     EXPR2 expr2_;
     RES (*f_)(ARG1, ARG2);
-  
-  private:
-    BinaryFctPtrFunctor & operator=(BinaryFctPtrFunctor const &); // not implemented
 };
 
 template <class EXPR1, class EXPR2, class RES, class ARG1, class ARG2>
@@ -1927,6 +1942,11 @@ struct CommaFunctor
     CommaFunctor(EXPR1 const & e1, EXPR2 const & e2)
     : expr1_(e1), expr2_(e2)
     {}
+  
+    CommaFunctor(CommaFunctor const &) = default;
+    CommaFunctor & operator=(CommaFunctor const &) = delete;
+    CommaFunctor(CommaFunctor &&) = default;
+    CommaFunctor & operator=(CommaFunctor &&) = default;
     
     typename ResultTraits0<EXPR2>::Res 
     operator()() const 
@@ -1963,9 +1983,6 @@ struct CommaFunctor
   
     EXPR1 expr1_;
     EXPR2 expr2_;
-  
-  private:
-    CommaFunctor & operator=(CommaFunctor const &); // not implemented
 };
 
 template <class Expr1, class Expr2>
@@ -2012,6 +2029,11 @@ struct CommaAnalyser
     CommaAnalyser(EXPR1 const & e1, EXPR2 const & e2)
     : expr1_(e1), expr2_(e2)
     {}
+  
+    CommaAnalyser(CommaAnalyser const &) = default;
+    CommaAnalyser & operator=(CommaAnalyser const &) = delete;
+    CommaAnalyser(CommaAnalyser &&) = default;
+    CommaAnalyser & operator=(CommaAnalyser &&) = default;
     
     void operator()() const 
     {
@@ -2044,9 +2066,6 @@ struct CommaAnalyser
   
     EXPR1 expr1_;
     EXPR2 expr2_;
-  
-  private:
-    CommaAnalyser & operator=(CommaAnalyser const &); // not implemented
 };
 
 template <class EXPR1, class EXPR2>
