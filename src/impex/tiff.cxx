@@ -187,9 +187,9 @@ namespace vigra {
         tdata_t * stripbuffer;
         tstrip_t strip;
 
-        uint32 stripindex, stripheight;
-        uint32 width, height;
-        uint16 samples_per_pixel, bits_per_sample,
+        uint32_t stripindex, stripheight;
+        uint32_t width, height;
+        uint16_t samples_per_pixel, bits_per_sample,
             photometric, planarconfig, fillorder, extra_samples_per_pixel;
         float x_resolution, y_resolution;
         Diff2D position;
@@ -276,7 +276,7 @@ namespace vigra {
 
     std::string TIFFDecoderImpl::get_pixeltype_by_sampleformat() const
     {
-        uint16 sampleformat;
+        uint16_t sampleformat;
 
         if ( TIFFGetField( tiff, TIFFTAG_SAMPLEFORMAT, &sampleformat ) ) {
 
@@ -320,7 +320,7 @@ namespace vigra {
 
     std::string TIFFDecoderImpl::get_pixeltype_by_datatype() const
     {
-        uint16 datatype;
+        uint16_t datatype;
 
         if ( TIFFGetField( tiff, TIFFTAG_DATATYPE, &datatype ) ) {
             // dangelo: correct parsing of INT/UINT (given in tiff.h)
@@ -361,7 +361,7 @@ namespace vigra {
         TIFFGetField( tiff, TIFFTAG_IMAGELENGTH, &height );
 
         // check for tiled TIFFs
-        uint32 tileWidth, tileHeight;
+        uint32_t tileWidth, tileHeight;
         if( TIFFGetField( tiff, TIFFTAG_TILEWIDTH, &tileWidth ) &&
             TIFFGetField( tiff, TIFFTAG_TILELENGTH, &tileHeight ) )
             vigra_precondition( (tileWidth == width) && (tileHeight == height),
@@ -380,7 +380,7 @@ namespace vigra {
                         " A suitable default was not found." );
 
         // read extra samples (# of alpha channels)
-        uint16 *extra_sample_types=0;
+        uint16_t *extra_sample_types=0;
         if (TIFFGetField( tiff, TIFFTAG_EXTRASAMPLES,
                           &extra_samples_per_pixel, &extra_sample_types )!=1)
         {
@@ -450,7 +450,7 @@ namespace vigra {
             case PHOTOMETRIC_LOGL:
             case PHOTOMETRIC_LOGLUV:
             {
-                uint16 tiffcomp;
+                uint16_t tiffcomp;
                 TIFFGetFieldDefaulted( tiff, TIFFTAG_COMPRESSION, &tiffcomp );
                 if (tiffcomp != COMPRESSION_SGILOG && tiffcomp != COMPRESSION_SGILOG24)
                     vigra_fail("TIFFDecoder:"
@@ -532,8 +532,8 @@ namespace vigra {
         }
 
         // other fields
-        uint16 u16value;
-        uint32 u32value;
+        uint16_t u16value;
+        uint32_t u32value;
         float unitLength = 1.0f;
         if (TIFFGetField( tiff, TIFFTAG_RESOLUTIONUNIT, &u16value )) {
             switch (u16value) {
@@ -579,7 +579,7 @@ namespace vigra {
             canvasSize.y = u32value;
         }
 
-        if ((uint32)canvasSize.x < position.x + width || (uint32)canvasSize.y < position.y + height)
+        if ((uint32_t)canvasSize.x < position.x + width || (uint32_t)canvasSize.y < position.y + height)
         {
             canvasSize.x = canvasSize.y = 0;
         }
@@ -956,7 +956,7 @@ namespace vigra {
         TIFFSetField( tiff, TIFFTAG_BITSPERSAMPLE, bits_per_sample );
 
        if (extra_samples_per_pixel > 0) {
-              uint16 * types = new  uint16[extra_samples_per_pixel];
+              uint16_t * types = new  uint16_t[extra_samples_per_pixel];
            for ( int i=0; i < extra_samples_per_pixel; i++ ) {
               types[i] = EXTRASAMPLE_UNASSALPHA;
             }
@@ -990,8 +990,8 @@ namespace vigra {
             TIFFSetField( tiff, TIFFTAG_YPOSITION, position.y / y_resolution);
         }
 
-        if ((uint32)canvasSize.x >= position.x + width
-            && (uint32)canvasSize.y >= position.y + height)
+        if ((uint32_t)canvasSize.x >= position.x + width
+            && (uint32_t)canvasSize.y >= position.y + height)
         {
             TIFFSetField( tiff, TIFFTAG_PIXAR_IMAGEFULLWIDTH, canvasSize.x);
             TIFFSetField( tiff, TIFFTAG_PIXAR_IMAGEFULLLENGTH, canvasSize.y);

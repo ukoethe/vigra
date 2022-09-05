@@ -241,7 +241,7 @@ public:
         createTiffImage(View(img), tiff);
         TIFFClose(tiff);
 
-        uint32 w, h;
+        uint32_t w, h;
         tiff = TIFFOpen("res2.tif", "r");
         TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
         TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
@@ -525,7 +525,7 @@ public:
         createTiffImage(MultiArrayView<2, RGBValue<unsigned char> >(img), tiff);
         TIFFClose(tiff);
 
-        uint32 w, h;
+        uint32_t w, h;
         tiff = TIFFOpen("res2.tif", "r");
         TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
         TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);

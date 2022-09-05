@@ -39,7 +39,7 @@
     image size: 200^3, chunk size: 64^3, i.e. chunk count: 4^3
     times in msec, excluding time to store file on disk
 
-    win64/vs2012 (koethe-laptop):            uint8     float    double
+    win64/vs2012 (koethe-laptop):          uint8_t     float    double
     plain array                                 18        18        18
     chunked array (all in cache)                25        26        26
     thread-safe chunked (all in cache)          27        28        29
@@ -47,7 +47,7 @@
     thread-safe chunked (1 row in cache)        45        48        52
     chunked (initial creation, all in cache)    33        43        57
 
-    linux/gcc 4.7.3 (birdofprey):            uint8     float    double
+    linux/gcc 4.7.3 (birdofprey):          uint8_t     float    double
     plain array                                 16        20        21
     chunked array (all in cache)                17        23        24
     thread-safe chunked (all in cache)          19        24        25
@@ -55,7 +55,7 @@
     thread-safe chunked (1 row in cache)        24        33        39
     chunked (initial creation, all in cache)    22        34        48
 
-    OS X 10.7:                               uint8     float    double
+    OS X 10.7:                             uint8_t     float    double
     plain array                                 11        22        24
     chunked array (all in cache)                --        --        --
     thread-safe chunked (all in cache)          20        25        26
@@ -71,7 +71,7 @@
     image size: 400^3, chunk size: 127^3, i.e. chunk count: 4^3
     times in msec, excluding time to store file on disk
 
-    win64/vs2012 (koethe-laptop):            uint8     float    double
+    win64/vs2012 (koethe-laptop):          uint8_t     float    double
     plain array                                130       130       130
     chunked array (all in cache)               190       190       200
     thread-safe chunked (all in cache)         190       200       210
@@ -79,7 +79,7 @@
     thread-safe chunked (1 row in cache)       240       270       300
     chunked (initial creation, all in cache)   230       300       400
 
-    linux/gcc 4.7.3 (birdofprey):            uint8     float    double
+    linux/gcc 4.7.3 (birdofprey):          uint8_t     float    double
     plain array                                130       162       165
     chunked array (all in cache)               131       180       184
     thread-safe chunked (all in cache)         135       183       188
