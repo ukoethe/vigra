@@ -170,13 +170,13 @@ void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputAr
     }
 }
 
-/*+++++++++++++++++++++++MexEntryFunc++++++++++++++++++++++++++++++++*/
-/* Gatewayfunction - see matlab.hxx for details.
-/* if a certain class is NOT supported - you will have to copy the
-/* body of the callMexFunctor function and edit it here.
-/* Supports (u)int[8|16|32|64], float and double.
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/** MATLAB
+//+++++++++++++++++++++++MexEntryFunc++++++++++++++++++++++++++++++++
+// Gatewayfunction - see matlab.hxx for details.
+// if a certain class is NOT supported - you will have to copy the
+// body of the callMexFunctor function and edit it here.
+// Supports (u)int[8|16|32|64], float and double.
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/* MATLAB
 function D = vigraDistance(inputArray)
 function D = vigraDistance(inputArray, options);
 
