@@ -574,7 +574,7 @@ getString(mxArray const * t)
 
 
 
-class CompileTimeError;
+class CompileTimeError {};
 
 namespace detail {
 
@@ -1179,8 +1179,8 @@ class SparseArray
 
         int len = data.size();
         in = mxCreateSparse(width, length, len, mxREAL);
-        int* jc = mxGetJc(in);
-        int* ir = mxGetIr(in);
+        mwIndex* jc = mxGetJc(in);
+        mwIndex* ir = mxGetIr(in);
         double* pr = mxGetPr(in);
         if(len == 0){
             jc[0] = 1;
