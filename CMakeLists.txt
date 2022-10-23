@@ -110,7 +110,22 @@ VIGRA_FIND_PACKAGE(FFTW3F NAMES libfftw3f-3 libfftwf-3.3)
 
 
 IF(WITH_OPENEXR)
+    FIND_PACKAGE(Imath CONFIG)
+    IF(TARGET Imath::Imath)
+        FIND_PACKAGE(OpenEXR CONFIG)
+        SET(OPENEXR_LIBRARIES
+		    OpenEXR::OpenEXR
+		    OpenEXR::Iex
+			OpenEXR::IlmThread
+			Imath::Imath
+		)
+		get_target_property(OPENEXR_INCLUDE_DIR OpenEXR::OpenEXRConfig INTERFACE_INCLUDE_DIRECTORIES)
+		get_target_property(IMATH_INCLUDE_DIR Imath::ImathConfig INTERFACE_INCLUDE_DIRECTORIES)
+		include_directories(${OPENEXR_INCLUDE_DIR} ${IMATH_INCLUDE_DIR})
+		set(OPENEXR_FOUND TRUE)
+	ELSE()
     VIGRA_FIND_PACKAGE(OpenEXR)
+	ENDIF()
 ENDIF()
 
 IF(WITH_HDF5)
