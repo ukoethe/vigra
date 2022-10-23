@@ -210,7 +210,7 @@ def readHDF5(filenameOrGroup, pathInFile, order=None):
         dataset = group[pathInFile]
         if not isinstance(dataset, h5py.Dataset):
             raise IOError("readHDF5(): '%s' is not a dataset" % pathInFile)
-        data = dataset.value
+        data = dataset[...]
         axistags = dataset.attrs.get('axistags', None)
         if axistags is not None:
             data = data.view(arraytypes.VigraArray)
@@ -262,7 +262,7 @@ def writeHDF5(data, filenameOrGroup, pathInFile, compression=None, chunks=None):
         file = None
         group = filenameOrGroup
     else:
-        file = h5py.File(filenameOrGroup)
+        file = h5py.File(filenameOrGroup, 'a')
         group = file['/']
     try:
         levels = pathInFile.split('/')
@@ -286,7 +286,13 @@ def writeHDF5(data, filenameOrGroup, pathInFile, compression=None, chunks=None):
             data = data.transposeToNumpyOrder()
         except:
             pass
-        dataset = group.create_dataset(levels[-1], data=data, compression=compression, chunks=chunks)
+        dataset = group.create_dataset(
+            levels[-1],
+            shape=data.shape,
+            dtype=data.dtype,
+            data=data,
+            compression=compression,
+            chunks=chunks)
         if hasattr(data, 'axistags'):
             dataset.attrs['axistags'] = data.axistags.toJSON()
     finally:
