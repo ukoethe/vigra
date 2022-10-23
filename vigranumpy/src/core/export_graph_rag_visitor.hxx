@@ -326,7 +326,7 @@ public:
         const Graph &              graph,
         UInt32NodeArray            labelsArray,
         UInt32NodeArray            seedsArray,
-        typename PyNodeMapTraits<RagGraph, UInt32>::Array  ragSeedsArray=RagUInt32NodeArray()
+        typename PyNodeMapTraits<RagGraph, UInt32>::Array  ragSeedsArray=RagUInt32NodeArray().operator const typename NumpyArray<NodeMapDim, UInt32>::type
     ){
         ragSeedsArray.reshapeIfEmpty(TaggedGraphShape<RagGraph>::taggedNodeMapShape(rag));
         std::fill(ragSeedsArray.begin(),ragSeedsArray.end(),0);
