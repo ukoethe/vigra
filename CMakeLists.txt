@@ -184,10 +184,6 @@ endif()
 include(VigraDetectThreading)
 include(VigraConfigureThreading)
 
-# Should come after VigraDetectThreading, since that updates the -std flag.
-include(VigraDetectCppVersion)
-VIGRA_DETECT_CPP_VERSION()
-
 IF(WITH_VIGRANUMPY)
     FIND_PACKAGE(Python COMPONENTS Interpreter Development NumPy)
     FIND_PACKAGE(VIGRANUMPY_DEPENDENCIES)
