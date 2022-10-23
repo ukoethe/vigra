@@ -1780,7 +1780,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                         for yo in range(-1*bs, bs+1):
                             xx = x+xo
                             yy = y+yo
-                            if xo is not 0 or yo is not 0:
+                            if (xo != 0) or (yo != 0):
                                 if  xx >=0 and xx<shape[0] and \
                                     yy >=0 and yy<shape[0]:
                                     otherLabel = labels[xx, yy]
