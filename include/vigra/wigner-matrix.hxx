@@ -52,7 +52,7 @@ namespace vigra {
     /**
      *  \class WignerMatrix 
      *  \brief computation of Wigner D matrix + rotation functions 
-     *         in SH,VH and R³
+     *         in SH,VH and RÂ³
      *
      * All rotations in Euler zyz' convention   
      *
