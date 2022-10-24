@@ -2,17 +2,17 @@ pool:
   vmImage: $(imageName)
 
 jobs:
-  - job: Linux
-    pool:
-      vmImage: ubuntu-latest
-    strategy:
-      matrix:
-        py38:
-          PYTHON_VERSION: 3.8
-        py39:
-          PYTHON_VERSION: 3.9
-    steps:
-      - script: bash ci/build_unix.sh
+  # - job: Linux
+  #   pool:
+  #     vmImage: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       py38:
+  #         PYTHON_VERSION: 3.8
+  #       py39:
+  #         PYTHON_VERSION: 3.9
+  #   steps:
+  #     - script: bash ci/build_unix.sh
   - job: OSX
     pool:
       vmImage: macOS-latest
@@ -24,15 +24,15 @@ jobs:
       - script: |
           sudo xcode-select -s /Applications/Xcode_13.2.1.app
           bash ci/build_unix.sh
-  - job: Windows
-    pool:
-      vmImage: windows-2019
-    strategy:
-      matrix:
-        windows_py310:
-          PYTHON_VERSION: 3.10
-    steps:
-      # https://learn.microsoft.com/en-us/azure/devops/pipelines/ecosystems/anaconda?view=azure-devops&tabs=windows
-      - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
-        displayName: Add conda to PATH
-      - script: ci/build_windows.bat
+  # - job: Windows
+  #   pool:
+  #     vmImage: windows-2019
+  #   strategy:
+  #     matrix:
+  #       windows_py310:
+  #         PYTHON_VERSION: 3.10
+  #   steps:
+  #     # https://learn.microsoft.com/en-us/azure/devops/pipelines/ecosystems/anaconda?view=azure-devops&tabs=windows
+  #     - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+  #       displayName: Add conda to PATH
+  #     - script: ci/build_windows.bat
