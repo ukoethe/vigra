@@ -35,4 +35,4 @@ cmake .. \
 
 make -j2
 make check -j2
-ctest -V
+ctest -V --output-on-failure
