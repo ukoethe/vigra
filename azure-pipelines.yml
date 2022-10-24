@@ -10,7 +10,7 @@ jobs:
         py38:
           PYTHON_VERSION: 3.8
         py39:
-          PYTHON_VERSION: 3.8
+          PYTHON_VERSION: 3.9
     steps:
       - script: bash ci/build_unix.sh
   - job: OSX
