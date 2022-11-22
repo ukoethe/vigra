@@ -35,8 +35,7 @@ cmake .. ^
     -DBUILD_SHARED_LIBS=ON ^
     -DTEST_VIGRANUMPY=ON ^
     -DWITH_OPENEXR=ON ^
-    -DWITH_LEMON=ON ^
-    -DBUILD_TESTS=OFF
+    -DWITH_LEMON=ON
 
 if errorlevel 1 exit 1
 
