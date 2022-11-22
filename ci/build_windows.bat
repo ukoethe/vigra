@@ -1,21 +1,25 @@
 @echo on
-conda info
+call conda info
 if errorlevel 1 exit 1
 
-conda config --add channels conda-forge
+call conda config --add channels conda-forge
 if errorlevel 1 exit 1
-conda config --remove channels defaults || true
+call conda config --remove channels defaults || true
 if errorlevel 1 exit 1
-conda config --show
+call conda config --show
 if errorlevel 1 exit 1
 
-conda create ^
+rem cxx compiler version 1.5.0 -> vs2017
+rem build currently doesn't work on vs2019
+rem ref: https://github.com/ukoethe/vigra/issues/525
+call conda create ^
     --quiet --yes ^
     --name vigra ^
-    python=%PYTHON_VERSION% c-compiler cxx-compiler ^
-    zlib jpeg libpng libtiff hdf5 fftw ^
-    boost boost-cpp numpy h5py nose sphinx ^
+    python=%PYTHON_VERSION% c-compiler=1.5.0 cxx-compiler=1.5.0 ^
+    zlib jpeg libpng libtiff hdf5 fftw cmake ninja ^
+    boost=1.78 boost-cpp=1.78 numpy h5py nose sphinx ^
     openexr lemon
+
 if errorlevel 1 exit 1
 
 call activate vigra
