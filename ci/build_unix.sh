@@ -2,6 +2,7 @@ set -ex
 
 PYTHON_VERSION="${PYTHON_VERSION:-3.10}"
 
+export LDFLAGS="-undefined dynamic_lookup ${LDFLAGS}"
 
 conda config --add channels conda-forge
 conda config --remove channels defaults || true
@@ -34,5 +35,7 @@ cmake .. \
     -DAUTOEXEC_TESTS=OFF
 
 make -j2
+export DYLD_FALLBACK_LIBRARY_PATH="$PREFIX/lib":"${DYLD_FALLBACK_LIBRARY_PATH}"
+
 make check -j2
 ctest -V --output-on-failure
