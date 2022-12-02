@@ -31,6 +31,7 @@ if errorlevel 1 exit 1
 cd build
 
 cmake .. ^
+    -G "NMake Makefiles" ^
     -DCMAKE_INSTALL_PREFIX=%CONDA_PREFIX% ^
     -DCMAKE_PREFIX_PATH=%CONDA_PREFIX% ^
     -DCMAKE_BUILD_TYPE=Release ^
