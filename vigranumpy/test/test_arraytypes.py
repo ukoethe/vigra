@@ -1531,7 +1531,7 @@ def testMethods():
     assert_equal(b.axistags, a.axistags)
 
 def testUfuncs():
-    from numpy import bool, int8, uint8, int16, uint16, int32, uint32, int64, uint64
+    from numpy import bool_, int8, uint8, int16, uint16, int32, uint32, int64, uint64
     from numpy import float32, float64, longdouble, complex64, complex128, clongdouble
     integers = [ int8, uint8, int16, uint16, int32, uint32, int64, uint64]
     floats = [float32, float64, longdouble]
@@ -1553,7 +1553,7 @@ def testUfuncs():
         assert_equal(a.axistags, b.axistags)
         assert (b == t(4)).all()
         b = a == a
-        assert_equal(bool, b.dtype)
+        assert_equal(bool_, b.dtype)
         assert_equal(a.axistags, b.axistags)
         assert (b == True).all()
         b = ones[t] + a
@@ -1588,7 +1588,7 @@ def testUfuncs():
             assert_equal(a1.axistags, b.axistags)
             assert (b == 4).all()
             b = a1 <= a2
-            assert_equal(bool, b.dtype)
+            assert_equal(bool_, b.dtype)
             assert_equal(a1.axistags, b.axistags)
             assert (b == True).all()
         for j in floats + compl:
@@ -1602,11 +1602,11 @@ def testUfuncs():
             assert_equal(a1.axistags, b.axistags)
             assert (b == 4).all()
             b = a1 >= a2
-            assert_equal(bool, b.dtype)
+            assert_equal(bool_, b.dtype)
             assert_equal(a1.axistags, b.axistags)
             assert (b == True).all()
             b = a2 > a1
-            assert_equal(bool, b.dtype)
+            assert_equal(bool_, b.dtype)
             assert_equal(a1.axistags, b.axistags)
             assert (b == False).all()
         b = a1 + 1
@@ -1635,11 +1635,11 @@ def testUfuncs():
             assert_equal(a1.axistags, b.axistags)
             assert (b == 4).all()
             b = a1 >= a2
-            assert_equal(bool, b.dtype)
+            assert_equal(bool_, b.dtype)
             assert_equal(a1.axistags, b.axistags)
             assert (b == True).all()
             b = a2 > a1
-            assert_equal(bool, b.dtype)
+            assert_equal(bool_, b.dtype)
             assert_equal(a1.axistags, b.axistags)
             assert (b == False).all()
         b = a1 + 0.5
