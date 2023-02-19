@@ -34,5 +34,6 @@ cmake .. \
     -DAUTOEXEC_TESTS=OFF
 
 make -j2
+cat  /Users/runner/work/1/s/build/test/adjacency_list_graph/run_test_adjacency_list_graph.sh
 make check -j2
 ctest -V --output-on-failure
