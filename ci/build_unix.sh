@@ -36,8 +36,5 @@ cmake .. \
 make -j2
 make check -j2
 
-cat  /Users/runner/work/1/s/build/test/adjacency_list_graph/run_test_adjacency_list_graph.sh
-cat  /Users/runner/work/1/s/build/test/adjacency_list_graph/test_adjacency_list_graph
-
 which ctest
 ctest -V --output-on-failure

@@ -22,6 +22,7 @@ jobs:
           PYTHON_VERSION: 3.7
     steps:
       - script: |
+          ls -lah /Applications
           sudo xcode-select -s /Applications/Xcode_13.2.1.app
           bash ci/build_unix.sh
   # - job: Windows
