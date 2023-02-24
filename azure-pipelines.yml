@@ -13,17 +13,19 @@ jobs:
           PYTHON_VERSION: 3.9
     steps:
       - script: bash ci/build_unix.sh
-  - job: OSX
-    pool:
-      vmImage: macOS-latest
-    strategy:
-      matrix:
-        py37:
-          PYTHON_VERSION: 3.7
-    steps:
-      - script: |
-          sudo xcode-select -s /Applications/Xcode_13.2.1.app
-          bash ci/build_unix.sh
+  # We could not get the OSX CIs to pass easily.
+  # https://github.com/ukoethe/vigra/issues/535
+  # - job: OSX
+  #   pool:
+  #     vmImage: macOS-latest
+  #   strategy:
+  #     matrix:
+  #       py37:
+  #         PYTHON_VERSION: 3.7
+  #   steps:
+  #     - script: |
+  #         sudo xcode-select -s /Applications/Xcode_13.2.1.app
+  #         bash ci/build_unix.sh
   - job: Windows
     pool:
       vmImage: windows-2019
