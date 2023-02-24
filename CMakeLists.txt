@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 
 ##################################################
 #
@@ -110,7 +110,22 @@ VIGRA_FIND_PACKAGE(FFTW3F NAMES libfftw3f-3 libfftwf-3.3)
 
 
 IF(WITH_OPENEXR)
+    FIND_PACKAGE(Imath CONFIG)
+    IF(TARGET Imath::Imath)
+        FIND_PACKAGE(OpenEXR CONFIG)
+        SET(OPENEXR_LIBRARIES
+		    OpenEXR::OpenEXR
+		    OpenEXR::Iex
+			OpenEXR::IlmThread
+			Imath::Imath
+		)
+		get_target_property(OPENEXR_INCLUDE_DIR OpenEXR::OpenEXRConfig INTERFACE_INCLUDE_DIRECTORIES)
+		get_target_property(IMATH_INCLUDE_DIR Imath::ImathConfig INTERFACE_INCLUDE_DIRECTORIES)
+		include_directories(${OPENEXR_INCLUDE_DIR} ${IMATH_INCLUDE_DIR})
+		set(OPENEXR_FOUND TRUE)
+	ELSE()
     VIGRA_FIND_PACKAGE(OpenEXR)
+	ENDIF()
 ENDIF()
 
 IF(WITH_HDF5)
@@ -125,7 +140,7 @@ SET(DOXYGEN_SKIP_DOT TRUE)
 
 IF(BUILD_DOCS)
     FIND_PACKAGE(Doxygen)
-    FIND_PACKAGE(PythonInterp ${PYTHON_VERSION})
+    FIND_PACKAGE(Python COMPONENTS Interpreter)
 ENDIF()
 
 ##################################################
@@ -144,8 +159,6 @@ ENDIF()
 
 IF(WITH_VIGRANUMPY)
     set(WITH_BOOST "ON")
-    # Do not add "python" to WITH_BOOST_COMPONENTS. It is more
-    # reliabe to use 'FIND_LIBRARY' in FindVIGRANUMPY_DEPENDENCIES.
 ENDIF()
 
 IF(WITH_BOOST_THREAD)
@@ -171,11 +184,8 @@ endif()
 include(VigraDetectThreading)
 include(VigraConfigureThreading)
 
-# Should come after VigraDetectThreading, since that updates the -std flag.
-include(VigraDetectCppVersion)
-VIGRA_DETECT_CPP_VERSION()
-
 IF(WITH_VIGRANUMPY)
+    FIND_PACKAGE(Python COMPONENTS Interpreter Development NumPy)
     FIND_PACKAGE(VIGRANUMPY_DEPENDENCIES)
 ENDIF()
 
@@ -184,7 +194,7 @@ if(WITH_BOOST AND Boost_FOUND)
     # (default on Windows is a mangled name like 'boost_system-vc110-mt-1_51.lib')
     if((Boost_SYSTEM_LIBRARY MATCHES "boost_system\\.lib") OR
        (Boost_PYTHON_LIBRARY MATCHES "boost_python\\.lib") OR
-       (Boost_PYTHON_LIBRARY MATCHES "boost_python${PYTHON_VERSION_MAJOR}\\.lib"))
+       (Boost_PYTHON_LIBRARY MATCHES "boost_python${Python_VERSION_MAJOR}\\.lib"))
         set(Boost_MANGLED_NAMES 0)
         ADD_DEFINITIONS(-DBOOST_AUTO_LINK_NOMANGLE)
     else()
@@ -460,7 +470,7 @@ ENDIF()
 IF(WITH_VIGRANUMPY)
     IF(VIGRANUMPY_DEPENDENCIES_FOUND)
         MESSAGE( STATUS "  Using Python libraries: ${VIGRANUMPY_LIBRARIES}" )
-        MESSAGE( STATUS "  Using Numpy includes:   ${PYTHON_NUMPY_INCLUDE_DIR}" )
+        MESSAGE( STATUS "  Using Numpy includes:   ${Python_NumPy_INCLUDE_DIRS}" )
     ELSE()
         MESSAGE( STATUS "  Vigranumpy dependencies not found (vigranumpy disabled)" )
     ENDIF()
@@ -477,7 +487,7 @@ ELSE()
 ENDIF()
 
 MESSAGE( STATUS "  binaries will be generated in: ${CMAKE_CURRENT_BINARY_DIR}")
-IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
+IF(DOXYGEN_FOUND AND Python_Interpreter_FOUND)
     MESSAGE( STATUS "  manuals will be generated in: ${DOCDIR}")
 ENDIF()
 
@@ -492,7 +502,7 @@ else()
   MESSAGE( STATUS "  binaries will be installed at: ${CMAKE_INSTALL_PREFIX}/bin")
 endif()
 
-IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
+IF(DOXYGEN_FOUND AND Python_Interpreter_FOUND)
   MESSAGE( STATUS "  vigra manuals will be installed at: "
     "${CMAKE_INSTALL_PREFIX}/${DOCINSTALL}/vigra/index.html")
 ELSE()

@@ -59,8 +59,12 @@ python::tuple test(NumpyArray<N, T, Stride> const & array)
     NumpyAnyArray anyarray(array);
     
     NumpyArray<N, T> copy(array, true);
+#ifndef PYPY_VERSION
+// PyPy Doesn't support reference counting the same way that CPython does
+// therefore skip this test
     vigra_postcondition(copy.pyObject()->ob_refcnt == 1, 
           "freshly created NumpyArray<N, T> has reference count > 1.");
+#endif
 
     NumpyArray<N, T> same_shape(array.shape());
     same_shape = array;
