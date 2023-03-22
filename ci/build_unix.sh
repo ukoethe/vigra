@@ -11,7 +11,7 @@ conda create \
     python=${PYTHON_VERSION} c-compiler cxx-compiler \
     zlib jpeg libpng libtiff hdf5 fftw \
     boost boost-cpp numpy h5py nose sphinx \
-    openexr lemon cmake
+    openexr lemon cmake make
 
 export LDFLAGS="-undefined dynamic_lookup ${LDFLAGS}"
 
@@ -29,7 +29,7 @@ cmake .. \
     -DTEST_VIGRANUMPY=ON \
     -DWITH_OPENEXR=ON \
     -DWITH_LEMON=ON \
-    -DAUTOEXEC_TESTS=OFF
+    -DAUTOEXEC_TESTS=OFF \
 
 make -j2
 make check -j2
