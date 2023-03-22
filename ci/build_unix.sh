@@ -11,7 +11,9 @@ conda create \
     python=${PYTHON_VERSION} c-compiler cxx-compiler \
     zlib jpeg libpng libtiff hdf5 fftw \
     boost boost-cpp numpy h5py nose sphinx \
-    openexr lemon
+    openexr lemon cmake
+
+export LDFLAGS="-undefined dynamic_lookup ${LDFLAGS}"
 
 source $CONDA/bin/activate vigra
 
