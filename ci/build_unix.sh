@@ -13,7 +13,13 @@ conda create \
     boost boost-cpp numpy h5py nose sphinx \
     openexr lemon cmake make
 
-export LDFLAGS="-undefined dynamic_lookup ${LDFLAGS}"
+if [[ `uname` == 'Darwin' ]];
+then
+    export SHLIB_EXT=".dylib"
+    export LDFLAGS="-undefined dynamic_lookup ${LDFLAGS}"
+else
+    export SHLIB_EXT=".so"
+fi
 
 source $CONDA/bin/activate vigra
 
@@ -30,6 +36,12 @@ cmake .. \
     -DWITH_OPENEXR=ON \
     -DWITH_LEMON=ON \
     -DAUTOEXEC_TESTS=OFF \
+    -DZLIB_INCLUDE_DIR=${CONDA_PREFIX}/include \
+    -DZLIB_LIBRARY=${CONDA_PREFIX}/lib/libz${SHLIB_EXT} \
+\
+    -DPNG_LIBRARY=${CONDA_PREFIX}/lib/libpng${SHLIB_EXT} \
+    -DPNG_PNG_INCLUDE_DIR=${CONDA_PREFIX}/include
+
 
 make -j2
 make check -j2
