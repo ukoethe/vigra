@@ -149,7 +149,9 @@ IF(Python_Interpreter_FOUND)
     SET(VIGRANUMPY_INCLUDE_DIRS ${VIGRANUMPY_INCLUDE_DIRS}
         CACHE PATH "include directories needed by VIGRA Python bindings"
         FORCE)
-    IF(APPLE)
+    # due to some static linking in Python on conda-forge, Python cannot be directly linked to
+    # see also https://github.com/ukoethe/vigra/pull/538
+    IF(APPLE AND DEFINED ENV{CONDA_TOOLCHAIN_BUILD})
         SET(VIGRANUMPY_LIBRARIES ${Boost_PYTHON_LIBRARY})
     ELSE()
         SET(VIGRANUMPY_LIBRARIES ${Python_LIBRARIES} ${Boost_PYTHON_LIBRARY})
