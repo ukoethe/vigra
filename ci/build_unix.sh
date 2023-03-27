@@ -11,7 +11,15 @@ conda create \
     python=${PYTHON_VERSION} c-compiler cxx-compiler \
     zlib jpeg libpng libtiff hdf5 fftw \
     boost boost-cpp numpy h5py nose sphinx \
-    openexr lemon
+    openexr lemon cmake make
+
+if [[ `uname` == 'Darwin' ]];
+then
+    export SHLIB_EXT=".dylib"
+    export LDFLAGS="-undefined dynamic_lookup ${LDFLAGS}"
+else
+    export SHLIB_EXT=".so"
+fi
 
 source $CONDA/bin/activate vigra
 
@@ -27,7 +35,15 @@ cmake .. \
     -DTEST_VIGRANUMPY=ON \
     -DWITH_OPENEXR=ON \
     -DWITH_LEMON=ON \
-    -DAUTOEXEC_TESTS=OFF
+    -DAUTOEXEC_TESTS=OFF \
+    -DCMAKE_FIND_FRAMEWORK=LAST \
+    -DCMAKE_FIND_APPBUNDLE=LAST \
+    -DZLIB_INCLUDE_DIR=${CONDA_PREFIX}/include \
+    -DZLIB_LIBRARY=${CONDA_PREFIX}/lib/libz${SHLIB_EXT} \
+\
+    -DPNG_LIBRARY=${CONDA_PREFIX}/lib/libpng${SHLIB_EXT} \
+    -DPNG_PNG_INCLUDE_DIR=${CONDA_PREFIX}/include
+
 
 make -j2
 make check -j2

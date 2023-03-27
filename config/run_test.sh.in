@@ -1,1 +1,2 @@
+#!/bin/bash
 PATH=@EXTRA_PATH@$PATH && cd @CMAKE_CURRENT_BINARY_DIR@ && (@VIGRA_TEST_EXECUTABLE@ || { touch testsuccess.cxx; exit 1; } )
