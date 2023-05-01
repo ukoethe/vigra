@@ -50,6 +50,7 @@
 #include "multi_array.hxx"
 #include "multi_pointoperators.hxx"
 #include "sifImport.hxx"
+#include "tiff_file.hxx"
 
 #ifdef _MSC_VER
 # include <direct.h>
@@ -168,8 +169,9 @@ class VolumeImportInfo
             Possible values are:
             <DL>
             <DT>"MULTIPAGE"<DD> Multiple 2D images in a single file (currently only supported by TIFF).
+            <DT>"TILEDTIFF"<DD> Tiled TIFF (standard conform, but extremly rare, used by MeVisLab).
             <DT>"SIF"<DD>  <a href="http://www.andor.com">Andor Technology's</a> .sif format.
-            <DT>"RAW"<DD> Raw data file, accompanied by a .info file
+            <DT>"RAW"<DD> Raw data file, accompanied by an .info file
             <DT>"STACK"<DD> A numbered set of 2D image files, one per slice of the volume.
             </DL>
          **/
@@ -491,7 +493,51 @@ void VolumeImportInfo::importImpl(MultiArrayView <3, T, Stride> &volume) const
 {
     vigra_precondition(this->shape() == volume.shape(), "importVolume(): Output array must be shaped according to VolumeImportInfo.");
 
-    if(fileType_ == "RAW")
+    if(fileType_ == "TILEDTIFF")
+    {
+        TIFFFile f(path_.c_str(), "r");
+        
+        MultiArrayShape<3>::type
+            zero3D(0, 0, 0),
+            one3D(1, 1, 1),
+            imageSize = f.imageSize3D(),
+            tileSize = f.tileSize3D(),
+            tileCount = (imageSize + tileSize - one3D) / tileSize;
+
+        MultiArray<3, T> tileBuffer(tileSize);
+
+        // read all tiles; important background info on the libtiff API:
+        // - all tiles have the same size, i.e. we need to clip at the
+        //   upper boundaries in general
+        // - although the tiles are also numbered, the can only be
+        //   read by passing an arbitrary(!) coordinate pointing into
+        //   that slice...
+        MultiArrayShape<3>::type copyPos;
+        for(copyPos[0] = 0; copyPos[0] < imageSize[0]; copyPos[0] += tileSize[0])
+        {
+            for(copyPos[1] = 0; copyPos[1] < imageSize[1]; copyPos[1] += tileSize[1])
+            {
+                for(copyPos[2] = 0; copyPos[2] < imageSize[2]; copyPos[2] += tileSize[2])
+                {
+                    // clip by not always copying tileSize voxels into target volume
+                    MultiArrayShape<3>::type copySize(tileSize);
+                    for(char dim = 0; dim < 3; ++dim)
+                        if(copySize[dim] > imageSize[dim] - copyPos[dim])
+                            copySize[dim] = imageSize[dim] - copyPos[dim];
+
+                    MultiArrayView<3, T, Stride>
+                        targetVOI(volume.subarray(copyPos, imageSize));
+
+                    // now read and copy (TODO: handle T != pixelType()!)
+                    f.readTile(tileBuffer.data(), copyPos[0], copyPos[1], copyPos[2], 0);
+                    
+                    copyMultiArray(srcMultiArrayRange(tileBuffer.subarray(zero3D, copySize)),
+                                   destMultiArray(targetVOI));
+                }
+            }
+        }
+    }
+    else if(fileType_ == "RAW")
     {
         std::string dirName, baseName;
         char oldCWD[2048];
@@ -550,7 +596,7 @@ void VolumeImportInfo::importImpl(MultiArrayView <3, T, Stride> &volume) const
             // import the image
             ImageImportInfo info (filename.c_str ());
 
-            // generate a basic image view to the current layer
+            // generate a 2D image view to the current layer
             MultiArrayView <2, T, Stride> view (volume.bindOuter (i));
             vigra_precondition(view.shape() == info.shape(),
                 "importVolume(): the images have inconsistent sizes.");
