@@ -85,6 +85,14 @@ Many thanks to all!
       <li> Updated CMake minimum version to 3.12.
 
       <li> Added support for PyPy as python runtime (Mark Harfouche).
+
+      <li> Updated/Fixed CI, including various fixes for the build system (Mark Harfouche, John Kirkham, Dominik Kutra)
+
+      <li> Various fixes / improved compatility to support updated dependencies (hdf5 5.12, numpy>=1.20, sphinx>=1.8.0, python 3, h5py 3.0) (Mark Harfouche, John Kirkham, Ullrich Koethe, Dominik Kutra, Hans Meine) 
+
+      <li> Fixed Matlab compilation (Joachim B&ouml;rger)
+
+      <li> Fixed compilation with cpp17 (Constantin Pape)
 </ul>
 
 <b> Changes from Version 1.11.0 to 1.11.1</b>
@@ -94,7 +102,7 @@ Many thanks to all!
 
       <li> Added Random Forest version 3, inspired by LEMON's graph API, to simplify customization of RF variants (Philip Schill).
 
-      <li> Improved hierarchical clustering (Cpnstantin Pape).
+      <li> Improved hierarchical clustering (Constantin Pape).
 
       <li> Minor improvements and bug fixes in the code and documentation.
 </ul>
