@@ -84,7 +84,7 @@ else()
     endif()
 endif()
 
-IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
+IF(NOT PYTHON_PYTEST_NOT_FOUND)
     # copy the individual test scripts
     FOREACH(test_script ${TEST_SCRIPTS})
         ADD_CUSTOM_COMMAND(
@@ -122,7 +122,7 @@ IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
         get_filename_component(PYTHON_PATH ${Python_EXECUTABLE} PATH)
         get_filename_component(PYTHON_EXE  ${Python_EXECUTABLE} NAME)
         SET(EXTRA_PATH  "${PYTHON_PATH}${PATHSEP}${EXTRA_PATH}")
-        SET(VIGRA_TEST_EXECUTABLE "${PYTHON_EXE} -c \"import nose; nose.main()\" . %CONFIGURATION%")
+        SET(VIGRA_TEST_EXECUTABLE "${PYTHON_EXE} -m pytest . %CONFIGURATION%")
         SET(VIGRA_TEST_SCRIPT     "${CMAKE_CURRENT_BINARY_DIR}/run_vigranumpytest.bat")
         CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.bat.in
                        ${VIGRA_TEST_SCRIPT}.in
@@ -130,7 +130,7 @@ IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
         file(GENERATE OUTPUT "${VIGRA_TEST_SCRIPT}"
                       INPUT  "${VIGRA_TEST_SCRIPT}.in")
     ELSE()
-        SET(VIGRA_TEST_EXECUTABLE "${Python_EXECUTABLE} -c \"import nose; nose.main()\" .")
+        SET(VIGRA_TEST_EXECUTABLE "${Python_EXECUTABLE} -m pytest .")
         SET(VIGRA_TEST_SCRIPT     "${CMAKE_CURRENT_BINARY_DIR}/run_vigranumpytest.sh")
         CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.sh.in
                        ${VIGRA_TEST_SCRIPT}.in
@@ -161,11 +161,11 @@ IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
     if(MSVC AND NOT (MSVC_VERSION VERSION_LESS "11"))
         # FIXME: this may not portable between VC versions (works for 11.0 - 14.0)
         set(VIGRA_TEST_EXE "${Python_EXECUTABLE}")
-        set(VIGRA_TEST_ARGS "-c \"import nose; nose.main()\" . \$(Configuration)")
+        set(VIGRA_TEST_ARGS "-m pytest . \$(Configuration)")
         configure_file(${CMAKE_SOURCE_DIR}/config/testdebug.vcxproj.user.in
                        ${CMAKE_CURRENT_BINARY_DIR}/vigranumpytest.vcxproj.user
                        @ONLY)
     endif()
 ELSE()
-        MESSAGE(STATUS "  vigranumpy tests will NOT be executed (nosetests missing)")
+        MESSAGE(STATUS "  vigranumpy tests will NOT be executed (pytest missing)")
 ENDIF()

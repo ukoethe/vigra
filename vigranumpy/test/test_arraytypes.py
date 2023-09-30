@@ -33,21 +33,19 @@
 #
 #######################################################################
 
-# run with a simple 'nosetests' in this directory
-# (and nose installed, i.e. 'easy_install nose')
+# run with a simple 'pytest' in this directory
+# (and pytest installed, i.e. 'pip install pytest' or 'conda install pytest')
 
 from __future__ import division, print_function
 from functools import reduce
 
 import sys
-print("\nexecuting test file", __file__, file=sys.stderr)
 exec(compile(open('set_paths.py', "rb").read(), 'set_paths.py', 'exec'))
 # import vigra  # FIXME: without this line, C++ constructors don't find VigraArray
 import vigra.arraytypes as arraytypes
 import vigra.ufunc as ufunc
 import numpy, copy
 import vigranumpytest as vt
-from nose.tools import assert_equal, raises, assert_true
 
 from vigra.arraytypes import AxisTags, AxisInfo
 import platform
@@ -74,6 +72,19 @@ allTests = set()
 for n, f in vt.__dict__.items():
     if n.startswith('test'):
         allTests.add(n)
+
+# 2023/09
+# Small compatibility shims with old code that used
+#     assert_equal and assert_true
+# from nosetest. Rewriting the tests to use python's assert statement
+# was decided to be too invasive.
+def assert_equal(x, y):
+    assert x == y
+
+
+def assert_true(x):
+    assert x
+
 
 def checkShape(shape1, shape2):
     assert_equal(shape1, shape2)
@@ -455,7 +466,7 @@ def checkCompatibility(obj, compatible):
         except Exception:
             print("exception in %s with shape %s strides %s tags (%s)" % (n, obj.shape, obj.strides,
                                             repr(getattr(obj, "axistags", "none"))))
-            raise     
+            raise
 
 def testAxisTags():
     axistags = AxisTags(AxisInfo.c(description="RGB"),
