@@ -748,7 +748,6 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
         {
             Node p1 = raw_skeleton[k];
             SNode & n1 = skeleton[p1];
-            Node p2 = n1.parent;
             if(n1.principal_child == lemon::INVALID &&
                n1.salience >= threshold &&
                !n1.is_loop)
