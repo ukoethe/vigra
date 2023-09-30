@@ -83,7 +83,7 @@ IF(Python_Interpreter_FOUND)
     ######################################################################
     IF(NOT DEFINED VIGRANUMPY_INSTALL_DIR OR VIGRANUMPY_INSTALL_DIR MATCHES "^$")
         execute_process(COMMAND ${Python_EXECUTABLE} -c
-                         "from distutils.sysconfig import *; print(get_python_lib(1))"
+                         "import sysconfig; print(sysconfig.get_paths()['purelib'])"
                           OUTPUT_VARIABLE PYTHON_SITE_PACKAGES OUTPUT_STRIP_TRAILING_WHITESPACE)
         FILE(TO_CMAKE_PATH ${PYTHON_SITE_PACKAGES} VIGRANUMPY_INSTALL_DIR)
     ENDIF()

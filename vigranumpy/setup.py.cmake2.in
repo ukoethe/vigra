@@ -1,5 +1,8 @@
-import distutils, ctypes.util, shutil, os, sys
-from distutils.core import setup
+import ctypes.util
+import shutil
+import os
+import sys
+from setuptools import setup
 
 # copy the required DLLs to the directory $vigranumpy_tmp_dir/dlls
 # if additional libraries are linked dynamically (e.g. tiff, png)
