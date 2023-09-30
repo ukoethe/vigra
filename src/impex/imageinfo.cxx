@@ -1015,8 +1015,8 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
 
             do
             {
-                numEndIt = std::find_if(numBeginIt, filename.rend(),(int (*)(int)) &isdigit);
-                numBeginIt = std::find_if(numEndIt, filename.rend(), not1(std::ptr_fun((int (*)(int))&isdigit)));
+                numEndIt = std::find_if(numBeginIt, filename.rend(), [](const int x){ return isdigit(x); });
+                numBeginIt = std::find_if(numEndIt, filename.rend(), [](const int x){ return !isdigit(x); });
 
                 if(numEndIt != filename.rend())
                 {
