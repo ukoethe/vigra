@@ -15,7 +15,7 @@ rem ref: https://github.com/ukoethe/vigra/issues/525
 call conda create ^
     --quiet --yes ^
     --name vigra ^
-    python=%PYTHON_VERSION% c-compiler=1.5.0 cxx-compiler=1.5.0 ^
+    python=%PYTHON_VERSION% pytest c-compiler=1.5.0 cxx-compiler=1.5.0 ^
     zlib jpeg libpng libtiff hdf5 fftw cmake ninja ^
     boost=1.78 boost-cpp=1.78 numpy h5py nose sphinx ^
     openexr lemon

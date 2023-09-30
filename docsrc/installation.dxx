@@ -13,7 +13,7 @@
     <li> <a href="http://www.doxygen.org/">doxygen</a> and <a href="http://www.python.org/">Python</a> to generate C++ documentation.
     <li> <a href="http://www.python.org/">Python</a>, <a href="http://www.boost.org/">boost_python</a>, and <a href="http://numpy.scipy.org/">numpy</a> to compile and run vigranumpy (the VIGRA Python bindings).
     <li> <a href="http://sphinx.pocoo.org/">sphinx</a> to generate vigranumpy documentation.
-    <li> <a href="http://readthedocs.org/docs/nose/en/latest/">nosetests</a> to execute the vigranumpy test suite.
+    <li> <a href="https://docs.pytest.org/">pytest</a> to execute the vigranumpy test suite.
     </ul>
 
     These dependencies are optional - the functionality will simply be unavailable if the libraries cannot be found.

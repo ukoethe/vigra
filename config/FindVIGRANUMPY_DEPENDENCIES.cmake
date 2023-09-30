@@ -99,13 +99,13 @@ IF(Python_Interpreter_FOUND)
     #
     ######################################################################
     execute_process(COMMAND ${Python_EXECUTABLE} -c
-                     "import nose"
-                      RESULT_VARIABLE PYTHON_NOSETESTS_NOT_FOUND)
+                    "import pytest"
+                    RESULT_VARIABLE PYTHON_PYTEST_NOT_FOUND)
 
-    IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
-        MESSAGE(STATUS "Searching for Python nosetests: ok")
+    IF(NOT PYTHON_PYTEST_NOT_FOUND)
+        MESSAGE(STATUS "Searching for Python pytest: ok")
     ELSE()
-        MESSAGE(STATUS "Could NOT find Python nosetests ('import nose' failed)")
+        MESSAGE(STATUS "Could NOT find Python pytest ('import pytest' failed)")
     ENDIF()
 
     ######################################################################
@@ -160,8 +160,8 @@ IF(Python_Interpreter_FOUND)
     if(TEST_VIGRANUMPY AND NOT VIGRANUMPY_DEPENDENCIES_FOUND)
         MESSAGE(FATAL_ERROR "  vigranumpy dependencies NOT found while TEST_VIGRANUMPY=1")
     endif()
-    if(TEST_VIGRANUMPY AND PYTHON_NOSETESTS_NOT_FOUND)
-        MESSAGE(FATAL_ERROR "  nosetests NOT found while TEST_VIGRANUMPY=1")
+    if(TEST_VIGRANUMPY AND PYTHON_PYTEST_NOT_FOUND)
+        MESSAGE(FATAL_ERROR "  pytest NOT found while TEST_VIGRANUMPY=1")
     endif()
 ELSE()
     MESSAGE(STATUS "Python not found. Make sure that Python is in your PATH or set the appropriate variables as described in https://cmake.org/cmake/help/latest/module/FindPython.html")

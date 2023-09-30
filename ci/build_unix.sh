@@ -8,7 +8,7 @@ conda config --show
 conda create \
     --quiet --yes \
     --name vigra \
-    python=${PYTHON_VERSION} c-compiler cxx-compiler \
+    python=${PYTHON_VERSION} pytest c-compiler cxx-compiler \
     zlib jpeg libpng libtiff hdf5 fftw \
     boost boost-cpp numpy h5py nose sphinx \
     openexr lemon cmake make
