@@ -87,13 +87,6 @@ SET(AUTOBUILD_TESTS ${AUTOBUILD_TESTS}
     CACHE BOOL "Compile tests as part of target 'all' (resp. 'ALL_BUILD') ?"
     FORCE)
 
-IF(NOT DEFINED VIGRA_STATIC_LIB)
-    SET(VIGRA_STATIC_LIB "OFF")
-ENDIF()
-SET(VIGRA_STATIC_LIB ${VIGRA_STATIC_LIB}
-    CACHE BOOL "Whether to build vigra as a static library ?"
-    FORCE)
-
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     SET(CMAKE_COMPILER_IS_CLANGXX 1)
 endif()
