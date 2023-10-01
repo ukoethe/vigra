@@ -162,9 +162,6 @@
     #endif
     #define HAS_HASH_CONTAINERS
 
-    // these warnings produce too many false positives to be useful
-    #pragma GCC diagnostic ignored "-Wshadow"
-
     #if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus >= 201103L
         // see https://gcc.gnu.org/gcc-4.4/changes.html
         #if __GNUC__ < 4 || ((__GNUC__ == 4) && (__GNUC_MINOR__ <= 3))
