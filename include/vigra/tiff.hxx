@@ -446,11 +446,11 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
                     {
                         if(fillorder == FILLORDER_MSB2LSB)
                         {
-                            a.set(((((int8 *)buf)[x/8] >> (7 - x%8)) & 1) ? max : min, xd);
+                            a.set(((((int8_t *)buf)[x/8] >> (7 - x%8)) & 1) ? max : min, xd);
                         }
                         else
                         {
-                            a.set(((((int8 *)buf)[x/8] >> (x%8)) & 1) ? max : min, xd);
+                            a.set(((((int8_t *)buf)[x/8] >> (x%8)) & 1) ? max : min, xd);
                         }
                     }
                 }
@@ -479,7 +479,7 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
 
                     for(unsigned int x=0; x<w; ++x, ++xd.x)
                     {
-                        a.set(((int16 *)buf)[x], xd);
+                        a.set(((int16_t *)buf)[x], xd);
                     }
                 }
                 break;
@@ -493,7 +493,7 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
 
                     for(unsigned int x=0; x<w; ++x, ++xd.x)
                     {
-                        a.set(((int32 *)buf)[x], xd);
+                        a.set(((int32_t *)buf)[x], xd);
                     }
                 }
                 break;
@@ -883,12 +883,12 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                   {
                     for(unsigned int y=0; y<h; ++y, ++yd.y)
                     {
-                        int8 *pr, *pg, *pb;
+                        int8_t *pr, *pg, *pb;
                         
                         if(planarConfig == PLANARCONFIG_CONTIG)
                         {
                             TIFFReadScanline(tiff, bufr, y);
-                            pr = (int8 *)bufr;
+                            pr = (int8_t *)bufr;
                             pg = pr+1;
                             pb = pg+1;
                         }
@@ -897,9 +897,9 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                             TIFFReadScanline(tiff, bufr, y, 0);
                             TIFFReadScanline(tiff, bufg, y, 1);
                             TIFFReadScanline(tiff, bufb, y, 2);
-                            pr = (int8 *)bufr;
-                            pg = (int8 *)bufg;
-                            pb = (int8 *)bufb;
+                            pr = (int8_t *)bufr;
+                            pg = (int8_t *)bufg;
+                            pb = (int8_t *)bufb;
                         }
                         
                         typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
@@ -913,12 +913,12 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                   {
                     for(unsigned int y=0; y<h; ++y, ++yd.y)
                     {
-                        int16 *pr, *pg, *pb;
+                        int16_t *pr, *pg, *pb;
                         
                         if(planarConfig == PLANARCONFIG_CONTIG)
                         {
                             TIFFReadScanline(tiff, bufr, y);
-                            pr = (int16 *)bufr;
+                            pr = (int16_t *)bufr;
                             pg = pr+1;
                             pb = pg+1;
                         }
@@ -927,9 +927,9 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                             TIFFReadScanline(tiff, bufr, y, 0);
                             TIFFReadScanline(tiff, bufg, y, 1);
                             TIFFReadScanline(tiff, bufb, y, 2);
-                            pr = (int16 *)bufr;
-                            pg = (int16 *)bufg;
-                            pb = (int16 *)bufb;
+                            pr = (int16_t *)bufr;
+                            pg = (int16_t *)bufg;
+                            pb = (int16_t *)bufb;
                         }
                         typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
                         typename RGBImageIterator::row_iterator rowend = rowit + w;
@@ -942,12 +942,12 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                   {
                     for(unsigned int y=0; y<h; ++y, ++yd.y)
                     {
-                        int32 *pr, *pg, *pb;
+                        int32_t *pr, *pg, *pb;
                         
                         if(planarConfig == PLANARCONFIG_CONTIG)
                         {
                             TIFFReadScanline(tiff, bufr, y);
-                            pr = (int32 *)bufr;
+                            pr = (int32_t *)bufr;
                             pg = pr+1;
                             pb = pg+1;
                         }
@@ -956,9 +956,9 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                             TIFFReadScanline(tiff, bufr, y, 0);
                             TIFFReadScanline(tiff, bufg, y, 1);
                             TIFFReadScanline(tiff, bufb, y, 2);
-                            pr = (int32 *)bufr;
-                            pg = (int32 *)bufg;
-                            pb = (int32 *)bufb;
+                            pr = (int32_t *)bufr;
+                            pg = (int32_t *)bufg;
+                            pb = (int32_t *)bufb;
                         }
 
                         typename RGBImageIterator::row_iterator rowit = yd.rowIterator();
@@ -1359,7 +1359,7 @@ createShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     {
         for(int y=0; y<h; ++y, ++ys.y)
         {
-            int16 * p = (int16 *)buf;
+            int16_t * p = (int16_t *)buf;
             ImageIterator xs(ys);
             
             for(int x=0; x<w; ++x, ++xs.x)
@@ -1445,7 +1445,7 @@ createIScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     {
         for(int y=0; y<h; ++y, ++ys.y)
         {
-            int32 * p = (int32 *)buf;
+            int32_t * p = (int32_t *)buf;
             ImageIterator xs(ys);
             
             for(int x=0; x<w; ++x, ++xs.x)
