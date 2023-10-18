@@ -267,7 +267,7 @@ uninitializedCopyMultiArrayData(SrcIterator s, Shape const & shape, T * & d, ALL
     SrcIterator send = s + shape[0];
     for(; s < send; ++s, ++d)
     {
-        a.construct(d, static_cast<T const &>(*s));
+        std::allocator_traits<ALLOC>::construct(a, d, static_cast<T const &>(*s));
     }
 }
 
@@ -279,7 +279,7 @@ uninitializedCopyMultiArrayData(MultiIterator<1, UInt8, Ref, Ptr> si, Shape cons
     Ptr s = &(*si), send = s + shape[0];
     for(; s < send; ++s, ++d)
     {
-        a.construct(d, static_cast<T const &>(*s));
+        std::allocator_traits<ALLOC>::construct(a, d, static_cast<T const &>(*s));
     }
 }
 
@@ -3090,11 +3090,11 @@ void MultiArray <N, T, A>::allocate (pointer & ptr, difference_type_1 s,
     difference_type_1 i = 0;
     try {
         for (; i < s; ++i)
-            m_alloc.construct (ptr + i, init);
+            std::allocator_traits<allocator_type>::construct (m_alloc, ptr + i, init);
     }
     catch (...) {
         for (difference_type_1 j = 0; j < i; ++j)
-            m_alloc.destroy (ptr + j);
+            std::allocator_traits<allocator_type>::destroy (m_alloc, ptr + j);
         m_alloc.deallocate (ptr, (typename A::size_type)s);
         throw;
     }
@@ -3114,11 +3114,11 @@ void MultiArray <N, T, A>::allocate (pointer & ptr, difference_type_1 s,
     difference_type_1 i = 0;
     try {
         for (; i < s; ++i, ++init)
-            m_alloc.construct (ptr + i, *init);
+            std::allocator_traits<allocator_type>::construct(m_alloc, ptr + i, *init);
     }
     catch (...) {
         for (difference_type_1 j = 0; j < i; ++j)
-            m_alloc.destroy (ptr + j);
+            std::allocator_traits<allocator_type>::destroy (m_alloc, ptr + j);
         m_alloc.deallocate (ptr, (typename A::size_type)s);
         throw;
     }
@@ -3142,7 +3142,7 @@ void MultiArray <N, T, A>::allocate (pointer & ptr, MultiArrayView<N, U, StrideT
     }
     catch (...) {
         for (pointer pp = ptr; pp < p; ++pp)
-            m_alloc.destroy (pp);
+            std::allocator_traits<allocator_type>::destroy (m_alloc, pp);
         m_alloc.deallocate (ptr, (typename A::size_type)s);
         throw;
     }
@@ -3154,7 +3154,7 @@ inline void MultiArray <N, T, A>::deallocate (pointer & ptr, difference_type_1 s
     if (ptr == 0)
         return;
     for (difference_type_1 i = 0; i < s; ++i)
-        m_alloc.destroy (ptr + i);
+        std::allocator_traits<allocator_type>::destroy (m_alloc, ptr + i);
     m_alloc.deallocate (ptr, (typename A::size_type)s);
     ptr = 0;
 }
