@@ -696,7 +696,7 @@ template <class T, class Alloc>
 inline void ArrayVector<T, Alloc>::pop_back()
 {
     --this->size_;
-    alloc_.destroy(this->data_ + this->size_);
+    std::allocator_traits<Alloc>::destroy(alloc_, this->data_ + this->size_);
 }
 
 template <class T, class Alloc>
@@ -704,7 +704,7 @@ inline void ArrayVector<T, Alloc>::push_back( value_type const & t )
 {
     size_type old_capacity = this->capacity_;
     pointer old_data = reserveImpl(false);
-    alloc_.construct(this->data_ + this->size_, t);
+    std::allocator_traits<Alloc>::construct(alloc_, this->data_ + this->size_, t);
     // deallocate old data _after_ construction of new element, so that
     // 't' can refer to the old data as in 'push_back(front())'
     deallocate(old_data, this->size_, old_capacity);
