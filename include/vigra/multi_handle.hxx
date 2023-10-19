@@ -45,7 +45,6 @@ namespace vigra {
 template <unsigned TARGET_INDEX, class Handle, unsigned int INDEX=Handle::index>
 struct CoupledHandleCast;
 
-#ifndef _MSC_VER  // Visual Studio doesn't like these forward declarations
 template <unsigned int TARGET_INDEX, class Handle>
 typename CoupledHandleCast<TARGET_INDEX, Handle>::reference
 get(Handle & handle);
@@ -53,7 +52,6 @@ get(Handle & handle);
 template <unsigned int TARGET_INDEX, class Handle>
 typename CoupledHandleCast<TARGET_INDEX, Handle>::const_reference
 get(Handle const & handle);
-#endif
 
 /** \addtogroup MultiIteratorGroup
 */
