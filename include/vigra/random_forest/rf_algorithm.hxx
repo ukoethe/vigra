@@ -35,6 +35,7 @@
 #ifndef VIGRA_RF_ALGORITHM_HXX
 #define VIGRA_RF_ALGORITHM_HXX
 #include <vector>
+#include <random>
 #include "splices.hxx"
 #include <queue>
 #include <fstream>
@@ -1150,8 +1151,10 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
             ArrayVector<int> cts(2, 0);
             ArrayVector<Int32> indices(pr.features().shape(0));
             for(int ii = 0; ii < pr.features().shape(0); ++ii)
-               indices.push_back(ii); 
-            std::random_shuffle(indices.begin(), indices.end());
+               indices.push_back(ii); ;
+            std::random_device rd;
+            std::mt19937 g(rd());
+            std::shuffle(indices.begin(), indices.end(), g);
             for(int ii = 0; ii < rf.ext_param_.row_count_; ++ii)
             {
                 if(!sm.is_used()[indices[ii]] && cts[pr.response()(indices[ii], 0)] < 3000)
