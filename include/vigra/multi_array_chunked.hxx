@@ -597,7 +597,7 @@ class MultiArrayView<N, T_MaybeConst, ChunkedArrayTag>
                 vigra_precondition(this->shape() == rhs.shape(),
                                    "MultiArrayView::operator=(): shape mismatch.");
                 iterator i = begin(), ie = end();
-                const_iterator j = rhs.begin();
+                const_iterator j = rhs.cbegin();
                 for(; i != ie; ++i, ++j)
                     *i = *j;
             }
@@ -612,7 +612,7 @@ class MultiArrayView<N, T_MaybeConst, ChunkedArrayTag>
         vigra_precondition(this->shape() == rhs.shape(), \
                            "MultiArrayView::operator" #op "(): shape mismatch."); \
         iterator i = begin(), ie = end(); \
-        typename MultiArrayView<N, U, C1>::const_iterator j = rhs.begin(); \
+        typename MultiArrayView<N, U, C1>::const_iterator j = rhs.cbegin(); \
         for(; i != ie; ++i, ++j) \
             *i op detail::RequiresExplicitCast<value_type>::cast(*j); \
         return *this; \
@@ -1050,8 +1050,8 @@ class MultiArrayView<N, T_MaybeConst, ChunkedArrayTag>
     {
         if(this->shape() != rhs.shape())
             return false;
-        const_iterator i = begin(), ie = end();
-        typename MultiArrayView<N, U, C1>::const_iterator j = rhs.begin();
+        const_iterator i = cbegin(), ie = cend();
+        typename MultiArrayView<N, U, C1>::const_iterator j = rhs.cbegin();
         for(; i != ie; ++i, ++j)
             if(*i != *j)
                 return false;
@@ -1785,8 +1785,8 @@ class ChunkedArray
     {
         if(this->shape() != rhs.shape())
             return false;
-        const_iterator i = begin(), ie = end();
-        typename MultiArrayView<N, U, C1>::const_iterator j = rhs.begin();
+        const_iterator i = cbegin(), ie = cend();
+        typename MultiArrayView<N, U, C1>::const_iterator j = rhs.cbegin();
         for(; i != ie; ++i, ++j)
             if(*i != *j)
                 return false;
