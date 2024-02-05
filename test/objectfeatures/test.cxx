@@ -958,10 +958,10 @@ struct AccumulatorTest
 
             double h[HSIZE] = { 5.0, 0.0, 6.0, 3.0, 3.0, 1.0, 2.0, 2.0, 4.0, 4.0 };
 
-            shouldEqualSequence(h, h+HSIZE, get<IntegerHistogram<HSIZE> >(a).begin());
-            shouldEqualSequence(h, h+HSIZE, get<UserRangeHistogram<HSIZE> >(a).begin());
-            shouldEqualSequence(h, h+HSIZE, get<AutoRangeHistogram<HSIZE> >(a).begin());
-            shouldEqualSequence(h, h+HSIZE, get<IntegerHistogram<0> >(a).begin());
+            shouldEqualSequence(h, h+HSIZE, get<IntegerHistogram<HSIZE> >(a).cbegin());
+            shouldEqualSequence(h, h+HSIZE, get<UserRangeHistogram<HSIZE> >(a).cbegin());
+            shouldEqualSequence(h, h+HSIZE, get<AutoRangeHistogram<HSIZE> >(a).cbegin());
+            shouldEqualSequence(h, h+HSIZE, get<IntegerHistogram<0> >(a).cbegin());
 
             double density[HSIZE] = { 5.0/30.0, 0.0, 6.0/30.0, 3.0/30.0, 3.0/30.0, 1.0/30.0, 2.0/30.0, 2.0/30.0, 4.0/30.0, 4.0/30.0 };
             shouldEqualSequence(density, density+HSIZE, get<DivideByCount<UserRangeHistogram<HSIZE> > >(a).begin());
