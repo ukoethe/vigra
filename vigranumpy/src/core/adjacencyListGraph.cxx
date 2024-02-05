@@ -69,7 +69,7 @@ namespace vigra{
         const NumpyArray<1, UInt32> & serialization 
     ){
         graph.clear();
-        graph.deserialize(serialization.begin(),serialization.end());
+        graph.deserialize(serialization.cbegin(),serialization.cend());
     }
 
 

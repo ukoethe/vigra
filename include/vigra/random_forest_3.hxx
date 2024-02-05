@@ -390,8 +390,8 @@ random_forest_impl(
     std::vector<RF> trees(tree_count);
 
     // Transform the labels to 0, 1, 2, ...
-    std::set<LabelType> const dlabels(labels.begin(), labels.end());
-    std::vector<LabelType> const distinct_labels(dlabels.begin(), dlabels.end());
+    std::set<LabelType> const dlabels(labels.cbegin(), labels.cend());
+    std::vector<LabelType> const distinct_labels(dlabels.cbegin(), dlabels.cend());
     pspec.distinct_classes(distinct_labels);
     std::map<LabelType, size_t> label_map;
     for (size_t i = 0; i < distinct_labels.size(); ++i)
