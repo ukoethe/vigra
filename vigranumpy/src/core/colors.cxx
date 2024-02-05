@@ -337,7 +337,7 @@ NumpyAnyArray pythonApplyColortable(const NumpyArray<2, Singleband<T> >& valueIm
         //make an unstrided copy of the current column of the colortable
         ArrayVector<UInt8> ctable(colortable.bind<1>(c).begin(), colortable.bind<1>(c).end());
 
-        for(typename InputType::const_iterator v = valueImage.begin(); v != valueImage.end(); ++v, ++channelIter)
+        for(typename InputType::const_iterator v = valueImage.cbegin(); v != valueImage.cend(); ++v, ++channelIter)
         {
             if (*v == 0)
             {

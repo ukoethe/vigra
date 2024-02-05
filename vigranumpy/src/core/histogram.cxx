@@ -121,7 +121,7 @@ namespace vigra{
         {
             PyAllowThreads _pythread;
             TinyVector<double, DIM+1> sigmaVec;
-            std::copy(sigmas.begin(),sigmas.end(),sigmaVec.begin());
+            std::copy(sigmas.cbegin(),sigmas.cend(),sigmaVec.begin());
 
             multiGaussianRankOrder<DIM, float, float, float>(image, minVal, maxVal,
                                    bins, sigmaVec, ranks, out);

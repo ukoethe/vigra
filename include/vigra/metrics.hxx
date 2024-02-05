@@ -59,7 +59,7 @@ namespace metrics{
         }
         template<class A, class B>
         T operator()(const A & a,const B & b)const{
-            return opImpl(a.begin(),a.end(),b.begin());
+            return opImpl(a.cbegin(),a.cend(),b.cbegin());
         }
     private:
         template<class ITER_A,class ITER_B>
@@ -90,7 +90,7 @@ namespace metrics{
         }
         template<class A, class B>
         T operator()(const A & a,const B & b)const{
-            return opImpl(a.begin(),a.end(),b.begin());
+            return opImpl(a.cbegin(),a.cend(),b.cbegin());
         }
     private:
         template<class ITER_A,class ITER_B>
@@ -119,7 +119,7 @@ namespace metrics{
         }
         template<class A, class B>
         T operator()(const A & a,const B & b)const{
-            return opImpl(a.begin(),a.end(),b.begin());
+            return opImpl(a.cbegin(),a.cend(),b.cbegin());
         }
     private:
         template<class ITER_A,class ITER_B>
@@ -175,7 +175,7 @@ namespace metrics{
         }
         template<class A, class B>
         T operator()(const A & a,const B & b)const{
-            return opImpl(a.begin(),a.end(),b.begin());
+            return opImpl(a.cbegin(),a.cend(),b.cbegin());
         }
     private:
         template<class ITER_A,class ITER_B>
@@ -205,7 +205,7 @@ namespace metrics{
         }
         template<class A, class B>
         T operator()(const A & a,const B & b)const{
-            return opImpl(a.begin(),a.end(),b.begin());
+            return opImpl(a.cbegin(),a.cend(),b.cbegin());
         }
     private:
         template<class ITER_A,class ITER_B>
