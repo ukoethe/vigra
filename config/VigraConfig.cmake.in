@@ -1,6 +1,16 @@
 get_filename_component(SELF_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
 get_filename_component(Vigra_TOP_DIR  "${SELF_DIR}/../../" ABSOLUTE)
 
+if(@OPENEXR_FOUND@)
+  # need to make sure we can resolve the target names
+  # that end up in VigraConfig.cmake
+  # If we found OpenEXR by targets. 
+  find_dependency(OpenEXR QUIET)
+endif()
+
+
+
+
 include(${SELF_DIR}/vigra-targets.cmake)
 get_target_property(VIGRA_TYPE vigraimpex TYPE)
 if(${VIGRA_TYPE} STREQUAL "STATIC_LIBRARY")
