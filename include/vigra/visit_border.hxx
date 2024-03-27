@@ -106,13 +106,13 @@ struct visit_border_impl<0>
             typedef typename MultiArrayView<N, Data, S1>::const_iterator DataIterator;
             typedef typename MultiArrayView<N, Label, S2>::iterator LabelsIterator;
 
-            DataIterator u_data_it = u_data.begin();
+            DataIterator u_data_it = u_data.cbegin();
             LabelsIterator u_labels_it = u_labels.begin();
 
-            DataIterator v_data_it = v_data.begin();
+            DataIterator v_data_it = v_data.cbegin();
             LabelsIterator v_labels_it = v_labels.begin();
 
-            for( ; u_data_it != u_data.end(); ++u_data_it, ++u_labels_it, ++v_data_it, ++v_labels_it)
+            for( ; u_data_it != u_data.cend(); ++u_data_it, ++u_labels_it, ++v_data_it, ++v_labels_it)
             {
                 visitor(*u_data_it, *u_labels_it, *v_data_it, *v_labels_it, block_difference);
             }

@@ -859,9 +859,9 @@ public:
 
         // test const scan-order navigation
         array_view3_t av = a3;
-        iterator i1 = const_cast<array_view3_t const &>(av).begin();
-        iterator i2 = const_cast<array_view3_t const &>(av).begin();
-        iterator iend = const_cast<array_view3_t const &>(av).end();
+        iterator i1 = av.cbegin();
+        iterator i2 = av.cbegin();
+        iterator iend = av.cend();
 
         shouldEqual(&i1[0], &a3(0,0,0));
         shouldEqual(&i1[1], &a3(1,0,0));

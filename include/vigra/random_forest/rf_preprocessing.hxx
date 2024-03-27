@@ -128,7 +128,7 @@ namespace detail
     bool contains_nan(MultiArrayView<N, T, C> const & in)
     {
         typedef typename MultiArrayView<N, T, C>::const_iterator Iter;
-        Iter i = in.begin(), end = in.end();
+        Iter i = in.cbegin(), end = in.cend();
         for(; i != end; ++i)
             if(isnan(NumericTraits<T>::toRealPromote(*i)))
                 return true;
@@ -143,7 +143,7 @@ namespace detail
          if(!std::numeric_limits<T>::has_infinity)
              return false;
         typedef typename MultiArrayView<N, T, C>::const_iterator Iter;
-        Iter i = in.begin(), end = in.end();
+        Iter i = in.cbegin(), end = in.cend();
         for(; i != end; ++i)
             if(abs(*i) == std::numeric_limits<T>::infinity())
                 return true;
