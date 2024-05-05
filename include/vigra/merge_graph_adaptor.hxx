@@ -774,7 +774,7 @@ class MergeGraphAdaptor
         size_t maxDegree()const{
             size_t md=0;
             for(NodeIt it(*this);it!=lemon::INVALID;++it){
-                std::max(md, size_t( degree(*it) ) );
+                md = std::max(md, size_t( degree(*it) ) );
             }
             return md;
         }
