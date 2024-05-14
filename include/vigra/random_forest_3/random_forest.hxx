@@ -260,8 +260,8 @@ void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict(
     for (size_t i = 0; i < (size_t)features.shape()[0]; ++i)
     {
         auto const sub_probs = probs.template bind<0>(i);
-        auto it = std::max_element(sub_probs.begin(), sub_probs.end());
-        size_t const label = std::distance(sub_probs.begin(), it);
+        auto it = std::max_element(sub_probs.cbegin(), sub_probs.cend());
+        size_t const label = std::distance(sub_probs.cbegin(), it);
         labels(i) = problem_spec_.distinct_classes_[label];
     }
 }

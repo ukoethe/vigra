@@ -309,20 +309,20 @@ class StridedScanOrderIterator
         return this->template get<1>();
     }
 
-    const_reference operator*() const
-    {
-        return this->template get<1>();
-    }
+    // const_reference operator*() const
+    // {
+    //     return this->template get<1>();
+    // }
 
     pointer operator->()
     {
         return &this->template get<1>();
     }
 
-    const_pointer operator->() const
-    {
-        return &this->template get<1>();
-    }
+    // const_pointer operator->() const
+    // {
+    //     return &this->template get<1>();
+    // }
 
     reference operator[](MultiArrayIndex i)
     {
@@ -339,10 +339,10 @@ class StridedScanOrderIterator
         return *(StridedScanOrderIterator(*this) += coordOffset);
     }
 
-    const_reference operator[](const shape_type& coordOffset) const
-    {
-        return *(StridedScanOrderIterator(*this) += coordOffset);
-    }
+    // const_reference operator[](const shape_type& coordOffset) const
+    // {
+    //     return *(StridedScanOrderIterator(*this) += coordOffset);
+    // }
 
     StridedScanOrderIterator & operator++()
     {
