@@ -47,6 +47,10 @@
 #include <vigra/polynomial_registration.hxx>
 #include <vigra/rbf_registration.hxx>
 
+#ifdef WITH_LEMON
+#include <vigra/piecewiseaffine_registration.hxx>
+#endif
+
 using namespace vigra;
 
 static int pointdata[] = {
@@ -809,6 +813,127 @@ struct RadialBasisRegistrationTestSuite
     }
 };
 
+#ifdef WITH_LEMON
+struct PiecewiseAffineIdentityTest
+{
+    std::vector<vigra::TinyVector<double,2> > s_points;
+    
+    PiecewiseAffineIdentityTest()
+    : s_points(srcPoints())
+    {
+    }
+    
+    void testInit()
+    {
+        /**
+         * First test: If point sets are equal -> a number of triangles each assigned
+         *             with an identity matrix representation should be the result!
+         */
+        typedef std::vector<TriangleTransformationType> TTVectorType;
+        
+        TTVectorType identities = triangleTransformations2DFromCorrespondingPoints(s_points.begin(), s_points.end(), s_points.begin());
+        
+        /**
+         * Estimated result:
+         *
+         * Triangles... and each with an identity matrix
+         */
+        Matrix<double> reference = linalg::identityMatrix<double>(3);
+        
+        for (TTVectorType::const_iterator iter=identities.begin(); iter!=identities.end(); ++iter)
+        {
+            shouldEqualToleranceMatrices(iter->second, reference, test_epsilon);
+        }
+    }
+};
+
+
+
+
+struct PiecewiseAffineRegistrationTest
+{
+    vigra::BImage s_img;
+    vigra::BImage d_img;
+    
+    std::vector<vigra::TinyVector<double,2> > s_points;
+    std::vector<vigra::TinyVector<double,2> > d_points;
+    
+    PiecewiseAffineRegistrationTest()
+    : s_points(srcPoints()),
+      d_points(destPoints())
+    {
+        vigra::ImageImportInfo info1("nuernberg-1991.png");
+        s_img.resize(info1.width(), info1.height());
+        vigra::importImage(info1, destImage(s_img));
+        
+        vigra::ImageImportInfo info2("nuernberg-1995.png");
+        d_img.resize(info2.width(), info2.height());
+        vigra::importImage(info2, destImage(d_img));
+    }
+    
+    void testInit()
+    {
+        /**
+         * First test: If point sets are equal -> a number of triangles each assigned
+         *             with an identity matrix representation should be the result!
+         */
+        
+        typedef std::vector<TriangleTransformationType> TTVectorType;
+        
+        TTVectorType tri_trans = triangleTransformations2DFromCorrespondingPoints(s_points.begin(), s_points.end(), d_points.begin());
+        
+        /**
+         * Estimated result:
+         *
+         * Triangles... and each with a matrix that transforms dest Corners to src corners!
+         */
+        std::vector<PointType> d_test_points(3);
+        
+        for (TTVectorType::const_iterator iter=tri_trans.begin(); iter!=tri_trans.end(); ++iter)
+        {
+            d_test_points[0] = iter->first.first;
+            d_test_points[1] = iter->first.second;
+            d_test_points[2] = iter->first.third;
+            
+            vigra::Matrix<double> transformation = iter->second;
+            
+            for(int p=0; p<3; p++)
+            {
+                for(size_t i=0; i< d_points.size(); i++)
+                {
+                    //if current d_point is located at position i of all d_points:
+                    //test if it transforms to s_point of same index
+                    if (d_test_points[p] == d_points[i])
+                    {
+                        double sx = transformation(0,0)*d_test_points[p][0] + transformation(0,1)*d_test_points[p][1] + transformation(0,2);
+                        double sy = transformation(1,0)*d_test_points[p][0] + transformation(1,1)*d_test_points[p][1] + transformation(1,2);
+                        
+                        shouldEqualTolerance(sx, s_points[i][0], test_epsilon);
+                        shouldEqualTolerance(sy, s_points[i][1], test_epsilon);
+                    }
+                }
+            }
+        }
+        /**
+         * visual interpretation by means of the warped image:
+         */
+         BImage temp = d_img;
+         vigra::piecewiseAffineWarpImage(SplineImageView<2,unsigned char>(srcImageRange(s_img)), destImageRange(temp), tri_trans);
+         vigra::exportImage(srcImageRange(temp), vigra::ImageExportInfo("res-piecewise_affine.png"));
+    }
+};
+
+struct PiecewiseAffineRegistrationTestSuite
+: public vigra::test_suite
+{
+    PiecewiseAffineRegistrationTestSuite()
+    : vigra::test_suite("PiecewiseAffineRegistrationTestSuite")
+    {
+        add( testCase( &PiecewiseAffineIdentityTest::testInit));
+        add( testCase( &PiecewiseAffineRegistrationTest::testInit));
+    }
+};
+#endif /* WITH_LEMON */
 
 
 struct RegistrationTestCollection
@@ -823,6 +948,9 @@ struct RegistrationTestCollection
         add( new ProjectiveRegistrationTestSuite);
         add( new PolynomialRegistrationTestSuite);
         add( new RadialBasisRegistrationTestSuite);
+#ifdef WITH_LEMON
+        add( new PiecewiseAffineRegistrationTestSuite);
+#endif
    }
 };
 
