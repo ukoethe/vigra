@@ -38,7 +38,6 @@ import sys
 print("\nexecuting test file", __file__, file=sys.stderr)
 exec(compile(open('set_paths.py', "rb").read(), 'set_paths.py', 'exec'))
 
-from nose.tools import assert_equal, raises
 import numpy as np
 from vigra import *
 from vigra import arraytypes as at
@@ -67,7 +66,7 @@ def checkShape(shape1, shape2):
         shape1 = shape1.shape
     if isinstance(shape2, np.ndarray):
         shape2 = shape2.shape
-    assert_equal(shape1, shape2)
+    assert shape1 == shape2
 
 def checkImages(i1,i2):
     checkShape(i1.shape, i2.shape)

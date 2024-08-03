@@ -38,7 +38,6 @@ import sys
 print("\nexecuting test file", __file__, file=sys.stderr)
 exec(compile(open('set_paths.py', "rb").read(), 'set_paths.py', 'exec'))
 
-from nose.tools import assert_equal, raises, assert_raises, assert_true
 import vigra
 import numpy
 
@@ -69,8 +68,8 @@ def test_gray2qimage():
     tmp2 = vigra.impex.readImage("tmp2.png")
     
     for i in range(3):
-        assert_true( (tmp1 == tmp2[:,:,i]).all() )
-    assert_true( (tmp2[:,:,3] == 255).all() )
+        assert (tmp1 == tmp2[:,:,i]).all()
+    assert (tmp2[:,:,3] == 255).all()
 
 def test_alphamodulated2qimage():
     if not _have_qt:
@@ -93,15 +92,11 @@ def test_alphamodulated2qimage():
     tmp2 = byte_view(img)
     tmp2 = tmp2.swapaxes(0,1)
     
-    assert_true( tmp1.shape[0:2] == tmp2.shape[0:2] )
-    assert_true( tmp2.ndim == 3 )
-    assert_true( tmp2.shape[2] == 4 )
+    assert tmp1.shape[0:2] == tmp2.shape[0:2]
+    assert tmp2.ndim == 3
+    assert tmp2.shape[2] == 4
     
-    assert_true( (tmp2[:,:,0] == 0).all() )
-    assert_true( (tmp2[:,:,2] == 0).all() )
-    assert_true( (tmp2[:,:,3] == tmp1).all() )
-    assert_true( (tmp2[:,:,1] == tmp1).all() )
-
-if __name__ == '__main__':
-    import nose
-    nose.run(defaultTest=__file__)
+    assert (tmp2[:,:,0] == 0).all()
+    assert (tmp2[:,:,2] == 0).all()
+    assert (tmp2[:,:,3] == tmp1).all()
+    assert (tmp2[:,:,1] == tmp1).all()

@@ -38,7 +38,7 @@ import sys
 print("\nexecuting test file", __file__, file=sys.stderr)
 exec(compile(open('set_paths.py', "rb").read(), 'set_paths.py', 'exec'))
 
-from nose.tools import assert_equal, raises, assert_raises
+from nose.tools import assert_raises
 import vigra
 import numpy as np
 

@@ -39,7 +39,6 @@ print("\nexecuting test file", __file__, file=sys.stderr)
 exec(compile(open('set_paths.py', "rb").read(), 'set_paths.py', 'exec'))
 
 
-from nose.tools import assert_equal, raises
 import numpy as np
 import numpy as numpy
 from vigra import graphs as vigraph
@@ -273,17 +272,17 @@ class TestGraph(object):
         g.addNode(3)
         nodes = [n for n in g.nodeIter()]
         assert len(nodes)==1
-        assert g.id(nodes[0]) == 3 
+        assert g.id(nodes[0]) == 3
 
         g.addNode(6)
         nodes = [n for n in g.nodeIter()]
         assert len(nodes)==2
-        assert g.id(nodes[0]) == 3 
-        assert g.id(nodes[1]) == 6 
+        assert g.id(nodes[0]) == 3
+        assert g.id(nodes[1]) == 6
 
         g.addNode(2)
         nodes = [n for n in g.nodeIter()]
         assert len(nodes)==3
-        assert g.id(nodes[0]) == 2 
-        assert g.id(nodes[1]) == 3 
-        assert g.id(nodes[2]) == 6 
+        assert g.id(nodes[0]) == 2
+        assert g.id(nodes[1]) == 3
+        assert g.id(nodes[2]) == 6

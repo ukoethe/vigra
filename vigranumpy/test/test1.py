@@ -38,7 +38,7 @@ import sys
 print("\nexecuting test file", __file__, file=sys.stderr)
 exec(compile(open('set_paths.py', "rb").read(), 'set_paths.py', 'exec'))
 
-from nose.tools import assert_equal, raises, assert_raises
+from nose.tools import raises, assert_raises
 import vigra
 import numpy as np
 from vigra.analysis import *
@@ -68,10 +68,10 @@ def checkShape(shape1, shape2):
         shape1 = shape1.shape
     if isinstance(shape2, np.ndarray):
         shape2 = shape2.shape
-    assert_equal(shape1, shape2)
+    assert shape1 == shape2
 
 def checkType(i,type):
-    assert_equal(i.dtype, type)
+    assert i.dtype == type
 
 def checkAboutSame(i1,i2):
     compare_shapes(i1.shape, i2.shape)
@@ -178,8 +178,8 @@ def test_MinimaMaxima():
 
 def test_Region2Crack():
     res = regionImageToCrackEdgeImage(img_scalar_i)
-    assert_equal(img_scalar_f.shape[0]*2-1, res.shape[0])
-    assert_equal(img_scalar_f.shape[1]*2-1, res.shape[1])
+    assert img_scalar_f.shape[0]*2-1 == res.shape[0]
+    assert img_scalar_f.shape[1]*2-1 == res.shape[1]
     checkType(res,res.dtype)
 
     regionImageToCrackEdgeImage(img_scalar_i64[0:100,0:100], 1, img_scalar_i64)
@@ -232,8 +232,8 @@ def test_edges():
     checkType(res, np.uint8)
     
     res = shenCastanCrackEdgeImage(img_scalar_f, 1,128,255)
-    assert_equal(img_scalar_f.shape[0]*2-1, res.shape[0])
-    assert_equal(img_scalar_f.shape[1]*2-1, res.shape[1])
+    assert img_scalar_f.shape[0]*2-1 == res.shape[0]
+    assert img_scalar_f.shape[1]*2-1 == res.shape[1]
     
     res1 = beautifyCrackEdgeImage(res,  1, 0)
     checkShape(res1, res)
@@ -248,29 +248,29 @@ def test_edges():
     checkType(res, np.uint8)
     
     res = boundaryTensor2D(img_scalar_f, 1)
-    assert_equal(img_scalar_f.shape[0], res.shape[0])
-    assert_equal(img_scalar_f.shape[1], res.shape[1])
-    assert_equal(res.shape[2], 3)    
+    assert img_scalar_f.shape[0] == res.shape[0]
+    assert img_scalar_f.shape[1] == res.shape[1]
+    assert res.shape[2] == 3
     checkType(res, np.float32)
     
     res = hourGlassFilter2D(img_multi_f, 1, 2)
-    assert_equal(img_multi_f.shape[0], res.shape[0])
-    assert_equal(img_multi_f.shape[1], res.shape[1])
+    assert img_multi_f.shape[0] == res.shape[0]
+    assert img_multi_f.shape[1] == res.shape[1]
     checkType(res, np.float32)
     
     res = tensorEigenRepresentation2D(img_multi_f)
-    assert_equal(img_multi_f.shape[0], res.shape[0])
-    assert_equal(img_multi_f.shape[1], res.shape[1])
+    assert img_multi_f.shape[0] == res.shape[0]
+    assert img_multi_f.shape[1] == res.shape[1]
     checkType(res, np.float32)
     
     res = tensorTrace(img_multi_f)
-    assert_equal(img_multi_f.shape[0], res.shape[0])
-    assert_equal(img_multi_f.shape[1], res.shape[1])
+    assert img_multi_f.shape[0] == res.shape[0]
+    assert img_multi_f.shape[1] == res.shape[1]
     checkType(res, np.float32)
     
     res = rieszTransformOfLOG2D(img_scalar_f, 1, 1, 1)
-    assert_equal(img_multi_f.shape[0], res.shape[0])
-    assert_equal(img_multi_f.shape[1], res.shape[1])
+    assert img_multi_f.shape[0] == res.shape[0]
+    assert img_multi_f.shape[1] == res.shape[1]
     checkType(res, np.float32)
     
     

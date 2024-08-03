@@ -75,15 +75,12 @@ for n, f in vt.__dict__.items():
 
 # 2023/09
 # Small compatibility shims with old code that used
-#     assert_equal and assert_true
+#     assert_equal
 # from nosetest. Rewriting the tests to use python's assert statement
 # was decided to be too invasive.
 def assert_equal(x, y):
     assert x == y
 
-
-def assert_true(x):
-    assert x
 
 
 def checkShape(shape1, shape2):
@@ -177,7 +174,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         if channels > 1:
             assert_equal(img.order, "V" if hasChannelAxis else "F")
         else:
-            assert_true(img.order in ['V', 'F'])
+            assert img.order in ['V', 'F']
         assert_equal(img.flags.c_contiguous, False)
 
         # test axistags
@@ -186,7 +183,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         assert_equal(img.withAxes('y', 'z', 'x', 'c').axistags, axistags4)
         assert_equal(img.withAxes('yzxc').axistags, axistags4)
         assert_equal(img.withAxes(axistags4).axistags, axistags4)
-        assert_true(img.withAxes(img.axistags) is img)
+        assert img.withAxes(img.axistags) is img
         array = img.noTags()
         assert_equal(type(array), numpy.ndarray)
         assert_equal(arraytypes.taggedView(array, vaxistags).axistags, vaxistags)
@@ -265,7 +262,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         if channels > 1:
             assert_equal(img.order, "V" if hasChannelAxis else "F")
         else:
-            assert_true(img.order in ['V', 'F'])
+            assert img.order in ['V', 'F']
         assert_equal(img.flags.c_contiguous, False)
         assert_equal(img.axistags, vaxistags)
         img[1,2] = value
@@ -319,7 +316,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         if channels > 1:
             assert_equal(img.order, "V" if hasChannelAxis else "F")
         else:
-            assert_true(img.order in ['V', 'F'])
+            assert img.order in ['V', 'F']
         assert_equal(b.axistags, img.axistags)
         assert_equal(b.flags.c_contiguous, False)
         assert (b==img).all()
@@ -1379,7 +1376,7 @@ def testSlicing():
     assert_equal(tags, a.axistags)
 
     b = a[...]
-    assert_true((a==b).all())
+    assert (a==b).all()
     assert_equal(tags, b.axistags)
 
     b = a[...,0]
@@ -1420,17 +1417,17 @@ def testSlicing():
 
     b = a.subarray((4,3,2))
     assert_equal(b.shape, (4,3,2,2))
-    assert_true((a[:4,:3,:2,:]==b).all())
+    assert (a[:4,:3,:2,:]==b).all()
     assert_equal(tags, b.axistags)
 
     b = a.subarray((1,1,1),(4,3,2))
     assert_equal(b.shape, (3,2,1,2))
-    assert_true((a[1:4,1:3,1:2]==b).all())
+    assert (a[1:4,1:3,1:2]==b).all()
     assert_equal(tags, b.axistags)
 
     b = a.subarray((1,1,1,1),(4,3,2,2))
     assert_equal(b.shape, (3,2,1,1))
-    assert_true((a[1:4,1:3,1:2,1:]==b).all())
+    assert (a[1:4,1:3,1:2,1:]==b).all()
     assert_equal(tags, b.axistags)
 
 def testMethods():
