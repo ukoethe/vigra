@@ -36,7 +36,6 @@
 # run with a simple 'pytest' in this directory
 # (and pytest installed, i.e. 'pip install pytest' or 'conda install pytest')
 
-from __future__ import division, print_function
 from functools import reduce
 
 import sys

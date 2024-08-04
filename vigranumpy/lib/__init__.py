@@ -33,7 +33,6 @@
 #
 #######################################################################
 
-from __future__ import division, print_function
 import sys, os, time, math
 
 from numbers import Number

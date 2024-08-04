@@ -33,7 +33,6 @@
 #
 #######################################################################
 
-from __future__ import division, print_function
 import sys
 print("\nexecuting test file", __file__, file=sys.stderr)
 exec(compile(open('set_paths.py', "rb").read(), 'set_paths.py', 'exec'))

@@ -1,4 +1,3 @@
-from __future__ import print_function
 
 import vigra
 from vigra import numpy
