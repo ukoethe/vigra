@@ -7,10 +7,10 @@ jobs:
       vmImage: ubuntu-latest
     strategy:
       matrix:
-        py38:
-          PYTHON_VERSION: 3.8
-        py39:
-          PYTHON_VERSION: 3.9
+        py311:
+          PYTHON_VERSION: 3.11
+        py312:
+          PYTHON_VERSION: 3.12
     steps:
       - script: bash ci/build_unix.sh
   - job: OSX
@@ -18,8 +18,8 @@ jobs:
       vmImage: macOS-latest
     strategy:
       matrix:
-        py37:
-          PYTHON_VERSION: 3.7
+        py310:
+          PYTHON_VERSION: 3.10
     steps:
       - script: |
           sudo xcode-select -s /Applications/Xcode_13.2.1.app
