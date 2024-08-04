@@ -38,9 +38,15 @@ import sys
 print("\nexecuting test file", __file__, file=sys.stderr)
 exec(compile(open('set_paths.py', "rb").read(), 'set_paths.py', 'exec'))
 
-from nose.tools import assert_raises
+import pytest
 import vigra
 import numpy as np
+
+# Compatibility for
+#    from nose.tools import assert_raises
+def assert_raises(error, func, *args, **kwargs):
+    with pytest.raises(error):
+        func(*args, **kwargs)
 
 def checkAboutSame(i1,i2):
     assert(i1.shape==i2.shape)
