@@ -38,12 +38,18 @@ import sys
 print("\nexecuting test file", __file__, file=sys.stderr)
 exec(compile(open('set_paths.py', "rb").read(), 'set_paths.py', 'exec'))
 
-from nose.tools import raises, assert_raises
+import pytest
 import vigra
 import numpy as np
 from vigra.analysis import *
 from vigra.filters import *
 import vigra.arraytypes as at
+
+# Compatibility for
+#    from nose.tools import assert_raises
+def assert_raises(error, func, *args, **kwargs):
+    with pytest.raises(error):
+        func(*args, **kwargs)
 
 img_rgb_f = at.RGBImage(np.random.rand(100,200,3)*255,dtype=np.float32)
 img_scalar_f = at.ScalarImage(np.random.rand(100,200)*255,dtype=np.float32)
