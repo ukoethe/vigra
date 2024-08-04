@@ -192,7 +192,7 @@ class Function(object):
             highestArrayType = arrayTypes[-1]
 
         if self.is_bool:
-            return (highestArrayType[-1], numpy.bool8)
+            return (highestArrayType[-1], numpy.bool_)
 
         scalarType = [numpy.dtype(type(x)) for x in args if numpy.isscalar(x)]
         if not scalarType:
