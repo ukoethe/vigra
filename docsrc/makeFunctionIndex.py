@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import re
-import glob
 import sys
 import xml.etree.ElementTree as ET
 from itertools import chain

@@ -153,7 +153,7 @@ def testGridGraphAgglomerativeClustering():
     g1  = graphs.regionAdjacencyGraph(graph=g0,labels=labels)
     assert g1.nodeNum == 5
 
-class TestGraph(object):
+class TestGraph:
 
     def testAddNodesWithIds(self):
 

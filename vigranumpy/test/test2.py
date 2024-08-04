@@ -155,7 +155,7 @@ def test_Kernel1D():
     contents = np.array([-1,2,3,5,3,2,-1], dtype=np.float64)
     k1 = Kernel1D()
     k1.initExplicitly(-3,3, contents)
-    for k in xrange(-3, 4):
+    for k in range(-3, 4):
         assert(k1[k]==contents[k+3])
     k1[-2]=5
     assert(k1[-2]==5)
@@ -164,8 +164,8 @@ def test_Kernel2D():
     contents = np.array([[0,1,2],[3,4,5],[6,7,8]],dtype=np.float64)
     k2=Kernel2D()
     k2.initExplicitly((-1,-1),(1,1), contents)
-    for i in xrange(-1, 2):
-        for j in xrange(-1, 2):
+    for i in range(-1, 2):
+        for j in range(-1, 2):
             assert(k2[i,j]==contents[i+1, j+1])
     k2[0,-1]=-5
     assert(k2[0,-1]==-5)

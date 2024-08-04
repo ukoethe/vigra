@@ -50,15 +50,6 @@ from vigra.arraytypes import AxisTags, AxisInfo
 import platform
 IS_PYPY = platform.python_implementation() == 'PyPy'
 
-if sys.version_info[0] > 2:
-    def xrange(*args):
-        return range(*args)
-
-    def iteritems(dictionary, **kwargs):
-        return dictionary.items(**kwargs)
-else:
-    def iteritems(dictionary, **kwargs):
-        return dictionary.iteritems(**kwargs)
 
 numpyHasComplexNegateBug = numpy.version.version.startswith('1.0')
 
@@ -1369,7 +1360,7 @@ def testZMQ():
 
 def testSlicing():
     a = arraytypes.Vector2Volume((5,4,3))
-    a.flat[...] = xrange(a.size)
+    a.flat[...] = range(a.size)
 
     tags = arraytypes.VigraArray.defaultAxistags('xyzc')
     assert_equal(tags, a.axistags)
@@ -1435,7 +1426,7 @@ def testMethods():
 
     a.ravel()[...] = range(a.size)
 
-    for k, i in zip(a.flat, xrange(a.size)):
+    for k, i in zip(a.flat, range(a.size)):
         assert_equal(k, i)
 
     assert (a.flatten() == range(a.size)).all()
@@ -1560,7 +1551,7 @@ def testUfuncs():
     for t in types:
         arrays[t] = arraytypes.ScalarImage((2,2), t, value=2)
         ones[t] = arraytypes.ScalarImage((1,1), t, value=1)
-    for t, a in iteritems(arrays):
+    for t, a in arrays.items():
         b = -a
         assert_equal(t, b.dtype)
         assert_equal(a.axistags, b.axistags)

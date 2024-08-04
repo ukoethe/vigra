@@ -42,8 +42,6 @@ from PyQt4.QtCore import SIGNAL
 import vigra
 import vigra.ufunc
 
-if sys.version_info[0] > 2:
-    xrange = range
 
 try:
     from VigraQt import OverlayViewer, ImageCursor
@@ -92,7 +90,7 @@ class ImageViewer(OverlayViewer):
         elif hasattr(image, "name"):
             self.setWindowTitle(image.name)
         else:
-            for k in xrange(1, 10000):
+            for k in range(1, 10000):
                 if not ImageViewer.activeViewers.has_key(k):
                     break
             ImageViewer.activeViewers[k] = self

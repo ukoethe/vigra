@@ -118,10 +118,10 @@ indexPageHeadingReplacement = '''\\1 <h2 class="details_section">\\2
 \\3
 <center> Version'''
 
-templateDeclaration = re.compile('''<tr><td class="memTemplParams" nowrap colspan="2">([^<]*)</td></tr>\s*
+templateDeclaration = re.compile(r'''<tr><td class="memTemplParams" nowrap colspan="2">([^<]*)</td></tr>\s*
 <tr><td class="memTemplItemLeft" nowrap align="right" valign="top">[^<]*</td><td class="memTemplItemRight" valign="bottom"><a class="el" href=".*#([^"]+)">''')
 
-templateDocumentation = '''(<a class="anchor" name="%s"></a>.*
+templateDocumentation = r'''(<a class="anchor" name="%s"></a>.*
 <div class="memitem">
 <div class="memproto">\s*
       <table class="memname">
@@ -158,10 +158,7 @@ def insertMissingTemplateDeclarations(text):
 
 def processFile(fileName):
     print(fileName)          # log message
-    if sys.version_info[0] < 3:
-        f = open(fileName)
-    else:
-        f = open(fileName,encoding = "ISO-8859-1")
+    f = open(fileName,encoding = "ISO-8859-1")
     text = f.read()
     f.close()
     
