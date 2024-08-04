@@ -10,7 +10,7 @@ conda create \
     --name vigra \
     python=${PYTHON_VERSION} pytest c-compiler cxx-compiler \
     zlib jpeg libpng libtiff hdf5 fftw \
-    boost boost-cpp numpy h5py nose sphinx \
+    boost boost-cpp "numpy<2" h5py nose sphinx \
     openexr lemon cmake make
 
 if [[ `uname` == 'Darwin' ]];
