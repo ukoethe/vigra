@@ -11,7 +11,8 @@ conda create \
     python=${PYTHON_VERSION} pytest c-compiler cxx-compiler \
     zlib jpeg libpng libtiff hdf5 fftw \
     boost boost-cpp "numpy<2" h5py sphinx \
-    openexr lemon cmake make
+    openexr lemon cmake make ruff
+
 
 if [[ `uname` == 'Darwin' ]];
 then
@@ -22,6 +23,9 @@ else
 fi
 
 source $CONDA/bin/activate vigra
+
+# lint quickly to help find obvious mistakes
+( cd vigranumpy && ruff check . )
 
 mkdir build
 cd build
