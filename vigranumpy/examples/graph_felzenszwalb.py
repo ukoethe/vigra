@@ -35,7 +35,7 @@ rag = graphs.regionAdjacencyGraph(gridGraph, labels)
 edgeWeights = rag.accumulateEdgeFeatures(gridGraphEdgeIndicator)
 
 # do the segmentation with felzenszwalbs method
-labels   = graphs.felzenszwalbSegmentation(rag, edgeWeights, 
+labels   = graphs.felzenszwalbSegmentation(rag, edgeWeights,
                                            k=50,nodeNumStop=nodeNumStop)
 
 

@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-import os 
+import os
 from PyQt4 import QtCore, QtGui
 
 def viewer2svg(viewer, basepath, onlyVisible = False, moveBy = QtCore.QPointF(0.5, 0.5)):
@@ -32,7 +32,7 @@ def viewer2svg(viewer, basepath, onlyVisible = False, moveBy = QtCore.QPointF(0.
             ovs.append([viewer._defaultOverlayName(ov.eo), ov.eo])
             ovs.append([viewer._defaultOverlayName(ov.po), ov.po])
         else:
-            ovs.append([ovname, ov])            
+            ovs.append([ovname, ov])
 
     for overlay in ovs:
         if overlay[0] == "EdgeOverlay":
