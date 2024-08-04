@@ -70,7 +70,7 @@ struct IterablePartitonTest
                 set.insert(i);
             }
         }
-        for(typename  SetType::const_iterator iter=c.begin();iter!=c.end();++iter){
+        for(typename  SetType::const_iterator iter=c.cbegin();iter!=c.cend();++iter){
             const IdType toRemove=*iter;
             should(set.find(toRemove)!=set.end());
             set.erase(toRemove);

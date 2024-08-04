@@ -1488,7 +1488,7 @@ struct LabelDispatch
     template <class ArrayLike>
     void mergeImpl(LabelDispatch const & o, ArrayLike const & labelMapping)
     {
-        MultiArrayIndex newMaxLabel = std::max<MultiArrayIndex>(maxRegionLabel(), *argMax(labelMapping.begin(), labelMapping.end()));
+        MultiArrayIndex newMaxLabel = std::max<MultiArrayIndex>(maxRegionLabel(), *argMax(labelMapping.cbegin(), labelMapping.cend()));
         setMaxRegionLabel(newMaxLabel);
         for(unsigned int k=0; k<labelMapping.size(); ++k)
             regions_[labelMapping[k]].mergeImpl(o.regions_[k]);
