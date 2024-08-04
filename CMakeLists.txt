@@ -407,7 +407,7 @@ EXPORT(TARGETS vigraimpex FILE vigra-targets.cmake)
 MESSAGE( STATUS "---------------------------------------------------------" )
 MESSAGE( STATUS "VIGRA configuration information:" )
 MESSAGE( STATUS "---------------------------------------------------------" )
-MESSAGE( STATUS "  Using CXX strandard: ${CMAKE_CXX_STANDARD}" )
+MESSAGE( STATUS "  Using CXX standard: ${CMAKE_CXX_STANDARD}" )
 
 IF(ZLIB_FOUND)
     MESSAGE( STATUS "  Using ZLIB  libraries: ${ZLIB_LIBRARIES}" )
