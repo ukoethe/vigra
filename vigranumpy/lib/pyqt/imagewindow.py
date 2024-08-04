@@ -32,7 +32,6 @@
 #    OTHER DEALINGS IN THE SOFTWARE.
 #
 #######################################################################
-from __future__ import print_function
 
 import math, os, sys, numpy, PyQt4
 

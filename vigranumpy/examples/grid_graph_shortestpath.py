@@ -1,4 +1,3 @@
-from __future__ import print_function
 
 import vigra
 import vigra.graphs as vigraph
