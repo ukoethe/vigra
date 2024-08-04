@@ -30,7 +30,7 @@ def makeVisuImage(path,img):
     iG[coords]=0
     iB[coords]=0
     visuimg-=visuimg.min()
-    visuimg/=visuimg.max()  
+    visuimg/=visuimg.max()
     return visuimg
 
 
@@ -73,7 +73,7 @@ gradmag = numpy.squeeze(vigra.filters.gaussianGradientMagnitude(imgLabSmall,sigm
 hessian = numpy.squeeze(vigra.filters.hessianOfGaussianEigenvalues(imgLabSmall[:,:,0],sigma))[:,:,0]
 hessian-=hessian.min()
 raw     = 256-imgLabSmall[:,:,0].copy()
-gridGraph  = vigraph.gridGraph(imgLab.shape[:2],False)  
+gridGraph  = vigraph.gridGraph(imgLab.shape[:2],False)
 
 
 
