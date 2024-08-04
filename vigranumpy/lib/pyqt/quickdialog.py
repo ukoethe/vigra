@@ -212,8 +212,6 @@ class OptionalStringInput(qt.QFrame):
     def text(self):
         return str(self.variable.text())
     
-    def unicode(self):
-        return unicode(self.variable.text())
 
 class StringInput(OptionalStringInput):
     def __init__(self, parent, label):

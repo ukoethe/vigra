@@ -155,17 +155,6 @@ class Timer:
         if self.verbose  :
             print("... took ", self.interval, "sec")
 
-# portable way to inject a metaclass (taken from six.py)
-def _with_metaclass(meta, *bases):
-    """Create a base class with a metaclass."""
-    # This requires a bit of explanation: the basic idea is to make a dummy
-    # metaclass for one level of class instantiation that replaces itself with
-    # the actual metaclass.
-    class metaclass(meta):
-        def __new__(cls, name, this_bases, d):
-            return meta(name, bases, d)
-    return type.__new__(metaclass, 'temporary_class', (), {})
-
 
 # import most frequently used functions
 from vigra.arraytypes import *
@@ -742,16 +731,10 @@ def _genFeaturConvenienceFunctions():
             return False
     def has_key(self, key):
         self.__contains__(key)
-    if sys.version_info[0] < 3:
-        def values(self):
-            return [self[k] for k in self.keys()]
-        def items(self):
-            return [(k, self[k]) for k in self.keys()]
-    else:
-        def values(self):
-            return self.itervalues()
-        def items(self):
-            return self.iteritems()
+    def values(self):
+        return self.itervalues()
+    def items(self):
+        return self.iteritems()
     def iterkeys(self):
         return self.keys().__iter__()
     def itervalues(self):
@@ -819,7 +802,7 @@ def _genGridGraphConvenienceFunctions():
                             setattr(b,k,v)
                 return type.__init__(self, name, bases, dict)
 
-        class gridGraphInjector(_with_metaclass(gridGraphInjectorMeta, object)):
+        class gridGraphInjector(metaclass=gridGraphInjectorMeta):
             pass
 
         ##inject some methods in the point foo
@@ -1034,7 +1017,7 @@ def _genGraphConvenienceFunctions():
 
 
 
-    class ShortestPathPathDijkstra(object):
+    class ShortestPathPathDijkstra:
         def __init__(self,graph):
             """ shortest path computer
 
@@ -1604,7 +1587,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
     graphs.GridRegionAdjacencyGraph = GridRegionAdjacencyGraph
 
 
-    class TinyEdgeLabelGui(object):
+    class TinyEdgeLabelGui:
         def __init__(self, rag, img, edgeLabels = None, labelMode=True):
 
             if labelMode and isinstance(edgeLabels, numpy.ndarray):

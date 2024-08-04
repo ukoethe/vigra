@@ -100,7 +100,7 @@ In order to prevent overflow, necessary upcasting is performed before
 the function is executed.
 '''
 
-class Function(object):
+class Function:
     test_types = numpy.typecodes['AllInteger'][:-2] + numpy.typecodes['AllFloat']+'O'
     len_test_types = len(test_types)
     kindToNumber = {'b': 1, 'u': 2, 'i': 2, 'f': 3, 'c': 4}

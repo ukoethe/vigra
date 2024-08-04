@@ -263,8 +263,8 @@ Now suppose we want to execute a numpy algorithm which expects the [y, x] orderi
     numpy_image = image.transposeToNumpyOrder()
 
     # execute the algorithm
-    for y in xrange(height):
-        for x in xrange(width):
+    for y in range(height):
+        for x in range(width):
             numpy_image[y, x] = ...   # note the index order
 
 When we want to execute a VIGRA algorithm which expects the [x, y] ordering, we do::
@@ -273,8 +273,8 @@ When we want to execute a VIGRA algorithm which expects the [x, y] ordering, we 
     vigra_image = image.transposeToVigraOrder()
 
     # execute the algorithm
-    for y in xrange(height):
-        for x in xrange(width):
+    for y in range(height):
+        for x in range(width):
             vigra_image[x, y] = ...   # note the index order
 
 Notice that the order of the loops (the inner loop runs over x) is the same in both cases: To maximize cache locality and therefore speed, the inner loop should operate on consecutive memory cells. Since image memory order derives from file memory order (where the x-axis is consecutive), and array views can never change the memory order, this loop ordering is always preferable, regardless of the index order.

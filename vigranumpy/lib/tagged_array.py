@@ -36,8 +36,6 @@
 import copy, sys
 import numpy
 
-if sys.version_info[0] > 2:
-    xrange = range
 
 def preserve_doc(f):
     f.__doc__ = eval('numpy.ndarray.%s.__doc__' % f.__name__)
@@ -98,7 +96,7 @@ of 'numpy.ndarray'.
         if hasattr(self, 'axistags'):
             if axes is None:
                 axes = range(self.ndim-1, -1, -1)
-            for k in xrange(self.ndim):
+            for k in range(self.ndim):
                 axistags[k] = self.axistags[int(axes[k])]
         return axistags
 
@@ -253,7 +251,7 @@ of 'numpy.ndarray'.
     @preserve_doc
     def nonzero(self):
         res = numpy.ndarray.nonzero(self)
-        for k in xrange(len(res)):
+        for k in range(len(res)):
             res[k].axistags = copy.copy(self.axistags[k])
         return res
 
@@ -303,7 +301,7 @@ of 'numpy.ndarray'.
         res = numpy.ndarray.squeeze(self)
         if self.ndim != res.ndim:
             res.axistags = res.copy_axistags()
-            for k in xrange(self.ndim-1, -1, -1):
+            for k in range(self.ndim-1, -1, -1):
                 if self.shape[k] == 1:
                     del res.axistags[k]
         return res
