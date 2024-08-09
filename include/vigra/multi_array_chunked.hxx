@@ -139,6 +139,7 @@
 #include "metaprogramming.hxx"
 #include "threading.hxx"
 #include "compression.hxx"
+#include "error.hxx"
 
 #ifdef _WIN32
 # include "windows.h"
@@ -3481,6 +3482,25 @@ class ChunkIterator
     array_type * array_;
     Chunk chunk_;
     shape_type start_, stop_, chunk_shape_, array_point_;
+};
+
+/**
+    Compare if two ChunkedArray references point to the same object
+    and throw a precondition violation if the comparison evaluates to true.
+*/
+template <unsigned int N, class T1, class T2>
+struct CompareChunkedArrays
+{
+    CompareChunkedArrays(const ChunkedArray<N,T1> &, const ChunkedArray<N,T2> &) {}
+};
+
+template <unsigned int N, class T>
+struct CompareChunkedArrays<N,T,T>
+{
+    CompareChunkedArrays(const ChunkedArray<N,T> & source, const ChunkedArray<N,T> & dest)
+    {
+        vigra_precondition(&source != &dest, "&source must be unequal &destination");
+    }
 };
 
 //@}
