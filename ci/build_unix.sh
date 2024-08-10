@@ -9,7 +9,7 @@ conda create \
     --quiet --yes \
     --name vigra \
     python=${PYTHON_VERSION} pytest c-compiler cxx-compiler \
-    zlib jpeg libpng libtiff hdf5 fftw \
+    zlib libjpeg-turbo libpng libtiff hdf5 fftw \
     boost boost-cpp "numpy<2" h5py sphinx \
     openexr lemon cmake make ruff
 

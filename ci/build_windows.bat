@@ -16,7 +16,7 @@ call conda create ^
     --quiet --yes ^
     --name vigra ^
     python=%PYTHON_VERSION% pytest c-compiler=1.5.0 cxx-compiler=1.5.0 ^
-    zlib jpeg libpng libtiff hdf5 fftw cmake ninja ^
+    zlib libjpeg-turbo libpng libtiff hdf5 fftw cmake ninja ^
     boost=1.78 boost-cpp=1.78 numpy h5py sphinx ^
     openexr lemon
 
