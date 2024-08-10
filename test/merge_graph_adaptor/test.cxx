@@ -81,7 +81,7 @@ struct IterablePartitonTest
 
     void testReps(const PartitionType ufd,VecType & vec){
         vec.clear();
-        vec.assign(ufd.begin(),ufd.end());
+        vec.assign(ufd.cbegin(),ufd.cend());
     }
 
 
