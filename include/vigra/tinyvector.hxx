@@ -1416,7 +1416,7 @@ closeAtTolerance(TinyVectorBase<V, SIZE, D1, D2> const & l,
                  V epsilon = NumericTraits<V>::epsilon())
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
-    return ltype::closeAtTolerance(l.begin(), r.cbegin(), epsilon);
+    return ltype::closeAtTolerance(l.cbegin(), r.cbegin(), epsilon);
 }
 
 template <class V, int SIZE>
@@ -1426,7 +1426,7 @@ closeAtTolerance(TinyVector<V, SIZE> const & l,
                  V epsilon = NumericTraits<V>::epsilon())
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
-    return ltype::closeAtTolerance(l.begin(), r.cbegin(), epsilon);
+    return ltype::closeAtTolerance(l.cbegin(), r.cbegin(), epsilon);
 }
 
 /********************************************************/
