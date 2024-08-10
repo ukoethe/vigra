@@ -93,8 +93,8 @@ class Polytope
                 type_map_[n] == FACET,
                 "Polytope::closed(): Node needs do be a facet");
         return std::find(
-                aligns_map_[n].begin(),
-                aligns_map_[n].end(),
+                aligns_map_[n].cbegin(),
+                aligns_map_[n].cend(),
                 lemon::INVALID) == aligns_map_[n].end();
     }
 
@@ -139,8 +139,8 @@ class Polytope
             if (neighbor != lemon::INVALID)
             {
                 auto it = std::find(
-                        aligns_map_[neighbor].begin(),
-                        aligns_map_[neighbor].end(),
+                        aligns_map_[neighbor].cbegin(),
+                        aligns_map_[neighbor].cend(),
                         u);
                 vigra_assert(
                         it != aligns_map_[neighbor].end(),
@@ -625,7 +625,7 @@ class StarPolytope : public Polytope<N, T>
         for (int i = 0; a != lemon::INVALID; ++a, ++i)
         {
             const point_type vec = vec_map_[graph_.target(a)] - vertex;
-            std::copy(vec.begin(), vec.end(), rowVector(mat, i).begin());
+            std::copy(vec.cbegin(), vec.cend(), rowVector(mat, i).begin());
         }
         point_view_type normal = vec_map_[u];
         for (int i = 0; i < dimension; i++)
@@ -776,11 +776,11 @@ class StarPolytope : public Polytope<N, T>
                 }
                 {
                 const point_type vec = vertices[ii] - p;
-                std::copy(vec.begin(), vec.end(), rowVector(jp_mat, i).begin());
+                std::copy(vec.cbegin(), vec.cend(), rowVector(jp_mat, i).begin());
                 }
                 {
                 const point_type vec = vertices[ii] - vertices[j];
-                std::copy(vec.begin(), vec.end(), rowVector(jj_mat, i).begin());
+                std::copy(vec.cbegin(), vec.cend(), rowVector(jj_mat, i).begin());
                 }
             }
             const coordinate_type jj_det = linalg::determinant(jj_mat);
@@ -820,7 +820,7 @@ class StarPolytope : public Polytope<N, T>
         {
             fac *= (i+1);
             const point_type vec = vec_map_[graph_.target(a)] - center_;
-            std::copy(vec.begin(), vec.end(), rowVector(mat, i).begin());
+            std::copy(vec.cbegin(), vec.cend(), rowVector(mat, i).begin());
         }
         return abs(linalg::determinant(mat) / fac);
     }
@@ -851,10 +851,10 @@ class StarPolytope : public Polytope<N, T>
         {
             factor *= i;
             const point_type tmp = vec_map_[graph_.target(a)] - vec;
-            std::copy(tmp.begin(), tmp.end(), rowVector(mat, i).begin());
+            std::copy(tmp.cbegin(), tmp.cend(), rowVector(mat, i).begin());
         }
         const point_type tmp = vec_map_[n];
-        std::copy(tmp.begin(), tmp.end(), rowVector(mat, 0).begin());
+        std::copy(tmp.cbegin(), tmp.cend(), rowVector(mat, 0).begin());
         return abs(linalg::determinant(mat)) / factor;
     }
 

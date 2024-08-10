@@ -6311,7 +6311,7 @@ class ConvexHull
             {
                 initialize();
             }
-            point_type vec(t.point().begin());
+            point_type vec(t.point().cbegin());
             convex_hull_.addExtremeVertex(vec);
         }
 
