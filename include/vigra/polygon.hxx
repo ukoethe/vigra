@@ -847,7 +847,7 @@ void convexHull(const PointArray1 &points, PointArray2 & convex_hull)
     typename PointArray1::const_iterator cbegin = points.cbegin();
     if(points.front() == points.back()) // closed polygon
         ++cbegin;                        // => remove redundant start point
-    ArrayVector<Point> ordered(cbegin, points.end());
+    ArrayVector<Point> ordered(cbegin, points.cend());
     std::sort(ordered.begin(), ordered.end(), detail::pointYXOrdering<Point>);
     
     ArrayVector<Point> H;

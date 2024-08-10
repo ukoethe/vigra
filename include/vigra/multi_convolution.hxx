@@ -85,7 +85,7 @@ struct SequenceDoubleYielder
     typename X::const_iterator it;
     SequenceDoubleYielder(const X & seq, unsigned dim,
                           const char *const function_name = "SequenceDoubleYielder")
-        : it(seq.begin())
+        : it(seq.cbegin())
     {
         if (seq.size() == dim)
             return;

@@ -315,10 +315,10 @@ public:
 
     }
     bool isEnd()const{ 
-        return graph_==NULL || nodeIdIt_==graph_->nodeUfd_.end();
+        return graph_==NULL || nodeIdIt_==graph_->nodeUfd_.cend();
     }
     bool isBegin()const{
-        return graph_!=NULL && nodeIdIt_==graph_->nodeUfd_.begin();
+        return graph_!=NULL && nodeIdIt_==graph_->nodeUfd_.cbegin();
     }
 private:
    friend class vigra::IteratorFacadeCoreAccess;
@@ -363,10 +363,10 @@ public:
         edge_(){
     }
     bool isEnd()const{ 
-        return graph_==NULL || edgeIdIt_==graph_->edgeUfd_.end();
+        return graph_==NULL || edgeIdIt_==graph_->edgeUfd_.cend();
     }
     bool isBegin()const{
-        return graph_!=NULL && edgeIdIt_==graph_->edgeUfd_.begin();
+        return graph_!=NULL && edgeIdIt_==graph_->edgeUfd_.cbegin();
     }
 private:
     friend class vigra::IteratorFacadeCoreAccess;
@@ -1025,26 +1025,26 @@ MergeGraphAdaptor<GRAPH>::degree(
 template<class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::EdgeIdIt 
 MergeGraphAdaptor<GRAPH>::edgeIdsBegin()const{
-    return edgeUfd_.begin();
+    return edgeUfd_.cbegin();
 }
 
 template<class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::EdgeIdIt 
 MergeGraphAdaptor<GRAPH>::edgeIdsEnd()const{
-    return edgeUfd_.end();
+    return edgeUfd_.cend();
 }
 
 
 template<class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::NodeIdIt 
 MergeGraphAdaptor<GRAPH>::nodeIdsBegin()const{
-    return nodeUfd_.begin();
+    return nodeUfd_.cbegin();
 }
 
 template<class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::NodeIdIt 
 MergeGraphAdaptor<GRAPH>::nodeIdsEnd()const{
-    return nodeUfd_.end();
+    return nodeUfd_.cend();
 }
 
 

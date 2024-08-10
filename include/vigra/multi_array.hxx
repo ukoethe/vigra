@@ -2186,7 +2186,7 @@ MultiArrayView <N-M, T, StrideTag>
 MultiArrayView <N, T, StrideTag>::bindOuter (const TinyVector <Index, M> &d) const
 {
     TinyVector <MultiArrayIndex, M> stride;
-    stride.init (m_stride.begin () + N-M, m_stride.end ());
+    stride.init (m_stride.cbegin () + N-M, m_stride.cend ());
     pointer ptr = m_ptr + dot (d, stride);
     static const int NNew = (N-M == 0) ? 1 : N-M;
     TinyVector <MultiArrayIndex, NNew> inner_shape, inner_stride;
@@ -2197,8 +2197,8 @@ MultiArrayView <N, T, StrideTag>::bindOuter (const TinyVector <Index, M> &d) con
     }
     else
     {
-        inner_shape.init (m_shape.begin (), m_shape.end () - M);
-        inner_stride.init (m_stride.begin (), m_stride.end () - M);
+        inner_shape.init (m_shape.cbegin (), m_shape.cend () - M);
+        inner_stride.init (m_stride.cbegin (), m_stride.cend () - M);
     }
     return MultiArrayView <N-M, T, StrideTag> (inner_shape, inner_stride, ptr);
 }
@@ -2209,7 +2209,7 @@ MultiArrayView <N - M, T, StridedArrayTag>
 MultiArrayView <N, T, StrideTag>::bindInner (const TinyVector <Index, M> &d) const
 {
     TinyVector <MultiArrayIndex, M> stride;
-    stride.init (m_stride.begin (), m_stride.end () - N + M);
+    stride.init (m_stride.cbegin (), m_stride.cend () - N + M);
     pointer ptr = m_ptr + dot (d, stride);
     static const int NNew = (N-M == 0) ? 1 : N-M;
     TinyVector <MultiArrayIndex, NNew> outer_shape, outer_stride;
@@ -2220,8 +2220,8 @@ MultiArrayView <N, T, StrideTag>::bindInner (const TinyVector <Index, M> &d) con
     }
     else
     {
-        outer_shape.init (m_shape.begin () + M, m_shape.end ());
-        outer_stride.init (m_stride.begin () + M, m_stride.end ());
+        outer_shape.init (m_shape.cbegin () + M, m_shape.cend ());
+        outer_stride.init (m_stride.cbegin () + M, m_stride.cend ());
     }
     return MultiArrayView <N-M, T, StridedArrayTag>
         (outer_shape, outer_stride, ptr);

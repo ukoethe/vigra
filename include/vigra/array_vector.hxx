@@ -433,7 +433,7 @@ ArrayVectorView <T>::copyImpl(const ArrayVectorView <U>& rhs)
 {
     vigra_precondition (size() == rhs.size(),
         "ArrayVectorView::copy(): shape mismatch.");
-    std::copy(rhs.begin(), rhs.end(), begin());
+    std::copy(rhs.cbegin(), rhs.cend(), begin());
 }
 
 template <class T>

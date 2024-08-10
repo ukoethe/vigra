@@ -224,7 +224,7 @@ namespace vigra{
             MultiCoordinateIterator<DIM> iter(image.shape());
             for(std::ptrdiff_t i=0 ;i<image.size(); ++i, ++iter){
                 const ImgCoord imgCoord(*iter);
-                std::copy(imgCoord.begin(),imgCoord.end(),histCoord.begin() );
+                std::copy(imgCoord.cbegin(),imgCoord.cend(),histCoord.begin() );
 
                 const T value = image[imgCoord];
                 const T fbinIndex = ((value-minVal)/(maxVal-minVal))*bins;
@@ -269,9 +269,9 @@ namespace vigra{
                 const ImgCoord imgCoord(*iter);
                 //std::cout<<"at pixel "<<imgCoord<<"\n";
 
-                std::copy(imgCoord.begin(),imgCoord.end(),histCoord.begin() );
+                std::copy(imgCoord.cbegin(),imgCoord.cend(),histCoord.begin() );
                 nextHistCoord = histCoord;
-                std::copy(imgCoord.begin(),imgCoord.end(),outCoord.begin() );
+                std::copy(imgCoord.cbegin(),imgCoord.cend(),outCoord.begin() );
                 double sum = 0;
                 for(size_t bi=0; bi<bins; ++bi){
                     histCoord[DIM] = bi;

@@ -1173,7 +1173,7 @@ pythonUnique(NumpyArray<NDIM, Singleband<VoxelType> > src, bool sort=true)
 
     if (sort)
     {
-        std::sort( result.cbegin(), result.cend() );
+        std::sort( result.begin(), result.end() );
     }
     return result;
 }

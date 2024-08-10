@@ -398,11 +398,11 @@ class DecisionTreeDeprec
         {
             DecisionTreeDeprecNodeProxy<TreeInt> node(tree_, nodeindex);
             nodeindex = split.decideAtNode(features, node.decisionColumns(),
-                                       terminalWeights_.begin() + node.decisionWeightsIndex())
+                                       terminalWeights_.cbegin() + node.decisionWeightsIndex())
                                 ? node.child(0)
                                 : node.child(1);
             if(nodeindex <= 0)
-                return terminalWeights_.begin() + (-nodeindex);
+                return terminalWeights_.cbegin() + (-nodeindex);
         }
     }
 
@@ -423,7 +423,7 @@ class DecisionTreeDeprec
         {
             DecisionTreeDeprecNodeProxy<TreeInt> node(tree_, nodeindex);
             nodeindex = split.decideAtNode(features, node.decisionColumns(),
-                                       terminalWeights_.begin() + node.decisionWeightsIndex())
+                                       terminalWeights_.cbegin() + node.decisionWeightsIndex())
                                 ? node.child(0)
                                 : node.child(1);
             if(nodeindex <= 0)

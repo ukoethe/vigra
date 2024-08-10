@@ -218,7 +218,7 @@ struct GetArrayTag_Visitor
         
         template <class Permute>
         CoordPermutation(Permute const & p)
-        : permutation_(p.begin(), p.end())
+        : permutation_(p.cbegin(), p.cend())
         {}
         
         template <class T>
@@ -396,7 +396,7 @@ struct PythonAccumulator
     
     template <class Permutation>
     PythonAccumulator(Permutation const & p)
-    : permutation_(p.begin(), p.end())
+    : permutation_(p.cbegin(), p.cend())
     {}
     
     void activate(std::string const & tag)
