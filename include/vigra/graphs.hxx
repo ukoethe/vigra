@@ -578,6 +578,11 @@ public:
         return MAKE_ITER(map_.begin());
     }
 
+    const_iterator begin() const
+    {
+        return MAKE_CITER(map_.cbegin());
+    }
+
     const_iterator cbegin() const
     {
         return MAKE_CITER(map_.cbegin());
@@ -586,6 +591,11 @@ public:
     iterator end()
     {
         return MAKE_ITER(map_.end());
+    }
+
+    const_iterator end() const
+    {
+        return MAKE_CITER(map_.cend());
     }
 
     const_iterator cend() const

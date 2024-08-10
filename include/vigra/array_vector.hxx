@@ -560,7 +560,7 @@ public:
     : view_type(),
       alloc_(alloc)
     {
-        initImpl(rhs.begin(), rhs.end(), VigraFalseType());
+        initImpl(rhs.cbegin(), rhs.cend(), VigraFalseType());
     }
 
     template <class InputIterator>

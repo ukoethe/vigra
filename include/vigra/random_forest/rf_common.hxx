@@ -592,7 +592,7 @@ public:
     {
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
-        std::copy(rhs.classes.begin(), rhs.classes.end(), iter);
+        std::copy(rhs.classes.cbegin(), rhs.classes.cend(), iter);
     }
     #undef EQUALS
     #define EQUALS(field) field(rhs.field)
@@ -613,7 +613,7 @@ public:
     {
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
-        std::copy(rhs.classes.begin(), rhs.classes.end(), iter);
+        std::copy(rhs.classes.cbegin(), rhs.classes.cend(), iter);
     }
     #undef EQUALS
 
@@ -657,11 +657,11 @@ public:
         class_weights_.clear();
         std::back_insert_iterator<ArrayVector<double> >
                         iter2(class_weights_);
-        std::copy(rhs.class_weights_.begin(), rhs.class_weights_.end(), iter2);
+        std::copy(rhs.class_weights_.cbegin(), rhs.class_weights_.cend(), iter2);
         classes.clear();
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
-        std::copy(rhs.classes.begin(), rhs.classes.end(), iter);
+        std::copy(rhs.classes.cbegin(), rhs.classes.cend(), iter);
         return *this;
     }
     #undef EQUALS

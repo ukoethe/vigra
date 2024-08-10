@@ -305,7 +305,7 @@ public:
     }
     MergeGraphNodeIt(const Graph & g)
     :   graph_(&g),
-        nodeIdIt_(g.nodeUfd_.begin()),
+        nodeIdIt_(g.nodeUfd_.cbegin()),
         node_(){
     }
     MergeGraphNodeIt(const Graph & g,const Node & node)
@@ -353,7 +353,7 @@ public:
     }
     MergeGraphEdgeIt(const Graph & g)
     :   graph_(&g),
-        edgeIdIt_(g.edgeUfd_.begin()),
+        edgeIdIt_(g.edgeUfd_.cbegin()),
         edge_(){
 
     }

@@ -120,22 +120,22 @@ public:
 
         const std::string nodeIteratorHolderClsName = std::string("NodeIteratorHolder")+clsName_;
         python::class_<PyNodeIteratorHolder>(nodeIteratorHolderClsName.c_str(),python::no_init)
-        .def("__iter__",python::range(&PyNodeIteratorHolder::begin,&PyNodeIteratorHolder::end))
+        .def("__iter__",python::range(&PyNodeIteratorHolder::cbegin,&PyNodeIteratorHolder::cend))
         ;
 
         const std::string edgeIteratorHolderClsName = std::string("EdgeIteratorHolder")+clsName_;
         python::class_<PyEdgeIteratorHolder>(edgeIteratorHolderClsName.c_str(),python::no_init)
-        .def("__iter__",python::range(&PyEdgeIteratorHolder::begin,&PyEdgeIteratorHolder::end))
+        .def("__iter__",python::range(&PyEdgeIteratorHolder::cbegin,&PyEdgeIteratorHolder::cend))
         ;
 
         const std::string neighbourNodeIteratorHolderClsName = std::string("NeighbourNodeIteratorHolder")+clsName_;
         python::class_<PyNeighbourNodeIteratorHolder>(neighbourNodeIteratorHolderClsName.c_str(),python::no_init)
-        .def("__iter__",python::range(&PyNeighbourNodeIteratorHolder::begin,&PyNeighbourNodeIteratorHolder::end))
+        .def("__iter__",python::range(&PyNeighbourNodeIteratorHolder::cbegin,&PyNeighbourNodeIteratorHolder::cend))
         ;
 
         const std::string incEdgeIteratorHolderClsName = std::string("IncEdgeIteratorHolder")+clsName_;
         python::class_<PyIncEdgeIteratorHolder>(incEdgeIteratorHolderClsName.c_str(),python::no_init)
-        .def("__iter__",python::range(&PyIncEdgeIteratorHolder::begin,&PyIncEdgeIteratorHolder::end))
+        .def("__iter__",python::range(&PyIncEdgeIteratorHolder::cbegin,&PyIncEdgeIteratorHolder::cend))
         ;
         //const std::string nodeIteratorHolderClsName = std::string("NodeIteratorHolder")+clsName_;
         //python::class_<NodeIteratorHolderType>(nodeIteratorHolderClsName.c_str(),python::no_init)

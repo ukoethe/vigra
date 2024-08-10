@@ -97,7 +97,7 @@ pythonConstructRandomForest(int treeCount,
     
     if(labels.size() > 0)
     {
-        ext_param.classes_(labels.begin(), labels.end());
+        ext_param.classes_(labels.cbegin(), labels.cend());
     }
     
     RandomForest<LabelType>* rf = new RandomForest<LabelType>(options, ext_param);

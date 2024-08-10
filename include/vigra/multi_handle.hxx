@@ -262,7 +262,7 @@ public:
 
     CoupledHandle(typename MultiArrayShape<N+1>::type const & shape)
     : point_(),
-      shape_(shape.begin()),
+      shape_(shape.cbegin()),
       scanOrderIndex_()
     {}
 
