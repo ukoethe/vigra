@@ -6463,7 +6463,7 @@ class ConvexHullFeatures
             coord_max += coord_type(1);
             // Get offset
             point_type offset;
-            std::copy(coord_min.begin(), coord_min.end(), offset.begin());
+            std::copy(coord_min.cbegin(), coord_min.cend(), offset.begin());
             // Create the label array
             label_array_.reshape(coord_max - coord_min, 0);
             hull.fill(label_array_, 1, offset);

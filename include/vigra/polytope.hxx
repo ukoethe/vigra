@@ -95,7 +95,7 @@ class Polytope
         return std::find(
                 aligns_map_[n].cbegin(),
                 aligns_map_[n].cend(),
-                lemon::INVALID) == aligns_map_[n].end();
+                lemon::INVALID) == aligns_map_[n].cend();
     }
 
     /** Check if the polytope has a closed surface
@@ -139,8 +139,8 @@ class Polytope
             if (neighbor != lemon::INVALID)
             {
                 auto it = std::find(
-                        aligns_map_[neighbor].cbegin(),
-                        aligns_map_[neighbor].cend(),
+                        aligns_map_[neighbor].begin(),
+                        aligns_map_[neighbor].end(),
                         u);
                 vigra_assert(
                         it != aligns_map_[neighbor].end(),
