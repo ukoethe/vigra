@@ -102,10 +102,10 @@ public:
    // operator[]
    const value_type& operator[](const size_type) const;
    // iterators
-   const_iterator begin() const;
-   const_iterator end() const;
-   const_iterator rbegin() const;
-   const_iterator rend() const;
+   const_iterator cbegin() const;
+   const_iterator cend() const;
+   const_iterator crbegin() const;
+   const_iterator crend() const;
 
    iterator begin();
    iterator end();

@@ -443,19 +443,11 @@ public:
     {
         return map_.begin();
     }
-    const_iterator begin() const
-    {
-        return map_.begin();
-    }
     const_iterator cbegin() const
     {
         return map_.cbegin();
     }
     iterator end()
-    {
-        return map_.end();
-    }
-    const_iterator end() const
     {
         return map_.end();
     }
@@ -586,22 +578,12 @@ public:
         return MAKE_ITER(map_.begin());
     }
 
-    const_iterator begin() const
-    {
-        return MAKE_ITER(map_.begin());
-    }
-
     const_iterator cbegin() const
     {
         return MAKE_CITER(map_.cbegin());
     }
 
     iterator end()
-    {
-        return MAKE_ITER(map_.end());
-    }
-
-    const_iterator end() const
     {
         return MAKE_ITER(map_.end());
     }

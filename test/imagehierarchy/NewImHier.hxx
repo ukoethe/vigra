@@ -104,10 +104,10 @@ class ConstVectorProxy
     iterator end()
         { return data_ + size_; }
     
-    const_iterator begin() const
+    const_iterator cbegin() const
         { return data_; }
     
-    const_iterator end() const
+    const_iterator cend() const
         { return data_ + size_; }
     
     value_type const & operator[](int i) const
@@ -309,10 +309,10 @@ class VectorProxy
     iterator end()
         { return data_ + size_; }
     
-    const_iterator begin() const
+    const_iterator cbegin() const
         { return data_; }
     
-    const_iterator end() const
+    const_iterator cend() const
         { return data_ + size_; }
     
     value_type & operator[](int i)
@@ -1220,10 +1220,10 @@ class FixedBandsImage
     iterator end()
         { return begin() + width()*height(); }
         
-    const_iterator begin() const
+    const_iterator cbegin() const
         { return ConstScanOrderIterator(ScanOrderIteratorPolicy<ConstIterator>::ROI(upperLeft(), lowerRight())); }
 
-    const_iterator end() const
+    const_iterator cend() const
         { return begin() + width()*height(); }
 
     Accessor accessor() 
@@ -1360,10 +1360,10 @@ class FixedRGBImage : public FixedBandsImage<IMAGE, VectorAccessor<TinyVector<Gr
     iterator end()
         { return begin() + width()*height(); }
         
-    const_iterator begin() const
+    const_iterator cbegin() const
         { return ConstScanOrderIterator(ScanOrderIteratorPolicy<ConstIterator>::ROI(upperLeft(), lowerRight())); }
 
-    const_iterator end() const
+    const_iterator cend() const
         { return begin() + width()*height(); }
 
     Accessor accessor()                                       
@@ -1621,10 +1621,10 @@ class SingleBandImage
     iterator end()
         { return begin() + width()*height(); }
         
-    const_iterator begin() const
+    const_iterator cbegin() const
         { return ConstScanOrderIterator(ScanOrderIteratorPolicy<ConstIterator>::ROI(upperLeft(), lowerRight())); }
 
-    const_iterator end() const
+    const_iterator cend() const
         { return begin() + width()*height(); }
     
     Accessor accessor()                           
@@ -1793,10 +1793,10 @@ class GrayImage
     iterator end()
         { return begin() + width()*height(); }
         
-    const_iterator begin() const
+    const_iterator cbegin() const
         { return ConstScanOrderIterator(ScanOrderIteratorPolicy<ConstIterator>::ROI(upperLeft(), lowerRight())); }
 
-    const_iterator end() const
+    const_iterator cend() const
         { return begin() + width()*height(); }
 
     Accessor accessor() 

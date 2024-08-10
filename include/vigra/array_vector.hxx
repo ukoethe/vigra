@@ -218,25 +218,11 @@ public:
         return data_;
     }
 
-        /** Get const iterator referring to the first array element.
-        */
-    inline const_iterator begin() const
-    {
-        return data();
-    }
-
         /** Get iterator referring to the first array element.
         */
     inline iterator begin()
     {
         return data();
-    }
-
-        /** Get const iterator pointing beyond the last array element.
-        */
-    inline const_iterator end() const
-    {
-        return data() + size();
     }
 
         /** Get iterator pointing beyond the last array element.

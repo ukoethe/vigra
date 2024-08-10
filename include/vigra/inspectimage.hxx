@@ -2196,8 +2196,8 @@ class ArrayOfRegionStatistics
 
         /** const iterator to the begin of the region array
         */
-    const_iterator begin() const
-        { return regions.begin(); }
+    const_iterator cbegin() const
+        { return regions.cbegin(); }
 
         /** iterator to the end of the region array
         */
@@ -2206,8 +2206,8 @@ class ArrayOfRegionStatistics
 
         /** const iterator to the end of the region array
         */
-    const_iterator end() const
-        { return regions.end(); }
+    const_iterator cend() const
+        { return regions.cend(); }
 
         /** prepare next pass for multi-pass RegionStatistics types
         */

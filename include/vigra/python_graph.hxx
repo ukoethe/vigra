@@ -243,12 +243,12 @@ struct NodeIteratorHolder{
     : graph_(&graph),
       node_(node){
     }
-    const_iterator begin()const{
+    const_iterator cbegin()const{
 
         Iter iter = GraphIteratorAccessor<GRAPH>::nodesBegin(*graph_);
         return const_iterator(iter,Transform(*graph_));
     }
-    const_iterator end()const{
+    const_iterator cend()const{
         Iter iter = GraphIteratorAccessor<GRAPH>::nodesEnd(*graph_);
         return const_iterator(iter,Transform(*graph_));
     }
@@ -266,12 +266,12 @@ struct EdgeIteratorHolder{
     : graph_(&graph),
       edge_(edge){
     }
-    const_iterator begin()const{
+    const_iterator cbegin()const{
 
         Iter iter = GraphIteratorAccessor<GRAPH>::edgesBegin(*graph_);
         return const_iterator(iter,Transform(*graph_));
     }
-    const_iterator end()const{
+    const_iterator cend()const{
         Iter iter = GraphIteratorAccessor<GRAPH>::edgesEnd(*graph_);
         return const_iterator(iter,Transform(*graph_));
     }
@@ -290,11 +290,11 @@ struct NeighbourNodeIteratorHolder{
     : graph_(&graph),
       node_(node){
     }
-    const_iterator begin()const{
+    const_iterator cbegin()const{
         Iter iter = GraphIteratorAccessor<GRAPH>::outArcBegin(*graph_,node_);
         return const_iterator(iter,Transform(*graph_));
     }
-    const_iterator end()const{
+    const_iterator cend()const{
         Iter iter = GraphIteratorAccessor<GRAPH>::outArcEnd(*graph_,node_);
         return const_iterator(iter,Transform(*graph_));
     }
@@ -314,11 +314,11 @@ struct IncEdgeIteratorHolder{
     : graph_(&graph),
       node_(node){
     }
-    const_iterator begin()const{
+    const_iterator cbegin()const{
         Iter iter = GraphIteratorAccessor<GRAPH>::outArcBegin(*graph_,node_);
         return const_iterator(iter,Transform(*graph_));
     }
-    const_iterator end()const{
+    const_iterator cend()const{
         Iter iter = GraphIteratorAccessor<GRAPH>::outArcEnd(*graph_,node_);
         return const_iterator(iter,Transform(*graph_));
     }

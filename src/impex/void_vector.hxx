@@ -198,7 +198,7 @@ namespace vigra
                 ( void_vector_base::data() );
         }
 
-        inline const_iterator begin() const
+        inline const_iterator cbegin() const
         {
             return data();
         }
@@ -208,7 +208,7 @@ namespace vigra
             return data();
         }
 
-        inline const_iterator end() const
+        inline const_iterator cend() const
         {
             return data() + size();
         }

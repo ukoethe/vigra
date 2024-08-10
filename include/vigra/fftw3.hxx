@@ -389,10 +389,10 @@ class FFTWComplex
     iterator end()
         { return data_ + 2; }
 
-    const_iterator begin() const
+    const_iterator cbegin() const
         { return data_; }
 
-    const_iterator end() const
+    const_iterator cend() const
         { return data_ + 2; }
 
   private:

@@ -865,14 +865,6 @@ class TinyVectorBase
 
         /** Get const random access iterator to begin of vector.
         */
-    const_iterator begin() const { return data_; }
-
-        /** Get const random access iterator past-the-end of vector.
-        */
-    const_iterator end() const { return data_ + SIZE; }
-
-        /** Get const random access iterator to begin of vector.
-        */
     const_iterator cbegin() const { return data_; }
 
         /** Get const random access iterator past-the-end of vector.

@@ -165,7 +165,7 @@ public:
         /** Returns an iterator pointing to the first image
             (STL-Container interface)
          */
-    const_iterator begin() const
+    const_iterator cbegin() const
     {
         return images_.begin();
     }
@@ -181,7 +181,7 @@ public:
         /** Returns an iterator pointing behind the last image
             (STL-Container interface)
          */
-    const_iterator end() const
+    const_iterator cend() const
     {
         return images_.end();
     }
@@ -199,7 +199,7 @@ public:
             the reversed view of this array (STL-Reversable Container
             interface)
          */
-    const_reverse_iterator rbegin() const
+    const_reverse_iterator crbegin() const
     {
         return images_.rbegin();
     }
@@ -217,7 +217,7 @@ public:
             of the reversed view of this array (STL-Reversable
             Container interface)
          */
-    const_reverse_iterator rend() const
+    const_reverse_iterator crend() const
     {
         return images_.rend();
     }

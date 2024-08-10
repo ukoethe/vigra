@@ -359,7 +359,7 @@ class BasicImageView
         /** init 1D random access const iterator pointing to first pixel.
             Note: Only works if stride equals width.
         */
-    const_iterator begin() const
+    const_iterator cbegin() const
     {
         vigra_precondition(stride_ == width_,
             "BasicImageView::begin(): "
@@ -370,7 +370,7 @@ class BasicImageView
         /** init 1D random access const iterator pointing past the end.
             Note: Only works if stride equals width.
         */
-    const_iterator end() const
+    const_iterator cend() const
     {
         vigra_precondition(stride_ == width_,
             "BasicImageView::end(): "

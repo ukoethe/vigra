@@ -173,13 +173,13 @@ public:
    }
    typedef ConstRepIter<T> const_iterator;
 
-   const_iterator begin()const{
+   const_iterator cbegin()const{
       if(numberOfSets_!=0)
          return ConstRepIter<T>(*this,firstRep_);
       else
          return ConstRepIter<T>(*this,lastRep_+1);
    }
-   const_iterator end()const{
+   const_iterator cend()const{
       return ConstRepIter<T>(*this,lastRep_+1);
    }
 

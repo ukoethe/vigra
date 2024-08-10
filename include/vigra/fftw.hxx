@@ -196,10 +196,10 @@ class FFTWComplex
     iterator end()
         { return &re + 2; }
 
-    const_iterator begin() const
+    const_iterator cbegin() const
         { return &re; }
 
-    const_iterator end() const
+    const_iterator cend() const
         { return &re + 2; }
 };
 

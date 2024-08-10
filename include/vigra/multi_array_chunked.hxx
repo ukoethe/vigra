@@ -1179,12 +1179,12 @@ class MultiArrayView<N, T_MaybeConst, ChunkedArrayTag>
         return cbegin().getEndIterator();
     }
 
-    const_iterator begin() const
+    const_iterator cbegin() const
     {
         return createCoupledIterator(*this);
     }
 
-    const_iterator end() const
+    const_iterator cend() const
     {
         return begin().getEndIterator();
     }
@@ -2405,22 +2405,6 @@ class ChunkedArray
     const_iterator cend() const
     {
         return cbegin().getEndIterator();
-    }
-
-    /** \brief Create a read-only scan-order iterator for the entire
-         chunked array.
-    */
-    const_iterator begin() const
-    {
-        return createCoupledIterator(*this);
-    }
-
-    /** \brief Create the end iterator for read-only scan-order iteration over
-        the entire chunked array.
-    */
-    const_iterator end() const
-    {
-        return begin().getEndIterator();
     }
 
     /** \brief Create an iterator over all chunks intersected by the given ROI.

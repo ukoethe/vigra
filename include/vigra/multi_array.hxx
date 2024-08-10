@@ -2879,33 +2879,33 @@ public:
          */
     void swap (MultiArray & other);
 
-        // /** sequential iterator pointing to the first array element.
-         // */
-    // iterator begin ()
-    // {
-        // return vigra::detail::MultiIteratorChooser<actual_stride>::template constructIterator<iterator>((view_type *)this);
-    // }
+         /** sequential iterator pointing to the first array element.
+          */
+     iterator begin ()
+     {
+         return vigra::detail::MultiIteratorChooser<actual_stride>::template constructIterator<iterator>((view_type *)this);
+     }
 
-        // /** sequential iterator pointing beyond the last array element.
-         // */
-    // iterator end ()
-    // {
-        // return begin() + this->elementCount();
-    // }
+         /** sequential iterator pointing beyond the last array element.
+          */
+     iterator end ()
+     {
+         return begin() + this->elementCount();
+     }
 
-        // /** sequential const iterator pointing to the first array element.
-         // */
-    // const_iterator begin () const
-    // {
-        // return vigra::detail::MultiIteratorChooser<actual_stride>::template constructIterator<iterator>((view_type const *)this);
-    // }
+        /** sequential const iterator pointing to the first array element.
+         */
+    const_iterator cbegin () const
+    {
+        return vigra::detail::MultiIteratorChooser<actual_stride>::template constructIterator<iterator>((view_type const *)this);
+    }
 
-        // /** sequential const iterator pointing beyond the last array element.
-         // */
-    // const_iterator end () const
-    // {
-        // return begin() + this->elementCount();
-    // }
+        /** sequential const iterator pointing beyond the last array element.
+         */
+    const_iterator cend () const
+    {
+        return cbegin() + this->elementCount();
+    }
 
         /** get the allocator.
          */

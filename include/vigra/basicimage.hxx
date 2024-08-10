@@ -980,7 +980,7 @@ class BasicImage
 
         /** init 1D random access const iterator pointing to first pixel
         */
-    const_iterator begin() const
+    const_iterator cbegin() const
     {
         vigra_precondition(data_ != 0,
           "BasicImage::begin(): image must have non-zero size.");
@@ -989,7 +989,7 @@ class BasicImage
 
         /** init 1D random access const iterator pointing past the end
         */
-    const_iterator end() const
+    const_iterator cend() const
     {
         vigra_precondition(data_ != 0,
           "BasicImage::end(): image must have non-zero size.");
