@@ -1167,7 +1167,7 @@ public:
         right_ = Point2D((image.width() - 1) /  2, (image.height() - 1) /  2);
 
         norm_ = 0;
-        for (auto iter = image.begin(); iter != image.end(); ++iter)
+        for (auto iter = image.cbegin(); iter != image.cend(); ++iter)
         {
             norm_ += *iter;
         }
