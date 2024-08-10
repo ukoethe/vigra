@@ -41,7 +41,24 @@ MACRO(VIGRA_FIND_PACKAGE package)
 
     MESSAGE(STATUS "Searching for ${package}${VERSION_MESSAGE}")
 
-    FIND_PACKAGE(${package} ${VERSION_SPEC} ${COMPONENTS})
+    SET(OLD_CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH})
+    SET(OLD_CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH})
+    foreach(path ${DEPENDENCY_SEARCH_PREFIX})
+        if(NOT ${package}_FOUND)
+            SET(CMAKE_INCLUDE_PATH ${path}/include)
+            SET(CMAKE_LIBRARY_PATH ${path}/lib)
+
+            # SET(${package}_INCLUDE_DIR ${package}_INCLUDE_DIR-NOTFOUND)
+            # SET(${package}_LIBRARIES ${package}_LIBRARIES-NOTFOUND)
+            # SET(${package}_LIBRARY ${package}_LIBRARY-NOTFOUND)
+            MESSAGE(STATUS "   in prefix ${path}")
+            FIND_PACKAGE(${package} ${VERSION_SPEC} ${COMPONENTS})
+
+        endif()
+    endforeach(path)
+
+    SET(CMAKE_INCLUDE_PATH ${OLD_CMAKE_INCLUDE_PATH})
+    SET(CMAKE_LIBRARY_PATH ${OLD_CMAKE_LIBRARY_PATH})
 
     # search the package in the default locations if not found
     # in the DEPENDENCY_SEARCH_PREFIX
