@@ -1613,12 +1613,12 @@ void defineSegmentation()
         "The function returns a Python tuple (labelImage, maxRegionLabel)\n"
         "\n");
 
-    multidef("unique",
-        pyUnique<1,5,npy_uint8, npy_uint32, npy_uint64, npy_int64>(),
-        (arg("arr"), arg("sort")=true),
-        "Find unique values in the given label array.\n"
-        "If ``sort`` is True, then the output is sorted.\n"
-        "Much faster then ``numpy.unique()``.\n");
+    // multidef("unique",
+    //     pyUnique<1,5,npy_uint8, npy_uint32, npy_uint64, npy_int64>(),
+    //     (arg("arr"), arg("sort")=true),
+    //     "Find unique values in the given label array.\n"
+    //     "If ``sort`` is True, then the output is sorted.\n"
+    //     "Much faster then ``numpy.unique()``.\n");
 
     //-- 3D relabelConsecutive
     def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<3, npy_uint64, npy_uint32>),
