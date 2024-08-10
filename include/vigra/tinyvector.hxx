@@ -2230,7 +2230,7 @@ inline
 TinyVector<V, SIZE>
 reverse(TinyVector<V, SIZE> const & t)
 {
-    return TinyVector<V, SIZE>(t.begin(), ReverseCopy);
+    return TinyVector<V, SIZE>(t.cbegin(), ReverseCopy);
 }
 
     /** \brief transposed copy
