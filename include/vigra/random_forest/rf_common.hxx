@@ -633,11 +633,11 @@ public:
         class_weights_.clear();
         std::back_insert_iterator<ArrayVector<double> >
                         iter2(class_weights_);
-        std::copy(rhs.class_weights_.begin(), rhs.class_weights_.end(), iter2);
+        std::copy(rhs.class_weights_.cbegin(), rhs.class_weights_.cend(), iter2);
         classes.clear();
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
-        std::copy(rhs.classes.begin(), rhs.classes.end(), iter);
+        std::copy(rhs.classes.cbegin(), rhs.classes.cend(), iter);
         return *this;
     }
 
@@ -754,13 +754,13 @@ public:
         PUSH(response_size_);
         if(is_weighted_)
         {
-            std::copy(class_weights_.begin(),
-                      class_weights_.end(),
+            std::copy(class_weights_.cbegin(),
+                      class_weights_.cend(),
                       iter);
             iter += class_count_;
         }
-        std::copy(classes.begin(),
-                  classes.end(),
+        std::copy(classes.cbegin(),
+                  classes.cend(),
                   iter);
         #undef PUSH
     }

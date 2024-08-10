@@ -247,7 +247,7 @@ pythonMultiBinaryOpening(NumpyArray<dim, Multiband<PixelType> > array,
 
     {
         PyAllowThreads _pythread;
-        MultiArray<dim-1,PixelType> tmp(typename MultiArrayShape<dim-1>::type(array.shape().begin()));
+        MultiArray<dim-1,PixelType> tmp(typename MultiArrayShape<dim-1>::type(array.shape().cbegin()));
 
         for(int k=0; k<array.shape(dim-1); ++k)
         {
@@ -273,7 +273,7 @@ pythonMultiBinaryClosing(NumpyArray<dim, Multiband<PixelType> > array,
 
     {
         PyAllowThreads _pythread;
-        MultiArray<dim-1,PixelType> tmp(typename MultiArrayShape<dim-1>::type(array.shape().begin()));
+        MultiArray<dim-1,PixelType> tmp(typename MultiArrayShape<dim-1>::type(array.shape().cbegin()));
 
         for(int k=0; k<array.shape(dim-1); ++k)
         {
@@ -345,7 +345,7 @@ pythonMultiGrayscaleOpening(NumpyArray<dim, Multiband<PixelType> > array,
 
     {
         PyAllowThreads _pythread;
-        MultiArray<dim-1,PixelType> tmp(typename MultiArrayShape<dim-1>::type(array.shape().begin()));
+        MultiArray<dim-1,PixelType> tmp(typename MultiArrayShape<dim-1>::type(array.shape().cbegin()));
 
         for(int k=0; k<array.shape(dim-1); ++k)
         {
@@ -371,7 +371,7 @@ pythonMultiGrayscaleClosing(NumpyArray<dim, Multiband<PixelType> > array,
 
     {
         PyAllowThreads _pythread;
-        MultiArray<dim-1,PixelType> tmp(typename MultiArrayShape<dim-1>::type(array.shape().begin()));
+        MultiArray<dim-1,PixelType> tmp(typename MultiArrayShape<dim-1>::type(array.shape().cbegin()));
 
         for(int k=0; k<array.shape(dim-1); ++k)
         {

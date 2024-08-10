@@ -255,9 +255,9 @@ class NodeBase
                 P_Container_type const   &  parameter,
                 INT                         n)
     :
-                    topology_   (const_cast<Topology_type>(topology.begin()+ n)),
+                    topology_   (const_cast<Topology_type>(topology.cbegin()+ n)),
                     topology_size_(4),
-                    parameters_  (const_cast<Parameter_type>(parameter.begin() + parameter_addr())),
+                    parameters_  (const_cast<Parameter_type>(parameter.cbegin() + parameter_addr())),
                     parameter_size_(1),
                     featureCount_(topology[0]),
                     classCount_(topology[1]),
@@ -275,9 +275,9 @@ class NodeBase
                 P_Container_type const & parameter,
                 INT                         n)
     :
-                    topology_   (const_cast<Topology_type>(topology.begin()+ n)),
+                    topology_   (const_cast<Topology_type>(topology.cbegin()+ n)),
                     topology_size_(tLen),
-                    parameters_  (const_cast<Parameter_type>(parameter.begin() + parameter_addr())),
+                    parameters_  (const_cast<Parameter_type>(parameter.cbegin() + parameter_addr())),
                     parameter_size_(pLen),
                     featureCount_(topology[0]),
                     classCount_(topology[1]),

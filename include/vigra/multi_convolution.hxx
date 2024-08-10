@@ -171,7 +171,7 @@ struct multiArrayScaleParam
     }
     return_type operator()() const
     {
-        return vec.begin();
+        return vec.cbegin();
     }
     static void precondition(unsigned n_par, const char *const function_name = "multiArrayScaleParam")
     {

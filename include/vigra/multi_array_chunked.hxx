@@ -1179,16 +1179,6 @@ class MultiArrayView<N, T_MaybeConst, ChunkedArrayTag>
         return cbegin().getEndIterator();
     }
 
-    const_iterator cbegin() const
-    {
-        return createCoupledIterator(*this);
-    }
-
-    const_iterator cend() const
-    {
-        return begin().getEndIterator();
-    }
-
     chunk_iterator chunk_begin(shape_type const & start, shape_type const & stop)
     {
         checkSubarrayBounds(start, stop, "MultiArrayView<N-1, T, ChunkedArrayTag>::chunk_begin()");

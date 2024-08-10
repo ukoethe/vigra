@@ -252,7 +252,7 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
 
         if(permute.size() != 0)
         {
-            applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
+            applyPermutation(permute.begin(), permute.end(), data.cbegin(), res.begin());
         }
     }
 
@@ -400,7 +400,7 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
             linearSequence(permute.begin(), permute.end());
         }
 
-        applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
+        applyPermutation(permute.begin(), permute.end(), data.cbegin(), res.begin());
     }
 
     template <class U>
@@ -569,7 +569,7 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
             }
         }
 
-        applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
+        applyPermutation(permute.begin(), permute.end(), data.cbegin(), res.begin());
     }
 
     template <class U>
@@ -732,7 +732,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
             linearSequence(permute.begin(), permute.end());
         }
 
-        applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
+        applyPermutation(permute.begin(), permute.end(), data.cbegin(), res.begin());
     }
 
     template <class U>

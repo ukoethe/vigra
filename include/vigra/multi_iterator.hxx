@@ -1033,7 +1033,7 @@ class MultiIterator<2, T, REFERENCE, POINTER>
 
     MultiIterator & operator+= (multi_difference_type const & d)
     {
-        this->m_ptr += total_stride(d.begin());
+        this->m_ptr += total_stride(d.cbegin());
         return *this;
     }
 
@@ -1045,7 +1045,7 @@ class MultiIterator<2, T, REFERENCE, POINTER>
 
     MultiIterator & operator-= (multi_difference_type const & d)
     {
-        this->m_ptr -= total_stride(d.begin());
+        this->m_ptr -= total_stride(d.cbegin());
         return *this;
     }
 
@@ -1089,7 +1089,7 @@ class MultiIterator<2, T, REFERENCE, POINTER>
 
     reference operator[] (multi_difference_type const & d) const
     {
-        return this->m_ptr [total_stride(d.begin())];
+        return this->m_ptr [total_stride(d.cbegin())];
     }
 
     next_type begin () const
@@ -1274,7 +1274,7 @@ public:
         */
     MultiIterator & operator+= (multi_difference_type const & d)
     {
-        this->m_ptr += total_stride(d.begin());
+        this->m_ptr += total_stride(d.cbegin());
         return *this;
     }
 
@@ -1292,7 +1292,7 @@ public:
         */
     MultiIterator & operator-= (multi_difference_type const & d)
     {
-        this->m_ptr -= total_stride(d.begin());
+        this->m_ptr -= total_stride(d.cbegin());
         return *this;
     }
 
@@ -1391,7 +1391,7 @@ public:
         */
     reference operator[] (multi_difference_type const & d) const
     {
-        return this->m_ptr [total_stride(d.begin())];
+        return this->m_ptr [total_stride(d.cbegin())];
     }
 
         /** Return the (N-1)-dimensional multi-iterator that points to
@@ -1796,7 +1796,7 @@ class StridedMultiIterator<2, T, REFERENCE, POINTER>
 
     StridedMultiIterator & operator+= (multi_difference_type const & d)
     {
-        this->m_ptr += total_stride(d.begin());
+        this->m_ptr += total_stride(d.cbegin());
         return *this;
     }
 
@@ -1808,7 +1808,7 @@ class StridedMultiIterator<2, T, REFERENCE, POINTER>
 
     StridedMultiIterator & operator-= (multi_difference_type const & d)
     {
-        this->m_ptr -= total_stride(d.begin());
+        this->m_ptr -= total_stride(d.cbegin());
         return *this;
     }
 
@@ -1852,7 +1852,7 @@ class StridedMultiIterator<2, T, REFERENCE, POINTER>
 
     reference operator[] (multi_difference_type const & d) const
     {
-        return this->m_ptr [total_stride(d.begin())];
+        return this->m_ptr [total_stride(d.cbegin())];
     }
 
     next_type begin () const
@@ -2036,7 +2036,7 @@ public:
         */
     StridedMultiIterator & operator+= (multi_difference_type const & d)
     {
-        this->m_ptr += total_stride(d.begin());
+        this->m_ptr += total_stride(d.cbegin());
         return *this;
     }
 
@@ -2054,7 +2054,7 @@ public:
         */
     StridedMultiIterator & operator-= (multi_difference_type const & d)
     {
-        this->m_ptr -= total_stride(d.begin());
+        this->m_ptr -= total_stride(d.cbegin());
         return *this;
     }
 
@@ -2153,7 +2153,7 @@ public:
         */
     reference operator[] (multi_difference_type const & d) const
     {
-        return this->m_ptr [total_stride(d.begin())];
+        return this->m_ptr [total_stride(d.cbegin())];
     }
 
         /** Return the (N-1)-dimensional multi-iterator that points to

@@ -1103,8 +1103,8 @@ FFTWPlan<N, Real>::initImpl(MI ins, MO outs, int SIGN, unsigned int planner_flag
     Shape newShape(logicalShape.begin(), logicalShape.end()),
           newIStrides(ins.stride().begin(), ins.stride().end()),
           newOStrides(outs.stride().begin(), outs.stride().end()),
-          itotal(ins.shape().begin(), ins.shape().end()),
-          ototal(outs.shape().begin(), outs.shape().end());
+          itotal(ins.shape().cbegin(), ins.shape().cend()),
+          ototal(outs.shape().cbegin(), outs.shape().cend());
 
     for(unsigned int j=1; j<N; ++j)
     {

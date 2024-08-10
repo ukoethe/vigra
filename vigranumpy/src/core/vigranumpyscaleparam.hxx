@@ -52,7 +52,7 @@ struct pythonScaleParam1
     }
     return_type operator()() const
     {
-        return vec.begin();
+        return vec.cbegin();
     }
 };
 

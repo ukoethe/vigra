@@ -422,31 +422,31 @@ class TaggedShape
 
     template <class U, int N>
     TaggedShape(TinyVector<U, N> const & sh, PyAxisTags tags)
-    : shape(sh.begin(), sh.end()),
-      original_shape(sh.begin(), sh.end()),
+    : shape(sh.cbegin(), sh.cend()),
+      original_shape(sh.cbegin(), sh.cend()),
       axistags(tags),
       channelAxis(none)
     {}
 
     template <class T>
     TaggedShape(ArrayVector<T> const & sh, PyAxisTags tags)
-    : shape(sh.begin(), sh.end()),
-      original_shape(sh.begin(), sh.end()),
+    : shape(sh.cbegin(), sh.cend()),
+      original_shape(sh.cbegin(), sh.cend()),
       axistags(tags),
       channelAxis(none)
     {}
 
     template <class U, int N>
     explicit TaggedShape(TinyVector<U, N> const & sh)
-    : shape(sh.begin(), sh.end()),
-      original_shape(sh.begin(), sh.end()),
+    : shape(sh.cbegin(), sh.cend()),
+      original_shape(sh.cbegin(), sh.cend()),
       channelAxis(none)
     {}
 
     template <class T>
     explicit TaggedShape(ArrayVector<T> const & sh)
-    : shape(sh.begin(), sh.end()),
-      original_shape(sh.begin(), sh.end()),
+    : shape(sh.cbegin(), sh.cend()),
+      original_shape(sh.cbegin(), sh.cend()),
       channelAxis(none)
     {}
 

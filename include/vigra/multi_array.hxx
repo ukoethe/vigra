@@ -1568,8 +1568,8 @@ public:
     MultiArrayView <N, T, StridedArrayTag>
     transpose () const
     {
-        difference_type shape(m_shape.begin(),   ReverseCopy),
-                        stride(m_stride.begin(), ReverseCopy);
+        difference_type shape(m_shape.cbegin(),   ReverseCopy),
+                        stride(m_stride.cbegin(), ReverseCopy);
         return MultiArrayView <N, T, StridedArrayTag>(shape, stride, m_ptr);
     }
 
@@ -1963,7 +1963,7 @@ public:
         */
     const_traverser traverser_begin () const
     {
-        const_traverser ret (m_ptr, m_stride.begin (), m_shape.begin ());
+        const_traverser ret (m_ptr, m_stride.cbegin (), m_shape.cbegin ());
         return ret;
     }
 
@@ -1984,7 +1984,7 @@ public:
         */
     const_traverser traverser_end () const
     {
-        const_traverser ret (m_ptr, m_stride.begin (), m_shape.begin ());
+        const_traverser ret (m_ptr, m_stride.cbegin (), m_shape.cbegin ());
         ret += m_shape [actual_dimension-1];
         return ret;
     }
@@ -2242,11 +2242,11 @@ MultiArrayView <N, T, StrideTag>::bind (difference_type_1 d) const
     }
     else
     {
-        std::copy (m_shape.begin (), m_shape.begin () + M, shape.begin ());
-        std::copy (m_shape.begin () + M+1, m_shape.end (),
+        std::copy (m_shape.cbegin (), m_shape.cbegin () + M, shape.begin ());
+        std::copy (m_shape.cbegin () + M+1, m_shape.cend (),
                    shape.begin () + M);
-        std::copy (m_stride.begin (), m_stride.begin () + M, stride.begin ());
-        std::copy (m_stride.begin () + M+1, m_stride.end (),
+        std::copy (m_stride.cbegin (), m_stride.cbegin () + M, stride.begin ());
+        std::copy (m_stride.cbegin () + M+1, m_stride.cend (),
                    stride.begin () + M);
     }
     return MultiArrayView <N-1, T, typename detail::MaybeStrided<StrideTag, M>::type>
@@ -2266,8 +2266,8 @@ MultiArrayView <N, T, StrideTag>::bindOuter (difference_type_1 d) const
     }
     else
     {
-        inner_shape.init (m_shape.begin (), m_shape.end () - 1);
-        inner_stride.init (m_stride.begin (), m_stride.end () - 1);
+        inner_shape.init (m_shape.cbegin (), m_shape.cend () - 1);
+        inner_stride.init (m_stride.cbegin (), m_stride.cend () - 1);
     }
     return MultiArrayView <N-1, T, StrideTag> (inner_shape, inner_stride,
                                        m_ptr + d * m_stride [N-1]);
@@ -2286,8 +2286,8 @@ MultiArrayView <N, T, StrideTag>::bindInner (difference_type_1 d) const
     }
     else
     {
-        outer_shape.init (m_shape.begin () + 1, m_shape.end ());
-        outer_stride.init (m_stride.begin () + 1, m_stride.end ());
+        outer_shape.init (m_shape.cbegin () + 1, m_shape.cend ());
+        outer_stride.init (m_stride.cbegin () + 1, m_stride.cend ());
     }
     return MultiArrayView <N-1, T, StridedArrayTag>
         (outer_shape, outer_stride, m_ptr + d * m_stride [0]);
@@ -2310,11 +2310,11 @@ MultiArrayView <N, T, StrideTag>::bindAt (difference_type_1 n, difference_type_1
     }
     else
     {
-        std::copy (m_shape.begin (), m_shape.begin () + n, shape.begin ());
-        std::copy (m_shape.begin () + n+1, m_shape.end (),
+        std::copy (m_shape.cbegin (), m_shape.cbegin () + n, shape.begin ());
+        std::copy (m_shape.cbegin () + n+1, m_shape.cend (),
                    shape.begin () + n);
-        std::copy (m_stride.begin (), m_stride.begin () + n, stride.begin ());
-        std::copy (m_stride.begin () + n+1, m_stride.end (),
+        std::copy (m_stride.cbegin (), m_stride.cbegin () + n, stride.begin ());
+        std::copy (m_stride.cbegin () + n+1, m_stride.cend (),
                    stride.begin () + n);
     }
     return MultiArrayView <N-1, T, StridedArrayTag>
@@ -2359,10 +2359,10 @@ MultiArrayView <N, T, StrideTag>::insertSingletonDimension (difference_type_1 i)
         0 <= i && i <= static_cast <difference_type_1> (N),
         "MultiArrayView <N, T, StrideTag>::insertSingletonDimension(): index out of range.");
     TinyVector <MultiArrayIndex, N+1> shape, stride;
-    std::copy (m_shape.begin (), m_shape.begin () + i, shape.begin ());
-    std::copy (m_shape.begin () + i, m_shape.end (), shape.begin () + i + 1);
-    std::copy (m_stride.begin (), m_stride.begin () + i, stride.begin ());
-    std::copy (m_stride.begin () + i, m_stride.end (), stride.begin () + i + 1);
+    std::copy (m_shape.cbegin (), m_shape.cbegin () + i, shape.begin ());
+    std::copy (m_shape.cbegin () + i, m_shape.cend (), shape.begin () + i + 1);
+    std::copy (m_stride.cbegin (), m_stride.cbegin () + i, stride.begin ());
+    std::copy (m_stride.cbegin () + i, m_stride.cend (), stride.begin () + i + 1);
     shape[i] = 1;
     stride[i] = 1;
 

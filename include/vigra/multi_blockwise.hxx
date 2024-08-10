@@ -125,7 +125,7 @@ public:
         */
     template <class T, int N>
     BlockwiseOptions & blockShape(const TinyVector<T, N> & blockShape){
-        Shape(blockShape.begin(), blockShape.end()).swap(blockShape_);
+        Shape(blockShape.cbegin(), blockShape.cend()).swap(blockShape_);
         return *this;
     }
 

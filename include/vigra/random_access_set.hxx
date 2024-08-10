@@ -253,35 +253,35 @@ RandomAccessSet<Key,Compare,Alloc>::operator=
 /// \returns begin iterator
 template<class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key,Compare,Alloc>::const_iterator
-RandomAccessSet<Key,Compare,Alloc>::begin() const
+RandomAccessSet<Key,Compare,Alloc>::cbegin() const
 {
-   return vector_.begin();
+   return vector_.cbegin();
 }
 
 /// const end iterator
 /// \returns end iterator
 template<class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key,Compare,Alloc>::const_iterator
-RandomAccessSet<Key,Compare,Alloc>::end() const
+RandomAccessSet<Key,Compare,Alloc>::cend() const
 {
-    return vector_.end();
+    return vector_.cend();
 }
 /// reverse const begin iterator
 /// \returns reverse begin iterator
 template<class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key,Compare,Alloc>::const_iterator
-RandomAccessSet<Key,Compare,Alloc>::rbegin() const
+RandomAccessSet<Key,Compare,Alloc>::crbegin() const
 {
-   return vector_.rbegin();
+   return vector_.crbegin();
 }
 
 /// reverse const end iterator
 /// \param reverse end iterator
 template<class Key, class Compare, class Alloc>
 inline typename RandomAccessSet<Key,Compare,Alloc>::const_iterator
-RandomAccessSet<Key,Compare,Alloc>::rend() const
+RandomAccessSet<Key,Compare,Alloc>::crend() const
 {
-    return vector_.rend();
+    return vector_.crend();
 }
 
 /// begin iterator
@@ -504,9 +504,9 @@ RandomAccessSet<Key,Compare,Alloc>::find
 ) const
 {
    const_iterator i(lower_bound(value));
-   if (i != end() && compare_(value, *i))
+   if (i != cend() && compare_(value, *i))
    {
-       i = end();
+       i = cend();
    }
    return i;
 }

@@ -724,7 +724,7 @@ class TinyVectorBase
     template <class T1, class D1, class D2>
     DERIVED & operator+=(TinyVectorBase<T1, SIZE, D1, D2> const & r)
     {
-        Loop::add(data_, r.begin());
+        Loop::add(data_, r.cbegin());
         return static_cast<DERIVED &>(*this);
     }
 
@@ -733,7 +733,7 @@ class TinyVectorBase
     template <class T1, class D1, class D2>
     DERIVED & operator-=(TinyVectorBase<T1, SIZE, D1, D2> const & r)
     {
-        Loop::sub(data_, r.begin());
+        Loop::sub(data_, r.cbegin());
         return static_cast<DERIVED &>(*this);
     }
 
@@ -742,7 +742,7 @@ class TinyVectorBase
     template <class T1, class D1, class D2>
     DERIVED & operator*=(TinyVectorBase<T1, SIZE, D1, D2> const & r)
     {
-        Loop::mul(data_, r.begin());
+        Loop::mul(data_, r.cbegin());
         return static_cast<DERIVED &>(*this);
     }
 
@@ -751,7 +751,7 @@ class TinyVectorBase
     template <class T1, class D1, class D2>
     DERIVED & operator/=(TinyVectorBase<T1, SIZE, D1, D2> const & r)
     {
-        Loop::div(data_, r.begin());
+        Loop::div(data_, r.cbegin());
         return static_cast<DERIVED &>(*this);
     }
 
@@ -760,7 +760,7 @@ class TinyVectorBase
     template <class T1, class D1, class D2>
     DERIVED & operator%=(TinyVectorBase<T1, SIZE, D1, D2> const & r)
     {
-        Loop::mod(data_, r.begin());
+        Loop::mod(data_, r.cbegin());
         return static_cast<DERIVED &>(*this);
     }
 
@@ -1140,7 +1140,7 @@ class TinyVector
             Usage:
             \code
             TinyVector<int, 3> v(1,2,3);
-            TinyVector<int, 3> reversed(v.begin(), TinyVector<int, 3>::ReverseCopy);
+            TinyVector<int, 3> reversed(v.cbegin(), TinyVector<int, 3>::ReverseCopy);
             \endcode
         */
     explicit TinyVector(const_pointer data, ReverseCopyTag)
@@ -1155,7 +1155,7 @@ class TinyVector
     TinyVector(TinyVectorBase<U, SIZE, DATA, DERIVED> const & r)
     : BaseType()
     {
-        Loop::assignCast(BaseType::data_, r.begin());
+        Loop::assignCast(BaseType::data_, r.cbegin());
     }
 
         /** Copy assignment.
@@ -1171,7 +1171,7 @@ class TinyVector
     template <class U, class DATA, class DERIVED>
     TinyVector & operator=(TinyVectorBase<U, SIZE, DATA, DERIVED> const & r)
     {
-        Loop::assignCast(BaseType::data_, r.begin());
+        Loop::assignCast(BaseType::data_, r.cbegin());
         return *this;
     }
 
@@ -1206,7 +1206,7 @@ class TinyVector
                                         : SIZE;
 
         typedef typename detail::LoopType<minSize>::type MinLoop;
-        MinLoop::assignCast(BaseType::data_, r.begin());
+        MinLoop::assignCast(BaseType::data_, r.cbegin());
         return *this;
     }
 };
@@ -1300,7 +1300,7 @@ class TinyVectorView
         */
    TinyVectorView & operator=(TinyVectorView const & r)
     {
-        Loop::assign(BaseType::data_, r.begin());
+        Loop::assign(BaseType::data_, r.cbegin());
         return *this;
     }
 
@@ -1309,7 +1309,7 @@ class TinyVectorView
     template <class U, class DATA, class DERIVED>
     TinyVectorView & operator=(TinyVectorBase<U, SIZE, DATA, DERIVED> const & r)
     {
-        Loop::assignCast(BaseType::data_, r.begin());
+        Loop::assignCast(BaseType::data_, r.cbegin());
         return *this;
     }
 };
@@ -1347,7 +1347,7 @@ operator!=(TinyVectorBase<V1, SIZE, D1, D2> const & l,
            TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
-    return ltype::notEqual(l.begin(), r.begin());
+    return ltype::notEqual(l.cbegin(), r.cbegin());
 }
 
     /// lexicographical comparison
@@ -1357,7 +1357,7 @@ operator<(TinyVectorBase<V1, SIZE, D1, D2> const & l,
                       TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
-    return ltype::lexicographicLessThan(l.begin(), r.begin());
+    return ltype::lexicographicLessThan(l.cbegin(), r.cbegin());
 }
 
 
@@ -1416,7 +1416,7 @@ closeAtTolerance(TinyVectorBase<V, SIZE, D1, D2> const & l,
                  V epsilon = NumericTraits<V>::epsilon())
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
-    return ltype::closeAtTolerance(l.begin(), r.begin(), epsilon);
+    return ltype::closeAtTolerance(l.begin(), r.cbegin(), epsilon);
 }
 
 template <class V, int SIZE>
@@ -1426,7 +1426,7 @@ closeAtTolerance(TinyVector<V, SIZE> const & l,
                  V epsilon = NumericTraits<V>::epsilon())
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
-    return ltype::closeAtTolerance(l.begin(), r.begin(), epsilon);
+    return ltype::closeAtTolerance(l.begin(), r.cbegin(), epsilon);
 }
 
 /********************************************************/
@@ -1558,7 +1558,7 @@ struct NumericTraits<TinyVector<T, SIZE> >
     {
         TinyVector<T, SIZE> res(detail::dontInit());
         typedef typename detail::LoopType<SIZE>::type ltype;
-        ltype::fromPromote(res.begin(), v.begin());
+        ltype::fromPromote(res.begin(), v.cbegin());
         return res;
     }
 
@@ -1568,7 +1568,7 @@ struct NumericTraits<TinyVector<T, SIZE> >
     {
         TinyVector<T, SIZE> res(detail::dontInit());
         typedef typename detail::LoopType<SIZE>::type ltype;
-        ltype::fromRealPromote(res.begin(), v.begin());
+        ltype::fromRealPromote(res.begin(), v.cbegin());
         return res;
     }
 };
@@ -1707,7 +1707,7 @@ struct NumericTraits<TinyVector<T, SIZE> >\
     static TinyVector<T, SIZE> fromPromote(Promote const & v) { \
         TinyVector<T, SIZE> res;\
         TinyVector<T, SIZE>::iterator d = res.begin(), dend = res.end();\
-        Promote::const_iterator s = v.begin();\
+        Promote::const_iterator s = v.cbegin();\
         for(; d != dend; ++d, ++s)\
             *d = NumericTraits<T>::fromPromote(*s);\
         return res;\
@@ -1715,7 +1715,7 @@ struct NumericTraits<TinyVector<T, SIZE> >\
     static TinyVector<T, SIZE> fromRealPromote(RealPromote const & v) {\
         TinyVector<T, SIZE> res;\
         TinyVector<T, SIZE>::iterator d = res.begin(), dend = res.end();\
-        RealPromote::const_iterator s = v.begin();\
+        RealPromote::const_iterator s = v.cbegin();\
         for(; d != dend; ++d, ++s)\
             *d = NumericTraits<T>::fromRealPromote(*s);\
         return res;\
@@ -1937,7 +1937,7 @@ operator-(TinyVectorBase<V, SIZE, D1, D2> const & v)
 {
     TinyVector<V, SIZE> res(detail::dontInit());
     typedef typename detail::LoopType<SIZE>::type ltype;
-    ltype::neg(res.begin(), v.begin());
+    ltype::neg(res.begin(), v.cbegin());
     return res;
 }
 
@@ -1949,7 +1949,7 @@ abs(TinyVectorBase<V, SIZE, D1, D2> const & v)
 {
     TinyVector<V, SIZE> res(detail::dontInit());
     typedef typename detail::LoopType<SIZE>::type ltype;
-    ltype::abs(res.begin(), v.begin());
+    ltype::abs(res.begin(), v.cbegin());
     return res;
 }
 
@@ -1962,7 +1962,7 @@ ceil(TinyVectorBase<V, SIZE, D1, D2> const & v)
 {
     TinyVector<V, SIZE> res(detail::dontInit());
     typedef typename detail::LoopType<SIZE>::type ltype;
-    ltype::ceil(res.begin(), v.begin());
+    ltype::ceil(res.begin(), v.cbegin());
     return res;
 }
 
@@ -1975,7 +1975,7 @@ floor(TinyVectorBase<V, SIZE, D1, D2> const & v)
 {
     TinyVector<V, SIZE> res(detail::dontInit());
     typedef typename detail::LoopType<SIZE>::type ltype;
-    ltype::floor(res.begin(), v.begin());
+    ltype::floor(res.begin(), v.cbegin());
     return res;
 }
 
@@ -1988,7 +1988,7 @@ round(TinyVectorBase<V, SIZE, D1, D2> const & v)
 {
     TinyVector<V, SIZE> res(detail::dontInit());
     typedef typename detail::LoopType<SIZE>::type ltype;
-    ltype::round(res.begin(), v.begin());
+    ltype::round(res.begin(), v.cbegin());
     return res;
 }
 
@@ -2014,7 +2014,7 @@ sqrt(TinyVectorBase<V, SIZE, D1, D2> const & v)
 {
     TinyVector<V, SIZE> res(detail::dontInit());
     typedef typename detail::LoopType<SIZE>::type ltype;
-    ltype::sqrt(res.begin(), v.begin());
+    ltype::sqrt(res.begin(), v.cbegin());
     return res;
 }
 
@@ -2055,7 +2055,7 @@ dot(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
-    return ltype::dot(l.begin(), r.begin());
+    return ltype::dot(l.cbegin(), r.cbegin());
 }
 
     /// sum of the vector's elements
@@ -2117,7 +2117,7 @@ min(TinyVectorBase<V1, SIZE, D1, D2> const & l,
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
     TinyVector<typename PromoteTraits<V1, V2>::Promote, SIZE> res(l);
-    ltype::min(res.begin(), r.begin());
+    ltype::min(res.begin(), r.cbegin());
     return res;
 }
 
@@ -2130,7 +2130,7 @@ min(TinyVectorBase<V1, SIZE, D1, D2> const & l,
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
     TinyVector<V1, SIZE> res(l);
-    ltype::min(res.begin(), r.begin());
+    ltype::min(res.begin(), r.cbegin());
     return res;
 }
 
@@ -2142,7 +2142,7 @@ min(TinyVector<V1, SIZE> const & l,
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
     TinyVector<V1, SIZE> res(l);
-    ltype::min(res.begin(), r.begin());
+    ltype::min(res.begin(), r.cbegin());
     return res;
 }
 
@@ -2166,7 +2166,7 @@ max(TinyVectorBase<V1, SIZE, D1, D2> const & l,
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
     TinyVector<typename PromoteTraits<V1, V2>::Promote, SIZE> res(l);
-    ltype::max(res.begin(), r.begin());
+    ltype::max(res.begin(), r.cbegin());
     return res;
 }
 
@@ -2179,7 +2179,7 @@ max(TinyVectorBase<V1, SIZE, D1, D2> const & l,
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
     TinyVector<V1, SIZE> res(l);
-    ltype::max(res.begin(), r.begin());
+    ltype::max(res.begin(), r.cbegin());
     return res;
 }
 
@@ -2191,7 +2191,7 @@ max(TinyVector<V1, SIZE> const & l,
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
     TinyVector<V1, SIZE> res(l);
-    ltype::max(res.begin(), r.begin());
+    ltype::max(res.begin(), r.cbegin());
     return res;
 }
 

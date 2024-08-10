@@ -358,7 +358,7 @@ namespace vigra{
                 
                 std::pair<index_type,bool> findEdge(const index_type nodeId)const{
                     AdjIt iter = adjacency_.find(AdjacencyElement(nodeId,0));
-                    if(iter==adjacency_.end()){
+                    if(iter==adjacency_.cend()){
                         return std::pair<index_type,bool>(-1,false);
                     }
                     else{
@@ -373,10 +373,10 @@ namespace vigra{
                 }
 
                 AdjIt adjacencyBegin()const{
-                    return adjacency_.begin();
+                    return adjacency_.cbegin();
                 }
                 AdjIt adjacencyEnd()const{
-                    return adjacency_.end();
+                    return adjacency_.cend();
                 }
 
 

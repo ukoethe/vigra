@@ -212,7 +212,7 @@ namespace vigra{
         // FIXME: crashes on Python3
 
         HistCoord histShape;
-        std::copy(image.shape().begin(), image.shape().end(), histShape.begin());
+        std::copy(image.shape().cbegin(), image.shape().cend(), histShape.begin());
         histShape[DIM] = bins;
         HistType histA(histShape);
 

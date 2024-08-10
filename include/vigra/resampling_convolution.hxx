@@ -300,12 +300,12 @@ resamplingConvolveLine(SrcIter s, SrcIter send, SrcAcc src,
     int wo2 = 2*wo - 2;
 
     int i;
-    typename KernelArray::const_iterator kernel = kernels.begin();
+    typename KernelArray::const_iterator kernel = kernels.cbegin();
     for(i=0; i<wn; ++i, ++d, ++kernel)
     {
         // use the kernels periodically
-        if(kernel == kernels.end())
-            kernel = kernels.begin();
+        if(kernel == kernels.cend())
+            kernel = kernels.cbegin();
 
         // calculate current target point into source location
         int is = mapTargetToSourceCoordinate(i);

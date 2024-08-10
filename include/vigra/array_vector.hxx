@@ -418,11 +418,11 @@ ArrayVectorView <T>::copyImpl(const ArrayVectorView & rhs)
     // use copy() or copy_backward() according to possible overlap of this and rhs
     if(data_ <= rhs.data())
     {
-        std::copy(rhs.begin(), rhs.end(), begin());
+        std::copy(rhs.cbegin(), rhs.cend(), begin());
     }
     else
     {
-        std::copy_backward(rhs.begin(), rhs.end(), end());
+        std::copy_backward(rhs.cbegin(), rhs.cend(), end());
     }
 }
 
@@ -552,7 +552,7 @@ public:
     : view_type(),
       alloc_(rhs.alloc_)
     {
-        initImpl(rhs.begin(), rhs.end(), VigraFalseType());
+        initImpl(rhs.cbegin(), rhs.cend(), VigraFalseType());
     }
 
     template <class U>

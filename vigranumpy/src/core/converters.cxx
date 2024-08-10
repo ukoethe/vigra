@@ -375,7 +375,7 @@ constructArrayFromAxistags(python::object type, ArrayVector<npy_intp> const & sh
     if(pyaxistags.size() > 0)
     {
         ArrayVector<npy_intp> permutation(pyaxistags.permutationToNormalOrder());
-        applyPermutation(permutation.begin(), permutation.end(), shape.begin(), norm_shape.begin());
+        applyPermutation(permutation.begin(), permutation.end(), shape.cbegin(), norm_shape.begin());
     }
 
     TaggedShape tagged_shape(norm_shape, pyaxistags);

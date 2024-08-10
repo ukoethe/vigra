@@ -2849,7 +2849,7 @@ void HDF5File::write_(std::string &datasetName,
     std::string setname = SplitString(datasetName).last();
 
     // shape of the array. Add one dimension, if array contains non-scalars.
-    ArrayVector<hsize_t> shape(array.shape().begin(), array.shape().end());
+    ArrayVector<hsize_t> shape(array.shape().cbegin(), array.shape().cend());
     std::reverse(shape.begin(), shape.end());
 
     if(numBandsOfType > 1)
@@ -3055,7 +3055,7 @@ void HDF5File::write_attribute_(std::string name,
         "HDF5File::writeAttribute(): file is read-only.");
 
     // shape of the array. Add one dimension, if array contains non-scalars.
-    ArrayVector<hsize_t> shape(array.shape().begin(), array.shape().end());
+    ArrayVector<hsize_t> shape(array.shape().cbegin(), array.shape().cend());
     std::reverse(shape.begin(), shape.end());
     if(numBandsOfType > 1)
         shape.push_back(numBandsOfType);
@@ -3390,7 +3390,7 @@ void HDF5File::read_attribute_(std::string datasetName,
     HDF5ImportInfo info(filename, dataset_name);
     vigra_precondition(info.numDimensions() == 3, "Dataset must be 3-dimensional.");
 
-    MultiArrayShape<3>::type shape(info.shape().begin());
+    MultiArrayShape<3>::type shape(info.shape().cbegin());
     MultiArray<3, int> array(shape);
 
     readHDF5(info, array);
@@ -3647,8 +3647,8 @@ void writeHDF5Attr(hid_t loc,
     if(H5Aexists(loc, name) > 0)
         H5Adelete(loc, name);
 
-    ArrayVector<hsize_t> shape(array.shape().begin(),
-                               array.shape().end());
+    ArrayVector<hsize_t> shape(array.shape().cbegin(),
+                               array.shape().cend());
     HDF5Handle
         dataspace_handle(H5Screate_simple(N, shape.data(), NULL),
                          &H5Sclose,
@@ -3683,8 +3683,8 @@ void writeHDF5Attr(hid_t loc,
     if(H5Aexists(loc, name) > 0)
         H5Adelete(loc, name);
 
-    ArrayVector<hsize_t> shape(array.shape().begin(),
-                               array.shape().end());
+    ArrayVector<hsize_t> shape(array.shape().cbegin(),
+                               array.shape().cend());
     HDF5Handle
         dataspace_handle(H5Screate_simple(N, shape.data(), NULL),
                          &H5Sclose,

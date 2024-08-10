@@ -2127,7 +2127,7 @@ class Kernel1D
 
     const_iterator center() const
     {
-        return kernel_.begin() - left();
+        return kernel_.cbegin() - left();
     }
 
         /** Access kernel value at specified location.

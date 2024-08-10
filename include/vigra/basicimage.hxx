@@ -1103,8 +1103,8 @@ BasicImage<PIXELTYPE, Alloc>::operator=(const BasicImage & rhs)
         }
         else
         {
-            ConstScanOrderIterator is = rhs.begin();
-            ConstScanOrderIterator iend = rhs.end();
+            ConstScanOrderIterator is = rhs.cbegin();
+            ConstScanOrderIterator iend = rhs.cend();
             ScanOrderIterator id = begin();
 
             for(; is != iend; ++is, ++id) *id = *is;

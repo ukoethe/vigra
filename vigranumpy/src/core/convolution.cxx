@@ -536,7 +536,7 @@ pythonRecursiveLaplacian(NumpyArray<3, Multiband<PixelType> > image,
 
     {
         PyAllowThreads _pythread;
-        MultiArrayShape<2>::type tmpShape(image.shape().begin());
+        MultiArrayShape<2>::type tmpShape(image.shape().cbegin());
         MultiArray<2, PixelType > tmp(tmpShape);
         for(int k=0;k<image.shape(2);++k)
         {

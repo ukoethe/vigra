@@ -104,7 +104,7 @@ pythonGaussianGradientMagnitudeImpl(NumpyArray<ndim, Multiband<VoxelType> > arra
 
     std::string description("Gaussian gradient magnitude");
     typedef typename MultiArrayShape<sdim>::type Shape;
-    Shape tmpShape(array.shape().begin());
+    Shape tmpShape(array.shape().cbegin());
     if(opt.to_point != Shape())
         tmpShape = opt.to_point-opt.from_point;
 
@@ -143,7 +143,7 @@ pythonGaussianGradientMagnitudeImpl(NumpyArray<ndim, Multiband<VoxelType> > volu
     std::string description("channel-wise Gaussian gradient magnitude");
 
     typedef typename MultiArrayShape<sdim>::type Shape;
-    Shape tmpShape(volume.shape().begin());
+    Shape tmpShape(volume.shape().cbegin());
     if(opt.to_point != Shape())
         tmpShape = opt.to_point-opt.from_point;
 
@@ -189,7 +189,7 @@ pythonGaussianGradientMagnitude(NumpyArray<ndim, Multiband<VoxelType> > volume,
     }
     else
     {
-        opt.subarray(Shape(), Shape(volume.shape().begin()));
+        opt.subarray(Shape(), Shape(volume.shape().cbegin()));
     }
 
     return accumulate

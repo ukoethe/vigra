@@ -681,7 +681,7 @@ class AxisTags
             vigra_precondition(permutation.size() == size(),
                 "AxisTags::transpose(): Permutation has wrong size.");
             ArrayVector<AxisInfo> newAxes(size());
-            applyPermutation(permutation.begin(), permutation.end(), axes_.begin(), newAxes.begin());
+            applyPermutation(permutation.cbegin(), permutation.cend(), axes_.begin(), newAxes.begin());
             axes_.swap(newAxes);
         }
     }
@@ -696,7 +696,7 @@ class AxisTags
     permutationToNormalOrder(ArrayVector<T> & permutation) const
     {
         permutation.resize(size());
-        indexSort(axes_.begin(), axes_.end(), permutation.begin());
+        indexSort(axes_.cbegin(), axes_.cend(), permutation.begin());
     }
     
     template <class T>
@@ -751,7 +751,7 @@ class AxisTags
     void permutationToVigraOrder(ArrayVector<T> & permutation) const
     {
         permutation.resize(size());
-        indexSort(axes_.begin(), axes_.end(), permutation.begin());
+        indexSort(axes_.cbegin(), axes_.cend(), permutation.begin());
         int channel = channelIndex();
         if(channel < (int)size())
         {
@@ -837,7 +837,7 @@ class AxisTags
     {
         if(size() != other.size())
             return false;
-        return std::equal(axes_.begin(), axes_.end(), other.axes_.begin());
+        return std::equal(axes_.cbegin(), axes_.cend(), other.axes_.cbegin());
     }
 
     bool operator!=(AxisTags const & other) const
@@ -1105,7 +1105,7 @@ class AxisTags
     
     // template <int N>
     // TaggedShape(typename MultiArrayShape<N>::type const & sh)
-    // : shape(sh.begin(), sh.end())
+    // : shape(sh.cbegin(), sh.cend())
     // {}
     
     // npy_intp & operator[](int i)
