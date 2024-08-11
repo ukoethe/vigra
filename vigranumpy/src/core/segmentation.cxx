@@ -1169,11 +1169,21 @@ pythonUnique(NumpyArray<NDIM, Singleband<VoxelType> > src, bool sort=true)
 
     NumpyArray<1, VoxelType> result;
     result.reshape( Shape1(labelset.size()) );
-    std::copy( labelset.begin(), labelset.end(), result.begin() );
 
     if (sort)
     {
-        std::sort( result.begin(), result.end() );
+        // I (hmaarrfk) had a lot of trouble getting the derencing poiter
+        // implementation for std::sort to work
+        // In 2022 this started to cause compilation problems in Windows
+        // and in 2024 it started to manifest as porblems with clang 16
+        // https://github.com/ukoethe/vigra/issues/525
+        // We therefore create a temporary copy to a std::vector
+        // then copy the sorted result back
+        std::vector<VoxelType> sorted_result(labelset.begin(), labelset.end());
+        std::sort( sorted_result.begin(), sorted_result.end() );
+        std::copy( sorted_result.begin(), sorted_result.end(), result.begin() );
+    } else {
+        std::copy( labelset.begin(), labelset.end(), result.begin() );
     }
     return result;
 }
