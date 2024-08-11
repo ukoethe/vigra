@@ -82,15 +82,18 @@ def test_applyMapping():
     _impl_test_applyMapping(numpy.uint32)
     _impl_test_applyMapping(numpy.uint64)
 
-def _impl_test_unique(dtype):
-    a = numpy.array([2,3,5,7,11,13,17,19,23,29] + [2,3,5,7,11,13,17,19,23,29], dtype=dtype)
-    u = vigra.analysis.unique(a, sort=True)
-    assert (u == [2,3,5,7,11,13,17,19,23,29]).all()
-
-def test_unique():
-    _impl_test_unique(numpy.uint8)
-    _impl_test_unique(numpy.uint32)
-    _impl_test_unique(numpy.uint64)
+# The implementation of vigra.analysis.unique was disabled
+# due to:
+# https://github.com/ukoethe/vigra/pull/573
+# def _impl_test_unique(dtype):
+#     a = numpy.array([2,3,5,7,11,13,17,19,23,29] + [2,3,5,7,11,13,17,19,23,29], dtype=dtype)
+#     u = vigra.analysis.unique(a, sort=True)
+#     assert (u == [2,3,5,7,11,13,17,19,23,29]).all()
+#
+# def test_unique():
+#     _impl_test_unique(numpy.uint8)
+#     _impl_test_unique(numpy.uint32)
+#     _impl_test_unique(numpy.uint64)
 
 def _impl_relabelConsecutive(dtype):
     start = 17
