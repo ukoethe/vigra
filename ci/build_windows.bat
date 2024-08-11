@@ -9,13 +9,10 @@ if errorlevel 1 exit 1
 call conda config --show
 if errorlevel 1 exit 1
 
-rem cxx compiler version 1.5.0 -> vs2017
-rem build currently doesn't work on vs2019
-rem ref: https://github.com/ukoethe/vigra/issues/525
 call conda create ^
     --quiet --yes ^
     --name vigra ^
-    python=%PYTHON_VERSION% pytest c-compiler=1.5.0 cxx-compiler=1.5.0 ^
+    python=%PYTHON_VERSION% pytest c-compiler cxx-compiler ^
     zlib libjpeg-turbo libpng libtiff hdf5 fftw cmake ninja ^
     boost=1.78 boost-cpp=1.78 numpy h5py sphinx ^
     openexr lemon
