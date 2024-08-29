@@ -71,5 +71,5 @@ of a traditional, hand tuned, inflexible, solution.
 Making a New Release
 --------------------
 
-1. Update the version in the header file.
+1. Update the version in the header file. `include/vigra/config_version.hxx`
 2. Create a tag on the main branch.
