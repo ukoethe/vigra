@@ -119,10 +119,10 @@ def test_writeAndReadImageHDF5():
 
     # negative tests
     # write and read image
-    image_imp[1,1,1] = 100000
+    image_imp[1,1,1] = 100
     checkUnequalData(image,image_imp)
     # write and read scalar image
-    scalar_image_imp[1,1] = 100000
+    scalar_image_imp[1,1] = 100
     checkUnequalData(scalar_image,scalar_image_imp)
 
 def test_writeAndReadVolumeHDF5():
@@ -152,8 +152,8 @@ def test_writeAndReadVolumeHDF5():
 
     # negative tests
     # write and read volume
-    volume256_imp[1,1,1] = 100000
+    volume256_imp[1,1,1] = 100
     checkUnequalData(volume256,volume256_imp)
     # write and read binary volume
-    volumeFloat_imp[1,1,1] = 100000
+    volumeFloat_imp[1,1,1] = 100
     checkUnequalData(volumeFloat.transposeToDefaultOrder(), volumeFloat_imp)
