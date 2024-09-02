@@ -72,4 +72,7 @@ Making a New Release
 --------------------
 
 1. Update the version in the header file. `include/vigra/config_version.hxx`
-2. Create a tag on the main branch.
+2. Create a short release in `docsrc/credits_changelog.dxx`.
+3. Create a merge request.
+4. Give "reasonable time" for others to chime in.
+5. Create a tag on the main branch. The tag should follow `Version-MAJOR-MINOR-PATCH` format.
