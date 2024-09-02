@@ -10,25 +10,27 @@ conda create \
     --name vigra \
     python=${PYTHON_VERSION} pytest c-compiler cxx-compiler \
     zlib libjpeg-turbo libpng libtiff hdf5 fftw \
-    boost boost-cpp "numpy<2" h5py sphinx \
+    boost boost-cpp numpy h5py sphinx \
     openexr lemon cmake make ruff
 
-
-if [[ `uname` == 'Darwin' ]];
-then
+if [[ `uname` == 'Darwin' ]]; then
     export SHLIB_EXT=".dylib"
+    # I - hmaarrrfk - forget why the definition of LDFLAGS here is necessary
     export LDFLAGS="-undefined dynamic_lookup ${LDFLAGS}"
 else
     export SHLIB_EXT=".so"
 fi
+
+# Set the variable CPU_COUNT to take on the default value of 2
+export CPU_COUNT=${CPU_COUNT:-2}
 
 source $CONDA/bin/activate vigra
 
 # lint quickly to help find obvious mistakes
 ( cd vigranumpy && ruff check . )
 
-mkdir build
-cd build
+mkdir -p build
+pushd build
 
 cmake .. \
     -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} \
@@ -49,6 +51,7 @@ cmake .. \
     -DPNG_PNG_INCLUDE_DIR=${CONDA_PREFIX}/include
 
 
-make -j2
-make check -j2
+make -j${CPU_COUNT}
+make check -j${CPU_COUNT}
 ctest -V
+popd

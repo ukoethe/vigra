@@ -95,7 +95,7 @@ IF(Python_Interpreter_FOUND)
 
     ######################################################################
     #
-    #      check if nosetests are installed
+    #      check if pytest is installed
     #
     ######################################################################
     execute_process(COMMAND ${Python_EXECUTABLE} -c

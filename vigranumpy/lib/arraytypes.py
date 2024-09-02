@@ -1443,9 +1443,9 @@ class VigraArray(numpy.ndarray):
         if type(axis) == str:
             axis = self.axistags.index(axis)
         if axis is None:
-            return self.transposeToOrder('C').view(numpy.ndarray).ptp(out=out)
+            return numpy.ptp(self.transposeToOrder('C').view(numpy.ndarray), out=out)
         else:
-            res = self.view(numpy.ndarray).ptp(axis, out)
+            res = numpy.ptp(self.view(numpy.ndarray), axis=axis, out=out)
             if out is None:
                 res = res.view(VigraArray)
                 res.axistags = self._copy_axistags()
