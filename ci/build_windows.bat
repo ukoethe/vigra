@@ -14,7 +14,7 @@ call conda create ^
     --name vigra ^
     python=%PYTHON_VERSION% pytest c-compiler cxx-compiler ^
     zlib libjpeg-turbo libpng libtiff hdf5 fftw cmake ninja ^
-    boost boost-cpp "numpy<2" h5py sphinx ^
+    boost boost-cpp numpy h5py sphinx ^
     openexr lemon
 
 if errorlevel 1 exit 1
