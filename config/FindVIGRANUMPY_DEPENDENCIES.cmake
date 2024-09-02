@@ -2,22 +2,11 @@
 #
 MESSAGE(STATUS "Checking VIGRANUMPY_DEPENDENCIES")
 
-IF(NOT Python_Interpreter_FOUND)
-    FIND_PACKAGE(Python COMPONENTS Interpreter Development NumPy)
-ENDIF()
+FIND_PACKAGE(Python COMPONENTS Interpreter Development NumPy)
 
 IF(Python_Interpreter_FOUND)
     MESSAGE(STATUS "Using Python ${Python_VERSION} at ${Python_EXECUTABLE}")
     MESSAGE(STATUS "Python_LIBRARIES ${Python_LIBRARIES}")
-
-    ######################################################################
-    #
-    #      find Python prefix
-    #
-    ######################################################################
-    execute_process(COMMAND ${Python_EXECUTABLE} -c
-                     "import sys; print(sys.exec_prefix)"
-                      OUTPUT_VARIABLE PYTHON_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
 
     IF(Python_INCLUDE_DIRS)
         MESSAGE(STATUS "Found Python includes:  ${Python_INCLUDE_DIRS}")
@@ -113,7 +102,7 @@ IF(Python_Interpreter_FOUND)
     #      check if sphinx documentation generator is installed
     #
     ######################################################################
-    find_program(PYTHON_SPHINX sphinx-build "${PYTHON_PREFIX}/Scripts")
+    find_program(PYTHON_SPHINX sphinx-build)
 
     IF(NOT PYTHON_SPHINX)
         MESSAGE(STATUS "Could NOT find sphinx documentation generator")
