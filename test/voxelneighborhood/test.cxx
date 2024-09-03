@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -52,12 +52,12 @@ struct NeighborhoodCirculator3dTest
     typedef vigra::MultiArray<3,int> IntVolume;
 
     IntVolume vol;
-        
+
     SixTraverser sixTrav;
     TwentySixTraverser twentySixTrav;
 
     enum { w=5,h=5,d=5 };
-        
+
 
     NeighborhoodCirculator3dTest()
     : vol(IntVolume::difference_type(w,h,d)),
@@ -223,7 +223,7 @@ struct NeighborhoodCirculator3dTest
         for(int i=0; i<27; i++, sixTrav++, twentySixTrav++)
         {
             switch(i){
-                case  4 : 
+                case  4 :
                 case 10 :
                 case 12 :
                 case 13 :
@@ -345,12 +345,12 @@ struct RestrictedNeighborhoodCirculator3dTest
     typedef vigra::MultiArray<3,int> IntVolume;
 
     IntVolume vol;
-        
+
     SixTraverser sixTrav;
     TwentySixTraverser twentySixTrav;
 
     enum { w=3,h=3,d=3 };
-        
+
 
     RestrictedNeighborhoodCirculator3dTest()
     : vol(IntVolume::difference_type(w,h,d)),

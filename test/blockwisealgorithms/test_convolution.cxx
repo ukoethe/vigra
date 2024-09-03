@@ -18,7 +18,7 @@ struct BlockwiseConvolutionTest
     {
         typedef MultiArray<2, double> Array;
         typedef Array::difference_type Shape;
- 
+
         Shape shape(40);
         Shape block_shape(2);
 
@@ -30,10 +30,10 @@ struct BlockwiseConvolutionTest
 
         Array correct_output(shape);
         separableConvolveMultiArray(data, correct_output, kernel);
-        
+
         Array tested_output(shape);
         separableConvolveBlockwise(data, tested_output, kernel, block_shape);
-        
+
         shouldEqualSequenceTolerance(correct_output.begin(), correct_output.end(), tested_output.begin(), 1e-14);
     }
 
@@ -45,9 +45,9 @@ struct BlockwiseConvolutionTest
         typedef ChunkedArrayLazy<3, int> ChunkedArray;
 
         typedef NormalArray::difference_type Shape;
-        
+
         Shape shape(40);
-        
+
         NormalArray data(shape);
         fillRandom(data.begin(), data.end(), 2000);
         ChunkedArray chunked_data(shape);
@@ -56,11 +56,11 @@ struct BlockwiseConvolutionTest
         Kernel1D<double> kernel;
         kernel.initAveraging(3, 2);
         vector<Kernel1D<double> > kernels(N, kernel);
-        
+
         separableConvolveMultiArray(data, data, kernels.begin()); // data now contains output
-        
+
         separableConvolveBlockwise(chunked_data, chunked_data, kernels.begin());
-        
+
         NormalArray checked_out_data(shape);
         chunked_data.checkoutSubarray(Shape(0), checked_out_data);
         for(int i = 0; i != data.size(); ++i)
@@ -82,7 +82,7 @@ struct BlockwiseConvolutionTest
 
         typedef MultiArray<2, double> Array;
         typedef Array::difference_type Shape;
-        
+
         // random array
         Shape shape(200,200);
         Array data(shape);
@@ -97,9 +97,9 @@ struct BlockwiseConvolutionTest
         gaussianSmoothMultiArray(data, res, sigma);
 
         shouldEqualSequenceTolerance(
-            res.begin(), 
-            res.end(), 
-            resB.begin(), 
+            res.begin(),
+            res.end(),
+            resB.begin(),
             1e-14
         );
 

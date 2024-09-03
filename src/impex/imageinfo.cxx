@@ -889,10 +889,10 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
   numBands_(0)
 {
     std::string message;
-    
+
 #if 0 // defined(HasHDF5)
     // Deactivate this code because it effectively forces multi_impex.hxx to be compiled with HDF5 only.
-    
+
     // try reading from HDF5
     // (do this first because it uses mangled 'filename/dataset_name' format)
     {
@@ -903,7 +903,7 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
         if(ext != std::string::npos)
         {
             name = filename.substr(0, ext+3);
-            datasetName = filename.substr(ext+3); 
+            datasetName = filename.substr(ext+3);
         }
         else
         {
@@ -911,14 +911,14 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
             if(ext != std::string::npos)
             {
                 name = filename.substr(0, ext+5);
-                datasetName = filename.substr(ext+5); 
+                datasetName = filename.substr(ext+5);
             }
             else
             {
                 name = filename;
             }
         }
-        
+
         if(H5Fis_hdf5(name.c_str()))
         {
             message = std::string("VolumeImportInfo(): File '");
@@ -926,16 +926,16 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
             vigra_precondition(datasetName.size() > 0, message.c_str());
 
             HDF5File hdf5file(name, HDF5File::OpenReadOnly);
-            
+
             message = std::string("VolumeImportInfo(): Dataset '");
             message += datasetName + "' not found in HDF5 file '" + name + "'.";
             vigra_precondition(hdf5file.existsDataset(datasetName), message.c_str());
-            
+
             ArrayVector<hsize_t> shape(hdf5file.getDatasetShape(datasetName));
             message = std::string("VolumeImportInfo(): Dataset '");
             message += datasetName + "' in HDF5 file '" + name + "' is not a volume.";
             vigra_precondition(shape.size() == 3 || shape.size() == 4, message.c_str());
-            
+
             shape_[0] = shape[0];
             shape_[1] = shape[1];
             shape_[2] = shape[2];
@@ -970,8 +970,8 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
                 message = std::string("VolumeImportInfo(): Unable to open file '");
                 message += filename + "'.";
                 vigra_precondition(false, message.c_str());
-            }    
-            
+            }
+
             getline(siffile, magic_string);
         }
         if(magic_string == "Andor Technology Multi-Channel File")
@@ -984,10 +984,10 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
             numBands_ = 1;
             baseName_ = filename;
             fileType_ = "SIF";
-            return;            
+            return;
         }
     }
-    
+
     // try multi-page TIFF or image stack
     if(isImage(filename.c_str()))
     {
@@ -997,7 +997,7 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
         resolution_[1] = -1.f; // assume images to be right-handed
         pixelType_ = info.getPixelType();
         numBands_ = info.numBands();
-        
+
         if(info.numImages() > 1)
         {
             // must be a multi-page TIFF
@@ -1043,24 +1043,24 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
             }
             while(numEndIt != filename.rend());
         }
-        
+
         message = std::string("VolumeImportInfo(): File '");
         message += filename + "' is neither a multi-page TIFF nor a valid image stack.";
         vigra_precondition(false, message.c_str());
     }
-    
+
     {
-        static std::string pixelTypes[] = { std::string("UNSIGNED_CHAR"), 
-                                            std::string("UNSIGNED_BYTE"), 
-                                            std::string("UINT8"), 
-                                            std::string("INT16"), 
-                                            std::string("UINT16"), 
-                                            std::string("INT32"), 
-                                            std::string("UINT32"), 
-                                            std::string("FLOAT"), 
-                                            std::string("DOUBLE"), 
+        static std::string pixelTypes[] = { std::string("UNSIGNED_CHAR"),
+                                            std::string("UNSIGNED_BYTE"),
+                                            std::string("UINT8"),
+                                            std::string("INT16"),
+                                            std::string("UINT16"),
+                                            std::string("INT32"),
+                                            std::string("UINT32"),
+                                            std::string("FLOAT"),
+                                            std::string("DOUBLE"),
                                             std::string() };
-        
+
         // try .info file loading
         std::ifstream stream(filename.c_str());
 

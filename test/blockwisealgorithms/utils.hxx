@@ -52,7 +52,7 @@ bool equivalentLabels(Iterator1 begin1, Iterator1 end1,
 
     if(end1 - begin1 != end2 - begin2)
         return false;
-    
+
     typedef vector<int> LabelMap;
     LabelMap left_to_right; // from range 1 to range 2
     LabelMap right_to_left;
@@ -73,7 +73,7 @@ bool equivalentLabels(Iterator1 begin1, Iterator1 end1,
         else if(right_to_left[*begin2] != *begin1)
             return false;
     }
-    
+
     return true;
 }
 

@@ -79,7 +79,7 @@ enum NodeTags
              it is not like anybody else is going to use this NodeBase class
              is it?
 
-        TODO: use the RF_Traits::ProblemSpec_t to specify the external 
+        TODO: use the RF_Traits::ProblemSpec_t to specify the external
              parameters instead of the options.
 */
 
@@ -187,9 +187,9 @@ class NodeBase
     }
 
     /** Topology Range - gives access to the raw Topo memory
-     * the size_ member was added as a result of premature 
+     * the size_ member was added as a result of premature
      * optimisation.
-     */ 
+     */
     Topology_type   topology_begin() const
     {
         return topology_;
@@ -286,7 +286,7 @@ class NodeBase
         /*while((int)xrange.size() <  featureCount_)
             xrange.push_back(xrange.size());*/
     }
-    /** create ReadOnly node with known length 
+    /** create ReadOnly node with known length
      * from existing Node
      */
     NodeBase(   int                      tLen,
@@ -346,12 +346,12 @@ class NodeBase
     }
 
 
-  /** PseudoCopy Constructor  - 
+  /** PseudoCopy Constructor  -
    *
-   * Copy Node to the end of a container. 
-   * Since each Node views on different data there can't be a real 
-   * copy constructor (unless both objects should point to the 
-   * same underlying data.                                  
+   * Copy Node to the end of a container.
+   * Since each Node views on different data there can't be a real
+   * copy constructor (unless both objects should point to the
+   * same underlying data.
    */
     NodeBase(   NodeBase      const  &    toCopy,
                 T_Container_type      &    topology,
@@ -408,7 +408,7 @@ class Node<i_ThresholdNode>
     {}
 
     Node( BT & node_)
-        :   BT(5, 2, node_) 
+        :   BT(5, 2, node_)
     {}
 
     double& threshold()
@@ -469,7 +469,7 @@ class Node<i_HyperplaneNode>
     }
 
     Node( BT & node_)
-        :   BT(5, 2, node_) 
+        :   BT(5, 2, node_)
     {
         //TODO : is there a more elegant way to do this?
         BT::topology_size_ += BT::column_data()[0]== AllColumns ?
@@ -554,7 +554,7 @@ class Node<i_HypersphereNode>
     }
 
     Node( BT & node_)
-        :   BT(5, 1, node_) 
+        :   BT(5, 1, node_)
     {
         BT::topology_size_ += BT::column_data()[0]== AllColumns ?
                                         0
@@ -648,7 +648,7 @@ class Node<e_ConstProbNode>
 
 
     Node( BT & node_)
-        :   BT(2, node_.classCount_ +1, node_) 
+        :   BT(2, node_.classCount_ +1, node_)
     {}
     BT::Parameter_type  prob_begin() const
     {

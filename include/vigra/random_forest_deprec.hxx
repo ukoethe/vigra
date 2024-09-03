@@ -53,7 +53,7 @@
 namespace vigra
 {
 
-/** \addtogroup MachineLearning 
+/** \addtogroup MachineLearning
 **/
 //@{
 

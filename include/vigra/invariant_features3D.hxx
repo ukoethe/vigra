@@ -60,12 +60,12 @@ inline double realSH(double l, double m)
 template<int N, class T, class C>
 TinyVector<float, N> centerOfBB(MultiArrayView<N, T, C> const & A)
 {
-    return TinyVector<float, N>(A.shape()) /= 2.0;                        
+    return TinyVector<float, N>(A.shape()) /= 2.0;
 }
 
 } // namespace detail
 
 
-} // namespace vigra 
+} // namespace vigra
 
 #endif // VIGRA_INVARIANT_FEATURES3D_HXX

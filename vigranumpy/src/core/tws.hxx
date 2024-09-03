@@ -134,7 +134,7 @@ void tws
         if(j % 1000000 == 0) {
             std::cout << "\r  initializing queues " << (j/float(numVoxels)*100) << "%                    " << std::flush;
         }
-		if(isAtSeedBorder<T>(labeling, j)) 
+		if(isAtSeedBorder<T>(labeling, j))
         {
 			queues[(int)vol[j]].push(j, vol[j]);
 		}
@@ -237,7 +237,7 @@ template<class T>
 void twsc
 (
 	const MultiArrayView<3, UInt8>& vol,
-	MultiArrayView<3, T>& labeling, 
+	MultiArrayView<3, T>& labeling,
 	MultiArrayView<3, UInt8>& directions,
 	std::map<std::pair<T, T>, std::pair<MultiArrayIndex, MultiArrayIndex> >& adjacency
 )
@@ -339,7 +339,7 @@ inline bool isAtSeedBorder
 	const MultiArrayIndex& index
 )
 {
-	if(labeling[index] == 0) {	
+	if(labeling[index] == 0) {
 		return false; // not a seed voxel
 	}
 	else {

@@ -48,7 +48,7 @@ namespace vigra {
 namespace detail {
 
 template <class T, class C1, class C2, class C3>
-bool quadprogAddConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T, C2> & J, MultiArrayView<2, T, C3> & d, 
+bool quadprogAddConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T, C2> & J, MultiArrayView<2, T, C3> & d,
                            int activeConstraintCount, double& R_norm)
 {
     typedef typename MultiArrayShape<2>::type Shape;
@@ -59,18 +59,18 @@ bool quadprogAddConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T, C2
         return false;
     R_norm = std::max<T>(R_norm, abs(d(activeConstraintCount,0)));
 
-    ++activeConstraintCount;   
+    ++activeConstraintCount;
     // add d as a new column to R
-    columnVector(R, Shape(0, activeConstraintCount - 1), activeConstraintCount) = subVector(d, 0, activeConstraintCount);  
+    columnVector(R, Shape(0, activeConstraintCount - 1), activeConstraintCount) = subVector(d, 0, activeConstraintCount);
     return true;
 }
 
 template <class T, class C1, class C2, class C3>
-void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T, C2> & J, MultiArrayView<2, T, C3> & u, 
+void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T, C2> & J, MultiArrayView<2, T, C3> & u,
                               int activeConstraintCount,  int constraintToBeRemoved)
 {
     typedef typename MultiArrayShape<2>::type Shape;
-    
+
     int newActiveConstraintCount = activeConstraintCount - 1;
 
     if(constraintToBeRemoved == newActiveConstraintCount)
@@ -78,9 +78,9 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
 
     std::swap(u(constraintToBeRemoved,0), u(newActiveConstraintCount,0));
     columnVector(R, constraintToBeRemoved).swapData(columnVector(R, newActiveConstraintCount));
-    linalg::detail::qrGivensStepImpl(0, R.subarray(Shape(constraintToBeRemoved, constraintToBeRemoved), 
+    linalg::detail::qrGivensStepImpl(0, R.subarray(Shape(constraintToBeRemoved, constraintToBeRemoved),
                                                    Shape(newActiveConstraintCount,newActiveConstraintCount)),
-                                        J.subarray(Shape(constraintToBeRemoved, 0), 
+                                        J.subarray(Shape(constraintToBeRemoved, 0),
                                                    Shape(newActiveConstraintCount,newActiveConstraintCount)));
 }
 
@@ -92,24 +92,24 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
    /** Solve Quadratic Programming Problem.
 
      The quadraticProgramming() function implements the algorithm described in
-     
+
      D. Goldfarb, A. Idnani: <i>"A numerically stable dual method for solving
-                 strictly convex quadratic programs"</i>, Mathematical Programming 27:1-33, 1983. 
-     
+                 strictly convex quadratic programs"</i>, Mathematical Programming 27:1-33, 1983.
+
      for the solution of (convex) quadratic programming problems by means of a primal-dual method.
-         
+
      <b>\#include</b> \<vigra/quadprog.hxx\> <br/>
      Namespaces: vigra
 
      <b>Declaration:</b>
 
      \code
-     namespace vigra { 
+     namespace vigra {
          template <class T, class C1, class C2, class C3, class C4, class C5, class C6, class C7>
-         T 
-         quadraticProgramming(MultiArrayView<2, T, C1> const & GG, MultiArrayView<2, T, C2> const & g,  
-                              MultiArrayView<2, T, C3> const & CE, MultiArrayView<2, T, C4> const & ce,  
-                              MultiArrayView<2, T, C5> const & CI, MultiArrayView<2, T, C6> const & ci, 
+         T
+         quadraticProgramming(MultiArrayView<2, T, C1> const & GG, MultiArrayView<2, T, C2> const & g,
+                              MultiArrayView<2, T, C3> const & CE, MultiArrayView<2, T, C4> const & ce,
+                              MultiArrayView<2, T, C5> const & CI, MultiArrayView<2, T, C6> const & ci,
                               MultiArrayView<2, T, C7> & x);
      }
      \endcode
@@ -120,8 +120,8 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
         \mbox{minimize } &\,& \frac{1}{2} \mbox{\bf x}'\,\mbox{\bf G}\, \mbox{\bf x} + \mbox{\bf g}'\,\mbox{\bf x} \\
         \mbox{subject to} &\,& \mbox{\bf C}_E\, \mbox{\bf x} = \mbox{\bf c}_e \\
          &\,& \mbox{\bf C}_I\,\mbox{\bf x} \ge \mbox{\bf c}_i
-     \f}            
-     Matrix <b>G</b> G must be symmetric positive definite, and matrix <b>C</b><sub>E</sub> must have full row rank. 
+     \f}
+     Matrix <b>G</b> G must be symmetric positive definite, and matrix <b>C</b><sub>E</sub> must have full row rank.
      Matrix and vector dimensions must be as follows:
      <ul>
      <li> <b>G</b>: [n * n], <b>g</b>: [n * 1]
@@ -129,14 +129,14 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
      <li> <b>C</b><sub>I</sub>: [mi * n], <b>c</b><sub>i</sub>: [mi * 1]
      <li> <b>x</b>: [n * 1]
      </ul>
-     
-     The function writes the optimal solution into the vector \a x and returns the cost of this solution. 
+
+     The function writes the optimal solution into the vector \a x and returns the cost of this solution.
      If the problem is infeasible, <tt>std::numeric_limits::infinity()</tt> is returned. In this case
      the value of vector \a x is undefined.
-     
+
      <b>Usage:</b>
-     
-     Minimize <tt> f = 0.5 * x'*G*x + g'*x </tt> subject to <tt> -1 &lt;= x &lt;= 1</tt>. 
+
+     Minimize <tt> f = 0.5 * x'*G*x + g'*x </tt> subject to <tt> -1 &lt;= x &lt;= 1</tt>.
      The solution is <tt> x' = [1.0, 0.5, -1.0] </tt> with <tt> f = -22.625</tt>.
      \code
       double Gdata[] = {13.0, 12.0, -2.0,
@@ -151,27 +151,27 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
                          -1.0,  0.0,  0.0,
                           0.0, -1.0,  0.0,
                           0.0,  0.0, -1.0};
-                        
+
       double cidata[] = {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0};
 
-      Matrix<double> G(3,3, Gdata), 
-                     g(3,1, gdata), 
+      Matrix<double> G(3,3, Gdata),
+                     g(3,1, gdata),
                      CE,             // empty since there are no equality constraints
                      ce,             // likewise
-                     CI(7,3, CIdata), 
-                     ci(7,1, cidata), 
+                     CI(7,3, CIdata),
+                     ci(7,1, cidata),
                      x(3,1);
-                   
+
       double f = quadraticProgramming(G, g, CE, ce, CI, ci, x);
      \endcode
-     
+
      This algorithm can also be used to solve non-negative least squares problems
-     (see \ref nonnegativeLeastSquares() for an alternative algorithm). Consider the 
+     (see \ref nonnegativeLeastSquares() for an alternative algorithm). Consider the
      problem to minimize <tt> f = (A*x - b)' * (A*x - b) </tt> subject to <tt> x &gt;= 0</tt>.
      Expanding the product in the objective gives <tt>f = x'*A'*A*x - 2*b'*A*x + b'*b</tt>.
      This is equivalent to the problem of minimizing <tt>fn = 0.5 * x'*G*x + g'*x</tt> with
      <tt>G = A'*A</tt> and <tt>g = -A'*b</tt> (the constant term <tt>b'*b</tt> has no
-     effect on the optimal solution and can be dropped). The following code computes the 
+     effect on the optimal solution and can be dropped). The following code computes the
      solution <tt>x' = [18.4493, 0, 4.50725]</tt>:
      \code
         double A_data[] = {
@@ -181,8 +181,8 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
         };
 
         double b_data[] = {
-             27, 
-            -78, 
+             27,
+            -78,
              64
         };
 
@@ -202,28 +202,28 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
 doxygen_overloaded_function(template <...> unsigned int quadraticProgramming)
 
 template <class T, class C1, class C2, class C3, class C4, class C5, class C6, class C7>
-T 
-quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2> const & g,  
-               MultiArrayView<2, T, C3> const & CE, MultiArrayView<2, T, C4> const & ce,  
-               MultiArrayView<2, T, C5> const & CI, MultiArrayView<2, T, C6> const & ci, 
+T
+quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2> const & g,
+               MultiArrayView<2, T, C3> const & CE, MultiArrayView<2, T, C4> const & ce,
+               MultiArrayView<2, T, C5> const & CI, MultiArrayView<2, T, C6> const & ci,
                MultiArrayView<2, T, C7> & x)
 {
     using namespace linalg;
     typedef typename MultiArrayShape<2>::type Shape;
-    
+
     int n  = rowCount(g),
         me = rowCount(ce),
         mi = rowCount(ci),
         constraintCount = me + mi;
-        
+
     vigra_precondition(columnCount(G) == n && rowCount(G) == n,
         "quadraticProgramming(): Matrix shape mismatch between G and g.");
     vigra_precondition(rowCount(x) == n,
         "quadraticProgramming(): Output vector x has illegal shape.");
-    vigra_precondition((me > 0 && columnCount(CE) == n && rowCount(CE) == me) || 
+    vigra_precondition((me > 0 && columnCount(CE) == n && rowCount(CE) == me) ||
                        (me == 0 && columnCount(CE) == 0),
         "quadraticProgramming(): Matrix CE has illegal shape.");
-    vigra_precondition((mi > 0 && columnCount(CI) == n && rowCount(CI) == mi) || 
+    vigra_precondition((mi > 0 && columnCount(CI) == n && rowCount(CI) == mi) ||
                        (mi == 0 && columnCount(CI) == 0),
         "quadraticProgramming(): Matrix CI has illegal shape.");
 
@@ -238,38 +238,38 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
     }
     // current solution value
     T f_value = 0.5 * dot(g, x);
-    
+
     T epsilonZ   = NumericTraits<T>::epsilon() * sq(J.norm(0)),
       inf        = std::numeric_limits<T>::infinity();
-    
+
     Matrix<T> R(n, n), r(constraintCount, 1), u(constraintCount,1);
     T R_norm = NumericTraits<T>::one();
-    
+
     // incorporate equality constraints
     for (int i=0; i < me; ++i)
     {
         MultiArrayView<2, T, C3> np = rowVector(CE, i);
         Matrix<T> d = J*transpose(np);
         Matrix<T> z = transpose(J).subarray(Shape(0, i), Shape(n,n))*subVector(d, i, n);
-        linearSolveUpperTriangular(R.subarray(Shape(0, 0), Shape(i,i)), 
-                                   subVector(d, 0, i), 
+        linearSolveUpperTriangular(R.subarray(Shape(0, 0), Shape(i,i)),
+                                   subVector(d, 0, i),
                                    subVector(r, 0, i));
         // compute step in primal space so that the constraint becomes satisfied
         T step = (squaredNorm(z) <= epsilonZ) // i.e. z == 0
-                     ? 0.0 
+                     ? 0.0
                      : (-dot(np, x) + ce(i,0)) / dot(z, np);
-    
-        x += step * z;    
+
+        x += step * z;
         u(i,0) = step;
         subVector(u, 0, i) -= step * subVector(r, 0, i);
-        
+
         f_value += 0.5 * sq(step) * dot(z, np);
-    
+
         vigra_precondition(vigra::detail::quadprogAddConstraint(R, J, d, i, R_norm),
             "quadraticProgramming(): Equality constraints are linearly dependent.");
     }
     int activeConstraintCount = me;
-  
+
     // determine optimum solution and corresponding active inequality constraints
     ArrayVector<int> activeSet(mi);
     for (int i = 0; i < mi; ++i)
@@ -287,9 +287,9 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
         }
     }
 
-    int iter = 0, maxIter = 10*mi;    
+    int iter = 0, maxIter = 10*mi;
     while(iter++ < maxIter)
-    {        
+    {
         if (ss >= 0.0)       // all constraints are satisfied
             return f_value;  // => solved!
 
@@ -297,20 +297,20 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
         MultiArrayView<2, T, C5> np = rowVector(CI, activeSet[constraintToBeAdded]);
         Matrix<T> d = J*transpose(np);
         Matrix<T> z = transpose(J).subarray(Shape(0, activeConstraintCount), Shape(n,n))*subVector(d, activeConstraintCount, n);
-        
+
         // compute negative of the step direction in the dual space
-        linearSolveUpperTriangular(R.subarray(Shape(0, 0), Shape(activeConstraintCount,activeConstraintCount)), 
-                                   subVector(d, 0, activeConstraintCount), 
+        linearSolveUpperTriangular(R.subarray(Shape(0, 0), Shape(activeConstraintCount,activeConstraintCount)),
+                                   subVector(d, 0, activeConstraintCount),
                                    subVector(r, 0, activeConstraintCount));
 
         // determine minimum step length in primal space such that activeSet[constraintToBeAdded] becomes feasible
         T primalStep = (squaredNorm(z) <= epsilonZ) // i.e. z == 0
                           ? inf
                           : -ss / dot(z, np);
-      
+
         // determine maximum step length in dual space that doesn't violate dual feasibility
         // and the corresponding index
-        T dualStep = inf; 
+        T dualStep = inf;
         int constraintToBeRemoved = 0;
         for (int k = me; k < activeConstraintCount; ++k)
         {
@@ -323,16 +323,16 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
                 }
             }
         }
-        
+
         // the step is chosen as the minimum of dualStep and primalStep
         T step = std::min(dualStep, primalStep);
-      
+
         // take step and update matrices
-      
+
         if (step == inf)
         {
             // case (i): no step in primal or dual space possible
-            return inf; // QPP is infeasible 
+            return inf; // QPP is infeasible
         }
         if (primalStep == inf)
         {
@@ -343,15 +343,15 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
             std::swap(activeSet[constraintToBeRemoved-me], activeSet[activeConstraintCount-me]);
             continue;
         }
-      
-        // case (iii): step in primal and dual space      
+
+        // case (iii): step in primal and dual space
         x += step * z;
         // update the solution value
         f_value += 0.5 * sq(step) * dot(z, np);
         // u = [u 1]' + step * [-r 1]
         subVector(u, 0, activeConstraintCount) -= step * subVector(r, 0, activeConstraintCount);
         u(activeConstraintCount,0) = step;
-      
+
         if (step == primalStep)
         {
             // add constraintToBeAdded to the active set
@@ -366,7 +366,7 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
             --activeConstraintCount;
             std::swap(activeSet[constraintToBeRemoved-me], activeSet[activeConstraintCount-me]);
         }
-        
+
         // update values of inactive inequality constraints
         ss = 0.0;
         for (int i = activeConstraintCount-me; i < mi; ++i)

@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -56,8 +56,8 @@ struct FFTWSinCosConfig
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class Config>
-void 
-cosineTransformLineImpl(SrcIterator s, SrcIterator send, SrcAccessor src, 
+void
+cosineTransformLineImpl(SrcIterator s, SrcIterator send, SrcAccessor src,
                         DestIterator d, DestAccessor dest,
                         Config & config)
 {
@@ -68,7 +68,7 @@ cosineTransformLineImpl(SrcIterator s, SrcIterator send, SrcAccessor src,
 
     if(size <= 0)
         return;
-    
+
     fftw_real const * twiddles = config.twiddles.begin();
     fftw_real * fftwInput = config.fftwInput.begin();
     fftw_complex * fftwTmpResult = config.fftwTmpResult.begin();
@@ -150,14 +150,14 @@ void cosineTransformX(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
 {
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
-    
+
     detail::FFTWSinCosConfig config;
 
     // horizontal transformation
     int ns2 = w / 2;
     int nm1 = w - 1;
     int modn = w % 2;
-    
+
     config.twiddles.resize(w+1);
     config.fftwInput.resize(w+1);
     config.fftwTmpResult.resize(w+1);
@@ -190,14 +190,14 @@ void cosineTransformY(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
 {
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
-    
+
     detail::FFTWSinCosConfig config;
 
     // horizontal transformation
     int ns2 = h / 2;
     int nm1 = h - 1;
     int modn = h % 2;
-    
+
     config.twiddles.resize(h + 1);
     config.fftwInput.resize(h + 1);
     config.fftwTmpResult.resize(h + 1);
@@ -225,7 +225,7 @@ void cosineTransformY(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
 
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
-inline void 
+inline void
 realFourierTransformXEvenYEven(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
                       DestTraverser dul, DestAccessor dest, fftw_real norm)
 {
@@ -236,7 +236,7 @@ realFourierTransformXEvenYEven(SrcTraverser sul, SrcTraverser slr, SrcAccessor s
 
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
-inline void 
+inline void
 realFourierTransformXEvenYEven(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
                       pair<DestTraverser, DestAccessor> dest, fftw_real norm)
 {

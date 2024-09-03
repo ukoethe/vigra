@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -52,13 +52,13 @@ namespace vigra {
 
 namespace detail {
 
-template < class Point >    
-bool pointYXOrdering(Point const & p1, Point const & p2) 
+template < class Point >
+bool pointYXOrdering(Point const & p1, Point const & p2)
 {
     return (p1[1]<p2[1]) || (p1[1] == p2[1] && p1[0] < p2[0]);
 }
 
-template < class Point >    
+template < class Point >
 bool orderedClockwise(const Point &O, const Point &A, const Point &B)
 {
     return (A[0] - O[0]) * (B[1] - O[1]) - (A[1] - O[1]) * (B[0] - O[0]) <= 0;
@@ -72,10 +72,10 @@ bool orderedClockwise(const Point &O, const Point &A, const Point &B)
 //@{
 
     /** Polygons in two and higher dimenions.
-    
+
     */
 template<class POINT=TinyVector<double, 2> >
-class Polygon 
+class Polygon
 : protected ArrayVector<POINT>
 {
   public:
@@ -94,7 +94,7 @@ class Polygon
     typedef typename Base::size_type              size_type;
     typedef typename Base::difference_type        difference_type;
     typedef typename POINT::value_type            coordinate_type;
-    
+
     using Base::size;
     using Base::empty;
     using Base::begin;
@@ -127,7 +127,7 @@ class Polygon
       lengthValid_(false),
       partialAreaValid_(false)
     {}
-    
+
     void clear()
     {
         invalidateProperties();
@@ -179,9 +179,9 @@ class Polygon
         return size() <= 1 || back() == front();
     }
 
-        /** Linearly interpolate at <tt>offset</tt> between knots 
+        /** Linearly interpolate at <tt>offset</tt> between knots
             <tt>index</tt> and <tt>index+1</tt>.
-            
+
             Preconditions: <tt>0 <= index < size()-1</tt> and <tt>0 <= offset <= 1</tt>.
         */
     Point interpolate(unsigned int index, double offset) const
@@ -207,7 +207,7 @@ class Polygon
     {
         return contains(point, 2.0*NumericTraits<coordinate_type>::epsilon());
     }
-    
+
     void push_back(const_reference v)
     {
         if(size())
@@ -219,7 +219,7 @@ class Polygon
         }
         push_back_unsafe(v);
     }
-    
+
     void push_back_unsafe(const_reference v)
     {
         Base::push_back(v);
@@ -266,7 +266,7 @@ class Polygon
         Base::operator[](pos) = x;
     }
 
-        // alternative, but it will also invalidate if the caller only reads 
+        // alternative, but it will also invalidate if the caller only reads
         // reads the return value.
     // reference operator[](unsigned int pos)
     // {
@@ -283,30 +283,30 @@ class Polygon
     {
         return Base::front();
     }
-    
+
     const_reference back() const
     {
         return Base::back();
     }
-    
+
     iterator begin()
     {
         invalidateProperties();
         return Base::begin();
     }
-    
+
     iterator end()
     {
         invalidateProperties();
         return Base::end();
     }
-    
+
     reverse_iterator rbegin()
     {
         invalidateProperties();
         return Base::rbegin();
     }
-    
+
     reverse_iterator rend()
     {
         invalidateProperties();
@@ -364,13 +364,13 @@ class Polygon
             arcLengths.push_back(length);
         }
     }
-    
+
         /** Find the point on the polygon that corresponds to the given quantile.
-        
+
             \a quantile must be in <tt>[0.0, 1.0]</tt>. The result of this function
             can be used as input to <tt>interpolate()</tt>. For example,
             the following code computes the point in the middle of the polygon:
-            
+
             \code
             double c = poly.arcLengthQuantile(0.5);
             Point center = poly.interpolate((int)floor(c), c - floor(c));
@@ -415,7 +415,7 @@ class Polygon
     }
 
     POINT nearestPoint(const_reference p) const;
-    
+
     Polygon & operator+=(POINT const & offset)
     {
         if(!closed())
@@ -466,9 +466,9 @@ class Polygon
     {
         return !((*this) == rhs);
     }
-    
+
   protected:
-    
+
     mutable double length_;
     mutable bool lengthValid_;
     mutable double partialArea_;
@@ -520,24 +520,24 @@ POINT Polygon<POINT>::nearestPoint(const_reference p) const
 }
 
 template <class POINT>
-bool 
-Polygon<POINT>::contains(const_reference point, 
+bool
+Polygon<POINT>::contains(const_reference point,
                          coordinate_type tolerance) const
 {
     typedef typename Polygon<POINT>::Base Base;
     vigra_precondition(closed(),
                        "Polygon::contains() requires polygon to be closed!");
-    
+
     // NOTE: the following code is very similar to detail::createScanIntervals()
     //       to ensure consistent results.
-    
+
     Polygon p = (*this) - point; // shift the polygon so that we only need to test
                                  // for intersections with scanline 0
     int n = p.size();
     for(int k=0; k<n; ++k)
         if(closeAtTolerance(p[k][1], 0.0, tolerance))
             ((Base&)p)[k][1] = 0.0;
-        
+
     int result = 0;
     bool drop_next_start_point = false;
     int first_point_maybe_dropped = -1;
@@ -545,7 +545,7 @@ Polygon<POINT>::contains(const_reference point,
     {
         Point const & p1 = p[k];
         Point const & p2 = p[k+1];
-        
+
         if(p1[1] == p2[1]) // ignore horizontal lines
             continue;
 
@@ -589,7 +589,7 @@ Polygon<POINT>::contains(const_reference point,
         {
             int j = (k+2)%n;
             bool convex = detail::orderedClockwise(p1, p2, p[j]);
-            if(convex) 
+            if(convex)
             {
                 double x = p2[0] - p2[1]*t;
                 if(closeAtTolerance(x, 0.0, tolerance))
@@ -602,9 +602,9 @@ Polygon<POINT>::contains(const_reference point,
                 double bend = dy*(p[j][1] - yend);
                 if(bend == 0.0)
                     continue;
-                // Drop startpoint of next segment when the polygon after a convex 
-                // degenerate knot eventually crosses the scanline, or when it 
-                // returns to the original side of the scanline after a concave 
+                // Drop startpoint of next segment when the polygon after a convex
+                // degenerate knot eventually crosses the scanline, or when it
+                // returns to the original side of the scanline after a concave
                 // degenerate knot.
                 if((convex && bend > 0.0) || (!convex && bend < 0.0))
                     drop_next_start_point = true;
@@ -612,7 +612,7 @@ Polygon<POINT>::contains(const_reference point,
             }
         }
     }
-    
+
     if(drop_next_start_point && first_point_maybe_dropped == 1)
         --result;
 
@@ -620,7 +620,7 @@ Polygon<POINT>::contains(const_reference point,
 }
 
 template <class POINT>
-inline Polygon<POINT> round(Polygon<POINT> const & p) 
+inline Polygon<POINT> round(Polygon<POINT> const & p)
 {
     Polygon<POINT> result(p.size());
     for(unsigned int i = 0; i < p.size(); ++i)
@@ -631,7 +631,7 @@ inline Polygon<POINT> round(Polygon<POINT> const & p)
 }
 
 template <class POINT>
-inline Polygon<TinyVector<std::ptrdiff_t, 2> > roundi(Polygon<POINT> const & p) 
+inline Polygon<TinyVector<std::ptrdiff_t, 2> > roundi(Polygon<POINT> const & p)
 {
     Polygon<TinyVector<std::ptrdiff_t, 2> > result(p.size());
     for(unsigned int i = 0; i < p.size(); ++i)
@@ -642,21 +642,21 @@ inline Polygon<TinyVector<std::ptrdiff_t, 2> > roundi(Polygon<POINT> const & p)
 }
 
 template <class POINT>
-inline Polygon<POINT> 
+inline Polygon<POINT>
 operator+(Polygon<POINT> const & p, POINT const & offset)
 {
     return Polygon<POINT>(p) += offset;
 }
 
 template <class POINT>
-inline Polygon<POINT> 
+inline Polygon<POINT>
 operator+(POINT const & offset, Polygon<POINT> const & p)
 {
     return Polygon<POINT>(p) += offset;
 }
 
 template <class POINT>
-inline Polygon<POINT> 
+inline Polygon<POINT>
 operator-(Polygon<POINT> const & p)
 {
     Polygon<POINT> result(p.size());
@@ -666,21 +666,21 @@ operator-(Polygon<POINT> const & p)
 }
 
 template <class POINT>
-inline Polygon<POINT> 
+inline Polygon<POINT>
 operator-(Polygon<POINT> const & p, POINT const & offset)
 {
     return Polygon<POINT>(p) -= offset;
 }
 
 template <class POINT>
-inline Polygon<POINT> 
+inline Polygon<POINT>
 operator*(Polygon<POINT> const & p, double scale)
 {
     return Polygon<POINT>(p) *= scale;
 }
 
 template <class POINT>
-inline Polygon<POINT> 
+inline Polygon<POINT>
 operator*(double scale, Polygon<POINT> const & p)
 {
     return Polygon<POINT>(p) *= scale;
@@ -688,14 +688,14 @@ operator*(double scale, Polygon<POINT> const & p)
 
 
 template <class POINT>
-inline Polygon<POINT> 
+inline Polygon<POINT>
 operator/(Polygon<POINT> const & p, double scale)
 {
     return Polygon<POINT>(p) /= scale;
 }
 
 template <class POINT>
-inline Polygon<POINT> 
+inline Polygon<POINT>
 transpose(Polygon<POINT> const & p)
 {
     Polygon<POINT> result(p.size());
@@ -707,7 +707,7 @@ transpose(Polygon<POINT> const & p)
 }
 
 template <class POINT>
-inline Polygon<POINT> 
+inline Polygon<POINT>
 reverse(Polygon<POINT> const & p)
 {
     Polygon<POINT> result(p);
@@ -755,23 +755,23 @@ namespace vigra {
     The point \a anchor_point must be in the region whose contour we want to extract,
     and must be adjacent to the contour. The algorithm uses the 'left hand on the wall'
     algorithm to trace the connected component whose label equals the label of the
-    \a anchor_point. The contour is returned in \a countour_points as a closed polygon 
+    \a anchor_point. The contour is returned in \a countour_points as a closed polygon
     that circles the region counter-clockwise in the image coordinate system (i.e. the
     coordinate system where x points to the right and y points downwards). Since the
-    resulting polygon represents the interpixel contour, all points will have one integer 
+    resulting polygon represents the interpixel contour, all points will have one integer
     and one half-integer coordinate.
 */
 template<class T, class S, class PointArray>
-void 
+void
 extractContour(MultiArrayView<2, T, S> const &label_image,
                Shape2 const & anchor_point,
-               PointArray & contour_points) 
+               PointArray & contour_points)
 {
     typedef typename PointArray::value_type Point;
-    
+
     Shape2 step[4] = { Shape2(0, -1), Shape2(1, 0), Shape2(0, 1), Shape2(-1, 0) };
     Point contour_offsets[4] = { Point(-0.5, 0), Point(0, -0.5), Point(0.5, 0), Point(0, 0.5) };
-    
+
     T foreground = label_image[anchor_point];
 
     int direction;
@@ -783,21 +783,21 @@ extractContour(MultiArrayView<2, T, S> const &label_image,
         if(!label_image.isInside(position) || label_image[position] != foreground)
             break;
     }
-    
+
     vigra_precondition(direction >= 0,
         "extractContour(): the anchor point must be at the region border.");
-        
+
     int initial_direction = direction;
     Shape2 initial_position = position;
 
     // go around the object
-    do 
+    do
     {
         contour_points.push_back(position + contour_offsets[direction]);
 
         Shape2 next_position = position + step[direction];
 
-        if(label_image.isInside(next_position) && 
+        if(label_image.isInside(next_position) &&
            label_image[next_position] == foreground)
         {
             // we have bumped into a wall => turn right to touch the wall again
@@ -808,7 +808,7 @@ extractContour(MultiArrayView<2, T, S> const &label_image,
             position = next_position;
             int next_direction = (direction + 3) % 4;
             next_position += step[next_direction];
-            if(!label_image.isInside(next_position) || 
+            if(!label_image.isInside(next_position) ||
                label_image[next_position] != foreground)
             {
                 // we have lost the wall => turn left and move forward to touch the wall again
@@ -816,9 +816,9 @@ extractContour(MultiArrayView<2, T, S> const &label_image,
                 position = next_position;
             }
         }
-    } 
+    }
     while (position != initial_position || direction != initial_direction);
-    
+
     contour_points.push_back(contour_points.front()); // make it a closed polygon
 }
 
@@ -826,10 +826,10 @@ extractContour(MultiArrayView<2, T, S> const &label_image,
 
     The input array \a points contains a (not necessarily ordered) set of 2D points
     whose convex hull is to be computed. The array's <tt>value_type</tt> (i.e. the point type)
-    must be compatible with std::vector (in particular, it must support indexing, 
+    must be compatible with std::vector (in particular, it must support indexing,
     copying, and have <tt>size() == 2</tt>). The points of the convex hull will be appended
-    to the output array \a convex_hull (which must support <tt>std::back_inserter(convex_hull)</tt>). 
-    Since the convex hull is a closed polygon, the first and last point of the output will 
+    to the output array \a convex_hull (which must support <tt>std::back_inserter(convex_hull)</tt>).
+    Since the convex hull is a closed polygon, the first and last point of the output will
     be the same (i.e. the first point will simply be inserted at the end again). The points
     of the convex hull will be ordered counter-clockwise, starting with the leftmost point
     of the input. The function implements Andrew's Monotone Chain algorithm.
@@ -841,23 +841,23 @@ void convexHull(const PointArray1 &points, PointArray2 & convex_hull)
                        "convexHull(): at least two input points are needed.");
     vigra_precondition(points[0].size() == 2,
                        "convexHull(): 2-dimensional points required.");
-    
+
     typedef typename PointArray1::value_type Point;
-    
+
     typename PointArray1::const_iterator begin = points.begin();
     if(points.front() == points.back()) // closed polygon
         ++begin;                        // => remove redundant start point
     ArrayVector<Point> ordered(begin, points.end());
     std::sort(ordered.begin(), ordered.end(), detail::pointYXOrdering<Point>);
-    
+
     ArrayVector<Point> H;
-    
+
     int n = ordered.size(), k=0;
-    
+
     // Build lower hull
-    for (int i = 0; i < n; i++) 
+    for (int i = 0; i < n; i++)
     {
-        while (k >= 2 && detail::orderedClockwise(H[k-2], H[k-1], ordered[i])) 
+        while (k >= 2 && detail::orderedClockwise(H[k-2], H[k-1], ordered[i]))
         {
             H.pop_back();
             --k;
@@ -865,11 +865,11 @@ void convexHull(const PointArray1 &points, PointArray2 & convex_hull)
         H.push_back(ordered[i]);
         ++k;
     }
-    
+
     // Build upper hull
-    for (int i = n-2, t = k+1; i >= 0; i--) 
+    for (int i = n-2, t = k+1; i >= 0; i--)
     {
-        while (k >= t && detail::orderedClockwise(H[k-2], H[k-1], ordered[i])) 
+        while (k >= t && detail::orderedClockwise(H[k-2], H[k-1], ordered[i]))
         {
             H.pop_back();
             --k;
@@ -877,7 +877,7 @@ void convexHull(const PointArray1 &points, PointArray2 & convex_hull)
         H.push_back(ordered[i]);
         ++k;
     }
-    
+
     for(int i=k-1; i>=0; --i)
         convex_hull.push_back(H[i]);
 }
@@ -892,12 +892,12 @@ namespace detail {
 
 /*
  * Find and sort all intersection points of the polygon with scanlines.
- * Polygons are considered as closed set, i.e. pixels on the polygon 
+ * Polygons are considered as closed set, i.e. pixels on the polygon
  * contour are included. The function handles degenerate cases (i.e.
  * knots on scanlines) correctly.
  */
 template<class Point, class Array>
-void createScanIntervals(Polygon<Point> const &p, Array & result) 
+void createScanIntervals(Polygon<Point> const &p, Array & result)
 {
     bool drop_next_start_point = false;
     int n = p.size();
@@ -905,7 +905,7 @@ void createScanIntervals(Polygon<Point> const &p, Array & result)
     {
         Point const & p1 = p[k];
         Point const & p2 = p[k+1];
-        
+
         if(p1[1] == p2[1]) // ignore horizontal lines
             continue;
 
@@ -948,9 +948,9 @@ void createScanIntervals(Polygon<Point> const &p, Array & result)
                 double bend = dy*(p[j][1] - yend);
                 if(bend == 0.0)
                     continue;
-                // Drop startpoint of next segment when the polygon after a convex 
-                // degenerate knot eventually crosses the scanline, or when it 
-                // returns to the original side of the scanline after a concave 
+                // Drop startpoint of next segment when the polygon after a convex
+                // degenerate knot eventually crosses the scanline, or when it
+                // returns to the original side of the scanline after a concave
                 // degenerate knot.
                 if((convex && bend > 0.0) || (!convex && bend < 0.0))
                     drop_next_start_point = true;
@@ -958,10 +958,10 @@ void createScanIntervals(Polygon<Point> const &p, Array & result)
             }
         }
     }
-    
+
     if(drop_next_start_point)
         result.erase(result.begin());
-    
+
     vigra_invariant((result.size() & 1) == 0,
         "createScanIntervals(): internal error - should return an even number of points.");
     sort(result.begin(), result.end(), pointYXOrdering<Point>);
@@ -973,11 +973,11 @@ void createScanIntervals(Polygon<Point> const &p, Array & result)
 template<class Point, class FUNCTOR>
 bool
 inspectPolygon(Polygon<Point> const &p,
-               FUNCTOR const & f) 
+               FUNCTOR const & f)
 {
     vigra_precondition(p.closed(),
         "inspectPolygon(): polygon must be closed (i.e. first point == last point).");
-        
+
     std::vector<Point> scan_intervals;
     detail::createScanIntervals(p, scan_intervals);
 
@@ -993,22 +993,22 @@ inspectPolygon(Polygon<Point> const &p,
     return true;
 }
 
-/** \brief Render closed polygon \a p into the image \a output_image. 
+/** \brief Render closed polygon \a p into the image \a output_image.
 
-    All pixels on the polygon's contour and in its interior are 
+    All pixels on the polygon's contour and in its interior are
     set to the given \a value. Parts of the polygon outside the image
-    region are clipped. The function uses a robust X-intersection array 
-    algorithm that is able to handle all corner cases (concave and 
+    region are clipped. The function uses a robust X-intersection array
+    algorithm that is able to handle all corner cases (concave and
     self-intersecting polygons, knots on integer coordinates).
  */
 template<class Point, class T, class S, class Value>
 void fillPolygon(Polygon<Point> const &p,
-                 MultiArrayView<2, T, S> &output_image, 
-                 Value value) 
+                 MultiArrayView<2, T, S> &output_image,
+                 Value value)
 {
     vigra_precondition(p.closed(),
         "fillPolygon(): polygon must be closed (i.e. first point == last point).");
-        
+
     std::vector<Point> scan_intervals;
     detail::createScanIntervals(p, scan_intervals);
 

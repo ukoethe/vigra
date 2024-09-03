@@ -55,9 +55,9 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     BasicImageView<T>   in      =   inputs.getImage<T>(0, v_required());
     double              scale   =   inputs.getScalarMinMax<double>(1, v_default(1.0), 0.0, "inf");
 
-    MultiArrayView<3,T> res     =   outputs.createMultiArray<3,T>   (0, v_required(), 
+    MultiArrayView<3,T> res     =   outputs.createMultiArray<3,T>   (0, v_required(),
                                                    MultiArrayShape<3>::type(3, in.width(), in.height()));
-    
+
     vigra_precondition(sizeof(TinyVector<T, 3>) == sizeof(T)*res.stride(1),
            "vigraBoundaryTensor(): Internal error (unsuitable memory layout).");
 
@@ -94,7 +94,7 @@ function out = vigraBoundaryTensor(inputImage, scale);
 inputImage - 2D scalar input array
 scale      - 1.0 (default), a positive floating point scale
              parameter for boundary tensor computation
-             
+
 out        - output boundary tensor image
              the first dimension holds the boundary tensor entries
                  B11(y,x) = out(1,y,x)

@@ -64,7 +64,7 @@ public:
 
         char hdf5File[] = "testfile_scalar_unstrided.hdf5";
 
-        // data 1: 
+        // data 1:
         MultiArray<3,int> out_data_1(MultiArrayShape<3>::type(2, 3, 4));
         // ...initialize the array to the test data
         for (int i = 0; i < 24; ++i)
@@ -72,12 +72,12 @@ public:
         //std::cout << "Test (0,0), (0,1), (1,0): " << out_data_1(0,0) << " " << out_data_1(0,1) << " " << out_data_1(1,0) << " " << std::endl;
 
         // export
-        // ...data 1: 
+        // ...data 1:
         char hdf5group_1[] = "group/subgroup/data_unstrided";
         writeHDF5(hdf5File, hdf5group_1, out_data_1);
 
         // import
-        // data 1: 
+        // data 1:
         HDF5ImportInfo infoHDF5_1(hdf5File, hdf5group_1);
         MultiArray<3,int> in_data_1(MultiArrayShape<3>::type(infoHDF5_1.shapeOfDimension(0), infoHDF5_1.shapeOfDimension(1), infoHDF5_1.shapeOfDimension(2)));
         readHDF5(infoHDF5_1, in_data_1);
@@ -101,7 +101,7 @@ public:
             out_data_1.data () [i] = i - 12;
         // data 2: strided
         MultiArrayView<2,int,StridedArrayTag> out_data_2(out_data_1.bindAt(1, 0));
-        
+
         // export
         // ...data 2: strided
         char hdf5group_2[] = "group/subgroup/data_strided";
@@ -142,7 +142,7 @@ public:
         writeHDF5(hdf5File, hdf5group_1, out_data_1);
 
         // import
-        // data 1: 
+        // data 1:
         HDF5ImportInfo infoHDF5_1(hdf5File, hdf5group_1);
         MultiArray< 2, RGBValue<double> > in_data_1(MultiArrayShape<2>::type(infoHDF5_1.shapeOfDimension(1), infoHDF5_1.shapeOfDimension(2)));
         readHDF5(infoHDF5_1, in_data_1);
@@ -209,7 +209,7 @@ public:
         writeHDF5(hdf5File, hdf5group_1, out_data_1);
 
         // import
-        // data 1: 
+        // data 1:
         HDF5ImportInfo infoHDF5_1(hdf5File, hdf5group_1);
         MultiArray< 2, TinyVector<double, 4> > in_data_1(MultiArrayShape<2>::type(infoHDF5_1.shapeOfDimension(1), infoHDF5_1.shapeOfDimension(2)));
         readHDF5(infoHDF5_1, in_data_1);
@@ -269,12 +269,12 @@ public:
             out_data_1.data () [i] = i;
 
         // export
-        // ...data 1: 
+        // ...data 1:
         char hdf5group_1[] = "group/subgroup/data";
         writeHDF5(hdf5File, hdf5group_1, out_data_1);
 
         // import
-        // data 1: 
+        // data 1:
         HDF5ImportInfo infoHDF5_1(hdf5File, hdf5group_1);
         MultiArray< 2, RGBValue<double> > in_data_1(MultiArrayShape<2>::type(infoHDF5_1.shapeOfDimension(1), infoHDF5_1.shapeOfDimension(2)));
         readHDF5(infoHDF5_1, in_data_1);
@@ -306,14 +306,14 @@ public:
             out_data_2.data () [i] = i + (std::rand() / (double)RAND_MAX) - 120;
 
         // export
-        // ...data 1: 
+        // ...data 1:
         char hdf5group_1[] = "group/subgroup/data1";
         writeHDF5(hdf5File, hdf5group_1, out_data_1);
         // ...data 2, overwriting existing data
         writeHDF5(hdf5File, hdf5group_1, out_data_2);
 
         // import
-        // data 1: 
+        // data 1:
         HDF5ImportInfo infoHDF5_2(hdf5File, hdf5group_1);
         MultiArray<4,double> in_data_2(MultiArrayShape<4>::type(infoHDF5_2.shapeOfDimension(0), infoHDF5_2.shapeOfDimension(1), infoHDF5_2.shapeOfDimension(2), infoHDF5_2.shapeOfDimension(3)));
         readHDF5(infoHDF5_2, in_data_2);
@@ -460,7 +460,7 @@ public:
         should(!isHDF5("file_does_not_exist.txt"));
 
         file.open(file_name, HDF5File::Open);
-        
+
         // check if data is really written
 
         MultiArray<2,int> in_data_1 (Shape2(10, 11));
@@ -581,9 +581,9 @@ public:
         file.read("/dataset",in_data_overwrite);
 
         should(in_data_overwrite == out_data_2);
-        
+
         file.cd("/");
-        
+
         // writing and reading single values
 
         file.write("set_char",'A');
@@ -600,63 +600,63 @@ public:
         file.write("set_longdouble",(long double)3.);
         file.write("set_string",std::string("abc").c_str());
         file.write("set_string2",std::string("abcdef"));
-        
+
         char read_char = 0;
         file.read("set_char",read_char);
         should(read_char=='A');
-        
+
         Int8 read_int8 = 0;
         file.read("set_int8",read_int8);
         should(read_int8==8);
-        
+
         Int16 read_int16 = 0;
         file.read("set_int16",read_int16);
         should(read_int16 == 16);
-        
+
         Int32 read_int32 = 0;
         file.read("set_int32",read_int32);
         should(read_int32 == 32);
-        
+
         Int64 read_int64 = 0;
         file.read("set_int64",read_int64);
         should(read_int64 == 64);
-        
+
         UInt8 read_uint8 = 0;
         file.read("set_uint8",read_uint8);
         should(read_uint8 == 8);
-        
+
         UInt16 read_uint16 = 0;
         file.read("set_uint16",read_uint16);
         should(read_uint16 == 16);
-        
+
         UInt32 read_uint32 = 0;
         file.read("set_uint32",read_uint32);
         should(read_uint32 == 32);
-        
+
         UInt64 read_uint64 = 0;
         file.read("set_uint64",read_uint64);
         should(read_uint64 == 64);
-        
+
         float read_float = 0;
         file.read("set_float",read_float);
         should(read_float == 1.);
-        
+
         double read_double = 0;
         file.read("set_double",read_double);
         should(read_double == 2.);
-        
+
         long double read_longdouble = 0;
         file.read("set_longdouble",read_longdouble);
         should(read_longdouble == 3.);
-        
+
         std::string read_string = "";
-        file.read("set_string",read_string);  
+        file.read("set_string",read_string);
         should(read_string == "abc");
 
         std::string read_string2 = "";
         file.read("set_string2",read_string2);
         should(read_string2 == "abcdef");
-       
+
         // test read-only opening
         file.close();
         file.open(file_name, HDF5File::OpenReadOnly);
@@ -1297,13 +1297,13 @@ public:
         }
 
             // this function is for debugging the test
-            // (the leak test should be strong enough to detect the leak) 
+            // (the leak test should be strong enough to detect the leak)
         hid_t forceGroupLeak(std::string name)
         {
             return openCreateGroup_(name);
         }
     };
-    
+
     void test_file_closing()
     {
         hid_t file_id = 0;
@@ -1337,7 +1337,7 @@ public:
             MultiArrayShape<3>::type shape (10, 10, 10);
             test_file.createDataset<3, float>("new_dataset", shape, 1.23f);
             test_file.closeCurrentGroup();
-            
+
             // the file handle must be the only remaining open object
             shouldEqual(H5Fget_obj_count(file_id, H5F_OBJ_ALL), 1);
 

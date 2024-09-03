@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -91,15 +91,15 @@ namespace vigra {
     \ref IteratorBasedArgumentObjectFactories. The possibility to retrieve the default accessor by means of a traits
     class is especially important since this information is not
     contained in the iterator directly.
-    
-    The member <tt>hasConstantStrides</tt> is useful for certain 
+
+    The member <tt>hasConstantStrides</tt> is useful for certain
     optimizations: it helps to decide whether we can replace iterator
     operations such as <tt>iter++</tt> or <tt>iter += n</tt> with
     corresponding pointer operations (which may be faster), where
-    the pointer is obtained as the address of iterator's pointee 
-    (the object the iterator currently  refers to). 
+    the pointer is obtained as the address of iterator's pointee
+    (the object the iterator currently  refers to).
     This flag would be <tt>VigraFalseType</tt> for a
-    <tt>std::list<int>::iterator</tt>, but is <tt>VigraTrueType</tt> 
+    <tt>std::list<int>::iterator</tt>, but is <tt>VigraTrueType</tt>
     for most VIGRA iterators.
 
     <b>\#include</b> \<vigra/iteratortraits.hxx\>
@@ -421,7 +421,7 @@ struct IteratorTraitsBase
 
   \section MultiArrayBasedArgumentObjectFactories MultiArrayView Based Argument Object Factories
 
-    <b>Include:</b> automatically included with 
+    <b>Include:</b> automatically included with
        \<vigra/multi_array.hxx\><br>
     Namespace: vigra
 
@@ -429,7 +429,7 @@ struct IteratorTraitsBase
     are given instances or subclasses of \ref vigra::MultiArrayView.
     These factory functions access <TT>array.traverser_begin()</TT>,
     <TT>array.traverser_end()</TT> to obtain the iterators. If no accessor is
-    given, they use the <tt>AccessorTraits<T></tt> to determine the default 
+    given, they use the <tt>AccessorTraits<T></tt> to determine the default
     accessor associated with the array's value type <tt>T</tt>.
     The following factory functions are provided:
 
@@ -442,7 +442,7 @@ struct IteratorTraitsBase
 
     <TT>srcMultiArrayRange(img)</TT>
     </td><td>
-        create argument object containing a \ref vigra::MultiIterator 
+        create argument object containing a \ref vigra::MultiIterator
         marking the begin of the array, a shape object giving the desired
         shape of the array (possibly a subarray) and the default const accessor for
         <tt>SomeType</tt>
@@ -452,7 +452,7 @@ struct IteratorTraitsBase
 
     <TT>srcMultiArrayRange(img, SomeAccessor())</TT>
     </td><td>
-        create argument object containing a \ref vigra::MultiIterator 
+        create argument object containing a \ref vigra::MultiIterator
         marking the begin of the array, a shape object giving the desired
         shape of the array (possibly a subarray) and the given accessor
 
@@ -470,7 +470,7 @@ struct IteratorTraitsBase
 
     <TT>srcMultiArray(img, SomeAccessor())</TT>
     </td><td>
-        create argument object containing a \ref vigra::MultiIterator 
+        create argument object containing a \ref vigra::MultiIterator
         marking the begin of the array and the given accessor
 
     </td></tr>
@@ -478,7 +478,7 @@ struct IteratorTraitsBase
 
     <TT>destMultiArrayRange(img)</TT>
     </td><td>
-        create argument object containing a \ref vigra::MultiIterator 
+        create argument object containing a \ref vigra::MultiIterator
         marking the begin of the array, a shape object giving the desired
         shape of the array (possibly a subarray) and the default accessor for
         <tt>SomeType</tt>
@@ -488,7 +488,7 @@ struct IteratorTraitsBase
 
     <TT>destMultiArrayRange(img, SomeAccessor())</TT>
     </td><td>
-        create argument object containing a \ref vigra::MultiIterator's 
+        create argument object containing a \ref vigra::MultiIterator's
         marking the begin of the array, a shape object giving the desired
         shape of the array (possibly a subarray) and the given accessor
 
@@ -497,7 +497,7 @@ struct IteratorTraitsBase
 
     <TT>destMultiArray(img)</TT>
     </td><td>
-        create argument object containing a \ref vigra::MultiIterator 
+        create argument object containing a \ref vigra::MultiIterator
         marking the begin of the array and the default accessor for
         <tt>SomeType</tt>
 
@@ -506,7 +506,7 @@ struct IteratorTraitsBase
 
     <TT>destMultiArray(img, SomeAccessor())</TT>
     </td><td>
-        create argument object containing a \ref vigra::MultiIterator's 
+        create argument object containing a \ref vigra::MultiIterator's
         marking the begin of the array and the given accessor
 
     </td></tr>

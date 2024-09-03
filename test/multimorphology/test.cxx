@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -61,7 +61,7 @@ struct MultiMorphologyTest
             0, 1, 1, 1, 1, 1, 0,
             0, 1, 1, 1, 1, 1, 0,
             0, 1, 1, 1, 1, 1, 0};
-        
+
         const unsigned char *i=in;
         for(IntImage::iterator iter=img.begin(); iter!=img.end(); ++iter, ++i){
             *iter=*i;
@@ -80,40 +80,40 @@ struct MultiMorphologyTest
             0, 1, 2, 3, 4, 5, 6,
             0, 1, 2, 3, 4, 5, 6,
             0, 1, 2, 3, 4, 5, 6};
-        
+
         i=in1;
         for(IntImage::iterator iter=img2.begin(); iter!=img2.end(); ++iter, ++i){
             *iter=*i;
         }
 
-        static const unsigned char in2[] = { 0, 0, 0, 0, 0, 
-                                             0, 0, 0, 0, 0,  
-                                             0, 0, 0, 0, 0,  
-                                             0, 0, 0, 0, 0,  
+        static const unsigned char in2[] = { 0, 0, 0, 0, 0,
+                                             0, 0, 0, 0, 0,
+                                             0, 0, 0, 0, 0,
+                                             0, 0, 0, 0, 0,
                                              0, 0, 0, 0, 0,
 
-                                             0, 0, 0, 0, 0,  
-                                             0, 1, 1, 1, 0,  
-                                             0, 1, 1, 1, 0,  
-                                             0, 1, 1, 1, 0,  
+                                             0, 0, 0, 0, 0,
+                                             0, 1, 1, 1, 0,
+                                             0, 1, 1, 1, 0,
+                                             0, 1, 1, 1, 0,
                                              0, 0, 0, 0, 0,
 
-                                             0, 0, 0, 0, 0,  
-                                             0, 1, 1, 1, 0,  
-                                             0, 1, 1, 1, 0,  
-                                             0, 1, 1, 1, 0,  
+                                             0, 0, 0, 0, 0,
+                                             0, 1, 1, 1, 0,
+                                             0, 1, 1, 1, 0,
+                                             0, 1, 1, 1, 0,
                                              0, 0, 0, 0, 0,
 
-                                             0, 0, 0, 0, 0,  
-                                             0, 1, 1, 1, 0,  
-                                             0, 1, 1, 1, 0,  
-                                             0, 1, 1, 1, 0,  
+                                             0, 0, 0, 0, 0,
+                                             0, 1, 1, 1, 0,
+                                             0, 1, 1, 1, 0,
+                                             0, 1, 1, 1, 0,
                                              0, 0, 0, 0, 0,
 
-                                             0, 0, 0, 0, 0, 
-                                             0, 0, 0, 0, 0,  
-                                             0, 0, 0, 0, 0,  
-                                             0, 0, 0, 0, 0,  
+                                             0, 0, 0, 0, 0,
+                                             0, 0, 0, 0, 0,
+                                             0, 0, 0, 0, 0,
+                                             0, 0, 0, 0, 0,
                                              0, 0, 0, 0, 0};
 
         i=in2;
@@ -121,12 +121,12 @@ struct MultiMorphologyTest
             *iter=*i;
         }
     }
-    
+
     void binaryErosionTest()
     {
         IntImage res(img);
         int foreground = NumericTraits<int>::one();
-        
+
         static const int desired[] = {
                    0, 0, 0, foreground, 0, 0, 0,
                    0, 0, 0, foreground, 0, 0, 0,
@@ -135,10 +135,10 @@ struct MultiMorphologyTest
                    0, 0, 0, foreground, 0, 0, 0,
                    0, 0, 0, foreground, 0, 0, 0,
                    0, 0, 0, foreground, 0, 0, 0};
-        
+
         multiBinaryErosion(srcMultiArrayRange(img), destMultiArray(res), 2);
         shouldEqualSequence(res.begin(), res.end(), desired);
-        
+
         res = 0;
         multiBinaryErosion(img, res, 2);
         shouldEqualSequence(res.begin(), res.end(), desired);
@@ -148,7 +148,7 @@ struct MultiMorphologyTest
     {
         IntImage res(img2);
         int foreground = NumericTraits<int>::one();
-        
+
         static const int desired[] = {
                    0, 0, 0, foreground, foreground, foreground, foreground,
                    0, 0, 0, foreground, foreground, foreground, foreground,
@@ -166,7 +166,7 @@ struct MultiMorphologyTest
     {
         IntImage res(lin);
         int foreground = NumericTraits<int>::one();
-        
+
         static const int desired[] = {0, 0, 0, foreground, 0, 0, 0};
         multiBinaryErosion(lin, res, 2);
         shouldEqualSequence(res.begin(), res.end(), desired);
@@ -176,99 +176,99 @@ struct MultiMorphologyTest
     {
         IntVolume res(vol.shape()), res2(vol.shape());
         int f = NumericTraits<int>::one();
-        
-        static const int desiredErosion[] = {  0, 0, 0, 0, 0, 
-                                               0, 0, 0, 0, 0,  
-                                               0, 0, 0, 0, 0,  
-                                               0, 0, 0, 0, 0,  
+
+        static const int desiredErosion[] = {  0, 0, 0, 0, 0,
                                                0, 0, 0, 0, 0,
-                                               
-                                               0, 0, 0, 0, 0, 
-                                               0, 0, 0, 0, 0,  
-                                               0, 0, 0, 0, 0,  
-                                               0, 0, 0, 0, 0,  
                                                0, 0, 0, 0, 0,
-                                               
-                                               0, 0, 0, 0, 0, 
-                                               0, 0, 0, 0, 0,  
-                                               0, 0, f, 0, 0,  
-                                               0, 0, 0, 0, 0,  
                                                0, 0, 0, 0, 0,
-                                               
-                                               0, 0, 0, 0, 0, 
-                                               0, 0, 0, 0, 0,  
-                                               0, 0, 0, 0, 0,  
-                                               0, 0, 0, 0, 0,  
                                                0, 0, 0, 0, 0,
-                                               
-                                               0, 0, 0, 0, 0, 
-                                               0, 0, 0, 0, 0,  
-                                               0, 0, 0, 0, 0,  
-                                               0, 0, 0, 0, 0,  
+
+                                               0, 0, 0, 0, 0,
+                                               0, 0, 0, 0, 0,
+                                               0, 0, 0, 0, 0,
+                                               0, 0, 0, 0, 0,
+                                               0, 0, 0, 0, 0,
+
+                                               0, 0, 0, 0, 0,
+                                               0, 0, 0, 0, 0,
+                                               0, 0, f, 0, 0,
+                                               0, 0, 0, 0, 0,
+                                               0, 0, 0, 0, 0,
+
+                                               0, 0, 0, 0, 0,
+                                               0, 0, 0, 0, 0,
+                                               0, 0, 0, 0, 0,
+                                               0, 0, 0, 0, 0,
+                                               0, 0, 0, 0, 0,
+
+                                               0, 0, 0, 0, 0,
+                                               0, 0, 0, 0, 0,
+                                               0, 0, 0, 0, 0,
+                                               0, 0, 0, 0, 0,
                                                0, 0, 0, 0, 0};
 
         multiBinaryErosion(vol, res, 1);
         shouldEqualSequence(res.begin(), res.end(), desiredErosion);
 
-        static const int desiredDilation[] = {  0, 0, 0, 0, 0, 
-                                                0, 0, 0, 0, 0,  
-                                                0, 0, 0, 0, 0,  
-                                                0, 0, 0, 0, 0,  
+        static const int desiredDilation[] = {  0, 0, 0, 0, 0,
                                                 0, 0, 0, 0, 0,
-                                                
-                                                0, 0, 0, 0, 0, 
-                                                0, 0, 0, 0, 0,  
-                                                0, 0, f, 0, 0,  
-                                                0, 0, 0, 0, 0,  
                                                 0, 0, 0, 0, 0,
-                                                
-                                                0, 0, 0, 0, 0, 
-                                                0, 0, f, 0, 0,  
-                                                0, f, f, f, 0,  
-                                                0, 0, f, 0, 0,  
                                                 0, 0, 0, 0, 0,
-                                                
-                                                0, 0, 0, 0, 0, 
-                                                0, 0, 0, 0, 0,  
-                                                0, 0, f, 0, 0,  
-                                                0, 0, 0, 0, 0,  
                                                 0, 0, 0, 0, 0,
-                                                
-                                                0, 0, 0, 0, 0, 
-                                                0, 0, 0, 0, 0,  
-                                                0, 0, 0, 0, 0,  
-                                                0, 0, 0, 0, 0,  
+
+                                                0, 0, 0, 0, 0,
+                                                0, 0, 0, 0, 0,
+                                                0, 0, f, 0, 0,
+                                                0, 0, 0, 0, 0,
+                                                0, 0, 0, 0, 0,
+
+                                                0, 0, 0, 0, 0,
+                                                0, 0, f, 0, 0,
+                                                0, f, f, f, 0,
+                                                0, 0, f, 0, 0,
+                                                0, 0, 0, 0, 0,
+
+                                                0, 0, 0, 0, 0,
+                                                0, 0, 0, 0, 0,
+                                                0, 0, f, 0, 0,
+                                                0, 0, 0, 0, 0,
+                                                0, 0, 0, 0, 0,
+
+                                                0, 0, 0, 0, 0,
+                                                0, 0, 0, 0, 0,
+                                                0, 0, 0, 0, 0,
+                                                0, 0, 0, 0, 0,
                                                 0, 0, 0, 0, 0};
 
         IntVolume v2(res);
-        
+
         multiBinaryDilation(v2, res, 1);
         shouldEqualSequence(res.begin(), res.end(), desiredDilation);
 
         multiBinaryDilation(v2, res2, 1.8);
         shouldEqualSequence(res2.begin(), res2.end(), vol.begin());
     }
-    
+
     void grayErosionTest2D()
     {
         typedef vigra::MultiArray<2,float> FloatImage;
         FloatImage in(img), res(img), res_cmp(img);
-        
+
         //erosion on original image
         multiGrayscaleErosion(srcMultiArrayRange(in), destMultiArray(res), 1);
-        
+
         //create comparable result = result+2 for every pixel
         for(FloatImage::iterator iter=res.begin(); iter!=res.end(); ++iter){
             *iter+=2.9f;
         }
-        
+
         //create compare image = img+2 for every pixel
         for(FloatImage::iterator iter=in.begin(); iter!=in.end(); ++iter){
             *iter+=2.9f;
         }
         //erosion on compare image (image+2)
         multiGrayscaleErosion(in, res_cmp, 1);
-        
+
         shouldEqualSequence(res.begin(), res.end(), res_cmp.begin());
     }
 
@@ -324,12 +324,12 @@ struct MultiMorphologyTest
         multiGrayscaleErosion(srcMultiArrayRange(in), destMultiArray(tmp),2);
         multiGrayscaleDilation(srcMultiArrayRange(tmp), destMultiArray(res),2);
     }
-    
+
     IntImage img, img2, lin;
     IntVolume vol;
 };
 
-        
+
 struct MorphologyTestSuite
 : public vigra::test_suite
 {

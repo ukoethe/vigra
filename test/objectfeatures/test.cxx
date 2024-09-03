@@ -65,7 +65,7 @@ struct AccumulatorTest
 {
     AccumulatorTest()
     {}
-    
+
     void testStandardizeTag()
     {
         using namespace vigra::acc;
@@ -88,7 +88,7 @@ struct AccumulatorTest
         shouldEqual(Count::name(), "PowerSum<0>");
         shouldEqual(Weighted<Count>::name(), "Weighted<PowerSum<0> >");
 
-        // sum 
+        // sum
         should((IsSameType<StandardizeTag<Sum>::type,
                            Sum>::value));
         should((IsSameType<StandardizeTag<Central<Sum> >::type,
@@ -224,7 +224,7 @@ struct AccumulatorTest
         should((IsSameType<StandardizeTag<Coord<CovarianceEigensystem> >::type,
                            Coord<DivideByCount<ScatterMatrixEigensystem> > >::value));
 
-            // CoordinateSystem 
+            // CoordinateSystem
         should((IsSameType<StandardizeTag<Central<CoordinateSystem> >::type,
                            CoordinateSystem>::value));
         should((IsSameType<StandardizeTag<Principal<CoordinateSystem> >::type,
@@ -265,7 +265,7 @@ struct AccumulatorTest
         typedef typename StandardizeTag<SOURCE >::type StdSource;
         typedef typename TagLongForm<StdSource, MinPriority>::type LongSource;
         typedef typename StandardizeTagLongForm<LongSource>::type Dest;
-            
+
         shouldMsg((IsSameType<LongSource, REFERENCE >::value), message);
 //        shouldMsg((IsSameType<LongSource, REFERENCE >::value), typeid(LongSource).name());
         shouldMsg((IsSameType<StdSource, Dest>::value), message);
@@ -294,7 +294,7 @@ struct AccumulatorTest
         }
 #undef TEST_LONG_FORM
 #undef DM
-          
+
           typedef Select<Count, Sum, Mean, Variance>::type Target;
 
           should((IsSameType<TransferModifiers<Minimum, Target>::type,
@@ -329,8 +329,8 @@ struct AccumulatorTest
     void testScalar()
     {
         using namespace vigra::acc;
-        
-        { 
+
+        {
             typedef AccumulatorChain<double, Select<Count> > A;
             A a;
 
@@ -339,16 +339,16 @@ struct AccumulatorTest
             a(1.0);
             a(2.0);
             a(3.0);
-            
+
             shouldEqual(get<Count>(a), 3.0);
             // access to an inactive statistic triggers a static assertion
             // get<Mean>(a);
         }
 
         {
-            typedef AccumulatorChain<double, Select<CovarianceEigensystem, Covariance, UnbiasedVariance, UnbiasedStdDev, 
+            typedef AccumulatorChain<double, Select<CovarianceEigensystem, Covariance, UnbiasedVariance, UnbiasedStdDev,
                                                Variance, StdDev, Minimum, Maximum, Skewness, Kurtosis,
-                                               AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation, 
+                                               AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation,
                                                Principal<Variance>, Principal<CoordinateSystem>
                                               > > A;
 
@@ -397,7 +397,7 @@ struct AccumulatorTest
             shouldEqual(get<MeanAbsoluteDeviation>(a), 1.25);
         }
 
-        { 
+        {
             DynamicAccumulatorChain<double, Select<Mean, Covariance, StdDev, Minimum, CentralMoment<4> > > a;
 
             shouldEqual(0, a.passesRequired());
@@ -413,12 +413,12 @@ struct AccumulatorTest
 
             shouldEqual(get<Count>(a), 3.0);
 
-            try 
+            try
             {
                 get<Mean>(a);
                 failTest("get<Mean>() failed to throw exception");
             }
-            catch(ContractViolation & c) 
+            catch(ContractViolation & c)
             {
                 std::string expected("\nPrecondition violation!\nget(accumulator): attempt to access inactive statistic");
                 std::string message(c.what());
@@ -478,7 +478,7 @@ struct AccumulatorTest
         {
             typedef TinyVector<int, 3> V;
             typedef AccumulatorChain<V, Select<StdDev, Mean, CovarianceEigensystem, Covariance, Minimum, Maximum, CentralMoment<2>,
-                                          AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation, 
+                                          AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation,
                                           Principal<Variance>, Principal<CoordinateSystem>, Principal<Sum>,
                                           Principal<Minimum>, Principal<Maximum>, Principal<Skewness>, Principal<Kurtosis>, Principal<SumOfAbsDifferences>
                                           > > A;
@@ -507,7 +507,7 @@ struct AccumulatorTest
             shouldEqualTolerance(get<SumOfAbsDifferences>(a), W(2.0, 4.0, 3.5), W(1e-15));
             shouldEqualTolerance(get<MeanAbsoluteDeviation>(a), W(0.5, 1.0, 7.0/8.0), W(1e-15));
 
-            double covarianceData[] = { 
+            double covarianceData[] = {
                 0.5,   0.5,  -0.25,
                 0.5,   1.25, -0.375,
                -0.25, -0.375, 1.1875 };
@@ -515,7 +515,7 @@ struct AccumulatorTest
             shouldEqual(get<Covariance>(a).shape(), Shape2(3,3));
             shouldEqual(get<Covariance>(a), covariance);
             std::pair<W const &, Var const &> eigen = get<CovarianceEigensystem>(a);
-            W ew(1.8181423035878563, 0.87335382939336145, 0.24600386701878226); 
+            W ew(1.8181423035878563, 0.87335382939336145, 0.24600386701878226);
             shouldEqualTolerance(ew, eigen.first, W(1e-15));
             shouldEqualTolerance(ew, get<Principal<Variance> >(a), W(1e-15));
 
@@ -538,13 +538,13 @@ struct AccumulatorTest
 
         {
             using namespace vigra::multi_math;
-            
+
             typedef MultiArray<1, int> V;
             typedef TinyVector<int, 3> T;
             typedef AccumulatorChain<V::view_type, Select<Covariance, Mean, StdDev, Minimum, Maximum, CentralMoment<2> > > A;
             typedef LookupTag<Mean, A>::value_type W;
             typedef LookupTag<Covariance, A>::value_type Var;
-            
+
             should((IsSameType<W, MultiArray<1, double> >::value));
 
             A a;
@@ -696,8 +696,8 @@ struct AccumulatorTest
     void testMerge()
     {
         using namespace vigra::acc;
-        
-        typedef AccumulatorChain<double, Select<Covariance, StdDev, Minimum, Maximum, Skewness, Kurtosis, 
+
+        typedef AccumulatorChain<double, Select<Covariance, StdDev, Minimum, Maximum, Skewness, Kurtosis,
                                            CentralMoment<3>, CentralMoment<4> > > A;
 
         A a, b;
@@ -751,7 +751,7 @@ struct AccumulatorTest
 
             typedef LookupTag<Coord<Mean>, A>::value_type W;
             typedef LookupTag<Coord<Covariance>, A>::value_type Var;
-            
+
             A a;
 
             Iterator i = createCoupledIterator(V(4,4,4));
@@ -780,18 +780,18 @@ struct AccumulatorTest
             W stddev = sqrt( W(2.0/3.0));
             shouldEqualTolerance(stddev, get<Coord<StdDev> >(a), W(1e-15));
 
-            double covarianceData[] = { 
+            double covarianceData[] = {
                 2.0/3.0, -1.0/3.0, -1.0/3.0,
                -1.0/3.0,  2.0/3.0, -1.0/3.0,
                -1.0/3.0, -1.0/3.0,  2.0/3.0 };
             Var covariance(3,3, covarianceData);
             shouldEqual(get<Coord<Covariance> >(a), covariance);
 
-            W sew(3.0, 3.0, 0.0); 
+            W sew(3.0, 3.0, 0.0);
             std::pair<W const &, Var const &> seigen = get<Coord<ScatterMatrixEigensystem> >(a);
             shouldEqualTolerance(sew, seigen.first, W(1e-15));
 
-            W ew(1.0, 1.0, 0.0); 
+            W ew(1.0, 1.0, 0.0);
             std::pair<W const &, Var const &> eigen = get<Coord<CovarianceEigensystem> >(a);
             shouldEqualTolerance(ew, eigen.first, W(1e-15));
             shouldEqualTolerance(ew, get<Coord<Principal<Variance> > >(a), W(1e-15));
@@ -804,7 +804,7 @@ struct AccumulatorTest
                 -0.4082482904638629, -0.7071067811865476, -0.5773502691896257,
                 -0.4082482904638629,  0.7071067811865476, -0.5773502691896257,
                  0.816496580927726,   0.0               , -0.5773502691896257 };
-            
+
             Var ev(3,3, closeAtTolerance(seigen.second(0,0), -0.7071067811865476, 1e-15)
                                 ? eigenvectorData
                                 : eigenvectorDataSwapped),
@@ -823,11 +823,11 @@ struct AccumulatorTest
                                                ArgMinWeight, ArgMaxWeight,
                                                Coord<ArgMinWeight>, Coord<ArgMaxWeight>, WeightArg<2>, DataArg<1>
                                           > > A;
-            
+
             A a;
 
             typedef LookupTag<Coord<Mean>, A>::value_type W;
-            
+
             MultiArray<3, double> data(Shape3(4,4,4), 1.0);
             data(1,2,3) = 0.5;
             data(3,1,2) = 4.0;
@@ -884,25 +884,25 @@ struct AccumulatorTest
         typedef CoupledIteratorType<3, double, double>::type Iterator;
         typedef Iterator::value_type Handle;
         typedef Shape3 V;
-        
+
         typedef AccumulatorChain<Handle, Select<WeightArg<1>, DataArg<2>, Mean, Coord<Mean>, Coord<Maximum>, Coord<Minimum>, Weighted<Count>, Weighted<Mean>, CoordWeighted<Mean>, ArgMinWeight, ArgMaxWeight, Coord<ArgMinWeight>, Coord<ArgMaxWeight> > >  A;
         A a;
-        
+
         typedef LookupTag<Coord<Mean>, A>::value_type W;
-        
+
         MultiArray<3, double> data(Shape3(4,4,4), 1.0);
         data(1,2,3) = 0.5;
         data(3,1,2) = 4.0;
         MultiArray<3, double> weights(Shape3(4,4,4), 1.0);
         weights(1,2,3) = 0.5;
         weights(3,1,2) = 0.25;
-        
+
         Iterator i = createCoupledIterator(weights, data);
-        
+
         a(*(i+V(1,2,3)));
         a(*(i+V(2,3,1)));
         a(*(i+V(3,1,2)));
-        
+
         shouldEqual(get<Count>(a), 3.0);
         shouldEqual(get<Coord<Minimum> >(a), V(1));
         shouldEqual(get<Coord<Maximum> >(a), V(3));
@@ -922,7 +922,7 @@ struct AccumulatorTest
 
         shouldEqual(V(3,1,2), get<Coord<ArgMinWeight> >(b));
     }
-  
+
     void testHistogram()
     {
         static const int SIZE = 30, HSIZE = 10;
@@ -976,10 +976,10 @@ struct AccumulatorTest
 
             double q_onebin[QSIZE] = { 0.0, 0.9, 2.25, 4.5, 6.75, 8.1, 9.0 };
             shouldEqualSequenceTolerance(q_onebin, q_onebin+QSIZE, get<StandardQuantiles<UserRangeHistogram<3> > >(a).begin(), 1e-14);
-            
+
             double qauto[QSIZE] = { 0.0, 0.54, 2.175, 3.9, 7.3125, 8.325, 9.0 };
             shouldEqualSequenceTolerance(qauto, qauto+QSIZE, get<StandardQuantiles<AutoRangeHistogram<HSIZE> > >(a).begin(), 1e-15);
-            
+
             double qint[QSIZE] = { 0.0, 0.0, 2.0, 4.0, 7.75, 9.0, 9.0 };
             shouldEqualSequence(qint, qint+QSIZE, get<StandardQuantiles<IntegerHistogram<HSIZE> > >(a).begin());
             shouldEqualSequence(qint, qint+QSIZE, get<StandardQuantiles<IntegerHistogram<0> > >(a).begin());
@@ -1008,7 +1008,7 @@ struct AccumulatorTest
 
             std::reverse(quser, quser+QSIZE);
             shouldEqualSequenceTolerance(quser, quser+QSIZE, (-get<StandardQuantiles<UserRangeHistogram<HSIZE> > >(a)).begin(), 1e-14);
-            
+
             std::reverse(qauto, qauto+QSIZE);
             shouldEqualSequenceTolerance(qauto, qauto+QSIZE, (-get<StandardQuantiles<AutoRangeHistogram<HSIZE> > >(a)).begin(), 1e-14);
 
@@ -1049,33 +1049,33 @@ struct AccumulatorTest
             shouldEqualSequence(h, h+HSIZE, get<AutoRangeHistogram<0> >(a).begin());
             shouldEqualSequence(h, h+HSIZE, get<IntegerHistogram<0> >(a).begin());
 
-            try 
+            try
             {
                 A b;
                 extractFeatures(data, data+SIZE, b);
                 failTest("extractFeatures() failed to throw exception");
             }
-            catch(ContractViolation & c) 
+            catch(ContractViolation & c)
             {
                 std::string expected("\nPrecondition violation!\nUserRangeHistogram::update(): setMinMax(...) has not been called.");
                 std::string message(c.what());
                 shouldEqual(expected, message.substr(0,expected.size()));
             }
 
-            try 
+            try
             {
                 A b;
                 getAccumulator<UserRangeHistogram<0> >(b).setMinMax(-2.5, 12.5);
                 failTest("extractFeatures() failed to throw exception");
             }
-            catch(ContractViolation & c) 
+            catch(ContractViolation & c)
             {
                 std::string expected("\nPrecondition violation!\nRangeHistogramBase::setMinMax(...): setBinCount(...) has not been called.");
                 std::string message(c.what());
                 shouldEqual(expected, message.substr(0,expected.size()));
             }
 
-            try 
+            try
             {
                 A b;
                 getAccumulator<UserRangeHistogram<0> >(b).setBinCount(HSIZE+2);
@@ -1083,14 +1083,14 @@ struct AccumulatorTest
                 extractFeatures(data, data+SIZE, b);
                 failTest("extractFeatures() failed to throw exception");
             }
-            catch(ContractViolation & c) 
+            catch(ContractViolation & c)
             {
                 std::string expected("\nPrecondition violation!\nRangeHistogramBase::setMinMax(...): setBinCount(...) has not been called.");
                 std::string message(c.what());
                 shouldEqual(expected, message.substr(0,expected.size()));
             }
 
-            try 
+            try
             {
                 A b;
                 b.setHistogramOptions(HistogramOptions().setBinCount(HSIZE));
@@ -1101,7 +1101,7 @@ struct AccumulatorTest
 
                 failTest("extractFeatures() failed to throw exception");
             }
-            catch(ContractViolation & c) 
+            catch(ContractViolation & c)
             {
                 std::string expected("\nPrecondition violation!\nRangeHistogramBase::operator+=(): cannot merge histograms with different data mapping.");
                 std::string message(c.what());
@@ -1141,9 +1141,9 @@ struct AccumulatorTest
             typedef Select<Count, RegionAnchor, Coord<Sum>, Global<Count>, Global<Coord<Minimum> >, LabelArg<1>, DataArg<1> > Selected;
             typedef AccumulatorChainArray<Handle, Selected> A;
 
-            should((IsSameType<acc::acc_detail::ConfigureAccumulatorChainArray<Handle, Selected>::GlobalTags, 
+            should((IsSameType<acc::acc_detail::ConfigureAccumulatorChainArray<Handle, Selected>::GlobalTags,
                                TypeList<Count,TypeList<Coord<Minimum>,TypeList<DataArg<1>, TypeList<LabelArg<1>, void> > > > >::value));
-            should((IsSameType<acc::acc_detail::ConfigureAccumulatorChainArray<Handle, Selected>::RegionTags, 
+            should((IsSameType<acc::acc_detail::ConfigureAccumulatorChainArray<Handle, Selected>::RegionTags,
                                TypeList<RegionAnchor,TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, TypeList<LabelArg<1>, void> > > > > >::value));
 
             typedef LookupTag<Count, A>::type RegionCount;
@@ -1155,7 +1155,7 @@ struct AccumulatorTest
             MultiArray<2, int> labels(Shape2(3,2));
             labels(2,0) = labels(2,1) = 1;
             Iterator i     = createCoupledIterator(labels),
-                     start = i,   
+                     start = i,
                      end   = i.getEndIterator();
 
             A a;
@@ -1167,7 +1167,7 @@ struct AccumulatorTest
             shouldEqual(a.maxRegionLabel(), 1);
             shouldEqual(a.regionCount(), 2);
             should((&getAccumulator<Count, A>(a, 0) != &getAccumulator<Count, A>(a, 1)));
-   
+
             LookupTag<Count, A>::reference rc = getAccumulator<Count>(a, 0);
             LookupTag<Global<Count>, A>::reference gc = getAccumulator<Global<Count> >(a);
             should((&gc == &getAccumulatorIndirectly<Global<Count> >(rc)));
@@ -1175,7 +1175,7 @@ struct AccumulatorTest
 
             for(; i < end; ++i)
                 a(*i);
-            
+
             shouldEqual(4, get<Count>(a, 0));
             shouldEqual(2, get<Count>(a, 1));
             shouldEqual(6, get<Global<Count> >(a));
@@ -1199,7 +1199,7 @@ struct AccumulatorTest
 
             for(i = start; i < end; ++i)
                 aa(*i);
-            
+
             shouldEqual(4, get<Count>(aa, 0));
             shouldEqual(2, get<Count>(aa, 1));
             shouldEqual(6, get<Global<Count> >(aa));
@@ -1216,7 +1216,7 @@ struct AccumulatorTest
 
             for(i = start; i < end; ++i)
                 ab(*i);
-            
+
             shouldEqual(4, get<Count>(ab, 0));
             shouldEqual(2, get<Count>(ab, 1));
             shouldEqual(6, get<Global<Count> >(ab));
@@ -1232,7 +1232,7 @@ struct AccumulatorTest
 
             for(; i < end; ++i)
                 b(*i);
-            
+
             shouldEqual(0, get<Count>(b, 0));
             shouldEqual(2, get<Count>(b, 1));
             shouldEqual(2, get<Global<Count> >(b));
@@ -1246,7 +1246,7 @@ struct AccumulatorTest
             typedef CoupledIteratorType<2, double, int>::type Iterator;
             typedef Iterator::value_type Handle;
 
-            typedef AccumulatorChainArray<Handle, Select<Count, RegionPerimeter, RegionCircularity, RegionEccentricity, 
+            typedef AccumulatorChainArray<Handle, Select<Count, RegionPerimeter, RegionCircularity, RegionEccentricity,
                                                          AutoRangeHistogram<3>, GlobalRangeHistogram<3>,
                                                          Global<Count>, Global<AutoRangeHistogram<3> >, DataArg<1>, LabelArg<2>
                                           > > A;
@@ -1259,7 +1259,7 @@ struct AccumulatorTest
             labels(2,0) = labels(2,1) = 1;
 
             Iterator i     = createCoupledIterator(data, labels),
-                     start = i,   
+                     start = i,
                      end   = i.getEndIterator();
 
             A a;
@@ -1268,7 +1268,7 @@ struct AccumulatorTest
 
             for(; i < end; ++i)
                 a(*i);
-            
+
             shouldEqual(a.maxRegionLabel(), 1);
             shouldEqual(a.regionCount(), 2);
             shouldEqual(4, get<Count>(a, 0));
@@ -1285,7 +1285,7 @@ struct AccumulatorTest
 
             for(i = start; i < end; ++i)
                 a.updatePass2(*i);
-            
+
             shouldEqual(4, get<Count>(a, 0));
             shouldEqual(2, get<Count>(a, 1));
             shouldEqual(6, get<Global<Count> >(a));
@@ -1300,15 +1300,15 @@ struct AccumulatorTest
 
             typedef LookupTag<RegionContour, A>::value_type::value_type Point;
 
-            Point ref0[] = { Point(0, -0.5), Point(-0.5, 0), Point(-0.5, 1), Point(0, 1.5), Point(1, 1.5), 
+            Point ref0[] = { Point(0, -0.5), Point(-0.5, 0), Point(-0.5, 1), Point(0, 1.5), Point(1, 1.5),
                              Point(1.5, 1), Point(1.5, 0), Point(1, -0.5), Point(0.0, -0.5) };
             shouldEqual(get<RegionContour>(a, 0).size(), 9);
             shouldEqualSequence(get<RegionContour>(a, 0).cbegin(), get<RegionContour>(a, 0).cend(), ref0);
             shouldEqualTolerance(get<RegionPerimeter>(a, 0), 4.0 + 2.0*M_SQRT2, 1e-15);
             shouldEqualTolerance(get<RegionCircularity>(a, 0), 0.9712214720608953, 1e-15);
             shouldEqualTolerance(get<RegionEccentricity>(a, 0), 0.0, 1e-15);
- 
-            Point ref1[] = { Point(2, -0.5), Point(1.5, 0), Point(1.5, 1), Point(2, 1.5), 
+
+            Point ref1[] = { Point(2, -0.5), Point(1.5, 0), Point(1.5, 1), Point(2, 1.5),
                              Point(2.5, 1), Point(2.5, 0), Point(2, -0.5) };
             shouldEqual(get<RegionContour>(a, 1).size(), 7);
             shouldEqualSequence(get<RegionContour>(a, 1).cbegin(), get<RegionContour>(a, 1).cend(), ref1);
@@ -1320,11 +1320,11 @@ struct AccumulatorTest
         {
             typedef CoupledIteratorType<2, double, int>::type Iterator;
 
-            typedef DynamicAccumulatorChainArray<CoupledArrays<2, double, int>, 
+            typedef DynamicAccumulatorChainArray<CoupledArrays<2, double, int>,
                                                 Select<Count, Coord<Mean>, GlobalRangeHistogram<3>,
-                                                       AutoRangeHistogram<3>, 
-                                                       Global<Count>, Global<Coord<Mean> >, 
-                                                       StandardQuantiles<GlobalRangeHistogram<3> >, 
+                                                       AutoRangeHistogram<3>,
+                                                       Global<Count>, Global<Coord<Mean> >,
+                                                       StandardQuantiles<GlobalRangeHistogram<3> >,
                                                        LabelArg<2>, DataArg<1>
                                                  > > A;
 
@@ -1382,15 +1382,15 @@ struct AccumulatorTest
             MultiArray<2, int> labels(Shape2(3,2));
             labels(2,0) = labels(2,1) = 1;
             Iterator i     = createCoupledIterator(data, labels),
-                     start = i,   
+                     start = i,
                      end   = i.getEndIterator();
 
             for(; i < end; ++i)
                 a(*i);
-            
+
             for(i = start; i < end; ++i)
                 a.updatePass2(*i);
-            
+
             shouldEqual(a.maxRegionLabel(), 1);
             shouldEqual(4, get<Count>(a, 0));
             shouldEqual(2, get<Count>(a, 1));
@@ -1405,7 +1405,7 @@ struct AccumulatorTest
             should(getAccumulator<GlobalRangeHistogram<3> >(a,0).scale_ == getAccumulator<GlobalRangeHistogram<3> >(a,1).scale_);
             should(getAccumulator<GlobalRangeHistogram<3> >(a,0).scale_ != getAccumulator<AutoRangeHistogram<3> >(a,0).scale_);
             should(getAccumulator<GlobalRangeHistogram<3> >(a,1).scale_ != getAccumulator<AutoRangeHistogram<3> >(a,1).scale_);
-            
+
             typedef TinyVector<double, 3> W;
             shouldEqual(W(4, 0, 0), get<GlobalRangeHistogram<3> >(a,0));
             shouldEqual(W(0, 0, 2), get<GlobalRangeHistogram<3> >(a,1));
@@ -1416,12 +1416,12 @@ struct AccumulatorTest
             b.activateAll();
 
             extractFeatures(data, labels, b);
-            
+
             shouldEqual(W(4, 0, 0), get<GlobalRangeHistogram<3> >(b,0));
             shouldEqual(W(0, 0, 2), get<GlobalRangeHistogram<3> >(b,1));
 
             a += b;
-            
+
             shouldEqual(a.maxRegionLabel(), 1);
             shouldEqual(8, get<Count>(a, 0));
             shouldEqual(4, get<Count>(a, 1));
@@ -1455,7 +1455,7 @@ struct AccumulatorTest
 
             shouldEqual(getAccumulator<GlobalRangeHistogram<3> >(c,0).scale_, getAccumulator<AutoRangeHistogram<3> >(c,0).scale_);
             shouldEqual(getAccumulator<GlobalRangeHistogram<3> >(c,1).scale_, getAccumulator<AutoRangeHistogram<3> >(c,1).scale_);
-            
+
             shouldEqual(W(3, 0, 1), get<GlobalRangeHistogram<3> >(c,0));
             shouldEqual(W(1, 0, 1), get<GlobalRangeHistogram<3> >(c,1));
             shouldEqual(W(3, 0, 1), get<AutoRangeHistogram<3> >(c,0));

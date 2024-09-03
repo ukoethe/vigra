@@ -64,13 +64,13 @@ namespace vigra{
 
 
     template <
-        class UnaryFunction, 
+        class UnaryFunction,
         class Iterator
     >
     class TransformIterator{
 
     public:
-        
+
         typedef typename UnaryFunction::result_type function_result_type;
         typedef TransformIterValProxy<function_result_type> RetHelper;
 
@@ -87,15 +87,15 @@ namespace vigra{
         }
 
         reference  operator * () const{
-            return retHelper_.getRef(f_(*iter_)); 
-        } 
+            return retHelper_.getRef(f_(*iter_));
+        }
 
         reference  operator[](const difference_type i) const{
-            return retHelper_.getRef(f_(iter_[i])); 
+            return retHelper_.getRef(f_(iter_[i]));
         }
 
         pointer  operator -> () const{
-            return retHelper_.getRef(f_(*iter_)); 
+            return retHelper_.getRef(f_(*iter_));
         }
 
 
@@ -134,7 +134,7 @@ namespace vigra{
         TransformIterator & operator+=( const difference_type i ){
             iter_ += i;
             return *this;
-        } 
+        }
         TransformIterator & operator-=( const difference_type i ){
             iter_ -= i;
             return *this;
@@ -143,12 +143,12 @@ namespace vigra{
             TransformIterator res(*this);
             res += i;
             return res;
-        } 
+        }
         TransformIterator operator-( const difference_type i )const{
             TransformIterator res(*this);
             res -= i;
             return res;
-        } 
+        }
 
         difference_type operator - (const TransformIterator rhs) const{
             return iter_ - rhs.iter_;
@@ -169,7 +169,7 @@ namespace vigra{
 
 
     template <
-        class UnaryFunction, 
+        class UnaryFunction,
         class Iterator
     >
     class EndAwareTransformIterator
@@ -184,7 +184,7 @@ namespace vigra{
             return EndAwareTransformIterator(this->baseIterator().getEndIterator(),
                                              this->unaryFunction());
         }
-    private:    
+    private:
 
     };
 

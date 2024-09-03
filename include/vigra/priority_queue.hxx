@@ -53,7 +53,7 @@ namespace vigra {
     i.e. like in <tt>std::priority_queue</tt> the largest element has highest priority.
     An ascending queue can be specified as <tt>BucketQueue\<ValueType, true\></tt>.
     Elements with equal priorities are returned in a first-in first-out fashion.
-    
+
     The main difference to <tt>std::priority_queue</tt> is the function <tt>push</tt>
     which explicitly takes the priority of the element to be added as a second argument.
     This allows optimization of <tt>ValueType</tt>: since the bucket uniquely
@@ -71,15 +71,15 @@ class BucketQueue
     ArrayVector<std::queue<ValueType> > buckets_;
     std::size_t size_;
     std::ptrdiff_t top_;
-    
+
   public:
-  
+
     typedef ValueType value_type;
     typedef ValueType & reference;
     typedef ValueType const & const_reference;
     typedef std::size_t size_type;
     typedef std::ptrdiff_t priority_type;
-    
+
         /** \brief Create bucket queue with \arg bucket_count entries.
             Priorities must be integers in the range <tt>[0, ..., bucket_count-1]</tt>.
         */
@@ -87,14 +87,14 @@ class BucketQueue
     : buckets_(bucket_count),
       size_(0), top_(0)
     {}
-    
+
         /** \brief Number of elements in this queue.
         */
     size_type size() const
     {
         return size_;
     }
-    
+
         /** \brief Queue contains no elements.
              Equivalent to <tt>size() == 0</tt>.
         */
@@ -102,7 +102,7 @@ class BucketQueue
     {
         return size() == 0;
     }
-    
+
         /** \brief Maximum index (i.e. priority) allowed in this queue.
              Equivalent to <tt>bucket_count - 1</tt>.
         */
@@ -110,19 +110,19 @@ class BucketQueue
     {
         return (priority_type)buckets_.size() - 1;
     }
-    
+
         /** \brief Priority of the current top element.
         */
     priority_type topPriority() const
     {
         return top_;
     }
-    
+
         /** \brief The current top element.
         */
     const_reference top() const
     {
-        
+
         return buckets_[top_].front();
     }
 
@@ -132,66 +132,66 @@ class BucketQueue
     {
         --size_;
         buckets_[top_].pop();
-        
+
         while(top_ > 0 && buckets_[top_].size() == 0)
             --top_;
     }
-    
+
         /** \brief Insert new element \arg v with given \arg priority.
         */
     void push(value_type const & v, priority_type priority)
     {
         ++size_;
         buckets_[priority].push(v);
-        
+
         if(priority > top_)
             top_ = priority;
     }
 };
 
-template <class ValueType> 
+template <class ValueType>
 class BucketQueue<ValueType, true> // ascending queue
 {
     ArrayVector<std::queue<ValueType> > buckets_;
     std::size_t size_;
     std::ptrdiff_t top_;
-    
+
   public:
-  
+
     typedef ValueType value_type;
     typedef ValueType & reference;
     typedef ValueType const & const_reference;
     typedef std::size_t size_type;
     typedef std::ptrdiff_t priority_type;
-    
+
     BucketQueue(size_type bucket_count = 256)
     : buckets_(bucket_count),
       size_(0), top_((priority_type)bucket_count)
     {}
-    
+
     size_type size() const
     {
         return size_;
     }
-    
+
     bool empty() const
     {
         return size() == 0;
     }
-    
+
     priority_type maxIndex() const
     {
         return (priority_type)buckets_.size() - 1;
     }
-    
+
     priority_type topPriority() const
     {
         return top_;
     }
-    
+
     const_reference top() const
     {
-        
+
         return buckets_[top_].front();
     }
 
@@ -199,16 +199,16 @@ class BucketQueue<ValueType, true> // ascending queue
     {
         --size_;
         buckets_[top_].pop();
-        
+
         while(top_ < (priority_type)buckets_.size() && buckets_[top_].size() == 0)
             ++top_;
     }
-    
+
     void push(value_type const & v, priority_type priority)
     {
         ++size_;
         buckets_[priority].push(v);
-        
+
         if(priority < top_)
             top_ = priority;
     }
@@ -227,13 +227,13 @@ class BucketQueue<ValueType, true> // ascending queue
     Namespace: vigra
 */
 template <class ValueType,
-          class PriorityFunctor, 
-          bool Ascending = false> 
+          class PriorityFunctor,
+          bool Ascending = false>
 class MappedBucketQueue
 : public BucketQueue<ValueType, Ascending>
 {
     PriorityFunctor get_priority_;
-    
+
   public:
 
     typedef BucketQueue<ValueType, Ascending> BaseType;
@@ -242,7 +242,7 @@ class MappedBucketQueue
     typedef typename BaseType::const_reference const_reference;
     typedef typename BaseType::size_type size_type;
     typedef typename BaseType::priority_type priority_type;
-    
+
         /** \brief Create a queue with \arg bucket_count entries.
             Priorities will be computed by the <tt>PriorityFunctor</tt>
             given in \arg priority (i.e. <tt>priority(v)</tt> must result in an integer,
@@ -253,10 +253,10 @@ class MappedBucketQueue
     : BaseType(bucket_count),
       get_priority_(priority)
     {}
-    
+
         /** \brief Insert new element \arg v.
             Its priority is calculated by <tt>priority(v)</tt>,
-            where <tt>priority</tt> is an instance of the 
+            where <tt>priority</tt> is an instance of the
             <tt>PriorityFunctor</tt> passed in the constructor.
             If the priority is outside the range <tt>[0, ..., bucket_count-1]</tt>,
             it is clamped to the range borders.
@@ -264,13 +264,13 @@ class MappedBucketQueue
     void push(value_type const & v)
     {
         priority_type index = get_priority_(v);
-        
+
         // clamp index to the allowed range
         if(index > BaseType::maxIndex())
             index = BaseType::maxIndex();
         else if (index < 0)
             index = 0;
-        
+
         BaseType::push(v, index);
     }
 };
@@ -278,7 +278,7 @@ class MappedBucketQueue
 /** \brief Heap-based priority queue compatible to BucketQueue.
 
     This template is compatible to \ref vigra::BucketQueue, but accepts arbitrary priority
-    types. Internally, it uses a <tt>std::priority_queue</tt>, but implements an 
+    types. Internally, it uses a <tt>std::priority_queue</tt>, but implements an
     API where priorities and payload data are separate, like in \ref vigra::BucketQueue.
 
     <b>\#include</b> \<vigra/priority_queue.hxx\><br>
@@ -290,43 +290,43 @@ template <class ValueType,
 class PriorityQueue
 {
     typedef std::pair<ValueType, PriorityType> ElementType;
-    
+
     struct Compare
     {
-        typename IfBool<Ascending, std::greater<PriorityType>, 
+        typename IfBool<Ascending, std::greater<PriorityType>,
                                    std::less<PriorityType> >::type cmp;
-        
+
         bool operator()(ElementType const & l, ElementType const & r) const
         {
             return cmp(l.second, r.second);
         }
     };
-    
+
     typedef std::priority_queue<ElementType, std::vector<ElementType>, Compare> Heap;
-    
+
     Heap heap_;
-    
+
   public:
-  
+
     typedef ValueType value_type;
     typedef ValueType & reference;
     typedef ValueType const & const_reference;
     typedef typename Heap::size_type size_type;
     typedef PriorityType priority_type;
-    
+
         /** \brief Create empty priority queue.
         */
     PriorityQueue()
     : heap_()
     {}
-    
+
         /** \brief Number of elements in this queue.
         */
     size_type size() const
     {
         return heap_.size();
     }
-    
+
         /** \brief Queue contains no elements.
              Equivalent to <tt>size() == 0</tt>.
         */
@@ -334,7 +334,7 @@ class PriorityQueue
     {
         return size() == 0;
     }
-    
+
         /** \brief Maximum index (i.e. priority) allowed in this queue.
              Equivalent to <tt>bucket_count - 1</tt>.
         */
@@ -342,19 +342,19 @@ class PriorityQueue
     {
         return NumericTraits<priority_type>::max();
     }
-    
+
         /** \brief Priority of the current top element.
         */
     priority_type topPriority() const
     {
         return heap_.top().second;
     }
-    
+
         /** \brief The current top element.
         */
     const_reference top() const
     {
-        
+
         return heap_.top().first;
     }
 
@@ -364,7 +364,7 @@ class PriorityQueue
     {
         heap_.pop();
     }
-    
+
         /** \brief Insert new element \arg v with given \arg priority.
         */
     void push(value_type const & v, priority_type priority)
@@ -380,7 +380,7 @@ class PriorityQueue<ValueType, unsigned char, Ascending>
 {
   public:
     typedef BucketQueue<ValueType, Ascending> BaseType;
-    
+
     PriorityQueue()
     : BaseType(NumericTraits<unsigned char>::max()+1)
     {}
@@ -393,7 +393,7 @@ class PriorityQueue<ValueType, unsigned short, Ascending>
 {
   public:
     typedef BucketQueue<ValueType, Ascending> BaseType;
-    
+
     PriorityQueue()
     : BaseType(NumericTraits<unsigned short>::max()+1)
     {}
@@ -406,7 +406,7 @@ class PriorityQueue<ValueType, unsigned short, Ascending>
     This pq allows to change the priorities of elements in the queue
 
     <b>\#include</b> \<vigra/priority_queue.hxx\><br>
-    
+
     Namespace: vigra
 */
 template<class T,class COMPARE = std::less<T> >
@@ -423,7 +423,7 @@ public:
 
 
     /// Create an empty ChangeablePriorityQueue which can contain atmost maxSize elements
-    ChangeablePriorityQueue(const size_t maxSize)  
+    ChangeablePriorityQueue(const size_t maxSize)
     : maxSize_(maxSize),
       currentSize_(0),
       heap_(maxSize_+1),
@@ -433,7 +433,7 @@ public:
         for(unsigned i = 0; i <= maxSize_; i++)
             indices_[i] = -1;
     }
-    
+
 
     void reset(){
         currentSize_ = 0 ;
@@ -444,7 +444,7 @@ public:
     bool empty() const {
         return currentSize_ == 0;
     }
- 
+
     /// check if the PQ is empty
     void clear() {
         for(int i = 0; i < currentSize_; i++)
@@ -454,21 +454,21 @@ public:
         }
         currentSize_ = 0;
     }
- 
+
     /// check if i is an index on the PQ
     bool contains(const int i) const{
         return indices_[i] != -1;
     }
- 
+
     /// return the number of elements in the PQ
     int size()const{
         return currentSize_;
     }
- 
+
 
     /** \brief Insert a index with a given priority.
 
-        If the queue contains i bevore this 
+        If the queue contains i bevore this
         call the priority of the given index will
         be changed
     */
@@ -484,19 +484,19 @@ public:
             changePriority(i,p);
         }
     }
- 
+
     /** \brief get index with top priority
     */
     const_reference top() const {
         return heap_[1];
     }
- 
+
     /**\brief get top priority
     */
     priority_type topPriority() const {
         return priorities_[heap_[1]];
     }
- 
+
     /** \brief Remove the current top element.
     */
     void pop() {
@@ -506,12 +506,12 @@ public:
         indices_[min] = -1;
         heap_[currentSize_+1] = -1;
     }
- 
+
     /// returns the value associated with index i
     priority_type priority(const value_type i) const{
         return priorities_[i];
     }
-  
+
     /// deleqte the priority associated with index i
     void deleteItem(const value_type i)   {
         int ind = indices_[i];
@@ -535,21 +535,21 @@ public:
         }
     }
 private:
-    
+
 
     void swapItems(const int i,const  int j) {
         std::swap(heap_[i],heap_[j]);
-        indices_[heap_[i]] = i; 
+        indices_[heap_[i]] = i;
         indices_[heap_[j]] = j;
     }
- 
+
     void bubbleUp(int k)    {
         while(k > 1 && _gt( priorities_[heap_[k/2]],priorities_[heap_[k]]))   {
             swapItems(k, k/2);
             k = k/2;
         }
     }
- 
+
     void bubbleDown(int k)  {
         int j;
         while(static_cast<unsigned>(2*k) <= currentSize_) {
@@ -579,7 +579,7 @@ private:
     bool _geqt(const T & a,const T & b)const{
         return !comp_(a,b);
     }
- 
+
 
     size_t maxSize_;
     size_t currentSize_;

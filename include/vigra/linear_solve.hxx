@@ -66,10 +66,10 @@ T determinantByLUDecomposition(MultiArrayView<2, T, C1> const & a)
     Matrix<T> LU(a);
     T det = 1.0;
 
-    for (MultiArrayIndex j = 0; j < n; ++j) 
+    for (MultiArrayIndex j = 0; j < n; ++j)
     {
         // Apply previous transformations.
-        for (MultiArrayIndex i = 0; i < m; ++i) 
+        for (MultiArrayIndex i = 0; i < m; ++i)
         {
             MultiArrayIndex end = std::min(i, j);
             T s = dot(rowVector(LU, Shape(i,0), end), columnVector(LU, Shape(0,j), end));
@@ -78,12 +78,12 @@ T determinantByLUDecomposition(MultiArrayView<2, T, C1> const & a)
 
         // Find pivot and exchange if necessary.
         MultiArrayIndex p = j + argMax(abs(columnVector(LU, Shape(j,j), m)));
-        if (p != j) 
+        if (p != j)
         {
             rowVector(LU, p).swapData(rowVector(LU, j));
             det = -det;
         }
-        
+
         det *= LU(j,j);
 
         // Compute multipliers.
@@ -140,7 +140,7 @@ T givensCoefficients(T a, T b, T & c, T & s)
 {
     if(abs(a) < abs(b))
     {
-        T t = a/b, 
+        T t = a/b,
           r = std::sqrt(1.0 + t*t);
         s = 1.0 / r;
         c = t*s;
@@ -148,7 +148,7 @@ T givensCoefficients(T a, T b, T & c, T & s)
     }
     else if(a != 0.0)
     {
-        T t = b/a, 
+        T t = b/a,
           r = std::sqrt(1.0 + t*t);
         c = 1.0 / r;
         s = t*c;
@@ -177,7 +177,7 @@ bool givensRotationMatrix(T a, T b, Matrix<T> & gTranspose)
 // reflections are symmetric matrices and can thus be applied to rows
 // and columns in the same way => code simplification relative to rotations
 template <class T>
-inline bool 
+inline bool
 givensReflectionMatrix(T a, T b, Matrix<T> & g)
 {
     if(b == 0.0)
@@ -190,11 +190,11 @@ givensReflectionMatrix(T a, T b, Matrix<T> & g)
 
 // see Golub, van Loan: Algorithm 5.2.2 (p. 227) and Section 12.5.2 (p. 608)
 template <class T, class C1, class C2>
-bool 
+bool
 qrGivensStepImpl(MultiArrayIndex i, MultiArrayView<2, T, C1> r, MultiArrayView<2, T, C2> rhs)
 {
     typedef typename Matrix<T>::difference_type Shape;
-    
+
     const MultiArrayIndex m = rowCount(r);
     const MultiArrayIndex n = columnCount(r);
     const MultiArrayIndex rhsCount = columnCount(rhs);
@@ -209,7 +209,7 @@ qrGivensStepImpl(MultiArrayIndex i, MultiArrayView<2, T, C1> r, MultiArrayView<2
 
         r(k-1,i) = givens(0,0)*r(k-1,i) + givens(0,1)*r(k,i);
         r(k,i) = 0.0;
-        
+
         r.subarray(Shape(k-1,i+1), Shape(k+1,n)) = givens*r.subarray(Shape(k-1,i+1), Shape(k+1,n));
         rhs.subarray(Shape(k-1,0), Shape(k+1,rhsCount)) = givens*rhs.subarray(Shape(k-1,0), Shape(k+1,rhsCount));
     }
@@ -218,12 +218,12 @@ qrGivensStepImpl(MultiArrayIndex i, MultiArrayView<2, T, C1> r, MultiArrayView<2
 
 // see Golub, van Loan: Section 12.5.2 (p. 608)
 template <class T, class C1, class C2, class Permutation>
-void 
-upperTriangularCyclicShiftColumns(MultiArrayIndex i, MultiArrayIndex j, 
+void
+upperTriangularCyclicShiftColumns(MultiArrayIndex i, MultiArrayIndex j,
                                   MultiArrayView<2, T, C1> &r, MultiArrayView<2, T, C2> &rhs, Permutation & permutation)
 {
     typedef typename Matrix<T>::difference_type Shape;
-    
+
     const MultiArrayIndex m = rowCount(r);
     const MultiArrayIndex n = columnCount(r);
     const MultiArrayIndex rhsCount = columnCount(rhs);
@@ -236,7 +236,7 @@ upperTriangularCyclicShiftColumns(MultiArrayIndex i, MultiArrayIndex j,
         return;
     if(j < i)
         std::swap(j,i);
-        
+
     Matrix<T> t = columnVector(r, i);
     MultiArrayIndex ti = permutation[i];
     for(MultiArrayIndex k=i; k<j;++k)
@@ -246,16 +246,16 @@ upperTriangularCyclicShiftColumns(MultiArrayIndex i, MultiArrayIndex j,
     }
     columnVector(r, j) = t;
     permutation[j] = ti;
-    
+
     Matrix<T> givens(2,2);
     for(MultiArrayIndex k=i; k<j; ++k)
     {
         if(!givensReflectionMatrix(r(k,k), r(k+1,k), givens))
             continue;  // r(k+1,k) was already zero
-        
+
         r(k,k) = givens(0,0)*r(k,k) + givens(0,1)*r(k+1,k);
         r(k+1,k) = 0.0;
-        
+
         r.subarray(Shape(k,k+1), Shape(k+2,n)) = givens*r.subarray(Shape(k,k+1), Shape(k+2,n));
         rhs.subarray(Shape(k,0), Shape(k+2,rhsCount)) = givens*rhs.subarray(Shape(k,0), Shape(k+2,rhsCount));
     }
@@ -263,12 +263,12 @@ upperTriangularCyclicShiftColumns(MultiArrayIndex i, MultiArrayIndex j,
 
 // see Golub, van Loan: Section 12.5.2 (p. 608)
 template <class T, class C1, class C2, class Permutation>
-void 
-upperTriangularSwapColumns(MultiArrayIndex i, MultiArrayIndex j, 
+void
+upperTriangularSwapColumns(MultiArrayIndex i, MultiArrayIndex j,
                            MultiArrayView<2, T, C1> &r, MultiArrayView<2, T, C2> &rhs, Permutation & permutation)
-{    
+{
     typedef typename Matrix<T>::difference_type Shape;
-    
+
     const MultiArrayIndex m = rowCount(r);
     const MultiArrayIndex n = columnCount(r);
     const MultiArrayIndex rhsCount = columnCount(rhs);
@@ -284,7 +284,7 @@ upperTriangularSwapColumns(MultiArrayIndex i, MultiArrayIndex j,
 
     columnVector(r, i).swapData(columnVector(r, j));
     std::swap(permutation[i], permutation[j]);
-    
+
     Matrix<T> givens(2,2);
     for(int k=m-1; k>static_cast<int>(i); --k)
     {
@@ -293,7 +293,7 @@ upperTriangularSwapColumns(MultiArrayIndex i, MultiArrayIndex j,
 
         r(k-1,i) = givens(0,0)*r(k-1,i) + givens(0,1)*r(k,i);
         r(k,i) = 0.0;
-        
+
         r.subarray(Shape(k-1,i+1), Shape(k+1,n)) = givens*r.subarray(Shape(k-1,i+1), Shape(k+1,n));
         rhs.subarray(Shape(k-1,0), Shape(k+1,rhsCount)) = givens*rhs.subarray(Shape(k-1,0), Shape(k+1,rhsCount));
     }
@@ -302,10 +302,10 @@ upperTriangularSwapColumns(MultiArrayIndex i, MultiArrayIndex j,
     {
         if(!givensReflectionMatrix(r(k,k), r(k+1,k), givens))
             continue;  // r(k+1,k) was already zero
-        
+
         r(k,k) = givens(0,0)*r(k,k) + givens(0,1)*r(k+1,k);
         r(k+1,k) = 0.0;
-        
+
         r.subarray(Shape(k,k+1), Shape(k+2,n)) = givens*r.subarray(Shape(k,k+1), Shape(k+2,n));
         rhs.subarray(Shape(k,0), Shape(k+2,rhsCount)) = givens*rhs.subarray(Shape(k,0), Shape(k+2,rhsCount));
     }
@@ -319,7 +319,7 @@ bool householderVector(MultiArrayView<2, T, C1> const & v, MultiArrayView<2, T, 
                  ? -norm(v)
                  :  norm(v);
     U f = std::sqrt(vnorm*(vnorm - v(0,0)));
-    
+
     if(f == NumericTraits<U>::zero())
     {
         u.init(NumericTraits<T>::zero());
@@ -336,12 +336,12 @@ bool householderVector(MultiArrayView<2, T, C1> const & v, MultiArrayView<2, T, 
 
 // see Lawson & Hanson: Algorithm H1 (p. 57)
 template <class T, class C1, class C2, class C3>
-bool 
-qrHouseholderStepImpl(MultiArrayIndex i, MultiArrayView<2, T, C1> & r, 
+bool
+qrHouseholderStepImpl(MultiArrayIndex i, MultiArrayView<2, T, C1> & r,
                       MultiArrayView<2, T, C2> & rhs, MultiArrayView<2, T, C3> & householderMatrix)
 {
     typedef typename Matrix<T>::difference_type Shape;
-    
+
     const MultiArrayIndex m = rowCount(r);
     const MultiArrayIndex n = columnCount(r);
     const MultiArrayIndex rhsCount = columnCount(rhs);
@@ -352,7 +352,7 @@ qrHouseholderStepImpl(MultiArrayIndex i, MultiArrayView<2, T, C1> & r,
     Matrix<T> u(m-i,1);
     T vnorm;
     bool nontrivial = householderVector(columnVector(r, Shape(i,i), m), u, vnorm);
-    
+
     r(i,i) = vnorm;
     columnVector(r, Shape(i+1,i), m).init(NumericTraits<T>::zero());
 
@@ -370,7 +370,7 @@ qrHouseholderStepImpl(MultiArrayIndex i, MultiArrayView<2, T, C1> & r,
 }
 
 template <class T, class C1, class C2>
-bool 
+bool
 qrColumnHouseholderStep(MultiArrayIndex i, MultiArrayView<2, T, C1> &r, MultiArrayView<2, T, C2> &rhs)
 {
     Matrix<T> dontStoreHouseholderVectors; // intentionally empty
@@ -378,7 +378,7 @@ qrColumnHouseholderStep(MultiArrayIndex i, MultiArrayView<2, T, C1> &r, MultiArr
 }
 
 template <class T, class C1, class C2>
-bool 
+bool
 qrRowHouseholderStep(MultiArrayIndex i, MultiArrayView<2, T, C1> &r, MultiArrayView<2, T, C2> & householderMatrix)
 {
     Matrix<T> dontTransformRHS; // intentionally empty
@@ -390,12 +390,12 @@ qrRowHouseholderStep(MultiArrayIndex i, MultiArrayView<2, T, C1> &r, MultiArrayV
 // O(n) algorithm due to Bischof: Incremental Condition Estimation, 1990
 template <class T, class C1, class C2, class SNType>
 void
-incrementalMaxSingularValueApproximation(MultiArrayView<2, T, C1> const & newColumn, 
-                                         MultiArrayView<2, T, C2> & z, SNType & v) 
+incrementalMaxSingularValueApproximation(MultiArrayView<2, T, C1> const & newColumn,
+                                         MultiArrayView<2, T, C2> & z, SNType & v)
 {
     typedef typename Matrix<T>::difference_type Shape;
     MultiArrayIndex n = rowCount(newColumn) - 1;
-    
+
     SNType vneu = squaredNorm(newColumn);
     T yv = dot(columnVector(newColumn, Shape(0,0),n), columnVector(z, Shape(0,0),n));
     // use atan2 as it is robust against overflow/underflow
@@ -410,8 +410,8 @@ incrementalMaxSingularValueApproximation(MultiArrayView<2, T, C1> const & newCol
 // O(n) algorithm due to Bischof: Incremental Condition Estimation, 1990
 template <class T, class C1, class C2, class SNType>
 void
-incrementalMinSingularValueApproximation(MultiArrayView<2, T, C1> const & newColumn, 
-                                         MultiArrayView<2, T, C2> & z, SNType & v, double tolerance) 
+incrementalMinSingularValueApproximation(MultiArrayView<2, T, C1> const & newColumn,
+                                         MultiArrayView<2, T, C2> & z, SNType & v, double tolerance)
 {
     typedef typename Matrix<T>::difference_type Shape;
 
@@ -422,14 +422,14 @@ incrementalMinSingularValueApproximation(MultiArrayView<2, T, C1> const & newCol
     }
 
     MultiArrayIndex n = rowCount(newColumn) - 1;
-    
+
     T gamma = newColumn(n,0);
-    if(gamma == 0.0) 
+    if(gamma == 0.0)
     {
         v = 0.0;
         return;
     }
-    
+
     T yv = dot(columnVector(newColumn, Shape(0,0), static_cast<int>(n)),
                columnVector(z, Shape(0,0), static_cast<int>(n)));
     // use atan2 as it is robust against overflow/underflow
@@ -443,18 +443,18 @@ incrementalMinSingularValueApproximation(MultiArrayView<2, T, C1> const & newCol
 
 // QR algorithm with optional column pivoting
 template <class T, class C1, class C2, class C3>
-unsigned int 
+unsigned int
 qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C2> & rhs, MultiArrayView<2, T, C3> & householder,
                             ArrayVector<MultiArrayIndex> & permutation, double epsilon)
 {
     typedef typename Matrix<T>::difference_type Shape;
     typedef typename NormTraits<MultiArrayView<2, T, C1> >::NormType NormType;
     typedef typename NormTraits<MultiArrayView<2, T, C1> >::SquaredNormType SNType;
-    
+
     const MultiArrayIndex m = rowCount(r);
     const MultiArrayIndex n = columnCount(r);
     const MultiArrayIndex maxRank = std::min(m, n);
-    
+
     vigra_precondition(m >= n,
         "qrTransformToTriangularImpl(): Coefficient matrix with at least as many rows as columns required.");
 
@@ -462,25 +462,25 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
     bool transformRHS = rhsCount > 0;
     vigra_precondition(!transformRHS || m == rowCount(rhs),
                        "qrTransformToTriangularImpl(): RHS matrix shape mismatch.");
-                       
+
     bool storeHouseholderSteps = columnCount(householder) > 0;
     vigra_precondition(!storeHouseholderSteps || r.shape() == householder.shape(),
                        "qrTransformToTriangularImpl(): Householder matrix shape mismatch.");
-                       
+
     bool pivoting = permutation.size() > 0;
     vigra_precondition(!pivoting || n == static_cast<MultiArrayIndex>(permutation.size()),
                        "qrTransformToTriangularImpl(): Permutation array size mismatch.");
 
     if(n == 0)
         return 0; // trivial solution
-        
+
     Matrix<SNType> columnSquaredNorms;
     if(pivoting)
     {
         columnSquaredNorms.reshape(Shape(1,n));
         for(MultiArrayIndex k=0; k<n; ++k)
             columnSquaredNorms[k] = squaredNorm(columnVector(r, k));
-            
+
         int pivot = argMax(columnSquaredNorms);
         if(pivot != 0)
         {
@@ -489,17 +489,17 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
             std::swap(permutation[0], permutation[pivot]);
         }
     }
-    
+
     qrHouseholderStepImpl(0, r, rhs, householder);
-    
+
     MultiArrayIndex rank = 1;
     NormType maxApproxSingularValue = norm(r(0,0)),
              minApproxSingularValue = maxApproxSingularValue;
-    
+
     double tolerance = (epsilon == 0.0)
                           ? m*maxApproxSingularValue*NumericTraits<T>::epsilon()
                           : epsilon;
-    
+
     bool simpleSingularValueApproximation = (n < 4);
     Matrix<T> zmax, zmin;
     if(minApproxSingularValue <= tolerance)
@@ -530,12 +530,12 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
                 std::swap(permutation[k], permutation[pivot]);
             }
         }
-        
+
         qrHouseholderStepImpl(k, r, rhs, householder);
 
         if(simpleSingularValueApproximation)
         {
-            NormType nv = norm(r(k,k));        
+            NormType nv = norm(r(k,k));
             maxApproxSingularValue = std::max(nv, maxApproxSingularValue);
             minApproxSingularValue = std::min(nv, minApproxSingularValue);
         }
@@ -544,13 +544,13 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
             incrementalMaxSingularValueApproximation(columnVector(r, Shape(0,k),k+1), zmax, maxApproxSingularValue);
             incrementalMinSingularValueApproximation(columnVector(r, Shape(0,k),k+1), zmin, minApproxSingularValue, tolerance);
         }
-        
+
 #if 0
         Matrix<T> u(k+1,k+1), s(k+1, 1), v(k+1,k+1);
         singularValueDecomposition(r.subarray(Shape(0,0), Shape(k+1,k+1)), u, s, v);
         std::cerr << "estimate, svd " << k << ": " << minApproxSingularValue << " " << s(k,0) << "\n";
 #endif
-        
+
         if(epsilon == 0.0)
             tolerance = m*maxApproxSingularValue*NumericTraits<T>::epsilon();
 
@@ -563,8 +563,8 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
 }
 
 template <class T, class C1, class C2>
-unsigned int 
-qrTransformToUpperTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C2> & rhs, 
+unsigned int
+qrTransformToUpperTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C2> & rhs,
                              ArrayVector<MultiArrayIndex> & permutation, double epsilon = 0.0)
 {
     Matrix<T> dontStoreHouseholderVectors; // intentionally empty
@@ -573,8 +573,8 @@ qrTransformToUpperTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, 
 
 // QR algorithm with optional row pivoting
 template <class T, class C1, class C2, class C3>
-unsigned int 
-qrTransformToLowerTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C2> & rhs, MultiArrayView<2, T, C3> & householderMatrix, 
+unsigned int
+qrTransformToLowerTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C2> & rhs, MultiArrayView<2, T, C3> & householderMatrix,
                       double epsilon = 0.0)
 {
     ArrayVector<MultiArrayIndex> permutation(static_cast<unsigned int>(rowCount(rhs)));
@@ -584,7 +584,7 @@ qrTransformToLowerTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, 
     MultiArrayView<2, T, StridedArrayTag> rt = transpose(r),
                                           ht = transpose(householderMatrix);
     unsigned int rank = qrTransformToTriangularImpl(rt, dontTransformRHS, ht, permutation, epsilon);
-    
+
     // apply row permutation to RHS
     Matrix<T> tempRHS(rhs);
     for(MultiArrayIndex k=0; k<static_cast<MultiArrayIndex>(permutation.size()); ++k)
@@ -595,24 +595,24 @@ qrTransformToLowerTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, 
 // QR algorithm without column pivoting
 template <class T, class C1, class C2>
 inline bool
-qrTransformToUpperTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C2> & rhs, 
+qrTransformToUpperTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C2> & rhs,
                       double epsilon = 0.0)
 {
     ArrayVector<MultiArrayIndex> noPivoting; // intentionally empty
-    
-    return (qrTransformToUpperTriangular(r, rhs, noPivoting, epsilon) == 
+
+    return (qrTransformToUpperTriangular(r, rhs, noPivoting, epsilon) ==
             static_cast<unsigned int>(columnCount(r)));
 }
 
 // QR algorithm without row pivoting
 template <class T, class C1, class C2>
 inline bool
-qrTransformToLowerTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C2> & householder, 
+qrTransformToLowerTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C2> & householder,
                       double epsilon = 0.0)
 {
     Matrix<T> noPivoting; // intentionally empty
-    
-    return (qrTransformToLowerTriangular(r, noPivoting, householder, epsilon) == 
+
+    return (qrTransformToLowerTriangular(r, noPivoting, householder, epsilon) ==
            static_cast<unsigned int>(rowCount(r)));
 }
 
@@ -633,7 +633,7 @@ void applyHouseholderColumnReflections(MultiArrayView<2, T, C1> const &household
     MultiArrayIndex n = rowCount(householder);
     MultiArrayIndex m = columnCount(householder);
     MultiArrayIndex rhsCount = columnCount(res);
-    
+
     for(int k = m-1; k >= 0; --k)
     {
         MultiArrayView<2, T, C1> u = columnVector(householder, Shape(k,k), n);
@@ -645,9 +645,9 @@ void applyHouseholderColumnReflections(MultiArrayView<2, T, C1> const &household
 } // namespace detail
 
 template <class T, class C1, class C2, class C3>
-unsigned int 
+unsigned int
 linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
-                     MultiArrayView<2, T, C3> & res, 
+                     MultiArrayView<2, T, C3> & res,
                      double epsilon = 0.0)
 {
     typedef typename Matrix<T>::difference_type Shape;
@@ -658,7 +658,7 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
     MultiArrayIndex rank = std::min(m,n);
     Shape ul(MultiArrayIndex(0), MultiArrayIndex(0));
 
-    
+
     vigra_precondition(rhsCount == columnCount(b),
            "linearSolveQR(): RHS and solution must have the same number of columns.");
     vigra_precondition(m == rowCount(b),
@@ -667,7 +667,7 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
            "linearSolveQR(): Mismatch between column count of coefficient matrix and row count of solution.");
     vigra_precondition(epsilon >= 0.0,
            "linearSolveQR(): 'epsilon' must be non-negative.");
-    
+
     if(m < n)
     {
         // minimum norm solution of underdetermined system
@@ -680,15 +680,15 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
             // system is also rank-deficient => compute minimum norm least squares solution
             MultiArrayView<2, T, C1> Asub = A.subarray(ul, Shape(m,rank));
             detail::qrTransformToUpperTriangular(Asub, b, epsilon);
-            linearSolveUpperTriangular(A.subarray(ul, Shape(rank,rank)), 
-                                       b.subarray(ul, Shape(rank,rhsCount)), 
+            linearSolveUpperTriangular(A.subarray(ul, Shape(rank,rank)),
+                                       b.subarray(ul, Shape(rank,rhsCount)),
                                        res.subarray(ul, Shape(rank, rhsCount)));
         }
         else
         {
             // system has full rank => compute minimum norm solution
-            linearSolveLowerTriangular(A.subarray(ul, Shape(rank,rank)), 
-                                       b.subarray(ul, Shape(rank, rhsCount)), 
+            linearSolveLowerTriangular(A.subarray(ul, Shape(rank,rank)),
+                                       b.subarray(ul, Shape(rank, rhsCount)),
                                        res.subarray(ul, Shape(rank, rhsCount)));
         }
         detail::applyHouseholderColumnReflections(householderMatrix.subarray(ul, Shape(n, rank)), res);
@@ -701,7 +701,7 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
             permutation[k] = k;
 
         rank = static_cast<MultiArrayIndex>(detail::qrTransformToUpperTriangular(A, b, permutation, epsilon));
-        
+
         Matrix<T> permutedSolution(n, rhsCount);
         if(rank < n)
         {
@@ -710,16 +710,16 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
             MultiArrayView<2, T, StridedArrayTag> ht = transpose(householderMatrix);
             MultiArrayView<2, T, C1> Asub = A.subarray(ul, Shape(rank,n));
             detail::qrTransformToLowerTriangular(Asub, ht, epsilon);
-            linearSolveLowerTriangular(A.subarray(ul, Shape(rank,rank)), 
-                                       b.subarray(ul, Shape(rank, rhsCount)), 
+            linearSolveLowerTriangular(A.subarray(ul, Shape(rank,rank)),
+                                       b.subarray(ul, Shape(rank, rhsCount)),
                                        permutedSolution.subarray(ul, Shape(rank, rhsCount)));
             detail::applyHouseholderColumnReflections(householderMatrix, permutedSolution);
         }
         else
         {
             // system has full rank => compute exact or least squares solution
-            linearSolveUpperTriangular(A.subarray(ul, Shape(rank,rank)), 
-                                       b.subarray(ul, Shape(rank,rhsCount)), 
+            linearSolveUpperTriangular(A.subarray(ul, Shape(rank,rank)),
+                                       b.subarray(ul, Shape(rank,rhsCount)),
                                        permutedSolution);
         }
         detail::inverseRowPermutation(permutedSolution, res, permutation);
@@ -736,22 +736,22 @@ unsigned int linearSolveQR(MultiArrayView<2, T, C1> const & A, MultiArrayView<2,
 }
 
 /** \defgroup MatrixAlgebra Advanced Matrix Algebra
-    
+
     \brief Solution of linear systems, eigen systems, linear least squares etc.
-    
+
     \ingroup LinearAlgebraModule
  */
 //@{
     /** Create the inverse or pseudo-inverse of matrix \a v.
 
         If the matrix \a v is square, \a res must have the same shape and will contain the
-        inverse of \a v. If \a v is rectangular, \a res must have the transposed shape 
-        of \a v. The inverse is then computed in the least-squares 
+        inverse of \a v. If \a v is rectangular, \a res must have the transposed shape
+        of \a v. The inverse is then computed in the least-squares
         sense, i.e. \a res will be the pseudo-inverse (Moore-Penrose inverse).
-        The function returns <tt>true</tt> upon success, and <tt>false</tt> if \a v 
-        is not invertible (has not full rank). The inverse is computed by means of QR 
+        The function returns <tt>true</tt> upon success, and <tt>false</tt> if \a v
+        is not invertible (has not full rank). The inverse is computed by means of QR
         decomposition. This function can be applied in-place.
-        
+
         <b>\#include</b> \<vigra/linear_solve.hxx\> or<br>
         <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
@@ -760,40 +760,40 @@ template <class T, class C1, class C2>
 bool inverse(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &res)
 {
     typedef typename MultiArrayShape<2>::type Shape;
-    
+
     const MultiArrayIndex n = columnCount(v);
     const MultiArrayIndex m = rowCount(v);
     vigra_precondition(n == rowCount(res) && m == columnCount(res),
        "inverse(): shape of output matrix must be the transpose of the input matrix' shape.");
-    
+
     if(m < n)
     {
         MultiArrayView<2, T, StridedArrayTag> vt = transpose(v);
         Matrix<T> r(vt.shape()), q(n, n);
         if(!qrDecomposition(vt, q, r))
             return false; // a didn't have full rank
-        linearSolveUpperTriangular(r.subarray(Shape(0,0), Shape(m,m)), 
-                                   transpose(q).subarray(Shape(0,0), Shape(m,n)), 
-                                   transpose(res)); 
+        linearSolveUpperTriangular(r.subarray(Shape(0,0), Shape(m,m)),
+                                   transpose(q).subarray(Shape(0,0), Shape(m,n)),
+                                   transpose(res));
     }
     else
     {
         Matrix<T> r(v.shape()), q(m, m);
         if(!qrDecomposition(v, q, r))
             return false; // a didn't have full rank
-        linearSolveUpperTriangular(r.subarray(Shape(0,0), Shape(n,n)), 
-                                   transpose(q).subarray(Shape(0,0), Shape(n,m)), 
-                                   res); 
+        linearSolveUpperTriangular(r.subarray(Shape(0,0), Shape(n,n)),
+                                   transpose(q).subarray(Shape(0,0), Shape(n,m)),
+                                   res);
     }
     return true;
 }
 
     /** Create the inverse or pseudo-inverse of matrix \a v.
 
-        The result is returned as a temporary matrix. If the matrix \a v is square, 
-        the result will have the same shape and contains the inverse of \a v. 
-        If \a v is rectangular, the result will have the transposed shape of \a v. 
-        The inverse is then computed in the least-squares 
+        The result is returned as a temporary matrix. If the matrix \a v is square,
+        the result will have the same shape and contains the inverse of \a v.
+        If \a v is rectangular, the result will have the transposed shape of \a v.
+        The inverse is then computed in the least-squares
         sense, i.e. \a res will be the pseudo-inverse (Moore-Penrose inverse).
         The inverse is computed by means of QR decomposition. If \a v
         is not invertible, <tt>vigra::PreconditionViolation</tt> exception is thrown.
@@ -826,7 +826,7 @@ TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
     {
         vigra_precondition(inverse(v, const_cast<TemporaryMatrix<T> &>(v)),
             "inverse(): matrix is not invertible.");
-        return v;      
+        return v;
     }
     else
     {
@@ -843,8 +843,8 @@ TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
         <DL>
         <DT>"default"<DD> Use "minor" for integral types and "LU" for any other.
         <DT>"Cholesky"<DD> Compute the solution by means of Cholesky decomposition. This
-                           method is faster than "LU", but requires the matrix \a a 
-                           to be symmetric positive definite. If this is 
+                           method is faster than "LU", but requires the matrix \a a
+                           to be symmetric positive definite. If this is
                            not the case, a <tt>ContractViolation</tt> exception is thrown.
         <DT>"LU"<DD> Compute the solution by means of LU decomposition.
         <DT>"minor"<DD> Compute the solution by means of determinants of minors.
@@ -861,7 +861,7 @@ determinant(MultiArrayView<2, T, C1> const & a, std::string method = "default")
     typedef typename NumericTraits<T>::Promote PromoteType;
     MultiArrayIndex n = columnCount(a);
     vigra_precondition(rowCount(a) == n,
-               "determinant(): Square matrix required.");    
+               "determinant(): Square matrix required.");
 
     method = tolower(method);
 
@@ -912,26 +912,26 @@ T logDeterminant(MultiArrayView<2, T, C1> const & a)
 {
     MultiArrayIndex n = columnCount(a);
     vigra_precondition(rowCount(a) == n,
-               "logDeterminant(): Square matrix required.");    
+               "logDeterminant(): Square matrix required.");
     if(n == 1)
     {
         vigra_precondition(a(0,0) > 0.0,
-                   "logDeterminant(): Matrix not positive definite.");    
+                   "logDeterminant(): Matrix not positive definite.");
         return std::log(a(0,0));
     }
     if(n == 2)
     {
         T det = a(0,0)*a(1,1) - a(0,1)*a(1,0);
         vigra_precondition(det > 0.0,
-                   "logDeterminant(): Matrix not positive definite.");    
+                   "logDeterminant(): Matrix not positive definite.");
         return std::log(det);
     }
     else
     {
         Matrix<T> L(a.shape());
         vigra_precondition(choleskyDecomposition(a, L),
-                "logDeterminant(): Matrix not positive definite.");  
-        T logdet = std::log(L(0,0)); 
+                "logDeterminant(): Matrix not positive definite.");
+        T logdet = std::log(L(0,0));
         for(MultiArrayIndex k=1; k<n; ++k)
             logdet += std::log(L(k,k));  // L(k,k) is guaranteed to be positive
         return 2.0*logdet;
@@ -959,7 +959,7 @@ template <class T, class C1, class C2>
 bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
                            MultiArrayView<2, T, C2> &L)
 {
-    MultiArrayIndex n = columnCount(A); 
+    MultiArrayIndex n = columnCount(A);
     vigra_precondition(NumericTraits<T>::isIntegral::value == false,
                        "choleskyDecomposition(): Input matrix must not be an integral type.");
     vigra_precondition(rowCount(A) == n,
@@ -969,13 +969,13 @@ bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
     vigra_precondition(isSymmetric(A),
                        "choleskyDecomposition(): Input matrix must be symmetric.");
 
-    for (MultiArrayIndex j = 0; j < n; ++j) 
+    for (MultiArrayIndex j = 0; j < n; ++j)
     {
         T d(0.0);
-        for (MultiArrayIndex k = 0; k < j; ++k) 
+        for (MultiArrayIndex k = 0; k < j; ++k)
         {
             T s(0.0);
-            for (MultiArrayIndex i = 0; i < k; ++i) 
+            for (MultiArrayIndex i = 0; i < k; ++i)
             {
                s += L(k, i)*L(j, i);
             }
@@ -986,7 +986,7 @@ bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
         if(d <= 0.0)
             return false;  // A is not positive definite
         L(j, j) = std::sqrt(d);
-        for (MultiArrayIndex k = j+1; k < n; ++k) 
+        for (MultiArrayIndex k = j+1; k < n; ++k)
         {
            L(j, k) = 0.0;
         }
@@ -997,14 +997,14 @@ bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
     /** QR decomposition.
 
         \a a contains the original matrix, results are returned in \a q and \a r, where
-        \a q is a orthogonal matrix, and \a r is an upper triangular matrix, such that 
+        \a q is a orthogonal matrix, and \a r is an upper triangular matrix, such that
         (up to round-off errors):
 
         \code
         a == q * r;
         \endcode
 
-        If \a a doesn't have full rank, the function returns <tt>false</tt>. 
+        If \a a doesn't have full rank, the function returns <tt>false</tt>.
         The decomposition is computed by householder transformations. It can be applied in-place,
         i.e. <tt>&a == &q</tt> or <tt>&a == &r</tt> are allowed.
 
@@ -1033,7 +1033,7 @@ bool qrDecomposition(MultiArrayView<2, T, C1> const & a,
     /** Deprecated, use \ref linearSolveUpperTriangular().
      */
 template <class T, class C1, class C2, class C3>
-inline 
+inline
 bool reverseElimination(const MultiArrayView<2, T, C1> &r, const MultiArrayView<2, T, C2> &b,
                         MultiArrayView<2, T, C3> x)
 {
@@ -1044,15 +1044,15 @@ bool reverseElimination(const MultiArrayView<2, T, C1> &r, const MultiArrayView<
 
         The square matrix \a r must be an upper-triangular coefficient matrix as can,
         for example, be obtained by means of QR decomposition. If \a r doesn't have full rank
-        the function fails and returns <tt>false</tt>, otherwise it returns <tt>true</tt>. The 
+        the function fails and returns <tt>false</tt>, otherwise it returns <tt>true</tt>. The
         lower triangular part of matrix \a r will not be touched, so it doesn't need to contain zeros.
-        
+
         The column vectors of matrix \a b are the right-hand sides of the equation (several equations
         with the same coefficients can thus be solved in one go). The result is returned
         int \a x, whose columns contain the solutions for the corresponding
         columns of \a b. This implementation can be applied in-place, i.e. <tt>&b == &x</tt> is allowed.
         The following size requirements apply:
-        
+
         \code
         rowCount(r) == columnCount(r);
         rowCount(r) == rowCount(b);
@@ -1092,17 +1092,17 @@ bool linearSolveUpperTriangular(const MultiArrayView<2, T, C1> &r, const MultiAr
 
     /** Solve a linear system with lower-triangular coefficient matrix.
 
-        The square matrix \a l must be a lower-triangular coefficient matrix. If \a l 
-        doesn't have full rank the function fails and returns <tt>false</tt>, 
-        otherwise it returns <tt>true</tt>. The upper triangular part of matrix \a l will not be touched, 
+        The square matrix \a l must be a lower-triangular coefficient matrix. If \a l
+        doesn't have full rank the function fails and returns <tt>false</tt>,
+        otherwise it returns <tt>true</tt>. The upper triangular part of matrix \a l will not be touched,
         so it doesn't need to contain zeros.
-        
+
         The column vectors of matrix \a b are the right-hand sides of the equation (several equations
         with the same coefficients can thus be solved in one go). The result is returned
         in \a x, whose columns contain the solutions for the corresponding
         columns of \a b. This implementation can be applied in-place, i.e. <tt>&b == &x</tt> is allowed.
         The following size requirements apply:
-        
+
         \code
         rowCount(l) == columnCount(l);
         rowCount(l) == rowCount(b);
@@ -1145,13 +1145,13 @@ bool linearSolveLowerTriangular(const MultiArrayView<2, T, C1> &l, const MultiAr
 
         The square matrix \a L must be a lower-triangular matrix resulting from Cholesky
         decomposition of some positive definite coefficient matrix.
-        
+
         The column vectors of matrix \a b are the right-hand sides of the equation (several equations
         with the same matrix \a L can thus be solved in one go). The result is returned
         in \a x, whose columns contain the solutions for the corresponding
         columns of \a b. This implementation can be applied in-place, i.e. <tt>&b == &x</tt> is allowed.
         The following size requirements apply:
-        
+
         \code
         rowCount(L) == columnCount(L);
         rowCount(L) == rowCount(b);
@@ -1164,7 +1164,7 @@ bool linearSolveLowerTriangular(const MultiArrayView<2, T, C1> &l, const MultiAr
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
-inline 
+inline
 void choleskySolve(MultiArrayView<2, T, C1> const & L, MultiArrayView<2, T, C2> const & b, MultiArrayView<2, T, C3> & x)
 {
     /* Solve L * y = b */
@@ -1174,64 +1174,64 @@ void choleskySolve(MultiArrayView<2, T, C1> const & L, MultiArrayView<2, T, C2> 
 }
 
     /** Solve a linear system.
-    
+
         <b> Declarations:</b>
-        
+
         \code
         // use MultiArrayViews for input and output
         template <class T, class C1, class C2, class C3>
-        bool linearSolve(MultiArrayView<2, T, C1> const & A, 
+        bool linearSolve(MultiArrayView<2, T, C1> const & A,
                          MultiArrayView<2, T, C2> const & b,
-                         MultiArrayView<2, T, C3> res, 
+                         MultiArrayView<2, T, C3> res,
                          std::string method = "QR");
-                         
+
         // use TinyVector for RHS and result
         template <class T, class C1, int N>
-        bool linearSolve(MultiArrayView<2, T, C1> const & A, 
+        bool linearSolve(MultiArrayView<2, T, C1> const & A,
                          TinyVector<T, N> const & b,
-                         TinyVector<T, N> & res, 
+                         TinyVector<T, N> & res,
                          std::string method = "QR");
         \endcode
 
         \a A is the coefficient matrix, and the column vectors
         in \a b are the right-hand sides of the equation (so, several equations
-        with the same coefficients can be solved in one go). The result is returned 
+        with the same coefficients can be solved in one go). The result is returned
         in \a res, whose columns contain the solutions for the corresponding
         columns of \a b. The number of columns of \a A must equal the number of rows of
-        both \a b and \a res, and the number of columns of \a b and \a res must match. 
-        If right-hand-side and result are specified as TinyVector, the number of columns 
+        both \a b and \a res, and the number of columns of \a b and \a res must match.
+        If right-hand-side and result are specified as TinyVector, the number of columns
         of \a A must equal N.
-        
+
         \a method must be one of the following:
         <DL>
-        <DT>"Cholesky"<DD> Compute the solution by means of Cholesky decomposition. The 
+        <DT>"Cholesky"<DD> Compute the solution by means of Cholesky decomposition. The
                            coefficient matrix \a A must by symmetric positive definite. If
                            this is not the case, the function returns <tt>false</tt>.
-                           
-        <DT>"QR"<DD> (default) Compute the solution by means of QR decomposition.  The 
+
+        <DT>"QR"<DD> (default) Compute the solution by means of QR decomposition.  The
                            coefficient matrix \a A can be square or rectangular. In the latter case,
-                           it must have more rows than columns, and the solution will be computed in the 
-                           least squares sense. If \a A doesn't have full rank, the function 
+                           it must have more rows than columns, and the solution will be computed in the
+                           least squares sense. If \a A doesn't have full rank, the function
                            returns <tt>false</tt>.
 
-        <DT>"SVD"<DD> Compute the solution by means of singular value decomposition.  The 
+        <DT>"SVD"<DD> Compute the solution by means of singular value decomposition.  The
                            coefficient matrix \a A can be square or rectangular. In the latter case,
-                           it must have more rows than columns, and the solution will be computed in the 
-                           least squares sense. If \a A doesn't have full rank, the function 
+                           it must have more rows than columns, and the solution will be computed in the
+                           least squares sense. If \a A doesn't have full rank, the function
                            returns <tt>false</tt>.
 
         <DT>"NE"<DD> Compute the solution by means of the normal equations, i.e. by applying Cholesky
                            decomposition to the equivalent problem <tt>A'*A*x = A'*b</tt>. This only makes sense
-                           when the equation is to be solved in the least squares sense, i.e. when \a A is a 
-                           rectangular matrix with more rows than columns. If \a A doesn't have full column rank, 
+                           when the equation is to be solved in the least squares sense, i.e. when \a A is a
+                           rectangular matrix with more rows than columns. If \a A doesn't have full column rank,
                            the function returns <tt>false</tt>.
         </DL>
-        
+
         This function can be applied in-place, i.e. <tt>&b == &res</tt> or <tt>&A == &res</tt> are allowed
         (provided they have the required shapes).
 
         The following size requirements apply:
-        
+
         \code
         rowCount(r) == rowCount(b);
         columnCount(r) == rowCount(x);
@@ -1245,9 +1245,9 @@ void choleskySolve(MultiArrayView<2, T, C1> const & L, MultiArrayView<2, T, C2> 
 doxygen_overloaded_function(template <...> bool linearSolve)
 
 template <class T, class C1, class C2, class C3>
-bool linearSolve(MultiArrayView<2, T, C1> const & A, 
+bool linearSolve(MultiArrayView<2, T, C1> const & A,
                  MultiArrayView<2, T, C2> const & b,
-                 MultiArrayView<2, T, C3> res, 
+                 MultiArrayView<2, T, C3> res,
                  std::string method = "QR")
 {
     const MultiArrayIndex n = columnCount(A);
@@ -1255,7 +1255,7 @@ bool linearSolve(MultiArrayView<2, T, C1> const & A,
 
     vigra_precondition(n <= m,
         "linearSolve(): Coefficient matrix A must have at least as many rows as columns.");
-    vigra_precondition(n == rowCount(res) && 
+    vigra_precondition(n == rowCount(res) &&
                        m == rowCount(b) && columnCount(b) == columnCount(res),
         "linearSolve(): matrix shape mismatch.");
 
@@ -1304,9 +1304,9 @@ bool linearSolve(MultiArrayView<2, T, C1> const & A,
 }
 
 template <class T, class C1, int N>
-bool linearSolve(MultiArrayView<2, T, C1> const & A, 
+bool linearSolve(MultiArrayView<2, T, C1> const & A,
                  TinyVector<T, N> const & b,
-                 TinyVector<T, N> & res, 
+                 TinyVector<T, N> & res,
                  std::string method = "QR")
 {
     Shape2 shape(N, 1);

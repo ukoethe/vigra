@@ -62,13 +62,13 @@ public:
         dim_(dim),
         val_(val)
     {}
-    
+
     template<typename FEATURES>
     size_t operator()(FEATURES const & features) const
     {
         return features(dim_) <= val_ ? 0 : 1;
     }
-    
+
     size_t dim_;
     T val_;
 };

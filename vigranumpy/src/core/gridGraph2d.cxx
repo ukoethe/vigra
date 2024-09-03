@@ -92,7 +92,7 @@ namespace vigra{
         typedef GridGraph<DIM,boost::undirected_tag> Graph;
         typedef typename MultiArray<DIM,int>::difference_type ShapeType;
 
-        
+
         python::class_<Graph>(clsName.c_str(),python::init< ShapeType >())
         .def("__init__",python::make_constructor(&pyGridGraphFactory2d<DIM,boost::undirected_tag>))
         .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
@@ -104,7 +104,7 @@ namespace vigra{
         .def("coordinateToNode",pyCoordinateToNode2d<DIM,boost::undirected_tag>)
         ;
 
-       
+
     }
 
     void defineGridGraph2d(){
@@ -114,6 +114,6 @@ namespace vigra{
     }
 
 
-} 
+}
 
 

@@ -16,40 +16,40 @@ class VariableBandsImagePolicy
 *  dagegen ChildImage ist die abgeleitete Klasse von Image, z.B. GrayImage oder FixedRGBImage.
 *  Die VariableBandsImage-Konstruktoren sind protected und somit nicht aufrufbar. Um die Klasse zu testen,
 *  muessen wir die Konstruktoren der abgeleiteten Klassen benutzen. Somit werden alle zur Verfuegung
-*  stehende Funktionen getestet. 
+*  stehende Funktionen getestet.
 *  In der Testklasse werden die ChildImage Konstruktoren aufgerufen, aber an einem Objekt
 *  der VariableBandsImage Klasse (Polymorphie).
 */
 
-public: 
-    typedef typename IMAGEPOLICY::Image                 ChildImage;             // abgeleitete Klasse der ImageKlasse, es kann sich hierbei um GrayImage, SelectBandImage, SingleBandImage, FixedRGBImage oder beliebiges FixedBandImage (Vector2Image, Vector3Image usw.) handeln                
+public:
+    typedef typename IMAGEPOLICY::Image                 ChildImage;             // abgeleitete Klasse der ImageKlasse, es kann sich hierbei um GrayImage, SelectBandImage, SingleBandImage, FixedRGBImage oder beliebiges FixedBandImage (Vector2Image, Vector3Image usw.) handeln
     typedef vigra::VariableBandsImage                   Image;                  // VariableBandsImage
     typedef vigra::VariableBandsImage::PixelType        PixelType;              // VektorProxy
-    typedef typename ChildImage::value_type             value_type;             // 
-    typedef typename ChildImage::value_type             child_value_type;       
+    typedef typename ChildImage::value_type             value_type;             //
+    typedef typename ChildImage::value_type             child_value_type;
     typedef std::vector<value_type>                     data_array_type;
     typedef std::vector<value_type>                     child_data_array_type;
-    
+
     static  data_array_type getData()
     {
         return IMAGEPOLICY::getData();
     }
-    
+
     static  child_data_array_type getChildData()
     {
         return IMAGEPOLICY::getChildData();
     }
-    
+
     static ChildImage * factory()
     {
         return new ChildImage();
     }
-    
+
     static ChildImage * factory(int x, int y)
     {
         return new ChildImage(x,y);
-    }     
-    
+    }
+
     static ChildImage * factory(vigra::Diff2D size)
     {
         return new ChildImage(size);
@@ -59,12 +59,12 @@ public:
     {
         return new ChildImage(x, y, pixel);
     }
-    
+
     static ChildImage * factory(ChildImage image)
     {
         return new ChildImage(image);
     }
-    
+
     static ChildImage * factory(typename ChildImage::InnerImage image)
     {
         return new ChildImage(image);

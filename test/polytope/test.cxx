@@ -691,7 +691,7 @@ struct FloatConvexPolytopeTest
             }
         }
     }
-    
+
     void testAddExtremeVertex3D()
     {
         const int N = 100;

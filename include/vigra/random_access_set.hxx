@@ -44,7 +44,7 @@
 #include <utility>
 
 namespace vigra {
-   
+
 /// set with O(n) insert and O(1) access
 ///
 /// \tparam Key key and value type of the set
@@ -143,7 +143,7 @@ public:
    size_t capacity()const{
        return vector_.capacity();
    }
-   
+
    template<class SET>
    void assignFromSet(const SET & set){
       vector_.assign(set.begin(),set.end());

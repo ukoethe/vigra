@@ -54,7 +54,7 @@ class TestVisitor: public rf::visitors::VisitorBase
 
     //TODO split must be const
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
-    void visit_after_split( Tree          & /*tree*/, 
+    void visit_after_split( Tree          & /*tree*/,
                             Split         & split,
                             Region        & parent,
                             Region        & leftChild,
@@ -106,7 +106,7 @@ class SetTestVisitor: public rf::visitors::VisitorBase
 
 
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
-    void visit_after_split( Tree          & /*tree*/, 
+    void visit_after_split( Tree          & /*tree*/,
                             Split         & split,
                             Region        & parent,
                             Region        & leftChild,
@@ -172,7 +172,7 @@ class AllOutputVisitor: public rf::visitors::VisitorBase
 
     //TODO split must be const
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
-    void visit_after_split( Tree          & /*tree*/, 
+    void visit_after_split( Tree          & /*tree*/,
                             Split         & split,
                             Region        & parent,
                             Region        & leftChild,

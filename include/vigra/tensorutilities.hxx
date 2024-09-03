@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -55,17 +55,17 @@ namespace vigra {
 
 /** \brief Calculate the tensor (outer) product of a 2D vector with itself.
 
-    This function is useful to transform vector images into a tensor representation 
+    This function is useful to transform vector images into a tensor representation
     that can be used as input to tensor based processing and analysis functions
     (e.g. tensor smoothing). The input pixel type must be vectors of length 2, whereas
     the output must contain vectors of length 3 which will represent the tensor components
     in the order t11, t12 (== t21 due to symmetry), t22.
-    
+
     <b>Note:</b> In order to account for the left-handedness of the image coordinate system,
     the second tensor component (t12) can be negated by setting <tt>negateComponent2 = false</tt>.
     Angles will then be interpreted counter-clockwise rather than clockwise. By default,
     this behavior is switched off.
-    
+
     <b> Declarations:</b>
 
     pass 2D array views:
@@ -113,7 +113,7 @@ namespace vigra {
     MultiArray<2, TinyVector<float, 2> >  gradient(w,h);
     MultiArray<2, TinyVector<float, 3> >  tensor(w,h);
     ...
-    
+
     gaussianGradient(img, gradient, 2.0);
     vectorToTensor(gradient, tensor);
     \endcode
@@ -123,7 +123,7 @@ namespace vigra {
     FImage img(w,h);
     FVector2Image gradient(w,h);
     FVector3Image tensor(w,h);
-    
+
     gaussianGradient(srcImageRange(img), destImage(gradient), 2.0);
     vectorToTensor(srcImageRange(gradient), destImage(tensor));
     \endcode
@@ -226,7 +226,7 @@ vectorToTensor(MultiArrayView<2, T1, S1> const & src,
     defined in a left-handed coordinate system (the default on images), the angle will
     then be given in clockwise orientation, starting at the x-axis. Otherwise, it
     will be given in counter-clockwise orientation.
-    
+
     <b> Declarations:</b>
 
     pass 2D array views:
@@ -269,7 +269,7 @@ vectorToTensor(MultiArrayView<2, T1, S1> const & src,
     \code
     MultiArray<2, TinyVector<float, 3> >  tensor(w,h),
                                           eigen(w,h);
-    
+
     tensorEigenRepresentation(tensor, eigen);
     \endcode
 
@@ -277,7 +277,7 @@ vectorToTensor(MultiArrayView<2, T1, S1> const & src,
     \code
     FVector3Image tensor(w,h);
     FVector3Image eigen(w,h);
-    
+
     tensorEigenRepresentation(srcImageRange(tensor), destImage(eigen));
     \endcode
     \deprecatedEnd
@@ -304,13 +304,13 @@ void tensorEigenRepresentation(SrcIterator sul, SrcIterator slr, SrcAccessor src
         typename DestIterator::row_iterator d = dul.rowIterator();
         for(; s < send; ++s, ++d)
         {
-            typedef typename 
+            typedef typename
                NumericTraits<typename SrcAccessor::component_type>::RealPromote TmpType;
             TmpType d1 = src.getComponent(s,0) + src.getComponent(s,2);
             TmpType d2 = src.getComponent(s,0) - src.getComponent(s,2);
             TmpType d3 = TmpType(2.0) * src.getComponent(s,1);
             TmpType d4 = (TmpType)hypot(d2, d3);
-            
+
             dest.setComponent(0.5 * (d1 + d4), d, 0); // large EV
             dest.setComponent(0.5 * (d1 - d4), d, 1); // small EV
             if(d2==0.0 && d3==0.0)
@@ -354,9 +354,9 @@ tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
 /** \brief Calculate the trace of a 2x2 tensor.
 
     This function turns a 3-band image representing the tensor components
-    t11, t12 (== t21 due to symmetry), t22 into the a 1-band image holding the 
+    t11, t12 (== t21 due to symmetry), t22 into the a 1-band image holding the
     tensor trace t11 + t22.
-    
+
     <b> Declarations:</b>
 
     pass 2D array views:
@@ -399,7 +399,7 @@ tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
     \code
     MultiArray<2, TinyVector<float, 3> >  tensor(w,h);
     MultiArray<2, float>                  trace(w,h);
-    
+
     tensorTrace(tensor, trace);
     \endcode
 
@@ -407,7 +407,7 @@ tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
     \code
     FVector3Image tensor(w,h);
     FImage trace(w,h);
-    
+
     tensorTrace(srcImageRange(tensor), destImage(trace));
     \endcode
     \deprecatedEnd
@@ -466,13 +466,13 @@ tensorTrace(MultiArrayView<2, T1, S1> const & src,
 /** \brief Decompose a symmetric 2x2 tensor into its edge and corner parts.
 
     This function turns a 3-band image representing the tensor components
-    t11, t12 (== t21 due to symmetry), t22 into the a 2-band image holding 
-    the tensor's edgeness (difference of the tensor's 
-    eigenvalues) and orientation, and a 1-band image representing its corner part 
-    (equal to the twice the small eigen value). The original tensor must be 
+    t11, t12 (== t21 due to symmetry), t22 into the a 2-band image holding
+    the tensor's edgeness (difference of the tensor's
+    eigenvalues) and orientation, and a 1-band image representing its corner part
+    (equal to the twice the small eigen value). The original tensor must be
     positive definite and defined in a right-handed coordinate system (e.g.
     the tensor resulting from \ref boundaryTensor()).
-    
+
     <b> Declarations:</b>
 
     pass 2D array views:
@@ -523,7 +523,7 @@ tensorTrace(MultiArrayView<2, T1, S1> const & src,
     MultiArray<2, TinyVector<float, 2> >  edgePart(w,h);
     MultiArray<2, float>                  cornerPart(w,h);
     ...
-    
+
     tensorTrace(tensor, edgePart, cornerPart);
     \endcode
 
@@ -532,7 +532,7 @@ tensorTrace(MultiArrayView<2, T1, S1> const & src,
     FVector3Image tensor(w,h);
     FVector2Image edgePart(w,h);
     FImage cornerPart(w,h);
-    
+
     tensorTrace(srcImageRange(tensor), destImage(edgePart), destImage(cornerPart));
     \endcode
     \deprecatedEnd
@@ -562,13 +562,13 @@ void tensorToEdgeCorner(SrcIterator sul, SrcIterator slr, SrcAccessor src,
         typename DestIterator2::row_iterator c = cornerul.rowIterator();
         for(; s < send; ++s, ++e, ++c)
         {
-            typedef typename 
+            typedef typename
                NumericTraits<typename SrcAccessor::component_type>::RealPromote TmpType;
             TmpType d1 = src.getComponent(s,0) + src.getComponent(s,2);
             TmpType d2 = src.getComponent(s,0) - src.getComponent(s,2);
             TmpType d3 = 2.0 * src.getComponent(s,1);
             TmpType d4 = (TmpType)hypot(d2, d3);
-            
+
             edge.setComponent(d4, e, 0); // edgeness = difference of EVs
             if(d2 == 0.0 && d3 == 0.0)
             {
@@ -591,7 +591,7 @@ tensorToEdgeCorner(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator1, DestAccessor1> edge,
                    pair<DestIterator2, DestAccessor2> corner)
 {
-    tensorToEdgeCorner(src.first, src.second, src.third, 
+    tensorToEdgeCorner(src.first, src.second, src.third,
                        edge.first, edge.second, corner.first, corner.second);
 }
 
@@ -605,7 +605,7 @@ tensorToEdgeCorner(MultiArrayView<2, T1, S1> const & src,
 {
     vigra_precondition(src.shape() == edge.shape(),
         "tensorToEdgeCorner(): shape mismatch between input and output.");
-    tensorToEdgeCorner(srcImageRange(src), 
+    tensorToEdgeCorner(srcImageRange(src),
                        destImage(edge), destImage(corner));
 }
 

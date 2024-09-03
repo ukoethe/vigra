@@ -48,7 +48,7 @@ namespace vigra
 {
 
 template < class PixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonCornerResponseFunction2D(NumpyArray<2, Singleband<PixelType> > image,
                                double scale=1.0,
                                NumpyArray<2, Singleband<PixelType> > res = python::object() )
@@ -56,9 +56,9 @@ pythonCornerResponseFunction2D(NumpyArray<2, Singleband<PixelType> > image,
     std::string description("Harris cornerness, scale=");
     description += asString(scale);
 
-    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
-            "cornernessHarris(): Output array has wrong shape.");    
-    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
+            "cornernessHarris(): Output array has wrong shape.");
+
     {
         PyAllowThreads _pythread;
         cornerResponseFunction(srcImageRange(image), destImage(res), scale);
@@ -67,7 +67,7 @@ pythonCornerResponseFunction2D(NumpyArray<2, Singleband<PixelType> > image,
 }
 
 template < class PixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonFoerstnerCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image,
                                 double scale=1.0,
                                 NumpyArray<2, Singleband<PixelType> > res = python::object() )
@@ -75,9 +75,9 @@ pythonFoerstnerCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image,
     std::string description("Foerstner cornerness, scale=");
     description += asString(scale);
 
-    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
-            "cornernessFoerstner(): Output array has wrong shape.");    
-    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
+            "cornernessFoerstner(): Output array has wrong shape.");
+
     {
         PyAllowThreads _pythread;
         foerstnerCornerDetector(srcImageRange(image), destImage(res), scale);
@@ -86,7 +86,7 @@ pythonFoerstnerCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image,
 }
 
 template < class PixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonRohrCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image,
                            double scale = 1.0,
                            NumpyArray<2, Singleband<PixelType> > res = python::object())
@@ -94,9 +94,9 @@ pythonRohrCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image,
     std::string description("Rohr cornerness, scale=");
     description += asString(scale);
 
-    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
-            "cornernessRohr(): Output array has wrong shape.");    
-    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
+            "cornernessRohr(): Output array has wrong shape.");
+
     {
         PyAllowThreads _pythread;
         rohrCornerDetector(srcImageRange(image), destImage(res), scale);
@@ -105,7 +105,7 @@ pythonRohrCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image,
 }
 
 template < class PixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonBeaudetCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image,
                               double scale=1.0,
                               NumpyArray<2, Singleband<PixelType> > res = python::object())
@@ -113,9 +113,9 @@ pythonBeaudetCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image,
     std::string description("Beaudet cornerness, scale=");
     description += asString(scale);
 
-    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
-            "cornernessBeaudet(): Output array has wrong shape.");    
-    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
+            "cornernessBeaudet(): Output array has wrong shape.");
+
     {
         PyAllowThreads _pythread;
         beaudetCornerDetector(srcImageRange(image), destImage(res), scale);
@@ -124,7 +124,7 @@ pythonBeaudetCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image,
 }
 
 template < class PixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonBoundaryTensorCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image,
                                      double scale=1.0,
                                      NumpyArray<2, Singleband<PixelType> > res = python::object())
@@ -132,14 +132,14 @@ pythonBoundaryTensorCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image
     std::string description("boundary tensor cornerness, scale=");
     description += asString(scale);
 
-    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
-        "cornernessBoundaryTensor(): Output array has wrong shape.");    
-    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
+        "cornernessBoundaryTensor(): Output array has wrong shape.");
+
     {
         PyAllowThreads _pythread;
         MultiArray<2, TinyVector<PixelType, 3> > bt(image.shape());
         boundaryTensor(srcImageRange(image), destImage(bt), scale);
-        
+
         PixelType ev1, ev2;
         for(int y=0; y<image.shape(1); ++y)
         {
@@ -157,7 +157,7 @@ pythonBoundaryTensorCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image
 void defineInterestpoints()
 {
     using namespace python;
-    
+
     docstring_options doc_options(true, true, false);
 
     def("cornernessHarris",
@@ -168,13 +168,13 @@ void defineInterestpoints()
         );
 
     def("cornernessFoerstner",
-        registerConverters(&pythonFoerstnerCornerDetector2D<float>), 
+        registerConverters(&pythonFoerstnerCornerDetector2D<float>),
         (arg("image"), arg("scale"),arg("out")=python::object()),
         "Find corners in a scalar 2D image using the method of Foerstner at the given 'scale'.\n\n"
         "For details see foerstnerCornerDetector_ in the vigra C++ documentation.\n");
 
     def("cornernessRohr",
-        registerConverters(&pythonRohrCornerDetector2D<float>), 
+        registerConverters(&pythonRohrCornerDetector2D<float>),
         (arg("image"), arg("scale"),arg("out")=python::object()),
         "Find corners in a scalar 2D image using the method of Rohr at the given 'scale'.\n\n"
         "For details see rohrCornerDetector_ in the vigra C++ documentation.\n");

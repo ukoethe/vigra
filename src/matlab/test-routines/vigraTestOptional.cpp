@@ -73,7 +73,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 
 
     outputs.createScalar<int>(2, v_optional(), agaIsSet);
-    
+
     if(agaIsSet)
         outputs.createScalar<double>(0, v_optional(), aga);
     else

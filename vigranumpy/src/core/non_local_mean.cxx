@@ -102,7 +102,7 @@ void exportNonLocalMeanPolicyParameterObjects(){
         .def_readwrite("varRatio", &ParamType::varRatio_)
         .def_readwrite("epsilon", &ParamType::epsilon_)
         ;
-            
+
     }
 
     {
@@ -122,7 +122,7 @@ void exportNonLocalMeanPolicyParameterObjects(){
         .def_readwrite("meanDist", &ParamType::meanDist_)
         .def_readwrite("varRatio", &ParamType::varRatio_)
         ;
-            
+
     }
 
 

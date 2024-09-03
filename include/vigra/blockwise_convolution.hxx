@@ -60,15 +60,15 @@ void separableConvolveBlockwise(MultiArrayView<N, T1, S1> source, MultiArrayView
     using namespace blockwise_convolution_detail;
 
     typedef typename MultiArrayView<N, T1, S1>::difference_type Shape;
-    
+
     Shape shape = source.shape();
     vigra_precondition(shape == dest.shape(), "shape mismatch of source and destination");
-    
+
     std::pair<Shape, Shape> overlap = kernelOverlap<Shape, KernelIterator>(kit);
     Overlaps<MultiArrayView<N, T2, S2> > overlaps(source, block_shape, overlap.first, overlap.second);
 
     MultiArray<N, MultiArrayView<N, T2, S2> > destination_blocks = blockify(dest, block_shape);
-    
+
     convolveImpl(overlaps, destination_blocks.begin(), kit);
 }
 template <unsigned int N, class T1, class S1,
@@ -115,7 +115,7 @@ void separableConvolveBlockwise(const ChunkedArray<N, T1>& source, ChunkedArray<
     using namespace blockwise_convolution_detail;
 
     typedef typename ChunkedArray<N, T1>::shape_type Shape;
-    
+
     Shape shape = source.shape();
     vigra_precondition(shape == destination.shape(), "shape mismatch of source and destination");
 
@@ -123,7 +123,7 @@ void separableConvolveBlockwise(const ChunkedArray<N, T1>& source, ChunkedArray<
     Shape block_shape = source.chunkShape();
     vigra_precondition(block_shape == destination.chunkShape(), "chunk shapes do not match");
     Overlaps<ChunkedArray<N, T1> > overlaps(source, block_shape, overlap.first, overlap.second);
-    
+
     convolveImpl(overlaps, destination.chunk_begin(Shape(0), shape), kit);
 }
 template <unsigned int N, class T1, class T2, class T>

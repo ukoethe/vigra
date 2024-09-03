@@ -60,7 +60,7 @@ namespace vigra {
 /** \brief BasicImage using foreign memory.
 
     <b>deprecated</b>, use \ref vigra::MultiArrayView instead
-    
+
     This class provides the same interface as \ref vigra::BasicImage
     (with the exception of <tt>resize()</tt>) but the image's
     memory is provided from the outside instead of allocated internally.

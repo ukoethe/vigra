@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -406,11 +406,11 @@ class VectorComponentAccessor
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR, class OFFSET>
-    void set(V const & value, ITERATOR const & i, OFFSET const & diff) const 
-    { 
-        i[diff][index_]= detail::RequiresExplicitCast<value_type>::cast(value); 
+    void set(V const & value, ITERATOR const & i, OFFSET const & diff) const
+    {
+        i[diff][index_]= detail::RequiresExplicitCast<value_type>::cast(value);
     }
-    
+
         /** Reset the index to the given number.
         */
     void setIndex(int i)
@@ -476,31 +476,31 @@ class VectorComponentValueAccessor
         */
     template <class ITERATOR, class OFFSET>
     value_type operator()(ITERATOR const & i, OFFSET const & diff) const
-    { 
-        return detail::RequiresExplicitCast<value_type>::cast(i[diff][index_]); 
+    {
+        return detail::RequiresExplicitCast<value_type>::cast(i[diff][index_]);
     }
-    
+
         /** Write the current data item. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR>
-    void set(V value, ITERATOR const & i) const 
-    { 
-        (*i)[index_] = detail::RequiresExplicitCast<value_type>::cast(value); 
+    void set(V value, ITERATOR const & i) const
+    {
+        (*i)[index_] = detail::RequiresExplicitCast<value_type>::cast(value);
     }
-    
+
         /** Write the data item at an offset (can be 1D or 2D or higher order difference)..
             The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR, class OFFSET>
-    void set(V value, ITERATOR const & i, OFFSET const & diff) const 
-    { 
-        i[diff][index_]= detail::RequiresExplicitCast<value_type>::cast(value); 
+    void set(V value, ITERATOR const & i, OFFSET const & diff) const
+    {
+        i[diff][index_]= detail::RequiresExplicitCast<value_type>::cast(value);
     }
-    
+
         /** Reset the index to the given number.
         */
     void setIndex(int i)
@@ -517,23 +517,23 @@ class VectorComponentValueAccessor
 
 /** \brief Accessor for one component of a vector.
 
-    This works like VectorComponentAccessor, only the template parameters differ: 
+    This works like VectorComponentAccessor, only the template parameters differ:
     Here, we need a vector accessor type , whereas VectorComponentAccessor requires a vector type.
 
     <b>Usage:</b>
-    
+
     \code
     vigra::BRGBImage image(w,h);
-    
+
     // init red channel with 255
-    initImage(destImageRange(image, 
+    initImage(destImageRange(image,
                              VectorElementAccessor<vigra::BRGBImage::Accessor>(0)),
               255);
     \endcode
-    
+
     <b>\#include</b> \<vigra/accessor.hxx\><br>
     Namespace: vigra
-    
+
 */
 template <class ACCESSOR>
 class VectorElementAccessor
@@ -544,36 +544,36 @@ class VectorElementAccessor
         /** the value_type
         */
     typedef typename ACCESSOR::component_type value_type;
-    
+
         /** determine the component to be accessed
         */
     VectorElementAccessor(int index, ACCESSOR a = ACCESSOR())
     : index_(index),
       a_(a)
     {}
-    
+
         /** read the current data item
         */
     template <class ITERATOR>
-    value_type const & operator()(ITERATOR const & i) const 
+    value_type const & operator()(ITERATOR const & i) const
         { return a_.getComponent(i, index_); }
-    
+
         /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
     template <class ITERATOR, class OFFSET>
     value_type const & operator()(ITERATOR const & i, OFFSET const & diff) const
-    { 
-        return a_.getComponent(i, diff, index_); 
+    {
+        return a_.getComponent(i, diff, index_);
     }
-    
+
         /** Write the current data item. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR>
-    void set(V const & value, ITERATOR const & i) const 
-    { 
-        a_.setComponent(detail::RequiresExplicitCast<value_type>::cast(value), i, index_); 
+    void set(V const & value, ITERATOR const & i) const
+    {
+        a_.setComponent(detail::RequiresExplicitCast<value_type>::cast(value), i, index_);
     }
 
         /** Write the data item at an offset (can be 1D or 2D or higher order difference)..
@@ -582,11 +582,11 @@ class VectorElementAccessor
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR, class OFFSET>
-    void set(V const & value, ITERATOR const & i, OFFSET const & diff) const 
-    { 
-       a_.setComponent(detail::RequiresExplicitCast<value_type>::cast(value), i, diff, index_); 
+    void set(V const & value, ITERATOR const & i, OFFSET const & diff) const
+    {
+       a_.setComponent(detail::RequiresExplicitCast<value_type>::cast(value), i, diff, index_);
     }
-    
+
         /** Reset the index to the given number.
         */
     void setIndex(int i)
@@ -641,7 +641,7 @@ class SequenceAccessor
     typedef typename
             If<typename TypeTraits<SEQUENCE>::isConst,
                typename SEQUENCE::const_iterator,
-               typename SEQUENCE::iterator>::type 
+               typename SEQUENCE::iterator>::type
             iterator;
 #else
         /** the sequence's iterator type

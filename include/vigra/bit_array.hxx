@@ -176,14 +176,14 @@ class BitArray<SIZE, WORD_TYPE, typename EnableBitArray<SIZE, WORD_TYPE>::type>
             return set_bits[last_pos] == last_mask;
         return true;
     }
-    
+
     BitArray operator~() const
     {
         BitArray x(*this);
         x.flip();
         return x;
     }
-   
+
   protected:
     template <class F>
     bool mutual_compare(const BitArray & t, F f, bool if_equal = false) const
@@ -201,7 +201,7 @@ class BitArray<SIZE, WORD_TYPE, typename EnableBitArray<SIZE, WORD_TYPE>::type>
     }
     typedef std::less<WORD_TYPE>    less;
     typedef std::greater<WORD_TYPE> greater;
-    
+
   public:
     bool operator<(const BitArray & t) const
     {
@@ -266,7 +266,7 @@ class BitArray<SIZE, WORD_TYPE, typename EnableBitArray<SIZE, WORD_TYPE>::type>
     {
         return assign_operator<bit_or_assign>(x);
     }
-   
+
   protected:
     template <class A>
     BitArray & bit_operator(const BitArray & y) const

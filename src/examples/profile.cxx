@@ -29,17 +29,17 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
+
 
 #include <iostream>
 #include <vigra/stdimage.hxx>
 #include <vigra/imageiteratoradapter.hxx>
 #include <vigra/impex.hxx>
 
-using namespace vigra; 
+using namespace vigra;
 
 
 int main(int argc, char ** argv)
@@ -48,42 +48,42 @@ int main(int argc, char ** argv)
     {
         std::cout << "Usage: " << argv[0] << " infile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
-        
+
         return 1;
     }
-    
+
     try
     {
         ImageImportInfo info(argv[1]);
-        
+
         vigra_precondition(info.isGrayscale(), "Sorry, cannot operate on color images");
-        
+
         int w = info.width();
         int h = info.height();
-            
-        
+
+
         BImage in(w, h);
         importImage(info, destImage(in));
-        
+
         int length = (w < h) ? h : w;
 
         // create output image of appropriate size
         BImage out(length, 256);
-        
-        
+
+
         // paint output image white
         out = 255;
 
         // create line iterator that iterates along the image diagonal
         LineIterator<BImage::Iterator> line(in.upperLeft(), in.lowerRight());
-         
+
         // create line iterator that marks the end of iteration
         LineIterator<BImage::Iterator> end(in.lowerRight(), in.lowerRight());
 
         // create image iterator that points to the first pixel of the last
         // row of the destination image
         BImage::Iterator column = out.upperLeft() + Diff2D(0, 255);
-        
+
         // iterate along the line and across the destination image
         for(; line != end; ++line, ++column.x)
         {
@@ -92,7 +92,7 @@ int main(int argc, char ** argv)
             // current gray value along the diagonal
             for(int y=0; y <= *line; ++y, --row.y)  *row = 0;
         }
-        
+
         std::cout << "Writing profile.gif" << std::endl;
         exportImage(srcImageRange(out), ImageExportInfo("profile.gif"));
     }
@@ -101,6 +101,6 @@ int main(int argc, char ** argv)
         std::cout << e.what() << std::endl;
         return 1;
     }
-    
+
     return 0;
 }

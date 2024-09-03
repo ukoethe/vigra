@@ -1,16 +1,16 @@
 #include <iostream>
 #include <vigra/impex.hxx>
 
-int main(int argc, char ** argv) 
+int main(int argc, char ** argv)
 {
    if(argc != 2)
     {
         std::cout << "Usage: " << argv[0] << " infile" << std::endl;
         std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
-        
+
         return 1;
     }
-    
+
     try
     {
         // read image given as first command-line argument
@@ -27,7 +27,7 @@ int main(int argc, char ** argv)
         else                        std::cout << "no  (";
         std::cout << "number of channels: " << imageInfo.numBands() << ")\n";
     }
-    catch (std::exception & e) 
+    catch (std::exception & e)
     {
         // catch any errors that might have occurred (e.g. "file not found") and print their reason
         std::cout << e.what() << std::endl;

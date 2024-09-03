@@ -29,11 +29,11 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
- 
+
+
 #ifndef VIGRA_BORDERTREATMENT_HXX
 #define VIGRA_BORDERTREATMENT_HXX
 
@@ -42,30 +42,30 @@ namespace vigra {
 
 /** \page BorderTreatmentMode BorderTreatmentMode
 
-    Choose between different border treatment modes. In the convolution 
-    algorithms, these modes apply to 
-    all image pixels where the kernel does not completely fit inside 
+    Choose between different border treatment modes. In the convolution
+    algorithms, these modes apply to
+    all image pixels where the kernel does not completely fit inside
     the image.
-    
+
     <b>\#include</b> \<vigra/bordertreatment.hxx\><br>
     Namespace: vigra
-    
+
     \code
-    enum BorderTreatmentMode 
+    enum BorderTreatmentMode
     {
-          // do not operate on a pixel where the kernel does 
+          // do not operate on a pixel where the kernel does
           // not fit in the image
-       BORDER_TREATMENT_AVOID, 
+       BORDER_TREATMENT_AVOID,
 
           // clip kernel at image border (this is only useful if the
           //  kernel is >= 0 everywhere)
-       BORDER_TREATMENT_CLIP, 
+       BORDER_TREATMENT_CLIP,
 
           // repeat the nearest valid pixel
        BORDER_TREATMENT_REPEAT,
 
-          // reflect image at last row/column 
-       BORDER_TREATMENT_REFLECT, 
+          // reflect image at last row/column
+       BORDER_TREATMENT_REFLECT,
 
           // wrap image around (periodic boundary conditions)
        BORDER_TREATMENT_WRAP
@@ -74,13 +74,13 @@ namespace vigra {
        BORDER_TREATMENT_ZEROPAD
     };
     \endcode
-*/   
-enum BorderTreatmentMode 
+*/
+enum BorderTreatmentMode
 {
-   BORDER_TREATMENT_AVOID, 
-   BORDER_TREATMENT_CLIP, 
+   BORDER_TREATMENT_AVOID,
+   BORDER_TREATMENT_CLIP,
    BORDER_TREATMENT_REPEAT,
-   BORDER_TREATMENT_REFLECT, 
+   BORDER_TREATMENT_REFLECT,
    BORDER_TREATMENT_WRAP,
    BORDER_TREATMENT_ZEROPAD
 };

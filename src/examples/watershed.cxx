@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -41,7 +41,7 @@
 #include <vigra/multi_watersheds.hxx>
 #include <vigra/impex.hxx>
 
-using namespace vigra; 
+using namespace vigra;
 
 template <class InImage, class OutImage>
 void watershedSegmentation(InImage & in, OutImage & out, double scale)
@@ -49,12 +49,12 @@ void watershedSegmentation(InImage & in, OutImage & out, double scale)
     // compute the gradient magnitude as a suitable boundary indicator
     MultiArray<2, float> gradient(in.shape());
     gaussianGradientMagnitude(in, gradient, scale);
-    
+
     // Compute watershed segmentation using a region growing algorithm with 4-neighborhood.
-    // Use option object to ask the watershed algorithm to compute seeds automatically at 
+    // Use option object to ask the watershed algorithm to compute seeds automatically at
     // minima of the boundary indicator.
     MultiArray<2, unsigned int> labeling(in.shape());
-    unsigned int max_region_label = 
+    unsigned int max_region_label =
         watershedsMultiArray(gradient, labeling, DirectNeighborhood,
                              WatershedOptions().seedOptions(SeedOptions().minima()));
 
@@ -103,7 +103,7 @@ int main(int argc, char ** argv)
             int h = info.height();
 
             MultiArray<2, UInt8> in(w, h), out(w, h);
-            
+
             importImage(info, in);
 
             // perform watershed segmentation on gray image

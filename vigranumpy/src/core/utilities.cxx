@@ -50,7 +50,7 @@ namespace vigra{
 
     template<class PQ>
     void pyPush(
-        PQ & pq, 
+        PQ & pq,
         const NumpyArray<1,UInt32> indices,
         const NumpyArray<1,float>  priorities
     ){

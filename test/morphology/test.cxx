@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -57,12 +57,12 @@ struct FlatMorphologyTest
             0, 1, 2, 3, 4, 5, 6,
             0, 1, 2, 3, 4, 5, 6,
             0, 1, 2, 3, 4, 5, 6};
-        
+
         Image::ScanOrderIterator i = img.begin();
         Image::ScanOrderIterator end = img.end();
         Image::Accessor acc = img.accessor();
         const unsigned char * p = in;
-        
+
         for(; i != end; ++i, ++p)
         {
             acc.set(*p, i);
@@ -76,23 +76,23 @@ struct FlatMorphologyTest
             0, 1, 1, 1, 1, 1, 0,
             0, 1, 1, 1, 1, 1, 0,
             1, 1, 1, 1, 1, 1, 1};
-        
+
         i = mask.begin();
         end = mask.end();
         p = in1;
-        
+
         for(; i != end; ++i, ++p)
         {
             acc.set(*p, i);
         }
     }
-    
+
     void erosionTest()
     {
         Image res(img.size()), res1(img.size());
-        
+
         discErosion(srcImageRange(img), destImage(res), 2);
-        
+
         static const unsigned char desired[] = {
                    0, 0, 0, 1, 2, 3, 4,
                    0, 0, 0, 1, 2, 3, 4,
@@ -101,12 +101,12 @@ struct FlatMorphologyTest
                    0, 0, 0, 1, 2, 3, 4,
                    0, 0, 0, 1, 2, 3, 4,
                    0, 0, 0, 1, 2, 3, 4};
-                                         
+
         const unsigned char * i1 = desired;
         const unsigned char * i1end = i1 + 49;
         Image::ScanOrderIterator i2 = res.begin();
         Image::Accessor acc = res.accessor();
-        
+
         for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == acc(i2));
@@ -115,14 +115,14 @@ struct FlatMorphologyTest
         discErosion(View(img), View(res1), 2);
         should(View(res) == View(res1));
     }
-    
+
     void erosionWithMaskTest()
     {
         Image res(img.size(), 9), res1(img.size(), 9);
-        
+
         discErosionWithMask(srcImageRange(img), maskImage(mask),
                             destImage(res), 2);
-        
+
         static const unsigned char desired[] = {
                    0, 0, 0, 1, 2, 3, 4,
                    0, 0, 0, 1, 2, 3, 4,
@@ -131,12 +131,12 @@ struct FlatMorphologyTest
                    0, 0, 1, 1, 2, 3, 4,
                    0, 0, 0, 1, 2, 3, 4,
                    0, 0, 0, 1, 2, 3, 4};
-                                         
+
         const unsigned char * i1 = desired;
         const unsigned char * i1end = i1 + 49;
         Image::ScanOrderIterator i2 = res.begin();
         Image::Accessor acc = res.accessor();
-        
+
         for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == acc(i2));
@@ -145,13 +145,13 @@ struct FlatMorphologyTest
         discErosionWithMask(View(img), View(mask), View(res1), 2);
         should(View(res) == View(res1));
     }
-    
+
     void dilationTest()
     {
         Image res(img.size()), res1(img.size());
-        
+
         discDilation(srcImageRange(img), destImage(res), 2);
-        
+
         static const unsigned char desired[] = {
                    2, 3, 4, 5, 6, 6, 6,
                    2, 3, 4, 5, 6, 6, 6,
@@ -160,12 +160,12 @@ struct FlatMorphologyTest
                    2, 3, 4, 5, 6, 6, 6,
                    2, 3, 4, 5, 6, 6, 6,
                    2, 3, 4, 5, 6, 6, 6};
-                                         
+
         const unsigned char * i1 = desired;
         const unsigned char * i1end = i1 + 49;
         Image::ScanOrderIterator i2 = res.begin();
         Image::Accessor acc = res.accessor();
-        
+
         for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == acc(i2));
@@ -174,14 +174,14 @@ struct FlatMorphologyTest
         discDilation(View(img), View(res1), 2);
         should(View(res) == View(res1));
     }
-    
+
     void dilationWithMaskTest()
     {
         Image res(img.size(), 9), res1(img.size(), 9);
-        
+
         discDilationWithMask(srcImageRange(img), maskImage(mask),
                             destImage(res), 2);
-        
+
         static const unsigned char desired[] = {
                    2, 3, 4, 5, 6, 6, 6,
                    2, 3, 4, 5, 6, 6, 6,
@@ -190,12 +190,12 @@ struct FlatMorphologyTest
                    2, 3, 4, 5, 5, 6, 6,
                    2, 3, 4, 5, 6, 6, 6,
                    2, 3, 4, 5, 6, 6, 6};
-                                         
+
         const unsigned char * i1 = desired;
         const unsigned char * i1end = i1 + 49;
         Image::ScanOrderIterator i2 = res.begin();
         Image::Accessor acc = res.accessor();
-        
+
         for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == acc(i2));
@@ -204,13 +204,13 @@ struct FlatMorphologyTest
         discDilationWithMask(View(img), View(mask), View(res1), 2);
         should(View(res) == View(res1));
     }
-    
+
     void medianTest()
     {
         Image res(img.size()), res1(img.size());
-        
+
         discMedian(srcImageRange(img), destImage(res), 2);
-        
+
         static const unsigned char desired[] = {
             1, 1, 2, 3, 4, 5, 5,
             1, 1, 2, 3, 4, 5, 5,
@@ -219,12 +219,12 @@ struct FlatMorphologyTest
             1, 1, 2, 3, 4, 5, 5,
             1, 1, 2, 3, 4, 5, 5,
             1, 1, 2, 3, 4, 5, 5};
-                                         
+
         const unsigned char * i1 = desired;
         const unsigned char * i1end = i1 + 49;
         Image::ScanOrderIterator i2 = res.begin();
         Image::Accessor acc = res.accessor();
-        
+
         for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == acc(i2));
@@ -233,14 +233,14 @@ struct FlatMorphologyTest
         discMedian(View(img), View(res1), 2);
         should(View(res) == View(res1));
     }
-    
+
     void medianWithMaskTest()
     {
         Image res(img.size(), 9), res1(img.size(), 9);
-        
+
         discMedianWithMask(srcImageRange(img), maskImage(mask),
                             destImage(res), 2);
-        
+
         static const unsigned char desired[] = {
                    1, 2, 2, 3, 4, 4, 5,
                    1, 2, 2, 3, 4, 4, 5,
@@ -249,12 +249,12 @@ struct FlatMorphologyTest
                    1, 2, 2, 3, 4, 4, 5,
                    1, 2, 2, 3, 4, 4, 5,
                    1, 2, 2, 3, 4, 4, 5};
-                                         
+
         const unsigned char * i1 = desired;
         const unsigned char * i1end = i1 + 49;
         Image::ScanOrderIterator i2 = res.begin();
         Image::Accessor acc = res.accessor();
-        
+
         for(; i1 != i1end; ++i1, ++i2)
         {
             should(*i1 == acc(i2));
@@ -263,11 +263,11 @@ struct FlatMorphologyTest
         discMedianWithMask(View(img), View(mask), View(res1), 2);
         should(View(res) == View(res1));
     }
-    
+
     Image img, mask;
 };
 
-        
+
 struct MorphologyTestSuite
 : public vigra::test_suite
 {

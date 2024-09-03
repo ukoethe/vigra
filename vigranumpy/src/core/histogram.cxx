@@ -104,11 +104,11 @@ namespace vigra{
         const float                         minVal,
         const float                         maxVal,
         const size_t                        bins,
-        const NumpyArray<1, float>        & sigmas,  
+        const NumpyArray<1, float>        & sigmas,
         const NumpyArray<1, float>        & ranks,
         NumpyArray<DIM+1, float>            out
     ){
-        // reshape 
+        // reshape
         typename NumpyArray<DIM+1,float>::difference_type  outShape;
         for(size_t d=0;d<DIM;++d){
            outShape[d]=image.shape(d);
@@ -180,7 +180,7 @@ namespace vigra{
             )
         );
     }
-    
+
 
 
 } // namespace vigra

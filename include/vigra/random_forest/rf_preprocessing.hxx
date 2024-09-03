@@ -45,18 +45,18 @@ namespace vigra
 
 /** Class used while preprocessing  (currently used only during learn)
  *
- * This class is internally used by the Random Forest learn function. 
+ * This class is internally used by the Random Forest learn function.
  * Different split functors may need to process the data in different manners
- * (i.e., regression labels that should not be touched and classification 
+ * (i.e., regression labels that should not be touched and classification
  * labels that must be converted into a integral format)
  *
- * This Class only exists in specialized versions, where the Tag class is 
- * fixed. 
+ * This Class only exists in specialized versions, where the Tag class is
+ * fixed.
  *
  * The Tag class is determined by Splitfunctor::Preprocessor_t . Currently
- * it can either be ClassificationTag or RegressionTag.  look At the 
+ * it can either be ClassificationTag or RegressionTag.  look At the
  * RegressionTag specialisation for the basic interface if you ever happen
- * to care.... - or need some sort of vague new preprocessor.  
+ * to care.... - or need some sort of vague new preprocessor.
  * new preprocessor ( Soft labels or whatever)
  */
 template<class Tag, class LabelType, class T1, class C1, class T2, class C2>
@@ -65,8 +65,8 @@ class Processor;
 namespace detail
 {
 
-    /* Common helper function used in all Processors. 
-     * This function analyses the options struct and calculates the real 
+    /* Common helper function used in all Processors.
+     * This function analyses the options struct and calculates the real
      * values needed for the current problem (data)
      */
     template<class T>
@@ -121,7 +121,7 @@ namespace detail
         }
 
     }
-    
+
     /* Returns true if MultiArray contains NaNs
      */
     template<unsigned int N, class T, class C>
@@ -132,9 +132,9 @@ namespace detail
         for(; i != end; ++i)
             if(isnan(NumericTraits<T>::toRealPromote(*i)))
                 return true;
-        return false; 
+        return false;
     }
-    
+
     /* Returns true if MultiArray contains Infs
      */
     template<unsigned int N, class T, class C>
@@ -155,7 +155,7 @@ namespace detail
 
 /** Preprocessor used during Classification
  *
- * This class converts the labels int Integral labels which are used by the 
+ * This class converts the labels int Integral labels which are used by the
  * standard split functor to address memory in the node objects.
  */
 template<class LabelType, class T1, class C1, class T2, class C2>
@@ -171,12 +171,12 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
     MultiArrayView<2, LabelInt>         strata_;
 
     template<class T>
-    Processor(MultiArrayView<2, T1, C1>const & features,   
+    Processor(MultiArrayView<2, T1, C1>const & features,
               MultiArrayView<2, T2, C2>const & response,
-              RandomForestOptions &options,         
+              RandomForestOptions &options,
               ProblemSpec<T> &ext_param)
     :
-        features_( features) // do not touch the features. 
+        features_( features) // do not touch the features.
     {
         vigra_precondition(!detail::contains_nan(features), "RandomForest(): Feature matrix "
                                                            "contains NaNs");
@@ -186,7 +186,7 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
                                                            "contains inf");
         vigra_precondition(!detail::contains_inf(response), "RandomForest(): Response "
                                                            "contains inf");
-        // set some of the problem specific parameters 
+        // set some of the problem specific parameters
         ext_param.column_count_  = features.shape(1);
         ext_param.row_count_     = features.shape(0);
         ext_param.problem_type_  = CLASSIFICATION;
@@ -196,7 +196,7 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
         //get the class labels
         if(ext_param.class_count_ == 0)
         {
-            // fill up a map with the current labels and then create the 
+            // fill up a map with the current labels and then create the
             // integral labels.
             std::set<T2>                    labelToInt;
             for(MultiArrayIndex k = 0; k < features.shape(0); ++k)
@@ -217,7 +217,7 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
         // set class weights
         if(ext_param.class_weights_.size() == 0)
         {
-            ArrayVector<T2> 
+            ArrayVector<T2>
                 tmp(static_cast<std::size_t>(ext_param.class_count_),
                     NumericTraits<T2>::one());
             ext_param.class_weights(tmp.begin(), tmp.end());
@@ -291,7 +291,7 @@ public:
         options_(options),
         ext_param_(ext_param)
     {
-        // set some of the problem specific parameters 
+        // set some of the problem specific parameters
         ext_param.column_count_  = features.shape(1);
         ext_param.row_count_     = features.shape(0);
         ext_param.problem_type_  = REGRESSION;

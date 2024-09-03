@@ -42,7 +42,7 @@
 /* The ONLM filter is described in:                                     */
 /*                                                                      */
 /* P. Coupe, P. Yger, S. Prima, P. Hellier, C. Kervrann, C. Barillot.   */
-/* An Optimized Blockwise Non Local Means Denoising Filter              */ 
+/* An Optimized Blockwise Non Local Means Denoising Filter              */
 /* for 3D Magnetic Resonance Images                                     */
 /* . IEEE Transactions on Medical Imaging, 27(4):425-441,               */
 /* Avril 2008                                                           */
@@ -98,7 +98,7 @@ struct NonLocalMeanParameter{
 
 
 // this has no template since this should
-// be the same class for different dimensions 
+// be the same class for different dimensions
 // and pixel types
 class RatioPolicyParameter{
 public:
@@ -148,7 +148,7 @@ class RatioPolicy{
         )const{
             // Compute mean ratio of mean and variance
             const ValueType m = mean(meanA/meanB);
-            const ValueType v = mean(varA/varB);          
+            const ValueType v = mean(varA/varB);
             return (m > meanRatio_ && m < (1.0 / meanRatio_) && v > varRatio_ && v < (1.0 / varRatio_));
         }
 
@@ -166,7 +166,7 @@ class RatioPolicy{
 
 
 // this has no template since this should
-// be the same class for different dimensions 
+// be the same class for different dimensions
 // and pixel types
 class NormPolicyParameter{
 public:
@@ -274,7 +274,7 @@ class NormPolicy{
         )const{
             // Compute mean ratio of mean and variance
             const ValueType m = squaredNorm(meanA-meanB);
-            const ValueType v = mean(varA/varB); 
+            const ValueType v = mean(varA/varB);
             //std::cout<<"norms  "<<m<<" v "<<v<<"\n";
             return (m < meanDist_ && v > varRatio_ && v < (1.0 / varRatio_));
         }
@@ -296,9 +296,9 @@ class NormPolicy{
 template<int DIM, class PIXEL_TYPE_IN, class SMOOTH_POLICY>
 class BlockWiseNonLocalMeanThreadObject{
     typedef PIXEL_TYPE_IN       PixelTypeIn;
-    typedef typename NumericTraits<PixelTypeIn>::RealPromote        RealPromotePixelType;  
+    typedef typename NumericTraits<PixelTypeIn>::RealPromote        RealPromotePixelType;
     typedef typename NumericTraits<RealPromotePixelType>::ValueType RealPromoteScalarType;
-    
+
     typedef typename MultiArray<DIM,int>::difference_type Coordinate;
     typedef NonLocalMeanParameter ParameterType;
 
@@ -331,7 +331,7 @@ public:
         MutexType &                 estimateMutex,
         MultiArray<1,int> &         progress
     )
-    : 
+    :
     inImage_(inImage),
     meanImage_(meanImage),
     varImage_(varImage),
@@ -401,13 +401,13 @@ private:
     EstimateArrayView   estimageImage_;
     LabelArrayView      labelImage_;
 
-    // policy object 
+    // policy object
     SmoothPolicyType smoothPolicy_;
 
     // param obj.
     ParameterType param_;
 
-    // thread related; 
+    // thread related;
     RangeType lastAxisRange_;
     size_t threadIndex_;
     size_t nThreads_;
@@ -436,7 +436,7 @@ inline void BlockWiseNonLocalMeanThreadObject<DIM, PIXEL_TYPE_IN, SMOOTH_POLICY>
             const RealPromoteScalarType distance = norm(xyz);
             const RealPromoteScalarType w =gaussian(distance);
             sum+=w;
-            gaussWeight_[c]=w;   
+            gaussWeight_[c]=w;
         }
     }
     if(DIM==3){
@@ -446,7 +446,7 @@ inline void BlockWiseNonLocalMeanThreadObject<DIM, PIXEL_TYPE_IN, SMOOTH_POLICY>
             const RealPromoteScalarType distance = norm(xyz);
             const RealPromoteScalarType w =gaussian(distance);
             sum+=w;
-            gaussWeight_[c]=w;     
+            gaussWeight_[c]=w;
         }
     }
     if(DIM==4){
@@ -457,7 +457,7 @@ inline void BlockWiseNonLocalMeanThreadObject<DIM, PIXEL_TYPE_IN, SMOOTH_POLICY>
             const RealPromoteScalarType distance = norm(xyz);
             const RealPromoteScalarType w =gaussian(distance);
             sum+=w;
-            gaussWeight_[c]=w;   
+            gaussWeight_[c]=w;
         }
     }
     // normalize
@@ -491,10 +491,10 @@ void BlockWiseNonLocalMeanThreadObject<DIM, PIXEL_TYPE_IN, SMOOTH_POLICY>::opera
 
     this->initalizeGauss();
 
-    Coordinate xyz; 
+    Coordinate xyz;
     int c=0;
     if(param_.verbose_ && threadIndex_==nThreads_-1){
-        std::cout<<"progress"; 
+        std::cout<<"progress";
     }
 
     if(DIM==2){
@@ -621,14 +621,14 @@ inline void BlockWiseNonLocalMeanThreadObject<DIM, PIXEL_TYPE_IN, SMOOTH_POLICY>
     RealPromoteScalarType & wmax,
     RealPromoteScalarType & totalweight
 ){
-    
+
     if(BorderHelper<DIM,ALWAYS_INSIDE>::isInside(nxyz,inImage_)){
     //if(ALWAYS_INSIDE || inImage_.isInside(nxyz)){
         if(smoothPolicy_.usePixel(meanImage_[nxyz],varImage_[nxyz])){
             // here we check if to patches fit to each other
-            // one patch is around xyz 
+            // one patch is around xyz
             // other patch is arround nxyz
-            if(smoothPolicy_.usePixelPair(meanImage_[xyz],varImage_[xyz],meanImage_[nxyz],varImage_[nxyz])){                
+            if(smoothPolicy_.usePixelPair(meanImage_[xyz],varImage_[xyz],meanImage_[nxyz],varImage_[nxyz])){
                 const RealPromoteScalarType distance =this->patchDistance<ALWAYS_INSIDE>(xyz,nxyz);
                 const RealPromoteScalarType w = smoothPolicy_.distanceToWeight(meanImage_[xyz],varImage_[xyz],distance);
                 wmax = std::max(w,wmax);
@@ -643,7 +643,7 @@ inline void BlockWiseNonLocalMeanThreadObject<DIM, PIXEL_TYPE_IN, SMOOTH_POLICY>
 
 template<int DIM,class PIXEL_TYPE_IN, class SMOOTH_POLICY>
 template<bool ALWAYS_INSIDE>
-inline typename BlockWiseNonLocalMeanThreadObject<DIM, PIXEL_TYPE_IN, SMOOTH_POLICY>::RealPromoteScalarType 
+inline typename BlockWiseNonLocalMeanThreadObject<DIM, PIXEL_TYPE_IN, SMOOTH_POLICY>::RealPromoteScalarType
 BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN,SMOOTH_POLICY>::patchDistance(
     const Coordinate & pA,
     const Coordinate & pB
@@ -655,8 +655,8 @@ BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN,SMOOTH_POLICY>::patchDistanc
     int acu = 0;
     RealPromoteScalarType distancetotal = 0;
     int c =0 ;
-    //this->mirrorIfIsOutsidePoint<ALWAYS_INSIDE>(nPa);       
-   // this->mirrorIfIsOutsidePoint<ALWAYS_INSIDE>(nPb);       
+    //this->mirrorIfIsOutsidePoint<ALWAYS_INSIDE>(nPa);
+   // this->mirrorIfIsOutsidePoint<ALWAYS_INSIDE>(nPb);
     #define VIGRA_NLM_IN_LOOP_CODE                              \
         nPa = pA+offset;                                        \
         nPb = pB+offset;                                        \
@@ -697,7 +697,7 @@ BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN,SMOOTH_POLICY>::patchDistanc
 
 template<int DIM,class PIXEL_TYPE_IN, class SMOOTH_POLICY>
 template<bool ALWAYS_INSIDE>
-inline void 
+inline void
 BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN,SMOOTH_POLICY>::patchExtractAndAcc(
     const Coordinate & xyz,
     const RealPromoteScalarType weight
@@ -745,12 +745,12 @@ BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN,SMOOTH_POLICY>::patchExtract
 
 template<int DIM,class PIXEL_TYPE_IN, class SMOOTH_POLICY>
 template<bool ALWAYS_INSIDE>
-inline void 
+inline void
 BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN,SMOOTH_POLICY>::patchAccMeanToEstimate(
     const Coordinate & xyz,
     const RealPromoteScalarType globalSum
 ){
-    Coordinate abc(SkipInitialization),xyzPos(SkipInitialization),nhSize(param_.patchRadius_);        
+    Coordinate abc(SkipInitialization),xyzPos(SkipInitialization),nhSize(param_.patchRadius_);
     int count = 0 ;
     const int ns = 2 * param_.patchRadius_ + 1;
 
@@ -804,7 +804,7 @@ inline void gaussianMeanAndVariance(
     vigra::MultiArrayView<DIM,PIXEL_TYPE_OUT> & tmpArray
 ){
 
-    // compute mean and variance 
+    // compute mean and variance
     vigra::gaussianSmoothMultiArray(inArray, meanArray, sigma);
     // square raw data (use estimate Image to store temp. results)
     for(int scanOrderIndex=0;scanOrderIndex<inArray.size();++scanOrderIndex){
@@ -816,7 +816,7 @@ inline void gaussianMeanAndVariance(
         var  = clipLower(var);
         //makeNegtiveValuesZero(var);  // callbyref
         varArray[scanOrderIndex] = var;
-    }      
+    }
 }
 
 template<int DIM,class PIXEL_TYPE_IN, class SMOOTH_POLICY,class PIXEL_TYPE_OUT>
@@ -827,7 +827,7 @@ inline void gaussianMeanAndVariance(
     vigra::MultiArrayView<DIM,PIXEL_TYPE_OUT> & varArray
 ){
     vigra::MultiArray<DIM,PIXEL_TYPE_OUT>  tmpArray(inArray.shape());
-    gaussianMeanAndVariance<DIM,PIXEL_TYPE_IN,PIXEL_TYPE_OUT>(inArray,sigma,meanArray,varArray,tmpArray);   
+    gaussianMeanAndVariance<DIM,PIXEL_TYPE_IN,PIXEL_TYPE_OUT>(inArray,sigma,meanArray,varArray,tmpArray);
 }
 
 namespace detail_non_local_means{
@@ -841,8 +841,8 @@ void nonLocalMean1Run(
 ){
 
     typedef PIXEL_TYPE_IN       PixelTypeIn;
-    typedef typename vigra::NumericTraits<PixelTypeIn>::RealPromote         RealPromotePixelType;  
-     typedef typename vigra::NumericTraits<RealPromotePixelType>::ValueType RealPromoteScalarType;  
+    typedef typename vigra::NumericTraits<PixelTypeIn>::RealPromote         RealPromotePixelType;
+     typedef typename vigra::NumericTraits<RealPromotePixelType>::ValueType RealPromoteScalarType;
     typedef SMOOTH_POLICY SmoothPolicyType;
 
     typedef BlockWiseNonLocalMeanThreadObject<DIM,PixelTypeIn,SmoothPolicyType> ThreadObjectType;
@@ -860,7 +860,7 @@ void nonLocalMean1Run(
     vigra::MultiArray<DIM,RealPromotePixelType> estimageImage(image.shape());
     vigra::MultiArray<DIM,RealPromoteScalarType> labelImage(image.shape());
 
-    // compute mean and variance 
+    // compute mean and variance
     // last argument is a "buffer" since within "gaussianMeanAndVariance" another array is needed
     // ==> to avoid an unnecessary allocation we use the estimageImage as a buffer
     //gaussianMeanAndVariance<DIM,PixelTypeIn,RealPromotePixelType>(image,param.sigmaMean_,meanImage,varImage,estimageImage);
@@ -886,8 +886,8 @@ void nonLocalMean1Run(
 
         // allocate all thread objects
         // each thread object works on a portion of the data
-        std::vector<ThreadObjectType> threadObjects(nThreads, 
-            ThreadObjectType(image, meanImage, varImage, estimageImage, labelImage, 
+        std::vector<ThreadObjectType> threadObjects(nThreads,
+            ThreadObjectType(image, meanImage, varImage, estimageImage, labelImage,
                 smoothPolicy, param, nThreads, estimateMutex,progress)
         );
 
@@ -900,7 +900,7 @@ void nonLocalMean1Run(
             lastAxisRange[0]=(i * image.shape(DIM-1)) / nThreads;
             lastAxisRange[1]=((i+1) * image.shape(DIM-1)) / nThreads;
             threadObj.setRange(lastAxisRange);
-            // this will start the threads and cal operator() 
+            // this will start the threads and cal operator()
             // of the threadObjects
             threadPtrs[i] = new ThreadType(threadObjects[i]);
         }
@@ -934,7 +934,7 @@ void nonLocalMean(
     detail_non_local_means::nonLocalMean1Run<DIM,PIXEL_TYPE_IN,PIXEL_TYPE_OUT,SMOOTH_POLICY>(image,smoothPolicy,param,outImage);
     if(param.iterations_>1){
 
-        vigra::MultiArray<DIM,PIXEL_TYPE_OUT> tmp(outImage.shape());        
+        vigra::MultiArray<DIM,PIXEL_TYPE_OUT> tmp(outImage.shape());
         for(size_t i=0;i<static_cast<size_t>(param.iterations_-1);++i){
             tmp=outImage;
             detail_non_local_means::nonLocalMean1Run<DIM,PIXEL_TYPE_OUT,PIXEL_TYPE_OUT,SMOOTH_POLICY>(tmp,smoothPolicy,param,outImage);

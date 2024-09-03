@@ -20,12 +20,12 @@ extern "C" {
 
 typedef struct {
   int valid;            /* indicate which fields are valid */
-  char programtype[16]; /* listed at beginning of file to identify it 
-                         * after "#?".  defaults to "RGBE" */ 
-  float gamma;          /* image has already been gamma corrected with 
+  char programtype[16]; /* listed at beginning of file to identify it
+                         * after "#?".  defaults to "RGBE" */
+  float gamma;          /* image has already been gamma corrected with
                          * given gamma.  defaults to 1.0 (no correction) */
   float exposure;       /* a value of 1.0 in an image corresponds to
-             * <exposure> watts/steradian/m^2. 
+             * <exposure> watts/steradian/m^2.
              * defaults to 1.0 */
 } vigra_rgbe_header_info;
 

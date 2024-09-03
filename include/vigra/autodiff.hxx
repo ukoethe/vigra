@@ -47,39 +47,39 @@ namespace autodiff {
 
 /** Number type for automatic differentiation.
 
-    <a href="http://en.wikipedia.org/wiki/Automatic_differentiation">Automatic differentiation</a> 
-    allows one to compute the value of a numeric expression and its gradient 
-    with respect to the expression's arguments automatically and in one go. 
+    <a href="http://en.wikipedia.org/wiki/Automatic_differentiation">Automatic differentiation</a>
+    allows one to compute the value of a numeric expression and its gradient
+    with respect to the expression's arguments automatically and in one go.
     To support this, one needs a special number type that holds a scalar value
     and the corresponding gradient vector of appropriate length. This is the
     purpose of hte template class <tt>DualVector<T, N></tt>, where <tt>T</tt> is the
-    underlying numerical type (usually 'double'), and <tt>N</tt> denotes the 
-    length of the gradient vector. 
-    
-    The standard arithmetic and algebraic functions are overloaded for 
-    <tt>DualVector</tt> in order to implement the required arithmetic of 
+    underlying numerical type (usually 'double'), and <tt>N</tt> denotes the
+    length of the gradient vector.
+
+    The standard arithmetic and algebraic functions are overloaded for
+    <tt>DualVector</tt> in order to implement the required arithmetic of
     dual numbers. When you replace all arguments in a numeric expression
     with the appropriate <tt>DualVector</tt> instances, the result will be
     a <tt>DualVector</tt> that contains the result value and gradient of
     the expression, evaluated at the point defined by the input values.
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/autodiff.hxx\><br>
     Namespace: vigra::autodiff
 
     \code
     typedef DualVector<double, 2> N;  // for expressions with two arguments
-    
+
     N x(1.0, 0);  // first argument of the expression
     N s(2.0, 1);  // second argument of the expression
-    
+
     N y = exp(-0.5 * sq(x / s));
-    
+
     std::cout << "Evaluated exp(- x^2 / (2 s^2)) at x=1 and s = 2:\n";
     std::cout << "result = " << y.value() <<", gradient = " << y.gradient() << "\n";
     \endcode
-    Note that the second argument of the <tt>DualVector</tt> constructors specifies that 
+    Note that the second argument of the <tt>DualVector</tt> constructors specifies that
     the derivative w.r.t 'x' shall be the element 0 of the gradient vector, and the
     derivative w.r.t. 's' shall be element 1.
 */
@@ -89,46 +89,46 @@ class DualVector
   public:
     typedef T                 value_type; ///< type of function values and gradient elements
     typedef TinyVector<T, N>  Gradient;   ///< type of the gradient vector
-    
+
     T v;
     Gradient d;
-    
+
         /** Zero initialization.
         */
     DualVector()
     : v(), d()
     {}
-    
+
         /** Provide a value, but zero-initialize the gradient.
         */
     explicit DualVector(T const & val)
     : v(val), d()
     {}
-    
+
         /** Initialize with given value and gradient.
         */
     DualVector(T const & val, Gradient const & grad)
     : v(val), d(grad)
     {}
-    
+
         /** Shorthand for <tt>DualVector(val, Gradient(g0))</tt> when <tt>N == 1</tt>.
-        
+
             Not to be used when <tt>N != 1</tt>.
         */
     DualVector(T const & val, T const & g0)
     : v(val), d(g0)
     {}
-    
+
         /** Shorthand for <tt>DualVector(val, Gradient(g0, g1))</tt> when <tt>N == 2</tt>.
-        
+
             Not to be used when <tt>N != 2</tt>.
         */
     DualVector(T const & val, T const & g0, T const & g1)
     : v(val), d(g0, g1)
     {}
-    
+
         /** Initialize value to represent the argument number 'targetElement' in an
-            expression. 
+            expression.
 
             The derivative of the expression w.r.t. this variable will be element 'targetElement'
             of the resulting gradient vector.
@@ -138,78 +138,78 @@ class DualVector
     {
         d[targetElement] = T(1.0);
     }
-    
+
         /** Get current value.
         */
     T value() const
     {
         return v;
     }
-    
+
         /** Get current gradient.
         */
     Gradient const & gradient() const
     {
         return d;
     }
-    
+
     DualVector operator+() const
     {
         return *this;
     }
-    
+
     DualVector operator-() const
     {
         return DualVector(-v, -d);
     }
-    
+
     DualVector & operator+=(DualVector const & o)
     {
         d += o.d;
         v += o.v;
         return *this;
     }
-    
+
     DualVector & operator+=(T const & o)
     {
         v += o;
         return *this;
     }
-    
+
     DualVector & operator-=(DualVector const & o)
     {
         d -= o.d;
         v -= o.v;
         return *this;
     }
-    
+
     DualVector & operator-=(T const & o)
     {
         v -= o;
         return *this;
     }
-    
+
     DualVector & operator*=(DualVector const & o)
     {
         d = o.v * d + v * o.d;
         v *= o.v;
         return *this;
     }
-    
+
     DualVector & operator*=(T const & o)
     {
         d *= o;
         v *= o;
         return *this;
     }
-    
+
     DualVector & operator/=(DualVector const & o)
     {
         d = (o.v * d - v * o.d) / sq(o.v);
         v /= o.v;
         return *this;
     }
-    
+
     DualVector & operator/=(T const & o)
     {
         d /= o;
@@ -325,7 +325,7 @@ inline DualVector<T, N> fabs(DualVector<T, N> const & v)
 using std::log;
 // log(a + h) => log(a) + h / a
 template <typename T, int N>
-inline DualVector<T, N> log(DualVector<T, N> v) 
+inline DualVector<T, N> log(DualVector<T, N> v)
 {
     v.d /= v.v;
     v.v = log(v.v);
@@ -405,7 +405,7 @@ inline DualVector<T, N> asin(DualVector<T, N> v)
 using std::acos;
 // acos(a + h) => acos(a) - 1 / sqrt(1 - a^2) h
 template <typename T, int N>
-inline DualVector<T, N> acos(DualVector<T, N> v) 
+inline DualVector<T, N> acos(DualVector<T, N> v)
 {
     v.d /= -sqrt(T(1.0) - sq(v.v));
     v.v = acos(v.v);
@@ -445,7 +445,7 @@ inline DualVector<T, N> sinh(DualVector<T, N> v)
 
 // cosh(a + h) => cosh(a) + sinh(a) h
 template <typename T, int N>
-inline DualVector<T, N> cosh(DualVector<T, N> v) 
+inline DualVector<T, N> cosh(DualVector<T, N> v)
 {
     v.d *= sinh(v.v);
     v.v = cosh(v.v);
@@ -474,8 +474,8 @@ inline DualVector<T, N> sq(DualVector<T, N> v)
 
 using std::atan2;
 // atan2(b + db, a + da) => atan2(b, a) + (- b da + a db) / (a^2 + b^2)
-template <typename T, int N> 
-inline DualVector<T, N> atan2(DualVector<T, N> v1, DualVector<T, N> const & v2) 
+template <typename T, int N>
+inline DualVector<T, N> atan2(DualVector<T, N> v1, DualVector<T, N> const & v2)
 {
     v1.d = (v2.v * v1.d - v1.v * v2.d) / (sq(v1.v) + sq(v2.v));
     v1.v = atan2(v1.v, v2.v);
@@ -485,7 +485,7 @@ inline DualVector<T, N> atan2(DualVector<T, N> v1, DualVector<T, N> const & v2)
 
 using vigra::pow;
 // (a+da)^p => a^p + p*a^(p-1) da
-template <typename T, int N> 
+template <typename T, int N>
 inline DualVector<T, N> pow(DualVector<T, N> v, T p)
 {
     T pow_p_1 = pow(v.v, p-T(1.0));
@@ -495,7 +495,7 @@ inline DualVector<T, N> pow(DualVector<T, N> v, T p)
 }
 
 // (a)^(p+dp) => a^p + a^p log(a) dp
-template <typename T, int N> 
+template <typename T, int N>
 inline DualVector<T, N> pow(T v, DualVector<T, N> p)
 {
     p.v = pow(v, p.v);
@@ -505,7 +505,7 @@ inline DualVector<T, N> pow(T v, DualVector<T, N> p)
 
 
 // (a+da)^(b+db) => a^b + b * a^(b-1) da + a^b log(a) * db
-template <typename T, int N> 
+template <typename T, int N>
 inline DualVector<T, N> pow(DualVector<T, N> v, DualVector<T, N> const & p)
 {
     T pow_p_1 = pow(v.v, p.v-T(1.0)),
@@ -566,14 +566,14 @@ inline DualVector<T, N> max(DualVector<T, N> const & v1, T v2)
 }
 
 template <class T, int N>
-inline bool 
+inline bool
 operator==(DualVector<T, N> const & v1, DualVector<T, N> const & v2)
 {
     return v1.v == v2.v && v1.d == v2.d;
 }
 
 template <class T, int N>
-inline bool 
+inline bool
 operator!=(DualVector<T, N> const & v1, DualVector<T, N> const & v2)
 {
     return v1.v != v2.v || v1.d != v2.d;
@@ -609,8 +609,8 @@ VIGRA_DUALVECTOR_RELATIONAL_OPERATORS(>=)
 #undef VIGRA_DUALVECTOR_RELATIONAL_OPERATORS
 
 template <class T, int N>
-inline bool 
-closeAtTolerance(DualVector<T, N> const & v1, DualVector<T, N> const & v2, 
+inline bool
+closeAtTolerance(DualVector<T, N> const & v1, DualVector<T, N> const & v2,
                  T epsilon = NumericTraits<T>::epsilon())
 {
     return vigra::closeAtTolerance(v1.v, v2.v, epsilon) && vigra::closeAtTolerance(v1.d, v2.d, epsilon);

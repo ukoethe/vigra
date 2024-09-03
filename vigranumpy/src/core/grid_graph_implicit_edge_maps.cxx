@@ -79,7 +79,7 @@ namespace vigra{
     template<class GRAPH, class T_NODE,class NODE_MAP, class FUNCTOR, class RESULT>
     void defineImplicitEdgeMapT(const std::string & clsName, const std::string & factoryName){
 
-        
+
         typedef OnTheFlyEdgeMap2<GRAPH, NODE_MAP, FUNCTOR, RESULT> EdgeMap;
 
         python::class_<EdgeMap>(clsName.c_str(),python::no_init)
@@ -90,20 +90,20 @@ namespace vigra{
         python::def(factoryName.c_str(),registerConverters(&makeImplicitEdgeMap<GRAPH, T_NODE,FUNCTOR, EdgeMap>),
             python::with_custodian_and_ward_postcall< 0,1 ,
                 python::with_custodian_and_ward_postcall< 0 ,2,
-                    python::return_value_policy<   python::manage_new_object      
-                >   >   >()  
+                    python::return_value_policy<   python::manage_new_object
+                >   >   >()
         );
-       
+
     }
 
     template<int DIM, class T_NODE, class T_RES, class FUNCTOR>
     void defineGridGraphImplicitEdgeMapT(const std::string & clsName, const std::string & factoryName){
-            
+
 
 
         typedef GridGraph<DIM, boost::undirected_tag> Graph;
         typedef typename PyNodeMapTraits<Graph, T_NODE>::Map NodeMap;
-       
+
         //typedef OnTheFlyEdgeMap2<Graph, NodeMap, FUNCTOR, T_RES> EdgeMap;
         defineImplicitEdgeMapT<Graph,T_NODE, NodeMap, FUNCTOR,  T_RES>(clsName,factoryName);
 
@@ -131,6 +131,6 @@ namespace vigra{
         }
     }
 
-} 
+}
 
 

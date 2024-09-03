@@ -50,32 +50,32 @@
 namespace vigra {
 
     /**
-     *  \class WignerMatrix 
-     *  \brief computation of Wigner D matrix + rotation functions 
+     *  \class WignerMatrix
+     *  \brief computation of Wigner D matrix + rotation functions
      *         in SH,VH and R³
      *
-     * All rotations in Euler zyz' convention   
+     * All rotations in Euler zyz' convention
      *
      * WARNING: not thread safe! use a new instance of WignerMatrix
      * for each thread!!!
      */
 template <class Real>
 class WignerMatrix
-{   
+{
   public:
-  
+
     // FIXME: should we rather use FFTWComplex?
     typedef std::complex<Real> Complex;
     typedef ArrayVector<ArrayVector<ArrayVector<Complex> > > NestedArray;
-    
+
          /** \brief constructor
-          * 
-          * \param l_max    maximum expansion band (used to pre-compute 
+          *
+          * \param l_max    maximum expansion band (used to pre-compute
           *         the D matrix)
           *
           */
     WignerMatrix(int l_max);
-    
+
          /** \brief Compute D with fixed theta = pi/2, phi=0, psi=0.
           *
           * \param band expansion band
@@ -87,7 +87,7 @@ class WignerMatrix
          /** \brief Compute D for arbitrary rotations.
           *
           * \param l        expansion band
-          * \param phi  rotation angle  
+          * \param phi  rotation angle
           * \param theta    rotation angle
           * \param psi  rotation angle
           *
@@ -97,8 +97,8 @@ class WignerMatrix
          /** \brief  Get the (n,m) entry of D.
           *
           * \param l        expansion band
-          * \param n        
-          * \param m    
+          * \param n
+          * \param m
           */
     Complex get_D(int l, int n, int m) const
     {
@@ -106,13 +106,13 @@ class WignerMatrix
         {
             std::string message = std::string("WignerMatrix::get_D(): index out of bounds: l=");
             message << l << " l_max=" << D.size() << " m=" << m << " n=" << n << "\n";
-                                  
+
             vigra_precondition(l < D.size() && m+l <= 2*l+1 &&
                                n+l <= 2*l+1 && m+l >= 0 && n+l >= 0,
                                message.c_str());
             return D[l](n+l, m+l);
         }
-        else 
+        else
         {
             return Complex(Real(1.0));
         }
@@ -126,19 +126,19 @@ class WignerMatrix
     {
         std::string message = std::string("WignerMatrix::get_D(): index out of bounds: l=");
         message << l << " l_max=" << l_max << "\n";
-                              
+
         vigra_precondition(l > 0 && l <= l_max, message.c_str());
         return D[l];
     }
 
          /** \brief Rotate in PH.
           *
-          * \param PH       input PH expansion 
+          * \param PH       input PH expansion
           * \param phi      rotation angle
           * \param theta    rotation angle
           * \param psi      rotation angle
           *
-          * \retval PHresult PH expansion   
+          * \retval PHresult PH expansion
           */
     void rotatePH(NestedArray const & PH, Real phi, Real theta, Real psi,
                   NestedArray & PHresult);
@@ -146,7 +146,7 @@ class WignerMatrix
 
   private:
     // FIXME: is function is not called (and cannot be called from outside the class)
-    TinyVector<double,3> 
+    TinyVector<double,3>
     rot(TinyVector<double,3> const & vec, TinyVector<double,3> const & axis, double angle)
     {
         typedef Quaternion<double> Q;
@@ -196,24 +196,24 @@ WignerMatrix<Real>::compute_D(int l, Real phi, Real theta, Real psi)
 {
     double s = std::sin(theta);
     double c = std::cos(theta);
-    
+
     Complex i(0.0, 1.0);
     Complex eiphi = std::exp(i*phi);
     Complex emiphi = std::exp(-i*phi);
     Complex eipsi = std::exp(i*psi);
     Complex emipsi = std::exp(-i*psi);
-    
-    if (D.size() < (std::size_t)(l+1)) 
+
+    if (D.size() < (std::size_t)(l+1))
         D.resize(l+1);
     D[1].reshape(MultiArrayShape<2>::type(3,3));
-    
+
     D[1](0,0) = emipsi * Complex(Real(0.5*(1.0+c))) * emiphi;
     D[1](0,1) = Complex(Real(-s/M_SQRT2)) * emiphi;
     D[1](0,2) = eipsi * Complex(Real(0.5*(1.0-c))) * emiphi;
     D[1](1,0) = emipsi * Complex(Real(s/M_SQRT2));
     D[1](1,1) = Complex(Real(c));
     D[1](1,2) = eipsi * Complex(Real(-s/M_SQRT2));
-    D[1](2,0) = emipsi * Complex(Real(0.5*(1.0-c))) * eiphi; 
+    D[1](2,0) = emipsi * Complex(Real(0.5*(1.0-c))) * eiphi;
     D[1](2,1) = Complex(Real(s/M_SQRT2)) * eiphi;
     D[1](2,2) = eipsi * Complex(Real(0.5*(1.0+c))) * eiphi;
 
@@ -228,7 +228,7 @@ template <class Real>
 void
 WignerMatrix<Real>::compute_D(int l)
 {
-    if (D.size() < (std::size_t)(l+1) ) 
+    if (D.size() < (std::size_t)(l+1) )
     {
         D.resize(l+1);
         l_max = 0;
@@ -237,7 +237,7 @@ WignerMatrix<Real>::compute_D(int l)
     if (l==1)
     {
         //precompute D0 =1 and D1 = (90 degree rot)
-        // FIXME: signs are inconsistent with above explicit formula for 
+        // FIXME: signs are inconsistent with above explicit formula for
         //        theta = pi/2, phi=0, psi=0 (sine terms should be negated)
         D[1].reshape(MultiArrayShape<2>::type(3,3));
         D[1](0,0) = Real(0.5);
@@ -261,8 +261,8 @@ WignerMatrix<Real>::compute_D(int l)
         }
 
         D[l].reshape(MultiArrayShape<2>::type(2*l+1,2*l+1));
-        D[l].init(Real(0.0));      
-        
+        D[l].init(Real(0.0));
+
         for(int m = -l; m <= l ; m++)
         {
             for(int n = -l; n <= l ; n++)
@@ -287,7 +287,7 @@ WignerMatrix<Real>::compute_D(int l)
 }
 
 template <class Real>
-void 
+void
 WignerMatrix<Real>::rotatePH(NestedArray const & PH, Real phi, Real theta, Real psi,
                              NestedArray & PHresult)
 {
@@ -316,6 +316,6 @@ WignerMatrix<Real>::rotatePH(NestedArray const & PH, Real phi, Real theta, Real 
     }
 }
 
-} // namespace vigra 
+} // namespace vigra
 
 #endif // VIGRA_WIGNER_MATRIX_HXX

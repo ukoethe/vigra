@@ -50,7 +50,7 @@ namespace vigra
 {
 
 
-/** Standard Stackentry used to Build a Tree. Contains Information 
+/** Standard Stackentry used to Build a Tree. Contains Information
  * About the current region being split
  */
 template <class Iter>
@@ -79,7 +79,7 @@ class DT_StackEntry
     bool                                    classCountsIsValid;
     bool                                    weightedClassCountsIsValid;
     IndexIterator                           begin_,  end_;
-    int                                     size_; 
+    int                                     size_;
     IndexIterator                           oob_begin_, oob_end_;
     int                                     oob_size_;
 
@@ -176,7 +176,7 @@ class DT_StackEntry
         size_(e-i)
     {}
 
-    
+
     Int32 size()const
     {
         return size_;

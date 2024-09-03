@@ -5,33 +5,33 @@
 
 using namespace vigra;
 
-int main (int argc, char ** argv) 
+int main (int argc, char ** argv)
 {
     if(argc != 4)
     {
         std::cout << "Usage: " << argv[0] << " infile1 infile2 outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
-        
+
         return 1;
     }
-    
-    try 
+
+    try
     {
         // read the images given as first and second argument
         ImageImportInfo info1(argv[1]),
                         info2(argv[2]);
-        
+
         // for simplicity, we always use RGB images, even when the inputs are grayscale
         // (in which case all three channels will be equal)
         MultiArray<2, RGBValue<UInt8> > imageArray1(info1.shape()),
                                         imageArray2(info2.shape());
-        
+
         importImage(info1, imageArray1);
         importImage(info2, imageArray2);
-        
+
         // calculate size of dissolved image (take the minimum along both axes)
         Shape2 resultShape = min(info1.shape(), info2.shape());
-        
+
         // instantiate array of appropriate size for the dissolved image
         MultiArray<2, RGBValue<UInt8> > exportArray(resultShape);
 
@@ -52,7 +52,7 @@ int main (int argc, char ** argv)
         // write image data to the file given as third argument
         exportImage(exportArray, ImageExportInfo(argv[3]));
     }
-    catch (std::exception & e) 
+    catch (std::exception & e)
     {
         // catch any errors that might have occurred and print their reason
         std::cout << e.what() << std::endl;

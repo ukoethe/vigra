@@ -221,7 +221,7 @@ struct BinaryForestTests
         should(m[n0] == 27);
         should(m[n1] == 12);
         should(m[n2] == 73);
-        
+
         {
             auto it = m.find(n0);
             should(it != m.end());

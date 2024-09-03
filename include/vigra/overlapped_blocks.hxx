@@ -103,7 +103,7 @@ Shape blocksShape(const Shape& global_shape, const Shape& block_shape)
 } // namespace overlapped_blocks_detail
 
 template <class Shape>
-inline bool 
+inline bool
 within(const Shape& coordinates, const std::pair<Shape, Shape>& bounds)
 {
     return allLessEqual(bounds.first, coordinates) && allLess(coordinates, bounds.second);

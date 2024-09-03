@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -107,8 +107,8 @@ struct IntTypeList
 template<int SIZE, class LIST>
 struct SelectIntegerType
 {
-    typedef typename 
-       IfBool<(SIZE == LIST::size), 
+    typedef typename
+       IfBool<(SIZE == LIST::size),
            typename LIST::type,
            typename SelectIntegerType<SIZE, typename LIST::next>::type >::type
        type;
@@ -123,11 +123,11 @@ struct SelectIntegerType<SIZE, Int_type_not_supported_on_this_platform>
 template<class LIST>
 struct SelectBiggestIntegerType
 {
-    enum { cursize = static_cast<int>(LIST::size), 
+    enum { cursize = static_cast<int>(LIST::size),
            nextsize = static_cast<int>(SelectBiggestIntegerType<typename LIST::next>::size),
            size = (cursize < nextsize) ? nextsize : cursize };
-    typedef typename 
-       IfBool<(cursize < nextsize), 
+    typedef typename
+       IfBool<(cursize < nextsize),
            typename SelectBiggestIntegerType<typename LIST::next>::type,
            typename LIST::type>::type
        type;
@@ -140,13 +140,13 @@ struct SelectBiggestIntegerType<Int_type_not_supported_on_this_platform>
     typedef Int_type_not_supported_on_this_platform type;
 };
 
-typedef IntTypeList<signed char, 
+typedef IntTypeList<signed char,
         IntTypeList<signed short,
         IntTypeList<signed int,
         IntTypeList<signed long,
         IntTypeList<signed long long,
         Int_type_not_supported_on_this_platform > > > > > SignedIntTypes;
-typedef IntTypeList<unsigned char, 
+typedef IntTypeList<unsigned char,
         IntTypeList<unsigned short,
         IntTypeList<unsigned int,
         IntTypeList<unsigned long,
@@ -157,7 +157,7 @@ typedef IntTypeList<unsigned char,
 
 /** \addtogroup FixedSizeInt Fixed Size Integer Types
 
-    Since the C++ standard does only specify minimal sizes for the built-in 
+    Since the C++ standard does only specify minimal sizes for the built-in
     integer types, one cannot rely on them to have a specific size. But
     pixel types with a specific size are often required in image processing,
     especially when reading or writing binary files. The VIGRA typedefs

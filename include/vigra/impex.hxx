@@ -106,7 +106,7 @@ namespace vigra
             const unsigned bands(decoder->getNumBands());
             const unsigned offset(decoder->getOffset());
             const unsigned accessor_size(image_accessor.size(image_iterator));
-            
+
             // OPTIMIZATION: Specialization for the most common case
             // of an RGB-image, i.e. 3 channels.
             if (accessor_size == 3U)
@@ -120,7 +120,7 @@ namespace vigra
                     decoder->nextScanline();
 
                     scanline_0 = static_cast<const ValueType*>(decoder->currentScanlineOfBand(0));
-                    
+
                     if(bands == 1)
                     {
                         scanline_1 = scanline_0;
@@ -131,7 +131,7 @@ namespace vigra
                         scanline_1 = static_cast<const ValueType*>(decoder->currentScanlineOfBand(1));
                         scanline_2 = static_cast<const ValueType*>(decoder->currentScanlineOfBand(2));
                     }
-                    
+
                     ImageRowIterator is(image_iterator.rowIterator());
                     const ImageRowIterator is_end(is + width);
 
@@ -158,7 +158,7 @@ namespace vigra
                 for (unsigned y = 0U; y != height; ++y)
                 {
                     decoder->nextScanline();
-                    
+
                     scanlines[0] = static_cast<const ValueType*>(decoder->currentScanlineOfBand(0));
 
                     if(bands == 1)
@@ -175,7 +175,7 @@ namespace vigra
                             scanlines[i] = static_cast<const ValueType*>(decoder->currentScanlineOfBand(i));
                         }
                     }
-                    
+
                     ImageRowIterator is(image_iterator.rowIterator());
                     const ImageRowIterator is_end(is + width);
 
@@ -246,7 +246,7 @@ namespace vigra
                 "importImage(): Number of channels in input and destination image don't match.");
 
             VIGRA_UNIQUE_PTR<Decoder> decoder(vigra::decoder(import_info));
-            
+
             switch (pixel_t_of_string(decoder->getPixelType()))
             {
             case UNSIGNED_INT_8:
@@ -631,20 +631,20 @@ namespace vigra
         }
     }  // end namespace detail
 
-    /** 
+    /**
     \brief Read an image from a file.
-   
+
     If the first parameter is \ref vigra::ImageImportInfo, this function assumes that the destination
     image has already the appropriate shape. If the first parameter is a string, the destination
     must be a \ref vigra::MultiArray reference, which will be reshaped automatically.
-    
+
     If the input image has only a single band, but the destination has multiple bands (e.g. is an RGB
-    image), all bands will receive the same data. When a multi-band file is read into a single-band 
+    image), all bands will receive the same data. When a multi-band file is read into a single-band
     destination array, only the first band is read. Any other mismatch between the number of bands in
     input and output is an error and will throw a precondition exception.
-    
+
     <B>Declarations</B>
-   
+
     pass 2D array views:
     \code
     namespace vigra {
@@ -666,7 +666,7 @@ namespace vigra
                     MultiArray<2, T, A> & image);
     }
     \endcode
-   
+
     \deprecatedAPI{importImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
@@ -687,9 +687,9 @@ namespace vigra
     }
     \endcode
     \deprecatedEnd
-   
+
     <b> Usage:</b>
-   
+
     <B>\#include</B> \<vigra/impex.hxx\><br/>
     Namespace: vigra
 
@@ -717,7 +717,7 @@ namespace vigra
     \code
     // create empty float image
     MultiArray<2, float> image;
-    
+
     // resize image and read the data
     importImage("myimage.png", image);
     \endcode
@@ -725,12 +725,12 @@ namespace vigra
     \deprecatedUsage{importImage}
     \code
         ImageImportInfo info("myimage.gif");
-   
+
         if (info.isGrayscale())
         {
             // create byte image of appropriate size
             BImage image(info.width(), info.height());
-   
+
             importImage(info, destImage(image));
             ...
         }
@@ -738,20 +738,20 @@ namespace vigra
         {
             // create byte RGB image of appropriate size
             BRGBImage image(info.width(), info.height());
-   
+
             importImage(info, destImage(image));
             ...
         }
     \endcode
     \deprecatedEnd
-   
+
     <B>Preconditions</B>
-   
+
     - The image file must be readable.
-    - The required support library must be installed (if the table doesn't specify an external library, 
+    - The required support library must be installed (if the table doesn't specify an external library,
       VIGRA supports the format natively).
     - The file type must be one of the following:
-   
+
     <table cellspacing="10">
     <tr align="left">
     <th>Type</th><th> Extension </th><th> Name                           </th><th> Support Library </th>
@@ -838,22 +838,22 @@ namespace vigra
     }
 
     /** \brief Write an image to a file.
-    
+
     The file can be specified either by a file name or by a \ref vigra::ImageExportInfo object.
     In the latter case, you have much more control about how the file is written. By default,
-    the file format to be created is guessed from the filename extension. This can be 
+    the file format to be created is guessed from the filename extension. This can be
     overridden by an explicit file type in the ImageExportInfo object. If the file format
     supports compression (e.g. JPEG and TIFF), default compression parameters are used
     which can be overridden by the ImageExportInfo object.
-    
+
     If the file format to be created supports the pixel type of the source image, this
-    pixel type will be kept in the file (e.g. <tt>float</tt> can be stored by TIFF without 
+    pixel type will be kept in the file (e.g. <tt>float</tt> can be stored by TIFF without
     conversion) unless the ImageExportInfo object
-    explicitly requests a different storage type. If the array's pixel type is not supported by 
+    explicitly requests a different storage type. If the array's pixel type is not supported by
     the file format, the pixel values are transformed to the range 0..255 and
     converted to <tt>unsigned char</tt>, unless another mapping is explicitly requested by
-    the ImageExportInfo object.  
-    
+    the ImageExportInfo object.
+
     Currently, the following file formats are supported.  The pixel types given in brackets
     are those that are written without conversion:
         - BMP: Microsoft Windows bitmap image file (pixel types: UINT8 as gray and RGB);
@@ -872,9 +872,9 @@ namespace vigra
               only available if libtiff is installed;
         - VIFF: Khoros Visualization image file
               (pixel types: UINT8, INT16, INT32, FLOAT, DOUBLE with arbitrary many channels);
-    
+
     <B>Declarations</B>
-    
+
     pass 2D array views:
     \code
     namespace vigra {
@@ -894,7 +894,7 @@ namespace vigra
                     std::string const & filename);
     }
     \endcode
-    
+
     \deprecatedAPI{exportImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
@@ -914,9 +914,9 @@ namespace vigra
         }
     \endcode
     \deprecatedEnd
-    
+
     <b> Usage:</b>
-    
+
     <B>\#include</B> \<vigra/impex.hxx\><br/>
     Namespace: vigra
 
@@ -951,9 +951,9 @@ namespace vigra
                 ImageExportInfo("my-INT16-image.tif").setPixelType("INT16"));
     \endcode
     \deprecatedEnd
-    
+
     <B>Preconditions</B>
-    
+
     - The image file must be writable and
     - the file type must be one of the supported file types.
 */

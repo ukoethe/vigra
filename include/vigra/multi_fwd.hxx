@@ -98,8 +98,8 @@ struct ResolveChunkedMemory;
 /*                                                      */
 /********************************************************/
 
-    /** \brief Initialize a MultiArray in a standard way.  
-    
+    /** \brief Initialize a MultiArray in a standard way.
+
     */
 enum MultiArrayInitializationTag {
     LinearSequence ///< Initialize array by a linear sequence in scan order
@@ -126,7 +126,7 @@ class SharedChunkHandle;
 template <unsigned int N, class T, class C = StridedArrayTag>
 class MultiArrayView;
 
-template <unsigned int N, class T, 
+template <unsigned int N, class T,
           class A = std::allocator<typename detail::ResolveMultiband<T>::type> >
 class MultiArray;
 
@@ -177,13 +177,13 @@ class ChunkIterator;
 /*                                                      */
 /********************************************************/
 
-    /** \brief Choose the neighborhood system in a dimension-independent way.  
-    
+    /** \brief Choose the neighborhood system in a dimension-independent way.
+
         DirectNeighborhood corresponds to 4-neighborhood in 2D and 6-neighborhood in 3D, whereas
         IndirectNeighborhood means 8-neighborhood in 2D and 26-neighborhood in 3D. The general
-        formula for N dimensions are 2*N for direct neighborhood and 3^N-1 for indirect neighborhood. 
+        formula for N dimensions are 2*N for direct neighborhood and 3^N-1 for indirect neighborhood.
     */
-enum NeighborhoodType { 
+enum NeighborhoodType {
         DirectNeighborhood=0,   ///< use only direct neighbors
         IndirectNeighborhood=1  ///< use direct and indirect neighbors
 };

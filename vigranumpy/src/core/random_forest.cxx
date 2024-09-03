@@ -55,7 +55,7 @@ namespace vigra
 {
 
 template<class FeatureType>
-OnlinePredictionSet<FeatureType>* 
+OnlinePredictionSet<FeatureType>*
 pythonConstructOnlinePredictioSet(NumpyArray<2,FeatureType> features, int num_sets)
 {
     return new OnlinePredictionSet<FeatureType>(features, num_sets);
@@ -94,12 +94,12 @@ pythonConstructRandomForest(int treeCount,
         options.use_stratification(RF_EQUAL);
 
     ProblemSpec<LabelType> ext_param;
-    
+
     if(labels.size() > 0)
     {
         ext_param.classes_(labels.begin(), labels.end());
     }
-    
+
     RandomForest<LabelType>* rf = new RandomForest<LabelType>(options, ext_param);
 
     return rf;
@@ -107,17 +107,17 @@ pythonConstructRandomForest(int treeCount,
 
 #ifdef HasHDF5
 template<class LabelType>
-RandomForest<LabelType> * 
-pythonImportRandomForestFromHDF5(std::string filename, 
+RandomForest<LabelType> *
+pythonImportRandomForestFromHDF5(std::string filename,
                                  std::string pathname = "")
-{ 
+{
     VIGRA_UNIQUE_PTR<RandomForest<LabelType> > rf(new RandomForest<LabelType>);
-    
+
     vigra_precondition(rf_import_HDF5(*rf, filename, pathname),
            "RandomForest(): Unable to load from HDF5 file.");
-           
+
     return rf.release();
-}                   
+}
 
 template<class LabelType>
 RandomForest<LabelType> *
@@ -135,19 +135,19 @@ pythonImportRandomForestFromHDF5id(hid_t inf_id,
 
 template<class LabelType, class FeatureType>
 python::tuple
-pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf, 
-                                            NumpyArray<2,FeatureType> trainData, 
+pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf,
+                                            NumpyArray<2,FeatureType> trainData,
                                             NumpyArray<2,LabelType> trainLabels,
                                             UInt32 randomSeed=0)
 {
     vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
                        "RandomForest.learnRFWithFeatureSelection(): training data and labels must not\n"
                        "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
-    
+
     using namespace rf;
     visitors::VariableImportanceVisitor var_imp;
     visitors::OOB_Error                 oob_v;
-    
+
     {
         PyAllowThreads _pythread;
         RandomNumberGenerator<> rnd(randomSeed, randomSeed == 0);
@@ -156,7 +156,7 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf,
                 vigra::rf_default(), vigra::rf_default(),
                 rnd);
     }
-    
+
     double oob = oob_v.oob_breiman;
     // std::cout << "out of bag: " << oob << std::endl;
     NumpyArray<2,double> res(var_imp.variable_importance_);
@@ -166,8 +166,8 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf,
 
 template<class LabelType, class FeatureType>
 double
-pythonLearnRandomForest(RandomForest<LabelType> & rf, 
-                        NumpyArray<2,FeatureType> trainData, 
+pythonLearnRandomForest(RandomForest<LabelType> & rf,
+                        NumpyArray<2,FeatureType> trainData,
                         NumpyArray<2,LabelType> trainLabels, // FIXME why are the labels 2d ?!
                         UInt32 randomSeed=0,
                         int maxdepth=-1,
@@ -176,7 +176,7 @@ pythonLearnRandomForest(RandomForest<LabelType> & rf,
     vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
                        "RandomForest.learnRF(): training data and labels must not\n"
                        "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
-    
+
     using namespace rf;
     visitors::OOB_Error oob_v;
 
@@ -196,7 +196,7 @@ pythonLearnRandomForest(RandomForest<LabelType> & rf,
 }
 
 template<class LabelType,class FeatureType>
-void 
+void
 pythonRFOnlineLearn(RandomForest<LabelType> & rf,
                     NumpyArray<2,FeatureType> trainData,
                     NumpyArray<2,LabelType> trainLabels,
@@ -207,7 +207,7 @@ pythonRFOnlineLearn(RandomForest<LabelType> & rf,
     vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
                        "RandomForest.onlineLearn(): training data and labels must not\n"
                        "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
-    
+
     PyAllowThreads _pythread;
     RandomNumberGenerator<> rnd(randomSeed, randomSeed == 0);
     rf.onlineLearn(trainData, trainLabels, startIndex,
@@ -216,7 +216,7 @@ pythonRFOnlineLearn(RandomForest<LabelType> & rf,
 }
 
 template<class LabelType,class FeatureType>
-void 
+void
 pythonRFReLearnTree(RandomForest<LabelType> & rf,
                     NumpyArray<2,FeatureType> trainData,
                     NumpyArray<2,LabelType> trainLabels,
@@ -225,7 +225,7 @@ pythonRFReLearnTree(RandomForest<LabelType> & rf,
     vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
                        "RandomForest.reLearnTree(): training data and labels must not\n"
                        "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
-    
+
     PyAllowThreads _pythread;
     RandomNumberGenerator<> rnd(randomSeed, randomSeed == 0);
     rf.reLearnTree(trainData, trainLabels, treeId,
@@ -234,7 +234,7 @@ pythonRFReLearnTree(RandomForest<LabelType> & rf,
 }
 
 template<class LabelType,class FeatureType>
-NumpyAnyArray 
+NumpyAnyArray
 pythonRFPredictLabels(RandomForest<LabelType> const & rf,
                       NumpyArray<2,FeatureType> testData,
                       python::object pyNaNLabel,
@@ -243,12 +243,12 @@ pythonRFPredictLabels(RandomForest<LabelType> const & rf,
     vigra_precondition(!testData.axistags() && !res.axistags(),
                        "RandomForest.predictLabels(): test data and output array must not have axistags\n"
                        "(use 'array.view(numpy.ndarray)' to remove them).");
-    
+
     res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), 1),
                        "RandomForest.predictLabels(): Output array has wrong dimensions.");
-    
+
     python::extract<LabelType> nanLabel(pyNaNLabel);
-    
+
     if(nanLabel.check())
     {
         LabelType nan_label(nanLabel());
@@ -264,15 +264,15 @@ pythonRFPredictLabels(RandomForest<LabelType> const & rf,
 }
 
 template<class LabelType, class FeatureType>
-NumpyAnyArray 
+NumpyAnyArray
 pythonRFPredictProbabilities(RandomForest<LabelType> & rf,
-                             NumpyArray<2,FeatureType> testData, 
+                             NumpyArray<2,FeatureType> testData,
                              NumpyArray<2,float> res)
 {
     vigra_precondition(!testData.axistags() && !res.axistags(),
                        "RandomForest.predictProbabilities(): test data and output array must not\n"
                        "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
-    
+
     res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), rf.ext_param_.class_count_),
                        "RandomForest.predictProbabilities(): Output array has wrong dimensions.");
     {
@@ -283,7 +283,7 @@ pythonRFPredictProbabilities(RandomForest<LabelType> & rf,
 }
 
 template<class LabelType,class FeatureType>
-NumpyAnyArray 
+NumpyAnyArray
 pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
                                           OnlinePredictionSet<FeatureType> & predSet,
                                           NumpyArray<2,float> res)
@@ -291,7 +291,7 @@ pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
     vigra_precondition(!res.axistags(),
                        "RandomForest.predictProbabilities(): output array must not have axistags\n"
                        "(use 'array.view(numpy.ndarray)' to remove them).");
-    
+
     res.reshapeIfEmpty(MultiArrayShape<2>::type(predSet.features.shape(0),
                                                  rf.ext_param_.class_count_),
                        "RandomForest.predictProbabilities(): Output array has wrong dimenstions.");
@@ -310,7 +310,7 @@ pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
 void defineRandomForest()
 {
     using namespace python;
-    
+
     docstring_options doc_options(true, true, false);
 
     class_<OnlinePredictionSet<float> > pred_set_class("RF_OnlinePredictionSet",python::no_init);
@@ -323,7 +323,7 @@ void defineRandomForest()
 
         .def("get_worsed_tree",&OnlinePredictionSet<float>::get_worsed_tree,
            "doku")
-    
+
         .def("invalidateTree",&OnlinePredictionSet<float>::reset_tree,
          (arg("treeId")),
          "doku")

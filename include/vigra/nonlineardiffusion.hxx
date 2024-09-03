@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -53,25 +53,25 @@ void internalNonlinearDiffusionDiagonalSolver(
     DestIterator dbegin)
 {
     int w = send - sbegin - 1;
-    
+
     int i;
-    
+
     for(i=0; i<w; ++i)
     {
         lower[i] = lower[i] / diag[i];
-        
+
         diag[i+1] = diag[i+1] - lower[i] * upper[i];
     }
-    
+
     dbegin[0] = sa(sbegin);
-    
+
     for(i=1; i<=w; ++i)
     {
         dbegin[i] = sa(sbegin, i) - lower[i-1] * dbegin[i-1];
     }
-    
+
     dbegin[w] = dbegin[w] / diag[w];
-    
+
     for(i=w-1; i>=0; --i)
     {
         dbegin[i] = (dbegin[i] - upper[i] * dbegin[i+1]) / diag[i];
@@ -91,7 +91,7 @@ void internalNonlinearDiffusionAOSStep(
     typedef typename
         NumericTraits<typename WeightAccessor::value_type>::RealPromote
         WeightType;
-        
+
     // calculate width and height of the image
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
@@ -103,14 +103,14 @@ void internalNonlinearDiffusionAOSStep(
                             res(d);
 
     int x,y;
-    
+
     WeightType one = NumericTraits<WeightType>::one();
-    
+
      // create y iterators
     SrcIterator ys = sul;
     WeightIterator yw = wul;
     DestIterator yd = dul;
-    
+
     // x-direction
     for(y=0; y<h; ++y, ++ys.y, ++yd.y, ++yw.y)
     {
@@ -119,7 +119,7 @@ void internalNonlinearDiffusionAOSStep(
         typename DestIterator::row_iterator xd = yd.rowIterator();
 
         // fill 3-diag matrix
-        
+
         diag[0] = one + timestep * (aw(xw) + aw(xw, 1));
         for(x=1; x<w-1; ++x)
         {
@@ -132,21 +132,21 @@ void internalNonlinearDiffusionAOSStep(
             lower[x] = -timestep * (aw(xw, x) + aw(xw, x+1));
             upper[x] = lower[x];
         }
-        
+
         internalNonlinearDiffusionDiagonalSolver(xs, xs+w, as,
                             diag.begin(), upper.begin(), lower.begin(), res.begin());
-                            
+
         for(x=0; x<w; ++x, ++xd)
         {
             ad.set(res[x], xd);
         }
     }
-        
+
     // y-direction
     ys = sul;
     yw = wul;
     yd = dul;
-    
+
     for(x=0; x<w; ++x, ++ys.x, ++yd.x, ++yw.x)
     {
         typename SrcIterator::column_iterator xs = ys.columnIterator();
@@ -154,7 +154,7 @@ void internalNonlinearDiffusionAOSStep(
         typename DestIterator::column_iterator xd = yd.columnIterator();
 
         // fill 3-diag matrix
-        
+
         diag[0] = one + timestep * (aw(xw) + aw(xw, 1));
         for(y=1; y<h-1; ++y)
         {
@@ -167,10 +167,10 @@ void internalNonlinearDiffusionAOSStep(
             lower[y] = -timestep * (aw(xw, y) + aw(xw, y+1));
             upper[y] = lower[y];
         }
-        
+
         internalNonlinearDiffusionDiagonalSolver(xs, xs+h, as,
                             diag.begin(), upper.begin(), lower.begin(), res.begin());
-                            
+
         for(y=0; y<h; ++y, ++xd)
         {
             ad.set(0.5 * (ad(xd) + res[y]), xd);
@@ -179,7 +179,7 @@ void internalNonlinearDiffusionAOSStep(
 }
 
 /** \addtogroup NonLinearDiffusion Non-linear Diffusion and Total Variation
-    
+
     Perform edge-preserving smoothing.
 */
 //@{
@@ -193,7 +193,7 @@ void internalNonlinearDiffusionAOSStep(
 /** \brief Perform edge-preserving smoothing at the given scale.
 
     The algorithm solves the non-linear diffusion equation
-    
+
     \f[
         \frac{\partial}{\partial t} u =
         \frac{\partial}{\partial x}
@@ -201,7 +201,7 @@ void internalNonlinearDiffusionAOSStep(
                  \frac{\partial}{\partial x} u
           \right)
     \f]
-    
+
     where <em> t</em> is the time, <b> x</b> is the location vector,
     <em> u(</em><b> x</b><em> , t)</em> is the smoothed image at time <em> t</em>, and
     <em> g(.)</em> is the location dependent diffusivity. At time zero, the image
@@ -209,7 +209,7 @@ void internalNonlinearDiffusionAOSStep(
     proportional to the square of the scale parameter: \f$t = s^2\f$.
     The diffusion equation is solved iteratively according
     to the Additive Operator Splitting Scheme (AOS) from
-    
+
     J. Weickert: <em>"Recursive Separable Schemes for Nonlinear Diffusion
     Filters"</em>,
     in: B. ter Haar Romeny, L. Florack, J. Koenderingk, M. Viergever (eds.):
@@ -225,20 +225,20 @@ void internalNonlinearDiffusionAOSStep(
     other functors, for example one that always returns 1, in which case
     we obtain the solution to the linear diffusion equation, i.e.
     Gaussian convolution.
-    
+
     The source value type must be a
     linear space with internal addition, scalar multiplication, and
     NumericTraits defined. The value_type of the DiffusivityFunctor must be the
     scalar field over wich the source value type's linear space is defined.
-    
+
     In addition to <TT>nonlinearDiffusion()</TT>, there is an algorithm
     <TT>nonlinearDiffusionExplicit()</TT> which implements the Explicit Scheme
     described in the above article. Both algorithms have the same interface,
     but the explicit scheme gives slightly more accurate approximations of
     the diffusion process at the cost of much slower processing.
-    
+
     <b> Declarations:</b>
-    
+
     pass 2D array views:
     \code
     namespace vigra {
@@ -249,7 +249,7 @@ void internalNonlinearDiffusionAOSStep(
         nonlinearDiffusion(MultiArrayView<2, T1, S1> const & src,
                            MultiArrayView<2, T2, S2> dest,
                            DiffusivityFunc const & weight, double scale);
-                                   
+
         template <class T1, class S1,
                   class T2, class S2,
                   class DiffusivityFunc>
@@ -259,7 +259,7 @@ void internalNonlinearDiffusionAOSStep(
                                    DiffusivityFunc const & weight, double scale);
     }
     \endcode
-    
+
     \deprecatedAPI{nonlinearDiffusion}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
@@ -285,17 +285,17 @@ void internalNonlinearDiffusionAOSStep(
     }
     \endcode
     \deprecatedEnd
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/nonlineardiffusion.hxx\><br/>
     Namespace: vigra
-    
+
     \code
     MultiArray<2, float> src(w,h), dest(w,h);
     float edge_threshold, scale;
     ...
-    
+
     nonlinearDiffusion(src, dest,
                        DiffusivityFunctor<float>(edge_threshold), scale);
     \endcode
@@ -305,7 +305,7 @@ void internalNonlinearDiffusionAOSStep(
     FImage src(w,h), dest(w,h);
     float edge_threshold, scale;
     ...
-    
+
     nonlinearDiffusion(srcImageRange(src), destImage(dest),
                        DiffusivityFunctor<float>(edge_threshold), scale);
     \endcode
@@ -319,11 +319,11 @@ void internalNonlinearDiffusionAOSStep(
     <li> <TT>DiffusivityFunctor::value_type</TT> is an algebraic field
     </ul>
     \deprecatedEnd
-    
+
     <b> Precondition:</b>
-    
+
     <TT>scale > 0</TT>
-    
+
     \see vigra::DiffusivityFunctor
 */
 doxygen_overloaded_function(template <...> void nonlinearDiffusion)
@@ -336,28 +336,28 @@ void nonlinearDiffusion(SrcIterator sul, SrcIterator slr, SrcAccessor as,
                    DiffusivityFunc const & weight, double scale)
 {
     vigra_precondition(scale > 0.0, "nonlinearDiffusion(): scale must be > 0");
-    
+
     double total_time = scale*scale/2.0;
     const double time_step = 5.0;
     int number_of_steps = (int)(total_time / time_step);
     double rest_time = total_time - time_step * number_of_steps;
-    
+
     Size2D size(slr.x - sul.x, slr.y - sul.y);
 
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
         TmpType;
     typedef typename DiffusivityFunc::value_type WeightType;
-    
+
     BasicImage<TmpType> smooth1(size);
     BasicImage<TmpType> smooth2(size);
-    
+
     BasicImage<WeightType> weights(size);
-    
+
     typename BasicImage<TmpType>::Iterator s1 = smooth1.upperLeft(),
                                   s2 = smooth2.upperLeft();
     typename BasicImage<TmpType>::Accessor a = smooth1.accessor();
-    
+
     typename BasicImage<WeightType>::Iterator wi = weights.upperLeft();
     typename BasicImage<WeightType>::Accessor wa = weights.accessor();
 
@@ -368,12 +368,12 @@ void nonlinearDiffusion(SrcIterator sul, SrcIterator slr, SrcAccessor as,
     for(int i = 0; i < number_of_steps; ++i)
     {
         gradientBasedTransform(s1, s1+size, a, wi, wa, weight);
-                      
+
         internalNonlinearDiffusionAOSStep(s1, s1+size, a, wi, wa, s2, a, time_step);
-    
+
         std::swap(s1, s2);
     }
-    
+
     copyImage(s1, s1+size, a, dul, ad);
 }
 
@@ -420,37 +420,37 @@ void internalNonlinearDiffusionExplicitStep(
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
         SumType;
-    
+
     typedef typename
         NumericTraits<typename WeightAccessor::value_type>::RealPromote
         WeightType;
-        
+
     // calculate width and height of the image
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
     int x,y;
-    
+
     const Diff2D left(-1, 0);
     const Diff2D right(1, 0);
     const Diff2D top(0, -1);
     const Diff2D bottom(0, 1);
-    
+
     WeightType gt, gb, gl, gr, g0;
     WeightType one = NumericTraits<WeightType>::one();
     SumType sum;
-    
+
     time_step /= 2.0;
-    
+
     // create y iterators
     SrcIterator ys = sul;
     WeightIterator yw = wul;
     DestIterator yd = dul;
-        
+
     SrcIterator xs = ys;
     WeightIterator xw = yw;
     DestIterator xd = yd;
-    
+
     gt = (aw(xw) + aw(xw, bottom)) * time_step;
     gb = (aw(xw) + aw(xw, bottom)) * time_step;
     gl = (aw(xw) + aw(xw, right)) * time_step;
@@ -495,13 +495,13 @@ void internalNonlinearDiffusionExplicitStep(
     sum += gr * as(xs, left);
 
     ad.set(sum, xd);
-    
+
     for(y=2, ++ys.y, ++yd.y, ++yw.y; y<h; ++y, ++ys.y, ++yd.y, ++yw.y)
     {
         xs = ys;
         xd = yd;
         xw = yw;
-        
+
         gt = (aw(xw) + aw(xw, top)) * time_step;
         gb = (aw(xw) + aw(xw, bottom)) * time_step;
         gl = (aw(xw) + aw(xw, right)) * time_step;
@@ -515,7 +515,7 @@ void internalNonlinearDiffusionExplicitStep(
         sum += gr * as(xs, right);
 
         ad.set(sum, xd);
-        
+
         for(x=2, ++xs.x, ++xd.x, ++xw.x; x<w; ++x, ++xs.x, ++xd.x, ++xw.x)
         {
             gt = (aw(xw) + aw(xw, top)) * time_step;
@@ -523,16 +523,16 @@ void internalNonlinearDiffusionExplicitStep(
             gl = (aw(xw) + aw(xw, left)) * time_step;
             gr = (aw(xw) + aw(xw, right)) * time_step;
             g0 = one - gt - gb - gr - gl;
-            
+
             sum = g0 * as(xs);
             sum += gt * as(xs, top);
             sum += gb * as(xs, bottom);
             sum += gl * as(xs, left);
             sum += gr * as(xs, right);
-            
+
             ad.set(sum, xd);
         }
-        
+
         gt = (aw(xw) + aw(xw, top)) * time_step;
         gb = (aw(xw) + aw(xw, bottom)) * time_step;
         gl = (aw(xw) + aw(xw, left)) * time_step;
@@ -547,7 +547,7 @@ void internalNonlinearDiffusionExplicitStep(
 
         ad.set(sum, xd);
     }
-    
+
     xs = ys;
     xd = yd;
     xw = yw;
@@ -612,28 +612,28 @@ void nonlinearDiffusionExplicit(SrcIterator sul, SrcIterator slr, SrcAccessor as
                    DiffusivityFunc const & weight, double scale)
 {
     vigra_precondition(scale > 0.0, "nonlinearDiffusionExplicit(): scale must be > 0");
-    
+
     double total_time = scale*scale/2.0;
     const double time_step = 0.25;
     int number_of_steps = total_time / time_step;
     double rest_time = total_time - time_step * number_of_steps;
-    
+
     Size2D size(slr.x - sul.x, slr.y - sul.y);
 
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
         TmpType;
     typedef typename DiffusivityFunc::value_type WeightType;
-    
+
     BasicImage<TmpType> smooth1(size);
     BasicImage<TmpType> smooth2(size);
-    
+
     BasicImage<WeightType> weights(size);
-    
+
     typename BasicImage<TmpType>::Iterator s1 = smooth1.upperLeft(),
                                   s2 = smooth2.upperLeft();
     typename BasicImage<TmpType>::Accessor a = smooth1.accessor();
-    
+
     typename BasicImage<WeightType>::Iterator wi = weights.upperLeft();
     typename BasicImage<WeightType>::Accessor wa = weights.accessor();
 
@@ -644,12 +644,12 @@ void nonlinearDiffusionExplicit(SrcIterator sul, SrcIterator slr, SrcAccessor as
     for(int i = 0; i < number_of_steps; ++i)
     {
         gradientBasedTransform(s1, s1+size, a, wi, wa, weight);
-                      
+
         internalNonlinearDiffusionExplicitStep(s1, s1+size, a, wi, wa, s2, a, time_step);
-    
+
         swap(s1, s2);
     }
-    
+
     copyImage(s1, s1+size, a, dul, ad);
 }
 
@@ -690,13 +690,13 @@ nonlinearDiffusionExplicit(MultiArrayView<2, T1, S1> const & src,
 /** \brief Diffusivity functor for non-linear diffusion.
 
     This functor implements the diffusivity recommended by Weickert:
-    
+
     \f[
         g(|\nabla u|) = 1 -
            \exp{\left(\frac{-3.315}{(|\nabla u| / thresh)^4}\right)}
     \f]
-    
-    
+
+
     where <TT>thresh</TT> is a threshold that determines whether a specific gradient
     magnitude is interpreted as a significant edge (above the threshold)
     or as noise. It is meant to be used with \ref nonlinearDiffusion().
@@ -710,21 +710,21 @@ class DiffusivityFunctor
              necessary since Microsoft C++ doesn't support partial specialization).
          */
     typedef Value first_argument_type;
-    
+
          /** the functors second argument type (same as first).
              However, the functor also works with RGBValue<second_argument_type> (this hack is
              necessary since Microsoft C++ doesn't support partial specialization).
          */
     typedef Value second_argument_type;
-    
+
          /** the functors result type
          */
     typedef typename NumericTraits<Value>::RealPromote result_type;
-    
+
          /** \deprecated use first_argument_type, second_argument_type, result_type
          */
     typedef Value value_type;
-    
+
          /** init functor with given edge threshold
          */
     DiffusivityFunctor(Value const & thresh)
@@ -732,16 +732,16 @@ class DiffusivityFunctor
       one_(NumericTraits<result_type>::one()),
       zero_(NumericTraits<result_type>::zero())
     {}
-    
+
          /** calculate diffusivity from scalar arguments
          */
     result_type operator()(first_argument_type const & gx, second_argument_type const & gy) const
     {
         Value mag = (gx*gx + gy*gy) / weight_;
-                     
+
         return (mag == zero_) ? one_ : one_ - VIGRA_CSTD::exp(-3.315 / mag / mag);
     }
-    
+
          /** calculate diffusivity from RGB arguments
          */
     result_type operator()(RGBValue<Value> const & gx, RGBValue<Value> const & gy) const
@@ -755,7 +755,7 @@ class DiffusivityFunctor
 
         return (mag == zero_) ? one_ : one_ - VIGRA_CSTD::exp(-3.315 / mag / mag);
     }
-    
+
     result_type weight_;
     result_type one_;
     result_type zero_;

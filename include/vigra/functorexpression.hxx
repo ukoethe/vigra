@@ -29,202 +29,202 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
-#ifndef VIGRA_FUNCTOREXPRESSION_HXX 
-#define VIGRA_FUNCTOREXPRESSION_HXX 
+
+#ifndef VIGRA_FUNCTOREXPRESSION_HXX
+#define VIGRA_FUNCTOREXPRESSION_HXX
 
 
-/** \page FunctorExpressions Functor Expressions  
+/** \page FunctorExpressions Functor Expressions
 
     Simple automatic functor creation by means of expression templates
-    (also known as a "lambda library"). Note, however, that the \ref 
+    (also known as a "lambda library"). Note, however, that the \ref
     MultiMathModule module offers similar functionality with an easier
     syntax.
 
     <b>\#include</b> \<vigra/functorexpression.hxx\><br>
     Namespace: vigra::functor
-    
+
     <b> Motivation</b>
-    
+
     Many generic algorithms are made more flexible by means of functors
     which define part of the algorithms' behavior according to the
     needs of a specific situation. For example, we can apply an exponential
-    to each pixel by passing a pointer to the <TT>exp</TT> function 
+    to each pixel by passing a pointer to the <TT>exp</TT> function
     to <TT>transformImage()</TT>:
-    
+
     \code
     vigra::FImage src(w,h), dest(w,h);
     ... // fill src
-    
-    vigra::transformImage(srcImageRange(src), destImage(dest), &exp);    
+
+    vigra::transformImage(srcImageRange(src), destImage(dest), &exp);
     \endcode
-    
-    However, this only works for simple operations. If we wanted to 
+
+    However, this only works for simple operations. If we wanted to
     apply the exponential to a scaled pixel value (i.e. we want to execute
     <TT>exp(-beta*v)</TT>), we first need to implement a new functor:
-    
+
     \code
     struct Exponential
     {
         Exponential(double b)
         : beta(b)
         {}
-        
+
         template <class PixelType>
         PixelType operator()(PixelType const& v) const
         {
             return exp(-beta*v);
         }
-        
+
         double beta;
     };
     \endcode
-    
+
     This functor would be used like this:
-    
+
     \code
     double beta =  ...;
-    vigra::transformImage(srcImageRange(src), destImage(dest), 
-                   Exponential(beta));    
+    vigra::transformImage(srcImageRange(src), destImage(dest),
+                   Exponential(beta));
     \endcode
-    
+
     However, this approach has some disadvantages:
-    
+
     <UL>
-    
+
     <li> Writing a functor is more work then simply program the loop
           directly, i.e. non-generically. Programmers will tend to
-          avoid generic constructs, if they require so much writing. 
-    <li> Often, functors are only needed for a single expression. 
-          It is not desirable to get into the trouble of introducing 
+          avoid generic constructs, if they require so much writing.
+    <li> Often, functors are only needed for a single expression.
+          It is not desirable to get into the trouble of introducing
           and documenting a new class if that class is used only once.
     <li> Functors cannot be implemented directly at the point of use.
           Thus, to find out exactly what a functor is doing, one needs
           to look somewhere else. This complicates use and maintenance
           ot generic code.
-    
+
     </UL>
-    
-    Therefore, it is necessary to provide a means to generate functors on 
+
+    Therefore, it is necessary to provide a means to generate functors on
     the fly where they are needed. The C++ standard library contains so called
-    "functor combinators" that allow to construct complicated functors from 
+    "functor combinators" that allow to construct complicated functors from
     simpler ones. The above problem "apply exp(-beta*v) to every pixel"
     would be solved like this:
-    
+
     \code
     float beta = ...;
-    
-    vigra::transformImage(srcImageRange(src), destImage(dest), 
+
+    vigra::transformImage(srcImageRange(src), destImage(dest),
                    std::compose1(std::ptr_fun(exp),
                                  std::bind(std::multiplies<float>(), -beta, std::placeholdes::_1)));
     \endcode
- 
+
     I won't go into details on how this works. Suffice it to say that
     this technique requires a functional programming style that is unfamiliar
-    to many programmers, and thus leads to code that is difficult to 
-    understand. Moreover, this technique has some limitations that prevent 
+    to many programmers, and thus leads to code that is difficult to
+    understand. Moreover, this technique has some limitations that prevent
     certain expressions from being implementable this way. Therefore, VIGRA
     provides a better and simpler means to create functors on the fly.
-    
+
     <b> Automatic Functor Creation</b>
-    
+
     Automatic functor creation in VIGRA is based on a technique called
     <a href="http://extreme.indiana.edu/~tveldhui/papers/Expression-Templates/exprtmpl.html">Expression Templates</a>.
     This means that C++ operators are
-    overloaded so that they don't execute the specified operation directly, 
+    overloaded so that they don't execute the specified operation directly,
     but instead produce a functor which will later calculate the result.
     This technique has the big advantage that the familiar operator notation
     can be used, while all the flexibility of generic programming is preserved.
-    
+
     The above problem "apply <TT>exp(-beta*v)</TT> to every pixel" will be solved
     like this:
-    
+
     \code
     using namespace vigra::functor;
-    
+
     float beta = ...;
-    
-    transformImage(srcImageRange(src), destImage(dest), 
+
+    transformImage(srcImageRange(src), destImage(dest),
                    exp(Param(-beta)*Arg1()));
     \endcode
-    
+
     Here, four expression templates have been used to create the desired
     functor:
-    
+
     <DL>
-    
-    <DT><b><TT>Param(-beta):</TT></b><DD> creates a functor that represents a 
+
+    <DT><b><TT>Param(-beta):</TT></b><DD> creates a functor that represents a
          constant (<TT>-beta</TT> in this case)
-         
+
     <DT><b><TT>Arg1():</TT></b><DD> represents the first argument of the expression (i.e.
          the pixels of image <TT>src</TT> in the example). Likewise, <TT>Arg2()</TT> and
          <TT>Arg3()</TT> are defined to represent more arguments. These are needed
          for algorithms that have multiple input images, such as
          \ref combineTwoImages() and \ref combineThreeImages().
-         
+
     <DT><b>* (multiplication):</b><DD> creates a functor that returns the product of
-         its arguments. Likewise, the other C++ operators (i.e. 
-         <TT>+, -, *, /, %, ==, !=, <, <=, >, >=, &&, ||, &, |, ^, !, ~</TT>) 
+         its arguments. Likewise, the other C++ operators (i.e.
+         <TT>+, -, *, /, %, ==, !=, <, <=, >, >=, &&, ||, &, |, ^, !, ~</TT>)
          are overloaded.
-    
-    <DT><b><TT>exp():</TT></b><DD> creates a functor that takes the exponential of its 
+
+    <DT><b><TT>exp():</TT></b><DD> creates a functor that takes the exponential of its
         argument. Likewise, the other algebraic functions
-        (i.e. <TT>sq, sqrt, exp, log, log10, sin, asin, cos, acos, tan, 
-        atan, abs, floor, ceil, pow, atan2, fmod, min, max</TT>) 
+        (i.e. <TT>sq, sqrt, exp, log, log10, sin, asin, cos, acos, tan,
+        atan, abs, floor, ceil, pow, atan2, fmod, min, max</TT>)
         are overloaded.
-    
+
     </DL>
-    
-    We will explain additional capabilities of the functor creation mechanism 
+
+    We will explain additional capabilities of the functor creation mechanism
     by means of examples.
-    
-    The same argument can be used several times in the expression. 
+
+    The same argument can be used several times in the expression.
     For example, to calculate the gradient magnitude from the components
     of the gradient vector, you may write:
-    
+
     \code
     using namespace vigra::functor;
-    
+
     vigra::FImage gradient_x(w,h), gradient_y(w,h), magnitude(w,h);
     ... // calculate gradient_x and gradient_y
-    
+
     combineTwoImages(srcImageRange(gradient_x), srcImage(gradient_y),
                      destImage(magnitude),
                      sqrt(Arg1()*Arg1() + Arg2()*Arg2()));
     \endcode
-    
-    It is also possible to build other functions into functor expressions. Suppose 
+
+    It is also possible to build other functions into functor expressions. Suppose
     you want to apply <TT>my_complicated_function()</TT> to the sum of two images:
-    
+
     \code
     using namespace vigra::functor;
-    
+
     vigra::FImage src1(w,h), src2(w,h), dest(w,h);
-    
+
     double my_complicated_function(double);
-    
+
     combineTwoImages(srcImageRange(src1), srcImage(src2), destImage(dest),
-                     applyFct(&my_complicated_function, Arg1()+Arg2()));    
+                     applyFct(&my_complicated_function, Arg1()+Arg2()));
     \endcode
-    
+
     [Note that the arguments of the wrapped function are passed as additional
     arguments to <TT>applyFct()</TT>]
-    
-    You can implement conditional expression by means of the <TT>ifThenElse()</TT> 
+
+    You can implement conditional expression by means of the <TT>ifThenElse()</TT>
     functor. It corresponds to the "? :" operator that cannot be overloaded.
     <TT>ifThenElse()</TT> can be used, for example, to threshold an image:
-    
+
     \code
     using namespace vigra::functor;
-    
+
     vigra::FImage src(w,h), thresholded(w,h);
     ...// fill src
-    
+
     float threshold = ...;
-    
+
     transformImage(srcImageRange(src), destImage(thresholded),
                    ifThenElse(Arg1() < Param(threshold),
                               Param(0.0),    // yes branch
@@ -232,60 +232,60 @@
                   );
     \endcode
 
-    You can use the <TT>Var()</TT> functor to assign values to a variable 
+    You can use the <TT>Var()</TT> functor to assign values to a variable
     (<TT>=, +=, -=, *=, /=</TT>&nbsp; are supported). For example, the average gray
     value of the image is calculated like this:
-    
+
     \code
     using namespace vigra::functor;
-    
+
     vigra::FImage src(w,h);
     ...// fill src
-    
+
     double sum = 0.0;
-    
+
     inspectImage(srcImageRange(src), Var(sum) += Arg1());
-    
+
     std::cout << "Average: " << (sum / (w*h)) << std::endl;
     \endcode
-    
+
     For use in \ref inspectImage() and its relatives, there is a second
     conditional functor <TT>ifThen()</TT> that emulates the <TT>if()</TT> statement
     and does not return a value. Using <TT>ifThen()</TT>, we can calculate the size
     of an image region:
-    
+
     \code
     using namespace vigra::functor;
-    
+
     vigra::IImage label_image(w,h);
     ...// mark regions by labels in label_image
-    
+
     int region_label = ...; // the region we want to inspect
     int size = 0;
-    
+
     inspectImage(srcImageRange(label_image),
                  ifThen(Arg1() == Param(region_label),
                         Var(size) += Param(1)));
-                        
+
     std::cout << "Size of region " << region_label << ": " << size << std::endl;
     \endcode
-    
+
     Often, we want to execute several commands in one functor. This can be done
     by means of the overloaded <TT>operator,()</TT> ("operator comma"). Expressions
-    separated by a comma will be executed in succession. We can thus 
+    separated by a comma will be executed in succession. We can thus
     simultaneously find the size and the average gray value of a region:
-    
+
     \code
     using namespace vigra::functor;
-    
+
     vigra::FImage src(w,h);
     vigra::IImage label_image(w,h);
     ...// segment src and mark regions in label_image
-    
+
     int region_label = ...; // the region we want to inspect
     int size = 0;
     double sum = 0.0;
-    
+
     inspectTwoImages(srcImageRange(src), srcImage(label_image),
                      ifThen(Arg2() == Param(region_label),
                      (
@@ -293,32 +293,32 @@
                         Var(sum) += Arg1()
                      )));
 
-    std::cout << "Region " << region_label << ": size = " << size << 
+    std::cout << "Region " << region_label << ": size = " << size <<
                                               ", average = " << sum / size << std::endl;
     \endcode
-    
+
     [Note that the list of comma-separated expressions must be enclosed in parentheses.]
-    
+
     A comma separated list of expressions can also be applied in the context of
-    \ref transformImage() and its cousins. Here, a general rule of C++ applies: The 
+    \ref transformImage() and its cousins. Here, a general rule of C++ applies: The
     return value of a comma expression is the value of its last subexpression.
-    For example, we can initialize an image so that each pixel contains its 
+    For example, we can initialize an image so that each pixel contains its
     address in scan order:
-    
+
     \code
     using namespace vigra::functor;
-    
+
     vigra::IImage img(w,h);
-    
+
     int count = -1;
-    
+
     initImageWithFunctor(destImageRange(img),
                          (
-                              Var(count) += Param(1),  
+                              Var(count) += Param(1),
                               Var(count)     // this is the result of the comma expression
                          ));
     \endcode
-    
+
     Further information about how this mechanism works can be found in
     <a href="http://hci.iwr.uni-heidelberg.de/vigra/documents/FunctorFactory.ps">this paper</a> (sorry, slightly out of date).
 */
@@ -379,35 +379,35 @@ struct UnaryFunctor
     UnaryFunctor & operator=(UnaryFunctor const &) = delete;
     UnaryFunctor(UnaryFunctor &&) = default;
     UnaryFunctor & operator=(UnaryFunctor &&) = default;
-    
-    typename ResultTraits0<EXPR>::Res 
+
+    typename ResultTraits0<EXPR>::Res
     operator()() const
     {
         return expr_();
     }
-    
+
     template <class T1>
-    typename ResultTraits1<EXPR, T1>::Res 
+    typename ResultTraits1<EXPR, T1>::Res
     operator()(T1 const & v) const
     {
         return expr_(v);
     }
-    
+
     template <class T1, class T2>
-    typename ResultTraits2<EXPR, T1, T2>::Res 
+    typename ResultTraits2<EXPR, T1, T2>::Res
     operator()(T1 const & v1, T2 const & v2) const
     {
         return expr_(v1, v2);
     }
-    
+
     template <class T1, class T2, class T3>
-    typename ResultTraits3<EXPR, T1, T2, T3>::Res 
+    typename ResultTraits3<EXPR, T1, T2, T3>::Res
     operator()(T1 const & v1, T2 const & v2, T3 const & v3) const
     {
         return expr_(v1, v2, v3);
     }
-  
-  protected:  
+
+  protected:
     EXPR expr_;
 };
 
@@ -441,7 +441,7 @@ struct ResultTraits3<UnaryFunctor<Expr>, T1, T2, T3>
 /*                                                          */
 /************************************************************/
 
-struct ArgumentFunctor1; 
+struct ArgumentFunctor1;
 struct ArgumentFunctor2;
 struct ArgumentFunctor3;
 
@@ -449,24 +449,24 @@ template <>
 struct UnaryFunctor<ArgumentFunctor1>
 {
     UnaryFunctor() = default;
-  
+
     UnaryFunctor(UnaryFunctor const &) = default;
     UnaryFunctor & operator=(UnaryFunctor const &) = delete;
     UnaryFunctor(UnaryFunctor &&) = default;
     UnaryFunctor & operator=(UnaryFunctor &&) = default;
-    
+
     template <class T1>
     T1 const & operator()(T1 const & v1) const
     {
         return v1;
     }
-    
+
     template <class T1, class T2>
     T1 const & operator()(T1 const & v1, T2 const &) const
     {
         return v1;
     }
-    
+
     template <class T1, class T2, class T3>
     T1 const & operator()(T1 const & v1, T2 const &, T3 const &) const
     {
@@ -503,7 +503,7 @@ struct ResultTraits3<UnaryFunctor<ArgumentFunctor1>, T1, T2, T3>
 /************************************************************/
 
 inline
-UnaryFunctor<ArgumentFunctor1> 
+UnaryFunctor<ArgumentFunctor1>
 Arg1()
 {
     return UnaryFunctor<ArgumentFunctor1>();
@@ -520,13 +520,13 @@ struct UnaryFunctor<ArgumentFunctor2>
     UnaryFunctor & operator=(UnaryFunctor const &) = delete;
     UnaryFunctor(UnaryFunctor &&) = default;
     UnaryFunctor & operator=(UnaryFunctor &&) = default;
-    
+
     template <class T1, class T2>
     T2 const & operator()(T1 const &, T2 const & v2) const
     {
         return v2;
     }
-    
+
     template <class T1, class T2, class T3>
     T2 const & operator()(T1 const &, T2 const & v2, T3 const &) const
     {
@@ -561,7 +561,7 @@ struct ResultTraits3<UnaryFunctor<ArgumentFunctor2>, T1, T2, T3>
 /************************************************************/
 
 inline
-UnaryFunctor<ArgumentFunctor2> 
+UnaryFunctor<ArgumentFunctor2>
 Arg2()
 {
     return UnaryFunctor<ArgumentFunctor2>();
@@ -578,7 +578,7 @@ struct UnaryFunctor<ArgumentFunctor3>
     UnaryFunctor & operator=(UnaryFunctor const &) = delete;
     UnaryFunctor(UnaryFunctor &&) = default;
     UnaryFunctor & operator=(UnaryFunctor &&) = default;
-    
+
     template <class T1, class T2, class T3>
     T3 const & operator()(T1 const &, T2 const &, T3 const & v3) const
     {
@@ -613,7 +613,7 @@ struct ResultTraits3<UnaryFunctor<ArgumentFunctor3>, T1, T2, T3>
 /************************************************************/
 
 inline
-UnaryFunctor<ArgumentFunctor3> 
+UnaryFunctor<ArgumentFunctor3>
 Arg3()
 {
     return UnaryFunctor<ArgumentFunctor3>();
@@ -636,30 +636,30 @@ struct ParameterFunctor
     ParameterFunctor & operator=(ParameterFunctor const &) = delete;
     ParameterFunctor(ParameterFunctor &&) = default;
     ParameterFunctor & operator=(ParameterFunctor &&) = default;
-    
+
     T const & operator()() const
     {
         return value_;
     }
-    
+
     template <class U1>
     T const & operator()(U1 const &) const
     {
         return value_;
     }
-    
+
     template <class U1, class U2>
     T const & operator()(U1 const &, U2 const &) const
     {
         return value_;
     }
-    
+
     template <class U1, class U2, class U3>
     T const & operator()(U1 const &, U2 const &, U3 const &) const
     {
         return value_;
     }
-    
+
   protected:
     T value_;
 };
@@ -715,31 +715,31 @@ class UnaryAnalyser
     UnaryAnalyser & operator=(UnaryAnalyser const &) = delete;
     UnaryAnalyser(UnaryAnalyser &&) = default;
     UnaryAnalyser & operator=(UnaryAnalyser &&) = default;
-    
+
     void operator()() const
     {
         expr_();
     }
-    
+
     template <class T1>
     void operator()(T1 const & v) const
     {
         expr_(v);
     }
-    
+
     template <class T1, class T2>
     void operator()(T1 const & v1, T2 const & v2) const
     {
         expr_(v1, v2);
     }
-    
+
     template <class T1, class T2, class T3>
     void operator()(T1 const & v1, T2 const & v2, T3 const & v3) const
     {
         expr_(v1, v2, v3);
     }
   protected:
-  
+
     EXPR expr_;
 };
 
@@ -801,7 +801,7 @@ struct UnaryFunctor<VarFunctor<T> >;
       private: \
         V & value_; \
         UnaryFunctor<EXPR> expr_; \
-    }; 
+    };
 
 /************************************************************/
 
@@ -823,16 +823,16 @@ template <class T>
 struct UnaryFunctor<VarFunctor<T> >
 {
     typedef T Res;
-    
+
     UnaryFunctor(T & v)
     : value_(v)
     {}
-  
+
     UnaryFunctor(UnaryFunctor const &) = default;
     UnaryFunctor & operator=(UnaryFunctor const &) = delete;
     UnaryFunctor(UnaryFunctor &&) = default;
     UnaryFunctor & operator=(UnaryFunctor &&) = default;
-        
+
     template <class EXPR>
     UnaryAnalyser< AssignmentFunctor_assign<T, UnaryFunctor<EXPR> > >
     operator=(UnaryFunctor<EXPR> const & e)
@@ -840,7 +840,7 @@ struct UnaryFunctor<VarFunctor<T> >
         AssignmentFunctor_assign<T, UnaryFunctor<EXPR> > va(*this, e);
         return UnaryAnalyser< AssignmentFunctor_assign<T, UnaryFunctor<EXPR> > >(va);
     }
-    
+
     template <class EXPR>
     UnaryAnalyser< AssignmentFunctor_add<T, UnaryFunctor<EXPR> > >
     operator+=(UnaryFunctor<EXPR> const & e)
@@ -848,7 +848,7 @@ struct UnaryFunctor<VarFunctor<T> >
         AssignmentFunctor_add<T, UnaryFunctor<EXPR> > va(*this, e);
         return UnaryAnalyser< AssignmentFunctor_add<T, UnaryFunctor<EXPR> > >(va);
     }
-    
+
     template <class EXPR>
     UnaryAnalyser< AssignmentFunctor_subtract<T, UnaryFunctor<EXPR> > >
     operator-=(UnaryFunctor<EXPR> const & e)
@@ -856,7 +856,7 @@ struct UnaryFunctor<VarFunctor<T> >
         AssignmentFunctor_subtract<T, UnaryFunctor<EXPR> > va(*this, e);
         return UnaryAnalyser< AssignmentFunctor_subtract<T, UnaryFunctor<EXPR> > >(va);
     }
-    
+
     template <class EXPR>
     UnaryAnalyser< AssignmentFunctor_multiply<T, UnaryFunctor<EXPR> > >
     operator*=(UnaryFunctor<EXPR> const & e)
@@ -864,7 +864,7 @@ struct UnaryFunctor<VarFunctor<T> >
         AssignmentFunctor_multiply<T, UnaryFunctor<EXPR> > va(*this, e);
         return UnaryAnalyser< AssignmentFunctor_multiply<T, UnaryFunctor<EXPR> > >(va);
     }
-    
+
     template <class EXPR>
     UnaryAnalyser< AssignmentFunctor_divide<T, UnaryFunctor<EXPR> > >
     operator/=(UnaryFunctor<EXPR> const & e)
@@ -872,30 +872,30 @@ struct UnaryFunctor<VarFunctor<T> >
         AssignmentFunctor_divide<T, UnaryFunctor<EXPR> > va(*this, e);
         return UnaryAnalyser< AssignmentFunctor_divide<T, UnaryFunctor<EXPR> > >(va);
     }
-    
+
     T const & operator()() const
     {
         return value_;
     }
-    
+
     template <class U1>
     T const & operator()(U1 const &) const
     {
         return value_;
     }
-    
+
     template <class U1, class U2>
     T const & operator()(U1 const &, U2 const &) const
     {
         return value_;
     }
-    
+
     template <class U1, class U2, class U3>
     T const & operator()(U1 const &, U2 const &, U3 const &) const
     {
         return value_;
     }
-    
+
     T & value_;
 };
 
@@ -940,54 +940,54 @@ template <class EXPR1, class EXPR2>
 struct IfThenFunctor
 {
     typedef void Res;
-    
+
     IfThenFunctor(EXPR1 const & e1, EXPR2 const & e2)
     : expr1_(e1), expr2_(e2)
     {}
-  
+
     IfThenFunctor(IfThenFunctor const &) = default;
     IfThenFunctor & operator=(IfThenFunctor const &) = delete;
     IfThenFunctor(IfThenFunctor &&) = default;
     IfThenFunctor & operator=(IfThenFunctor &&) = default;
-    
-    void operator()() const 
+
+    void operator()() const
     {
         if( expr1_() ) expr2_();
     }
 
-    template <class T> 
-    void operator()(T const & v1) const 
+    template <class T>
+    void operator()(T const & v1) const
     {
         if( expr1_(v1) ) expr2_(v1);
     }
 
-    template <class T1, class T2> 
-    void operator()(T1 const & v1, T2 const & v2) const 
+    template <class T1, class T2>
+    void operator()(T1 const & v1, T2 const & v2) const
     {
         if( expr1_(v1, v2) ) expr2_(v1, v2);
     }
 
-    template <class T1, class T2, class T3> 
-    void operator()(T1 const & v1, T2 const & v2, T3 const & v3) const 
+    template <class T1, class T2, class T3>
+    void operator()(T1 const & v1, T2 const & v2, T3 const & v3) const
     {
         if( expr1_(v1, v2, v3) ) expr2_(v1, v2, v3);
     }
-    
+
   private:
-  
+
     EXPR1 expr1_;
     EXPR2 expr2_;
 };
 
 template <class EXPR1, class EXPR2>
-UnaryAnalyser<IfThenFunctor<UnaryFunctor<EXPR1>, 
+UnaryAnalyser<IfThenFunctor<UnaryFunctor<EXPR1>,
                             UnaryAnalyser<EXPR2> > >
-ifThen(UnaryFunctor<EXPR1> const & e1, 
+ifThen(UnaryFunctor<EXPR1> const & e1,
        UnaryAnalyser<EXPR2> const & e2)
 {
-    IfThenFunctor<UnaryFunctor<EXPR1>, 
+    IfThenFunctor<UnaryFunctor<EXPR1>,
                   UnaryAnalyser<EXPR2> > p(e1, e2);
-    return UnaryAnalyser<IfThenFunctor<UnaryFunctor<EXPR1>, 
+    return UnaryAnalyser<IfThenFunctor<UnaryFunctor<EXPR1>,
                                        UnaryAnalyser<EXPR2> > >(p);
 }
 
@@ -1038,14 +1038,14 @@ struct IfThenElseFunctor
     IfThenElseFunctor(EXPR1 const & e1, EXPR2 const & e2, EXPR3 const & e3)
     : expr1_(e1), expr2_(e2), expr3_(e3)
     {}
-  
+
     IfThenElseFunctor(IfThenElseFunctor const &) = default;
     IfThenElseFunctor & operator=(IfThenElseFunctor const &) = delete;
     IfThenElseFunctor(IfThenElseFunctor &&) = default;
     IfThenElseFunctor & operator=(IfThenElseFunctor &&) = default;
-    
-    typename ResultTraits0<IfThenElseFunctor>::Res 
-    operator()() const 
+
+    typename ResultTraits0<IfThenElseFunctor>::Res
+    operator()() const
     {
         if(expr1_())
         {
@@ -1057,9 +1057,9 @@ struct IfThenElseFunctor
         }
     }
 
-    template <class T> 
-    typename ResultTraits1<IfThenElseFunctor, T>::Res 
-    operator()(T const & v1) const 
+    template <class T>
+    typename ResultTraits1<IfThenElseFunctor, T>::Res
+    operator()(T const & v1) const
     {
         if(expr1_(v1))
         {
@@ -1071,9 +1071,9 @@ struct IfThenElseFunctor
         }
     }
 
-    template <class T1, class T2> 
-    typename ResultTraits2<IfThenElseFunctor, T1, T2>::Res 
-    operator()(T1 const & v1, T2 const & v2) const 
+    template <class T1, class T2>
+    typename ResultTraits2<IfThenElseFunctor, T1, T2>::Res
+    operator()(T1 const & v1, T2 const & v2) const
     {
         if(expr1_(v1, v2))
         {
@@ -1085,9 +1085,9 @@ struct IfThenElseFunctor
         }
     }
 
-    template <class T1, class T2, class T3> 
-    typename ResultTraits3<IfThenElseFunctor, T1, T2, T3>::Res 
-    operator()(T1 const & v1, T2 const & v2, T3 const & v3) const 
+    template <class T1, class T2, class T3>
+    typename ResultTraits3<IfThenElseFunctor, T1, T2, T3>::Res
+    operator()(T1 const & v1, T2 const & v2, T3 const & v3) const
     {
         if(expr1_(v1, v2, v3))
         {
@@ -1098,27 +1098,27 @@ struct IfThenElseFunctor
             return typename ResultTraits3<IfThenElseFunctor, T1, T2, T3>::Res(expr3_(v1, v2, v3));
         }
     }
-    
+
   private:
-  
+
     EXPR1 expr1_;
     EXPR2 expr2_;
     EXPR3 expr3_;
 };
 
 template <class EXPR1, class EXPR2, class EXPR3>
-UnaryFunctor<IfThenElseFunctor<UnaryFunctor<EXPR1>, 
-                               UnaryFunctor<EXPR2>, 
+UnaryFunctor<IfThenElseFunctor<UnaryFunctor<EXPR1>,
+                               UnaryFunctor<EXPR2>,
                                UnaryFunctor<EXPR3> > >
-ifThenElse(UnaryFunctor<EXPR1> const & e1, 
-           UnaryFunctor<EXPR2> const & e2, 
+ifThenElse(UnaryFunctor<EXPR1> const & e1,
+           UnaryFunctor<EXPR2> const & e2,
            UnaryFunctor<EXPR3> const & e3)
 {
-    IfThenElseFunctor<UnaryFunctor<EXPR1>, 
-                      UnaryFunctor<EXPR2>, 
+    IfThenElseFunctor<UnaryFunctor<EXPR1>,
+                      UnaryFunctor<EXPR2>,
                       UnaryFunctor<EXPR3> > p(e1, e2, e3);
-    return UnaryFunctor<IfThenElseFunctor<UnaryFunctor<EXPR1>, 
-                                          UnaryFunctor<EXPR2>, 
+    return UnaryFunctor<IfThenElseFunctor<UnaryFunctor<EXPR1>,
+                                          UnaryFunctor<EXPR2>,
                                           UnaryFunctor<EXPR3> > >(p);
 }
 
@@ -1773,36 +1773,36 @@ struct UnaryFctPtrFunctor
     UnaryFctPtrFunctor(EXPR const & e, RES (*fct)(ARG))
     : expr_(e), f_(fct)
     {}
-  
+
     UnaryFctPtrFunctor(UnaryFctPtrFunctor const &) = default;
     UnaryFctPtrFunctor & operator=(UnaryFctPtrFunctor const &) = delete;
     UnaryFctPtrFunctor(UnaryFctPtrFunctor &&) = default;
     UnaryFctPtrFunctor & operator=(UnaryFctPtrFunctor &&) = default;
-    
-    RES operator()() const 
+
+    RES operator()() const
     {
         return f_(expr_());
     }
-    
-    template <class T> 
-    RES operator()(T const & v1) const 
+
+    template <class T>
+    RES operator()(T const & v1) const
     {
         return f_(expr_(v1));
     }
-    
-    template <class T1, class T2> 
-    RES operator()(T1 const & v1, T2 const & v2) const 
+
+    template <class T1, class T2>
+    RES operator()(T1 const & v1, T2 const & v2) const
     {
         return f_(expr_(v1, v2));
     }
-    
-    template <class T1, class T2, class T3> 
-    RES operator()(T1 const & v1, T2 const & v2, T3 const & v3) const 
+
+    template <class T1, class T2, class T3>
+    RES operator()(T1 const & v1, T2 const & v2, T3 const & v3) const
     {
         return f_(expr_(v1, v2, v3));
     }
   protected:
-  
+
     EXPR expr_;
     RES (*f_)(ARG);
 };
@@ -1848,41 +1848,41 @@ applyFct(RES (*f)(ARG), UnaryFunctor<EXPR> const & e)
 template <class EXPR1, class EXPR2, class RES, class ARG1, class ARG2>
 struct BinaryFctPtrFunctor
 {
-    BinaryFctPtrFunctor(EXPR1 const & e1, EXPR2 const & e2, 
+    BinaryFctPtrFunctor(EXPR1 const & e1, EXPR2 const & e2,
                         RES (*f)(ARG1, ARG2))
     : expr1_(e1), expr2_(e2), f_(f)
     {}
-  
+
     BinaryFctPtrFunctor(BinaryFctPtrFunctor const &) = default;
     BinaryFctPtrFunctor & operator=(BinaryFctPtrFunctor const &) = delete;
     BinaryFctPtrFunctor(BinaryFctPtrFunctor &&) = default;
     BinaryFctPtrFunctor & operator=(BinaryFctPtrFunctor &&) = default;
-    
-    RES operator()() const 
+
+    RES operator()() const
     {
         return f_(expr1_(), expr2_());
     }
-    
-    template <class T> 
-    RES operator()(T const & v1) const 
+
+    template <class T>
+    RES operator()(T const & v1) const
     {
         return f_(expr1_(v1), expr2_(v1));
     }
-    
-    template <class T1, class T2> 
-    RES operator()(T1 const & v1, T2 const & v2) const 
+
+    template <class T1, class T2>
+    RES operator()(T1 const & v1, T2 const & v2) const
     {
         return f_(expr1_(v1, v2), expr2_(v1, v2));
     }
-    
-    template <class T1, class T2, class T3> 
-    RES operator()(T1 const & v1, T2 const & v2, T3 const & v3) const 
+
+    template <class T1, class T2, class T3>
+    RES operator()(T1 const & v1, T2 const & v2, T3 const & v3) const
     {
         return f_(expr1_(v1, v2, v3), expr2_(v1, v2, v3));
     }
-    
+
   protected:
-  
+
     EXPR1 expr1_;
     EXPR2 expr2_;
     RES (*f_)(ARG1, ARG2);
@@ -1894,21 +1894,21 @@ struct ResultTraits0<BinaryFctPtrFunctor<EXPR1, EXPR2, RES, ARG1, ARG2> >
     typedef RES Res;
 };
 
-template <class EXPR1, class EXPR2, class RES, class ARG1, class ARG2, 
+template <class EXPR1, class EXPR2, class RES, class ARG1, class ARG2,
           class T1>
 struct ResultTraits1<BinaryFctPtrFunctor<EXPR1, EXPR2, RES, ARG1, ARG2>, T1>
 {
     typedef RES Res;
 };
 
-template <class EXPR1, class EXPR2, class RES, class ARG1, class ARG2, 
+template <class EXPR1, class EXPR2, class RES, class ARG1, class ARG2,
           class T1, class T2>
 struct ResultTraits2<BinaryFctPtrFunctor<EXPR1, EXPR2, RES, ARG1, ARG2>, T1, T2>
 {
     typedef RES Res;
 };
 
-template <class EXPR1, class EXPR2, class RES, class ARG1, class ARG2, 
+template <class EXPR1, class EXPR2, class RES, class ARG1, class ARG2,
           class T1, class T2, class T3>
 struct ResultTraits3<BinaryFctPtrFunctor<EXPR1, EXPR2, RES, ARG1, ARG2>, T1, T2, T3>
 {
@@ -1916,17 +1916,17 @@ struct ResultTraits3<BinaryFctPtrFunctor<EXPR1, EXPR2, RES, ARG1, ARG2>, T1, T2,
 };
 
 template <class EXPR1, class EXPR2, class RES, class ARG1, class ARG2>
-inline UnaryFunctor<BinaryFctPtrFunctor<UnaryFunctor<EXPR1>, 
-                                 UnaryFunctor<EXPR2>, 
+inline UnaryFunctor<BinaryFctPtrFunctor<UnaryFunctor<EXPR1>,
+                                 UnaryFunctor<EXPR2>,
                                  RES, ARG1, ARG2> >
-applyFct(RES (*f)(ARG1, ARG2), UnaryFunctor<EXPR1> const & e1, 
+applyFct(RES (*f)(ARG1, ARG2), UnaryFunctor<EXPR1> const & e1,
          UnaryFunctor<EXPR2> const & e2)
 {
-    BinaryFctPtrFunctor<UnaryFunctor<EXPR1>, 
-                        UnaryFunctor<EXPR2>, 
+    BinaryFctPtrFunctor<UnaryFunctor<EXPR1>,
+                        UnaryFunctor<EXPR2>,
                         RES, ARG1, ARG2>  p(e1, e2, f);
-    return UnaryFunctor<BinaryFctPtrFunctor<UnaryFunctor<EXPR1>, 
-                                            UnaryFunctor<EXPR2>, 
+    return UnaryFunctor<BinaryFctPtrFunctor<UnaryFunctor<EXPR1>,
+                                            UnaryFunctor<EXPR2>,
                                             RES, ARG1, ARG2> >(p);
 }
 
@@ -1942,45 +1942,45 @@ struct CommaFunctor
     CommaFunctor(EXPR1 const & e1, EXPR2 const & e2)
     : expr1_(e1), expr2_(e2)
     {}
-  
+
     CommaFunctor(CommaFunctor const &) = default;
     CommaFunctor & operator=(CommaFunctor const &) = delete;
     CommaFunctor(CommaFunctor &&) = default;
     CommaFunctor & operator=(CommaFunctor &&) = default;
-    
-    typename ResultTraits0<EXPR2>::Res 
-    operator()() const 
+
+    typename ResultTraits0<EXPR2>::Res
+    operator()() const
     {
         expr1_();
         return expr2_();
     }
-    
-    template <class T> 
-    typename ResultTraits1<EXPR2, T>::Res 
-    operator()(T const & v1) const 
+
+    template <class T>
+    typename ResultTraits1<EXPR2, T>::Res
+    operator()(T const & v1) const
     {
         expr1_(v1);
         return expr2_(v1);
     }
-    
-    template <class T1, class T2> 
-    typename ResultTraits2<EXPR2, T1, T2>::Res 
-    operator()(T1 const & v1, T2 const & v2) const 
+
+    template <class T1, class T2>
+    typename ResultTraits2<EXPR2, T1, T2>::Res
+    operator()(T1 const & v1, T2 const & v2) const
     {
         expr1_(v1, v2);
         return expr2_(v1, v2);
     }
-    
-    template <class T1, class T2, class T3> 
-    typename ResultTraits3<EXPR2, T1, T2, T3>::Res 
-    operator()(T1 const & v1, T2 const & v2, T3 const & v3) const 
+
+    template <class T1, class T2, class T3>
+    typename ResultTraits3<EXPR2, T1, T2, T3>::Res
+    operator()(T1 const & v1, T2 const & v2, T3 const & v3) const
     {
         expr1_(v1, v2, v3);
         return expr2_(v1, v2, v3);
     }
-    
+
   protected:
-  
+
     EXPR1 expr1_;
     EXPR2 expr2_;
 };
@@ -2010,14 +2010,14 @@ struct ResultTraits3<CommaFunctor<Expr1, Expr2>, T1, T2, T3>
 };
 
 template <class EXPR1, class EXPR2>
-inline UnaryFunctor<CommaFunctor<UnaryAnalyser<EXPR1>, 
+inline UnaryFunctor<CommaFunctor<UnaryAnalyser<EXPR1>,
                             UnaryFunctor<EXPR2> > >
-operator,(UnaryAnalyser<EXPR1> const & e1, 
+operator,(UnaryAnalyser<EXPR1> const & e1,
           UnaryFunctor<EXPR2> const & e2)
 {
-    CommaFunctor<UnaryAnalyser<EXPR1>, 
+    CommaFunctor<UnaryAnalyser<EXPR1>,
                             UnaryFunctor<EXPR2> >  p(e1, e2);
-    return UnaryFunctor<CommaFunctor<UnaryAnalyser<EXPR1>, 
+    return UnaryFunctor<CommaFunctor<UnaryAnalyser<EXPR1>,
                             UnaryFunctor<EXPR2> > >(p);
 }
 
@@ -2029,54 +2029,54 @@ struct CommaAnalyser
     CommaAnalyser(EXPR1 const & e1, EXPR2 const & e2)
     : expr1_(e1), expr2_(e2)
     {}
-  
+
     CommaAnalyser(CommaAnalyser const &) = default;
     CommaAnalyser & operator=(CommaAnalyser const &) = delete;
     CommaAnalyser(CommaAnalyser &&) = default;
     CommaAnalyser & operator=(CommaAnalyser &&) = default;
-    
-    void operator()() const 
+
+    void operator()() const
     {
         expr1_();
         expr2_();
     }
-    
-    template <class T> 
-    void operator()(T const & v1) const 
+
+    template <class T>
+    void operator()(T const & v1) const
     {
         expr1_(v1);
         expr2_(v1);
     }
-    
-    template <class T1, class T2> 
-    void operator()(T1 const & v1, T2 const & v2) const 
+
+    template <class T1, class T2>
+    void operator()(T1 const & v1, T2 const & v2) const
     {
         expr1_(v1, v2);
         expr2_(v1, v2);
     }
-    
-    template <class T1, class T2, class T3> 
-    void operator()(T1 const & v1, T2 const & v2, T3 const & v3) const 
+
+    template <class T1, class T2, class T3>
+    void operator()(T1 const & v1, T2 const & v2, T3 const & v3) const
     {
         expr1_(v1, v2, v3);
         expr2_(v1, v2, v3);
     }
-    
+
   protected:
-  
+
     EXPR1 expr1_;
     EXPR2 expr2_;
 };
 
 template <class EXPR1, class EXPR2>
-inline UnaryAnalyser<CommaAnalyser<UnaryAnalyser<EXPR1>, 
+inline UnaryAnalyser<CommaAnalyser<UnaryAnalyser<EXPR1>,
                             UnaryAnalyser<EXPR2> > >
-operator,(UnaryAnalyser<EXPR1> const & e1, 
+operator,(UnaryAnalyser<EXPR1> const & e1,
           UnaryAnalyser<EXPR2> const & e2)
 {
-    CommaAnalyser<UnaryAnalyser<EXPR1>, 
+    CommaAnalyser<UnaryAnalyser<EXPR1>,
                             UnaryAnalyser<EXPR2> >  p(e1, e2);
-    return UnaryAnalyser<CommaAnalyser<UnaryAnalyser<EXPR1>, 
+    return UnaryAnalyser<CommaAnalyser<UnaryAnalyser<EXPR1>,
                             UnaryAnalyser<EXPR2> > >(p);
 }
 

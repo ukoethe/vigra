@@ -26,7 +26,7 @@ namespace vigra{
 
 
 template<class GRAPH>
-class LemonUndirectedGraphCoreVisitor 
+class LemonUndirectedGraphCoreVisitor
 :   public boost::python::def_visitor<LemonUndirectedGraphCoreVisitor<GRAPH> >
 {
 public:
@@ -36,7 +36,7 @@ public:
     typedef GRAPH Graph;
     typedef LemonUndirectedGraphCoreVisitor<GRAPH> VisitorType;
     // Lemon Graph Typedefs
-    
+
     typedef typename Graph::index_type       index_type;
     typedef typename Graph::Edge             Edge;
     typedef typename Graph::Node             Node;
@@ -65,7 +65,7 @@ public:
     typedef std::vector<PyArc > PyArcVector;
 
 
-        
+
 
     LemonUndirectedGraphCoreVisitor(const std::string clsName)
     :clsName_(clsName){
@@ -75,7 +75,7 @@ public:
     template <class classT>
     void visit(classT& c) const
     {
-        
+
         //import_vigranumpy();
 
         const std::string edgeHolderClsName = std::string("Edge")+clsName_;
@@ -113,7 +113,7 @@ public:
 
         python::class_<PyEdgeVector>(edgeHolderVectorClsName.c_str(),python::init<>())
         .def(python::vector_indexing_suite< PyEdgeVector >() );
-        ;   
+        ;
 
 
 
@@ -234,7 +234,7 @@ public:
             .def("uIds",registerConverters(&uIdsSubset),( python::arg("edgeIds"),python::arg("out")=python::object() ) )
             .def("vIds",registerConverters(&vIdsSubset),( python::arg("edgeIds"),python::arg("out")=python::object() ) )
             .def("uvIds",registerConverters(&uvIdsSubset),( python::arg("edgeIds"),python::arg("out")=python::object() ) )
-            
+
 
 
             // these functions are defined on the "FULL SET"
@@ -245,7 +245,7 @@ public:
 
 
             //.def("dtypetest",registerConverters(&dtypetest<Edge,EdgeIt>),( python::arg("out")=python::object() ) )
-            
+
         ;
     }
 
@@ -275,8 +275,8 @@ public:
     }
 
     template<class ITEM,class ITEM_IT>
-    static NumpyAnyArray dtypetest(   
-        const Graph & g, 
+    static NumpyAnyArray dtypetest(
+        const Graph & g,
         NumpyArray<1,ITEM> out = (NumpyArray<1,ITEM>())
     ){
         typedef GraphItemHelper<Graph,ITEM> ItemHelper;
@@ -293,7 +293,7 @@ public:
 
     static NumpyAnyArray findEdges(
         const Graph & g,
-        NumpyArray<2,UInt32> nodeIdPairs, 
+        NumpyArray<2,UInt32> nodeIdPairs,
         NumpyArray<1,Int32> out =(NumpyArray<1,Int32>())
     ){
         out.reshapeIfEmpty(typename NumpyArray<1,Int32>::difference_type(  nodeIdPairs.shape(0)  ));
@@ -304,7 +304,7 @@ public:
             );
             out(i) = e==lemon::INVALID ? -1 : g.id(e);
         }
-       
+
         return out;
     }
 
@@ -350,7 +350,7 @@ public:
     }
 
     static NumpyAnyArray uIdsSubset(
-        const Graph & g, 
+        const Graph & g,
         NumpyArray<1,UInt32> edgeIds,
         NumpyArray<1,UInt32> out =(NumpyArray<1,UInt32>())
     ){
@@ -365,7 +365,7 @@ public:
         return out;
     }
     static NumpyAnyArray vIdsSubset(
-        const Graph & g, 
+        const Graph & g,
         NumpyArray<1,UInt32> edgeIds,
         NumpyArray<1,UInt32> out =(NumpyArray<1,UInt32>())
     ){
@@ -381,7 +381,7 @@ public:
     }
 
     static NumpyAnyArray uvIdsSubset(
-        const Graph & g, 
+        const Graph & g,
         NumpyArray<1,UInt32> edgeIds,
         NumpyArray<2,UInt32> out =(NumpyArray<2,UInt32>())
     ){
@@ -460,7 +460,7 @@ public:
     static bool neqToInvalid(const ITEM &  item,const lemon::Invalid /*iv*/){
         return item.graph_!=NULL && item!=lemon::INVALID;
     }
-    
+
     static PyNode nodeFromId(const Graph & self,const index_type id){
         return PyNode(self,self.nodeFromId(id));
     }
@@ -489,7 +489,7 @@ public:
     static NumpyAnyArray nodeIdMap(
         const Graph & graph,
         typename PyNodeMapTraits<Graph,   UInt32>::Array  idArray
-    ){  
+    ){
         //reshape output
         idArray.reshapeIfEmpty(IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(graph));
 
@@ -507,7 +507,7 @@ public:
 
 
 template<class GRAPH>
-class LemonUndirectedGraphAddItemsVisitor 
+class LemonUndirectedGraphAddItemsVisitor
 :   public boost::python::def_visitor<LemonUndirectedGraphAddItemsVisitor<GRAPH> >
 {
 public:
@@ -518,7 +518,7 @@ public:
 
     typedef LemonUndirectedGraphAddItemsVisitor<GRAPH> VisitorType;
     // Lemon Graph Typedefs
-    
+
     typedef typename Graph::index_type       index_type;
     typedef typename Graph::Edge             Edge;
     typedef typename Graph::Node             Node;
@@ -543,7 +543,7 @@ public:
     template <class classT>
     void visit(classT& c) const
     {
-        
+
         //import_vigranumpy();
 
 

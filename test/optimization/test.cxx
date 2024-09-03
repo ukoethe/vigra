@@ -57,7 +57,7 @@ struct GaussianFitModel
     {
         return p[1] * exp(-0.5 * sq(data / p[0])) + p[2];
     }
-    
+
     // pass in vector data
     template <class T>
     T operator()(MultiArrayView<1, double> const & data, TinyVector<T, 3> const & p) const
@@ -67,7 +67,7 @@ struct GaussianFitModel
 };
 
 
-struct OptimizationTest 
+struct OptimizationTest
 {
     typedef vigra::linalg::Matrix<double>::difference_type Shape;
 
@@ -659,9 +659,9 @@ double OptimizationTest::gaussianFitData[400] = {
 4.000000, 0.422814
 };
 
-struct OptimizationTestSuite : public vigra::test_suite 
+struct OptimizationTestSuite : public vigra::test_suite
 {
-    OptimizationTestSuite() : vigra::test_suite("Optimization Tests") 
+    OptimizationTestSuite() : vigra::test_suite("Optimization Tests")
     {
         add( testCase(&OptimizationTest::testLSQ));
         add( testCase(&OptimizationTest::testWeightedLSQ));
@@ -678,7 +678,7 @@ struct OptimizationTestSuite : public vigra::test_suite
     }
 };
 
-int main() 
+int main()
 {
     OptimizationTestSuite test;
     int failed = test.run();

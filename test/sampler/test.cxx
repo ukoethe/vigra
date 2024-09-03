@@ -70,7 +70,7 @@ struct SamplerTests
     void testStratifiedSamplingWithReplacement();
     void testSamplingWithoutReplacementChi2();
     void testSamplingWithReplacementChi2();
-    
+
     void testSamplingImpl(bool withReplacement);
     void testStratifiedSamplingImpl(bool withReplacement);
 };
@@ -93,7 +93,7 @@ void SamplerTests::testSamplingImpl(bool withReplacement)
     for(int ii = 0; ii <300; ++ii)
     {
         // check basic attributes
-        Sampler<> sampler( totalDataCount, 
+        Sampler<> sampler( totalDataCount,
             SamplerOptions().withReplacement(withReplacement).sampleSize(numOfSamples));
         shouldEqual(sampler.totalCount(), totalDataCount);
         shouldEqual(sampler.sampleSize(), numOfSamples);
@@ -101,13 +101,13 @@ void SamplerTests::testSamplingImpl(bool withReplacement)
         shouldEqual(sampler.stratifiedSampling(), false);
         shouldEqual(sampler.withReplacement(), withReplacement);
 
-        Sampler<> samplerProportional( totalDataCount, 
+        Sampler<> samplerProportional( totalDataCount,
             SamplerOptions().withReplacement(withReplacement).sampleProportion(0.5));
         shouldEqual(samplerProportional.totalCount(), totalDataCount);
         shouldEqual(samplerProportional.sampleSize(), numOfSamples);
         shouldEqual(samplerProportional.strataCount(), 1);
         shouldEqual(samplerProportional.withReplacement(), withReplacement);
-        
+
         sampler.sample();
         samplerProportional.sample();
         // check that indices are either sampled or out-of-bag
@@ -115,13 +115,13 @@ void SamplerTests::testSamplingImpl(bool withReplacement)
             ArrayVector<bool> wasPicked(totalDataCount, false);
             Sampler<>::IndexArrayType usedIndices(sampler.sampledIndices());
             Sampler<>::IndexArrayType unusedIndices(sampler.oobIndices());
-            
+
             shouldEqual((int)usedIndices.size(), numOfSamples);
             if(withReplacement)
                 should(usedIndices.size()+unusedIndices.size() >= (unsigned int)totalDataCount);
             else
                 shouldEqual(usedIndices.size()+unusedIndices.size(), (unsigned int)totalDataCount);
-                
+
             for(unsigned int ii = 0; ii < usedIndices.size(); ++ii)
             {
                 should(usedIndices[ii] >= 0 && usedIndices[ii] < int(totalDataCount));
@@ -152,7 +152,7 @@ void SamplerTests::testSamplingImpl(bool withReplacement)
         // check exception when more samples than data
         try
         {
-            Sampler<> sampler( 2, 
+            Sampler<> sampler( 2,
                  SamplerOptions().withoutReplacement().sampleSize(9));
             failTest("No exception thrown when there are too few data for sampling.");
         }
@@ -181,10 +181,10 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
         strata.push_back(1);
         strata.push_back(2);
     }
-    
+
     {
         int  totalDataCount = strata.size();
-        Sampler<> sampler( strata.begin(), strata.end(), 
+        Sampler<> sampler( strata.begin(), strata.end(),
              SamplerOptions().withReplacement(withReplacement).sampleSize(10).stratified());
         shouldEqual(sampler.totalCount(), totalDataCount);
         shouldEqual(sampler.sampleSize(), 10);
@@ -196,7 +196,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
             should(int(sampler.sampledIndices().size()+sampler.oobIndices().size()) >= totalDataCount);
         else
             shouldEqual(int(sampler.sampledIndices().size()+sampler.oobIndices().size()), totalDataCount);
-            
+
         ArrayVector<bool> wasPicked(totalDataCount, false);
 
         for(int ii = 0; ii < 5; ++ii)
@@ -230,7 +230,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
 
     {
         int totalDataCount = strata.size();
-        Sampler<> sampler( strata.begin(), strata.end(), 
+        Sampler<> sampler( strata.begin(), strata.end(),
              SamplerOptions().withReplacement(withReplacement).sampleSize(9).stratified());
         sampler.sample();
         shouldEqual(sampler.sampleSize(), 9);
@@ -268,7 +268,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
     }
 
     {
-        Sampler<> sampler( strata.begin(), strata.end(), 
+        Sampler<> sampler( strata.begin(), strata.end(),
              SamplerOptions().withReplacement(withReplacement).sampleSize(10).stratified());
         sampler.sample();
 
@@ -290,7 +290,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
     // need at most one sample per stratum
     try
     {
-        Sampler<> sampler( strata.begin(), strata.end(), 
+        Sampler<> sampler( strata.begin(), strata.end(),
              SamplerOptions().withReplacement(withReplacement).sampleSize(2).stratified());
         failTest("No exception thrown when there are too few data for stratified sampling.");
     }
@@ -308,7 +308,7 @@ void SamplerTests::testSamplingWithoutReplacementChi2()
     int nsamples = 120000;
     int nclasses = 120;
     MersenneTwister randomGenerator;
-    Sampler<> sampler( 5, 
+    Sampler<> sampler( 5,
                 SamplerOptions().withoutReplacement().sampleSize(5),
                 &randomGenerator);
     std::map<unsigned int, int> wierdmap;
@@ -325,10 +325,10 @@ void SamplerTests::testSamplingWithoutReplacementChi2()
         }
         wierdmap[hash] = 0;
     }
-    
+
     // check that all 120 permutations occured after 1000 trials
     shouldEqual((int)wierdmap.size(), nclasses);
-    
+
     for(int ii = 0; ii < nsamples; ++ii)
     {
         sampler.sample();
@@ -347,7 +347,7 @@ void SamplerTests::testSamplingWithoutReplacementChi2()
     {
         chi_squared += sq(iter->second - ratio)/ratio;
     }
-    
+
     // check that we are in the 80% quantile of the expected distribution
     shouldEqualTolerance (0, chi2CDF(119, chi_squared)-0.5, 0.4);
 }
@@ -368,7 +368,7 @@ void SamplerTests::testSamplingWithReplacementChi2()
 
     {
         MersenneTwister randomGenerator;
-        Sampler<> sampler(totalDataCount, 
+        Sampler<> sampler(totalDataCount,
              SamplerOptions().withReplacement().sampleSize(numOfSamples),
              &randomGenerator);
 
@@ -395,7 +395,7 @@ void SamplerTests::testSamplingWithReplacementChi2()
     around 0.63 +/- 0.015 */
     totalDataCount = 10000;
     {
-        Sampler<> sampler( totalDataCount, 
+        Sampler<> sampler( totalDataCount,
              SamplerOptions().withReplacement().sampleSize(totalDataCount));
         sampler.sample();
         double numPositives = double(totalDataCount - sampler.oobIndices().size()) / totalDataCount;

@@ -12,7 +12,7 @@ IF(DOXYGEN_FOUND AND Python_Interpreter_FOUND)
         set(DOXYGEN_BEFORE_1_8 "#")
         set(DOXYGEN_FROM_1_8_2 "")
     endif()
-    
+
     CONFIGURE_FILE(
         ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
         ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
@@ -21,7 +21,7 @@ IF(DOXYGEN_FOUND AND Python_Interpreter_FOUND)
     ADD_CUSTOM_TARGET (doc_cpp
         COMMAND ${CMAKE_COMMAND} -E make_directory ${DOCDIR}
         COMMAND ${CMAKE_COMMAND} -E make_directory ${DOCDIR}/vigra
-        COMMAND ${DOXYGEN_EXECUTABLE}  
+        COMMAND ${DOXYGEN_EXECUTABLE}
         COMMENT "Generating documentation with doxygen ${DOXYGEN_VERSION}")
 
     ADD_CUSTOM_COMMAND(
@@ -46,7 +46,7 @@ IF(DOXYGEN_FOUND AND Python_Interpreter_FOUND)
         COMMENT "Postprocessing html files")
 
 ELSE()
-    ADD_CUSTOM_TARGET (doc_cpp 
+    ADD_CUSTOM_TARGET (doc_cpp
         COMMAND ${CMAKE_COMMAND} -E echo
             \"Cannot generate C++ documentation -- doxygen or Python not found.\")
 

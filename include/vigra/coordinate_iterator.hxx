@@ -121,7 +121,7 @@ struct StridePair
     {
         return index;
     }
-    
+
     double & dim0()
     {
         return coord[0];
@@ -231,7 +231,7 @@ struct StridePairPointer : public StridePairCoord<N>
     {
         return index;
     }
-    
+
     void operator+=(stride_type x)
     {
         index += x.c;
@@ -502,7 +502,7 @@ struct CoordinateMultiIterator : public CoordinateStride<N>::iterator_type
         : base_type(ptr_type(origin, stride.dim0()),
                     detail::dismember<N>(stride),
                     detail::dismember<N>(shape)) {}
-                                                 
+
     CoordinateMultiIterator(const base_type & x) : base_type(x) {}
 };
 
@@ -555,7 +555,7 @@ struct CombinedMultiIterator
     typedef typename ptr_type::stride_type            stride_type;
     typedef typename ptr_type::coord_type             coord_type;
     typedef typename pair_type::shape_array_type      shape_array_type;
-    
+
     CombinedMultiIterator(const T*                               raw_pointer,
                           const stride_type &                    origin,
                           const TinyVector<MultiArrayIndex, N> & pointer_stride,
@@ -565,7 +565,7 @@ struct CombinedMultiIterator
         : base_type(ptr_type(pair_type(raw_pointer, origin), stride.dim0()),
                     detail::dismember<N>(pointer_stride, stride),
                     shape) {}
-                                                 
+
     CombinedMultiIterator(const base_type & x) : base_type(x) {}
 };
 
@@ -607,7 +607,7 @@ srcCoordinateMultiArrayRange(const MultiArrayView<N, T, StrideTag> & array,
     typedef typename returns::access_type             access_type;
     typedef typename returns::iterator_type           iterator_type;
     typedef typename returns::shape_array_type        shape_array_type;
-    
+
     shape_array_type shape = array.shape();
     return type(iterator_type(array.traverser_begin().get(),
                               stride_type(origin),
@@ -665,7 +665,7 @@ class CoordinateConstValueAccessor
     value_type operator()(ITERATOR const & i) const
     {
         const typename ITERATOR::value_type & x = *i;
-        return value_type(a(&x.value()), x.coord()); 
+        return value_type(a(&x.value()), x.coord());
     }
         /** Read the data item at an offset.
         */
@@ -709,7 +709,7 @@ srcCoordinateMultiArrayRangeAccessor(const MultiArrayView<N, T, StrideTag> &
     typedef typename returns::access_type      access_type;
     typedef typename returns::iterator_type    iterator_type;
     typedef typename returns::shape_array_type shape_array_type;
-    
+
     shape_array_type shape = array.shape();
     return type(iterator_type(array.traverser_begin().get(),
                               stride_type(origin),

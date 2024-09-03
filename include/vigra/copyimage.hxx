@@ -29,11 +29,11 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
- 
+
+
 #ifndef VIGRA_COPYIMAGE_HXX
 #define VIGRA_COPYIMAGE_HXX
 
@@ -56,7 +56,7 @@ namespace vigra {
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
-copyLine(SrcIterator s, 
+copyLine(SrcIterator s,
          SrcIterator send, SrcAccessor src,
          DestIterator d, DestAccessor dest)
 {
@@ -65,10 +65,10 @@ copyLine(SrcIterator s,
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class MaskIterator, class MaskAccessor, 
+          class MaskIterator, class MaskAccessor,
           class DestIterator, class DestAccessor>
 void
-copyLineIf(SrcIterator s, 
+copyLineIf(SrcIterator s,
            SrcIterator send, SrcAccessor src,
            MaskIterator m, MaskAccessor mask,
            DestIterator d, DestAccessor dest)
@@ -81,7 +81,7 @@ copyLineIf(SrcIterator s,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
-swapLine(SrcIterator s, 
+swapLine(SrcIterator s,
          SrcIterator send, SrcAccessor src,
          DestIterator d, DestAccessor dest)
 {
@@ -103,11 +103,11 @@ swapLine(SrcIterator s,
 
     If necessary, type conversion takes place.
     Some variants of this function use accessors to access the pixel data.
-    
+
     See \ref copyMultiArray() for a dimension-independent version of this algorithm.
-    
+
     <b> Declarations:</b>
-    
+
     pass 2D array views:
     \code
     namespace vigra {
@@ -118,7 +118,7 @@ swapLine(SrcIterator s,
                   MultiArrayView<2, T2, S2> dest);
     }
     \endcode
-    
+
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -139,9 +139,9 @@ swapLine(SrcIterator s,
                   pair<DestImageIterator, DestAccessor> dest)
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/copyimage.hxx\><br>
     Namespace: vigra
 
@@ -150,9 +150,9 @@ swapLine(SrcIterator s,
     MultiArray<2, int> src(Shape2(100, 200)),
                        dest(Shape2(100, 200));
     ...
-    
+
     copyImage(src, dest);
-    
+
     // equivalent to
     dest = src;
     \endcode
@@ -161,20 +161,20 @@ swapLine(SrcIterator s,
     \code
     MultiArray<2, RGBValue<unsigned char> > src(Shape2(100, 200)),
     MultiArray<2, float>                    dest(Shape2(100, 200));
-    
+
     // convert RGB to gray values in the fly
-    copyImage(srcImageRange(src, RGBToGrayAccessor<RGBValue<unsigned char> >()), 
+    copyImage(srcImageRange(src, RGBToGrayAccessor<RGBValue<unsigned char> >()),
               destImage(dest));
     \endcode
-    
+
     <b> Required Interface:</b>
-    
+
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator      dest_upperleft;
     SrcImageIterator::row_iterator sx = src_upperleft.rowIterator();
     DestImageIterator::row_iterator dx = dest_upperleft.rowIterator();
-    
+
     SrcAccessor src_accessor;
     DestAccessor dest_accessor;
 
@@ -186,20 +186,20 @@ doxygen_overloaded_function(template <...> void copyImage)
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 void
-copyImage(SrcImageIterator src_upperleft, 
+copyImage(SrcImageIterator src_upperleft,
           SrcImageIterator src_lowerright, SrcAccessor sa,
           DestImageIterator dest_upperleft, DestAccessor da)
 {
     int w = src_lowerright.x - src_upperleft.x;
-    
+
     for(; src_upperleft.y<src_lowerright.y; ++src_upperleft.y, ++dest_upperleft.y)
     {
-        copyLine(src_upperleft.rowIterator(), 
-                 src_upperleft.rowIterator() + w, sa, 
+        copyLine(src_upperleft.rowIterator(),
+                 src_upperleft.rowIterator() + w, sa,
                  dest_upperleft.rowIterator(), da);
     }
 }
-    
+
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 inline
@@ -207,7 +207,7 @@ void
 copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
           pair<DestImageIterator, DestAccessor> dest)
 {
-    copyImage(src.first, src.second, src.third, 
+    copyImage(src.first, src.second, src.third,
               dest.first, dest.second);
 }
 
@@ -225,20 +225,20 @@ copyImage(MultiArrayView<2, T1, S1> const & src,
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 void
-swapImageData(SrcImageIterator src_upperleft, 
+swapImageData(SrcImageIterator src_upperleft,
               SrcImageIterator src_lowerright, SrcAccessor sa,
               DestImageIterator dest_upperleft, DestAccessor da)
 {
     int w = src_lowerright.x - src_upperleft.x;
-    
+
     for(; src_upperleft.y<src_lowerright.y; ++src_upperleft.y, ++dest_upperleft.y)
     {
-        swapLine(src_upperleft.rowIterator(), 
-                 src_upperleft.rowIterator() + w, sa, 
+        swapLine(src_upperleft.rowIterator(),
+                 src_upperleft.rowIterator() + w, sa,
                  dest_upperleft.rowIterator(), da);
     }
 }
-    
+
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 inline
@@ -246,7 +246,7 @@ void
 swapImageData(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
               pair<DestImageIterator, DestAccessor> dest)
 {
-    swapImageData(src.first, src.second, src.third, 
+    swapImageData(src.first, src.second, src.third,
                   dest.first, dest.second);
 }
 
@@ -274,9 +274,9 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
     accessor is not zero.
     If necessary, type conversion takes place.
     Some variants of this function use accessors to access the pixel data.
-    
+
     <b> Declarations:</b>
-    
+
     pass 2D array views:
     \code
     namespace vigra {
@@ -289,7 +289,7 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
                     MultiArrayView<2, T2, S2> dest);
     }
     \endcode
-    
+
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -297,7 +297,7 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
               class MaskImageIterator, class MaskAccessor,
               class DestImageIterator, clas DestAccessor>
         void
-        copyImageIf(SrcImageIterator src_upperleft, 
+        copyImageIf(SrcImageIterator src_upperleft,
             SrcImageIterator src_lowerright, SrcAccessor sa,
             MaskImageIterator mask_upperleft, MaskAccessor ma,
             DestImageIterator dest_upperleft, DestAccessor da)
@@ -315,9 +315,9 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
             pair<DestImageIterator, DestAccessor> dest)
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/copyimage.hxx\><br>
     Namespace: vigra
 
@@ -327,7 +327,7 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
                        mask(Shape2(100, 200)),
                        dest(Shape2(100, 200));
     ...
-    
+
     copyImageIf(src, mask, dest);
     \endcode
 
@@ -336,9 +336,9 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
     MultiArray<2, RGBValue<unsigned char> > src(Shape2(100, 200)),
     MultiArray<2, unsigned char>            mask(Shape2(100, 200));
     MultiArray<2, float>                    dest(Shape2(100, 200));
-    
+
     // convert RGB to gray values in the fly
-    copyImageIf(srcImageRange(src, RGBToGrayAccessor<RGBValue<unsigned char> >()), 
+    copyImageIf(srcImageRange(src, RGBToGrayAccessor<RGBValue<unsigned char> >()),
                 maskImage(mask), destImage(dest));
     \endcode
 
@@ -351,12 +351,12 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
     SrcImageIterator::row_iterator sx = src_upperleft.rowIterator();
     MaskImageIterator::row_iterator mx = mask_upperleft.rowIterator();
     DestImageIterator::row_iterator dx = dest_upperleft.rowIterator();
-    
+
     SrcAccessor src_accessor;
     DestAccessor dest_accessor;
     MaskAccessor mask_accessor;
     Functor functor;
-    
+
     if(mask_accessor(mx))
         dest_accessor.set(src_accessor(sx), dx);
 
@@ -368,19 +368,19 @@ template <class SrcImageIterator, class SrcAccessor,
           class MaskImageIterator, class MaskAccessor,
           class DestImageIterator, class DestAccessor>
 void
-copyImageIf(SrcImageIterator src_upperleft, 
+copyImageIf(SrcImageIterator src_upperleft,
             SrcImageIterator src_lowerright, SrcAccessor sa,
             MaskImageIterator mask_upperleft, MaskAccessor ma,
         DestImageIterator dest_upperleft, DestAccessor da)
 {
     int w = src_lowerright.x - src_upperleft.x;
-    
-    for(; src_upperleft.y<src_lowerright.y; 
+
+    for(; src_upperleft.y<src_lowerright.y;
              ++src_upperleft.y, ++mask_upperleft.y, ++dest_upperleft.y)
     {
-        copyLineIf(src_upperleft.rowIterator(), 
-                   src_upperleft.rowIterator() + w, sa, 
-                   mask_upperleft.rowIterator(), ma, 
+        copyLineIf(src_upperleft.rowIterator(),
+                   src_upperleft.rowIterator() + w, sa,
+                   mask_upperleft.rowIterator(), ma,
                    dest_upperleft.rowIterator(), da);
     }
 }
@@ -394,8 +394,8 @@ copyImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
             pair<MaskImageIterator, MaskAccessor> mask,
             pair<DestImageIterator, DestAccessor> dest)
 {
-    copyImageIf(src.first, src.second, src.third, 
-                mask.first, mask.second, 
+    copyImageIf(src.first, src.second, src.third,
+                mask.first, mask.second,
                 dest.first, dest.second);
 }
 
@@ -409,8 +409,8 @@ copyImageIf(MultiArrayView<2, T1, S1> const & src,
 {
     vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
         "copyImageIf(): shape mismatch between input and output.");
-    copyImageIf(srcImageRange(src), 
-                maskImage(mask), 
+    copyImageIf(srcImageRange(src),
+                maskImage(mask),
                 destImage(dest));
 }
 

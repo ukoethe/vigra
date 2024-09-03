@@ -426,12 +426,12 @@ class EdgeWeightedUcm
                 isLifted_[mergeGraph_.graph().id(aa)] = isLiftedA && isLiftedB;
             }
             if(!done){
-                
+
                 EdgeIndicatorReference va=edgeIndicatorMap_[aa];
                 EdgeIndicatorReference vb=edgeIndicatorMap_[bb];
                 va*=edgeSizeMap_[aa];
                 vb*=edgeSizeMap_[bb];
-                
+
                 va+=vb;
                 edgeSizeMap_[aa]+=edgeSizeMap_[bb];
                 va/=(edgeSizeMap_[aa]);

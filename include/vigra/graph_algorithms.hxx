@@ -73,7 +73,7 @@ namespace vigra{
         template <class GRAPH_MAP,class COMPERATOR>
         struct GraphItemCompare
         {
-            
+
             GraphItemCompare(const GRAPH_MAP & map,const COMPERATOR & comperator)
             : map_(map),
               comperator_(comperator){
@@ -92,7 +92,7 @@ namespace vigra{
 
     /// \brief get a vector of Edge descriptors
     ///
-    /// Sort the Edge descriptors given weights 
+    /// Sort the Edge descriptors given weights
     /// and a comperator
     template<class GRAPH,class WEIGHTS,class COMPERATOR>
     void edgeSort(
@@ -131,7 +131,7 @@ namespace vigra{
             ++iter;
         }
     }
-    /// \brief fill a lemon node map 
+    /// \brief fill a lemon node map
     template<class G,class A,class T>
     void fillNodeMap(const G & g, A & a, const T & value){
         typename  G::NodeIt iter(g);
@@ -154,7 +154,7 @@ namespace vigra{
     ///
     /// \param graphIn  : input graph
     /// \param labels   : labels w.r.t. graphIn
-    /// \param[out] rag  : region adjacency graph 
+    /// \param[out] rag  : region adjacency graph
     /// \param[out] affiliatedEdges : a vector of edges of graphIn for each edge in rag
     /// \param      ignoreLabel : optional label to ignore (default: -1 means no label will be ignored)
     ///
@@ -177,7 +177,7 @@ namespace vigra{
         typedef typename GraphIn::Edge   EdgeGraphIn;
         typedef typename GraphIn::NodeIt NodeItGraphIn;
         typedef typename GraphIn::EdgeIt EdgeItGraphIn;
-        typedef typename GraphOut::Edge   EdgeGraphOut; 
+        typedef typename GraphOut::Edge   EdgeGraphOut;
 
 
         for(NodeItGraphIn iter(graphIn);iter!=lemon::INVALID;++iter){
@@ -185,7 +185,7 @@ namespace vigra{
             if(ignoreLabel==-1 || static_cast<Int64>(l)!=ignoreLabel)
                 rag.addNode(l);
         }
-    
+
         for(EdgeItGraphIn e(graphIn);e!=lemon::INVALID;++e){
             const EdgeGraphIn edge(*e);
             const LabelType lu = labels[graphIn.u(edge)];
@@ -195,7 +195,7 @@ namespace vigra{
                 rag.addEdge( rag.nodeFromId(lu),rag.nodeFromId(lv));
             }
         }
-        
+
         //SET UP HYPEREDGES
         affiliatedEdges.assign(rag);
         for(EdgeItGraphIn e(graphIn);e!=lemon::INVALID;++e){
@@ -239,7 +239,7 @@ namespace vigra{
         const AFF_EDGES & affEdges,
         OUT_ITER outIter
     ){
-      
+
         typedef typename  AdjacencyListGraph::EdgeIt EdgeIt;
         typedef typename  AdjacencyListGraph::Edge Edge;
         typedef typename  GridGraph<DIM,DTAG>::Edge GEdge;
@@ -267,7 +267,7 @@ namespace vigra{
         IN_ITER begin,
         IN_ITER
     ){
-      
+
         typedef typename  AdjacencyListGraph::EdgeIt EdgeIt;
         typedef typename  AdjacencyListGraph::Edge Edge;
         typedef typename  GridGraph<DIM,DTAG>::Edge GEdge;
@@ -308,7 +308,7 @@ namespace vigra{
         typedef typename Graph:: template NodeMap<Node>       PredecessorsMap;
         typedef typename Graph:: template NodeMap<WeightType> DistanceMap;
         typedef ArrayVector<Node>                             DiscoveryOrder;
-            
+
         /// \ brief constructor from graph
         ShortestPathDijkstra(const Graph & g)
         :   graph_(g),
@@ -320,19 +320,19 @@ namespace vigra{
 
         /// \brief run shortest path given edge weights
         ///
-        /// \param weights : edge weights encoding the distance between adjacent nodes (must be non-negative) 
+        /// \param weights : edge weights encoding the distance between adjacent nodes (must be non-negative)
         /// \param source  : source node where shortest path should start
         /// \param target  : target node where shortest path should stop. If target is not given
         ///                  or <tt>INVALID</tt>, the shortest path from source to all reachable nodes is computed
         /// \param maxDistance  : path search is terminated when the path length exceeds <tt>maxDistance</tt>
         ///
-        /// When a valid \a target is unreachable from \a source (either because the graph is disconnected 
+        /// When a valid \a target is unreachable from \a source (either because the graph is disconnected
         /// or \a maxDistance is exceeded), it is set to <tt>lemon::INVALID</tt>. In contrast, if \a target
-        /// was <tt>lemon::INVALID</tt> at the beginning, it will always be set to the last node 
+        /// was <tt>lemon::INVALID</tt> at the beginning, it will always be set to the last node
         /// visited in the search.
         template<class WEIGHTS>
         void run(const WEIGHTS & weights, const Node & source,
-                 const Node & target = lemon::INVALID, 
+                 const Node & target = lemon::INVALID,
                  WeightType maxDistance=NumericTraits<WeightType>::max())
         {
             this->initializeMaps(source);
@@ -343,19 +343,19 @@ namespace vigra{
         ///
         /// \param start : first point in the desired ROI.
         /// \param stop  : beyond the last point in the desired ROI (i.e. exclusive)
-        /// \param weights : edge weights encoding the distance between adjacent nodes (must be non-negative) 
+        /// \param weights : edge weights encoding the distance between adjacent nodes (must be non-negative)
         /// \param source  : source node where shortest path should start
         /// \param target  : target node where shortest path should stop. If target is not given
         ///                  or <tt>INVALID</tt>, the shortest path from source to all reachable nodes is computed
         /// \param maxDistance  : path search is terminated when the path length exceeds <tt>maxDistance</tt>
         ///
         /// This version of <tt>run()</tt> restricts the path search to the ROI <tt>[start, stop)</tt> and only
-        /// works for instances of \ref GridGraph. Otherwise, it is identical to the standard <tt>run()</tt> 
+        /// works for instances of \ref GridGraph. Otherwise, it is identical to the standard <tt>run()</tt>
         /// function.
         template<class WEIGHTS>
         void run(Node const & start, Node const & stop,
                  const WEIGHTS & weights, const Node & source,
-                 const Node & target = lemon::INVALID, 
+                 const Node & target = lemon::INVALID,
                  WeightType maxDistance=NumericTraits<WeightType>::max())
         {
             vigra_precondition(allLessEqual(start, source) && allLess(source, stop),
@@ -369,13 +369,13 @@ namespace vigra{
 
         /// \brief run shortest path again with given edge weights
         ///
-        /// This only differs from standard <tt>run()</tt> by initialization: Instead of resetting 
-        /// the entire graph, this only resets the nodes that have been visited in the 
+        /// This only differs from standard <tt>run()</tt> by initialization: Instead of resetting
+        /// the entire graph, this only resets the nodes that have been visited in the
         /// previous run, i.e. the contents of the array <tt>discoveryOrder()</tt>.
         /// This will be much faster if only a small fraction of the nodes has to be reset.
         template<class WEIGHTS>
         void reRun(const WEIGHTS & weights, const Node & source,
-                   const Node & target = lemon::INVALID, 
+                   const Node & target = lemon::INVALID,
                    WeightType maxDistance=NumericTraits<WeightType>::max())
         {
             this->reInitializeMaps(source);
@@ -384,12 +384,12 @@ namespace vigra{
 
         /// \brief run shortest path with given edge weights from multiple sources.
         ///
-        /// This is otherwise identical to standard <tt>run()</tt>, except that 
+        /// This is otherwise identical to standard <tt>run()</tt>, except that
         /// <tt>source()</tt> returns <tt>lemon::INVALID</tt> after path search finishes.
         template<class WEIGHTS, class ITER>
-        void 
+        void
         runMultiSource(const WEIGHTS & weights, ITER source_begin, ITER source_end,
-                 const Node & target = lemon::INVALID, 
+                 const Node & target = lemon::INVALID,
                  WeightType maxDistance=NumericTraits<WeightType>::max())
         {
             this->initializeMapsMultiSource(source_begin, source_end);
@@ -399,16 +399,16 @@ namespace vigra{
 
         /// \brief run shortest path with given edge weights from multiple sources.
         ///
-        /// This is otherwise identical to standard <tt>run()</tt>, except that 
+        /// This is otherwise identical to standard <tt>run()</tt>, except that
         /// <tt>source()</tt> returns <tt>lemon::INVALID</tt> after path search finishes.
         template<class EFGE_WEIGHTS,class NODE_WEIGHTS, class ITER>
-        void 
+        void
         runMultiSource(
-            const EFGE_WEIGHTS & edgeWeights, 
+            const EFGE_WEIGHTS & edgeWeights,
             const NODE_WEIGHTS & nodeWeights,
-            ITER source_begin, 
+            ITER source_begin,
             ITER source_end,
-            const Node & target = lemon::INVALID, 
+            const Node & target = lemon::INVALID,
             WeightType maxDistance = NumericTraits<WeightType>::max())
         {
             this->initializeMapsMultiSource(source_begin, source_end);
@@ -442,12 +442,12 @@ namespace vigra{
         const PredecessorsMap & predecessors()const{
             return predMap_;
         }
-        
+
         /// \brief get the distances node map (after a call of run)
         const DistanceMap & distances()const{
             return distMap_;
         }
-        
+
         /// \brief get the distance to a rarget node (after a call of run)
         WeightType distance(const Node & target)const{
             return distMap_[target];
@@ -458,7 +458,7 @@ namespace vigra{
 
         template<class WEIGHTS>
         void runImpl(const WEIGHTS & weights,
-                     const Node & target = lemon::INVALID, 
+                     const Node & target = lemon::INVALID,
                      WeightType maxDistance=NumericTraits<WeightType>::max())
         {
             ZeroNodeMap<Graph, WEIGHT_TYPE> zeroNodeMap;
@@ -470,7 +470,7 @@ namespace vigra{
         void runImplWithNodeWeights(
             const EDGE_WEIGHTS & edgeWeights,
             const NODE_WEIGHTS & nodeWeights,
-            const Node & target = lemon::INVALID, 
+            const Node & target = lemon::INVALID,
             WeightType maxDistance=NumericTraits<WeightType>::max())
         {
             target_ = lemon::INVALID;
@@ -515,7 +515,7 @@ namespace vigra{
                 pq_.pop();
             }
             if(target == lemon::INVALID || discoveryOrder_.back() == target)
-                target_ = discoveryOrder_.back(); // Means that target was reached. If, to the contrary, target 
+                target_ = discoveryOrder_.back(); // Means that target was reached. If, to the contrary, target
                                                   // was unreachable within maxDistance, target_ remains INVALID.
         }
 
@@ -537,12 +537,12 @@ namespace vigra{
             Node left_border  = min(start, Node(1)),
                  right_border = min(predMap_.shape()-stop, Node(1)),
                  DONT_TOUCH   = Node(lemon::INVALID) - Node(1);
-            
+
             initMultiArrayBorder(predMap_.subarray(start-left_border, stop+right_border),
                                  left_border, right_border, DONT_TOUCH);
             predMap_.subarray(start, stop) = lemon::INVALID;
             predMap_[source]=source;
-            
+
             distMap_[source]=static_cast<WeightType>(0.0);
             discoveryOrder_.clear();
             pq_.push(graph_.id(source),0.0);
@@ -683,11 +683,11 @@ namespace vigra{
             }
         }
     }
-    
+
 
     template<
-    class GRAPH, 
-    class EDGE_WEIGHTS, 
+    class GRAPH,
+    class EDGE_WEIGHTS,
     class NODE_WEIGHTS,
     class SEED_NODE_MAP,
     class WEIGHT_TYPE
@@ -780,7 +780,7 @@ namespace vigra{
         const SEEDS             & seeds,
         PRIORITY_MANIP_FUNCTOR  & priorManipFunctor,
         LABELS                  & labels
-    ){  
+    ){
         typedef GRAPH Graph;
         typedef typename Graph::Edge Edge;
         typedef typename Graph::Node Node;
@@ -862,7 +862,7 @@ namespace vigra{
 
 
     /// \brief edge weighted watersheds Segmentataion
-    /// 
+    ///
     /// \param g: input graph
     /// \param edgeWeights : edge weights / edge indicator
     /// \param seeds : seed must be non empty!
@@ -873,14 +873,14 @@ namespace vigra{
         const EDGE_WEIGHTS & edgeWeights,
         const SEEDS        & seeds,
         LABELS             & labels
-    ){  
+    ){
         detail_watersheds_segmentation::RawPriorityFunctor fPriority;
         detail_watersheds_segmentation::edgeWeightedWatershedsSegmentationImpl(g,edgeWeights,seeds,fPriority,labels);
-    }   
-    
+    }
+
 
     /// \brief edge weighted watersheds Segmentataion
-    /// 
+    ///
     /// \param g: input graph
     /// \param edgeWeights : edge weights / edge indicator
     /// \param seeds : seed must be non empty!
@@ -905,7 +905,7 @@ namespace vigra{
     }
 
     /// \brief edge weighted watersheds Segmentataion
-    /// 
+    ///
     /// \param graph: input graph
     /// \param edgeWeights : edge weights / edge indicator
     /// \param nodeSizes : size of each node
@@ -932,7 +932,7 @@ namespace vigra{
 
         // initalize node size map  and internal diff map
         NodeIntDiffMap internalDiff(graph);
-        NodeSizeAccMap nodeSizeAcc(graph);  
+        NodeSizeAccMap nodeSizeAcc(graph);
         copyNodeMap(graph,nodeSizes,nodeSizeAcc);
         fillNodeMap(graph,internalDiff,static_cast<WeightType>(0.0));
 
@@ -949,7 +949,7 @@ namespace vigra{
         UnionFindArray<UInt64> ufdArray(graph.maxNodeId()+1);
 
 
-        size_t nodeNum = graph.nodeNum();   
+        size_t nodeNum = graph.nodeNum();
 
 
         while(true){
@@ -1001,7 +1001,7 @@ namespace vigra{
             const Node node(*n);
             nodeLabeling[node]=ufdArray.findLabel(graph.id(node));
         }
-    } 
+    }
 
 
 
@@ -1009,7 +1009,7 @@ namespace vigra{
     namespace detail_graph_smoothing{
 
     template<
-        class GRAPH, 
+        class GRAPH,
         class NODE_FEATURES_IN,
         class EDGE_WEIGHTS,
         class WEIGHTS_TO_SMOOTH_FACTOR,
@@ -1060,7 +1060,7 @@ namespace vigra{
                 weightSum+=smoothFactor;
                 ++degree;
             }
-            // fixme..set me to right type 
+            // fixme..set me to right type
             featIn*=static_cast<float>(degree);
             weightSum+=static_cast<float>(degree);
             featOut+=featIn;
@@ -1089,8 +1089,8 @@ namespace vigra{
     /// \brief smooth node features of a graph
     ///
     /// \param g               : input graph
-    /// \param nodeFeaturesIn  : input node features which should be smoothed       
-    /// \param edgeIndicator   : edge indicator to indicate over which edges one should smooth        
+    /// \param nodeFeaturesIn  : input node features which should be smoothed
+    /// \param edgeIndicator   : edge indicator to indicate over which edges one should smooth
     /// \param lambda          : scale edge indicator by lambda before taking negative exponent
     /// \param edgeThreshold   : edge threshold
     /// \param scale           : how much smoothing should be applied
@@ -1112,8 +1112,8 @@ namespace vigra{
     /// \brief smooth node features of a graph
     ///
     /// \param g               : input graph
-    /// \param nodeFeaturesIn  : input node features which should be smoothed       
-    /// \param edgeIndicator   : edge indicator to indicate over which edges one should smooth        
+    /// \param nodeFeaturesIn  : input node features which should be smoothed
+    /// \param edgeIndicator   : edge indicator to indicate over which edges one should smooth
     /// \param lambda          : scale edge indicator by lambda before taking negative exponent
     /// \param edgeThreshold   : edge threshold
     /// \param scale           : how much smoothing should be applied
@@ -1189,11 +1189,11 @@ namespace vigra{
 
 
     /// project ground truth from a base graph, to a region adjacency graph.
-    ///     
     ///
     ///
     ///
-    template<class RAG, class BASE_GRAPH, class BASE_GRAPH_RAG_LABELS,  
+    ///
+    template<class RAG, class BASE_GRAPH, class BASE_GRAPH_RAG_LABELS,
              class BASE_GRAPH_GT,  class RAG_GT, class RAG_GT_QT>
     void projectGroundTruth(
         const RAG                   & rag,
@@ -1216,9 +1216,9 @@ namespace vigra{
         typedef typename MapType::const_iterator MapIter;
         typedef typename  RAG:: template NodeMap<MapType> Overlap;
         Overlap overlap(rag);
-        
+
         size_t i=0;
-        //::cout<<"\n"; 
+        //::cout<<"\n";
         for(BaseGraphNodeIt baseNodeIter(baseGraph); baseNodeIter!=lemon::INVALID; ++baseNodeIter , ++i ){
 
             //if (i%2000 == 0){
@@ -1230,15 +1230,15 @@ namespace vigra{
             // get gt label
             const GtLabelType gtLabel = baseGraphGt[baseNode];
 
-            // get the label which generated rag 
+            // get the label which generated rag
             // (node mapping from  bg-node to rag-node-id)
             const BaseRagLabelType bgRagLabel = baseGraphRagLabels[baseNode];
             const RagNode  ragNode = rag.nodeFromId(bgRagLabel);
 
-            // fill overlap 
+            // fill overlap
             overlap[ragNode][gtLabel]+=1;
         }
-        //std::cout<<"\n"; 
+        //std::cout<<"\n";
         // select label with max overlap
         for(RagNodeIt ragNodeIter(rag); ragNodeIter!=lemon::INVALID; ++ragNodeIter ){
             const RagNode  ragNode = *ragNodeIter;
@@ -1333,11 +1333,11 @@ namespace vigra{
     /// \param[out] edgeWeights : resulting edge weights
     /// \param euclidean : if 'true', multiply the computed weights with the Euclidean
     ///                    distance between the edge's end nodes (default: 'false')
-    /// \param func : binary function that computes the edge weight from the 
+    /// \param func : binary function that computes the edge weight from the
     ///               weights of the edge's end nodes (default: take the average)
     template<unsigned int N, class DirectedTag,
              class NODEMAP, class EDGEMAP, class FUNCTOR>
-    void 
+    void
     edgeWeightsFromNodeWeights(
             const GridGraph<N, DirectedTag> & g,
             const NODEMAP  & nodeWeights,
@@ -1350,9 +1350,9 @@ namespace vigra{
         typedef typename Graph::EdgeIt EdgeIt;
         typedef typename MultiArrayShape<N>::type CoordType;
 
-        vigra_precondition(nodeWeights.shape() == g.shape(), 
+        vigra_precondition(nodeWeights.shape() == g.shape(),
              "edgeWeightsFromNodeWeights(): shape mismatch between graph and nodeWeights.");
-        
+
         for (EdgeIt iter(g); iter!=lemon::INVALID; ++iter)
         {
             const Edge edge(*iter);
@@ -1371,7 +1371,7 @@ namespace vigra{
 
     template<unsigned int N, class DirectedTag,
              class NODEMAP, class EDGEMAP>
-    inline void 
+    inline void
     edgeWeightsFromNodeWeights(
             const GridGraph<N, DirectedTag> & g,
             const NODEMAP  & nodeWeights,
@@ -1381,8 +1381,8 @@ namespace vigra{
         using namespace vigra::functor;
         edgeWeightsFromNodeWeights(g, nodeWeights, edgeWeights, euclidean, Param(0.5)*(Arg1()+Arg2()));
     }
-    
-    
+
+
     /// \brief create edge weights from an interpolated image
     ///
     /// \param g : input graph
@@ -1390,12 +1390,12 @@ namespace vigra{
     /// \param[out] edgeWeights : edge weights
     /// \param euclidean : if 'true', multiply the weights with the Euclidean
     ///                    distance between the edge's end nodes (default: 'false')
-    /// 
+    ///
     /// For each edge, the function reads the weight from <tt>interpolatedImage[u+v]</tt>,
     /// where <tt>u</tt> and <tt>v</tt> are the coordinates of the edge's end points.
     template<unsigned int N, class DirectedTag,
             class T, class EDGEMAP>
-    void 
+    void
     edgeWeightsFromInterpolatedImage(
             const GridGraph<N, DirectedTag> & g,
             const MultiArrayView<N, T>  & interpolatedImage,
@@ -1407,9 +1407,9 @@ namespace vigra{
         typedef typename Graph::EdgeIt EdgeIt;
         typedef typename MultiArrayShape<N>::type CoordType;
 
-        vigra_precondition(interpolatedImage.shape() == 2*g.shape()-CoordType(1), 
+        vigra_precondition(interpolatedImage.shape() == 2*g.shape()-CoordType(1),
              "edgeWeightsFromInterpolatedImage(): interpolated shape must be shape*2-1");
-        
+
         for (EdgeIt iter(g); iter!=lemon::INVALID; ++iter)
         {
             const Edge edge(*iter);
@@ -1470,8 +1470,8 @@ namespace vigra{
 
     template<class GRAPH>
     void find3Cycles(
-        const GRAPH & g, 
-        MultiArray<1, TinyVector<Int32, 3> > & cyclesArray 
+        const GRAPH & g,
+        MultiArray<1, TinyVector<Int32, 3> > & cyclesArray
     ){
         typedef typename GRAPH::Node Node;
         typedef typename GRAPH::Edge Edge;
@@ -1513,8 +1513,8 @@ namespace vigra{
 
     template<class GRAPH>
     void find3CyclesEdges(
-        const GRAPH & g, 
-        MultiArray<1, TinyVector<Int32, 3> > & cyclesArray 
+        const GRAPH & g,
+        MultiArray<1, TinyVector<Int32, 3> > & cyclesArray
     ){
         typedef typename GRAPH::Node Node;
         typedef typename GRAPH::Edge Edge;

@@ -55,37 +55,37 @@ struct UnionFindAccessorImpl
 {
     static const T max_label = NumericTraits<T>::maxConst >> 1;
     static const T anchor_bit = ~max_label;
-    
+
     static T max()
     {
         return max_label;
     }
-    
+
     static T deletedAnchor()
     {
         return NumericTraits<T>::maxConst;
     }
-    
+
     static bool isAnchor(T const & t)
     {
         return (t & anchor_bit) != 0;
     }
-    
+
     static bool isValidAnchor(T const & t)
     {
         return isAnchor(t) && t != deletedAnchor();
     }
-    
+
     static bool notAnchor(T const & t)
     {
         return (t & anchor_bit) == 0;
     }
-    
+
     static T toAnchor(T const & t)
     {
         return t | anchor_bit;
     }
-    
+
     static T fromAnchor(T const & t)
     {
         return t & max_label;
@@ -99,32 +99,32 @@ struct UnionFindAccessorImpl<T, VigraTrueType>
     {
         return NumericTraits<T>::max();
     }
-    
+
     static T deletedAnchor()
     {
         return NumericTraits<T>::min();
     }
-    
+
     static bool isAnchor(T const & t)
     {
         return t < 0;
     }
-    
+
     static bool isValidAnchor(T const & t)
     {
         return isAnchor(t) && t != deletedAnchor();
     }
-    
+
     static bool notAnchor(T const & t)
     {
         return t >= 0;
     }
-    
+
     static T toAnchor(T const & t)
     {
         return -t - 1;
     }
-    
+
     static T fromAnchor(T const & t)
     {
         return -(t + 1);
@@ -145,19 +145,19 @@ class UnionFindIteratorPolicy
 
     Array const & array_;
     value_type index_;
-    
+
     UnionFindIteratorPolicy(Array const & array, value_type index=0)
     : array_(array)
     , index_(index)
     {}
-    
-    static void initialize(BaseType & d) 
+
+    static void initialize(BaseType & d)
     {
         advanceToAnchor(d);
     }
 
     static reference dereference(BaseType const & d)
-    { 
+    {
         return d.index_;
     }
 
@@ -173,13 +173,13 @@ class UnionFindIteratorPolicy
 
     static void increment(BaseType & d)
     {
-        ++d.index_; 
+        ++d.index_;
         advanceToAnchor(d);
     }
 
     static void advanceToAnchor(BaseType & d)
     {
-        while(d.index_ < (value_type)d.array_.size()-1 && 
+        while(d.index_ < (value_type)d.array_.size()-1 &&
               !LabelAccessor::isValidAnchor(d.array_[d.index_]))
         {
             ++d.index_;
@@ -194,41 +194,41 @@ class UnionFindArray
 {
     typedef ArrayVector<T>                                             LabelArray;
     typedef typename LabelArray::difference_type                       IndexType;
-    typedef detail::UnionFindAccessorImpl<T, 
+    typedef detail::UnionFindAccessorImpl<T,
                           typename NumericTraits<T>::isSigned>         LabelAccessor;
     typedef detail::UnionFindIteratorPolicy<LabelArray, LabelAccessor> IteratorPolicy;
     typedef IteratorAdaptor<IteratorPolicy>                            iterator;
     typedef iterator                                                   const_iterator;
 
     mutable ArrayVector<T> labels_;
-    
+
   public:
     UnionFindArray(T next_free_label = 1)
     {
         vigra_precondition(next_free_label <= LabelAccessor::max(),
            "UnionFindArray(): Need more labels than can be represented"
            "in the destination type.");
-        
+
         for(T k=0; k < next_free_label; ++k)
             labels_.push_back(LabelAccessor::toAnchor(k));
         labels_.push_back(LabelAccessor::toAnchor(next_free_label));
-    } 
-    
+    }
+
     const_iterator begin(unsigned int start_at=0) const
     {
         return const_iterator(IteratorPolicy(labels_, start_at));
     }
-    
+
     const_iterator end() const
     {
         return const_iterator(IteratorPolicy(labels_, labels_.size()-1));
     }
-    
+
     T nextFreeIndex() const
     {
         return T(labels_.size() - 1);
     }
-    
+
     T findIndex(T index) const
     {
         IndexType root = index;
@@ -242,18 +242,18 @@ class UnionFindArray
             index = next;
         }
         return (T)root;
-    } 
-    
+    }
+
     T findLabel(T index) const
     {
         return LabelAccessor::fromAnchor(labels_[findIndex(index)]);
     }
-    
+
     void deleteIndex(T index)
     {
         labels_[findIndex(index)] = LabelAccessor::deletedAnchor();
     }
-    
+
         // this function does not yet check for deletedIndex()
     T makeUnion(T l1, T l2)
     {
@@ -274,7 +274,7 @@ class UnionFindArray
             return (T)i2;
         }
     }
-    
+
     T finalizeIndex(T index)
     {
         if(index == (T)labels_.size()-1)
@@ -292,8 +292,8 @@ class UnionFindArray
         }
         return index;
     }
-    
-    T makeNewIndex() 
+
+    T makeNewIndex()
     {
         T index = LabelAccessor::fromAnchor(labels_.back());
         vigra_invariant(index < LabelAccessor::max(),
@@ -301,11 +301,11 @@ class UnionFindArray
         labels_.push_back(LabelAccessor::toAnchor((T)labels_.size()));
         return index;
     }
-    
+
     unsigned int makeContiguous()
     {
         // compress trees
-        unsigned int count = 0; 
+        unsigned int count = 0;
         for(IndexType i=0; i<(IndexType)(labels_.size()-1); ++i)
         {
             if(LabelAccessor::isValidAnchor(labels_[i]))
@@ -317,7 +317,7 @@ class UnionFindArray
                     labels_[i] = findIndex(i);  // path compression
             }
         }
-        return count-1;   
+        return count-1;
     }
 };
 

@@ -49,11 +49,11 @@ namespace rf3
 
 /**
  * @brief Base class from which all random forest visitors derive.
- * 
+ *
  * @details
  * Due to the parallel training, we cannot simply use a single visitor for all trees.
  * Instead, each tree gets a copy of the original visitor.
- * 
+ *
  * The random forest training with visitors looks as follows:
  * - Do the random forest preprocessing (translate labels to 0, 1, 2, ...).
  * - Call visit_at_beginning() on the original visitor.
@@ -82,7 +82,7 @@ public:
 
     /**
      * @brief Do something after all trees have been learned.
-     * 
+     *
      * @param v vector with pointers to the visitor copies
      * @param rf the trained random forest
      */
@@ -92,7 +92,7 @@ public:
 
     /**
      * @brief Do something before a tree has been learned.
-     * 
+     *
      * @param weights the actual instance weights (after bootstrap sampling and class weights)
      */
     template <typename TREE, typename FEATURES, typename LABELS, typename WEIGHTS>
@@ -164,7 +164,7 @@ private:
 
 /**
  * @brief Compute the out of bag error.
- * 
+ *
  * After training, each data point is put down those trees for which it is OOB.
  * Using bootstrap sampling, each data point is OOB for approximately 37% of
  * the trees.
@@ -332,7 +332,7 @@ public:
         // Non-const types of features and labels.
         typedef typename std::remove_const<FEATURES>::type Features;
         typedef typename std::remove_const<LABELS>::type Labels;
-        
+
         typedef typename Features::value_type FeatureType;
 
         auto const num_features = features.shape()[1];
@@ -427,26 +427,26 @@ public:
      * This Array has the same entries as the R - random forest variable
      * importance.
      * Matrix is   featureCount by (classCount +2)
-     * variable_importance_(ii,jj) is the variable importance measure of 
+     * variable_importance_(ii,jj) is the variable importance measure of
      * the ii-th variable according to:
      * jj = 0 - (classCount-1)
-     *     classwise permutation importance 
+     *     classwise permutation importance
      * jj = rowCount(variable_importance_) -2
      *     permutation importance
      * jj = rowCount(variable_importance_) -1
      *     gini decrease importance.
-     *     
+     *
      * permutation importance:
      * The difference between the fraction of OOB samples classified correctly
      * before and after permuting (randomizing) the ii-th column is calculated.
      * The ii-th column is permuted rep_cnt times.
      *
      * class wise permutation importance:
-     * same as permutation importance. We only look at those OOB samples whose 
+     * same as permutation importance. We only look at those OOB samples whose
      * response corresponds to class jj.
      *
      * gini decrease importance:
-     * row ii corresponds to the sum of all gini decreases induced by variable ii 
+     * row ii corresponds to the sum of all gini decreases induced by variable ii
      * in each node of the random forest.
      */
     MultiArray<2, double> variable_importance_;
@@ -525,7 +525,7 @@ public:
 
     typename std::conditional<CPY, Visitor, Visitor &>::type visitor_;
     Next next_;
-    
+
     RFVisitorNode(Visitor & visitor, Next next)
         :
         visitor_(visitor),
@@ -563,7 +563,7 @@ public:
         typedef typename VISITORS::value_type VisitorNodeType;
         typedef typename VisitorNodeType::Visitor VisitorType;
         typedef typename VisitorNodeType::Next NextType;
-        
+
         // We want to call the visit_after_training function of the concrete visitor (e. g. OOBError).
         // Since v is a vector of visitor nodes (and not a vector of concrete visitors), we have to
         // extract the concrete visitors.
@@ -684,7 +684,7 @@ create_visitor(A & a, B & b, C & c)
 }
 
 template<typename A, typename B, typename C, typename D>
-detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C,
     detail::RFVisitorNode<D> > > >
 create_visitor(A & a, B & b, C & c, D & d)
 {
@@ -700,7 +700,7 @@ create_visitor(A & a, B & b, C & c, D & d)
 }
 
 template<typename A, typename B, typename C, typename D, typename E>
-detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C,
     detail::RFVisitorNode<D, detail::RFVisitorNode<E> > > > >
 create_visitor(A & a, B & b, C & c, D & d, E & e)
 {
@@ -719,7 +719,7 @@ create_visitor(A & a, B & b, C & c, D & d, E & e)
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F>
-detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C,
     detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F> > > > > >
 create_visitor(A & a, B & b, C & c, D & d, E & e, F & f)
 {
@@ -740,7 +740,7 @@ create_visitor(A & a, B & b, C & c, D & d, E & e, F & f)
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G>
-detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C,
     detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F,
     detail::RFVisitorNode<G> > > > > > >
 create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g)
@@ -764,7 +764,7 @@ create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g)
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H>
-detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C,
     detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F,
     detail::RFVisitorNode<G, detail::RFVisitorNode<H> > > > > > > >
 create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g, H & h)
@@ -790,7 +790,7 @@ create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g, H & h)
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I>
-detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C,
     detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F,
     detail::RFVisitorNode<G, detail::RFVisitorNode<H, detail::RFVisitorNode<I> > > > > > > > >
 create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g, H & h, I & i)
@@ -818,7 +818,7 @@ create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g, H & h, I & i)
 
 template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I, typename J>
-detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C,
     detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F,
     detail::RFVisitorNode<G, detail::RFVisitorNode<H, detail::RFVisitorNode<I,
     detail::RFVisitorNode<J> > > > > > > > > >

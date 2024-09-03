@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -651,11 +651,11 @@ class FFTWPhaseAccessor
 /********************************************************/
 
 /** \page FourierTransformFFTW2 Fast Fourier Transform
-    
-    This documentation describes the deprecated VIGRA interface to 
+
+    This documentation describes the deprecated VIGRA interface to
     FFTW 2. Use the \link FourierTransform interface to the newer
     version FFTW 3\endlink instead.
-    
+
     VIGRA uses the <a href="http://www.fftw.org/">FFTW Fast Fourier
     Transform</a> package to perform Fourier transformations. VIGRA
     provides a wrapper for FFTW's complex number type (FFTWComplex),

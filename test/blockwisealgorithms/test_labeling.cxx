@@ -63,16 +63,16 @@ void testOnData(DatasIterator datas_begin, DatasIterator datas_end,
         {
             typedef typename ShapesIterator::reference ShapeRef;
             ShapeRef shape = *shapes_it;
-            
+
             vector<NeighborhoodType> neighborhoods;
             neighborhoods.push_back(DirectNeighborhood);
             neighborhoods.push_back(IndirectNeighborhood);
             typedef vector<NeighborhoodType>::iterator NeighborhoodIterator;
-            
+
             for(NeighborhoodIterator neighborhood_it = neighborhoods.begin();
                 neighborhood_it != neighborhoods.end();
                 ++neighborhood_it)
-            {   
+            {
                 NeighborhoodType neighborhood = *neighborhood_it;
                 typedef typename DatasIterator::value_type Data;
 
@@ -86,7 +86,7 @@ void testOnData(DatasIterator datas_begin, DatasIterator datas_end,
                     bool with_background = *backgrounds_it;
                     Data correct_labels(data.shape());
                     Data tested_labels(data.shape());
-                    
+
                     BlockwiseLabelOptions options;
                     options.neighborhood(neighborhood);
                     options.blockShape(shape);
@@ -102,7 +102,7 @@ void testOnData(DatasIterator datas_begin, DatasIterator datas_end,
                     {
                         correct_label_number = labelMultiArray(data, correct_labels, neighborhood);
                     }
-                    
+
                     tested_label_number = labelMultiArrayBlockwise(data, tested_labels, options);
 
                     if(!equivalentLabels(correct_labels.begin(), correct_labels.end(),
@@ -136,7 +136,7 @@ void testOnData(DatasIterator datas_begin, DatasIterator datas_end,
 }
 
 struct BlockwiseLabelingTest
-{   
+{
     typedef MultiArray<5, unsigned int> Array5;
     typedef MultiArray<2, unsigned int> Array2;
     typedef MultiArray<1, unsigned int> Array1;
@@ -173,7 +173,7 @@ struct BlockwiseLabelingTest
         {
             fillRandom(array_twos[i].begin(), array_twos[i].end(), 3);
         }
-        
+
         array_ones.push_back(Array1(Shape1(1)));
         array_ones.push_back(Array1(Shape1(2)));
         array_ones.push_back(Array1(Shape1(47)));
@@ -200,7 +200,7 @@ struct BlockwiseLabelingTest
         shape_ones.push_back(Shape1(5));
         shape_ones.push_back(Shape1(213));
     }
-    
+
     void debugTest()
     {
         typedef MultiArray<2, int> Array;
@@ -213,18 +213,18 @@ struct BlockwiseLabelingTest
         data(1,0) = 1;
         data(0,1) = 1;
         data(1,1) = 1;
-        
+
         MultiArray<2, size_t> blockwise_labels(shape);
         MultiArray<2, size_t> labels(shape);
-    
+
         Shape block_shape(1, 1);
         //TinyVector<MultiArrayIndex, 3> block_shape(1, 1, 1);
 
         NeighborhoodType neighborhood = IndirectNeighborhood;
         using namespace vigra::blockwise;
-    
+
         size_t count = labelMultiArrayWithBackground(data, labels, neighborhood, 1);
-        size_t blockwise_count = labelMultiArrayBlockwise(data, blockwise_labels, 
+        size_t blockwise_count = labelMultiArrayBlockwise(data, blockwise_labels,
                                                           BlockwiseLabelOptions().neighborhood(neighborhood)
                                                                                  .ignoreBackgroundValue(1)
                                                                                  .blockShape(block_shape));
@@ -238,7 +238,7 @@ struct BlockwiseLabelingTest
         typedef ChunkedArrayLazy<3, int> DataArray;
         typedef ChunkedArrayLazy<3, size_t> LabelArray;
         typedef DataArray::shape_type Shape;
-        
+
         Shape shape = Shape(100, 200, 300);
         Shape chunk_shape = Shape(32);
 
@@ -247,21 +247,21 @@ struct BlockwiseLabelingTest
         LabelArray labels(shape, chunk_shape);
 
         using namespace vigra::blockwise;
-        
+
         BlockwiseLabelOptions options;
         options.neighborhood(IndirectNeighborhood).ignoreBackgroundValue(1);
 
         size_t tested_label_number = labelMultiArrayBlockwise(data, labels, options);
         MultiArray<3, size_t> checked_out_labels(shape);
         labels.checkoutSubarray(Shape(0), checked_out_labels);
-        
+
         MultiArray<3, int> oldschool_data_array(shape);
         MultiArray<3, size_t> oldschool_label_array(shape);
-        
+
         data.checkoutSubarray(Shape(0), oldschool_data_array);
         size_t actual_label_number = labelMultiArrayWithBackground(oldschool_data_array, oldschool_label_array,
                                                                    IndirectNeighborhood, 1);
-        
+
         shouldEqual(tested_label_number, actual_label_number);
         shouldEqual(equivalentLabels(checked_out_labels.begin(), checked_out_labels.end(),
                                      oldschool_label_array.begin(), oldschool_label_array.end()), true);

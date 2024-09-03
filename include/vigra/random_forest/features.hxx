@@ -22,7 +22,7 @@ class CompositFeatures : public FeatureBase
 public:
     typedef typename MultiArrayShape<2>::type
         Shp;
-    ArrayVector<Shp> 
+    ArrayVector<Shp>
         ext2int;
     ArrayVector<FeatureBase > sub_feats;
     void add(FeatureBase & feat)
@@ -55,7 +55,7 @@ class NeighborFeatures : public FeatureBase
 public:
     typedef typename MultiArrayShape<N>::type Shp;
     MultiArrayView<N, T, C> raw_data;
-    ArrayVector<Shp > 
+    ArrayVector<Shp >
                             feat_coos;
     MultiArrayShape<2>::type shape()
     {
@@ -82,7 +82,7 @@ public:
 class BindFeatureColumn : public FeatureBase
 {
     typedef typename MultiArrayShape<N>::type Shp;
-    int index; 
+    int index;
     FeatureBase & underlying;
 
     MultiArrayShape<2>::type shape()
@@ -96,11 +96,11 @@ class BindFeatureColumn : public FeatureBase
     }
     double & operator[](int i)
     {
-        return underlying(i, index); 
+        return underlying(i, index);
     }
-    
+
     BindFeatureColumn(FeaetureBase & in, int index_)
-        : index(index_), underlying(in) 
+        : index(index_), underlying(in)
     {
         ;
     }

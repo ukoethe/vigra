@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -84,7 +84,7 @@ struct success {};
 inline int check( success ) { return 0; }
 
 template< typename Predicate >
-failure ************ Predicate::************ 
+failure ************ Predicate::************
       assertImpl( void (*)(Predicate), typename Predicate::not_type );
 
 template< typename Predicate >
@@ -95,7 +95,7 @@ assertImpl( void (*)(Predicate), typename Predicate::type );
 
 1. Define an assertion class, derived from vigra::staticAssert::Assert,
    whose name serves as an error message:
-   
+
     template <int N>
     struct FixedPoint_overflow_error__More_than_31_bits_requested
     : vigra::staticAssert::AssertBool<(N < 32)>
@@ -109,7 +109,7 @@ assertImpl( void (*)(Predicate), typename Predicate::type );
         // signal error if N > 31
         VIGRA_STATIC_ASSERT((FixedPoint_overflow_error__More_than_31_bits_requested<N>));
     }
-    
+
 TODO: provide more assertion base classes for other (non boolean) types of tests
 */
 #if !defined(__GNUC__) || __GNUC__ > 2

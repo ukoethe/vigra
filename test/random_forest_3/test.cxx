@@ -168,7 +168,7 @@ struct RandomForestTests
         auto rf = random_forest(train_x, train_y, options, create_visitor(oob));
         should(oob.oob_err_ > 0.02 && oob.oob_err_ < 0.04); // FIXME: Use a statistical approach here.
     }
-    
+
     void test_var_importance_visitor()
     {
         // Create a (noisy) grid with datapoints and split the classes according to an oblique line.
@@ -198,7 +198,7 @@ struct RandomForestTests
         VariableImportance var_imp;
         auto rf = random_forest(train_x, train_y, options, create_visitor(var_imp));
 
-        // The permutation importances of feature 1 should be about 
+        // The permutation importances of feature 1 should be about
         // 10 times as big as the importances of feature 0.
         for (size_t i = 0; i < 4; ++i)
         {
@@ -221,7 +221,7 @@ struct RandomForestTests
         // points with x>=0.5 and y<0.5 have class 3.
         HDF5File hfile("data/rf.h5", HDF5File::ReadOnly);
         auto rf = random_forest_import_HDF5<Features, Labels>(hfile);
-        
+
         // Create some test data.
         FeatureType test_x_data[] = {
             0.2f, 0.4f, 0.6f, 0.8f,  0.2f, 0.4f, 0.6f, 0.8f,  0.2f, 0.4f, 0.6f, 0.8f,  0.2f, 0.4f, 0.6f, 0.8f,

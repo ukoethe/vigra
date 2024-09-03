@@ -15,7 +15,7 @@ SET(TIMESTAMP "${CMAKE_CURRENT_BINARY_DIR}/TIMESTAMP.cxx")
 FILE(GLOB TIMESTAMP_FOUND ${TIMESTAMP})
 IF(NOT TIMESTAMP_FOUND)
     FILE(WRITE ${TIMESTAMP}
-     "// auto-generated dummy file to ensure dependency on Python files. 
+     "// auto-generated dummy file to ensure dependency on Python files.
 // ADD_CUSTOM_TARGET(vigranumpy_lib SOURCES 'dollarsign'{PYSOURCES}) does not seem to be sufficient.
 ")
 ENDIF()

@@ -64,7 +64,7 @@ VIGRA_EXPORT void compress(char const * source, std::size_t size, std::vector<ch
 
     The destination buffer must be allocated to the correct size.
 */
-VIGRA_EXPORT void uncompress(char const * source, std::size_t srcSize, 
+VIGRA_EXPORT void uncompress(char const * source, std::size_t srcSize,
                              char * dest, std::size_t destSize, CompressionMethod method);
 
 

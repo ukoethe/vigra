@@ -75,14 +75,14 @@ namespace vigra{
         // do serialization
         serializeAffiliatedEdges(gridGraph, rag, affiliatedEdges, out.begin());
 
-        // return 
+        // return
         return out;
 
     }
 
 
     template<unsigned int DIM>
-    AdjacencyListGraph:: template EdgeMap< std::vector<  typename GridGraph<DIM, boost::undirected_tag >::Edge   > > * 
+    AdjacencyListGraph:: template EdgeMap< std::vector<  typename GridGraph<DIM, boost::undirected_tag >::Edge   > > *
     pyDeserializeAffiliatedEdges(
         const GridGraph<DIM, boost::undirected_tag> & gridGraph,
         const AdjacencyListGraph & rag,
@@ -90,12 +90,12 @@ namespace vigra{
     ){
 
         AdjacencyListGraph:: template EdgeMap< std::vector<  typename GridGraph<DIM, boost::undirected_tag >::Edge   > > * affEdges_
-        = new AdjacencyListGraph:: template EdgeMap< std::vector<  typename GridGraph<DIM, boost::undirected_tag >::Edge   > > () ; 
+        = new AdjacencyListGraph:: template EdgeMap< std::vector<  typename GridGraph<DIM, boost::undirected_tag >::Edge   > > () ;
 
         // do serialization
         deserializeAffiliatedEdges(gridGraph, rag, *affEdges_, serialization.begin(), serialization.end());
 
-        // return 
+        // return
         return affEdges_;
     }
 
@@ -126,6 +126,6 @@ namespace vigra{
     template void defineGridGraphRagSerialization< 2 >();
     template void defineGridGraphRagSerialization< 3  >();
 
-} 
+}
 
 

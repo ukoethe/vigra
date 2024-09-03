@@ -57,7 +57,7 @@ namespace type_lists {
     struct nil; // end-of-list marker.
     template <class T>
     struct nil_t;
-    
+
     // type lists of size >= 1.
 
     template <class A, class B = nil> struct cons
@@ -897,7 +897,7 @@ namespace type_lists {
 
     protected:
         ptr_type p;
-        
+
     public:
         tuple_entry() : p(0) {}
         template <class TUPLE>
@@ -997,9 +997,9 @@ namespace type_lists {
             this->assign(v);
         }
     };
-   
+
     // helper classes for tuples
-    
+
     template <unsigned pos, class X>
     struct at_finder
     {
@@ -1158,7 +1158,7 @@ namespace type_lists {
     {
         void reassign() {}
     };
-    
+
     struct plain_chooser // this policy does effectively nothing.
     {
         template <class V, unsigned pos = 0>
@@ -1229,7 +1229,7 @@ namespace type_lists {
             qv.set(t);
         }
     };
-    
+
     // start the machinery for cond_chooser that produces nested 'if's
 
     template <class X, class T, class L = typename get_pure_depends_on<T>::type>
@@ -1316,7 +1316,7 @@ namespace type_lists {
     };
     template <class ZL, template <class> class TEST, class RRL>
     struct cond_op_inner;
-    
+
     template <class ZL, template <class> class TEST, class RRL = nil>
     struct cond_op
     {
@@ -1369,7 +1369,7 @@ namespace type_lists {
                 typedef typename TUPLE::ref_finder_type ref_finder_type;
                 if (TEST<ref_finder_type>::value)
                     binder.call(static_cast<ref_finder_type &> (tuple.first));
-                    
+
                 if_then<recurse_deep, deep_type>::call(tuple.rest, binder, z);
             }
             if_then<iterate, iter_type>::call(tuple, binder, z);

@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -88,7 +88,7 @@ namespace vigra {
         desc.bandNumbers.resize(2);
         desc.bandNumbers[0] = 1;
         desc.bandNumbers[1] = 3;
-        
+
         return desc;
     }
 
@@ -160,12 +160,12 @@ namespace vigra {
 
     SunDecoderImpl::SunDecoderImpl( const std::string & filename )
 #ifdef VIGRA_NEED_BIN_STREAMS
-        : stream( filename.c_str(), std::ios::binary ), 
+        : stream( filename.c_str(), std::ios::binary ),
 #else
-        : stream( filename.c_str() ), 
+        : stream( filename.c_str() ),
 #endif
-          bo ("big endian"), 
-          maps (0), 
+          bo ("big endian"),
+          maps (0),
           bands (0),
           recode (false)
     {
@@ -176,7 +176,7 @@ namespace vigra {
             msg += "'.";
             vigra_precondition (0, msg.c_str ());
         }
-        
+
         // read the magic number, adjust byte order if necessary
         SunHeader::field_type magic;
         read_field (stream, bo, magic);
@@ -273,7 +273,7 @@ namespace vigra {
                     // blue
                     *recode_mover++ = *map_mover;
                 }
-                
+
             } else if (header.maptype == RMT_RAW) {
 
                 // map from UInt8 to UInt8
@@ -379,9 +379,9 @@ namespace vigra {
 
     SunEncoderImpl::SunEncoderImpl( const std::string & filename )
 #ifdef VIGRA_NEED_BIN_STREAMS
-        : stream( filename.c_str(), std::ios::binary ), 
+        : stream( filename.c_str(), std::ios::binary ),
 #else
-        : stream( filename.c_str() ), 
+        : stream( filename.c_str() ),
 #endif
           bo("big endian"),
           bands(0), finalized(false)

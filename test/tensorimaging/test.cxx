@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -83,18 +83,18 @@ struct TensorUtilityTest
             }
         }
     }
-    
+
     void tensorEigenRepresentationTest()
     {
         V3Image res(img3.shape());
         tensorEigenRepresentation(img3, res);
-        
+
         for(int y = 0; y < h; ++y)
         {
             for(int x = 0; x < w; ++x)
             {
                 shouldEqual(res(x,y)[0]+res(x,y)[1], img3(x,y)[0] + img3(x,y)[2]);
-                shouldEqual(res(x,y)[0]*res(x,y)[1], 
+                shouldEqual(res(x,y)[0]*res(x,y)[1],
                             img3(x,y)[0]*img3(x,y)[2]-sq(img3(x,y)[1]));
                 if(x == 0 && y == 0)
                 {
@@ -102,18 +102,18 @@ struct TensorUtilityTest
                 }
                 else
                 {
-                    shouldEqualTolerance(res(x,y)[2], 
+                    shouldEqualTolerance(res(x,y)[2],
                                     VIGRA_CSTD::atan2((double)y, (double)x), 1e-12);
                 }
             }
         }
     }
-    
+
     void tensorTraceTest()
     {
         Image res(img3.shape());
         tensorTrace(img3, res);
-        
+
         for(int y = 0; y < h; ++y)
         {
             for(int x = 0; x < w; ++x)
@@ -122,8 +122,8 @@ struct TensorUtilityTest
             }
         }
     }
-    
-    
+
+
     void tensorToEdgeCornerTest()
     {
         V2Image edge(img3.shape());
@@ -131,7 +131,7 @@ struct TensorUtilityTest
         tensorToEdgeCorner(img3, edge, corner);
         V3Image eigen(img3.shape());
         tensorEigenRepresentation(img3, eigen);
-        
+
         for(int y = 0; y < h; ++y)
         {
             for(int x = 0; x < w; ++x)
@@ -142,10 +142,10 @@ struct TensorUtilityTest
             }
         }
     }
-    
+
     int w, h;
     V2Image img2;
-    V3Image img3;    
+    V3Image img3;
 };
 
 #define defImpulseResponseTest(xorder, yorder) \
@@ -164,7 +164,7 @@ struct TensorUtilityTest
         \
         shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12); \
     } \
-    
+
 
 
 struct EdgeJunctionTensorTest
@@ -198,10 +198,10 @@ struct EdgeJunctionTensorTest
         V3Image res(img1.size()), res1(img1.size()), ref(img1.size());
         ImageImportInfo iref("boundaryTensor.xv");
         importImage(iref, destImage(ref));
-        
+
         boundaryTensor(srcImageRange(img1), destImage(res), 2.0);
         boundaryTensor(View(img1), View3(res1), 2.0);
-        
+
         for(V3Image::iterator i = res.begin(), j = res1.begin(), k = ref.begin(); i < res.end(); ++i, ++j, ++k)
         {
             shouldEqualTolerance(i->magnitude(), k->magnitude(), 1e-12);
@@ -218,12 +218,12 @@ struct EdgeJunctionTensorTest
 
         boundaryTensor1(srcImageRange(img2), destImage(bt), 2.0);
         tensorTrace(srcImageRange(bt), destImage(res));
-        
+
         shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
 
         boundaryTensor1(View(img2), View3(bt1), 2.0);
         tensorTrace(View3(bt1), View(res1));
-        
+
         shouldEqualSequenceTolerance(res1.begin(), res1.end(), ref.begin(), 1e-12);
     }
 
@@ -236,7 +236,7 @@ struct EdgeJunctionTensorTest
 
         boundaryTensor(View(img2), View3(bt), 2.0);
         tensorTrace(View3(bt), View(res));
-        
+
         shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
     }
 
@@ -248,7 +248,7 @@ struct EdgeJunctionTensorTest
             V3Image bt(img2.size()), bt2(img2.size());
 
             boundaryTensor3(srcImageRange(img2), destImage(bt), destImage(bt2), 1.0);
-            combineTwoImages(srcImageRange(bt), srcImage(bt2), destImage(bt2), 
+            combineTwoImages(srcImageRange(bt), srcImage(bt2), destImage(bt2),
                          std::plus<V3Image::value_type>());
             tensorTrace(srcImageRange(bt2), destImage(res));
         }
@@ -258,7 +258,7 @@ struct EdgeJunctionTensorTest
 
         shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
     }
-    
+
     void hourglassTest()
     {
         V2Image gradient(img2.size());
@@ -271,14 +271,14 @@ struct EdgeJunctionTensorTest
         vectorToTensor(srcImageRange(gradient), destImage(tensor));
         hourGlassFilter(View3(tensor), View3(smoothedTensor), 2.8, 0.4);
         tensorTrace(srcImageRange(smoothedTensor), destImage(res));
-  
+
         shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
     }
 
     void energyTensorTest()
     {
         using namespace functor;
-        
+
         V3Image get(img2.size());
         Image res(img2.size()), ref(img2.size());
         ImageImportInfo iref("l2_get.xv");

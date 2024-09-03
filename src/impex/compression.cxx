@@ -43,7 +43,7 @@
 
 namespace vigra {
 
-std::size_t compressImpl(char const * source, std::size_t srcSize, 
+std::size_t compressImpl(char const * source, std::size_t srcSize,
                          ArrayVector<char> & buffer,
                          CompressionMethod method)
 {
@@ -63,7 +63,7 @@ std::size_t compressImpl(char const * source, std::size_t srcSize,
         uLong destSize = ::compressBound(srcSize);
         buffer.resize(destSize);
         int res = ::compress2((Bytef *)buffer.data(), &destSize, (Bytef *)source, srcSize, method);
-        vigra_postcondition(res == Z_OK, "compress(): zlib compression failed.");                    
+        vigra_postcondition(res == Z_OK, "compress(): zlib compression failed.");
         return destSize;
     #else
         vigra_precondition(false, "compress(): VIGRA was compiled without ZLIB compression.");
@@ -96,14 +96,14 @@ std::size_t compressImpl(char const * source, std::size_t srcSize,
       case LZO:
       {
     #ifdef HasLZO
-        static const int workmemSize = 
+        static const int workmemSize =
                   (LZO1X_1_MEM_COMPRESS + sizeof(lzo_align_t) - 1) / sizeof(lzo_align_t);
         ArrayVector<lzo_align_t> wrkmem(workmemSize);
-        
+
         lzo_uint destSize = srcSize + srcSize / 16 + 64 + 3;
         buffer.resize(destSize);
-        int res = ::lzo1x_1_compress((const lzo_bytep)source, srcSize, 
-                                     (lzo_bytep)buffer.data(), &destSize, 
+        int res = ::lzo1x_1_compress((const lzo_bytep)source, srcSize,
+                                     (lzo_bytep)buffer.data(), &destSize,
                                      wrkmem.data());
         return destSize;
     #else
@@ -133,7 +133,7 @@ void compress(char const * source, std::size_t size, std::vector<char> & dest, C
     dest.insert(dest.begin(), buffer.data(), buffer.data() + destSize);
 }
 
-void uncompress(char const * source, std::size_t srcSize, 
+void uncompress(char const * source, std::size_t srcSize,
                 char * dest, std::size_t destSize, CompressionMethod method)
 {
     switch(method)
@@ -164,7 +164,7 @@ void uncompress(char const * source, std::size_t srcSize,
         vigra_postcondition(sourceLen >= 0 && static_cast<unsigned>(sourceLen) == srcSize, "uncompress(): lz4 decompression failed.");
         break;
       }
-      
+
 #if 0 // currently unsupported
       case SNAPPY:
       {

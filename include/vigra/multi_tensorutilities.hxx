@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -54,7 +54,7 @@ public:
     typedef ArgumentVector argument_type;
     typedef ResultVector result_type;
     typedef typename ArgumentVector::value_type ValueType;
-    
+
     result_type operator()(argument_type const & in) const
     {
         result_type res;
@@ -76,22 +76,22 @@ public:
 
     typedef ArgumentVector argument_type;
     typedef typename ArgumentVector::value_type result_type;
-    
+
     result_type exec(argument_type const & v, MetaInt<1>) const
     {
         return v[0];
     }
-    
+
     result_type exec(argument_type const & v, MetaInt<2>) const
     {
         return v[0] + v[2];
     }
-    
+
     result_type exec(argument_type const & v, MetaInt<3>) const
     {
         return v[0] + v[3] + v[5];
     }
-    
+
     template <int N2>
     void exec(argument_type const &, result_type &, MetaInt<N2>) const
     {
@@ -111,22 +111,22 @@ public:
 
     typedef ArgumentVector argument_type;
     typedef ResultVector result_type;
-    
+
     void exec(argument_type const & v, result_type & r, MetaInt<1>) const
     {
         symmetric2x2Eigenvalues(v[0], &r[0]);
     }
-    
+
     void exec(argument_type const & v, result_type & r, MetaInt<2>) const
     {
         symmetric2x2Eigenvalues(v[0], v[1], v[2], &r[0], &r[1]);
     }
-    
+
     void exec(argument_type const & v, result_type & r, MetaInt<3>) const
     {
         symmetric3x3Eigenvalues(v[0], v[1], v[2], v[3], v[4], v[5], &r[0], &r[1], &r[2]);
     }
-    
+
     template <int N2>
     void exec(argument_type const &, result_type &, MetaInt<N2>) const
     {
@@ -149,24 +149,24 @@ public:
 
     typedef ArgumentVector argument_type;
     typedef typename ArgumentVector::value_type result_type;
-    
+
     result_type exec(argument_type const & v, MetaInt<1>) const
     {
         return v[0];
     }
-    
+
     result_type exec(argument_type const & v, MetaInt<2>) const
     {
         return v[0]*v[2] - sq(v[1]);
     }
-    
+
     result_type exec(argument_type const & v, MetaInt<3>) const
     {
         result_type r0, r1, r2;
         symmetric3x3Eigenvalues(v[0], v[1], v[2], v[3], v[4], v[5], &r0, &r1, &r2);
         return r0*r1*r2;
     }
-    
+
     template <int N2>
     void exec(argument_type const &, result_type &, MetaInt<N2>) const
     {
@@ -194,17 +194,17 @@ public:
 
 /** \brief Calculate the tensor (outer) product of a N-D vector with itself.
 
-    This function is useful to transform vector arrays into a tensor representation 
+    This function is useful to transform vector arrays into a tensor representation
     that can be used as input to tensor based processing and analysis functions
-    (e.g. tensor smoothing). When the input array has N dimensions, the input value_type 
-    must be a vector of length N, whereas the output value_type mus be vectors of length 
-    N*(N-1)/2 which will represent the upper triangular part of the resulting (symmetric) 
-    tensor. That is, for 2D arrays the output contains the elements 
+    (e.g. tensor smoothing). When the input array has N dimensions, the input value_type
+    must be a vector of length N, whereas the output value_type mus be vectors of length
+    N*(N-1)/2 which will represent the upper triangular part of the resulting (symmetric)
+    tensor. That is, for 2D arrays the output contains the elements
     <tt>[t11, t12 == t21, t22]</tt> in this order, whereas it contains the elements
     <tt>[t11, t12, t13, t22, t23, t33]</tt> for 3D arrays.
-    
+
     Currently, <tt>N <= 3</tt> is required.
-    
+
     <b> Declarations:</b>
 
     pass arbitrary-dimensional array views:
@@ -212,7 +212,7 @@ public:
     namespace vigra {
         template <unsigned int N, class T1, class S1,
                                   class T2, class S2>
-        void 
+        void
         vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
                                  MultiArrayView<N, T2, S2> dest);
     }
@@ -224,7 +224,7 @@ public:
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        void 
+        void
         vectorToTensorMultiArray(SrcIterator  si, SrcShape const & shape, SrcAccessor src,
                                  DestIterator di, DestAccessor dest);
     }
@@ -234,7 +234,7 @@ public:
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        void 
+        void
         vectorToTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                                  pair<DestIterator, DestAccessor> d);
     }
@@ -250,7 +250,7 @@ public:
     MultiArray<3, float>                  vol(shape);
     MultiArray<3, TinyVector<float, 3> >  gradient(shape);
     MultiArray<3, TinyVector<float, 6> >  tensor(shape);
-    
+
     gaussianGradientMultiArray(vol, gradient, 2.0);
     vectorToTensorMultiArray(gradient, tensor);
     \endcode
@@ -259,13 +259,13 @@ doxygen_overloaded_function(template <...> void vectorToTensorMultiArray)
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-void 
+void
 vectorToTensorMultiArray(SrcIterator  si, SrcShape const & shape, SrcAccessor src,
                          DestIterator di, DestAccessor dest)
 {
     static const int N = SrcShape::static_size;
     static const int M = N*(N+1)/2;
-    
+
     typedef typename SrcAccessor::value_type  SrcType;
     typedef typename DestAccessor::value_type DestType;
 
@@ -278,13 +278,13 @@ vectorToTensorMultiArray(SrcIterator  si, SrcShape const & shape, SrcAccessor sr
     vigra_precondition(M == (int)dest.size(di),
         "vectorToTensorMultiArray(): Wrong number of channels in output array.");
 
-    transformMultiArray(si, shape, src, di, dest, 
+    transformMultiArray(si, shape, src, di, dest,
                         detail::OuterProductFunctor<N, SrcType, DestType>());
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline void 
+inline void
 vectorToTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                          pair<DestIterator, DestAccessor> d)
 {
@@ -293,7 +293,7 @@ vectorToTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
 
 template <unsigned int N, class T1, class S1,
                           class T2, class S2>
-inline void 
+inline void
 vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
                          MultiArrayView<N, T2, S2> dest)
 {
@@ -310,12 +310,12 @@ vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
 
 /** \brief Calculate the tensor trace for every element of a N-D tensor array.
 
-    This function turns a N-D tensor (whose value_type is a vector of length N*(N+1)/2, 
-    see \ref vectorToTensorMultiArray()) representing the upper triangular part of a 
+    This function turns a N-D tensor (whose value_type is a vector of length N*(N+1)/2,
+    see \ref vectorToTensorMultiArray()) representing the upper triangular part of a
     symmetric tensor into a scalar array holding the tensor trace.
-    
+
     Currently, <tt>N <= 3</tt> is required.
-    
+
     <b> Declarations:</b>
 
     pass arbitrary-dimensional array views:
@@ -323,7 +323,7 @@ vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
     namespace vigra {
         template <unsigned int N, class T1, class S1,
                                   class T2, class S2>
-        void 
+        void
         tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
                               MultiArrayView<N, T2, S2> dest);
     }
@@ -335,7 +335,7 @@ vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        void 
+        void
         tensorTraceMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor src,
                               DestIterator di, DestAccessor dest);
     }
@@ -345,7 +345,7 @@ vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        void 
+        void
         tensorTraceMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                               pair<DestIterator, DestAccessor> d);
     }
@@ -361,7 +361,7 @@ vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
     MultiArray<3, float>                  vol(shape);
     MultiArray<3, TinyVector<float, 6> >  hessian(shape);
     MultiArray<3, float>                  trace(shape);
-    
+
     hessianOfGaussianMultiArray(vol, hessian, 2.0);
     tensorTraceMultiArray(hessian, trace);
     \endcode
@@ -374,20 +374,20 @@ doxygen_overloaded_function(template <...> void tensorTraceMultiArray)
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-void 
+void
 tensorTraceMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor src,
                       DestIterator di, DestAccessor dest)
 {
     static const int N = SrcShape::static_size;
     typedef typename SrcAccessor::value_type  SrcType;
 
-    transformMultiArray(si, shape, src, di, dest, 
+    transformMultiArray(si, shape, src, di, dest,
                         detail::TensorTraceFunctor<N, SrcType>());
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline void 
+inline void
 tensorTraceMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                       pair<DestIterator, DestAccessor> d)
 {
@@ -396,7 +396,7 @@ tensorTraceMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
 
 template <unsigned int N, class T1, class S1,
                           class T2, class S2>
-inline void 
+inline void
 tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
                       MultiArrayView<N, T2, S2> dest)
 {
@@ -414,13 +414,13 @@ tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
 
 /** \brief Calculate the tensor eigenvalues for every element of a N-D tensor array.
 
-    This function turns a N-D tensor (whose value_type is a vector of length N*(N+1)/2, 
-    see \ref vectorToTensorMultiArray()) representing the upper triangular part of a 
+    This function turns a N-D tensor (whose value_type is a vector of length N*(N+1)/2,
+    see \ref vectorToTensorMultiArray()) representing the upper triangular part of a
     symmetric tensor into a vector-valued array holding the tensor eigenvalues (thus,
     the destination value_type must be vectors of length N).
-    
+
     Currently, <tt>N <= 3</tt> is required.
-    
+
     <b> Declarations:</b>
 
     pass arbitrary-dimensional array views:
@@ -428,7 +428,7 @@ tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
     namespace vigra {
         template <unsigned int N, class T1, class S1,
                                   class T2, class S2>
-        void 
+        void
         tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
                                     MultiArrayView<N, T2, S2> dest);
     }
@@ -440,7 +440,7 @@ tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        void 
+        void
         tensorEigenvaluesMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor src,
                                     DestIterator di, DestAccessor dest);
     }
@@ -450,7 +450,7 @@ tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        void 
+        void
         tensorEigenvaluesMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                                     pair<DestIterator, DestAccessor> d);
     }
@@ -466,7 +466,7 @@ tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
     MultiArray<3, float>                  vol(shape);
     MultiArray<3, TinyVector<float, 6> >  hessian(shape);
     MultiArray<3, TinyVector<float, 3> >  eigenvalues(shape);
-    
+
     hessianOfGaussianMultiArray(vol, hessian, 2.0);
     tensorEigenvaluesMultiArray(hessian, eigenvalues);
     \endcode
@@ -479,13 +479,13 @@ doxygen_overloaded_function(template <...> void tensorEigenvaluesMultiArray)
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-void 
+void
 tensorEigenvaluesMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor src,
                             DestIterator di, DestAccessor dest)
 {
     static const int N = SrcShape::static_size;
     static const int M = N*(N+1)/2;
-    
+
     typedef typename SrcAccessor::value_type  SrcType;
     typedef typename DestAccessor::value_type DestType;
 
@@ -498,13 +498,13 @@ tensorEigenvaluesMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor
     vigra_precondition(N == (int)dest.size(di),
         "tensorEigenvaluesMultiArray(): Wrong number of channels in output array.");
 
-    transformMultiArray(si, shape, src, di, dest, 
+    transformMultiArray(si, shape, src, di, dest,
                         detail::EigenvaluesFunctor<N, SrcType, DestType>());
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline void 
+inline void
 tensorEigenvaluesMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                             pair<DestIterator, DestAccessor> d)
 {
@@ -513,7 +513,7 @@ tensorEigenvaluesMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
 
 template <unsigned int N, class T1, class S1,
                           class T2, class S2>
-inline void 
+inline void
 tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
                             MultiArrayView<N, T2, S2> dest)
 {
@@ -530,12 +530,12 @@ tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
 
 /** \brief Calculate the tensor determinant for every element of a ND tensor array.
 
-    This function turns a N-D tensor (whose value_type is a vector of length N*(N+1)/2, 
-    see \ref vectorToTensorMultiArray()) representing the upper triangular part of a 
+    This function turns a N-D tensor (whose value_type is a vector of length N*(N+1)/2,
+    see \ref vectorToTensorMultiArray()) representing the upper triangular part of a
     symmetric tensor into the a scalar array holding the tensor determinant.
-    
+
     Currently, <tt>N <= 3</tt> is required.
-    
+
     <b> Declarations:</b>
 
     pass arbitrary-dimensional array views:
@@ -543,7 +543,7 @@ tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
     namespace vigra {
         template <unsigned int N, class T1, class S1,
                                   class T2, class S2>
-        void 
+        void
         tensorDeterminantMultiArray(MultiArrayView<N, T1, S1> const & source,
                                     MultiArrayView<N, T2, S2> dest);
     }
@@ -555,7 +555,7 @@ tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        void 
+        void
         tensorDeterminantMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor src,
                                     DestIterator di, DestAccessor dest);
     }
@@ -565,7 +565,7 @@ tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        void 
+        void
         tensorDeterminantMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                                     pair<DestIterator, DestAccessor> d);
     }
@@ -581,7 +581,7 @@ tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
     MultiArray<3, float>                  vol(shape);
     MultiArray<3, TinyVector<float, 6> >  hessian(shape);
     MultiArray<3, float>                  determinant(shape);
-    
+
     hessianOfGaussianMultiArray(vol, hessian, 2.0);
     tensorDeterminantMultiArray(hessian, determinant);
     \endcode
@@ -594,7 +594,7 @@ doxygen_overloaded_function(template <...> void tensorDeterminantMultiArray)
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-void 
+void
 tensorDeterminantMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor src,
                             DestIterator di, DestAccessor dest)
 {
@@ -602,7 +602,7 @@ tensorDeterminantMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor
 
     static const int N = SrcShape::static_size;
     static const int M = N*(N+1)/2;
-    
+
     for(int k=0; k<N; ++k)
         if(shape[k] <=0)
             return;
@@ -610,13 +610,13 @@ tensorDeterminantMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor
     vigra_precondition(M == (int)src.size(si),
         "tensorDeterminantMultiArray(): Wrong number of channels in output array.");
 
-    transformMultiArray(si, shape, src, di, dest, 
+    transformMultiArray(si, shape, src, di, dest,
                         detail::DeterminantFunctor<N, SrcType>());
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline void 
+inline void
 tensorDeterminantMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                             pair<DestIterator, DestAccessor> d)
 {
@@ -625,7 +625,7 @@ tensorDeterminantMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
 
 template <unsigned int N, class T1, class S1,
                           class T2, class S2>
-inline void 
+inline void
 tensorDeterminantMultiArray(MultiArrayView<N, T1, S1> const & source,
                             MultiArrayView<N, T2, S2> dest)
 {

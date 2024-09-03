@@ -29,10 +29,10 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
+
 
 #include <iostream>
 #include <vigra/multi_array.hxx>
@@ -41,7 +41,7 @@
 #include <vigra/impex.hxx>
 #include <string.h>
 
-using namespace vigra; 
+using namespace vigra;
 
 
 int main(int argc, char ** argv)
@@ -50,31 +50,31 @@ int main(int argc, char ** argv)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
-        
+
         return 1;
     }
-    
+
     try
     {
         ImageImportInfo info(argv[1]);
-        
+
         if(info.isGrayscale())
         {
             MultiArray<2, UInt8> in(info.width(), info.height()),
                                  out(info.width(), info.height());
-           
+
             importImage(info, in);
-            
+
             // create an inverted image by applying the expression
             //       newvalue = -1 * (oldvalue - 255)
             // to each pixel
             transformImage(in, out,
                            linearIntensityTransform(-1, -255));
-            
+
             // the same can be achieved using array expressions
             using namespace multi_math;   // activate array expressions
             out = 255 - in;
-            
+
             if(strcmp(argv[2], "-") == 0)
             {
                 // write stdout
@@ -89,23 +89,23 @@ int main(int argc, char ** argv)
         {
             MultiArray<2, RGBValue<UInt8> > in(info.width(), info.height()),
                                             out(info.width(), info.height());
-           
+
             importImage(info, in);
-            
+
             // create a negative image by applying the expression
             //       newvalue = -1 * (oldvalue + RGBValue<int>(-255, -255, -255))
             // to each pixel
             transformImage(in, out,
                            linearIntensityTransform(-1, RGBValue<int>(-255)));
-            
+
             // the same can be achieved using array expressions
             using namespace multi_math;   // activate array expressions
             out = RGBValue<int>(255) - in;
-            
+
             if(strcmp(argv[2], "-") == 0)
             {
                 // write stdout
-                exportImage(out, 
+                exportImage(out,
                  ImageExportInfo(argv[2]).setFileType(info.getFileType()));
             }
             else
@@ -119,6 +119,6 @@ int main(int argc, char ** argv)
         std::cout << e.what() << std::endl;
         return 1;
     }
-    
+
     return 0;
 }

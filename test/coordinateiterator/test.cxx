@@ -86,7 +86,7 @@ void testCoordinateIterator()
     StridePair<2>::coord_type c2_origin(10,  0);
     StridePair<2>::coord_type c2_stride( 1,  2);
     StridePair<2>::index_type c2_shape ( 2,  5);
-    
+
     CoordinateMultiIterator<2>(c2_origin, c2_stride, c2_shape);
 
     coordinateMultiRange<2>(c2_shape, c2_stride, c2_origin);
@@ -210,7 +210,7 @@ void testCoordinateIterator()
     };
     (inspectMultiArray(srcCoordinateMultiArrayRange(stride_image2),
                                 echo_f(out_6)));
-    
+
     array_3d stride_image3(array_3d::size_type(2, 3, 4));
     initMultiArray(destMultiArrayRange(stride_image3), count());
     char_s out_7[] =

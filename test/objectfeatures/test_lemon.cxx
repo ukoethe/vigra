@@ -82,7 +82,7 @@ struct AccumulatorTest
         mask(4, 3) = 1;
 
         AccumulatorChainArray<
-                CoupledArrays<2, int>, 
+                CoupledArrays<2, int>,
                 Select<LabelArg<1>, ConvexHullFeatures> > chf;
         chf.ignoreLabel(0);
         extractFeatures(mask, chf);
