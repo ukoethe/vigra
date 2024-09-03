@@ -44,8 +44,8 @@ if errorlevel 1 exit 1
 nmake
 if errorlevel 1 exit 1
 
-:REM nmake check
-:REM if errorlevel 1 exit 1
-:REM
-:REM ctest -V
-:REM if errorlevel 1 exit 1
+nmake check
+if errorlevel 1 exit 1
+
+ctest -V
+if errorlevel 1 exit 1
