@@ -84,7 +84,7 @@
 #endif
 
 #if defined(_MSC_VER) && !defined(VIGRA_HAS_ATOMIC)
-#  include "windows.h"
+#  include "vigra/windows.h"
 #endif
 
 namespace vigra { namespace threading {

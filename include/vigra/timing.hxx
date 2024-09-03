@@ -142,8 +142,7 @@ Alternatively, you can perform nested timing like so:
 
 
 #ifdef _WIN32
-
-    #include "windows.h"
+    #include "vigra/windows.h"
 
     namespace {
 

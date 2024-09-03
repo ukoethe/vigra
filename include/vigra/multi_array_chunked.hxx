@@ -141,7 +141,7 @@
 #include "compression.hxx"
 
 #ifdef _WIN32
-# include "windows.h"
+# include "vigra/windows.h"
 #else
 # include <fcntl.h>
 # include <stdlib.h>
