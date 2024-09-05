@@ -1126,7 +1126,7 @@ struct ResizeImageTest
 
     ResizeImageTest()
     {
-        ImageImportInfo ginfo("lenna128.xv");
+        ImageImportInfo ginfo("astronaut128.xv");
         img.resize(ginfo.width(), ginfo.height());
         importImage(ginfo, destImage(img));
 
@@ -1138,7 +1138,7 @@ struct ResizeImageTest
 
     void resizeLinearInterpolationReduceTest()
     {
-        ImageImportInfo inforef("lenna42lin.xv");
+        ImageImportInfo inforef("astronaut42lin.xv");
         Image ref(inforef.size());
         importImage(inforef, destImage(ref));
 
@@ -1162,7 +1162,7 @@ struct ResizeImageTest
 
     void scalarExpand()
     {
-        ImageImportInfo info("lenna288neu.xv");
+        ImageImportInfo info("astronaut288neu.xv");
 
         Image imgex(info.width(), info.height());
         importImage(info, destImage(imgex));
@@ -1175,7 +1175,7 @@ struct ResizeImageTest
 
     void scalarReduce()
     {
-        ImageImportInfo info("lenna42neu.xv");
+        ImageImportInfo info("astronaut42neu.xv");
 
         Image imgred(info.width(), info.height());
         importImage(info, destImage(imgred));
@@ -1237,7 +1237,7 @@ struct ResizeImageTest
     */
     void testCatmullRomInterpolationExtensionWithLena()
     {
-        ImageImportInfo inforef("lenna367FIR.xv");
+        ImageImportInfo inforef("astronaut367FIR.xv");
         Image ref(inforef.size());
         importImage(inforef, destImage(ref));
 
@@ -1253,7 +1253,7 @@ struct ResizeImageTest
     */
     void testCatmullRomInterpolationReductionWithLena()
     {
-        ImageImportInfo inforef("lenna42FIR.xv");
+        ImageImportInfo inforef("astronaut42FIR.xv");
         Image ref(inforef.size());
         importImage(inforef, destImage(ref));
 
@@ -1285,7 +1285,7 @@ struct ResizeImageTest
 
     void testCubicInterpolationExtensionWithLena()
     {
-        ImageImportInfo inforef("lenna367IIR.xv");
+        ImageImportInfo inforef("astronaut367IIR.xv");
         Image ref(inforef.size());
         importImage(inforef, destImage(ref));
 
@@ -1300,7 +1300,7 @@ struct ResizeImageTest
     */
     void testCubicInterpolationReductionWithLena()
     {
-        ImageImportInfo inforef("lenna42IIR.xv");
+        ImageImportInfo inforef("astronaut42IIR.xv");
         Image ref(inforef.size());
         importImage(inforef, destImage(ref));
 
@@ -1370,10 +1370,10 @@ struct SplineImageViewTest
 
     SplineImageViewTest()
     {
-        ImageImportInfo ginfo("lenna128.xv");
+        ImageImportInfo ginfo("astronaut128.xv");
         img.resize(ginfo.width(), ginfo.height());
         importImage(ginfo, destImage(img));
-        //importImage("lenna128.xv", img);
+        // importImage("astronaut128.xv", img);
     }
 
     void testPSF()
@@ -1592,7 +1592,7 @@ struct GeometricTransformsTest
 
     GeometricTransformsTest()
     {
-        ImageImportInfo ginfo("lenna128.xv");
+        ImageImportInfo ginfo("astronaut128.xv");
         w = ginfo.width();
         h = ginfo.height();
         img.resize(w, h);
@@ -1719,7 +1719,7 @@ struct GeometricTransformsTest
     void testRotation()
     {
         Image res(img.size()), ref(img.size()), res1(img.size());
-        importImage(vigra::ImageImportInfo("lenna_rotate.xv"), destImage(ref));
+        importImage(vigra::ImageImportInfo("astronaut_rotate.xv"), destImage(ref));
 
         SplineImageView<3, double> sp(srcImageRange(img));
 
