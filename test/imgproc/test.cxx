@@ -1130,7 +1130,7 @@ struct ResizeImageTest
         img.resize(ginfo.width(), ginfo.height());
         importImage(ginfo, destImage(img));
 
-        ImageImportInfo cinfo("lenna128rgb.xv");
+        ImageImportInfo cinfo("astronaut128rgb.xv");
         rgb.resize(cinfo.width(), cinfo.height());
         importImage(cinfo, destImage(rgb));
 
@@ -1148,7 +1148,7 @@ struct ResizeImageTest
 
         shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1.0e-6f);
 
-        ImageImportInfo inforgb("lenna42linrgb.xv");
+        ImageImportInfo inforgb("astronaut42linrgb.xv");
         RGBImage rgbref(inforgb.size());
         importImage(inforgb, destImage(rgbref));
 
@@ -1189,7 +1189,7 @@ struct ResizeImageTest
 
     void rgbExpand()
     {
-        ImageImportInfo info("lenna288rgbneu.xv");
+        ImageImportInfo info("astronaut288rgbneu.xv");
 
         RGBImage rgbex(info.width(), info.height());
         importImage(info, destImage(rgbex));
@@ -1212,7 +1212,7 @@ struct ResizeImageTest
 
     void rgbReduce()
     {
-        ImageImportInfo info("lenna42rgbneu.xv");
+        ImageImportInfo info("astronaut42rgbneu.xv");
 
         RGBImage rgbred(info.width(), info.height());
         importImage(info, destImage(rgbred));
@@ -1235,7 +1235,7 @@ struct ResizeImageTest
 
     /*Vergroesserungstest
     */
-    void testCatmullRomInterpolationExtensionWithLena()
+    void testCatmullRomInterpolationExtensionWithAstronaut()
     {
         ImageImportInfo inforef("astronaut367FIR.xv");
         Image ref(inforef.size());
@@ -1251,7 +1251,7 @@ struct ResizeImageTest
 
     /*Verkleinerungstest
     */
-    void testCatmullRomInterpolationReductionWithLena()
+    void testCatmullRomInterpolationReductionWithAstronaut()
     {
         ImageImportInfo inforef("astronaut42FIR.xv");
         Image ref(inforef.size());
@@ -1263,7 +1263,7 @@ struct ResizeImageTest
 
         shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1e-4f);
 
-        ImageImportInfo inforgb("lennargb42FIR.xv");
+        ImageImportInfo inforgb("astronautrgb42FIR.xv");
         RGBImage rgbref(inforgb.size());
         importImage(inforgb, destImage(rgbref));
 
@@ -1283,7 +1283,7 @@ struct ResizeImageTest
         }
     }
 
-    void testCubicInterpolationExtensionWithLena()
+    void testCubicInterpolationExtensionWithAstronaut()
     {
         ImageImportInfo inforef("astronaut367IIR.xv");
         Image ref(inforef.size());
@@ -1298,7 +1298,7 @@ struct ResizeImageTest
 
     /*Verkleinerungstest
     */
-    void testCubicInterpolationReductionWithLena()
+    void testCubicInterpolationReductionWithAstronaut()
     {
         ImageImportInfo inforef("astronaut42IIR.xv");
         Image ref(inforef.size());
@@ -1310,7 +1310,7 @@ struct ResizeImageTest
 
         shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1e-4f);
 
-        ImageImportInfo inforgb("lennargb42IIR.xv");
+        ImageImportInfo inforgb("astronautrgb42IIR.xv");
         RGBImage rgbref(inforgb.size());
         importImage(inforgb, destImage(rgbref));
 
@@ -1794,10 +1794,10 @@ struct ImageFunctionsTestSuite
         add( testCase( &ResizeImageTest::scalarReduce));
         add( testCase( &ResizeImageTest::rgbExpand));
         add( testCase( &ResizeImageTest::rgbReduce));
-        add( testCase( &ResizeImageTest::testCatmullRomInterpolationExtensionWithLena));
-        add( testCase( &ResizeImageTest::testCatmullRomInterpolationReductionWithLena));
-        add( testCase( &ResizeImageTest::testCubicInterpolationExtensionWithLena));
-        add( testCase( &ResizeImageTest::testCubicInterpolationReductionWithLena));
+        add( testCase( &ResizeImageTest::testCatmullRomInterpolationExtensionWithAstronaut));
+        add( testCase( &ResizeImageTest::testCatmullRomInterpolationReductionWithAstronaut));
+        add( testCase( &ResizeImageTest::testCubicInterpolationExtensionWithAstronaut));
+        add( testCase( &ResizeImageTest::testCubicInterpolationReductionWithAstronaut));
         add( testCase( &ResizeImageTest::testCatmullRomInterpolationExtensionHandControled));
         add( testCase( &SplineImageViewTest<0>::testPSF));
         add( testCase( &SplineImageViewTest<0>::testCoefficientArray));
