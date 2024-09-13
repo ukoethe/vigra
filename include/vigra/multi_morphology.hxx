@@ -55,7 +55,7 @@ namespace vigra
 namespace detail {
 
 // this class simplifies the design, but more importantly, it makes sure
-// that the in-place code doesn't get compiled for boolean arrays 
+// that the in-place code doesn't get compiled for boolean arrays
 // (were it would never executed anyway -- see the specializations below)
 template <class DestType, class TmpType>
 struct MultiBinaryMorphologyImpl
@@ -64,27 +64,27 @@ struct MultiBinaryMorphologyImpl
               class DestIterator, class DestAccessor>
     static void
     exec( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-          DestIterator d, DestAccessor dest, 
+          DestIterator d, DestAccessor dest,
           double radius, bool dilation)
     {
         using namespace vigra::functor;
-        
+
         // Allocate a new temporary array if the distances squared wouldn't fit
         MultiArray<SrcShape::static_size, TmpType> tmpArray(shape);
-            
-        separableMultiDistSquared(s, shape, src, 
+
+        separableMultiDistSquared(s, shape, src,
                                   tmpArray.traverser_begin(), typename AccessorTraits<TmpType>::default_accessor(), dilation );
-            
+
         // threshold everything less than radius away from the edge
         double radius2 = radius * radius;
-        DestType foreground = dilation 
+        DestType foreground = dilation
                                  ? NumericTraits<DestType>::zero()
                                  : NumericTraits<DestType>::one(),
-                 background = dilation 
+                 background = dilation
                                  ? NumericTraits<DestType>::one()
                                  : NumericTraits<DestType>::zero();
-        transformMultiArray( tmpArray.traverser_begin(), shape, StandardValueAccessor<double>(), 
-                             d, dest, 
+        transformMultiArray( tmpArray.traverser_begin(), shape, StandardValueAccessor<double>(),
+                             d, dest,
                              ifThenElse( Arg1() > Param(radius2),
                                          Param(foreground), Param(background) ) );
     }
@@ -97,22 +97,22 @@ struct MultiBinaryMorphologyImpl<DestType, DestType>
               class DestIterator, class DestAccessor>
     static void
     exec( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-          DestIterator d, DestAccessor dest, 
+          DestIterator d, DestAccessor dest,
           double radius, bool dilation)
     {
         using namespace vigra::functor;
 
         separableMultiDistSquared( s, shape, src, d, dest, dilation );
-        
+
         // threshold everything less than radius away from the edge
         DestType radius2 = detail::RequiresExplicitCast<DestType>::cast(radius * radius);
-        DestType foreground = dilation 
+        DestType foreground = dilation
                                  ? NumericTraits<DestType>::zero()
                                  : NumericTraits<DestType>::one(),
-                 background = dilation 
+                 background = dilation
                                  ? NumericTraits<DestType>::one()
                                  : NumericTraits<DestType>::zero();
-        transformMultiArray( d, shape, dest, d, dest, 
+        transformMultiArray( d, shape, dest, d, dest,
                              ifThenElse( Arg1() > Param(radius2),
                                          Param(foreground), Param(background) ) );
     }
@@ -150,17 +150,17 @@ struct MultiBinaryMorphologyImpl<bool, bool>
 /** \brief Binary erosion on multi-dimensional arrays.
 
     This function applies a flat circular erosion operator with a given radius. The
-    operation is isotropic. The input is interpreted as a binary multi-dimensional 
-    array where non-zero pixels represent foreground and zero pixels represent 
-    background. In the output, foreground is always represented by ones 
+    operation is isotropic. The input is interpreted as a binary multi-dimensional
+    array where non-zero pixels represent foreground and zero pixels represent
+    background. In the output, foreground is always represented by ones
     (i.e. NumericTrais<typename DestAccessor::value_type>::one()).
-    
+
     This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
     A temporary internal array is only allocated if working on the destination
     array directly would cause overflow errors (that is if
-    <tt> NumericTraits<typename DestAccessor::value_type>::max() < squaredNorm(shape)</tt>, 
+    <tt> NumericTraits<typename DestAccessor::value_type>::max() < squaredNorm(shape)</tt>,
     i.e. the squared length of the image diagonal doesn't fit into the destination type).
-           
+
     <b> Declarations:</b>
 
     pass arbitrary-dimensional array views:
@@ -170,7 +170,7 @@ struct MultiBinaryMorphologyImpl<bool, bool>
                                   class T2, class S2>
         void
         multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
-                           MultiArrayView<N, T2, S2> dest, 
+                           MultiArrayView<N, T2, S2> dest,
                            double radius);
     }
     \endcode
@@ -194,7 +194,7 @@ struct MultiBinaryMorphologyImpl<bool, bool>
                   class DestIterator, class DestAccessor>
         void
         multiBinaryErosion(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                                    pair<DestIterator, DestAccessor> const & dest, 
+                                    pair<DestIterator, DestAccessor> const & dest,
                                     int radius);
 
     }
@@ -228,7 +228,7 @@ multiBinaryErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
 {
     typedef typename DestAccessor::value_type DestType;
     typedef Int32 TmpType;
-    
+
     double dmax = squaredNorm(shape);
 
     // Get the distance squared transform of the image
@@ -256,7 +256,7 @@ template <unsigned int N, class T1, class S1,
                           class T2, class S2>
 inline void
 multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
-                   MultiArrayView<N, T2, S2> dest, 
+                   MultiArrayView<N, T2, S2> dest,
                    double radius)
 {
     vigra_precondition(source.shape() == dest.shape(),
@@ -274,17 +274,17 @@ multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
 /** \brief Binary dilation on multi-dimensional arrays.
 
     This function applies a flat circular dilation operator with a given radius. The
-    operation is isotropic. The input is interpreted as a binary multi-dimensional 
-    array where non-zero pixels represent foreground and zero pixels represent 
-    background. In the output, foreground is always represented by ones 
+    operation is isotropic. The input is interpreted as a binary multi-dimensional
+    array where non-zero pixels represent foreground and zero pixels represent
+    background. In the output, foreground is always represented by ones
     (i.e. NumericTrais<typename DestAccessor::value_type>::one()).
-    
+
     This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
     A temporary internal array is only allocated if working on the destination
     array directly would cause overflow errors (that is if
-    <tt> NumericTraits<typename DestAccessor::value_type>::max() < squaredNorm(shape)</tt>, 
+    <tt> NumericTraits<typename DestAccessor::value_type>::max() < squaredNorm(shape)</tt>,
     i.e. the squared length of the image diagonal doesn't fit into the destination type).
-           
+
     <b> Declarations:</b>
 
     pass arbitrary-dimensional array views:
@@ -292,7 +292,7 @@ multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
     namespace vigra {
         template <unsigned int N, class T1, class S1,
                                   class T2, class S2>
-        void 
+        void
         multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
                             MultiArrayView<N, T2, S2> dest,
                             double radius);
@@ -318,7 +318,7 @@ multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
                   class DestIterator, class DestAccessor>
         void
         multiBinaryDilation(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                                    pair<DestIterator, DestAccessor> const & dest, 
+                                    pair<DestIterator, DestAccessor> const & dest,
                                     int radius);
 
     }
@@ -352,7 +352,7 @@ multiBinaryDilation( SrcIterator s, SrcShape const & shape, SrcAccessor src,
 {
     typedef typename DestAccessor::value_type DestType;
     typedef Int32 TmpType;
-    
+
     double dmax = squaredNorm(shape);
 
     // Get the distance squared transform of the image
@@ -368,7 +368,7 @@ multiBinaryDilation( SrcIterator s, SrcShape const & shape, SrcAccessor src,
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline void 
+inline void
 multiBinaryDilation(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                     pair<DestIterator, DestAccessor> const & dest, double radius)
 {
@@ -378,7 +378,7 @@ multiBinaryDilation(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
 
 template <unsigned int N, class T1, class S1,
                           class T2, class S2>
-inline void 
+inline void
 multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
                     MultiArrayView<N, T2, S2> dest,
                     double radius)
@@ -399,13 +399,13 @@ multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
     This function applies a parabolic erosion operator with a given spread (sigma) on
     a grayscale array. The operation is isotropic.
     The input is a grayscale multi-dimensional array.
-    
+
     This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
     A full-sized internal array is only allocated if working on the destination
     array directly would cause overflow errors (i.e. if
     <tt> typeid(typename DestAccessor::value_type) < N * M*M</tt>, where M is the
     size of the largest dimension of the array.
-           
+
     <b> Declarations:</b>
 
     pass arbitrary-dimensional array views:
@@ -415,7 +415,7 @@ multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
                                   class T2, class S2>
         void
         multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
-                              MultiArrayView<N, T2, S2> dest, 
+                              MultiArrayView<N, T2, S2> dest,
                               double sigma);
     }
     \endcode
@@ -439,7 +439,7 @@ multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
                   class DestIterator, class DestAccessor>
         void
         multiGrayscaleErosion(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                                    pair<DestIterator, DestAccessor> const & dest, 
+                                    pair<DestIterator, DestAccessor> const & dest,
                                     double sigma);
 
     }
@@ -475,18 +475,18 @@ multiGrayscaleErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
     typedef typename NumericTraits<typename DestAccessor::value_type>::Promote TmpType;
     DestType MaxValue = NumericTraits<DestType>::max();
     enum { N = 1 + SrcIterator::level };
-    
+
     // temporary array to hold the current line to enable in-place operation
     ArrayVector<TmpType> tmp( shape[0] );
-        
-    int MaxDim = 0; 
+
+    int MaxDim = 0;
     for( int i=0; i<N; i++)
         if(MaxDim < shape[i]) MaxDim = shape[i];
-    
+
     using namespace vigra::functor;
-    
+
     ArrayVector<double> sigmas(shape.size(), sigma);
-    
+
     // Allocate a new temporary array if the distances squared wouldn't fit
     if(N*MaxDim*MaxDim > MaxValue)
     {
@@ -494,7 +494,7 @@ multiGrayscaleErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
 
         detail::internalSeparableMultiArrayDistTmp( s, shape, src, tmpArray.traverser_begin(),
             typename AccessorTraits<TmpType>::default_accessor(), sigmas );
-        
+
         transformMultiArray( tmpArray.traverser_begin(), shape,
                 typename AccessorTraits<TmpType>::default_accessor(), d, dest,
                 ifThenElse( Arg1() > Param(MaxValue), Param(MaxValue), Arg1() ) );
@@ -514,7 +514,7 @@ inline void
 multiGrayscaleErosion(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                       pair<DestIterator, DestAccessor> const & dest, double sigma)
 {
-    multiGrayscaleErosion( source.first, source.second, source.third, 
+    multiGrayscaleErosion( source.first, source.second, source.third,
                            dest.first, dest.second, sigma);
 }
 
@@ -522,12 +522,12 @@ template <unsigned int N, class T1, class S1,
                           class T2, class S2>
 inline void
 multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
-                      MultiArrayView<N, T2, S2> dest, 
+                      MultiArrayView<N, T2, S2> dest,
                       double sigma)
 {
     vigra_precondition(source.shape() == dest.shape(),
         "multiGrayscaleErosion(): shape mismatch between input and output.");
-    multiGrayscaleErosion( srcMultiArrayRange(source), 
+    multiGrayscaleErosion( srcMultiArrayRange(source),
                            destMultiArray(dest), sigma);
 }
 
@@ -541,13 +541,13 @@ multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
     This function applies a parabolic dilation operator with a given spread (sigma) on
     a grayscale array. The operation is isotropic.
     The input is a grayscale multi-dimensional array.
-    
+
     This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
     A full-sized internal array is only allocated if working on the destination
     array directly would cause overflow errors (i.e. if
     <tt> typeid(typename DestAccessor::value_type) < N * M*M</tt>, where M is the
     size of the largest dimension of the array.
-           
+
     <b> Declarations:</b>
 
     pass arbitrary-dimensional array views:
@@ -581,7 +581,7 @@ multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
                   class DestIterator, class DestAccessor>
         void
         multiGrayscaleDilation(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                                    pair<DestIterator, DestAccessor> const & dest, 
+                                    pair<DestIterator, DestAccessor> const & dest,
                                     double sigma);
 
     }
@@ -617,14 +617,14 @@ void multiGrayscaleDilation( SrcIterator s, SrcShape const & shape, SrcAccessor 
     DestType MinValue = NumericTraits<DestType>::min();
     DestType MaxValue = NumericTraits<DestType>::max();
     enum { N = 1 + SrcIterator::level };
-        
+
     // temporary array to hold the current line to enable in-place operation
     ArrayVector<TmpType> tmp( shape[0] );
-    
-    int MaxDim = 0; 
+
+    int MaxDim = 0;
     for( int i=0; i<N; i++)
         if(MaxDim < shape[i]) MaxDim = shape[i];
-    
+
     using namespace vigra::functor;
 
     ArrayVector<double> sigmas(shape.size(), sigma);
@@ -636,10 +636,10 @@ void multiGrayscaleDilation( SrcIterator s, SrcShape const & shape, SrcAccessor 
 
         detail::internalSeparableMultiArrayDistTmp( s, shape, src, tmpArray.traverser_begin(),
             typename AccessorTraits<TmpType>::default_accessor(), sigmas, true );
-        
+
         transformMultiArray( tmpArray.traverser_begin(), shape,
                 typename AccessorTraits<TmpType>::default_accessor(), d, dest,
-                ifThenElse( Arg1() > Param(MaxValue), Param(MaxValue), 
+                ifThenElse( Arg1() > Param(MaxValue), Param(MaxValue),
                     ifThenElse( Arg1() < Param(MinValue), Param(MinValue), Arg1() ) ) );
     }
     else
@@ -655,7 +655,7 @@ inline void
 multiGrayscaleDilation(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                        pair<DestIterator, DestAccessor> const & dest, double sigma)
 {
-    multiGrayscaleDilation( source.first, source.second, source.third, 
+    multiGrayscaleDilation( source.first, source.second, source.third,
                             dest.first, dest.second, sigma);
 }
 
@@ -668,7 +668,7 @@ multiGrayscaleDilation(MultiArrayView<N, T1, S1> const & source,
 {
     vigra_precondition(source.shape() == dest.shape(),
         "multiGrayscaleDilation(): shape mismatch between input and output.");
-    multiGrayscaleDilation( srcMultiArrayRange(source), 
+    multiGrayscaleDilation( srcMultiArrayRange(source),
                             destMultiArray(dest), sigma);
 }
 

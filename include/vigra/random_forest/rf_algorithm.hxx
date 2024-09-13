@@ -41,10 +41,10 @@
 #include <fstream>
 namespace vigra
 {
- 
+
 namespace rf
 {
-/** This namespace contains all algorithms developed for feature 
+/** This namespace contains all algorithms developed for feature
  * selection
  *
  */
@@ -79,12 +79,12 @@ namespace detail
 
 /** Standard random forest Errorrate callback functor
  *
- * returns the random forest error estimate when invoked. 
+ * returns the random forest error estimate when invoked.
  */
 class RFErrorCallback
 {
     RandomForestOptions options;
-    
+
     public:
     /** Default constructor
      *
@@ -95,7 +95,7 @@ class RFErrorCallback
     : options(opt)
     {}
 
-    /** returns the RF OOB error estimate given features and 
+    /** returns the RF OOB error estimate given features and
      * labels
      */
     template<class Feature_t, class Response_t>
@@ -104,8 +104,8 @@ class RFErrorCallback
     {
         RandomForest<>             rf(options);
         visitors::OOB_Error        oob;
-        rf.learn(features, 
-                 response, 
+        rf.learn(features,
+                 response,
                  visitors::create_visitor(oob ));
         return oob.oob_breiman;
     }
@@ -129,14 +129,14 @@ class VariableSelectionResult
 
     Pivot_t pivot;
 
-    /** list of features. 
+    /** list of features.
      */
     FeatureList_t selected;
-    
+
     /** vector of size (number of features)
      *
      * the i-th entry encodes the error rate obtained
-     * while using features [0 - i](including i) 
+     * while using features [0 - i](including i)
      *
      * if the i-th entry is -1 then no error rate was obtained
      * this may happen if more than one feature is added to the
@@ -145,14 +145,14 @@ class VariableSelectionResult
      * during initialisation error[m+n-1] is always filled
      */
     ErrorList_t errors;
-    
+
 
     /** errorrate using no features
      */
     double no_features;
 
-    template<class FeatureT, 
-             class ResponseT, 
+    template<class FeatureT,
+             class ResponseT,
              class Iter,
              class ErrorRateCallBack>
     bool init(FeatureT const & all_features,
@@ -161,7 +161,7 @@ class VariableSelectionResult
               Iter e,
               ErrorRateCallBack errorcallback)
     {
-        bool ret_ = init(all_features, response, errorcallback); 
+        bool ret_ = init(all_features, response, errorcallback);
         if(!ret_)
             return false;
         vigra_precondition(std::distance(b, e) == static_cast<std::ptrdiff_t>(selected.size()),
@@ -169,9 +169,9 @@ class VariableSelectionResult
         std::copy(b, e, selected.begin());
         return true;
     }
-    
-    template<class FeatureT, 
-             class ResponseT, 
+
+    template<class FeatureT,
+             class ResponseT,
              class Iter>
     bool init(FeatureT const & all_features,
               ResponseT const & response,
@@ -183,7 +183,7 @@ class VariableSelectionResult
     }
 
 
-    template<class FeatureT, 
+    template<class FeatureT,
              class ResponseT>
     bool init(FeatureT const & all_features,
               ResponseT const & response)
@@ -194,13 +194,13 @@ class VariableSelectionResult
      * of a VariableSelectionResult. Subsequent calls will not reinitialize
      * member variables.
      *
-     * This is intended, to allow continuing variable selection at a point 
-     * stopped in an earlier iteration. 
+     * This is intended, to allow continuing variable selection at a point
+     * stopped in an earlier iteration.
      *
-     * returns true if initialization was successful and false if 
+     * returns true if initialization was successful and false if
      * the object was already initialized before.
      */
-    template<class FeatureT, 
+    template<class FeatureT,
              class ResponseT,
              class ErrorRateCallBack>
     bool init(FeatureT const & all_features,
@@ -219,7 +219,7 @@ class VariableSelectionResult
         errors.resize(all_features.shape(1), -1);
         errors.back() = errorcallback(all_features, response);
 
-        // calculate error rate if no features are chosen 
+        // calculate error rate if no features are chosen
         // corresponds to max(prior probability) of the classes
         std::map<typename ResponseT::value_type, int>     res_map;
         std::vector<int>                                 cts;
@@ -252,20 +252,20 @@ class VariableSelectionResult
 };
 
 
-    
+
 /** Perform forward selection
  *
  * \param features    IN:     n x p matrix containing n instances with p attributes/features
  *                             used in the variable selection algorithm
  * \param response  IN:     n x 1 matrix containing the corresponding response
  * \param result    IN/OUT: VariableSelectionResult struct which will contain the results
- *                             of the algorithm. 
+ *                             of the algorithm.
  *                             Features between result.selected.begin() and result.pivot will
  *                             be left untouched.
  *                             \sa VariableSelectionResult
  * \param errorcallback
- *                     IN, OPTIONAL: 
- *                             Functor that returns the error rate given a set of 
+ *                     IN, OPTIONAL:
+ *                             Functor that returns the error rate given a set of
  *                             features and labels. Default is the RandomForest OOB Error.
  *
  * Forward selection subsequently chooses the next feature that decreases the Error rate most.
@@ -277,7 +277,7 @@ class VariableSelectionResult
  *         VariableSelectionResult  result;
  *         forward_selection(features, labels, result);
  * \endcode
- * To use forward selection but ensure that a specific feature e.g. feature 5 is always 
+ * To use forward selection but ensure that a specific feature e.g. feature 5 is always
  * included one would do the following
  *
  * \code
@@ -290,7 +290,7 @@ class VariableSelectionResult
  *
  * \sa VariableSelectionResult
  *
- */                    
+ */
 template<class FeatureT, class ResponseT, class ErrorRateCallBack>
 void forward_selection(FeatureT          const & features,
                        ResponseT          const & response,
@@ -299,7 +299,7 @@ void forward_selection(FeatureT          const & features,
 {
     VariableSelectionResult::FeatureList_t & selected         = result.selected;
     VariableSelectionResult::ErrorList_t &     errors            = result.errors;
-    VariableSelectionResult::Pivot_t       & pivot            = result.pivot;    
+    VariableSelectionResult::Pivot_t       & pivot            = result.pivot;
     int featureCount = features.shape(1);
     // initialize result struct if in use for the first time
     if(!result.init(features, response, errorcallback))
@@ -311,7 +311,7 @@ void forward_selection(FeatureT          const & features,
                            "matrix and number of features in previously used "
                            "result struct mismatch!");
     }
-    
+
 
     int not_selected_size = std::distance(pivot, selected.end());
     while(not_selected_size > 1)
@@ -322,9 +322,9 @@ void forward_selection(FeatureT          const & features,
         {
             std::swap(*pivot, *next);
             MultiArray<2, double> cur_feats;
-            detail::choose( features, 
-                            selected.begin(), 
-                            pivot+1, 
+            detail::choose( features,
+                            selected.begin(),
+                            pivot+1,
                             cur_feats);
             double error = errorcallback(cur_feats, response);
             current_errors.push_back(error);
@@ -360,13 +360,13 @@ void forward_selection(FeatureT          const & features,
  *                             used in the variable selection algorithm
  * \param response  IN:     n x 1 matrix containing the corresponding response
  * \param result    IN/OUT: VariableSelectionResult struct which will contain the results
- *                             of the algorithm. 
+ *                             of the algorithm.
  *                             Features between result.pivot and result.selected.end() will
  *                             be left untouched.
  *                             \sa VariableSelectionResult
  * \param errorcallback
- *                     IN, OPTIONAL: 
- *                             Functor that returns the error rate given a set of 
+ *                     IN, OPTIONAL:
+ *                             Functor that returns the error rate given a set of
  *                             features and labels. Default is the RandomForest OOB Error.
  *
  * Backward elimination subsequently eliminates features that have the least influence
@@ -379,7 +379,7 @@ void forward_selection(FeatureT          const & features,
  *         VariableSelectionResult  result;
  *         backward_elimination(features, labels, result);
  * \endcode
- * To use backward elimination but ensure that a specific feature e.g. feature 5 is always 
+ * To use backward elimination but ensure that a specific feature e.g. feature 5 is always
  * excluded one would do the following:
  *
  * \code
@@ -392,7 +392,7 @@ void forward_selection(FeatureT          const & features,
  *
  * \sa VariableSelectionResult
  *
- */                    
+ */
 template<class FeatureT, class ResponseT, class ErrorRateCallBack>
 void backward_elimination(FeatureT              const & features,
                              ResponseT         const & response,
@@ -402,8 +402,8 @@ void backward_elimination(FeatureT              const & features,
     int featureCount = features.shape(1);
     VariableSelectionResult::FeatureList_t & selected         = result.selected;
     VariableSelectionResult::ErrorList_t &     errors            = result.errors;
-    VariableSelectionResult::Pivot_t       & pivot            = result.pivot;    
-    
+    VariableSelectionResult::Pivot_t       & pivot            = result.pivot;
+
     // initialize result struct if in use for the first time
     if(!result.init(features, response, errorcallback))
     {
@@ -414,7 +414,7 @@ void backward_elimination(FeatureT              const & features,
                            "matrix and number of features in previously used "
                            "result struct mismatch!");
     }
-    pivot = selected.end() - 1;    
+    pivot = selected.end() - 1;
 
     int selected_size = std::distance(selected.begin(), pivot);
     while(selected_size > 1)
@@ -425,9 +425,9 @@ void backward_elimination(FeatureT              const & features,
         {
             std::swap(*pivot, *next);
             MultiArray<2, double> cur_feats;
-            detail::choose( features, 
-                            selected.begin(), 
-                            pivot+1, 
+            detail::choose( features,
+                            selected.begin(),
+                            pivot+1,
                             cur_feats);
             double error = errorcallback(cur_feats, response);
             current_errors.push_back(error);
@@ -466,16 +466,16 @@ void backward_elimination(FeatureT              const & features,
  * \param result    IN/OUT: VariableSelectionResult struct which will contain the results
  *                             of the algorithm. The struct should be initialized with the
  *                             predefined ranking.
- *                         
+ *
  *                             \sa VariableSelectionResult
  * \param errorcallback
- *                     IN, OPTIONAL: 
- *                             Functor that returns the error rate given a set of 
+ *                     IN, OPTIONAL:
+ *                             Functor that returns the error rate given a set of
  *                             features and labels. Default is the RandomForest OOB Error.
  *
  * Often some variable importance, score measure is used to create the ordering in which
- * variables have to be selected. This method takes such a ranking and calculates the 
- * corresponding error rates. 
+ * variables have to be selected. This method takes such a ranking and calculates the
+ * corresponding error rates.
  *
  * usage:
  * \code
@@ -489,7 +489,7 @@ void backward_elimination(FeatureT              const & features,
  *
  * \sa VariableSelectionResult
  *
- */                    
+ */
 template<class FeatureT, class ResponseT, class ErrorRateCallBack>
 void rank_selection      (FeatureT              const & features,
                              ResponseT         const & response,
@@ -510,15 +510,15 @@ void rank_selection      (FeatureT              const & features,
                            "matrix and number of features in previously used "
                            "result struct mismatch!");
     }
-    
+
     int ii = 0;
     for(; iter != selected.end(); ++iter)
     {
         ++ii;
         MultiArray<2, double> cur_feats;
-        detail::choose( features, 
-                        selected.begin(), 
-                        iter+1, 
+        detail::choose( features,
+                        selected.begin(),
+                        iter+1,
                         cur_feats);
         double error = errorcallback(cur_feats, response);
         errors[std::distance(selected.begin(), iter)] = error;
@@ -542,9 +542,9 @@ void rank_selection      (FeatureT              const & features,
 
 enum ClusterLeafTypes{c_Leaf = 95, c_Node = 99};
 
-/* View of a Node in the hierarchical clustering 
- * class 
- * For internal use only - 
+/* View of a Node in the hierarchical clustering
+ * class
+ * For internal use only -
  * \sa NodeBase
  */
 class ClusterNode
@@ -561,7 +561,7 @@ class ClusterNode
                     BT::P_Container_type    &   split_param)
                 :   BT(nCol + 5, 5,topology, split_param)
     {
-        status() = 0; 
+        status() = 0;
         BT::column_data()[0] = nCol;
         if(nCol == 1)
             BT::typeID() = c_Leaf;
@@ -579,7 +579,7 @@ class ClusterNode
     }
 
     ClusterNode( BT & node_)
-        :   BT(5, 5, node_) 
+        :   BT(5, 5, node_)
     {
         //TODO : is there a more elegant way to do this?
         BT::topology_size_ += BT::column_data()[0];
@@ -613,7 +613,7 @@ struct HC_Entry
 {
     int parent;
     int level;
-    int addr; 
+    int addr;
     bool infm;
     HC_Entry(int p, int l, int a, bool in)
         : parent(p), level(l), addr(a), infm(in)
@@ -621,7 +621,7 @@ struct HC_Entry
 };
 
 
-/** Hierarchical Clustering class. 
+/** Hierarchical Clustering class.
  * Performs single linkage clustering
  * \code
  *         Matrix<double> distance = get_distance_matrix();
@@ -644,21 +644,21 @@ public:
     ArrayVector<double>     parameters_;
     int                     begin_addr;
 
-    // Calculates the distance between two 
+    // Calculates the distance between two
     double dist_func(double a, double b)
     {
-        return std::min(a, b); 
+        return std::min(a, b);
     }
 
-    /** Visit each node with a Functor 
+    /** Visit each node with a Functor
      * in creation order (should be depth first)
      */
     template<class Functor>
     void iterate(Functor & tester)
     {
 
-        std::vector<int> stack; 
-        stack.push_back(begin_addr); 
+        std::vector<int> stack;
+        stack.push_back(begin_addr);
         while(!stack.empty())
         {
             ClusterNode node(topology_, parameters_, stack.back());
@@ -680,12 +680,12 @@ public:
     void breadth_first_traversal(Functor & tester)
     {
 
-        std::queue<HC_Entry> queue; 
+        std::queue<HC_Entry> queue;
         int level = 0;
         int parent = -1;
         int addr   = -1;
         bool infm  = false;
-        queue.push(HC_Entry(parent,level,begin_addr, infm)); 
+        queue.push(HC_Entry(parent,level,begin_addr, infm));
         while(!queue.empty())
         {
             level  = queue.front().level;
@@ -696,7 +696,7 @@ public:
             ClusterNode parnt;
             if(parent != -1)
             {
-                parnt = ClusterNode(topology_, parameters_, parent); 
+                parnt = ClusterNode(topology_, parameters_, parent);
             }
             queue.pop();
             bool istrue = tester(node, level, parnt, infm);
@@ -713,15 +713,15 @@ public:
     void save(std::string file, std::string prefix)
     {
 
-        vigra::writeHDF5(file.c_str(), (prefix + "topology").c_str(), 
+        vigra::writeHDF5(file.c_str(), (prefix + "topology").c_str(),
                                MultiArrayView<2, int>(
                                     Shp(topology_.size(),1),
                                     topology_.data()));
-        vigra::writeHDF5(file.c_str(), (prefix + "parameters").c_str(), 
+        vigra::writeHDF5(file.c_str(), (prefix + "parameters").c_str(),
                                MultiArrayView<2, double>(
                                     Shp(parameters_.size(), 1),
                                     parameters_.data()));
-        vigra::writeHDF5(file.c_str(), (prefix + "begin_addr").c_str(), 
+        vigra::writeHDF5(file.c_str(), (prefix + "begin_addr").c_str(),
                                MultiArrayView<2, int>(Shp(1,1), &begin_addr));
 
     }
@@ -733,8 +733,8 @@ public:
     template<class T, class C>
     void cluster(MultiArrayView<2, T, C> distance)
     {
-        MultiArray<2, T> dist(distance); 
-        std::vector<std::pair<int, int> > addr; 
+        MultiArray<2, T> dist(distance);
+        std::vector<std::pair<int, int> > addr;
         int index = 0;
         for(int ii = 0; ii < distance.shape(0); ++ii)
         {
@@ -750,20 +750,20 @@ public:
             //find the two nodes with the smallest distance
             int ii_min = 0;
             int jj_min = 1;
-            double min_dist = dist((addr.begin()+ii_min)->second, 
+            double min_dist = dist((addr.begin()+ii_min)->second,
                               (addr.begin()+jj_min)->second);
             for(unsigned int ii = 0; ii < addr.size(); ++ii)
             {
                 for(unsigned int jj = ii+1; jj < addr.size(); ++jj)
                 {
-                    if(  dist((addr.begin()+ii_min)->second, 
+                    if(  dist((addr.begin()+ii_min)->second,
                               (addr.begin()+jj_min)->second)
-                       > dist((addr.begin()+ii)->second, 
+                       > dist((addr.begin()+ii)->second,
                               (addr.begin()+jj)->second))
                     {
-                        min_dist = dist((addr.begin()+ii)->second, 
+                        min_dist = dist((addr.begin()+ii)->second,
                               (addr.begin()+jj)->second);
-                        ii_min = ii; 
+                        ii_min = ii;
                         jj_min = jj;
                     }
                 }
@@ -774,11 +774,11 @@ public:
             // The problem is that creating a new node invalidates the iterators stored
             // in firstChild and secondChild.
             {
-                ClusterNode firstChild(topology_, 
-                                       parameters_, 
+                ClusterNode firstChild(topology_,
+                                       parameters_,
                                        (addr.begin() +ii_min)->first);
-                ClusterNode secondChild(topology_, 
-                                       parameters_, 
+                ClusterNode secondChild(topology_,
+                                       parameters_,
                                        (addr.begin() +jj_min)->first);
                 col_size = firstChild.columns_size() + secondChild.columns_size();
             }
@@ -787,12 +787,12 @@ public:
 //            std::cerr << col_size << std::endl;
             ClusterNode parent(col_size,
                                topology_,
-                               parameters_); 
-            ClusterNode firstChild(topology_, 
-                                   parameters_, 
+                               parameters_);
+            ClusterNode firstChild(topology_,
+                                   parameters_,
                                    (addr.begin() +ii_min)->first);
-            ClusterNode secondChild(topology_, 
-                                   parameters_, 
+            ClusterNode secondChild(topology_,
+                                   parameters_,
                                    (addr.begin() +jj_min)->first);
             parent.parameters_begin()[0] = min_dist;
             parent.set_index(index);
@@ -822,7 +822,7 @@ public:
                 addr.erase(addr.begin()+ii_min);
             }
             //update distances;
-            
+
             for(int jj = 0 ; jj < static_cast<int>(addr.size()); ++jj)
             {
                 if(jj == ii_keep)
@@ -865,7 +865,7 @@ public:
 
 
 /** Perform Permutation importance on HClustering clusters
- * (See visit_after_tree() method of visitors::VariableImportance to 
+ * (See visit_after_tree() method of visitors::VariableImportance to
  * see the basic idea. (Just that we apply the permutation not only to
  * variables but also to clusters))
  */
@@ -885,12 +885,12 @@ public:
     int oob_size;
 
     template<class Feat_T, class Label_T>
-    PermuteCluster(Iter  a, 
+    PermuteCluster(Iter  a,
                    Iter  b,
                    Feat_T const & feats,
-                   Label_T const & labls, 
-                   MultiArrayView<2, double> p_imp, 
-                   MultiArrayView<2, double> o_imp, 
+                   Label_T const & labls,
+                   MultiArrayView<2, double> p_imp,
+                   MultiArrayView<2, double> o_imp,
                    int np,
                    DT const  & dt_)
         :tmp_mem_(_spl(a, b).size(), feats.shape(1)),
@@ -929,15 +929,15 @@ public:
                 for(int jj = 0; jj < node.columns_size(); ++jj)
                 {
                     if(node.columns_begin()[jj] != feats_.shape(1))
-                        tmp_mem_(ii, node.columns_begin()[jj]) 
+                        tmp_mem_(ii, node.columns_begin()[jj])
                             = tmp_mem_(index, node.columns_begin()[jj]);
                 }
             }
-            
+
             for(int ii = 0; ii < rowCount(tmp_mem_); ++ii)
             {
                 if(dt
-                        .predictLabel(rowVector(tmp_mem_, ii)) 
+                        .predictLabel(rowVector(tmp_mem_, ii))
                     ==  labels_(ii, 0))
                 {
                     //per class
@@ -954,7 +954,7 @@ public:
         node_status /= oob_size;
         node.status() += node_status;
         ++index;
-         
+
         return false;
     }
 };
@@ -975,7 +975,7 @@ public:
 #ifdef HasHDF5
     void save(std::string file, std::string prefix)
     {
-        vigra::writeHDF5(file.c_str(), (prefix + "_variables").c_str(), 
+        vigra::writeHDF5(file.c_str(), (prefix + "_variables").c_str(),
                                variables);
     }
 #endif
@@ -990,7 +990,7 @@ public:
     }
 };
 /** corrects the status fields of a linkage Clustering (HClustering Visitor)
- *  
+ *
  *  such that status(currentNode) = min(status(parent), status(currentNode))
  *  \sa cluster_permutation_importance()
  */
@@ -1016,12 +1016,12 @@ public:
  *      linkage.cluster(distance);
  *      Draw<double, int> draw(features, labels, "linkagetree.graph");
  *      linkage.breadth_first_traversal(draw);
- * \endcode 
+ * \endcode
  */
 template<class T1,
-         class T2, 
+         class T2,
          class C1 = UnstridedArrayTag,
-         class C2 = UnstridedArrayTag> 
+         class C2 = UnstridedArrayTag>
 class Draw
 {
 public:
@@ -1031,10 +1031,10 @@ public:
     std::ofstream graphviz;
 
 
-    Draw(MultiArrayView<2, T1, C1> const & features, 
+    Draw(MultiArrayView<2, T1, C1> const & features,
          MultiArrayView<2, T2, C2> const& labels,
          std::string const  gz)
-        :features_(features), labels_(labels), 
+        :features_(features), labels_(labels),
         graphviz(gz.c_str(), std::ios::out)
     {
         graphviz << "digraph G\n{\n node [shape=\"record\"]";
@@ -1087,22 +1087,22 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
     void save(std::string filename, std::string prefix)
     {
         std::string prefix1 = "cluster_importance_" + prefix;
-        writeHDF5(filename.c_str(), 
-                        prefix1.c_str(), 
+        writeHDF5(filename.c_str(),
+                        prefix1.c_str(),
                         cluster_importance_);
         prefix1 = "vars_" + prefix;
-        writeHDF5(filename.c_str(), 
-                        prefix1.c_str(), 
+        writeHDF5(filename.c_str(),
+                        prefix1.c_str(),
                         variables);
     }
 #endif
 
-    ClusterImportanceVisitor(HClustering & clst, int rep_cnt = 10) 
+    ClusterImportanceVisitor(HClustering & clst, int rep_cnt = 10)
     :   repetition_count_(rep_cnt), clustering(clst)
 
     {}
 
-    /** Allocate enough memory 
+    /** Allocate enough memory
      */
     template<class RF, class PR>
     void visit_at_beginning(RF const & rf, PR const & /*pr*/)
@@ -1110,23 +1110,23 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
         Int32 const  class_count = rf.ext_param_.class_count_;
         Int32 const  column_count = rf.ext_param_.column_count_+1;
         cluster_importance_
-            .reshape(MultiArrayShape<2>::type(2*column_count-1, 
+            .reshape(MultiArrayShape<2>::type(2*column_count-1,
                                                 class_count+1));
         cluster_stdev_
-            .reshape(MultiArrayShape<2>::type(2*column_count-1, 
+            .reshape(MultiArrayShape<2>::type(2*column_count-1,
                                                 class_count+1));
         variables
-            .reshape(MultiArrayShape<2>::type(2*column_count-1, 
+            .reshape(MultiArrayShape<2>::type(2*column_count-1,
                                                 column_count), -1);
         GetClusterVariables gcv(variables);
         clustering.iterate(gcv);
-        
+
     }
 
-    /**compute permutation based var imp. 
+    /**compute permutation based var imp.
      * (Only an Array of size oob_sample_count x 1 is created.
      *  - apposed to oob_sample_count x feature_count in the other method.
-     * 
+     *
      * \sa FieldProxy
      */
     template<class RF, class PR, class SM, class ST>
@@ -1134,18 +1134,18 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
     {
         typedef MultiArrayShape<2>::type Shp_t;
         Int32                   column_count = rf.ext_param_.column_count_ +1;
-        Int32                   class_count  = rf.ext_param_.class_count_;  
-        
-        // remove the const cast on the features (yep , I know what I am 
+        Int32                   class_count  = rf.ext_param_.class_count_;
+
+        // remove the const cast on the features (yep , I know what I am
         // doing here.) data is not destroyed.
-        typename PR::Feature_t & features 
+        typename PR::Feature_t & features
             = const_cast<typename PR::Feature_t &>(pr.features());
 
-        //find the oob indices of current tree. 
+        //find the oob indices of current tree.
         ArrayVector<Int32>      oob_indices;
         ArrayVector<Int32>::iterator
                                 iter;
-        
+
         if(rf.ext_param_.actual_msample_ < pr.features().shape(0)- 10000)
         {
             ArrayVector<int> cts(2, 0);
@@ -1173,20 +1173,20 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
 
         // Random foo
         RandomMT19937           random(RandomSeed);
-        UniformIntRandomFunctor<RandomMT19937>  
+        UniformIntRandomFunctor<RandomMT19937>
                                 randint(random);
 
         //make some space for the results
         MultiArray<2, double>
-                    oob_right(Shp_t(1, class_count + 1)); 
-        
+                    oob_right(Shp_t(1, class_count + 1));
+
         // get the oob success rate with the original samples
-        for(iter = oob_indices.begin(); 
-            iter != oob_indices.end(); 
+        for(iter = oob_indices.begin();
+            iter != oob_indices.end();
             ++iter)
         {
             if(rf.tree(index)
-                    .predictLabel(rowVector(features, *iter)) 
+                    .predictLabel(rowVector(features, *iter))
                 ==  pr.response()(*iter, 0))
             {
                 //per class
@@ -1195,12 +1195,12 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
                 ++oob_right[class_count];
             }
         }
-        
+
         MultiArray<2, double>
-                    perm_oob_right (Shp_t(2* column_count-1, class_count + 1)); 
-        
+                    perm_oob_right (Shp_t(2* column_count-1, class_count + 1));
+
         PermuteCluster<ArrayVector<Int32>::iterator,typename RF::DecisionTree_t>
-            pc(oob_indices.begin(), oob_indices.end(), 
+            pc(oob_indices.begin(), oob_indices.end(),
                             pr.features(),
                             pr.response(),
                             perm_oob_right,
@@ -1218,14 +1218,14 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
         cluster_importance_  += perm_oob_right;
     }
 
-    /** calculate permutation based impurity after every tree has been 
+    /** calculate permutation based impurity after every tree has been
      * learned  default behaviour is that this happens out of place.
-     * If you have very big data sets and want to avoid copying of data 
-     * set the in_place_ flag to true. 
+     * If you have very big data sets and want to avoid copying of data
+     * set the in_place_ flag to true.
      */
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
-    {    
+    {
             after_tree_ip_impl(rf, pr, sm, st, index);
     }
 
@@ -1248,10 +1248,10 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
  * \param linkage    OUT:    Hierarchical grouping of variables.
  * \param distance  OUT:    distance matrix used for creating the linkage
  *
- * Performs Hierarchical clustering of variables. And calculates the permutation importance 
+ * Performs Hierarchical clustering of variables. And calculates the permutation importance
  * measures of each of the clusters. Use the Draw functor to create human readable output
  * The cluster-permutation importance measure corresponds to the normal permutation importance
- * measure with all columns corresponding to a cluster permuted. 
+ * measure with all columns corresponding to a cluster permuted.
  * The importance measure for each cluster is stored as the status() field of each clusternode
  * \sa HClustering
  *
@@ -1270,7 +1270,7 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
  * \endcode
  *
  *
- */                    
+ */
 template<class FeatureT, class ResponseT>
 void cluster_permutation_importance(FeatureT              const & features,
                                          ResponseT         const &     response,
@@ -1284,7 +1284,7 @@ void cluster_permutation_importance(FeatureT              const & features,
             opt.samples_per_tree(20000).use_stratification(RF_EQUAL);
 
 
-        vigra::RandomForest<int> RF(opt); 
+        vigra::RandomForest<int> RF(opt);
         visitors::RandomForestProgressVisitor             progress;
         visitors::CorrelationVisitor                     missc;
         RF.learn(features, response,
@@ -1297,15 +1297,15 @@ void cluster_permutation_importance(FeatureT              const & features,
 
         // Produce linkage
         linkage.cluster(distance);
-        
+
         //linkage.save(exp_dir + dset.name() + "_result.h5", "_linkage_CC/");
-        vigra::RandomForest<int> RF2(opt); 
+        vigra::RandomForest<int> RF2(opt);
         ClusterImportanceVisitor          ci(linkage);
-        RF2.learn(features, 
+        RF2.learn(features,
                   response,
                   create_visitor(progress, ci));
-        
-        
+
+
         CorrectStatus cs;
         linkage.breadth_first_traversal(cs);
 
@@ -1315,7 +1315,7 @@ void cluster_permutation_importance(FeatureT              const & features,
 
 }
 
-    
+
 template<class FeatureT, class ResponseT>
 void cluster_permutation_importance(FeatureT              const & features,
                                          ResponseT         const &     response,
@@ -1325,7 +1325,7 @@ void cluster_permutation_importance(FeatureT              const & features,
     cluster_permutation_importance(features, response, linkage, distance);
 }
 
-    
+
 template<class Array1, class Vector1>
 void get_ranking(Array1 const & in, Vector1 & out)
 {

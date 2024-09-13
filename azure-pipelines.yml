@@ -13,6 +13,11 @@ jobs:
           PYTHON_VERSION: 3.12
     steps:
       - script: bash ci/build_unix.sh
+  - job: lint
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - script: bash run_lint.sh
   - job: OSX
     pool:
       vmImage: macOS-latest

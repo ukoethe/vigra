@@ -31,7 +31,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -45,18 +45,18 @@ namespace vigra{
 
 //---------------------------------------------------------------------------
 
-inline void projectEllipse2D_FirstQuad (double &vx, double &vy, double a, double b, const double eps, const int iter_max){                
-  
-  double t=0,tmin,tmax,d1,d2,f,x1,y1,l;                      
+inline void projectEllipse2D_FirstQuad (double &vx, double &vy, double a, double b, const double eps, const int iter_max){
+
+  double t=0,tmin,tmax,d1,d2,f,x1,y1,l;
   int i;
   tmax=std::max(2*a*vx,2*b*vy);
   tmin=-b*b;
   d1=a*vx/(tmax+a*a);
   d2=b*vy/(tmax+b*b);
   f=d1*d1+d2*d2-1;
-    
+
   for (i=0;i<iter_max;i++){
-  
+
     t=.5*(tmin+tmax);
     d1=a*vx/(t+a*a);
     d2=b*vy/(t+b*b);
@@ -64,7 +64,7 @@ inline void projectEllipse2D_FirstQuad (double &vx, double &vy, double a, double
     x1=a*vx/(t+a*a);
     y1=b*vy/(t+b*b);
     l=x1*x1+y1*y1-1;
-   
+
     if (fabs(l)<eps)
       break;
     if(f>0)
@@ -85,15 +85,15 @@ inline void projectEllipse2D_FirstQuad (double &vx, double &vy, double a, double
 
 
 inline void projectEllipse2D(double &vx, double &vy, const double _a,const double _b,const double eps,const int max_iter){
-  
+
   //double err;
   double a=_a,b=_b;
-  
+
   //check if inside ellipse
   if (((vx/a)*(vx/a)+(vy/b)*(vy/b))<=1){
     return;
   }
-  
+
   // special case of a circle
   if (fabs(a-b) < eps){
     double l = sqrt(vx*vx+vy*vy);
@@ -103,7 +103,7 @@ inline void projectEllipse2D(double &vx, double &vy, const double _a,const doubl
     }
     return;
   }
-  
+
   // reflect vx -> -vx, if necessary
   bool x_reflect;
   if (vx > eps){
@@ -130,7 +130,7 @@ inline void projectEllipse2D(double &vx, double &vy, const double _a,const doubl
     y_reflect = false;
     vy = 0.0;
   }
-  
+
   // swap axes if necessary
   bool swapped;
   if (a >= b){

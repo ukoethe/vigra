@@ -74,11 +74,11 @@ struct InvariantFeaturesTest
     {
         typedef Matrix<float> M;
         typedef MultiArrayShape<2>::type Shape;
-        
+
         int l_max = 15;
         WignerMatrix<float> wigner(l_max);
-        
-        M ref[] = { M(), 
+
+        M ref[] = { M(),
                      M(3, 3, wignerRef1),
                      M(5, 5, wignerRef2),
                      M(7, 7, wignerRef3),
@@ -94,13 +94,13 @@ struct InvariantFeaturesTest
                      M(27, 27, wignerRef13),
                      M(29, 29, wignerRef14),
                      M(31, 31, wignerRef15) };
-        
+
         for(int l=1; l<=l_max; ++l)
         {
             wigner.compute_D(l);
-            
+
             shouldEqual(wigner.get_D(l).shape(), Shape(2*l+1, 2*l+1));
-            
+
             M diff(2*l+1, 2*l+1);
             FindMinMax<float> minmax;
 
@@ -117,14 +117,14 @@ struct InvariantFeaturesTest
             should(minmax.min > -1e-4f);
             should(minmax.max <  1e-4f);
         }
-        
+
         WignerMatrix<float> wigner2(l_max);
         for(int l=1; l<=l_max; ++l)
         {
             wigner2.compute_D(l, 0.0f, float(M_PI / 2.0), 0.0f);
-            
+
             shouldEqual(wigner2.get_D(l).shape(), Shape(2*l+1, 2*l+1));
-            
+
             M diff(2*l+1, 2*l+1);
             FindMinMax<float> minmax;
 
@@ -133,7 +133,7 @@ struct InvariantFeaturesTest
             inspectMultiArray(srcMultiArrayRange(diff), minmax);
             shouldEqual(minmax.min, 0.0f);
             shouldEqual(minmax.max, 0.0f);
-            
+
             // FIXME: transpose() shouldn't be necessary below
             transformMultiArray(srcMultiArrayRange(transpose(wigner2.get_D(l))),
                                 destMultiArray(diff), ComplexRealFunctor<float>());
@@ -142,7 +142,7 @@ struct InvariantFeaturesTest
             should(minmax.min > -1e-4f);
             should(minmax.max <  1e-4f);
         }
-        
+
         // FIXME: compute_D() with arbitrary angles, rot(), and rotatePH() are untested!
     }
 

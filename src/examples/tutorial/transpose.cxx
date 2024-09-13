@@ -5,7 +5,7 @@
 using namespace vigra;
 
 template <class T>
-void print(MultiArrayView<2, T> array) 
+void print(MultiArrayView<2, T> array)
 {
     for(int y=0; y<array.shape(1); ++y)
     {
@@ -19,9 +19,9 @@ int main (int argc, char ** argv)
 {
     // create array
     MultiArray<2, int> base_array(Shape2(4,4));
-    
+
     // init array such that pixel values are equal to their x coordinate
-    for (int i = 0; i < base_array.size(); i++) 
+    for (int i = 0; i < base_array.size(); i++)
     {
         base_array[i] = i % base_array.shape(0);
     }
@@ -38,7 +38,7 @@ int main (int argc, char ** argv)
     std::cout << "transArrayView:\n";
     print(transarrayView);
 
-    // set transarray to 5    
+    // set transarray to 5
     transarray = 5;
     std::cout << "base_array after setting transarray to 5\n(no change, since transarray is a copy):\n";
     print(base_array);
@@ -60,7 +60,7 @@ int main (int argc, char ** argv)
 
     // print the shape of transposed array
     std::cout << "Shape of array5D view after default transpose(): " << arrayview5D.shape() << "\n";
-    
+
     // transpose to an explicitly specified axis permutation
     MultiArrayView<5, int> arrayview5D_permuted = array5D.transpose(Shape5(2,1,3,4,0));
 

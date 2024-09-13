@@ -351,7 +351,7 @@ static const Direction InFront        = NeighborCode3D::InFront;            /**<
 static const Direction DirectionCount = NeighborCode3D::DirectionCount;     /**<  Export NeighborCode3D::DirectionCount to namespace Neighborhood3DSix */
 
 template <int DUMMY>
-unsigned int NeighborCode3D::StaticData<DUMMY>::b[] = { 
+unsigned int NeighborCode3D::StaticData<DUMMY>::b[] = {
                                     1 << InFront,
                                     1 << North,
                                     1 << West,
@@ -361,7 +361,7 @@ unsigned int NeighborCode3D::StaticData<DUMMY>::b[] = {
                                   };
 
 template <int DUMMY>
-unsigned int NeighborCode3D::StaticData<DUMMY>::c[] = { 
+unsigned int NeighborCode3D::StaticData<DUMMY>::c[] = {
                                     6, 5, 5, 0, 5, 4, 4, 0, 5, 4,
                                     4, 0, 0, 0, 0, 0, 5, 4, 4, 0,
                                     4, 3, 3, 0, 4, 3, 3, 0, 0, 0,
@@ -414,7 +414,7 @@ Direction NeighborCode3D::StaticData<DUMMY>::bd[43][6] = {
                 { InFront, North, West, Error, Error, Error},   //41 - AtBottomRightRearBorder
                 { InFront, North, East, Error, Error, Error}    //42 - AtBottomLeftRearBorder
                };
-               
+
 template <int DUMMY>
 Direction NeighborCode3D::StaticData<DUMMY>::bc[43][4] = {
             { InFront, North, West, Error},                    // 0 - NotAtBorder
@@ -461,7 +461,7 @@ Direction NeighborCode3D::StaticData<DUMMY>::bc[43][4] = {
             { InFront, North, West, Error},                    //41 - AtBottomRightRearBorder
             { InFront, North, Error, Error}                    //42 - AtBottomLeftRearBorder
         };
-               
+
 template <int DUMMY>
 Diff3D NeighborCode3D::StaticData<DUMMY>::d[] = {
                     Diff3D(  0,  0, -1),  //InFront
@@ -471,7 +471,7 @@ Diff3D NeighborCode3D::StaticData<DUMMY>::d[] = {
                     Diff3D(  0,  1,  0),  //South
                     Diff3D(  1,  0,  0)   //East
                 };
-                
+
 template <int DUMMY>
 Diff3D NeighborCode3D::StaticData<DUMMY>::rd[][6] = {
 //     InFront      -      North         -           West     -         Behind     -      South        -        East
@@ -482,7 +482,7 @@ Diff3D NeighborCode3D::StaticData<DUMMY>::rd[][6] = {
 { Diff3D( 0,-1,-1), Diff3D( 0,-2, 0), Diff3D(-1,-1, 0), Diff3D( 0,-1, 1), Diff3D( 0, 0, 0),  Diff3D( 1,-1, 0)}, //South
 { Diff3D(-1, 0,-1), Diff3D(-1,-1, 0), Diff3D(-2, 0, 0), Diff3D(-1, 0, 1), Diff3D(-1, 1, 0), Diff3D( 0, 0, 0) }  //East
 };
-        
+
 }//namespace Neighborhood3DSix
 
 /** Export \ref vigra::Neighborhood3DSix::NeighborCode3D into the scope of namespace vigra.
@@ -911,9 +911,9 @@ unsigned int NeighborCode3D::StaticData<DUMMY>::b[] = {
                 1 <<  BehindSouth,
                 1 <<  BehindSouthEast
             };
-            
+
 template <int DUMMY>
-unsigned int NeighborCode3D::StaticData<DUMMY>::c[] = { 
+unsigned int NeighborCode3D::StaticData<DUMMY>::c[] = {
                                     26, 17, 17,  0, 17, 11, 11,  0, 17, 11,
                                     11,  0,  0,  0,  0,  0, 17, 11, 11,  0,
                                     11,  7,  7,  0, 11,  7,  7,  0,  0,  0,
@@ -1365,7 +1365,7 @@ Direction NeighborCode3D::StaticData<DUMMY>::bd[43][26] = {
     Error, Error, Error, Error, Error, Error,
     Error, Error, Error, Error}
 };
-               
+
 template <int DUMMY>
 Direction NeighborCode3D::StaticData<DUMMY>::bc[43][13] = {
 //0 - NotAtBorder -----> should never be used
@@ -1375,7 +1375,7 @@ Direction NeighborCode3D::StaticData<DUMMY>::bc[43][13] = {
 
       NorthWest,        North,           NorthEast,
       West},
-//1 - AtRightBorder 
+//1 - AtRightBorder
     { InFrontNorthWest, InFrontNorth,    /* InFrontNorthEast, */
       InFrontWest,      InFront,         /* InFrontEast, */
       InFrontSouthWest, InFrontSouth,    /* InFrontSouthEast, */
@@ -1419,7 +1419,7 @@ Direction NeighborCode3D::StaticData<DUMMY>::bc[43][13] = {
       Error, Error, Error, Error, Error, Error, Error, Error, Error},
 //7 - Nothin'
     { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
-//8 - AtBottomBorder 
+//8 - AtBottomBorder
     { InFrontNorthWest,  InFrontNorth,    InFrontNorthEast,
       InFrontWest,       InFront,         InFrontEast,
       /* InFrontSouthWest,  InFrontSouth,    InFrontSouthEast, */
@@ -1427,7 +1427,7 @@ Direction NeighborCode3D::StaticData<DUMMY>::bc[43][13] = {
       NorthWest,         North,           NorthEast,
       West,
       Error, Error, Error},
-//9 - AtBottomRightBorder 
+//9 - AtBottomRightBorder
     { InFrontNorthWest, InFrontNorth,    /* InFrontNorthEast, */
       InFrontWest,      InFront,         /* InFrontEast, */
       /* InFrontSouthWest, InFrontSouth,    InFrontSouthEast, */
@@ -1606,7 +1606,7 @@ Direction NeighborCode3D::StaticData<DUMMY>::bc[43][13] = {
       /*West*/
       Error, Error, Error, Error, Error, Error, Error}
 };
-               
+
 template <int DUMMY>
 Diff3D NeighborCode3D::StaticData<DUMMY>::d[] = {
                                 Diff3D( -1, -1, -1),  //InFrontNorthWest
@@ -1638,7 +1638,7 @@ Diff3D NeighborCode3D::StaticData<DUMMY>::d[] = {
                                 Diff3D(  0,  1,  1),  //BehindSouth
                                 Diff3D(  1,  1,  1),  //BehindSouthEast
                             };
-        
+
 }//namespace Neighborhood3DTwentySix
 
 /** Export \ref vigra::Neighborhood3DTwentySix::NeighborCode3D into the scope of namespace vigra.

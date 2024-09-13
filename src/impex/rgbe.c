@@ -41,7 +41,7 @@
  developed by Greg Ward.  It handles the conversions between rgbe and
  pixels consisting of floats.  The data is assumed to be an array of floats.
  By default there are three floats per pixel in the order red, green, blue.
- (RGBE_DATA_??? values control this.)  Only the mimimal header reading and 
+ (RGBE_DATA_??? values control this.)  Only the mimimal header reading and
  writing is implemented.  Each routine does error checking and will return
  a status value as defined below.  This code is intended as a skeleton so
  feel free to modify it to suit your needs.
@@ -88,7 +88,7 @@ static int rgbe_error(int rgbe_error_code, char *msg)
 
 /* standard conversion from float pixels to rgbe pixels */
 /* note: you can remove the "inline"s if your compiler complains about it */
-INLINE void 
+INLINE void
 VIGRA_float2rgbe(unsigned char rgbe[4], float red, float green, float blue)
 {
   double v;
@@ -112,7 +112,7 @@ VIGRA_float2rgbe(unsigned char rgbe[4], float red, float green, float blue)
 /* standard conversion from rgbe to float pixels */
 /* note: Ward uses ldexp(col+0.5,exp-(128+8)).  However we wanted pixels */
 /*       in the range [0,1] to map back into the range [0,1].            */
-INLINE void 
+INLINE void
 VIGRA_rgbe2float(float *red, float *green, float *blue, unsigned char rgbe[4])
 {
   float f;
@@ -297,7 +297,7 @@ static int RGBE_WriteBytes_RLE(FILE *fp, unsigned char *data, int numbytes)
     /* write out bytes until we reach the start of the next run */
     while(cur < beg_run) {
       nonrun_count = beg_run - cur;
-      if (nonrun_count > 128) 
+      if (nonrun_count > 128)
     nonrun_count = 128;
       buf[0] = nonrun_count;
       if (fwrite(buf,sizeof(buf[0]),1,fp) < 1)
@@ -330,7 +330,7 @@ int VIGRA_RGBE_WritePixels_RLE(FILE *fp, float *data, int scanline_width,
     /* run length encoding is not allowed so write flat*/
     return VIGRA_RGBE_WritePixels(fp,data,scanline_width*num_scanlines);
   buffer = (unsigned char *)malloc(sizeof(unsigned char)*4*scanline_width);
-  if (buffer == NULL) 
+  if (buffer == NULL)
     /* no buffer space so write flat */
     return VIGRA_RGBE_WritePixels(fp,data,scanline_width*num_scanlines);
   while(num_scanlines-- > 0) {
@@ -364,7 +364,7 @@ int VIGRA_RGBE_WritePixels_RLE(FILE *fp, float *data, int scanline_width,
   free(buffer);
   return VIGRA_RGBE_RETURN_SUCCESS;
 }
-      
+
 int VIGRA_RGBE_ReadPixels_RLE(FILE *fp, float *data, int scanline_width,
             int num_scanlines)
 {
@@ -396,9 +396,9 @@ int VIGRA_RGBE_ReadPixels_RLE(FILE *fp, float *data, int scanline_width,
     if (scanline_buffer == NULL)
       scanline_buffer = (unsigned char *)
     malloc(sizeof(unsigned char)*4*scanline_width);
-    if (scanline_buffer == NULL) 
+    if (scanline_buffer == NULL)
       return rgbe_error(rgbe_memory_error,"unable to allocate buffer space");
-    
+
     ptr = &scanline_buffer[0];
     /* read each of the four channels for the scanline into the buffer */
     for(i=0;i<4;i++) {
@@ -491,9 +491,9 @@ int VIGRA_RGBE_ReadPixels_Raw_RLE(FILE *fp, unsigned char *data, int scanline_wi
     if (scanline_buffer == NULL)
       scanline_buffer = (unsigned char *) malloc(sizeof(unsigned char)*4*scanline_width);
 
-    if (scanline_buffer == NULL) 
+    if (scanline_buffer == NULL)
       return rgbe_error(rgbe_memory_error,"unable to allocate buffer space");
-    
+
     ptr = &scanline_buffer[0];
     /* read each of the four channels for the scanline into the buffer */
     for(i=0;i<4;i++) {

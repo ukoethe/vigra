@@ -66,7 +66,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 
     Int32               v2Dconn[2]  = {8, 4};
     Int32               v3Dconn[2]  = {26, 6};
-    Int32               connectivity= inputs.getScalarVals2D3D<Int32>("conn", 
+    Int32               connectivity= inputs.getScalarVals2D3D<Int32>("conn",
                                                                       numOfDim == 2 ? v_default(8) : v_default(26),
                                                                       v2Dconn, v2Dconn+2,
                                                                       v3Dconn, v3Dconn+2,

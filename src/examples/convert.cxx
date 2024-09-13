@@ -29,16 +29,16 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
+
 
 #include <iostream>
 #include <vigra/multi_array.hxx>
 #include <vigra/impex.hxx>
 
-using namespace vigra; 
+using namespace vigra;
 
 
 int main(int argc, char ** argv)
@@ -47,24 +47,24 @@ int main(int argc, char ** argv)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
-        
+
         return 1;
     }
-    
+
     try
     {
         // read image given as first argument
         // file type is determined automatically
         ImageImportInfo info(argv[1]);
-        
+
         if(info.isGrayscale())
         {
             // create a gray scale image of appropriate size
             MultiArray<2, UInt8> in(info.width(), info.height());
-            
+
             // import the image just read
             importImage(info, in);
-            
+
             // write the image to the file given as second argument
             // the file type will be determined from the file name's extension
             exportImage(in, ImageExportInfo(argv[2]));
@@ -73,10 +73,10 @@ int main(int argc, char ** argv)
         {
             // create a RGB image of appropriate size
             MultiArray<2, RGBValue<UInt8> > in(info.width(), info.height());
-            
+
             // import the image just read
             importImage(info, in);
-            
+
             // write the image to the file given as second argument
             // the file type will be determined from the file name's extension
             exportImage(in, ImageExportInfo(argv[2]));
@@ -88,6 +88,6 @@ int main(int argc, char ** argv)
         std::cout << e.what() << std::endl;
         return 1;
     }
-    
+
     return 0;
 }

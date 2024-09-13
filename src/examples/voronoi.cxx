@@ -32,7 +32,7 @@
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
+
 
 #include <iostream>
 #include <vigra/multi_array.hxx>
@@ -42,7 +42,7 @@
 #include <vigra/seededregiongrowing.hxx>
 #include <vigra/impex.hxx>
 
-using namespace vigra; 
+using namespace vigra;
 
 int main(int argc, char ** argv)
 {
@@ -50,39 +50,39 @@ int main(int argc, char ** argv)
     {
         int number_of_points = 25;
         int size = 512;
-        
+
         // create input image
         MultiArray<2, float> in(size, size);
-        
+
         MersenneTwister random;
         for(int i=1; i<=number_of_points; ++i)
         {
-            // mark a number of points 
+            // mark a number of points
             int x = random.uniformInt(size);
             int y = random.uniformInt(size);
-            
+
             // label each point with a unique number
             in(x,y) = i;
         }
-        
+
         // create output image and paint it white
         MultiArray<2, int> out(size, size);
         out = 255;
-        
-        // in the output image, paint the points black which were 
+
+        // in the output image, paint the points black which were
         // marked in the input image
         initImageIf(out, in, 0);
-        
+
         // create image to hold the distance transform
         MultiArray<2, float> distances(size, size);
-        
+
         // calculate Euclidean distance transform
         // all pixels with value 0 are considered background
         distanceTransform(in, distances, 0, 2);
-        
+
         exportImage(distances, ImageExportInfo("distances.gif"));
         std::cout << "Wrote distance transform (distances.gif)" << std::endl;
-        
+
         // initialize statistics functor for region growing
         ArrayOfRegionStatistics<SeedRgDirectValueFunctor<float> > statistics(number_of_points);
 
@@ -90,8 +90,8 @@ int main(int argc, char ** argv)
         // image; as the feature (first source) image contains the distances,
         // the will calculate the voronoi regions of these points
         seededRegionGrowing(distances, in, in, statistics);
-        
-        // in the output image, mark the borders of the voronoi regions black 
+
+        // in the output image, mark the borders of the voronoi regions black
         regionImageToEdgeImage(in, out, 0);
 
         exportImage(out, ImageExportInfo("voronoi.gif"));
@@ -102,6 +102,6 @@ int main(int argc, char ** argv)
         std::cout << e.what() << std::endl;
         return 1;
     }
-    
+
     return 0;
 }

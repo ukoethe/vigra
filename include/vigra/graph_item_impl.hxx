@@ -16,10 +16,10 @@
 namespace vigra{
 
     /*
-        within this namespace we implement 
+        within this namespace we implement
         filter to provide generic lemon iterators
         for a single incEdgeIterator like iterator
-        
+
         These Iterators are used by:
         - AdjacencyListGraph
         - MergeGraphAdaptor
@@ -27,11 +27,11 @@ namespace vigra{
     namespace detail{
 
         /*
-            a filter is a functor 
-            which makes an lemon iterator 
+            a filter is a functor
+            which makes an lemon iterator
             from a std::set<Adjacency<...> >::const_iterator like
             iterator.
-            Using these filters will reduce the code 
+            Using these filters will reduce the code
             needed to implement lemon compatible iterators
         */
 
@@ -56,10 +56,10 @@ namespace vigra{
                 const AdjacencyElement & adj,
                 const typename GRAPH::index_type /*ownNodeId*/
             ){
-                return g.nodeFromId(adj.nodeId());    
+                return g.nodeFromId(adj.nodeId());
             }
 
-            static const bool IsFilter = false ; 
+            static const bool IsFilter = false ;
         };
 
         template<class GRAPH>
@@ -80,24 +80,24 @@ namespace vigra{
                 const AdjacencyElement & adj,
                 const typename GRAPH::index_type /*ownNodeId*/
             ){
-                return g.edgeFromId(adj.edgeId());    
+                return g.edgeFromId(adj.edgeId());
             }
 
-            static const bool IsFilter = false ; 
+            static const bool IsFilter = false ;
         };
 
         template<class GRAPH>
         struct BackEdgeFilter{
             typedef typename GRAPH::Edge ResultType;
             typedef typename GRAPH::NodeStorage::AdjacencyElement AdjacencyElement;
-            
+
             static bool valid(
                 const GRAPH &,
                 const AdjacencyElement & adj,
                 const typename GRAPH::index_type ownNodeId
             ){
                 return adj.nodeId() < ownNodeId;
-            } 
+            }
 
             static ResultType transform(
                 const GRAPH & g,
@@ -107,20 +107,20 @@ namespace vigra{
                 return g.edgeFromId(adj.edgeId());
             }
 
-            static const bool IsFilter = true ; 
+            static const bool IsFilter = true ;
         };
         template<class GRAPH>
         struct IsBackOutFilter{
             typedef typename GRAPH::Arc ResultType;
             typedef typename GRAPH::NodeStorage::AdjacencyElement AdjacencyElement;
-            
+
             static bool valid(
                 const GRAPH &,
                 const AdjacencyElement & adj,
                 const typename GRAPH::index_type ownNodeId
             ){
                 return adj.nodeId() < ownNodeId;
-            } 
+            }
             static ResultType transform(
                 const GRAPH & g,
                 const AdjacencyElement & adj,
@@ -129,20 +129,20 @@ namespace vigra{
                 return g.direct(g.edgeFromId(adj.edgeId()) ,g.nodeFromId(ownNodeId));
             }
 
-            static const bool IsFilter = true ; 
+            static const bool IsFilter = true ;
         };
         template<class GRAPH>
         struct IsOutFilter{
             typedef typename GRAPH::Arc ResultType;
             typedef typename GRAPH::NodeStorage::AdjacencyElement AdjacencyElement;
-            
+
             static bool valid(
                 const GRAPH &,
                 const AdjacencyElement &,
                 const typename GRAPH::index_type /*ownNodeId*/
             ){
                 return  true;
-            } 
+            }
             static ResultType transform(
                 const GRAPH & g,
                 const AdjacencyElement & adj,
@@ -151,7 +151,7 @@ namespace vigra{
                 return g.direct(g.edgeFromId(adj.edgeId()) ,g.nodeFromId(ownNodeId));
             }
 
-            static const bool IsFilter = false ; 
+            static const bool IsFilter = false ;
         };
 
 
@@ -160,14 +160,14 @@ namespace vigra{
         struct IsInFilter{
             typedef typename GRAPH::Arc ResultType;
             typedef typename GRAPH::NodeStorage::AdjacencyElement AdjacencyElement;
-            
+
             static bool valid(
                 const GRAPH &,
                 const AdjacencyElement &,
                 const typename GRAPH::index_type /*ownNodeId*/
             ){
                 return  true;
-            } 
+            }
             ResultType static transform(
                 const GRAPH & g,
                 const AdjacencyElement & adj,
@@ -175,10 +175,10 @@ namespace vigra{
             ){
                 return g.direct(g.edgeFromId(adj.edgeId()) ,g.nodeFromId(adj.nodeId()));
             }
-            static const bool IsFilter = false ; 
+            static const bool IsFilter = false ;
         };
 
-        template<class GRAPH,class NODE_IMPL,class FILTER>    
+        template<class GRAPH,class NODE_IMPL,class FILTER>
         class GenericIncEdgeIt
         : public ForwardIteratorFacade<
             GenericIncEdgeIt<GRAPH,NODE_IMPL,FILTER>,
@@ -202,7 +202,7 @@ namespace vigra{
                 ownNodeId_(-1),
                 adjIter_(),
                 resultItem_(lemon::INVALID){
-            }   
+            }
             // from a given node iterator
             GenericIncEdgeIt(const Graph & g , const NodeIt & nodeIt)
             :   nodeImpl_(&g.nodeImpl(*nodeIt)),
@@ -240,7 +240,7 @@ namespace vigra{
             typedef typename NodeImpl::AdjIt AdjIt;
 
             bool isEnd()const{
-                return  (nodeImpl_==NULL  || adjIter_==nodeImpl_->adjacencyEnd());      
+                return  (nodeImpl_==NULL  || adjIter_==nodeImpl_->adjacencyEnd());
             }
             bool isBegin()const{
                 return (nodeImpl_!=NULL &&  adjIter_==nodeImpl_->adjacencyBegin());
@@ -355,7 +355,7 @@ namespace vigra{
                 void setId(const index_type id){
                     id_=id;
                 }
-                
+
                 std::pair<index_type,bool> findEdge(const index_type nodeId)const{
                     AdjIt iter = adjacency_.find(AdjacencyElement(nodeId,0));
                     if(iter==adjacency_.end()){
@@ -410,7 +410,7 @@ namespace vigra{
                 :    vigra::TinyVector<INDEX_TYPE,3>(-1){
                 }
 
-                GenericEdgeImpl(const index_type u,const index_type v, const index_type id)   
+                GenericEdgeImpl(const index_type u,const index_type v, const index_type id)
                 :    vigra::TinyVector<INDEX_TYPE,3>(u,v,id){
                 }
             // public methods
@@ -440,7 +440,7 @@ namespace vigra{
 
             GenericArc(
                 const index_type id,
-                const index_type edgeId = static_cast<index_type>(-1) 
+                const index_type edgeId = static_cast<index_type>(-1)
             )
             :   id_(id),
                 edgeId_(edgeId){
@@ -531,7 +531,7 @@ namespace vigra{
 
             GenericNode(const index_type id  )
             : id_(id){
-                
+
             }
             bool operator == (const GenericNode<INDEX_TYPE> & other )const{
                 return id_ == other.id_;

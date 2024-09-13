@@ -6,16 +6,16 @@
 using namespace vigra;
 
 
-int main (int argc, char ** argv) 
+int main (int argc, char ** argv)
 {
     // read image given as first argument
     vigra::ImageImportInfo info(argv[1]);
-    
+
     int w = info.width(),
         h = info.height();
 
     // process grayscale image
-    if (info.isGrayscale()) 
+    if (info.isGrayscale())
     {
         // instantiate arrays for image data and for composite image of appropriate size
         vigra::MultiArray<2, UInt8> imageArray(info.shape());
@@ -40,7 +40,7 @@ int main (int argc, char ** argv)
         exportImage(exportArray, ImageExportInfo(argv[2]));
     }
     // process color image
-    else 
+    else
     {
         // instantiate arrays for image data and for composite image of appropriate size
         MultiArray<2, RGBValue<UInt8> > imageArray(info.shape());

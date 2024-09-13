@@ -49,7 +49,7 @@ struct blockify_impl
 {
     // for CurrentDimension >= 1
     template <unsigned int N, class T, class S, class Shape>
-    static void make(MultiArrayView<N, T, S>& source, 
+    static void make(MultiArrayView<N, T, S>& source,
                      MultiArrayView<N, MultiArrayView<N, T, S> >& blocks,
                      Shape current_block_begin,
                      Shape current_block_end,
@@ -60,12 +60,12 @@ struct blockify_impl
         enum{ n = CurrentDimensions - 1};
 
         size_type blocks_extend = blocks.shape(n);
-        
+
         vigra_assert(blocks_extend != 0, "");
         for(current_block_pos[n] = 0, current_block_begin[n] = 0, current_block_end[n] = block_shape[n];
             current_block_pos[n] != blocks_extend - 1;
             ++current_block_pos[n],
-                current_block_begin[n] += block_shape[n], 
+                current_block_begin[n] += block_shape[n],
                 current_block_end[n] += block_shape[n])
         {
             blockify_impl<n>::make(source, blocks, current_block_begin, current_block_end, current_block_pos, block_shape);
@@ -79,7 +79,7 @@ template <>
 struct blockify_impl<0>
 {
     template <unsigned int N, class T, class S, class Shape>
-    static void make(MultiArrayView<N, T, S>& source, 
+    static void make(MultiArrayView<N, T, S>& source,
                      MultiArrayView<N, MultiArrayView<N, T, S> >& blocks,
                      Shape current_block_begin,
                      Shape current_block_end,

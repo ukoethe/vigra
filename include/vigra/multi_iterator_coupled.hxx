@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -65,93 +65,93 @@ class CoupledDimensionProxy
     typedef typename Iterator::pointer             pointer;
     typedef CoupledDimensionProxy                  iterator;
     typedef std::random_access_iterator_tag        iterator_category;
-    
+
     static const int dimension = Iterator::dimension;
- 
+
     CoupledDimensionProxy & operator++()
     {
         this->incDim(dimension);
         return *this;
     }
-    
+
     CoupledDimensionProxy operator++(int)
     {
         CoupledDimensionProxy ret(*this);
         this->incDim(dimension);
         return ret;
     }
-    
+
     CoupledDimensionProxy & operator--()
     {
         this->decDim(dimension);
         return *this;
     }
-    
+
     CoupledDimensionProxy operator--(int)
     {
         CoupledDimensionProxy ret(*this);
         this->decDim(dimension);
         return ret;
     }
-    
+
     CoupledDimensionProxy & operator+=(MultiArrayIndex d)
     {
         this->addDim(dimension, d);
         return *this;
     }
-    
+
     CoupledDimensionProxy & operator-=(MultiArrayIndex d)
     {
         this->addDim(dimension, -d);
         return *this;
     }
-    
+
     value_type operator[](MultiArrayIndex d) const
     {
         return *(CoupledDimensionProxy(*this) += d);
     }
-    
+
     CoupledDimensionProxy & operator=(MultiArrayIndex d)
     {
         this->setDim(dimension, d);
         return *this;
     }
-    
+
     bool operator==(MultiArrayIndex d) const
     {
         return this->point(dimension) == d;
     }
-    
+
     bool operator!=(MultiArrayIndex d) const
     {
         return this->point(dimension) != d;
     }
-    
+
     bool operator<(MultiArrayIndex d) const
     {
         return this->point(dimension) < d;
     }
-    
+
     bool operator<=(MultiArrayIndex d) const
     {
         return this->point(dimension) <= d;
     }
-    
+
     bool operator>(MultiArrayIndex d) const
     {
         return this->point(dimension) > d;
     }
-    
+
     bool operator>=(MultiArrayIndex d) const
     {
         return this->point(dimension) >= d;
     }
 };
 
-/** \brief Iterate over multiple images simultaneously in scan order. 
+/** \brief Iterate over multiple images simultaneously in scan order.
 
     The value type of this iterator is an instance of the handle class CoupledHandle. This allows to iterate over multiple arrays simultaneously. The coordinates can be accessed as a special band (index 0) in the handle. The scan-order is defined such that dimensions are iterated from front to back (first to last).
-    
+
     Instances of this class are usually constructed by calling createCoupledIterator() .
 
     To get the type of a CoupledScanOrderIterator for arrays of a certain dimension and element types use CoupledIteratorType::type.
@@ -165,23 +165,23 @@ class CoupledDimensionProxy
     MultiArray<2, double> image1(Shape2(5, 5));
     MultiArray<2, double> image2(Shape2(5, 5));
     // fill image with data ...
-    
+
     typedef CoupledIteratorType<2, double, double>::type Iterator; // the type of the CoupledScanOrderIterator
-    
+
     Iterator start = createCoupledIterator(image1, image2); // create coupled iterator for simultaneous iteration over image1, image2 and their coordinates
     Iterator end = start.getEndIterator();
-    
+
     for (Iterator it = start; it < end; ++it) {
       std::cout << "coordinates: " << it.get<0>() << std::endl;
       std::cout << "image1: " << it.get<1>() << std::endl;
       std::cout << "image2: " << it.get<2>() << std::endl;
     }
-    
+
     //random access:
     Iterator::value_type handle = start[15];
     std::cout << "image1: " << get<1>(handle) << std::endl;
     \endcode
-    
+
     <b>\#include</b> \<vigra/multi_iterator_coupled.hxx\> <br/>
     Namespace: vigra
 */
@@ -198,7 +198,7 @@ class CoupledScanOrderIterator
 
   public:
      static const int dimension = DIMENSION;
- 
+
     typedef MultiArrayIndex                   difference_type;
     typedef CoupledScanOrderIterator          iterator;
     typedef std::random_access_iterator_tag   iterator_category;
@@ -283,7 +283,7 @@ class CoupledScanOrderIterator
     {
         return operator+(prod(this->shape()) - this->scanOrderIndex());
     }
-    
+
     CoupledScanOrderIterator operator+(MultiArrayIndex d) const
     {
         return CoupledScanOrderIterator(*this) += d;
@@ -309,7 +309,7 @@ class CoupledScanOrderIterator
         return base_type::operator-(r);
     }
 
-    CoupledScanOrderIterator & 
+    CoupledScanOrderIterator &
     restrictToSubarray(shape_type const & start, shape_type const & end)
     {
         base_type::restrictToSubarray(start, end);
@@ -317,19 +317,19 @@ class CoupledScanOrderIterator
     }
 
 #ifdef DOXYGEN
-  
+
         /** Returns reference to the element in the band with index TARGET_INDEX.
         */
-    template<unsigned int TARGET_INDEX> 
+    template<unsigned int TARGET_INDEX>
     typename CoupledHandleCast<TARGET_INDEX, value_type>::type::reference
     get();
 
         /** Returns constant reference to the element in the band with index TARGET_INDEX.
         */
-    template<unsigned int TARGET_INDEX> 
+    template<unsigned int TARGET_INDEX>
     typename CoupledHandleCast<TARGET_INDEX, value_type>::type::const_reference
     get() const;
-    
+
 #endif
 
   protected:
@@ -374,41 +374,41 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     typedef HANDLES                                  value_type;
     typedef MultiArrayIndex                          difference_type;
     typedef value_type &                             reference;
-    typedef value_type const &                       const_reference; 
+    typedef value_type const &                       const_reference;
     typedef value_type *                             pointer;
     typedef typename MultiArrayShape<N>::type        shape_type;
     typedef CoupledScanOrderIterator                 iterator;
     typedef std::random_access_iterator_tag          iterator_category;
     typedef CoupledDimensionProxy<iterator>          dimension_proxy;
-    
+
     template <unsigned int TARGET_INDEX>
     struct Reference
     {
         typedef typename CoupledHandleCast<TARGET_INDEX, HANDLES>::reference type;
     };
-    
+
     template <unsigned int TARGET_INDEX>
     struct ConstReference
     {
         typedef typename CoupledHandleCast<TARGET_INDEX, HANDLES>::const_reference type;
     };
-    
+
     explicit CoupledScanOrderIterator(value_type const & handles = value_type())
     : handles_(handles),
       strides_(detail::defaultStride(handles_.shape()))
     {}
-    
+
     template <unsigned int DIM>
-    typename CoupledScanOrderIterator<N, HANDLES, DIM>::dimension_proxy & 
+    typename CoupledScanOrderIterator<N, HANDLES, DIM>::dimension_proxy &
     dim()
     {
         typedef CoupledScanOrderIterator<N, HANDLES, DIM> Iter;
         typedef typename Iter::dimension_proxy Proxy;
         return static_cast<Proxy &>(static_cast<Iter &>(*this));
     }
-    
+
     template <unsigned int DIM>
-    typename CoupledScanOrderIterator<N, HANDLES, DIM>::dimension_proxy const & 
+    typename CoupledScanOrderIterator<N, HANDLES, DIM>::dimension_proxy const &
     dim() const
     {
         typedef CoupledScanOrderIterator<N, HANDLES, DIM> Iter;
@@ -530,7 +530,7 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     {
         return CoupledScanOrderIterator(*this) += coordOffset;
     }
-    
+
     CoupledScanOrderIterator operator-(const shape_type &coordOffset) const
     {
         return CoupledScanOrderIterator(*this) -= coordOffset;
@@ -627,7 +627,7 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
         return handles_;
     }
 
-    CoupledScanOrderIterator & 
+    CoupledScanOrderIterator &
     restrictToSubarray(shape_type const & start, shape_type const & end)
     {
         operator+=(-point());
@@ -651,25 +651,25 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
         return handles_.borderType();
     }
 
-    template<unsigned int TARGET_INDEX> 
+    template<unsigned int TARGET_INDEX>
     typename Reference<TARGET_INDEX>::type
-    get() 
+    get()
     {
         return vigra::get<TARGET_INDEX>(handles_);
     }
 
-    template<unsigned int TARGET_INDEX> 
+    template<unsigned int TARGET_INDEX>
     typename ConstReference<TARGET_INDEX>::type
     get() const
     {
         return vigra::get<TARGET_INDEX>(handles_);
     }
-    
+
     reference handles()
     {
         return handles_;
     }
-    
+
     const_reference handles() const
     {
         return handles_;
@@ -685,12 +685,12 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     {
         handles_.template increment<dimension>(shape()[dimension]);
     }
-    
+
     value_type handles_;
     shape_type strides_;
 };
 
-template <unsigned int TARGET_INDEX, 
+template <unsigned int TARGET_INDEX,
           unsigned int N,
           class HANDLES,
           int DIM>
@@ -700,7 +700,7 @@ get(CoupledScanOrderIterator<N, HANDLES, DIM> & i)
     return vigra::get<TARGET_INDEX>(*i);
 }
 
-template <unsigned int TARGET_INDEX, 
+template <unsigned int TARGET_INDEX,
           unsigned int N,
           class HANDLES,
           int DIM>
@@ -717,7 +717,7 @@ struct CoupledIteratorType
 {
     /** Type of the CoupledHandle.*/
     typedef typename CoupledHandleType<N, T1, T2, T3, T4, T5>::type HandleType;
-  
+
     /** Type of the CoupledScanOrderIterator.*/
     typedef CoupledScanOrderIterator<HandleType::dimensions, HandleType> IteratorType;
     typedef IteratorType                                                 type;
@@ -730,7 +730,7 @@ struct CoupledArrays
 : public CoupledIteratorType<N, T1, T2, T3, T4, T5>
 {};
 
-/** Returns a CoupledScanOrderIterator from shape to iterate over coordinates. 
+/** Returns a CoupledScanOrderIterator from shape to iterate over coordinates.
  */
 template <int N>
 typename CoupledIteratorType<N>::type
@@ -738,11 +738,11 @@ createCoupledIterator(TinyVector<MultiArrayIndex, N> const & shape)
 {
     typedef typename CoupledHandleType<N>::type   P0;
     typedef CoupledScanOrderIterator<N, P0> IteratorType;
-    
+
     return IteratorType(P0(shape));
 }
 
-/** Returns a CoupledScanOrderIterator to simultaneously iterate over image m1 and its coordinates. 
+/** Returns a CoupledScanOrderIterator to simultaneously iterate over image m1 and its coordinates.
  */
 template <unsigned int N1, class T1, class S1>
 typename CoupledIteratorType<N1, T1>::type
@@ -751,12 +751,12 @@ createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1)
     typedef typename CoupledHandleType<N1, T1>::type             P1;
     typedef typename P1::base_type                               P0;
     typedef CoupledScanOrderIterator<P1::dimensions, P1>         IteratorType;
-    
-    return IteratorType(P1(m1, 
+
+    return IteratorType(P1(m1,
                         P0(m1.shape())));
 }
 
-/** Returns a CoupledScanOrderIterator to simultaneously iterate over images m1, m2 and their coordinates. 
+/** Returns a CoupledScanOrderIterator to simultaneously iterate over images m1, m2 and their coordinates.
  */
 template <unsigned int N1, class T1, class S1,
           unsigned int N2, class T2, class S2>
@@ -768,13 +768,13 @@ createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1,
     typedef typename P2::base_type                               P1;
     typedef typename P1::base_type                               P0;
     typedef CoupledScanOrderIterator<P2::dimensions, P2> IteratorType;
-    
-    return IteratorType(P2(m2, 
-                        P1(m1, 
+
+    return IteratorType(P2(m2,
+                        P1(m1,
                         P0(m1.shape()))));
 }
 
-/** Returns a CoupledScanOrderIterator to simultaneously iterate over images m1, m2, m3 and their coordinates. 
+/** Returns a CoupledScanOrderIterator to simultaneously iterate over images m1, m2, m3 and their coordinates.
  */
 template <unsigned int N1, class T1, class S1,
           unsigned int N2, class T2, class S2,
@@ -789,14 +789,14 @@ createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1,
     typedef typename P2::base_type                               P1;
     typedef typename P1::base_type                               P0;
     typedef CoupledScanOrderIterator<P3::dimensions, P3> IteratorType;
-    
-    return IteratorType(P3(m3, 
-                        P2(m2, 
-                        P1(m1, 
+
+    return IteratorType(P3(m3,
+                        P2(m2,
+                        P1(m1,
                         P0(m1.shape())))));
 }
 
-/** Returns a CoupledScanOrderIterator to simultaneously iterate over images m1, m2, m3, m4 and their coordinates. 
+/** Returns a CoupledScanOrderIterator to simultaneously iterate over images m1, m2, m3, m4 and their coordinates.
  */
 template <unsigned int N1, class T1, class S1,
           unsigned int N2, class T2, class S2,
@@ -814,15 +814,15 @@ createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1,
     typedef typename P2::base_type                               P1;
     typedef typename P1::base_type                               P0;
     typedef CoupledScanOrderIterator<P4::dimensions, P4> IteratorType;
-    
-    return IteratorType(P4(m4, 
-                        P3(m3, 
-                        P2(m2, 
-                        P1(m1, 
+
+    return IteratorType(P4(m4,
+                        P3(m3,
+                        P2(m2,
+                        P1(m1,
                         P0(m1.shape()))))));
 }
 
-/** Returns a CoupledScanOrderIterator to simultaneously iterate over images m1, m2, m3, m4, m5 and their coordinates. 
+/** Returns a CoupledScanOrderIterator to simultaneously iterate over images m1, m2, m3, m4, m5 and their coordinates.
  */
 template <unsigned int N1, class T1, class S1,
           unsigned int N2, class T2, class S2,
@@ -843,12 +843,12 @@ createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1,
     typedef typename P2::base_type                                   P1;
     typedef typename P1::base_type                                   P0;
     typedef CoupledScanOrderIterator<P1::dimensions, P5> IteratorType;
-    
-    return IteratorType(P5(m5, 
-                        P4(m4, 
-                        P3(m3, 
-                        P2(m2, 
-                        P1(m1, 
+
+    return IteratorType(P5(m5,
+                        P4(m4,
+                        P3(m3,
+                        P2(m2,
+                        P1(m1,
                         P0(m1.shape())))))));
 }
 
@@ -858,7 +858,7 @@ zip(CoupledScanOrderIterator<N, A> const & a, CoupledScanOrderIterator<N, B> con
 {
     vigra_precondition(a.shape() == b.shape() && a.scanOrderIndex() == b.scanOrderIndex(),
          "zip(CoupledScanOrderIterator): iterators must have identical shape and position.");
-         
+
     typedef typename ZipCoupledHandles<A, B>::type Handle;
     typedef CoupledScanOrderIterator<N, Handle> IteratorType;
     return IteratorType(ZipCoupledHandles<A, B>::construct(*a, *b));

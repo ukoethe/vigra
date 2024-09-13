@@ -58,12 +58,12 @@ namespace vigra
 namespace detail
 {
  // todo FINALLY DECIDE TO USE CAMEL CASE OR UNDERSCORES !!!!!!
-/* decisiontree classifier. 
+/* decisiontree classifier.
  *
- * This class is actually meant to be used in conjunction with the 
- * Random Forest Classifier 
- * - My suggestion would be to use the RandomForest classifier with 
- *   following parameters instead of directly using this 
+ * This class is actually meant to be used in conjunction with the
+ * Random Forest Classifier
+ * - My suggestion would be to use the RandomForest classifier with
+ *   following parameters instead of directly using this
  *   class (Preprocessing default values etc is handled in there):
  *
  * \code
@@ -71,7 +71,7 @@ namespace detail
  *                                  .features_per_node(RF_ALL)
  *                                  .tree_count(1)            );
  * \endcode
- * 
+ *
  * \todo remove the classCount and featurecount from the topology
  *       array. Pass ext_param_ to the nodes!
  * \todo Use relative addressing of nodes?
@@ -80,7 +80,7 @@ class DecisionTree
 {
     /* \todo make private?*/
   public:
-    
+
     /* value type of container array. use whenever referencing it
      */
     typedef Int32 TreeInt;
@@ -114,8 +114,8 @@ class DecisionTree
 
     /* learn a Tree
      *
-     * \tparam  StackEntry_t The Stackentry containing Node/StackEntry_t 
-     *          Information used during learning. Each Split functor has a 
+     * \tparam  StackEntry_t The Stackentry containing Node/StackEntry_t
+     *          Information used during learning. Each Split functor has a
      *          Stack entry associated with it (Split_t::StackEntry_t)
      * \sa RandomForest::learn()
      */
@@ -158,11 +158,11 @@ class DecisionTree
 
     /* data driven traversal from root to leaf
      *
-     * traverse through tree with data given in features. Use Visitors to 
-     * collect statistics along the way. 
+     * traverse through tree with data given in features. Use Visitors to
+     * collect statistics along the way.
      */
     template<class U, class C, class Visitor_t>
-    TreeInt getToLeaf(MultiArrayView<2, U, C> const & features, 
+    TreeInt getToLeaf(MultiArrayView<2, U, C> const & features,
                       Visitor_t  & visitor) const
     {
         TreeInt index = 2;
@@ -173,30 +173,30 @@ class DecisionTree
             {
                 case i_ThresholdNode:
                 {
-                    Node<i_ThresholdNode> 
+                    Node<i_ThresholdNode>
                                 node(topology_, parameters_, index);
                     index = node.next(features);
                     break;
                 }
                 case i_HyperplaneNode:
                 {
-                    Node<i_HyperplaneNode> 
+                    Node<i_HyperplaneNode>
                                 node(topology_, parameters_, index);
                     index = node.next(features);
                     break;
                 }
                 case i_HypersphereNode:
                 {
-                    Node<i_HypersphereNode> 
+                    Node<i_HypersphereNode>
                                 node(topology_, parameters_, index);
                     index = node.next(features);
                     break;
                 }
-#if 0 
+#if 0
                 // for quick prototyping! has to be implemented.
                 case i_VirtualNode:
                 {
-                    Node<i_VirtualNode> 
+                    Node<i_VirtualNode>
                                 node(topology_, parameters, index);
                     index = node.next(features);
                 }
@@ -211,7 +211,7 @@ class DecisionTree
     }
     /* traverse tree to get statistics
      *
-     * Tree is traversed in order the Nodes are in memory (i.e. if no 
+     * Tree is traversed in order the Nodes are in memory (i.e. if no
      * relearning//pruning scheme is utilized this will be pre order)
      */
     template<class Visitor_t>
@@ -236,11 +236,11 @@ class DecisionTree
     template<class Visitor_t>
     void traverse_post_order(Visitor_t visitor,  TreeInt /*start*/ = 2) const
     {
-        typedef TinyVector<double, 2> Entry; 
+        typedef TinyVector<double, 2> Entry;
         std::vector<Entry > stack;
         std::vector<double> result_stack;
         stack.push_back(Entry(2, 0));
-        int addr; 
+        int addr;
         while(!stack.empty())
         {
             addr = stack.back()[0];
@@ -253,29 +253,29 @@ class DecisionTree
                 result_stack.pop_back();
                 result_stack.pop_back();
                 result_stack.push_back(rightRes+ leftRes);
-                visitor.visit_internal_node(*this, 
-                                            addr, 
-                                            node.typeID(), 
+                visitor.visit_internal_node(*this,
+                                            addr,
+                                            node.typeID(),
                                             rightRes+leftRes);
             }
             else
             {
                 if(isLeafNode(node.typeID()))
                 {
-                    visitor.visit_external_node(*this, 
-                                                addr, 
-                                                node.typeID(), 
+                    visitor.visit_external_node(*this,
+                                                addr,
+                                                node.typeID(),
                                                 node.weights());
                     stack.pop_back();
                     result_stack.push_back(node.weights());
                 }
                 else
                 {
-                    stack.back()[1] = 1; 
+                    stack.back()[1] = 1;
                     stack.push_back(Entry(node.child(0), 0));
                     stack.push_back(Entry(node.child(1), 0));
                 }
-                    
+
             }
         }
     }
@@ -297,17 +297,17 @@ class DecisionTree
         switch(topology_[nodeindex])
         {
             case e_ConstProbNode:
-                return Node<e_ConstProbNode>(topology_, 
+                return Node<e_ConstProbNode>(topology_,
                                              parameters_,
                                              nodeindex).prob_begin();
                 break;
-#if 0 
+#if 0
             //first make the Logistic regression stuff...
             case e_LogRegProbNode:
-                return Node<e_LogRegProbNode>(topology_, 
+                return Node<e_LogRegProbNode>(topology_,
                                               parameters_,
                                               nodeindex).prob_begin();
-#endif            
+#endif
             default:
                 vigra_fail("DecisionTree::predict() :"
                            " encountered unknown external Node Type");
@@ -387,33 +387,33 @@ void DecisionTree::continueLearn(   MultiArrayView<2, U, C> const       & featur
         split.reset();
 
 
-        //Either the Stopping criterion decides that the split should 
-        //produce a Terminal Node or the Split itself decides what 
+        //Either the Stopping criterion decides that the split should
+        //produce a Terminal Node or the Split itself decides what
         //kind of node to make
         TreeInt NodeID;
-        
+
         if(stop(top))
-            NodeID = split.makeTerminalNode(features, 
-                                            labels, 
-                                            top, 
+            NodeID = split.makeTerminalNode(features,
+                                            labels,
+                                            top,
                                             randint);
         else
         {
             //TIC;
-            NodeID = split.findBestSplit(features, 
-                                         labels, 
-                                         top, 
-                                         child_stack_entry, 
+            NodeID = split.findBestSplit(features,
+                                         labels,
+                                         top,
+                                         child_stack_entry,
                                          randint);
             //std::cerr << TOC <<" " << NodeID << ";" <<std::endl;
         }
 
         // do some visiting yawn - just added this comment as eye candy
         // (looks odd otherwise with my syntax highlighting....
-        visitor.visit_after_split(*this, split, top, 
-                                  child_stack_entry[0], 
+        visitor.visit_after_split(*this, split, top,
+                                  child_stack_entry[0],
                                   child_stack_entry[1],
-                                  features, 
+                                  features,
                                   labels);
 
 
@@ -423,25 +423,25 @@ void DecisionTree::continueLearn(   MultiArrayView<2, U, C> const       & featur
         last_node_pos = topology_.size();
         if(top.leftParent != StackEntry_t::DecisionTreeNoParent)
         {
-            NodeBase(topology_, 
-                     parameters_, 
+            NodeBase(topology_,
+                     parameters_,
                      top.leftParent).child(0) = last_node_pos;
         }
         else if(top.rightParent != StackEntry_t::DecisionTreeNoParent)
         {
-            NodeBase(topology_, 
-                     parameters_, 
+            NodeBase(topology_,
+                     parameters_,
                      top.rightParent).child(1) = last_node_pos;
         }
 
 
         // Supply the split functor with the Node type it requires.
-        // set the address to which the children of this node should point 
+        // set the address to which the children of this node should point
         // to and push back children onto stack
         if(!isLeafNode(NodeID))
         {
             child_stack_entry[0].leftParent = topology_.size();
-            child_stack_entry[1].rightParent = topology_.size();    
+            child_stack_entry[1].rightParent = topology_.size();
             child_stack_entry[0].rightParent = -1;
             child_stack_entry[1].leftParent = -1;
             stack.push_back(child_stack_entry[0]);
@@ -460,14 +460,14 @@ void DecisionTree::continueLearn(   MultiArrayView<2, U, C> const       & featur
         int last_parameter_size = Node<e_ConstProbNode>(topology_,parameters_,garbaged_child).parameters_size();
         topology_.resize(last_node_pos);
         parameters_.resize(parameters_.size() - last_parameter_size);
-    
+
         if(top.leftParent != StackEntry_t::DecisionTreeNoParent)
-            NodeBase(topology_, 
-                     parameters_, 
+            NodeBase(topology_,
+                     parameters_,
                      top.leftParent).child(0) = garbaged_child;
         else if(top.rightParent != StackEntry_t::DecisionTreeNoParent)
-            NodeBase(topology_, 
-                     parameters_, 
+            NodeBase(topology_,
+                     parameters_,
                      top.rightParent).child(1) = garbaged_child;
     }
 }

@@ -73,7 +73,7 @@ struct GraphMapTypeTraits<NumpyArray<DIM,T> >{
 };
 
 
-    
+
 template<class GRAPH>
 struct NodeHolder :  GRAPH::Node
 {
@@ -131,7 +131,7 @@ struct EdgeHolder : GRAPH::Edge
         return GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicEdgeCoordinate(*graph_,*this);
     }
 
-    const GRAPH * graph_; 
+    const GRAPH * graph_;
 };
 
 
@@ -513,7 +513,7 @@ private:
 
 
 // tagged shape for lemon graphs
-// edge map / node map / arc map 
+// edge map / node map / arc map
 template<class G>
 class TaggedGraphShape{
 public:
@@ -542,7 +542,7 @@ public:
     }
 };
 
-// macro to specialize TaggedGraphShape for 
+// macro to specialize TaggedGraphShape for
 // grid graphs up to 4 dimensions
 #define VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(DIM,tn,te,ta) \
 template<class BOOST_DIRECTED_TAG> \
@@ -619,24 +619,24 @@ void reshapeNodeMapIfEmpty(
 
 template<class G,class T>
 struct NumpyNodeMap
-: 
+:
     IfBool<
         IsMultiband<T>::value,
-        NumpyMultibandNodeMap< G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension+1,T> > , 
+        NumpyMultibandNodeMap< G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension+1,T> > ,
         NumpyScalarNodeMap<    G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension  ,T> >
     >::type
 
 {
     typedef typename IfBool<
         IsMultiband<T>::value,
-        NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension+1,T> , 
+        NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension+1,T> ,
         NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension  ,T>
     >::type NumpyArrayType;
 
 
     typedef typename IfBool<
         IsMultiband<T>::value,
-        NumpyMultibandNodeMap< G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension+1,T> > , 
+        NumpyMultibandNodeMap< G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension+1,T> > ,
         NumpyScalarNodeMap<    G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension  ,T> >
     >::type BaseType;
 
@@ -649,24 +649,24 @@ struct NumpyNodeMap
 
 template<class G,class T>
 struct NumpyEdgeMap
-: 
+:
     IfBool<
         IsMultiband<T>::value,
-        NumpyMultibandEdgeMap< G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension+1,T> > , 
+        NumpyMultibandEdgeMap< G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension+1,T> > ,
         NumpyScalarEdgeMap<    G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension  ,T> >
     >::type
 
 {
     typedef typename IfBool<
         IsMultiband<T>::value,
-        NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension+1,T> , 
+        NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension+1,T> ,
         NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension  ,T>
     >::type NumpyArrayType;
 
 
     typedef typename IfBool<
         IsMultiband<T>::value,
-        NumpyMultibandEdgeMap< G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension+1,T> > , 
+        NumpyMultibandEdgeMap< G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension+1,T> > ,
         NumpyScalarEdgeMap<    G ,  NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension  ,T> >
     >::type BaseType;
 
@@ -683,7 +683,7 @@ struct PyEdgeMapTraits{
     typedef NumpyEdgeMap<G,T> Map;
     typedef typename IfBool<
         IsMultiband<T>::value,
-        NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension+1,T> , 
+        NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension+1,T> ,
         NumpyArray<IntrinsicGraphShape<G>::IntrinsicEdgeMapDimension  ,T>
     >::type Array;
 };
@@ -696,7 +696,7 @@ struct PyNodeMapTraits{
     typedef NumpyNodeMap<G,T> Map;
     typedef typename IfBool<
         IsMultiband<T>::value,
-        NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension+1,T> , 
+        NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension+1,T> ,
         NumpyArray<IntrinsicGraphShape<G>::IntrinsicNodeMapDimension  ,T>
     >::type Array;
 };
@@ -706,7 +706,7 @@ namespace cluster_operators{
 
 template<class MERGE_GRAPH>
 class PythonOperator{
-    
+
     typedef PythonOperator<MERGE_GRAPH > SelfType;
 public:
 

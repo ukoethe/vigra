@@ -44,15 +44,15 @@
 namespace vigra {
 
 template <unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
-void 
-cumulativeSum(MultiArrayView<N, T1, S1> const & image, 
+void
+cumulativeSum(MultiArrayView<N, T1, S1> const & image,
               MultiArrayView<N, T2, S2> out,
               int axis,
               FUNCTOR const & functor)
 {
     typedef typename MultiArrayShape<N>::type ShapeN;
     ShapeN offset = ShapeN::unitVector(axis);
-    
+
     MultiCoordinateIterator<N> i(image.shape()),
                                end(i.getEndIterator());
     for(; i != end; ++i)
@@ -69,29 +69,29 @@ cumulativeSum(MultiArrayView<N, T1, S1> const & image,
 }
 
 template <unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
-void 
-integralMultiArrayImpl(MultiArrayView<N, T1, S1> const & array, 
+void
+integralMultiArrayImpl(MultiArrayView<N, T1, S1> const & array,
                        MultiArrayView<N, T2, S2> intarray,
                        FUNCTOR const & f)
 {
     vigra_precondition(array.shape() == intarray.shape(),
         "integralMultiArray(): shape mismatch between input and output.");
-        
+
     cumulativeSum(array, intarray, 0, f);
-    
+
     for(unsigned axis=1; axis < N; ++axis)
         cumulativeSum(intarray, intarray, axis, functor::Identity());
 }
 
 template <class T1, class S1, class T2, class S2, class FUNCTOR>
-void 
-integralMultiArrayImpl(MultiArrayView<2, T1, S1> const & image, 
+void
+integralMultiArrayImpl(MultiArrayView<2, T1, S1> const & image,
                        MultiArrayView<2, T2, S2> intimage,
                        FUNCTOR const & functor)
 {
     vigra_precondition(image.shape() == intimage.shape(),
         "integralMultiArray(): shape mismatch between input and output.");
-        
+
     int width = image.shape(0);
     int height = image.shape(1);
 
@@ -113,21 +113,21 @@ integralMultiArrayImpl(MultiArrayView<2, T1, S1> const & image,
 }
 
 template <class T1, class S1, class T2, class S2, class FUNCTOR>
-void 
-integralMultiArrayImpl(MultiArrayView<3, T1, S1> const & volume, 
+void
+integralMultiArrayImpl(MultiArrayView<3, T1, S1> const & volume,
                        MultiArrayView<3, T2, S2> intvolume,
                        FUNCTOR const & functor)
 {
     vigra_precondition(volume.shape() == intvolume.shape(),
         "integralMultiArray(): shape mismatch between input and output.");
-        
+
     int nx = volume.shape(0);
     int ny = volume.shape(1);
     int nz = volume.shape(2);
 
     //this vector will store s2(x, y-1) for all values of x
     MultiArray<1, T2> s2_temp(nx);
-    
+
     T2 s1 = T2();
     T2 s2 = T2();
 
@@ -142,11 +142,11 @@ integralMultiArrayImpl(MultiArrayView<3, T1, S1> const & volume,
             intvolume(ix, iy, 0) = s2;
         }
     }
-    
+
     for (int iz=1; iz<nz; ++iz)
-    {    
+    {
         s2_temp = T2();
-        
+
         for (int iy=0; iy<ny; ++iy)
         {
             s1 = T2();
@@ -162,8 +162,8 @@ integralMultiArrayImpl(MultiArrayView<3, T1, S1> const & volume,
 }
 
 template <unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
-inline void 
-integralMultiArray(MultiArrayView<N, T1, S1> const & array, 
+inline void
+integralMultiArray(MultiArrayView<N, T1, S1> const & array,
                    MultiArrayView<N, T2, S2> intarray,
                    FUNCTOR const & f)
 {
@@ -171,8 +171,8 @@ integralMultiArray(MultiArrayView<N, T1, S1> const & array,
 }
 
 template <unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
-inline void 
-integralMultiArray(MultiArrayView<N, Multiband<T1>, S1> const & array, 
+inline void
+integralMultiArray(MultiArrayView<N, Multiband<T1>, S1> const & array,
                    MultiArrayView<N, Multiband<T2>, S2> intarray,
                    FUNCTOR const & f)
 {
@@ -181,24 +181,24 @@ integralMultiArray(MultiArrayView<N, Multiband<T1>, S1> const & array,
 }
 
 template <unsigned int N, class T1, class S1, class T2, class S2>
-inline void 
-integralMultiArray(MultiArrayView<N, T1, S1> const & array, 
+inline void
+integralMultiArray(MultiArrayView<N, T1, S1> const & array,
                    MultiArrayView<N, T2, S2> intarray)
 {
     integralMultiArray(array, intarray, functor::Identity());
 }
 
 template <unsigned int N, class T1, class S1, class T2, class S2>
-inline void 
-integralMultiArray(MultiArrayView<N, Multiband<T1>, S1> const & array, 
+inline void
+integralMultiArray(MultiArrayView<N, Multiband<T1>, S1> const & array,
                    MultiArrayView<N, Multiband<T2>, S2> intarray)
 {
     integralMultiArray(array, intarray, functor::Identity());
 }
 
 template <unsigned int N, class T1, class S1, class T2, class S2>
-inline void 
-integralMultiArraySquared(MultiArrayView<N, T1, S1> const & array, 
+inline void
+integralMultiArraySquared(MultiArrayView<N, T1, S1> const & array,
                           MultiArrayView<N, T2, S2> intarray)
 {
     using namespace functor;
@@ -206,8 +206,8 @@ integralMultiArraySquared(MultiArrayView<N, T1, S1> const & array,
 }
 
 template <unsigned int N, class T1, class S1, class T2, class S2>
-inline void 
-integralMultiArraySquared(MultiArrayView<N, Multiband<T1>, S1> const & array, 
+inline void
+integralMultiArraySquared(MultiArrayView<N, Multiband<T1>, S1> const & array,
                           MultiArrayView<N, Multiband<T2>, S2> intarray)
 {
     using namespace functor;
@@ -215,5 +215,5 @@ integralMultiArraySquared(MultiArrayView<N, Multiband<T1>, S1> const & array,
 }
 
 } // namespace vigra
-    
+
 #endif // VIGRA_INTEGRALIMAGE_HXX

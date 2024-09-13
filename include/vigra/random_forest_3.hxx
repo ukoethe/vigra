@@ -398,7 +398,7 @@ random_forest_impl(
     {
         label_map[distinct_labels[i]] = i;
     }
-    
+
     MultiArray<1, LabelType> transformed_labels(Shape1(labels.size()));
     for (size_t i = 0; i < (size_t)labels.size(); ++i)
     {

@@ -101,7 +101,7 @@ namespace vigra
         }
 
     private:
-        
+
         typedef return_type (VIGRA_DELEGATE_CALLTYPE *stub_type)(void* object_ptr VIGRA_DELEGATE_SEPARATOR VIGRA_DELEGATE_PARAMS);
 
         void* object_ptr;

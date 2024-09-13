@@ -34,22 +34,22 @@
 /************************************************************************/
 
 
-/*                                                          
- *  Opens an Andor .sif file as MultiImageView.             
- *  The width, height and number of images are extracted    
- *  from the ASCII encoded variable length header.          
- *                                                          
- *  Based on the Java-Code from                             
- *  http://rsb.info.nih.gov/ij/plugins/open-sif.html        
- *  written by                                              
- *  L. Stirling Churchman (stirling at stanford.edu)        
- *  Philippe Carl (pcarl at uni-muenster.de)                
- *  Yoshiyuki Arai (arai at phys1.med.osaka-u.ac.jp)        
- *                                                          
- *  Currently tested SIF versions: 4.16.12005.0             
- *                                 4.16.30001.0             
- *                                 4. 6.    3.0             
- *                                 4. 6.    0.0             
+/*
+ *  Opens an Andor .sif file as MultiImageView.
+ *  The width, height and number of images are extracted
+ *  from the ASCII encoded variable length header.
+ *
+ *  Based on the Java-Code from
+ *  http://rsb.info.nih.gov/ij/plugins/open-sif.html
+ *  written by
+ *  L. Stirling Churchman (stirling at stanford.edu)
+ *  Philippe Carl (pcarl at uni-muenster.de)
+ *  Yoshiyuki Arai (arai at phys1.med.osaka-u.ac.jp)
+ *
+ *  Currently tested SIF versions: 4.16.12005.0
+ *                                 4.16.30001.0
+ *                                 4. 6.    3.0
+ *                                 4. 6.    0.0
 */
 
 
@@ -84,14 +84,14 @@ class BadConversion : public std::runtime_error {
      : std::runtime_error(s)
      { }
 };
- 
+
 inline double convertToDouble(std::string const& s) {
    std::istringstream i(s);
    double x;
    if (!(i >> x))
      throw BadConversion("convertToDouble(\"" + s + "\")");
    return x;
-} 
+}
 
 inline int convertToInt(std::string const& s) {
    std::istringstream i(s);
@@ -99,10 +99,10 @@ inline int convertToInt(std::string const& s) {
    if (!(i >> x))
      throw BadConversion("convertToDouble(\"" + s + "\")");
    return x;
-} 
+}
 
 }// namespace helper
- 
+
 /********************************************************/
 /*                                                      */
 /*                   SIFImportInfo                      */
@@ -113,7 +113,7 @@ int SIFImportInfo::width() const {    return m_dims[0]; }
 int SIFImportInfo::height() const {    return m_dims[1]; }
 int SIFImportInfo::stacksize() const {    return m_dims[2]; }
 std::ptrdiff_t SIFImportInfo::getOffset() const {    return m_offset; }
-const char * SIFImportInfo::getFileName() const  {    return m_filename;    }    
+const char * SIFImportInfo::getFileName() const  {    return m_filename;    }
 
 MultiArrayIndex SIFImportInfo::numDimensions() const { return 3; } // alway 3D data
 ArrayVector<size_t> const & SIFImportInfo::shape() const {return m_dims; }
@@ -129,7 +129,7 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
     left = 1, right = 512, bottom = 1, top = 512;
     xbin = 1, ybin = 1;
     xres = 1, yres = 1;
-    
+
     std::ifstream siffile (filename);
     if( !siffile.is_open() )
     {
@@ -137,7 +137,7 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
         msg += filename;
         msg += "'. File not found.";
         vigra_precondition(0, msg.c_str());
-    }    
+    }
     int spool = 0;    //If Data is Spooled one, spool is set to 1
     for(int i=0;i<headerlen+spool+1;i++) {
         std::string str;
@@ -148,7 +148,7 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
         if(i==0) {
             vigra_precondition(str=="Andor Technology Multi-Channel File", "The file is not a valid sif File.");
         }
-        if(i==2) { // Extract parameters such as temperature, exposureTime and so on. 
+        if(i==2) { // Extract parameters such as temperature, exposureTime and so on.
             std::vector<std::string> tokens = helper::split(str, ' ');
             // TODO
             //~ d = new Date(Long.parseLong(tokens[4])*1000); // Date is recorded as seconds counted from 1970.1.1 00:00:00
@@ -163,7 +163,7 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
             if(tokens.size() > 57) {
                 version = tokens[54]+"."+tokens[55]+"."+tokens[56]+"."+tokens[57];
             }
-            if(temperature1 == -999) 
+            if(temperature1 == -999)
                 // If the temperature is unstable, temperature1 value is -999 and unstable temperature value is recored in temperature2
                 temperature = asString(temperature2) + " (Unstable)";
             else
@@ -181,12 +181,12 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
                 spool=1;
             }
         }
-        if(i > 7 && i < headerlen-12) 
+        if(i > 7 && i < headerlen-12)
         {
-            if(str.size() == 17 && 
-                 str.substr(0,6)=="65539 " && 
-                 str[6] == 0x01 && str[7] == 0x20 && str[8] == 0x00) 
-            { // seems to be always ten lines before the dimensions-line 
+            if(str.size() == 17 &&
+                 str.substr(0,6)=="65539 " &&
+                 str[6] == 0x01 && str[7] == 0x20 && str[8] == 0x00)
+            { // seems to be always ten lines before the dimensions-line
                  headerlen = i+12;
             }
         }
@@ -198,7 +198,7 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
             yres = helper::convertToInt(tokens[2]);
             xres = helper::convertToInt(tokens[3]);
             m_dims[2] = helper::convertToInt(tokens[5]);
-            
+
         }
         if(i==(headerlen-1)) { // Read information about the size and bin
             std::vector<std::string> tokens = helper::split(str, ' ');
@@ -211,7 +211,7 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
             ybin = helper::convertToInt(tokens[6]);
         }
     }
-    
+
     // determine filesize
     siffile.seekg (0, std::ios::end); // goto the end
     filesize = siffile.tellg();
@@ -229,7 +229,7 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
         m_offset += 2;
     }
     siffile.close();
-    
+
     // Calc the width and the height value of the ROI
     size_t width=0, height=0;
     width = right-left+1;
@@ -243,13 +243,13 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
 
     size_t data_size = (size_t)width * height * 4 * stacksize();
     vigra_precondition(m_offset + data_size + 8 == filesize, "error reading sif file: data with header should be equal to filesize. ");
-    
+
 
 
 }
 
 // this function only works for MultiArrayView<3, float> so we don't use a template here.
-void readSIF(const SIFImportInfo &info, MultiArrayView<3, float> array) 
+void readSIF(const SIFImportInfo &info, MultiArrayView<3, float> array)
 {
     readSIFBlock(info, Shape3(0,0,0), Shape3(info.width(), info.height(), info.stacksize()), array);
 }
@@ -297,8 +297,8 @@ std::ostream& operator<<(std::ostream& os, const SIFImportInfo& info)
         "\nStacksize: \t\t\t" << info.stacksize() <<
         "\nFilesize: \t\t\t" << info.filesize <<
         "\nOffset to Image Data: \t" << info.m_offset <<
-        "\n";    
-        
+        "\n";
+
     return os;
 }
 

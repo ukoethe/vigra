@@ -55,9 +55,9 @@ using namespace vigra;
 struct Counter   // for initImageWithFunctor
 {
     Counter() : count(0) {}
-        
+
     int operator()() const { return count++; }
-    
+
     mutable int count;
 };
 
@@ -788,7 +788,7 @@ struct ImageFunctionsTest
         inspectImage(srcImageRange(img), minmax);
         transformImage(srcImageRange(img), destImage(img1),
                        linearRangeMapping(minmax, 0, 250));
-    
+
         int res1[] = {0, 31, 62, 94, 125, 156, 187, 219, 250 };
 #if 0
         for(int i=0; i<9; ++i)
@@ -890,7 +890,7 @@ struct ImageFunctionsTest
             }
         }
 
-        gradientBasedTransform(RGBView(in), View(res), 
+        gradientBasedTransform(RGBView(in), View(res),
                                vigra::RGBGradientMagnitudeFunctor<double>());
 
         for(y=0; y<3; ++y)
@@ -1611,7 +1611,7 @@ struct GeometricTransformsTest
                 shouldEqual(img(x,y), res1(w-x-1, h-y-1));
                 shouldEqual(img(x,y), res11(w-x-1, h-y-1));
             }
-        
+
         rotateImage(srcImageRange(img), destImage(res2), 90);
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)

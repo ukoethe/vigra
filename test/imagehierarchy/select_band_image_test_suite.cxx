@@ -1,13 +1,13 @@
 #include "g++_relops_workaround.hxx"
 
-#include "select_band_image_policy.hxx" 
+#include "select_band_image_policy.hxx"
 #include "select_image_test.hxx"
-#include "vector_2_image_policy.hxx" 
-// #include "vector_3_image_policy.hxx" 
-// #include "vector_4_image_policy.hxx" 
-#include "rgb_images_policy.hxx" 
-// #include "select_image_test.hxx" 
-#include <unittest.hxx> 
+#include "vector_2_image_policy.hxx"
+// #include "vector_3_image_policy.hxx"
+// #include "vector_4_image_policy.hxx"
+#include "rgb_images_policy.hxx"
+// #include "select_image_test.hxx"
+#include <unittest.hxx>
 
 /* Vorsicht !!! in select_image_test.hxx gibt's SelectBandImageTestSuite. Den Unterschied beachten!!!
 */
@@ -30,12 +30,12 @@ SelectImagesTestSuite::SelectImagesTestSuite()
 
 // int main()
 // {
-//  
+//
 //     SelectImagesTestSuite itest;
-// 
+//
 //     int failed = itest.run();
-// 
+//
 //     std::cout << itest.report() << std::endl;
-//     
+//
 //     return (failed != 0);
-// }  
+// }

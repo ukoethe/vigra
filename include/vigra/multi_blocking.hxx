@@ -142,7 +142,7 @@ namespace vigra{
         };
     }
     /// \endcond
-    
+
 
     /**
         MultiBlocking is used to split a image / volume / multiarray
@@ -150,7 +150,7 @@ namespace vigra{
         These non overlapping blocks are called cores.
         A border can be added to the core boxes.
         These 'core+border' blocks are just called border.
-        The core block within the coordinate system 
+        The core block within the coordinate system
         of the border block is called local core.
     */
     template<unsigned int DIM, class C = MultiArrayIndex>
@@ -168,7 +168,7 @@ namespace vigra{
         typedef detail_multi_blocking::BlockWithBorder<DIM, PointValue> BlockWithBorder;
 
 
-        // iterators 
+        // iterators
         typedef detail_multi_blocking::MultiCoordToBlockWithBoarder<SelfType> CoordToBwb;
         typedef detail_multi_blocking::MultiCoordToBlock<SelfType> CoordToB;
         typedef EndAwareTransformIterator<CoordToBwb, MultiCoordIter> BlockWithBorderIter;

@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -45,7 +45,7 @@
 #include "vigra/seededregiongrowing.hxx"
 #include "vigra/impex.hxx"
 
-using namespace vigra; 
+using namespace vigra;
 
 // define a functor that calsulates the squared magnitude of the gradient
 // given the x- and y- components of the gradient
@@ -70,13 +70,13 @@ template <class InImage, class OutImage>
 void weightedWatershedSegmentation(InImage & in, OutImage & out, double scale, unsigned int oversampling = 1)
 {
     using namespace vigra::functor;
-    
+
     typedef typename vigra::NumericTraits<typename InImage::value_type>::RealPromote
         TmpType;
 
     vigra_precondition(oversampling > 0,
        "weightedWatershedSegmentation(): oversampling must not be zero.");
-    
+
     int w = oversampling*(in.width() - 1) + 1;
     int h = oversampling*(in.height() - 1) + 1;
 
@@ -96,7 +96,7 @@ void weightedWatershedSegmentation(InImage & in, OutImage & out, double scale, u
     {
         gaussianGradient(srcImageRange(in), destImage(gradientx), destImage(gradienty), scale);
     }
-    
+
     // transform components into gradient magnitude
     combineTwoImages(srcImageRange(gradientx), srcImage(gradienty),
                      destImage(gradientmag), GradientSquaredMagnitudeFunctor());
@@ -124,10 +124,10 @@ void weightedWatershedSegmentation(InImage & in, OutImage & out, double scale, u
                         destImage(labels), gradstat, KeepContours);
 
     out.resize(w,h);
-    
+
     // set boundary pixels to the corresponding gradient value, non-boundary pixels to zero
     combineTwoImages(srcImageRange(gradientmag), srcImage(labels),
-                     destImage(out), 
+                     destImage(out),
                      ifThenElse(Arg2()==Param(0), sqrt(Arg1()), Param(0.0)));
 }
 

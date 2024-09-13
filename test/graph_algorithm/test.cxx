@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -58,7 +58,7 @@ struct GraphAlgorithmTest{
     typedef GraphType::OutArcIt                  OutArcIt;
     typedef GraphType::NeighborNodeIt            NeighborNodeIt;
 
-    GraphAlgorithmTest(){       
+    GraphAlgorithmTest(){
 
     }
 
@@ -90,7 +90,7 @@ struct GraphAlgorithmTest{
         const DistMap & dmap  = pf.distances();
         const PredMap & pmap  = pf.predecessors();
 
-        // check the length and the path 
+        // check the length and the path
         shouldEqual( pathLength(Shape2(0,0), Shape2(0,0),pmap) , 1);
         shouldEqual( pathLength(Shape2(0,0), Shape2(0,1),pmap) , 2);
         shouldEqual( pathLength(Shape2(0,0), Shape2(0,2),pmap) , 3);
@@ -148,9 +148,9 @@ struct GraphAlgorithmTest{
         typedef typename Graph::Edge Edge;
 
         //   1 | 2
-        //   _   _ 
-        //   3 | 4 
-        
+        //   _   _
+        //   3 | 4
+
         typename Graph::NodeIt node(g);
         const Node n1=*node++;
         const Node n2=*node++;
@@ -255,9 +255,9 @@ struct GraphAlgorithmTest{
         typedef typename Graph::Edge Edge;
 
         //   1 | 2
-        //   _   _ 
-        //   3 | 4 
-        
+        //   _   _
+        //   3 | 4
+
         typename Graph::NodeIt node(g);
         const Node n1=*node++;
         const Node n2=*node++;
@@ -396,13 +396,13 @@ struct GraphAlgorithmTest{
             const Edge e45= g.addEdge(n4,n5);
 
             //   1 | 2
-            //   _   _ 
-            //   3 | 4 | 5 
+            //   _   _
+            //   3 | 4 | 5
 
             //labeling
             //   1 | 7
-            //   _   _ 
-            //   1 | 7 | 3 
+            //   _   _
+            //   1 | 7 | 3
 
             GraphType::NodeMap<int> labels(g);
             labels[n1]=1;
@@ -449,7 +449,7 @@ struct GraphAlgorithmTest{
             should(affEdges[re73][0]==e45);
             should(affEdges[re17][0]==e12 || affEdges[re17][1]==e12 );
             should(affEdges[re17][0]==e34 || affEdges[re17][1]==e34 );
-        }   
+        }
     }
 
 
@@ -468,8 +468,8 @@ struct GraphAlgorithmTest{
             const Edge e45= g.addEdge(n4,n5);
 
             //   1 | 2
-            //   _   _ 
-            //   3 | 4 | 5 
+            //   _   _
+            //   3 | 4 | 5
 
             GraphType::EdgeMap<float> ew(g);
 
@@ -546,13 +546,13 @@ struct GraphAlgorithmTest{
 };
 
 
- 
+
 struct GraphAlgorithmTestSuite
 : public vigra::test_suite
 {
     GraphAlgorithmTestSuite()
     : vigra::test_suite("GraphAlgorithmTestSuite")
-    {   
+    {
         add( testCase( &GraphAlgorithmTest::testShortestPathAdjacencyListGraph));
         add( testCase( &GraphAlgorithmTest::testShortestPathGridGraph));
         add( testCase( &GraphAlgorithmTest::testRegionAdjacencyGraph));

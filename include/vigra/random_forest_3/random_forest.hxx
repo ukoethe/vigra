@@ -155,7 +155,7 @@ public:
     {
         return problem_spec_.num_classes_;
     }
-    
+
     /// \brief Return the number of classes.
     size_t num_features() const
     {
@@ -284,7 +284,7 @@ void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities(
     vigra_precondition((size_t)probs.shape()[1] == problem_spec_.num_classes_,
                        "RandomForest::predict_probabilities(): Number of labels in probabilities differs from training.");
 
-    // By default, actual_tree_indices is empty. In that case we want to use all trees. 
+    // By default, actual_tree_indices is empty. In that case we want to use all trees.
     // We need to make a copy. I really don't know how the old code did compile...
     std::vector<size_t> tree_indices_cpy(tree_indices);
     if (tree_indices_cpy.size() == 0)
@@ -299,14 +299,14 @@ void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities(
         for (auto i : tree_indices_cpy)
             vigra_precondition(i < graph_.numRoots(), "RandomForest::leaf_ids(): Tree index out of range.");
     }
-    
+
     size_t const num_instances = features.shape()[0];
-    
+
     if (n_threads == -1)
         n_threads = std::thread::hardware_concurrency();
     if (n_threads < 1)
         n_threads = 1;
-    
+
     parallel_foreach(
         n_threads,
         num_instances,
@@ -330,7 +330,7 @@ void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities_impl
     std::vector<AccInputType> tree_results;
     tree_results.reserve(tree_indices.size());
     auto const sub_features = features.template bind<0>(i);
-    
+
     // loop over the trees
     for (auto k : tree_indices)
     {
@@ -345,7 +345,7 @@ void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities_impl
 
     // write the tree results into the probabilities
     auto sub_probs = probs.template bind<0>(i);
-    acc(tree_results.begin(), tree_results.end(), sub_probs.begin());    
+    acc(tree_results.begin(), tree_results.end(), sub_probs.begin());
 }
 
 template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>

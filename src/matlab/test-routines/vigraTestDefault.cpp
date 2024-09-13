@@ -52,7 +52,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     MultiArrayShape<2>::type    newShape3 (3, 3);
     MultiArray<2,double> defMultArray(newShape3);
     MultiArrayView<2,double>         in3D   = inputs.getMultiArray<2,double>(2, v_default(MultiArrayView<2, double>(defMultArray)));
-    
+
     bool dimWasGiven;
     double                   aga            = inputs.getScalar<double>(0, v_default(2, dimWasGiven));
     double                   sgs            = inputs.getScalar<double>(1, aga == 2 ? v_default(2) : v_default(3));

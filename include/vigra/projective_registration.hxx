@@ -108,7 +108,7 @@ projectiveMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
 
 /** \brief Warp an image according to an projective transformation.
 
-    The matrix can be computed from a set of correspondung points 
+    The matrix can be computed from a set of correspondung points
     using \ref projectiveMatrix2DFromCorrespondingPoints().
 
     <b> Declarations:</b>

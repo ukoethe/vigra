@@ -247,13 +247,13 @@ public:
         TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
         shouldEqual(w, img.width());
         shouldEqual(h, img.height());
-    
+
         MultiArray<2, unsigned char> res2(w,h);
         importTiffImage(tiff, res2);
         TIFFClose(tiff);
 
         shouldEqualSequence(res2.begin(), res2.end(), img.data());
-        
+
         // test bilevel
         MultiArray<2, unsigned char> bilevel;
         importImage("bilevel.tiff", bilevel);
@@ -263,7 +263,7 @@ public:
         shouldEqual(m, 0);
         shouldEqual(M, 1);
         shouldEqual(bilevel.sum<int>(), 1653050); // 96% white pixels
-        
+
 #endif
     }
 
@@ -531,7 +531,7 @@ public:
         TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
         shouldEqual(w, img.width());
         shouldEqual(h, img.height());
-    
+
         MultiArray<2, RGBValue<unsigned char> > res2(w,h);
         importTiffImage(tiff, res2);
         TIFFClose(tiff);
@@ -1601,7 +1601,7 @@ public:
         }
 
         MultiArray<2, TinyVector<UInt8, 4> > vec4;
-        
+
         try {
             importImage("lennargb.xv", vec4);
             failTest( "Failed to throw exception." );
@@ -1621,14 +1621,14 @@ public:
     {
 #if defined(HasTIFF)
         vigra::ImageImportInfo info("lenna_masked_gray.tif");
-        
+
         image_.resize(info.size());
         alpha_.resize(info.size());
         importImageAlpha(info, destImage(image_), destImage(alpha_));
 #else
         image_.resize(Size2D(20,10));
         alpha_.resize(image_.size());
-        
+
         image_.init(10);
         alpha_.init(255);
 #endif
@@ -1741,7 +1741,7 @@ public:
 #else
         image_.resize(Size2D(20,10));
         alpha_.resize(image_.size());
-        
+
         image_.init(RGBValue<unsigned char>(10,20,30));
         alpha_.init(255);
 #endif
@@ -1833,7 +1833,7 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&ByteImageExportImportTest::testVIFF1));
         add(testCase(&ByteImageExportImportTest::testVIFF2));
         add(testCase(&ByteImageExportImportTest::testGrayToRGB));
-        
+
         // rgb byte images
         add(testCase(&ByteRGBImageExportImportTest::testGIF));
         add(testCase(&ByteRGBImageExportImportTest::testJPEG));

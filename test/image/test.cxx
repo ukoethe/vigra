@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -107,7 +107,7 @@ struct ImageTest
     {
         typename Image::Accessor acc = img.accessor();
         typename Image::iterator i = img.begin();
-        
+
         acc.set(data[0], i);
         ++i;
         acc.set(data[1], i);
@@ -266,13 +266,13 @@ struct ImageTest
     void testConstructor()
     {
         Image img1(img.width(), img.height(), data);
-        
+
         shouldEqual(img1.width(), img.width());
         shouldEqual(img1.height(), img.height());
         shouldEqualSequence(img.begin(), img.end(), img1.begin());
-        
+
         Image img2(img.width(), img.height(), SkipInitialization);
-        
+
         shouldEqual(img2.width(), img.width());
         shouldEqual(img2.height(), img.height());
     }
@@ -343,9 +343,9 @@ struct BasicImageTest
     {
         IMAGE other(1,1);
         other(0,0) = this->data[2];
-        
+
         this->img.swap(other);
-        
+
         shouldEqual(this->img.width(), 1);
         shouldEqual(this->img.height(), 1);
         shouldEqual(this->img(0,0), this->data[2]);
@@ -359,7 +359,7 @@ template <class IMAGE>
 struct BasicImageViewTest
 : public ImageTest<IMAGE>
 {
-    
+
     BasicImageViewTest()
     : ImageTest<IMAGE>(IMAGE(ImageTest<IMAGE>::internalMemory, Diff2D(3,3)))
     {}
@@ -385,7 +385,7 @@ template <class T>
 struct StridedImageIteratorTest
 {
     T * data_;
-    
+
     StridedImageIteratorTest()
     : data_(testData(T()))
     {}
@@ -395,14 +395,14 @@ struct StridedImageIteratorTest
         int w = 3, h = 3;
         int xskip = 2, yskip = 2;
         int ws = w / xskip + 1, hs = h / yskip + 1;
-        
+
         StridedImageIterator<T> ul(data_, w, xskip, yskip);
         StridedImageIterator<T> lr = ul + Diff2D(ws, hs);
-        
+
         shouldEqual(ws, lr.x - ul.x);
         shouldEqual(hs, lr.y - ul.y);
         shouldEqual(Diff2D(ws, hs), lr - ul);
-        
+
         StridedImageIterator<T> x = ul;
         typename StridedImageIterator<T>::row_iterator r = ul.rowIterator();
         typename StridedImageIterator<T>::row_iterator rend = r + ws;
@@ -420,7 +420,7 @@ struct StridedImageIteratorTest
         ++r;
         should(x.x == lr.x);
         should(r == rend);
-        
+
         ++ul.y;
         x = ul;
         r = ul.rowIterator();
@@ -780,7 +780,7 @@ struct CrackContourCirculatorTest
             0, 0, 1, 1, 1, 1, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0
         };
-    
+
         for(int i = 0; i<img.width()*img.height(); ++i)
             img.begin()[i] = imdata[i];
     }
@@ -789,7 +789,7 @@ struct CrackContourCirculatorTest
     {
         CrackCirc crackCirc(img.upperLeft() + vigra::Diff2D(1, 1));
         CrackCirc end = crackCirc;
-        
+
         should(crackCirc.pos() == vigra::Diff2D(0, 0));
         ++crackCirc;
         should(crackCirc.pos() == vigra::Diff2D(0, 1));

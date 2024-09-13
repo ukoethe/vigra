@@ -50,7 +50,7 @@ void ThreeJSymbolM(double l1, double l2, double l3, double m1,
                    double &m2min, double &m2max, double *thrcof, int ndim,
                    int &errflag)
 {
-    ContractViolation err;  
+    ContractViolation err;
     const double zero = 0.0, eps = 0.01, one = 1.0, two = 2.0;
 
     int nfin, nlim, i, n, index, lstep, nfinp1, nfinp2, nfinp3, nstep2;
@@ -74,20 +74,20 @@ void ThreeJSymbolM(double l1, double l2, double l3, double m1,
 
     //  Check error conditions 1, 2, and 3.
     if (l1 - abs(m1) + eps < zero
-            || std::fmod(l1 + abs(m1) + eps, one) >= eps + eps) 
+            || std::fmod(l1 + abs(m1) + eps, one) >= eps + eps)
     {
         errflag = 1;
         err << "ThreeJSymbolM: l1-abs(m1) less than zero or l1+abs(m1) not integer.\n";
         throw err;
-    } 
-    else if (l1+l2-l3 < -eps || l1-l2+l3 < -eps || -(l1) + l2+l3 < -eps) 
+    }
+    else if (l1+l2-l3 < -eps || l1-l2+l3 < -eps || -(l1) + l2+l3 < -eps)
     {
         errflag = 2;
         err << " ThreeJSymbolM: l1, l2, l3 do not satisfy triangular condition:"
             << l1 << " " << l2 << " " << l3 << "\n";
         throw err;
-    } 
-    else if (std::fmod(l1 + l2 + l3 + eps, one) >= eps + eps) 
+    }
+    else if (std::fmod(l1 + l2 + l3 + eps, one) >= eps + eps)
     {
         errflag = 3;
         err << " ThreeJSymbolM: l1+l2+l3 not integer.\n";
@@ -104,9 +104,9 @@ void ThreeJSymbolM(double l1, double l2, double l3, double m1,
         err << " ThreeJSymbolM: m2max-m2min not integer.\n";
         throw err;
     }
-    if (m2min < m2max - eps) 
+    if (m2min < m2max - eps)
         goto L20;
-    if (m2min < m2max + eps) 
+    if (m2min < m2max + eps)
         goto L10;
 
     //  Check error condition 5.
@@ -117,8 +117,8 @@ void ThreeJSymbolM(double l1, double l2, double l3, double m1,
     // This is reached in case that m2 and m3 can take only one value.
 L10:
     // mscale = 0
-    thrcof[1] = (odd(int(abs(l2-l3-m1)+eps)) 
-                       ? -one 
+    thrcof[1] = (odd(int(abs(l2-l3-m1)+eps))
+                       ? -one
                        :  one) / std::sqrt(l1+l2+l3+one);
     return;
 
@@ -126,7 +126,7 @@ L10:
 L20:
     // mscale = 0
     nfin = int(m2max - m2min + one + eps);
-    if (ndim - nfin >= 0) 
+    if (ndim - nfin >= 0)
         goto L23;
 
     // Check error condition 6.
@@ -157,22 +157,22 @@ L30:
     dv = (l1+l2+l3+one) * (l2+l3-l1) - (l2-m2+one) * (l3+m3+one)
          - (l2+m2-one) * (l3-m3-one);
 
-    if (lstep - 2 > 0) 
+    if (lstep - 2 > 0)
         c1old = abs(c1);
 
     // L32:
     c1 = -dv / newfac;
 
-    if (lstep > 2) 
+    if (lstep > 2)
         goto L60;
 
-    //  If m2 = m2min + 1, the third term in the recursion equation vanishes,  
+    //  If m2 = m2min + 1, the third term in the recursion equation vanishes,
     //  hence
 
     x = srtiny * c1;
     thrcof[2] = x;
     sum1 += tiny * c1 * c1;
-    if (lstep == nfin) 
+    if (lstep == nfin)
         goto L220;
     goto L30;
 
@@ -184,11 +184,11 @@ L60:
     thrcof[lstep] = x;
     sumfor = sum1;
     sum1 += x * x;
-    if (lstep == nfin) 
+    if (lstep == nfin)
         goto L100;
 
     // See if last unnormalized 3j coefficient exceeds srhuge
-    if (abs(x) < srhuge) 
+    if (abs(x) < srhuge)
         goto L80;
 
     // This is reached if last 3j coefficient larger than srhuge,
@@ -196,9 +196,9 @@ L60:
     // has to be rescaled to prevent overflow
 
     // mscale = mscale + 1
-    for (i = 1; i <= lstep; ++i) 
+    for (i = 1; i <= lstep; ++i)
     {
-        if (abs(thrcof[i]) < srtiny) 
+        if (abs(thrcof[i]) < srtiny)
             thrcof[i] = zero;
         thrcof[i] /= srhuge;
     }
@@ -212,7 +212,7 @@ L60:
     // reversed.
 
 L80:
-    if (c1old - abs(c1) > 0.0) 
+    if (c1old - abs(c1) > 0.0)
         goto L30;
 
     //  Keep three 3j coefficients aroundi mmatch for comparison later
@@ -247,14 +247,14 @@ L110:
     dv = (l1+l2+l3+one) * (l2+l3-l1) - (l2-m2+one) * (l3+m3+one)
           - (l2+m2-one) * (l3-m3-one);
     c1 = -dv / newfac;
-    if (lstep > 2) 
+    if (lstep > 2)
         goto L120;
 
     // if m2 = m2max + 1 the third term in the recursion equation vanishes
 
     y = srtiny * c1;
     thrcof[nfin - 1] = y;
-    if (lstep == nstep2) 
+    if (lstep == nstep2)
         goto L200;
     sumbac = sum2;
     sum2 += y * y;
@@ -267,7 +267,7 @@ L120:
 
     y = c1 * thrcof[nfinp2 - lstep] + c2 * thrcof[nfinp3 - lstep];
 
-    if (lstep == nstep2) 
+    if (lstep == nstep2)
         goto L200;
 
     thrcof[nfinp1 - lstep] = y;
@@ -276,18 +276,18 @@ L120:
 
     // See if last 3j coefficient exceeds SRHUGE
 
-    if (abs(y) < srhuge) 
+    if (abs(y) < srhuge)
         goto L110;
 
     // This is reached if last 3j coefficient larger than srhuge,
-    // so that the recursion series thrcof(nfin), ... , thrcof(nfin-lstep+1)   
+    // so that the recursion series thrcof(nfin), ... , thrcof(nfin-lstep+1)
     // has to be rescaled to prevent overflow.
 
     // mscale = mscale + 1
-    for (i = 1; i <= lstep; ++i) 
+    for (i = 1; i <= lstep; ++i)
     {
         index = nfin - i + 1;
-        if (abs(thrcof[index]) < srtiny) 
+        if (abs(thrcof[index]) < srtiny)
             thrcof[index] = zero;
         thrcof[index] /= srhuge;
     }
@@ -310,7 +310,7 @@ L200:
     ratio = (x1*y1 + x2*y2 + x3*y3) / (x1*x1 + x2*x2 + x3*x3);
     nlim = nfin - nstep2 + 1;
 
-    if (abs(ratio) < one) 
+    if (abs(ratio) < one)
         goto L211;
     for (n = 1; n <= nlim; ++n)
         thrcof[n] = ratio * thrcof[n];
@@ -335,19 +335,19 @@ L230:
     // Sign convention for last 3j coefficient determines overall phase
 
     sign1 = sign(thrcof[nfin]);
-    sign2 = odd(int(abs(l2-l3-m1)+eps)) 
-                   ? -one 
+    sign2 = odd(int(abs(l2-l3-m1)+eps))
+                   ? -one
                    : one;
-    if (sign1 * sign2 <= 0.0) 
+    if (sign1 * sign2 <= 0.0)
         goto L235;
-    else 
+    else
         goto L236;
 
 L235:
     cnorm = -cnorm;
 
 L236:
-    if (abs(cnorm) < one) 
+    if (abs(cnorm) < one)
         goto L250;
 
     for (n = 1; n <= nfin; ++n)
@@ -356,9 +356,9 @@ L236:
 
 L250:
     thresh = tiny / abs(cnorm);
-    for (n = 1; n <= nfin; ++n) 
+    for (n = 1; n <= nfin; ++n)
     {
-        if (abs(thrcof[n]) < thresh) 
+        if (abs(thrcof[n]) < thresh)
             thrcof[n] = zero;
         thrcof[n] = cnorm * thrcof[n];
     }
@@ -366,29 +366,29 @@ L250:
 
 } // anonymous namespace
 
-inline 
+inline
 double clebschGordan (double l1, double m1, double l2, double m2, double l3, double m3)
 {
     const double err = 0.01;
-    double CG = 0.0, m2min, m2max, *cofp;                               
-    // array for calculation of 3-j symbols 
+    double CG = 0.0, m2min, m2max, *cofp;
+    // array for calculation of 3-j symbols
     const int ncof = 100;
-    double cof[ncof];                                            
-    // reset error flag   
+    double cof[ncof];
+    // reset error flag
     int errflag = 0;
     ContractViolation Err;
 
     // Check for physical restriction.
     // All other restrictions are checked by the 3-j symbol routine.
-    if ( abs(m1 + m2 - m3) > err) 
+    if ( abs(m1 + m2 - m3) > err)
     {
         errflag = 7;
         Err << " clebschGordan: m1 + m2 - m3 is not zero.\n";
         throw Err;
-    }                                                                   
+    }
     // calculate minimum storage size needed for ThreeJSymbolM()
     // if the dimension becomes negative the 3-j routine will capture it
-    int njm = roundi(std::min(l2,l3-m1) - std::max(-l2,-l3-m1) + 1);            
+    int njm = roundi(std::min(l2,l3-m1) - std::max(-l2,-l3-m1) + 1);
 
     // allocate dynamic memory if necessary
     ArrayVector<double> cofa;
@@ -403,7 +403,7 @@ double clebschGordan (double l1, double m1, double l2, double m2, double l3, dou
     }
 
     // calculate series of 3-j symbols
-    ThreeJSymbolM (l1,l2,l3,m1, m2min,m2max, cofp,njm, errflag);        
+    ThreeJSymbolM (l1,l2,l3,m1, m2min,m2max, cofp,njm, errflag);
     // calculated Clebsch-Gordan coefficient
     if (! errflag)
     {
@@ -414,10 +414,10 @@ double clebschGordan (double l1, double m1, double l2, double m2, double l3, dou
         Err << " clebschGordan: 3jM-sym error.\n";
         throw Err;
     }
-    return CG;                                                          
+    return CG;
 }
 
-} // namespace vigra 
+} // namespace vigra
 
 #endif // VIGRA_CLEBSCH_GORDAN_HXX
 

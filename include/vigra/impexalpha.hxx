@@ -311,14 +311,14 @@ namespace vigra
 
 
     /**
-    
+
     \brief Read the image specified by the given \ref
-    vigra::ImageImportInfo object including its alpha channel. 
-    
+    vigra::ImageImportInfo object including its alpha channel.
+
     See \ref importImage() for more information.
-    
+
     <B>Declarations</B>
-    
+
     pass 2D array views:
     \code
     namespace vigra {
@@ -330,7 +330,7 @@ namespace vigra
                          MultiArrayView<2, T2, S2> alpha);
     }
     \endcode
-    
+
     \deprecatedAPI{importImageAlpha}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
@@ -355,9 +355,9 @@ namespace vigra
         }
     \endcode
     \deprecatedEnd
-    
+
     <b> Usage:</b>
-    
+
     <B>\#include</B> \<vigra/impexalpha.hxx\><br/>
     Namespace: vigra
 
@@ -410,9 +410,9 @@ namespace vigra
     }
     \endcode
     \deprecatedEnd
-    
+
     <B>Preconditions</B>
-    
+
     - The same preconditions hold as for importImage(), however the
       only image formats that support alpha channels are
       + TIFF and
@@ -899,11 +899,11 @@ namespace vigra
 
     /**
     \brief Write the image and its alpha channel to a file.
-    
+
     See \ref exportImage() for more information.
-    
+
     <B>Declarations</B>
-    
+
     pass 2D array views:
     \code
     namespace vigra {
@@ -929,7 +929,7 @@ namespace vigra
                          std::string const & filename)
     }
     \endcode
-    
+
     \deprecatedAPI{exportImageAlpha}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
@@ -954,12 +954,12 @@ namespace vigra
         }
     \endcode
     \deprecatedEnd
-    
+
     <b> Usage:</b>
-    
+
     <B>\#include</B> \<vigra/impexalpha.hxx\><br/>
     Namespace: vigra
-    
+
     \code
     typedef UInt8 value_t;
 
@@ -968,9 +968,9 @@ namespace vigra
 
    ... // do some image processing
 
-    // specify the output filename 
+    // specify the output filename
     exportImageAlpha(image, alpha, "zorro.tif");
-    
+
     // use a ImageExportInfo if you need more control over the export
     exportImageAlpha(image, alpha, ImageExportInfo("zorro.tif").setPixelType("FLOAT"));
    \endcode
@@ -1004,9 +1004,9 @@ namespace vigra
     }
     \endcode
     \deprecatedEnd
-    
+
     <B>Preconditions</B>
-    
+
     - The same preconditions hold as for exportImage(), however the
       only image formats that support alpha channels are
       + TIFF and
@@ -1099,7 +1099,7 @@ namespace vigra
     }
 
 /** @} */
-    
+
 } // end namespace vigra
 
 #endif // VIGRA_IMPEXALPHA_HXX

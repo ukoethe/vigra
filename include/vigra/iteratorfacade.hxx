@@ -29,21 +29,21 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 #ifndef VIGRA_ITERATORFACADE_HXX
 #define VIGRA_ITERATORFACADE_HXX
 
 /*std*/
-#include <iterator> 
+#include <iterator>
 
 /*vigra*/
 #include "metaprogramming.hxx"
 
 namespace vigra {
 
-// facade needs to make this class 
+// facade needs to make this class
 // a friend class
 class IteratorFacadeCoreAccess{
 public:
@@ -64,11 +64,11 @@ public:
 };
 
 
-// see boost iterator facade 
+// see boost iterator facade
 template<class FACADE,class VALUE_TYPE,bool IS_CONST = true>
 class ForwardIteratorFacade{
 private:
-    
+
 public:
 
     typedef std::forward_iterator_tag iterator_category;
@@ -76,7 +76,7 @@ public:
     typedef typename IfBool<IS_CONST, value_type const * , value_type *>::type  pointer;
     typedef typename IfBool<IS_CONST, const value_type  & , value_type &>::type  reference;
     typedef std::ptrdiff_t difference_type;
-    
+
 
     FACADE & operator++()
     {
@@ -128,7 +128,7 @@ public:
     typedef typename BaseType::value_type value_type;
     typedef typename BaseType::reference reference;
     typedef typename BaseType::pointer pointer;
-    
+
     MapKeyIterator(InternalIterator i)
     : iter_(i)
     {}
@@ -136,7 +136,7 @@ public:
   private:
 
     friend class IteratorFacadeCoreAccess;
-    
+
     bool equal(const MapKeyIterator & other) const{
         return iter_ == other.iter_;
     }
@@ -144,11 +144,11 @@ public:
     void increment(){
         ++iter_;
     }
-    
+
     reference dereference()const{
         return iter_->first;
     }
-    
+
     InternalIterator iter_;
 };
 

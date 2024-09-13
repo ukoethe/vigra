@@ -54,7 +54,7 @@ void pythonInitExplicitlyKernel1D(Kernel1D<T> &k, int left, int right, NumpyArra
 {
     vigra_precondition(contents.size() == 1 || right-left+1 == contents.shape(0),
               "Kernel1D::initExplicitly(): 'contents' must contain as many elements as the kernel (or just one element).");
-              
+
     k.initExplicitly(left,right);
     for(int i=left; i<=right; ++i)
     {
@@ -135,18 +135,18 @@ void pythonSetItemKernel1D(Kernel1D<T> & self, int position, T value)
         python::throw_error_already_set();
     }
 }
-    
+
 template<class T>
 void pythonInitExplicitlyKernel2D(Kernel2D<T> &k,
                                   MultiArrayShape<2>::type upperleft, MultiArrayShape<2>::type lowerright,
                                   NumpyArray<2,T> contents)
 {
-    vigra_precondition(contents.size() == 1 || 
+    vigra_precondition(contents.size() == 1 ||
                        lowerright - upperleft + MultiArrayShape<2>::type(1,1) == contents.shape(),
               "Kernel2D::initExplicitly(): 'contents' must contain as many elements as the kernel (or just one element).");
 
     Point2D ul(upperleft[0], upperleft[1]), lr(lowerright[0], lowerright[1]);
-    
+
     k.initExplicitly(ul, lr);
 
     for(int y = ul.y; y <= lr.y; ++y)
@@ -240,13 +240,13 @@ void pythonSetItemKernel2D(Kernel2D<T> & self, MultiArrayShape<2>::type position
         PyErr_SetString(PyExc_ValueError, str.str().c_str());
         python::throw_error_already_set();
     }
-}   
+}
 
 template<class T>
 void defineKernels()
 {
     using namespace python;
-    
+
     docstring_options doc_options(true, true, false);
 
     enum_<BorderTreatmentMode>("BorderTreatmentMode")

@@ -54,7 +54,7 @@ struct StandAloneAccChainTest
 {
     StandAloneAccChainTest()
     {}
-    
+
     void testStandardizeTag()
     {
         using namespace vigra::acc;
@@ -63,14 +63,14 @@ struct StandAloneAccChainTest
         typedef MultiArrayShape<3>::type CoordType;
         typedef MultiArrayShape<3>::type   Point;
 
-        typedef Select< 
+        typedef Select<
             DataArg<1>,
-            Variance, 
-            Mean, 
-            StdDev, 
-            Minimum, 
-            Maximum, 
-            RootMeanSquares, 
+            Variance,
+            Mean,
+            StdDev,
+            Minimum,
+            Maximum,
+            RootMeanSquares,
             Skewness,
             Covariance,
             RegionCenter
@@ -82,7 +82,7 @@ struct StandAloneAccChainTest
         a.updatePassN(1.0, Point(3,0,0), 1);
         a.updatePassN(2.0, Point(0,3,0), 1);
         a.updatePassN(3.0, Point(0,0,3), 1);
-        
+
 
 
         a.updatePassN(1.0, Point(3,0,0), 2);

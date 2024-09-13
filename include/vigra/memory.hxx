@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -43,12 +43,12 @@
 #  include <tr1/memory>
 #else
 #  include <memory>
-#endif 
+#endif
 
 #include <cstring>
 #include "metaprogramming.hxx"
 
-namespace vigra { 
+namespace vigra {
 
 enum SkipInitializationTag { SkipInitialization};
 
@@ -88,7 +88,7 @@ struct PlacementNewAllocator
     {
         new(p) T(initial);
     }
-    
+
     void destroy(T * p)
     {
         p->~T();
@@ -96,12 +96,12 @@ struct PlacementNewAllocator
 };
 
 template <class T>
-inline void 
+inline void
 destroy_n(T * /* p */, std::size_t /* n */, VigraTrueType /* isPOD */)
 {}
 
 template <class T>
-inline void 
+inline void
 destroy_n(T * p, std::size_t n, VigraFalseType /* isPOD */)
 {
     for(std::size_t i=0; i < n; ++i, ++p)
@@ -116,7 +116,7 @@ destroy_n(T * p, std::size_t n)
 }
 
 template <class T, class Alloc>
-inline T * 
+inline T *
 alloc_initialize_n(std::size_t n, T const & initial, Alloc & alloc)
 {
     T * p = alloc.allocate(n);
@@ -129,12 +129,12 @@ alloc_initialize_n(std::size_t n, T const & initial, Alloc & alloc)
     else
     {
         std::size_t i=0;
-        try 
+        try
         {
             for (; i < n; ++i)
                 alloc.construct(p+i, initial);
         }
-        catch (...) 
+        catch (...)
         {
             for (std::size_t j=0; j < i; ++j)
                 alloc.destroy(p+j);
@@ -146,7 +146,7 @@ alloc_initialize_n(std::size_t n, T const & initial, Alloc & alloc)
 }
 
 template <class T>
-inline T * 
+inline T *
 alloc_initialize_n(std::size_t n, T const & initial)
 {
     PlacementNewAllocator<T> alloc;
@@ -154,7 +154,7 @@ alloc_initialize_n(std::size_t n, T const & initial)
 }
 
 template <class T>
-inline T * 
+inline T *
 alloc_initialize_n(std::size_t n)
 {
     PlacementNewAllocator<T> alloc;
@@ -162,14 +162,14 @@ alloc_initialize_n(std::size_t n)
 }
 
 template <class T, class Alloc>
-inline void 
+inline void
 destroy_dealloc_impl(T * p, std::size_t n, Alloc & alloc, VigraTrueType /* isPOD */)
 {
     alloc.deallocate(p, n);
 }
 
 template <class T, class Alloc>
-inline void 
+inline void
 destroy_dealloc_impl(T * p, std::size_t n, Alloc & alloc, VigraFalseType /* isPOD */)
 {
     for (std::size_t i=0; i < n; ++i)
@@ -178,7 +178,7 @@ destroy_dealloc_impl(T * p, std::size_t n, Alloc & alloc, VigraFalseType /* isPO
 }
 
 template <class T, class Alloc>
-inline T * 
+inline T *
 destroy_dealloc_n(T * p, std::size_t n, Alloc & alloc)
 {
     if(p != 0)
@@ -187,7 +187,7 @@ destroy_dealloc_n(T * p, std::size_t n, Alloc & alloc)
 }
 
 template <class T>
-inline T * 
+inline T *
 destroy_dealloc_n(T * p, std::size_t n)
 {
     if(p != 0)

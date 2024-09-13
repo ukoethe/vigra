@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -53,7 +53,7 @@ int ff2(int a,int b){
 
 
 
-struct DelegateTest{   
+struct DelegateTest{
     typedef  vigra::delegate1<int,int> D1;
     typedef  vigra::delegate2<int,int,int> D2;
 
@@ -115,13 +115,13 @@ struct DelegateTest{
 
 
 
- 
+
 struct DelegatesTestSuite
 : public vigra::test_suite
 {
     DelegatesTestSuite()
     : vigra::test_suite("DelegatesTestSuite")
-    {   
+    {
         add( testCase( &DelegateTest::test1));
         add( testCase( &DelegateTest::test2));
     }

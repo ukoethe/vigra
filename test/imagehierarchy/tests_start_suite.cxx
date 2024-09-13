@@ -34,12 +34,12 @@ struct TestsStartSuite
 
 int main()
 {
- 
+
     TestsStartSuite itest;
 
     int failed = itest.run();
 
     std::cout << itest.report() << std::endl;
-    
+
     return (failed != 0);
-}  
+}

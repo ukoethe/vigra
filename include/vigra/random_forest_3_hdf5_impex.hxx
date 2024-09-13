@@ -48,7 +48,7 @@
 #include "random_forest_3/random_forest_visitors.hxx"
 #include "hdf5impex.hxx"
 
-namespace vigra 
+namespace vigra
 {
 namespace rf3
 {
@@ -394,7 +394,7 @@ void random_forest_export_HDF5(
                 topology.push_back(splits.at(n).dim_);
                 parameters.push_back(1.0); // inner nodes have the weight 1.
                 parameters.push_back(splits.at(n).val_);
-                
+
                 // Place the children on the stack.
                 stack.emplace(gr.getChild(n, 0), topology.size()-3);
                 stack.emplace(gr.getChild(n, 1), topology.size()-2);

@@ -87,7 +87,7 @@ BOOST_PYTHON_MODULE_INIT(graphs)
         .value("symetricKl", metrics::SymetricKlMetric)
         .value("bhattacharya", metrics::BhattacharyaMetric)
         ;
-    
+
 
 
     // all graph classes itself (GridGraph , AdjacencyListGraph)

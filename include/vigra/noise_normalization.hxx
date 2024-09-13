@@ -58,8 +58,8 @@ namespace vigra {
 /** \addtogroup NoiseNormalization Noise Normalization
     Estimate noise with intensity-dependent variance and transform it into additive Gaussian noise.
 */
-//@{ 
-                                    
+//@{
+
 /********************************************************/
 /*                                                      */
 /*               NoiseNormalizationOptions              */
@@ -71,25 +71,25 @@ namespace vigra {
     <tt>NoiseNormalizationOptions</tt>  is an argument object that holds various optional
     parameters used by the noise normalization functions. If a parameter is not explicitly
     set, a suitable default will be used.
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
-    
+
     \code
     MultiArray<2, float> src(w,h);
     std::vector<TinyVector<double, 2> > result;
-    
+
     ...
-    noiseVarianceEstimation(src, result, 
+    noiseVarianceEstimation(src, result,
                             NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0));
     \endcode
 */
 class NoiseNormalizationOptions
 {
   public:
-  
+
         /** Initialize all options with default values.
         */
     NoiseNormalizationOptions()
@@ -102,7 +102,7 @@ class NoiseNormalizationOptions
     {}
 
         /** Select the noise estimation algorithm.
-        
+
             If \a r is <tt>true</tt>, use the gradient-based noise estimator according to F&ouml;rstner (default).
             Otherwise, use an algorithm that uses the intensity values directly.
         */
@@ -582,7 +582,7 @@ void noiseVarianceListMedianCut(Vector1 const & noise, Vector2 & clusters,
         for(unsigned int k=0; k < clusters.size(); ++k)
         {
             int k1 = clusters[k][0], k2 = clusters[k][1]-1;
-            
+
 #if 0       // turned the "internal error" in a postcondition message
             // for the most likely case
             std::string message("noiseVarianceListMedianCut(): internal error (");
@@ -593,9 +593,9 @@ void noiseVarianceListMedianCut(Vector1 const & noise, Vector2 & clusters,
             message += std::string("clusters.size(): ") + asString(clusters.size()) + ").";
             vigra_invariant(k1 >= 0 && k1 < (int)noise.size() && k2 >= 0 && k2 < (int)noise.size(), message.c_str());
 #endif
-            
-            vigra_postcondition(k1 >= 0 && k1 < (int)noise.size() && 
-                                k2 >= 0 && k2 < (int)noise.size(), 
+
+            vigra_postcondition(k1 >= 0 && k1 < (int)noise.size() &&
+                                k2 >= 0 && k2 < (int)noise.size(),
                 "noiseVarianceClustering(): Unable to find homogeneous regions.");
 
             double diff = noise[k2][0] - noise[k1][0];
@@ -948,8 +948,8 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
 /** \addtogroup NoiseNormalization Noise Normalization
     Estimate noise with intensity-dependent variance and transform it into additive Gaussian noise.
 */
-//@{ 
-                                    
+//@{
+
 /********************************************************/
 /*                                                      */
 /*                noiseVarianceEstimation               */
@@ -958,23 +958,23 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
 
 /** \brief Determine the noise variance as a function of the image intensity.
 
-    This operator applies an algorithm described in 
-    
-    W. F&ouml;rstner: <i>"Image Preprocessing for Feature Extraction in Digital Intensity, Color and Range Images"</i>, 
-    Proc. Summer School on Data Analysis and the Statistical Foundations of Geomatics, 
+    This operator applies an algorithm described in
+
+    W. F&ouml;rstner: <i>"Image Preprocessing for Feature Extraction in Digital Intensity, Color and Range Images"</i>,
+    Proc. Summer School on Data Analysis and the Statistical Foundations of Geomatics,
     Lecture Notes in Earth Science, Berlin: Springer, 1999
-    
+
     in order to estimate the noise variance as a function of the image intensity in a robust way,
-    i.e. so that intensity changes due to edges do not bias the estimate. The source value type 
+    i.e. so that intensity changes due to edges do not bias the estimate. The source value type
     (<TT>SrcAccessor::value_type</TT>) must be a scalar type which is convertible to <tt>double</tt>.
-    The result is written into the \a result sequence, whose <tt>value_type</tt> must be constructible 
-    from two <tt>double</tt> values. The following options can be set via the \a options object 
+    The result is written into the \a result sequence, whose <tt>value_type</tt> must be constructible
+    from two <tt>double</tt> values. The following options can be set via the \a options object
     (see \ref vigra::NoiseNormalizationOptions for details):<br><br>
-    
+
     <tt>useGradient</tt>, <tt>windowRadius</tt>, <tt>noiseEstimationQuantile</tt>, <tt>noiseVarianceInitialGuess</tt>
-    
+
     <b> Declarations:</b>
-    
+
     pass 2D array views:
     \code
     namespace vigra {
@@ -985,7 +985,7 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
                                 NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
-    
+
     \deprecatedAPI{noiseVarianceEstimation}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
@@ -1006,20 +1006,20 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
     }
     \endcode
     \deprecatedEnd
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
 
     \code
     MultiArray<2, float> src(w,h);
     std::vector<TinyVector<double, 2> > result;
-    
+
     ...
-    noiseVarianceEstimation(src, result, 
+    noiseVarianceEstimation(src, result,
                             NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0));
-    
+
     // print the intensity / variance pairs found
     for(int k=0; k<result.size(); ++k)
         std::cout << "Intensity: " << result[k][0] << ", estimated variance: " << result[k][1] << std::endl;
@@ -1029,11 +1029,11 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
     \code
     vigra::BImage src(w,h);
     std::vector<vigra::TinyVector<double, 2> > result;
-    
+
     ...
-    vigra::noiseVarianceEstimation(srcImageRange(src), result, 
+    vigra::noiseVarianceEstimation(srcImageRange(src), result,
                                   vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0));
-    
+
     // print the intensity / variance pairs found
     for(int k=0; k<result.size(); ++k)
         std::cout << "Intensity: " << result[k][0] << ", estimated variance: " << result[k][1] << std::endl;
@@ -1042,15 +1042,15 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
     \code
     SrcIterator upperleft, lowerright;
     SrcAccessor src;
-    
+
     typedef SrcAccessor::value_type SrcType;
     typedef NumericTraits<SrcType>::isScalar isScalar;
     assert(isScalar::asBool == true);
-    
+
     double value = src(uperleft);
-    
+
     BackInsertable result;
-    typedef BackInsertable::value_type ResultType;    
+    typedef BackInsertable::value_type ResultType;
     double intensity, variance;
     result.push_back(ResultType(intensity, variance));
     \endcode
@@ -1102,14 +1102,14 @@ noiseVarianceEstimation(MultiArrayView<2, T1, S1> const & src,
     This operator first calls \ref noiseVarianceEstimation() to obtain a sequence of intensity/variance pairs,
     which are then clustered using the median cut algorithm. Then the cluster centers (i.e. average variance vs.
     average intensity) are determined and returned in the \a result sequence.
-    
-    In addition to the options valid for \ref noiseVarianceEstimation(), the following options can be set via 
+
+    In addition to the options valid for \ref noiseVarianceEstimation(), the following options can be set via
     the \a options object (see \ref vigra::NoiseNormalizationOptions for details):<br><br>
-    
+
     <tt>clusterCount</tt>, <tt>averagingQuantile</tt>
-    
+
     <b> Declarations:</b>
-    
+
     pass 2D array views:
     \code
     namespace vigra {
@@ -1120,7 +1120,7 @@ noiseVarianceEstimation(MultiArrayView<2, T1, S1> const & src,
                                 NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
-    
+
     \deprecatedAPI{noiseVarianceClustering}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
@@ -1141,21 +1141,21 @@ noiseVarianceEstimation(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     \deprecatedEnd
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
 
     \code
     MultiArray<2, float> src(w,h);
     std::vector<TinyVector<double, 2> > result;
-    
+
     ...
-    noiseVarianceClustering(src, result, 
+    noiseVarianceClustering(src, result,
                             NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
                             clusterCount(15));
-    
+
     // print the intensity / variance pairs representing the cluster centers
     for(int k=0; k<result.size(); ++k)
         std::cout << "Cluster: " << k << ", intensity: " << result[k][0] << ", estimated variance: " << result[k][1] << std::endl;
@@ -1165,12 +1165,12 @@ noiseVarianceEstimation(MultiArrayView<2, T1, S1> const & src,
     \code
     vigra::BImage src(w,h);
     std::vector<vigra::TinyVector<double, 2> > result;
-    
+
     ...
-    vigra::noiseVarianceClustering(srcImageRange(src), result, 
+    vigra::noiseVarianceClustering(srcImageRange(src), result,
                                   vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
                                   clusterCount(15));
-    
+
     // print the intensity / variance pairs representing the cluster centers
     for(int k=0; k<result.size(); ++k)
         std::cout << "Cluster: " << k << ", intensity: " << result[k][0] << ", estimated variance: " << result[k][1] << std::endl;
@@ -1220,27 +1220,27 @@ noiseVarianceClustering(MultiArrayView<2, T1, S1> const & src,
 
     The original image is assumed to be corrupted by noise whose variance depends on the intensity in an unknown way.
     The present functions first calls \ref noiseVarianceClustering() to obtain a sequence of intensity/variance pairs
-    (cluster centers) which estimate this dependency. The cluster centers are connected into a piecewise linear 
-    function which is the inverted according to the formula derived in 
-    
-    W. F&ouml;rstner: <i>"Image Preprocessing for Feature Extraction in Digital Intensity, Color and Range Images"</i>, 
-    Proc. Summer School on Data Analysis and the Statistical Foundations of Geomatics, 
+    (cluster centers) which estimate this dependency. The cluster centers are connected into a piecewise linear
+    function which is the inverted according to the formula derived in
+
+    W. F&ouml;rstner: <i>"Image Preprocessing for Feature Extraction in Digital Intensity, Color and Range Images"</i>,
+    Proc. Summer School on Data Analysis and the Statistical Foundations of Geomatics,
     Lecture Notes in Earth Science, Berlin: Springer, 1999
 
     The inverted formula defines a pixel-wise intensity transformation whose application turns the original image
     into one that is corrupted by additive Gaussian noise with unit variance. Most subsequent algorithms will be able
     to handle this type of noise much better than the original noise.
-    
+
     RGB and other multiband images will be processed one band at a time. The function returns <tt>true</tt> on success.
     Noise normalization will fail if the original image does not contain sufficiently homogeneous regions that
     allow robust estimation of the noise variance.
-    
+
     The \a options object may use all options described in \ref vigra::NoiseNormalizationOptions.
-    
+
     The function returns <tt>false</tt> if the noise estimation failed, so that no normalization could be performed.
-    
+
     <b> Declarations:</b>
-    
+
     pass 2D array views:
     \code
     namespace vigra {
@@ -1252,7 +1252,7 @@ noiseVarianceClustering(MultiArrayView<2, T1, S1> const & src,
                                         NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
-    
+
     \deprecatedAPI{nonparametricNoiseNormalization}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
@@ -1275,17 +1275,17 @@ noiseVarianceClustering(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     \deprecatedEnd
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
 
     \code
     MultiArray<2, RGBValue<float> > src(w,h), dest(w, h);
-    
+
     ...
-    nonparametricNoiseNormalization(src, dest, 
+    nonparametricNoiseNormalization(src, dest,
                                     NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
                                     clusterCount(15));
     \endcode
@@ -1293,9 +1293,9 @@ noiseVarianceClustering(MultiArrayView<2, T1, S1> const & src,
     \deprecatedUsage{nonparametricNoiseNormalization}
     \code
     vigra::BRGBImage src(w,h), dest(w, h);
-    
+
     ...
-    vigra::nonparametricNoiseNormalization(srcImageRange(src), destImage(dest), 
+    vigra::nonparametricNoiseNormalization(srcImageRange(src), destImage(dest),
                                            vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
                                            clusterCount(15));
     \endcode
@@ -1348,20 +1348,20 @@ nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
 
 /** \brief Noise normalization by means of an estimated or given quadratic noise model.
 
-    This function works like \ref nonparametricNoiseNormalization() excapt that the model for the 
-    dependency between intensity and noise variance is assumed to be a 
-    quadratic function rather than a piecewise linear function. If the data conform to the quadratic model, 
-    this leads to a somewhat smoother transformation. The function returns <tt>false</tt> if the noise 
+    This function works like \ref nonparametricNoiseNormalization() excapt that the model for the
+    dependency between intensity and noise variance is assumed to be a
+    quadratic function rather than a piecewise linear function. If the data conform to the quadratic model,
+    this leads to a somewhat smoother transformation. The function returns <tt>false</tt> if the noise
     estimation failed, so that no normalization could be performed.
 
-    In the second variant of the function, the parameters of the quadratic model are not estimated, 
+    In the second variant of the function, the parameters of the quadratic model are not estimated,
     but explicitly given according to:
     \code
     variance = a0 + a1 * intensity + a2 * sq(intensity)
     \endcode
-    
+
     <b> Declarations:</b>
-    
+
     pass 2D array views:
     \code
     namespace vigra {
@@ -1372,7 +1372,7 @@ nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
         quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                                     MultiArrayView<2, T2, S2> dest,
                                     NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
-        
+
         // apply a given quadratic noise model
         template <class T1, class S1,
                   class T2, class S2>
@@ -1382,7 +1382,7 @@ nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                                     double a0, double a1, double a2);
     }
     \endcode
-    
+
     \deprecatedAPI{quadraticNoiseNormalization}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
@@ -1421,22 +1421,22 @@ nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     \deprecatedEnd
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
 
     \code
     MultiArray<2, RGBValue<float> > src(w,h), dest(w, h);
-    
+
     ...
     // estimate the noise model and apply it to normalize the noise variance
-    bool success = quadraticNoiseNormalization(src, dest, 
+    bool success = quadraticNoiseNormalization(src, dest,
                                 NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
                                 clusterCount(15));
     vigra_postcondition(success, "quadraticNoiseNormalization(): Unable to estimate noise model.");
-    
+
     // apply a pre-computed noise model
     quadraticNoiseNormalization(src, dest, 100, 0.02, 1e-6);
     \endcode
@@ -1444,22 +1444,22 @@ nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     \deprecatedUsage{quadraticNoiseNormalization}
     \code
     vigra::BRGBImage src(w,h), dest(w, h);
-    
+
     ...
     // estimate the noise model and apply it to normalize the noise variance
-    vigra::quadraticNoiseNormalization(srcImageRange(src), destImage(dest), 
+    vigra::quadraticNoiseNormalization(srcImageRange(src), destImage(dest),
                                        vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
                                        clusterCount(15));
 
     // apply a pre-computed noise model
-    vigra::quadraticNoiseNormalization(srcImageRange(src), destImage(dest), 
+    vigra::quadraticNoiseNormalization(srcImageRange(src), destImage(dest),
                                        100, 0.02, 1e-6);
     \endcode
     \deprecatedEnd
 
     <b> Required Interface:</b>
-    
-    The source value type must be convertible to <tt>double</tt> or must be a vector whose elements 
+
+    The source value type must be convertible to <tt>double</tt> or must be a vector whose elements
     are convertible to <tt>double</tt>. Likewise, the destination type must be assignable from <tt>double</tt>
     or a vector whose elements are assignable from <tt>double</tt>.
 */
@@ -1550,21 +1550,21 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
 
 /** \brief Noise normalization by means of an estimated or given linear noise model.
 
-    This function works like \ref nonparametricNoiseNormalization() excapt that the model for the 
-    dependency between intensity and noise variance is assumed to be a 
-    linear function rather than a piecewise linear function. If the data conform to the linear model, 
-    this leads to a very simple transformation which is similar to the familiar gamma correction. 
-    The function returns <tt>false</tt> if the noise estimation failed, so that no 
+    This function works like \ref nonparametricNoiseNormalization() excapt that the model for the
+    dependency between intensity and noise variance is assumed to be a
+    linear function rather than a piecewise linear function. If the data conform to the linear model,
+    this leads to a very simple transformation which is similar to the familiar gamma correction.
+    The function returns <tt>false</tt> if the noise estimation failed, so that no
     normalization could be performed.
 
-    In the second variant of the function, the parameters of the linear model are not estimated, 
+    In the second variant of the function, the parameters of the linear model are not estimated,
     but explicitly given according to:
     \code
     variance = a0 + a1 * intensity
     \endcode
-    
+
     <b> Declarations:</b>
-    
+
     pass 2D array views:
     \code
     namespace vigra {
@@ -1585,7 +1585,7 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                                  double a0, double a1);
     }
     \endcode
-    
+
     \deprecatedAPI{linearNoiseNormalization}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
@@ -1624,22 +1624,22 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     \deprecatedEnd
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
 
     \code
     vigra::BRGBImage src(w,h), dest(w, h);
-    
+
     ...
     // estimate the noise model and apply it to normalize the noise variance
-    bool success = linearNoiseNormalization(src, dest, 
+    bool success = linearNoiseNormalization(src, dest,
                              NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
                              clusterCount(15));
     vigra_postcondition(success, "linearNoiseNormalization(): Unable to estimate noise model.");
-    
+
     // apply a pre-computed noise model
     linearNoiseNormalization(src, dest, 100, 0.02);
     \endcode
@@ -1647,22 +1647,22 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     \deprecatedUsage{linearNoiseNormalization}
     \code
     vigra::BRGBImage src(w,h), dest(w, h);
-    
+
     ...
     // estimate the noise model and apply it to normalize the noise variance
-    vigra::linearNoiseNormalization(srcImageRange(src), destImage(dest), 
+    vigra::linearNoiseNormalization(srcImageRange(src), destImage(dest),
                                     vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
                                     clusterCount(15));
-                                    
+
     // apply a pre-computed noise model
-    vigra::linearNoiseNormalization(srcImageRange(src), destImage(dest), 
+    vigra::linearNoiseNormalization(srcImageRange(src), destImage(dest),
                                     100, 0.02);
     \endcode
     \deprecatedEnd
 
     <b> Required Interface:</b>
-    
-    The source value type must be convertible to <tt>double</tt> or must be a vector whose elements 
+
+    The source value type must be convertible to <tt>double</tt> or must be a vector whose elements
     are convertible to <tt>double</tt>. Likewise, the destination type must be assignable from <tt>double</tt>
     or a vector whose elements are assignable from <tt>double</tt>.
 */

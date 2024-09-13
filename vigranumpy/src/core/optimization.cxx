@@ -50,10 +50,10 @@ NumpyAnyArray
 pythonLeastSquares(NumpyArray<2, T> A, NumpyArray<2, T> b)
 {
     NumpyArray<2, T, UnstridedArrayTag> res(Shape2(A.shape(1), 1));
-    
+
     {
         PyAllowThreads _pythread;
-        
+
         leastSquares(A, b, res);
     }
     return res;
@@ -64,10 +64,10 @@ NumpyAnyArray
 pythonNonnegativeLeastSquares(NumpyArray<2, T> A, NumpyArray<2, T> b)
 {
     NumpyArray<2, T, UnstridedArrayTag> res(Shape2(A.shape(1), 1));
-    
+
     {
         PyAllowThreads _pythread;
-        
+
         nonnegativeLeastSquares(A, b, res);
     }
     return res;
@@ -78,10 +78,10 @@ NumpyAnyArray
 pythonRidgeRegression(NumpyArray<2, T> A, NumpyArray<2, T> b, double lambda)
 {
     NumpyArray<2, T, UnstridedArrayTag> res(Shape2(A.shape(1), 1));
-    
+
     {
         PyAllowThreads _pythread;
-        
+
         ridgeRegression(A, b, res, lambda);
     }
     return res;
@@ -97,32 +97,32 @@ pythonlassoRegression(NumpyArray<2, T> A, NumpyArray<2, T> b,
 {
     vigra_precondition(lsqSolutions || lassoSolutions,
         "lassoRegression(): At least one of 'lsqSolutions' and 'lassoSolutions' must be 'True'.");
-    
+
     ArrayVector<Matrix<double> > lasso_solutions, lsq_solutions;
     ArrayVector<ArrayVector<MultiArrayIndex> > activeSets;
     unsigned int numSolutions = 0;
-    
+
     {
         PyAllowThreads _pythread;
-        
+
         ArrayVector<Matrix<double> > * plasso = lassoSolutions
                                                      ? &lasso_solutions
                                                      : 0,
                                      * plsq = lsqSolutions
                                                      ? &lsq_solutions
                                                      : 0;
-                                                            
+
         LeastAngleRegressionOptions options;
         if(nonNegative)
             options.nnlasso();
         else
             options.lasso();
         options.maxSolutionCount(maxSolutionCount);
-    
-        numSolutions = 
+
+        numSolutions =
             linalg::detail::leastAngleRegressionImpl(A, b, activeSets, plasso, plsq, options);
     }
-    
+
     python::list pyActiveSets;
     for(unsigned int k=0; k<numSolutions; ++k)
         pyActiveSets.append(python::object(activeSets[k]));
@@ -152,7 +152,7 @@ pythonlassoRegression(NumpyArray<2, T> A, NumpyArray<2, T> b,
             pyLsqSolutions.append(python::object(sol));
         }
     }
-        
+
     if(lsqSolutions)
     {
         if(lassoSolutions)
@@ -172,7 +172,7 @@ void defineOptimization()
     using namespace python;
 
     docstring_options doc_options(true, true, false);
-    
+
     NumpyArrayConverter<NumpyArray<2, double, UnstridedArrayTag> >();
 
     def("leastSquares", registerConverters(&pythonLeastSquares<double>),
@@ -197,7 +197,7 @@ void defineOptimization()
         "For details see ridgeRegression_ in the vigra C++ documentation.\n\n");
 
     def("lassoRegression", registerConverters(&pythonlassoRegression<double>),
-        (arg("A"), arg("b"), 
+        (arg("A"), arg("b"),
          arg("nonNegative")=false, arg("lsq")=true, arg("lasso")=false, arg("maxSolutionCount")=0),
         "Perform linear regression with L1 regularization.\n"
         "\n"

@@ -470,7 +470,7 @@ struct LarsData
     : activeSetSize(asetSize),
       A(d.R.subarray(Shape(0,0), Shape(d.A.shape(0), activeSetSize))), b(d.qtb), R(A), qtb(b),
       lars_solution(d.lars_solution.subarray(Shape(0,0), Shape(activeSetSize, 1))), lars_prediction(d.lars_prediction),
-      next_lsq_solution(d.next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1))), 
+      next_lsq_solution(d.next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1))),
       next_lsq_prediction(d.next_lsq_prediction), searchVector(d.searchVector),
       columnPermutation(A.shape(1))
     {
@@ -480,9 +480,9 @@ struct LarsData
 };
 
 template <class T, class C1, class C2, class Array1, class Array2, class Array3>
-unsigned int 
+unsigned int
 leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
-                             Array1 & activeSets, 
+                             Array1 & activeSets,
                              Array2 * lars_solutions, Array3 * lsq_solutions,
                              LeastAngleRegressionOptions const & options)
 {
@@ -533,7 +533,7 @@ leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
         Matrix<T> ac(cols - d.activeSetSize, 1);
         for(MultiArrayIndex k = 0; k<cols-d.activeSetSize; ++k)
         {
-            T rho = cLSQ(inactiveSet[k], 0), 
+            T rho = cLSQ(inactiveSet[k], 0),
               cc  = C - sign(rho)*cLARS(inactiveSet[k], 0);
 
             if(rho == 0.0)  // make sure that 0/0 cannot happen in the other cases
@@ -729,9 +729,9 @@ leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T
 
        <b>\#include</b> \<vigra/regression.hxx\><br/>
        Namespaces: vigra and vigra::linalg
-     
+
        <b> Declarations:</b>
-     
+
        \code
        namespace vigra {
           namespace linalg {
@@ -908,16 +908,16 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
 
         <b>\#include</b> \<vigra/regression.hxx\><br/>
         Namespaces: vigra and vigra::linalg
-     
+
         <b> Declarations:</b>
-      
+
         \code
         namespace vigra {
             namespace linalg {
                 template <class T, class C1, class C2, class C3>
                 void
                 nonnegativeLeastSquares(MultiArrayView<2, T, C1> const & A,
-                                        MultiArrayView<2, T, C2> const &b, 
+                                        MultiArrayView<2, T, C2> const &b,
                                         MultiArrayView<2, T, C3> &x);
             }
             using linalg::nonnegativeLeastSquares;
@@ -964,7 +964,7 @@ using linalg::LeastAngleRegressionOptions;
 namespace detail {
 
 template <class T, class S>
-inline T 
+inline T
 getRow(MultiArrayView<1, T, S> const & a, MultiArrayIndex i)
 {
     return a(i);
@@ -991,10 +991,10 @@ getRow(MultiArrayView<2, T, S> const & a, MultiArrayIndex i)
 class NonlinearLSQOptions
 {
   public:
-  
+
     double epsilon, lambda, tau;
     int max_iter;
-    
+
         /** \brief Initialize options with default values.
         */
     NonlinearLSQOptions()
@@ -1003,12 +1003,12 @@ class NonlinearLSQOptions
       tau(1.4),
       max_iter(50)
     {}
-    
+
         /** \brief Set minimum relative improvement in residual.
-        
+
             The algorithm stops when the relative improvement in residuals
             between consecutive iterations is less than this value.
-            
+
             Default: 0 (i.e. choose tolerance automatically, will be 10*epsilon of the numeric type)
         */
     NonlinearLSQOptions & tolerance(double eps)
@@ -1016,9 +1016,9 @@ class NonlinearLSQOptions
         epsilon = eps;
         return *this;
     }
-    
+
         /** \brief Set maximum number of iterations.
-        
+
             Default: 50
         */
     NonlinearLSQOptions & maxIterations(int iter)
@@ -1026,15 +1026,15 @@ class NonlinearLSQOptions
         max_iter = iter;
         return *this;
     }
-    
+
         /** \brief Set damping parameters for Levenberg-Marquardt algorithm.
-        
-            \a lambda determines by how much the diagonal is emphasized, and \a v is 
-            the factor by which lambda will be increased if more damping is needed 
+
+            \a lambda determines by how much the diagonal is emphasized, and \a v is
+            the factor by which lambda will be increased if more damping is needed
             for convergence
             (see <a href="http://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm">Wikipedia</a>
             for more explanations).
-        
+
             Default: lambda = 0.1, v = 1.4
         */
     NonlinearLSQOptions & dampingParamters(double lambda, double v)
@@ -1047,33 +1047,33 @@ class NonlinearLSQOptions
     }
 };
 
-template <unsigned int D, class T, class S1, class S2, 
-          class U, int N, 
+template <unsigned int D, class T, class S1, class S2,
+          class U, int N,
           class Functor>
 T
 nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const & features,
                           MultiArrayView<1, T, S2> const & response,
-                          TinyVector<U, N> & p, 
+                          TinyVector<U, N> & p,
                           Functor model,
                           NonlinearLSQOptions const & options)
 {
     vigra_precondition(features.shape(0) == response.shape(0),
                        "nonlinearLeastSquares(): shape mismatch between features and response.");
-                       
+
     double t = options.tau, l = options.lambda;  // initial damping parameters
-    
+
     double epsilonT = NumericTraits<T>::epsilon()*10.0,
            epsilonU = NumericTraits<U>::epsilon()*10.0,
            epsilon = options.epsilon <= 0.0
                          ? std::max(epsilonT, epsilonU)
                          : options.epsilon;
-    
+
     linalg::Matrix<T> jj(N,N);  // outer product of the Jacobian
     TinyVector<U, N> jr, dp;
-    
+
     T residual = 0.0;
     bool didStep = true;
-    
+
     for(int iter=0; iter<options.max_iter; ++iter)
     {
         if(didStep)
@@ -1082,32 +1082,32 @@ nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const & features,
             residual = 0.0;
             jr = 0.0;
             jj = 0.0;
-            
+
             for(int i=0; i<features.shape(0); ++i)
             {
                 autodiff::DualVector<U, N> res = model(detail::getRow(features, i), autodiff::dualMatrix(p));
-                
+
                 T r = response(i) - res.v;
                 jr += r * res.d;
                 jj += outer(res.d);
                 residual += sq(r);
             }
         }
-        
+
         // perform a damped gradient step
         linalg::Matrix<T> djj(jj);
-        djj.diagonal() *= 1.0 + l;        
+        djj.diagonal() *= 1.0 + l;
         linearSolve(djj, jr, dp);
-        
+
         TinyVector<U, N> p_new = p + dp;
-        
+
         // compute the new residual
         T residual_new = 0.0;
         for(int i=0; i<features.shape(0); ++i)
         {
             residual_new += sq(response(i) - model(detail::getRow(features, i), p_new));
         }
-        
+
         if(residual_new < residual)
         {
             // accept the step
@@ -1125,7 +1125,7 @@ nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const & features,
             didStep = false;
         }
     }
-    
+
     return residual;
 }
 
@@ -1138,62 +1138,62 @@ nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const & features,
 /** \brief Fit a non-linear model to given data by minimizing least squares loss.
 
     <b> Declarations:</b>
-    
+
     \code
     namespace vigra {
         // variant 1: optimize a univariate model ('x' is a 1D array of scalar data points)
-        template <class T, class S1, class S2, 
-                  class U, int N, 
+        template <class T, class S1, class S2,
+                  class U, int N,
                   class Functor>
         T
         nonlinearLeastSquares(MultiArrayView<1, T, S1> const & x,
                               MultiArrayView<1, T, S2> const & y,
-                              TinyVector<U, N> & model_parameters, 
+                              TinyVector<U, N> & model_parameters,
                               Functor model,
                               NonlinearLSQOptions const & options = NonlinearLSQOptions());
 
         // variant 2: optimize a multivariate model ('x' is a 2D array of vector-valued data points)
-        template <class T, class S1, class S2, 
-                  class U, int N, 
+        template <class T, class S1, class S2,
+                  class U, int N,
                   class Functor>
         T
         nonlinearLeastSquares(MultiArrayView<2, T, S1> const & x,
                               MultiArrayView<1, T, S2> const & y,
-                              TinyVector<U, N> & model_parameters, 
+                              TinyVector<U, N> & model_parameters,
                               Functor model,
                               NonlinearLSQOptions const & options = NonlinearLSQOptions());
     }
     \endcode
-    
-    This function implements the 
+
+    This function implements the
     <a href="http://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm">Levenberg-Marquardt algorithm</a>
-    to fit a non-linear model to given data. The model depends on a vector of 
-    parameters <b>p</b> which are to be choosen such that the least-squares residual 
+    to fit a non-linear model to given data. The model depends on a vector of
+    parameters <b>p</b> which are to be choosen such that the least-squares residual
     between the data and the model's predictions is minimized according to the objective function:
 
     \f[ \tilde \textrm{\bf p} = \textrm{argmin}_{\textrm{\bf p}} \sum_i \left( y_i - f(\textrm{\bf x}_i; \textrm{\bf p}) \right)^2
     \f]
 
-    where \f$f(\textrm{\bf x}; \textrm{\bf p})\f$ is the model to be optimized 
-    (with arguments \f$\textrm{\bf x}\f$ and parameters \f$\textrm{\bf p}\f$), and 
-    \f$(\textrm{\bf x}_i; y_i)\f$ are the feature/response pairs of the given data. 
-    Since the model is non-linear (otherwise, you should use ordinary \ref leastSquares()), 
-    it must be linearized in terms of a first-order Taylor expansion, and the optimal 
-    parameters <b>p</b> have to be determined iteratively. In order for the iterations to 
+    where \f$f(\textrm{\bf x}; \textrm{\bf p})\f$ is the model to be optimized
+    (with arguments \f$\textrm{\bf x}\f$ and parameters \f$\textrm{\bf p}\f$), and
+    \f$(\textrm{\bf x}_i; y_i)\f$ are the feature/response pairs of the given data.
+    Since the model is non-linear (otherwise, you should use ordinary \ref leastSquares()),
+    it must be linearized in terms of a first-order Taylor expansion, and the optimal
+    parameters <b>p</b> have to be determined iteratively. In order for the iterations to
     converge to the desired solution, a good initial guess on <b>p</b> is required.
-    
+
     The model must be specified by a functor which takes one of the following forms:
     \code
     typedef double DataType;   // type of your data samples, may be any numeric type
     static const int N = ...;  // number of model parameters
-    
+
     // variant 1: the features x are scalars
-    struct UnivariateModel 
+    struct UnivariateModel
     {
         template <class T>
         T operator()(DataType x, TinyVector<T, N> const & p) const { ... }
     };
-    
+
     // variant 2: the features x are vectors
     struct MultivariateModel
     {
@@ -1202,32 +1202,32 @@ nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const & features,
     };
     \endcode
     Each call to the functor's <tt>operator()</tt> computes the model's prediction for a single data
-    point. The current model parameters are specified in a TinyVector of appropriate length. 
+    point. The current model parameters are specified in a TinyVector of appropriate length.
     The type <tt>T</tt> must be templated: normally, it is the same as <tt>DataType</tt>, but
     the nonlinearLeastSquares() function will temporarily replace it with a special number type
-    that supports <a href="http://en.wikipedia.org/wiki/Automatic_differentiation">automatic differentiation</a> 
-    (see \ref vigra::autodiff::DualVector). In this way, the derivatives needed in the model's Taylor 
+    that supports <a href="http://en.wikipedia.org/wiki/Automatic_differentiation">automatic differentiation</a>
+    (see \ref vigra::autodiff::DualVector). In this way, the derivatives needed in the model's Taylor
     expansion can be computed automatically.
-    
-    When the model is univariate (has a single scalar argument), the samples must be passed to 
+
+    When the model is univariate (has a single scalar argument), the samples must be passed to
     nonlinearLeastSquares() in a pair 'x', 'y' of 1D <tt>MultiArrayView</tt>s (variant 1).
     When the model is multivariate (has a vector-valued argument), the 'x' input must
-    be a 2D <tt>MultiArrayView</tt> (variant 2) whose rows represent a single data sample 
-    (i.e. the number of columns corresponds to the length of the model's argument vector). 
+    be a 2D <tt>MultiArrayView</tt> (variant 2) whose rows represent a single data sample
+    (i.e. the number of columns corresponds to the length of the model's argument vector).
     The number of rows in 'x' defines the number of data samples and must match the length
     of array 'y'.
-    
+
     The <tt>TinyVector</tt> 'model_parameters' holds the initial guess for the model parameters and
     will be overwritten by the optimal values found by the algorithm. The algorithm's internal behavior
-    can be controlled by customizing the option object \ref vigra::NonlinearLSQOptions. 
-    
+    can be controlled by customizing the option object \ref vigra::NonlinearLSQOptions.
+
     The function returns the residual sum of squared errors of the final solution.
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/regression.hxx\><br>
     Namespace: vigra
-    
+
     Suppose that we want to fit a centered Gaussian function of the form
     \f[ f(x ; a, s, b) = a \exp\left(-\frac{x^2}{2 s^2}\right) + b  \f]
     to noisy data \f$(x_i, y_i)\f$, i.e. we want to find parameters a, s, b such that
@@ -1248,38 +1248,38 @@ nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const & features,
     Now we can find optimal values for the parameters like this:
     \code
     int size = ...;  // number of data points
-    MultiArray<1, double> x(size), y(size);    
+    MultiArray<1, double> x(size), y(size);
     ...   // fill the data arrays
-    
+
     TinyVector<double, 3> p(2.0, 1.0, 0.5);  // your initial guess of the parameters
                                              // (will be overwritten with the optimal values)
     double residual = nonlinearLeastSquares(x, y, p, GaussianModel());
-    
+
     std::cout << "Model parameters: a=" << p[0] << ", s=" << p[1] << ", b=" << p[2] << " (residual: " << residual << ")\n";
     \endcode
 */
 doxygen_overloaded_function(template <...> void nonlinearLeastSquares)
 
-template <class T, class S1, class S2, 
-          class U, int N, 
+template <class T, class S1, class S2,
+          class U, int N,
           class Functor>
 inline T
 nonlinearLeastSquares(MultiArrayView<1, T, S1> const & features,
                       MultiArrayView<1, T, S2> const & response,
-                      TinyVector<U, N> & p, 
+                      TinyVector<U, N> & p,
                       Functor model,
                       NonlinearLSQOptions const & options = NonlinearLSQOptions())
 {
     return nonlinearLeastSquaresImpl(features, response, p, model, options);
 }
 
-template <class T, class S1, class S2, 
-          class U, int N, 
+template <class T, class S1, class S2,
+          class U, int N,
           class Functor>
 inline T
 nonlinearLeastSquares(MultiArrayView<2, T, S1> const & features,
                       MultiArrayView<1, T, S2> const & response,
-                      TinyVector<U, N> & p, 
+                      TinyVector<U, N> & p,
                       Functor model,
                       NonlinearLSQOptions const & options = NonlinearLSQOptions())
 {

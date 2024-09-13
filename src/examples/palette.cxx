@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -44,22 +44,22 @@
 using namespace vigra;
 
 template<class Polar2Cartesian, class Cartesian2RGB, class RGB2RGBPrime>
-void createColorVsSaturation(MultiArray<2, RGBValue<UInt8> > & result, double brightness, 
+void createColorVsSaturation(MultiArray<2, RGBValue<UInt8> > & result, double brightness,
                  Polar2Cartesian polar2Cartesian, Cartesian2RGB cartesian2RGB, RGB2RGBPrime rgb2RGBPrime)
 {
-    int w = result.width(); 
+    int w = result.width();
     int h = result.height();
-    
+
     for(int y=0; y<h; ++y)
     {
         for(int x=0; x<w; ++x)
         {
             double saturation = (float)x / (w-1);
             double color = (float)y / (h-1) * 360.0;
-            
+
             RGBValue<float> rgb = cartesian2RGB(
                polar2Cartesian(color, brightness, saturation));
-                        
+
             if(saturation > 1.0 ||
                rgb.red() < 0.0 || rgb.red() > 255.0 ||
                rgb.green() < 0.0 || rgb.green() > 255.0 ||
@@ -76,22 +76,22 @@ void createColorVsSaturation(MultiArray<2, RGBValue<UInt8> > & result, double br
 }
 
 template<class Polar2Cartesian, class Cartesian2RGB, class RGB2RGBPrime>
-void createColorVsBrightness(MultiArray<2, RGBValue<UInt8> > & result, double saturation, 
+void createColorVsBrightness(MultiArray<2, RGBValue<UInt8> > & result, double saturation,
                  Polar2Cartesian polar2Cartesian, Cartesian2RGB cartesian2RGB, RGB2RGBPrime rgb2RGBPrime)
 {
-    int w = result.width(); 
+    int w = result.width();
     int h = result.height();
-    
+
     for(int y=0; y<h; ++y)
     {
         for(int x=0; x<w; ++x)
         {
             double brightness = (float)x / (w-1);
             double color = (float)y / (h-1) * 360.0;
-            
+
             RGBValue<float> rgb = cartesian2RGB(
                polar2Cartesian(color, brightness, saturation));
-            
+
             if(saturation > 1.0 ||
                rgb.red() < 0.0 || rgb.red() > 255.0 ||
                rgb.green() < 0.0 || rgb.green() > 255.0 ||
@@ -108,22 +108,22 @@ void createColorVsBrightness(MultiArray<2, RGBValue<UInt8> > & result, double sa
 }
 
 template<class Polar2Cartesian, class Cartesian2RGB, class RGB2RGBPrime>
-void createSaturationVsBrightness(MultiArray<2, RGBValue<UInt8> > & result, double color, 
+void createSaturationVsBrightness(MultiArray<2, RGBValue<UInt8> > & result, double color,
                  Polar2Cartesian polar2Cartesian, Cartesian2RGB cartesian2RGB, RGB2RGBPrime rgb2RGBPrime)
 {
-    int w = result.width(); 
+    int w = result.width();
     int h = result.height();
-    
+
     for(int y=0; y<h; ++y)
     {
         for(int x=0; x<w; ++x)
         {
             double brightness = (float)x / (w-1);
             double saturation = (float)y / (h-1);
-            
+
             RGBValue<float> rgb = cartesian2RGB(
                polar2Cartesian(color, brightness, saturation));
-            
+
             if(saturation > 1.0 ||
                rgb.red() < 0.0 || rgb.red() > 255.0 ||
                rgb.green() < 0.0 || rgb.green() > 255.0 ||
@@ -140,12 +140,12 @@ void createSaturationVsBrightness(MultiArray<2, RGBValue<UInt8> > & result, doub
 }
 
 template<class Polar2Cartesian, class Cartesian2RGB, class RGB2RGBPrime>
-void createColorCircle(MultiArray<2, RGBValue<UInt8> > & result, double brightness, 
+void createColorCircle(MultiArray<2, RGBValue<UInt8> > & result, double brightness,
                  Polar2Cartesian polar2Cartesian, Cartesian2RGB cartesian2RGB, RGB2RGBPrime rgb2RGBPrime)
 {
-    int w = result.width(); 
+    int w = result.width();
     int h = result.height();
-    
+
     for(int y=0; y<h; ++y)
     {
         for(int x=0; x<w; ++x)
@@ -154,10 +154,10 @@ void createColorCircle(MultiArray<2, RGBValue<UInt8> > & result, double brightne
             double dy = -y/128.0 + 1.0;
             double color = 180.0/M_PI*std::atan2(dy,dx);
             double saturation = std::sqrt(dx*dx+dy*dy);
-            
+
             RGBValue<float> rgb = cartesian2RGB(
                polar2Cartesian(color, brightness, saturation));
-            
+
             if(saturation > 1.0 ||
                rgb.red() < 0.0 || rgb.red() > 255.0 ||
                rgb.green() < 0.0 || rgb.green() > 255.0 ||
@@ -188,28 +188,28 @@ template<class Polar2Cartesian, class Cartesian2RGB, class RGB2RGBPrime>
 void createColorSpaceSlices(char const * colorspace,
     Polar2Cartesian polar2Cartesian, Cartesian2RGB cartesian2RGB, RGB2RGBPrime rgb2RGBPrime)
 {
-    int w = 257; 
+    int w = 257;
     int h = 257;
     int Ymax = 10;
-    
+
     for(int i=0; i<=Ymax; ++i)
     {
 
         MultiArray<2, RGBValue<UInt8> > result(w, h);
 
-        createColorVsSaturation(result, (float)i/Ymax, 
+        createColorVsSaturation(result, (float)i/Ymax,
                         polar2Cartesian, cartesian2RGB, rgb2RGBPrime);
         write(colorspace, "ColorVsSaturation", i, result);
 
-        createColorVsBrightness(result, (float)i/Ymax, 
+        createColorVsBrightness(result, (float)i/Ymax,
                         polar2Cartesian, cartesian2RGB, rgb2RGBPrime);
         write(colorspace, "ColorVsBrightness", i, result);
 
-        createSaturationVsBrightness(result, (float)i/Ymax*360.0, 
+        createSaturationVsBrightness(result, (float)i/Ymax*360.0,
                         polar2Cartesian, cartesian2RGB, rgb2RGBPrime);
         write(colorspace, "SaturationVsBrightness", i, result);
 
-        createColorCircle(result, (float)i/Ymax, 
+        createColorCircle(result, (float)i/Ymax,
                         polar2Cartesian, cartesian2RGB, rgb2RGBPrime);
         write(colorspace, "ColorCircle", i, result);
     }
@@ -235,45 +235,45 @@ int main(int argc, char ** argv)
         usage(argv[0]);
         return 1;
     }
-    
+
     try
     {
         typedef TinyVector<float, 3> (*PolarFct)(double, double, double);
         std::string colorspace(argv[1]);
-        
+
         if(colorspace == "lab")
         {
-            createColorSpaceSlices("lab", 
+            createColorSpaceSlices("lab",
                          (PolarFct)&polar2Lab, Lab2RGBFunctor<float>(),
                          RGB2RGBPrimeFunctor<float, unsigned char>());
         }
         else if(colorspace == "luv")
         {
-            createColorSpaceSlices("luv", 
+            createColorSpaceSlices("luv",
                          (PolarFct)&polar2Luv, Luv2RGBFunctor<float>(),
                          RGB2RGBPrimeFunctor<float, unsigned char>());
         }
         else if(colorspace == "ypbpr")
         {
-            createColorSpaceSlices("ypbpr", 
+            createColorSpaceSlices("ypbpr",
                          (PolarFct)&polar2YPrimePbPr, YPrimePbPr2RGBPrimeFunctor<float>(),
                          &NumericTraits<RGBValue<unsigned char> >::fromRealPromote);
         }
         else if(colorspace == "ycbcr")
         {
-            createColorSpaceSlices("ycbcr", 
+            createColorSpaceSlices("ycbcr",
                          (PolarFct)&polar2YPrimeCbCr, YPrimeCbCr2RGBPrimeFunctor<float>(),
                          &NumericTraits<RGBValue<unsigned char> >::fromRealPromote);
         }
         else if(colorspace == "yiq")
         {
-            createColorSpaceSlices("yiq", 
+            createColorSpaceSlices("yiq",
                          (PolarFct)&polar2YPrimeIQ, YPrimeIQ2RGBPrimeFunctor<float>(),
                          &NumericTraits<RGBValue<unsigned char> >::fromRealPromote);
         }
         else if(colorspace == "yuv")
         {
-            createColorSpaceSlices("yuv", 
+            createColorSpaceSlices("yuv",
                          (PolarFct)&polar2YPrimeUV, YPrimeUV2RGBPrimeFunctor<float>(),
                          &NumericTraits<RGBValue<unsigned char> >::fromRealPromote);
         }
@@ -289,6 +289,6 @@ int main(int argc, char ** argv)
         std::cout << e.what() << std::endl;
         return 1;
     }
-    
+
     return 0;
 }

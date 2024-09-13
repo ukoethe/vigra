@@ -186,7 +186,7 @@ namespace vigra{
         static const unsigned int IntrinsicArcMapDimension=DIM+1;
     };
 
-    // convert a descriptor to an multi_array index w.r.t. 
+    // convert a descriptor to an multi_array index w.r.t.
     // an node/edge/arc map
     template<class GRAPH>
     class GraphDescriptorToMultiArrayIndex{
@@ -214,7 +214,7 @@ namespace vigra{
 
     };
 
-    // convert a descriptor to an multi_array index w.r.t. 
+    // convert a descriptor to an multi_array index w.r.t.
     // an node/edge/arc map
     template<unsigned int DIM,class DIRECTED_TAG>
     class GraphDescriptorToMultiArrayIndex<GridGraph<DIM,DIRECTED_TAG> >{

@@ -49,7 +49,7 @@
 // as a workaround, we will do this in Python using the 'json' module
 #define VIGRA_DISABLE_FROMJSON
 
-#ifndef VIGRA_DISABLE_FROMJSON  
+#ifndef VIGRA_DISABLE_FROMJSON
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #endif
@@ -88,7 +88,7 @@ generic__deepcopy__(python::object copyable, python::dict memo)
     python::object builtin = python::import("builtins");
 #endif
     python::object globals = builtin.attr("__dict__");
-    
+
     Copyable* newCopyable(new Copyable(python::extract<const Copyable &>(copyable)()));
     python::object result(python::detail::new_reference(managingPyObject(newCopyable)));
 
@@ -98,7 +98,7 @@ generic__deepcopy__(python::object copyable, python::dict memo)
     memo[copyableId] = result;
 
     python::object dict_copy = deepcopy(python::extract<python::dict>(copyable.attr("__dict__"))(),
-                                        memo);    
+                                        memo);
     python::extract<python::dict>(result.attr("__dict__"))().update(dict_copy);
     return result;
 }
@@ -163,26 +163,26 @@ AxisInfo AxisInfo_c()
     return AxisInfo::c();
 }
 
-#ifndef VIGRA_DISABLE_FROMJSON  
+#ifndef VIGRA_DISABLE_FROMJSON
 AxisTags AxisTags::fromJSON(std::string const & repr)
 {
     using boost::property_tree::ptree;
-    
+
     std::istringstream s(repr);
     ptree pt;
     read_json(s, pt);
-    
+
     AxisTags res;
-    for(ptree::iterator v = pt.get_child("axes").begin(); 
+    for(ptree::iterator v = pt.get_child("axes").begin();
                          v != pt.get_child("axes").end(); ++v)
     {
         std::string key(v->second.get<std::string>("key"));
         unsigned int typeFlags(v->second.get<unsigned int>("typeFlags"));
         double resolution(v->second.get<double>("resolution"));
         std::string description(v->second.get<std::string>("description"));
-        
+
         res.push_back(AxisInfo(key, (AxisInfo::AxisType)typeFlags, resolution, description));
-    }    
+    }
     return res;
 }
 
@@ -197,7 +197,7 @@ AxisTags_create(python::object i1, python::object i2,
                 python::object i3, python::object i4, python::object i5)
 {
     VIGRA_UNIQUE_PTR<AxisTags> res(new AxisTags());
-    
+
     python::extract<AxisTags const &> tags(i1);
     if(tags.check())
     {
@@ -288,7 +288,7 @@ AxisTags_create(python::object i1, python::object i2,
             res->push_back(info());
         }
     }
-    
+
     return res.release();
 }
 
@@ -307,13 +307,13 @@ AxisInfo & AxisTags_getitem(AxisTags & axistags, int index)
 {
     if(index < 0)
         index += axistags.size();
-        
+
     if(index >= (int)axistags.size())
     {
         PyErr_SetString(PyExc_IndexError, "AxisTags.__getitem__(): Invalid index or key.");
         python::throw_error_already_set();
     }
-    
+
     return axistags.get(index);
 }
 
@@ -460,12 +460,12 @@ AxisTags_transform(AxisTags const & oldTags, python::object index, int lnew)
             ++kold;
             ++kindex;
         }
-        else 
+        else
         {
             if(item != python::object())
             {
                 python::extract<AxisInfo const &> newaxis(item);
-                
+
                 if(newaxis.check())
                 {
                     newTags->push_back(newaxis);
@@ -552,12 +552,12 @@ void defineAxisTags()
         .value("AllAxes", AxisInfo::AllAxes)
     ;
 
-    class_<AxisInfo>("AxisInfo", 
+    class_<AxisInfo>("AxisInfo",
          "\n"
          "An object describing a single axis.\n\nConstructor:\n\n"
          ".. method:: AxisInfo(key='?', typeFlags=AxisType.UnknownAxisType, resolution=0.0, description='')\n\n"
          "    :param key: the key of the axis,\n"
-         "                e.g. 'x' (x-axis), 'c' (channel axis), '?' (unknown)\n" 
+         "                e.g. 'x' (x-axis), 'c' (channel axis), '?' (unknown)\n"
          "    :type key: string\n"
          "    :param typeFlags: the type of the axis,\n"
          "                      e.g. AxisType.Space or AxisType.Time\n"
@@ -593,10 +593,10 @@ void defineAxisTags()
          "        in the Fourier domain.\n"
          "   ``AxisInfo.ft`` or ``AxisInfo.ft(resolution=0.0, description='')``:\n"
          "        Factory for an axisinfo object describing the 't' axis\n"
-         "        in the Fourier domain.\n\n", 
+         "        in the Fourier domain.\n\n",
          no_init)
         .def(init<std::string, AxisInfo::AxisType, double, std::string>(
-             (arg("key")="?", arg("typeFlags")=AxisInfo::UnknownAxisType, 
+             (arg("key")="?", arg("typeFlags")=AxisInfo::UnknownAxisType,
               arg("resolution")=0.0, arg("description")="")))
         .def(init<AxisInfo const &>())
         .def_readonly("key", &AxisInfo::key_,
@@ -623,28 +623,28 @@ void defineAxisTags()
              "\n(read-only property, type :class:`~vigra.AxisType`) the type of the axis .\n")
         .def("toFrequencyDomain", &AxisInfo::toFrequencyDomain, (arg("size") = 0, arg("sign") = 1))
         .def("fromFrequencyDomain", &AxisInfo::fromFrequencyDomain, (arg("size") = 0))
-        .def("isSpatial", &AxisInfo::isSpatial, 
+        .def("isSpatial", &AxisInfo::isSpatial,
              "\naxisinfo.isSpactial() yields True when :attr:`~vigra.AxisInfo.typeFlags` "
              "contains AxisType.Space\n")
-        .def("isEdge", &AxisInfo::isEdge, 
+        .def("isEdge", &AxisInfo::isEdge,
              "\naxisinfo.isEdge() yields True when :attr:`~vigra.AxisInfo.typeFlags` "
              "contains AxisType.Edge\n")
-        .def("isTemporal", &AxisInfo::isTemporal, 
+        .def("isTemporal", &AxisInfo::isTemporal,
              "\naxisinfo.isTemporal() yields True when :attr:`~vigra.AxisInfo.typeFlags` "
              "contains AxisType.Time\n")
-        .def("isChannel", &AxisInfo::isChannel, 
+        .def("isChannel", &AxisInfo::isChannel,
              "\naxisinfo.isChannel() yields True when :attr:`~vigra.AxisInfo.typeFlags` "
              "contains AxisType.Channels\n")
-        .def("isFrequency", &AxisInfo::isFrequency, 
+        .def("isFrequency", &AxisInfo::isFrequency,
              "\naxisinfo.isFrequency() yields True when :attr:`~vigra.AxisInfo.typeFlags` "
              "contains AxisType.Frequency\n")
-        .def("isAngular", &AxisInfo::isAngular, 
+        .def("isAngular", &AxisInfo::isAngular,
              "\naxisinfo.isAngular() yields True when :attr:`~vigra.AxisInfo.typeFlags` "
              "contains AxisType.Angle\n")
-        .def("isType", &AxisInfo::isType, 
+        .def("isType", &AxisInfo::isType,
              "\naxisinfo.isType(axistype) yields True when :attr:`~vigra.AxisInfo.typeFlags` "
              "contains the given axistype.\n")
-        .def("compatible", &AxisInfo::compatible, 
+        .def("compatible", &AxisInfo::compatible,
              "\naxisinfo1.compatible(axisinfo2) yields True when the two axisinfo objects "
              "have the same keys and types, or either of the two is 'unknown'.\n")
         .def(self == self)
@@ -670,7 +670,7 @@ void defineAxisTags()
         .add_static_property("c", &AxisInfo_c)
     ;
 
-    class_<AxisTags >("AxisTags", 
+    class_<AxisTags >("AxisTags",
             "Object to describe axis properties and axis ordering in a "
             ":class:`~vigra.VigraArray`. \n\nConstructor:\n\n"
             ".. method:: AxisTags(i1=None, i2=None, i3=None, i4=None, i5=None)\n\n"
@@ -681,7 +681,7 @@ void defineAxisTags()
             "    AxisTags object with that many '?' entries is created).\n\n"
             "Most AxisTags methods should not be called directly, but via the\n"
             "corresponding array methods, because this ensures that arrays and\n"
-            "their axistags are always kept in sync (rule of thumb: if an axistags\n" 
+            "their axistags are always kept in sync (rule of thumb: if an axistags\n"
             "function is not documented, you call it on your own risk).\n\n"
             "The entries of an axistags object (i.e. the individual axisinfo objects)\n"
             "can be accessed via the index operator, where the argument can either be\n"
@@ -696,7 +696,7 @@ void defineAxisTags()
             no_init)
         .def("__init__", make_constructor(&AxisTags_create,
             default_call_policies(),
-            (arg("i1")=object(), arg("i2")=object(), arg("i3")=object(), 
+            (arg("i1")=object(), arg("i2")=object(), arg("i3")=object(),
              arg("i4")=object(), arg("i5")=object())))
         .def("__repr__", &AxisTags::repr)
         .def("__str__", &AxisTags_str)
@@ -704,10 +704,10 @@ void defineAxisTags()
         .def("__deepcopy__", &generic__deepcopy__<AxisTags>)
         .def("__len__", &AxisTags::size)
         .def("__getitem__", &AxisTags_getitem, return_internal_reference<>())
-        .def("__getitem__", 
+        .def("__getitem__",
             (AxisInfo & (AxisTags::*)(std::string const &))&AxisTags::get, return_internal_reference<>())
         .def("__setitem__", (void (AxisTags::*)(int, AxisInfo const &))&AxisTags::set)
-        .def("__setitem__", 
+        .def("__setitem__",
             (void (AxisTags::*)(std::string const &, AxisInfo const &))&AxisTags::set)
         .def("__delitem__", (void (AxisTags::*)(int))&AxisTags::dropAxis)
         .def("__delitem__", (void (AxisTags::*)(std::string const &))&AxisTags::dropAxis)
@@ -720,7 +720,7 @@ void defineAxisTags()
         .def("swapaxes", &AxisTags::swapaxes)
         .def("keys", &AxisTags_keys)
         .def("values", &AxisTags_values)
-        
+
         // NOTE: in contrast to arrays, AxisTags::transpose() works
         //       in-place, i.e. changes 'self'
         .def("transpose", (void (AxisTags::*)())&AxisTags::transpose)
@@ -728,7 +728,7 @@ void defineAxisTags()
         .def("index", &AxisTags::index,
              "Get the axis index of a given axis key::\n\n"
              "    >>> axistags.index('x')\n"
-             "    0\n\n"     
+             "    0\n\n"
              "In this example, the 'x'-axis corresponds to index 0 (i.e. the first index).\n")
         .add_property("channelIndex", &AxisTags::channelIndex,
             "(read-only property, type 'int') the index of the channel axis, or ``len(axistags)``\n"
@@ -751,23 +751,23 @@ void defineAxisTags()
             "    3\n"
             "    >>> a.axisTypeCount(vigra.AxisType.NonChannel)\n"
             "    3\n\n")
-        
+
         // IMPORTANT: do not remove are rename the following functions,
         //            they are used by the vigranumpy C++ API
         .def("resolution", (double (AxisTags::*)(int) const)&AxisTags::resolution)
         .def("resolution", (double (AxisTags::*)(std::string const &) const)&AxisTags::resolution)
         .def("setResolution", (void (AxisTags::*)(int, double))&AxisTags::setResolution)
-        .def("setResolution", 
+        .def("setResolution",
             (void (AxisTags::*)(std::string const &, double))&AxisTags::setResolution)
         .def("scaleResolution", (void (AxisTags::*)(int, double))&AxisTags::scaleResolution)
-        .def("scaleResolution", 
+        .def("scaleResolution",
             (void (AxisTags::*)(std::string const &, double))&AxisTags::scaleResolution)
         .def("description", (std::string (AxisTags::*)(int) const)&AxisTags::description)
-        .def("description", 
+        .def("description",
              (std::string (AxisTags::*)(std::string const &) const)&AxisTags::description)
-        .def("setDescription", 
+        .def("setDescription",
             (void (AxisTags::*)(int, std::string const &))&AxisTags::setDescription)
-        .def("setDescription", 
+        .def("setDescription",
             (void (AxisTags::*)(std::string const &, std::string const &))&AxisTags::setDescription)
         .def("setChannelDescription", &AxisTags::setChannelDescription,
              "Set a description for the channel axis, if one exists::\n\n"
@@ -779,12 +779,12 @@ void defineAxisTags()
              "would cause an exception.\n")
         .def("toFrequencyDomain", (void (AxisTags::*)(int, int, int))&AxisTags::toFrequencyDomain,
                 (arg("index"), arg("size")=0, arg("sign")=1))
-        .def("toFrequencyDomain", 
+        .def("toFrequencyDomain",
                (void (AxisTags::*)(std::string const &, int, int))&AxisTags::toFrequencyDomain,
                (arg("key"), arg("size")=0, arg("sign")=1))
         .def("fromFrequencyDomain", (void (AxisTags::*)(int, int))&AxisTags::fromFrequencyDomain,
                 (arg("index"), arg("size")=0))
-        .def("fromFrequencyDomain", 
+        .def("fromFrequencyDomain",
                (void (AxisTags::*)(std::string const &, int))&AxisTags::fromFrequencyDomain,
                (arg("key"), arg("size")=0))
         .def("permutationToNormalOrder", &AxisTags_permutationToNormalOrder)

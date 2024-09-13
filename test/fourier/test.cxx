@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -214,7 +214,7 @@ struct FFTWComplexTest
             }
 
         FFTWComplexImage out(w, h);
-        
+
         fourierTransform(srcImageRange(in), destImage(out));
         fourierTransformInverse(srcImageRange(out), destImage(out));
 
@@ -431,7 +431,7 @@ struct MultiFFTTest
         CArray2 aout(s);
 
         fourierTransform(srcImageRange(in), destImage(out));
-        fourierTransform(MultiArrayView<2, C>(s, const_cast<C*>(in.data())), 
+        fourierTransform(MultiArrayView<2, C>(s, const_cast<C*>(in.data())),
                          aout);
 
         shouldEqualSequence(aout.data(), aout.data()+aout.size(), out.data());
@@ -508,7 +508,7 @@ struct MultiFFTTest
 
         shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
                                      ref.data(), 1e-14);
-        
+
         Kernel2D<double> gauss2;
         gauss2.initGaussian(2.0*scale);
         MV kernel2(Shape2(gauss2.width(), gauss2.height()), &gauss2[gauss2.upperLeft()]);
@@ -545,7 +545,7 @@ struct MultiFFTTest
         MV kernel2(Shape2(gauss2.width(), gauss2.height()), &gauss2[gauss2.upperLeft()]);
 
         //test complex double 2D convolution with spatial domain kernels
-        
+
         MultiArray<2, FFTWComplex<double> > inc(in);
         MultiArray<2, FFTWComplex<double> > outc(inc.shape()), outc2(inc.shape());
         MultiArray<2, FFTWComplex<double> > kernelc(kernel), kernelc2(kernel2);
@@ -557,7 +557,7 @@ struct MultiFFTTest
                                      ref.data(), 1e-14);
 
         outc.init(0.0);
-        
+
         MVC kernels[] = { kernelc, kernelc2 };
         MVC outs[] = { outc, outc2 };
         convolveFFTComplexMany(inc, kernels, kernels+2, outs, false);
@@ -570,7 +570,7 @@ struct MultiFFTTest
                                      ref2.data(), 1e-14);
 
         //test complex double 2D convolution with Fourier domain kernels
-        
+
         gauss.setBorderTreatment(BORDER_TREATMENT_WRAP);
         gauss2.setBorderTreatment(BORDER_TREATMENT_WRAP);
 
@@ -597,7 +597,7 @@ struct MultiFFTTest
 
         outc.init(0.0);
         outc2.init(0.0);
-        
+
         MVC kernelsf[] = { kernelf, kernelf2 };
         convolveFFTComplexMany(inc, kernelsf, kernelsf+2, outs, true);
 
@@ -610,7 +610,7 @@ struct MultiFFTTest
 #if 0
         // test complex float 3D convolution
         // compile-only test, currently disabled because it requires libfftwf
-                
+
         Shape3 sc(100,100,100);
         vigra::MultiArray<3, FFTWComplex<float> > incf(sc);
         vigra::MultiArray<3, FFTWComplex<float> > outcf(sc);
@@ -678,7 +678,7 @@ struct MultiFFTTest
         FindAverage<double> average;
         inspectImage(srcImageRange(ref), minmax);
         inspectImage(srcImageRange(ref), average);
-        
+
         should(std::max(minmax.max, -minmax.min) < 0.2);
         should(average.average() < 0.001);
 

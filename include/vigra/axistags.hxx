@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -50,79 +50,79 @@ namespace vigra {
 class AxisInfo
 {
   public:
-  
-    // this particular assignment of bits to types is crucial for 
+
+    // this particular assignment of bits to types is crucial for
     // canonical axis ordering
-    enum AxisType { Channels = 1, 
-                    Space = 2, 
-                    Angle = 4, 
-                    Time = 8, 
-                    Frequency = 16, 
+    enum AxisType { Channels = 1,
+                    Space = 2,
+                    Angle = 4,
+                    Time = 8,
+                    Frequency = 16,
                     Edge = 32,
-                    UnknownAxisType = 64, 
+                    UnknownAxisType = 64,
                     NonChannel = Space | Angle | Time | Frequency | UnknownAxisType,
                     AllAxes = 2*UnknownAxisType-1 };
 
-    AxisInfo(std::string key = "?", AxisType typeFlags = UnknownAxisType, 
+    AxisInfo(std::string key = "?", AxisType typeFlags = UnknownAxisType,
              double resolution = 0.0, std::string description = "")
     : key_(key),
       description_(description),
       resolution_(resolution),
       flags_(typeFlags)
     {}
-    
+
     std::string key() const
     {
         return key_;
     }
-    
+
     std::string description() const
     {
         return description_;
     }
-    
+
     void setDescription(std::string const & description)
     {
         description_ = description;
     }
-    
+
     double resolution() const
     {
         return resolution_;
     }
-    
+
     void setResolution(double resolution)
     {
         resolution_ = resolution;
     }
-    
+
     AxisType typeFlags() const
     {
         return flags_ == 0
                   ? UnknownAxisType
                   : flags_;
     }
-    
+
     bool isUnknown() const
     {
         return isType(UnknownAxisType);
     }
-    
+
     bool isSpatial() const
     {
         return isType(Space);
     }
-    
+
     bool isTemporal() const
     {
         return isType(Time);
     }
-    
+
     bool isChannel() const
     {
         return isType(Channels);
     }
-    
+
     bool isFrequency() const
     {
         return isType(Frequency);
@@ -132,17 +132,17 @@ class AxisInfo
     {
         return isType(Edge);
     }
-    
+
     bool isAngular() const
     {
         return isType(Angle);
     }
-    
+
     bool isType(AxisType type) const
     {
         return (typeFlags() & type) != 0;
     }
-    
+
     std::string repr() const
     {
         std::string res("AxisInfo: '");
@@ -177,7 +177,7 @@ class AxisInfo
         }
         return res;
     }
-    
+
     AxisInfo toFrequencyDomain(unsigned int size = 0, int sign = 1) const
     {
         AxisType type;
@@ -198,7 +198,7 @@ class AxisInfo
             res.resolution_ = 1.0 / (resolution_ * size);
         return res;
     }
-    
+
     AxisInfo fromFrequencyDomain(unsigned int size = 0) const
     {
         return toFrequencyDomain(size, -1);
@@ -206,7 +206,7 @@ class AxisInfo
 
     bool compatible(AxisInfo const & other) const
     {
-        return isUnknown() || other.isUnknown() || 
+        return isUnknown() || other.isUnknown() ||
                ((typeFlags() & ~Frequency) == (other.typeFlags() & ~Frequency) &&
                  key() == other.key());
     }
@@ -220,14 +220,14 @@ class AxisInfo
     {
         return !operator==(other);
     }
-    
+
     // the primary ordering is according to axis type:
     //     Channels < Space < Angle < Time < Frequency < Unknown
     // the secondary ordering is the lexicographic ordering of the keys
     //     "x" < "y" < "z"
     bool operator<(AxisInfo const & other) const
     {
-        return (typeFlags() < other.typeFlags()) || 
+        return (typeFlags() < other.typeFlags()) ||
                 (typeFlags() == other.typeFlags() && key() < other.key());
     }
 
@@ -235,28 +235,28 @@ class AxisInfo
     {
         return !(other < *this);
     }
-    
+
     bool operator>(AxisInfo const & other) const
     {
         return other < *this;
     }
-    
+
     bool operator>=(AxisInfo const & other) const
     {
         return !(*this < other);
     }
-    
+
     // factory functions for standard tags
     static AxisInfo x(double resolution = 0.0, std::string const & description = "")
     {
         return AxisInfo("x", Space, resolution, description);
     }
-    
+
     static AxisInfo y(double resolution = 0.0, std::string const & description = "")
     {
         return AxisInfo("y", Space, resolution, description);
     }
-    
+
     static AxisInfo z(double resolution = 0.0, std::string const & description = "")
     {
         return AxisInfo("z", Space, resolution, description);
@@ -266,7 +266,7 @@ class AxisInfo
     {
         return AxisInfo("n", Space, resolution, description);
     }
-    
+
     static AxisInfo e(double resolution = 0.0, std::string const & description = "")
     {
         return AxisInfo("e", Edge, resolution, description);
@@ -276,32 +276,32 @@ class AxisInfo
     {
         return AxisInfo("t", Time, resolution, description);
     }
-    
+
     static AxisInfo fx(double resolution = 0.0, std::string const & description = "")
     {
         return AxisInfo("x", AxisType(Space | Frequency), resolution, description);
     }
-    
+
     static AxisInfo fy(double resolution = 0.0, std::string const & description = "")
     {
         return AxisInfo("y", AxisType(Space | Frequency), resolution, description);
     }
-    
+
     static AxisInfo fz(double resolution = 0.0, std::string const & description = "")
     {
         return AxisInfo("z", AxisType(Space | Frequency), resolution, description);
     }
-    
+
     static AxisInfo ft(double resolution = 0.0, std::string const & description = "")
     {
         return AxisInfo("t", AxisType(Time | Frequency), resolution, description);
     }
-    
+
     static AxisInfo c(std::string const & description = "")
     {
         return AxisInfo("c", Channels, 0.0, description);
     }
-    
+
     std::string key_, description_;
     double resolution_;
     AxisType flags_;
@@ -310,32 +310,32 @@ class AxisInfo
 class AxisTags
 {
   public:
-   
+
     AxisTags()
     {}
-    
+
     AxisTags(int size)
     : axes_(size)
     {}
-    
+
     AxisTags(AxisInfo const & i1)
     {
         push_back(i1);
     }
-    
+
     AxisTags(AxisInfo const & i1, AxisInfo const & i2)
     {
         push_back(i1);
         push_back(i2);
     }
-    
+
     AxisTags(AxisInfo const & i1, AxisInfo const & i2, AxisInfo const & i3)
     {
         push_back(i1);
         push_back(i2);
         push_back(i3);
     }
-    
+
     AxisTags(AxisInfo const & i1, AxisInfo const & i2,
              AxisInfo const & i3, AxisInfo const & i4)
     {
@@ -344,7 +344,7 @@ class AxisTags
         push_back(i3);
         push_back(i4);
     }
-    
+
     AxisTags(AxisInfo const & i1, AxisInfo const & i2,
              AxisInfo const & i3, AxisInfo const & i4, AxisInfo const & i5)
     {
@@ -354,7 +354,7 @@ class AxisTags
         push_back(i4);
         push_back(i5);
     }
-    
+
     AxisTags(std::string const & tags)
     {
         for(std::string::size_type k=0; k<tags.size(); ++k)
@@ -405,7 +405,7 @@ class AxisTags
             }
         }
     }
-    
+
     // static AxisTags fromJSON(std::string const & repr);
 
     std::string toJSON() const
@@ -432,7 +432,7 @@ class AxisTags
     {
         return axes_.size();
     }
-    
+
     int axisTypeCount(AxisInfo::AxisType type) const
     {
         int res = 0;
@@ -441,7 +441,7 @@ class AxisTags
                 ++res;
         return res;
     }
-    
+
     std::string repr() const
     {
         std::string res;
@@ -454,12 +454,12 @@ class AxisTags
         }
         return res;
     }
-    
+
     bool contains(std::string const & key) const
     {
         return index(key) < (int)size();
     }
-    
+
     AxisInfo & get(int k)
     {
         checkIndex(k);
@@ -467,12 +467,12 @@ class AxisTags
             k += size();
         return axes_[k];
     }
-    
+
     AxisInfo & get(std::string const & key)
     {
         return get(index(key));
     }
-    
+
     AxisInfo const & get(int k) const
     {
         checkIndex(k);
@@ -480,12 +480,12 @@ class AxisTags
             k += size();
         return axes_[k];
     }
-    
+
     AxisInfo const & get(std::string const & key) const
     {
         return get(index(key));
     }
-    
+
     void set(int k, AxisInfo const & info)
     {
         checkIndex(k);
@@ -521,7 +521,7 @@ class AxisTags
         checkDuplicates(size(), i);
         axes_.push_back(i);
     }
-    
+
     void dropAxis(int k)
     {
         checkIndex(k);
@@ -530,19 +530,19 @@ class AxisTags
                                                  : axes_.begin() + k;
         axes_.erase(i, i+1);
     }
-    
+
     void dropAxis(std::string const & key)
     {
         dropAxis(index(key));
     }
-    
+
     void dropChannelAxis()
     {
         int k = channelIndex();
         if(k < (int)size())
             axes_.erase(axes_.begin() + k, axes_.begin() + k + 1);
     }
-    
+
     int index(std::string const & key) const
     {
         for(unsigned int k=0; k<size(); ++k)
@@ -550,89 +550,89 @@ class AxisTags
                 return k;
         return (int)size();
     }
-    
+
     double resolution(int k) const
     {
         return get(k).resolution_;
     }
-    
+
     double resolution(std::string const & key) const
     {
         return resolution(index(key));
     }
-    
-    void setResolution(int k, double r) 
+
+    void setResolution(int k, double r)
     {
         get(k).resolution_ = r;
     }
-    
-    void setResolution(std::string const & key, double r) 
+
+    void setResolution(std::string const & key, double r)
     {
         setResolution(index(key), r);
     }
-    
+
     void scaleResolution(int k, double factor)
     {
         get(k).resolution_ *= factor;
     }
-    
+
     void scaleResolution(std::string const & key, double factor)
     {
         get(key).resolution_ *= factor;
     }
-    
+
     std::string description(int k) const
     {
         return get(k).description_;
     }
-    
+
     std::string description(std::string const & key) const
     {
         return description(index(key));
     }
-    
-    void setDescription(int k, std::string const & d) 
+
+    void setDescription(int k, std::string const & d)
     {
         get(k).setDescription(d);
     }
-    
-    void setDescription(std::string const & key, std::string const & d) 
+
+    void setDescription(std::string const & key, std::string const & d)
     {
         setDescription(index(key), d);
     }
-    
+
     void setChannelDescription(std::string const & description)
     {
         int k = channelIndex();
         if(k < (int)size())
             axes_[k].setDescription(description);
     }
-    
+
     void toFrequencyDomain(int k, int size = 0, int sign = 1)
     {
         get(k) = get(k).toFrequencyDomain(size, sign);
     }
-    
+
     void toFrequencyDomain(std::string const & key, int size = 0, int sign = 1)
     {
         toFrequencyDomain(index(key), size, sign);
     }
-    
+
     void fromFrequencyDomain(int k, int size = 0)
     {
         toFrequencyDomain(k, size, -1);
     }
-    
+
     void fromFrequencyDomain(std::string const & key, int size = 0)
     {
         toFrequencyDomain(key, size, -1);
     }
-    
+
     bool hasChannelAxis() const
     {
         return channelIndex() != (int)size();
     }
-    
+
     // FIXME: cache the results of these functions?
     int channelIndex() const
     {
@@ -641,7 +641,7 @@ class AxisTags
                 return k;
         return (int)size();
     }
-    
+
     int innerNonchannelIndex() const
     {
         int k = 0;
@@ -657,7 +657,7 @@ class AxisTags
         }
         return k;
     }
-    
+
     void swapaxes(int i1, int i2)
     {
         checkIndex(i1);
@@ -668,7 +668,7 @@ class AxisTags
             i2 += size();
         std::swap(axes_[i1], axes_[i2]);
     }
-    
+
     template <class T>
     void transpose(ArrayVector<T> const & permutation)
     {
@@ -685,22 +685,22 @@ class AxisTags
             axes_.swap(newAxes);
         }
     }
-    
+
     void transpose()
     {
         std::reverse(axes_.begin(), axes_.end());
     }
-    
+
     template <class T>
-    void 
+    void
     permutationToNormalOrder(ArrayVector<T> & permutation) const
     {
         permutation.resize(size());
         indexSort(axes_.begin(), axes_.end(), permutation.begin());
     }
-    
+
     template <class T>
-    void 
+    void
     permutationToNormalOrder(ArrayVector<T> & permutation, AxisInfo::AxisType types) const
     {
         ArrayVector<AxisInfo> matchingAxes;
@@ -710,34 +710,34 @@ class AxisTags
         permutation.resize(matchingAxes.size());
         indexSort(matchingAxes.begin(), matchingAxes.end(), permutation.begin());
     }
-    
+
     template <class T>
-    void 
+    void
     permutationFromNormalOrder(ArrayVector<T> & inverse_permutation) const
     {
         ArrayVector<T> permutation;
         permutationToNormalOrder(permutation);
         inverse_permutation.resize(permutation.size());
         indexSort(permutation.begin(), permutation.end(), inverse_permutation.begin());
-    }   
-    
+    }
+
     template <class T>
-    void 
+    void
     permutationFromNormalOrder(ArrayVector<T> & inverse_permutation, AxisInfo::AxisType types) const
     {
         ArrayVector<T> permutation;
         permutationToNormalOrder(permutation, types);
         inverse_permutation.resize(permutation.size());
         indexSort(permutation.begin(), permutation.end(), inverse_permutation.begin());
-    }   
-    
+    }
+
     template <class T>
     void permutationToNumpyOrder(ArrayVector<T> & permutation) const
     {
         permutationToNormalOrder(permutation);
         std::reverse(permutation.begin(), permutation.end());
     }
-    
+
     template <class T>
     void permutationFromNumpyOrder(ArrayVector<T> & inverse_permutation) const
     {
@@ -745,8 +745,8 @@ class AxisTags
         permutationToNumpyOrder(permutation);
         inverse_permutation.resize(permutation.size());
         indexSort(permutation.begin(), permutation.end(), inverse_permutation.begin());
-    }   
-    
+    }
+
     template <class T>
     void permutationToVigraOrder(ArrayVector<T> & permutation) const
     {
@@ -760,7 +760,7 @@ class AxisTags
             permutation.back() = channel;
         }
     }
-    
+
     template <class T>
     void permutationFromVigraOrder(ArrayVector<T> & inverse_permutation) const
     {
@@ -768,8 +768,8 @@ class AxisTags
         permutationToVigraOrder(permutation);
         inverse_permutation.resize(permutation.size());
         indexSort(permutation.begin(), permutation.end(), inverse_permutation.begin());
-    }   
-    
+    }
+
     template <class T>
     void permutationToOrder(ArrayVector<T> & permutation, std::string const & order) const
     {
@@ -792,17 +792,17 @@ class AxisTags
         }
         else
         {
-            vigra_precondition(false, 
+            vigra_precondition(false,
                 "AxisTags::permutationToOrder(): unknown order '" + order + "'.");
         }
-    }   
-    
+    }
+
 #if 0
     ArrayVector<UInt32> matchOrdering(AxisTags const & other)
     {
         vigra_precondition(size() == other.size(),
             "AxisTags::matchOrdering(): size mismatch.");
-        
+
         ArrayVector<UInt32> permutation(size());
         for(unsigned int k = 0; k<size(); ++k)
         {
@@ -818,7 +818,7 @@ class AxisTags
             permutation[k] = l;
         }
         return permutation;
-    }    
+    }
 #endif
 
     bool compatible(AxisTags const & other) const
@@ -844,9 +844,9 @@ class AxisTags
     {
         return !operator==(other);
     }
-    
+
   protected:
-    
+
     void checkIndex(int k) const
     {
         vigra_precondition(k < (int)size() && k >= -(int)size(),
@@ -856,7 +856,7 @@ class AxisTags
     void checkDuplicates(int i, AxisInfo const & info)
     {
         if(info.isChannel())
-        {  
+        {
             for(int k=0; k<(int)size(); ++k)
             {
                 vigra_precondition(k == i || !axes_[k].isChannel(),
@@ -868,7 +868,7 @@ class AxisTags
             for(int k=0; k<(int)size(); ++k)
             {
                 vigra_precondition(k == i || axes_[k].key() != info.key(),
-                     std::string("AxisTags::checkDuplicates(): axis key '" + 
+                     std::string("AxisTags::checkDuplicates(): axis key '" +
                                   info.key() + "' already exists."));
             }
         }
@@ -924,7 +924,7 @@ class AxisTags
                 // push_back(i5);
         // }
     // }
-    
+
     // python::object getitem(int k)
     // {
         // if(!checkIndex(k))
@@ -936,7 +936,7 @@ class AxisTags
             // k += this->size();
         // return this->axes_[k];
     // }
-    
+
     // python::object getitem(std::string const & key)
     // {
         // return getitem(this->findKey(key));
@@ -954,12 +954,12 @@ class AxisTags
             // PyErr_SetString(PyExc_TypeError, "AxisInfo::setitem(): Item type must be AxisInfo.");
             // python::throw_error_already_set();
         // }
-        
+
         // if(k < 0)
             // k += this->size();
         // this->axes_[k] = i;
     // }
-    
+
     // void setitem(std::string const & key, python::object i)
     // {
         // setitem(this->findKey(key), i);
@@ -985,7 +985,7 @@ class AxisTags
         // }
         // this->axes_.insert(this->axes_.begin()+k, i);
     // }
-    
+
     // void insert(std::string const & key, python::object i)
     // {
         // insert(this->findKey(key), i);
@@ -1077,10 +1077,10 @@ class AxisTags
     // {
         // unsigned int osize = len(o);
         // ArrayVector<UInt32> permutation(osize);
-        
+
         // for(unsigned int k=0; k<this->size(); ++k)
             // permutation[k] = python::extract<UInt32>(o[k])();
-            
+
         // BaseType::transpose(permutation);
     // }
 
@@ -1098,64 +1098,64 @@ class AxisTags
     // python_ptr axistags;
     // npy_intp channelCount;
     // std::string channelDescription;
-    
+
     // TaggedShape(MultiArrayIndex size)
     // : shape(size)
     // {}
-    
+
     // template <int N>
     // TaggedShape(typename MultiArrayShape<N>::type const & sh)
     // : shape(sh.begin(), sh.end())
     // {}
-    
+
     // npy_intp & operator[](int i)
     // {
         // // rotate indices so that channels are located at index 0
         // return shape[(i+1) % shape.size()];
     // }
-    
+
     // npy_intp operator[](int i) const
     // {
         // return shape[(i+1) % shape.size()];
     // }
-    
+
     // unsigned int size() const
     // {
         // return shape.size();
     // }
-    
+
     // // void setChannelDescription(std::string const & description)
     // // {
         // // if(axistags)
         // // {
-            // // python_ptr func(PyString_FromString("setChannelDescription"), 
+            // // python_ptr func(PyString_FromString("setChannelDescription"),
                                          // // python_ptr::keep_count);
             // // pythonToCppException(res);
-            
+
             // // python_ptr d(PyString_FromString(d.c_str()), python_ptr::keep_count);
             // // pythonToCppException(d);
-            
+
             // // python_ptr res(PyObject_CallMethodObjArgs(axistags, func, d.get(), NULL),
                            // // python_ptr::keep_count);
             // // pythonToCppException(res);
         // // }
     // // }
-    
+
     // // void setChannelCount(int channelCount)
     // // {
         // // shape[0] = channelCount;
     // // }
-    
+
     // void setChannelDescription(std::string const & description)
     // {
         // channelDescription = description;
     // }
-    
+
     // void setChannelCount(int count)
     // {
         // channelCount = count;
     // }
-    
+
     // void setChannelConfig(int channelCount, std::string const & description)
     // {
         // setChannelCount(channelCount);

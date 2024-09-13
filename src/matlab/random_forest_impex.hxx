@@ -60,14 +60,14 @@ void importRandomForest(vigra::RandomForest<T> &rf,ConstCellArray cells)
     // for all decision trees
     for(UInt32 k=0; k<rf.options_.tree_count_; ++k)
     {
-        
+
         // read int tree array
         MultiArrayView<1, Int32> tree = getArray<Int32>(cells[2*k+2]);
         rf.tree(k).topology_.resize(tree.size());
         std::copy(tree.traverser_begin(), tree.traverser_end(),
                   rf.tree(k).topology_.begin());
 
-        
+
         MultiArrayView<1, double> weight = getArray<double>(cells[2*k+3]);
         rf.tree(k).parameters_.resize(weight.size());
         std::copy(weight.traverser_begin(), weight.traverser_end(),

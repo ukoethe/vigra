@@ -161,7 +161,7 @@ struct TinyVectorTest
         shouldEqual(fv5[2], fv3[2]);
         shouldEqual(fv5[3], SIZE <= 3 ? 0.0 : fv3[3]);
         shouldEqual(fv5[4], SIZE <= 4 ? 0.0 : fv3[4]);
-        
+
         shouldEqual(iv3, (iv3.template subarray<0,SIZE>()));
         shouldEqual(2, (iv3.template subarray<0,2>().size()));
         shouldEqual(iv3[0], (iv3.template subarray<0,2>()[0]));
@@ -171,7 +171,7 @@ struct TinyVectorTest
         shouldEqual(iv3[2], (iv3.template subarray<1,3>()[1]));
         shouldEqual(1, (iv3.template subarray<1,2>().size()));
         shouldEqual(iv3[1], (iv3.template subarray<1,2>()[0]));
-        
+
         for(int k=0; k<SIZE; ++k)
         {
             IV iv = IV::unitVector(k);
@@ -235,7 +235,7 @@ struct TinyVectorTest
         should(!allGreaterEqual(bv1, bv3));
 
         should(closeAtTolerance(fv3, fv3));
-        
+
         should(!bv0.any() && !bv0.all() && bv1.any() && bv1.all());
         should(!iv0.any() && !iv0.all() && iv1.any() && iv1.all());
         should(!fv0.any() && !fv0.all() && fv1.any() && fv1.all());
@@ -369,7 +369,7 @@ struct TinyVectorTest
         fvp = fv3 / 2.0;
         float fp1[] = {0.6f, 1.2f, 1.8f, 2.4f, 4.05f, 4.85f};
         should(equalIter(fvp.begin(), fvp.end(), fp1));
-        shouldEqual(2.0 / fv1, 2.0 * fv1);        
+        shouldEqual(2.0 / fv1, 2.0 * fv1);
         float fp2[] = {1.0f, 0.5f, 0.25f, 0.2f, 0.125f, 0.1f};
         fvp = 1.0 / bv3;
         should(equalIter(fvp.begin(), fvp.end(), fp2));
@@ -400,7 +400,7 @@ struct TinyVectorTest
         ivmax[1] = 3;
         int maxRef2[] = { 1, 3, 4, 5, 8, 10 };
         shouldEqualSequence(maxRef2, maxRef2+SIZE, max(iv3, ivmax).begin());
-        
+
         shouldEqual(sum(iv3), SIZE == 3 ? 7 : 30);
         shouldEqual(sum(fv3), SIZE == 3 ? 7.2f : 29.8f);
         shouldEqual(prod(iv3), SIZE == 3 ? 8 : 3200);

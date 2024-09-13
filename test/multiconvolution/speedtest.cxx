@@ -6,7 +6,7 @@
 #include "vigra/multi_pointoperators.hxx"
 //#include "vigra/multi_convolution.hxx"
 #include "vigra/basicimageview.hxx"
-#include "vigra/convolution.hxx" 
+#include "vigra/convolution.hxx"
 #include "vigra/navigator.hxx"
 #include "vigra/functorexpression.hxx"
 
@@ -25,16 +25,16 @@ namespace Impls
 
   /////////////////////////////////////////////////////////////////////////////////////////
 
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class KernelIterator>
-inline void 
-convolveCDR( SrcIterator si, SrcShape const & shape, SrcAccessor src, 
+inline void
+convolveCDR( SrcIterator si, SrcShape const & shape, SrcAccessor src,
          DestIterator di, DestAccessor dest, KernelIterator kit)
 {
     enum { N = 1 + SrcIterator::level };
 
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
-    
+
     // temporay array to hold the current line to enable in-place operation
     ArrayVector<TmpType> tmp;
 
@@ -43,9 +43,9 @@ convolveCDR( SrcIterator si, SrcShape const & shape, SrcAccessor src,
 
     { // only operate on first dimension here
         SNavigator snav( si, shape, 0 );
-        DNavigator dnav( di, shape, 0 );        
+        DNavigator dnav( di, shape, 0 );
 
-        for( ; snav.hasMore(); snav++, dnav++ ) 
+        for( ; snav.hasMore(); snav++, dnav++ )
         {
       convolveLine( srcIterRange( snav.begin(), snav.end(), src ),
             destIter( dnav.begin(), dest ),
@@ -55,13 +55,13 @@ convolveCDR( SrcIterator si, SrcShape const & shape, SrcAccessor src,
     }
 
     // operate on further dimensions
-    for( int d = 1; d < N; ++d, ++kit ) 
+    for( int d = 1; d < N; ++d, ++kit )
     {
         DNavigator dnav( di, shape, d );
 
         tmp.resize( shape[d] );
 
-        for( ; dnav.hasMore(); dnav++ ) 
+        for( ; dnav.hasMore(); dnav++ )
         {
              convolveLine( srcIterRange( dnav.begin(), dnav.end(), dest ),
                            destIter( tmp.begin(), StandardValueAccessor<TmpType>() ),
@@ -76,13 +76,13 @@ convolveCDR( SrcIterator si, SrcShape const & shape, SrcAccessor src,
 
 
 
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class KernelIterator>
-inline void convolveCDR( 
-        triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
+inline void convolveCDR(
+        triple<SrcIterator, SrcShape, SrcAccessor> const & source,
         pair<DestIterator, DestAccessor> const & dest, KernelIterator kit )
 {
-  convolveCDR( source.first, source.second, source.third, 
+  convolveCDR( source.first, source.second, source.third,
            dest.first, dest.second, kit );
 }
 
@@ -91,16 +91,16 @@ inline void convolveCDR(
 
   /////////////////////////////////////////////////////////////////////////////////////////
 
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class KernelIterator>
-inline void 
-convolveCopyDest( SrcIterator si, SrcShape const & shape, SrcAccessor src, 
+inline void
+convolveCopyDest( SrcIterator si, SrcShape const & shape, SrcAccessor src,
           DestIterator di, DestAccessor dest, KernelIterator kit)
 {
     enum { N = 1 + SrcIterator::level };
 
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
-    
+
     // temporay array to hold the current line to enable in-place operation
     ArrayVector<TmpType> tmp( shape[0] );
 
@@ -109,9 +109,9 @@ convolveCopyDest( SrcIterator si, SrcShape const & shape, SrcAccessor src,
 
     { // only operate on first dimension here
         SNavigator snav( si, shape, 0 );
-        DNavigator dnav( di, shape, 0 );        
+        DNavigator dnav( di, shape, 0 );
 
-        for( ; snav.hasMore(); snav++, dnav++ ) 
+        for( ; snav.hasMore(); snav++, dnav++ )
         {
       convolveLine( srcIterRange( snav.begin(), snav.end(), src ),
             destIter( tmp.begin(), StandardValueAccessor<TmpType>() ),
@@ -125,13 +125,13 @@ convolveCopyDest( SrcIterator si, SrcShape const & shape, SrcAccessor src,
     }
 
     // operate on further dimensions
-    for( int d = 1; d < N; ++d, ++kit ) 
+    for( int d = 1; d < N; ++d, ++kit )
     {
         DNavigator dnav( di, shape, d );
 
         tmp.resize( shape[d] );
 
-        for( ; dnav.hasMore(); dnav++ ) 
+        for( ; dnav.hasMore(); dnav++ )
         {
              convolveLine( srcIterRange( dnav.begin(), dnav.end(), dest ),
                            destIter( tmp.begin(), StandardValueAccessor<TmpType>() ),
@@ -146,13 +146,13 @@ convolveCopyDest( SrcIterator si, SrcShape const & shape, SrcAccessor src,
 
 
 
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class KernelIterator>
-inline void convolveCopyDest( 
-        triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
+inline void convolveCopyDest(
+        triple<SrcIterator, SrcShape, SrcAccessor> const & source,
         pair<DestIterator, DestAccessor> const & dest, KernelIterator kit )
 {
-  convolveCopyDest( source.first, source.second, source.third, 
+  convolveCopyDest( source.first, source.second, source.third,
             dest.first, dest.second, kit );
 }
 
@@ -162,16 +162,16 @@ inline void convolveCopyDest(
 
   /////////////////////////////////////////////////////////////////////////////////////////
 
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class KernelIterator>
-inline void 
-convolveCopySrc( SrcIterator si, SrcShape const & shape, SrcAccessor src, 
+inline void
+convolveCopySrc( SrcIterator si, SrcShape const & shape, SrcAccessor src,
          DestIterator di, DestAccessor dest, KernelIterator kit)
 {
     enum { N = 1 + SrcIterator::level };
 
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
-    
+
     // temporay array to hold the current line to enable in-place operation
     ArrayVector<TmpType> tmp( shape[0] );
 
@@ -180,11 +180,11 @@ convolveCopySrc( SrcIterator si, SrcShape const & shape, SrcAccessor src,
 
     { // only operate on first dimension here
         SNavigator snav( si, shape, 0 );
-        DNavigator dnav( di, shape, 0 );        
+        DNavigator dnav( di, shape, 0 );
 
-        for( ; snav.hasMore(); snav++, dnav++ ) 
+        for( ; snav.hasMore(); snav++, dnav++ )
         {
-      // copy source to temp 
+      // copy source to temp
       copyLine( snav.begin(), snav.end(), src,
             tmp.begin(), StandardValueAccessor<TmpType>() );
 
@@ -196,15 +196,15 @@ convolveCopySrc( SrcIterator si, SrcShape const & shape, SrcAccessor src,
     }
 
     // operate on further dimensions
-    for( int d = 1; d < N; ++d, ++kit ) 
+    for( int d = 1; d < N; ++d, ++kit )
     {
         DNavigator dnav( di, shape, d );
 
         tmp.resize( shape[d] );
 
-        for( ; dnav.hasMore(); dnav++ ) 
+        for( ; dnav.hasMore(); dnav++ )
         {
-      // copy source to temp 
+      // copy source to temp
       copyLine( dnav.begin(), dnav.end(), dest,
             tmp.begin(), StandardValueAccessor<TmpType>() );
 
@@ -217,13 +217,13 @@ convolveCopySrc( SrcIterator si, SrcShape const & shape, SrcAccessor src,
 
 
 
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class KernelIterator>
-inline void convolveCopySrc( 
-        triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
+inline void convolveCopySrc(
+        triple<SrcIterator, SrcShape, SrcAccessor> const & source,
         pair<DestIterator, DestAccessor> const & dest, KernelIterator kit )
 {
-  convolveCopySrc( source.first, source.second, source.third, 
+  convolveCopySrc( source.first, source.second, source.third,
             dest.first, dest.second, kit );
 }
 
@@ -338,17 +338,17 @@ struct MultiArraySepConvSpeedTest
     const int width = size[0];
     const int height = size[1];
     const int depth = size[2];
-    for( int z = 0; z < depth; ++z ) 
+    for( int z = 0; z < depth; ++z )
     {
-      for( int y = 0; y < height; ++y ) 
+      for( int y = 0; y < height; ++y )
       {
-        for( int x = 0; x < width; ++x ) 
-        {        
+        for( int x = 0; x < width; ++x )
+        {
           Image3D::value_type val = 80;
 
           if( (x > b) && x < (width-b) &&
               (y > b) && y < (height-b) &&
-              (z > b)  && z < (depth-b) ) 
+              (z > b)  && z < (depth-b) )
           {
             val = 220;
           }

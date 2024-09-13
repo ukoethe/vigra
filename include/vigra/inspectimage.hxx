@@ -125,8 +125,8 @@ inspectTwoLinesIf(SrcIterator1 s1,
     This function can be used to collect statistics of the image etc.
     The results must be stored in the functor, which serves as a return value
     (and is therefore passed by reference).
-    
-    For many common statistics, the use of \ref vigra::acc::extractFeatures() in combination with 
+
+    For many common statistics, the use of \ref vigra::acc::extractFeatures() in combination with
     \ref FeatureAccumulators is more convenient.
 
     <b> Declarations:</b>
@@ -147,7 +147,7 @@ inspectTwoLinesIf(SrcIterator1 s1,
     namespace vigra {
         template <class ImageIterator, class Accessor, class Functor>
         void
-        inspectImage(ImageIterator upperleft, ImageIterator lowerright, Accessor a, 
+        inspectImage(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
                      Functor & f)
     }
     \endcode
@@ -170,7 +170,7 @@ inspectTwoLinesIf(SrcIterator1 s1,
     \code
     MultiArray<2, unsigned char> img(width, height);
     ... // fill img
-    
+
     // init functor
     FindMinMax<unsined char> minmax;
 
@@ -201,7 +201,7 @@ inspectTwoLinesIf(SrcIterator1 s1,
     functor(accessor(ix));         // return not used
     \endcode
     \deprecatedEnd
-    
+
     \see InspectFunctor, FeatureAccumulators
 */
 doxygen_overloaded_function(template <...> void inspectImage)
@@ -347,7 +347,7 @@ inspectImage(MultiArrayView<2, T, S> const & img,
     MultiArray<2, unsigned char> img(100, 100),
                                  mask(100, 100);
     ... // fill img and mask
-    
+
     // init functor
     FindMinMax<unsigned char> minmax;
 
@@ -384,7 +384,7 @@ inspectImage(MultiArrayView<2, T, S> const & img,
     if(mask_accessor(mx)) functor(accessor(ix));
     \endcode
     \deprecatedEnd
-    
+
     \see InspectFunctor, FeatureAccumulators
 */
 doxygen_overloaded_function(template <...> void inspectImageIf)
@@ -502,8 +502,8 @@ inspectImageIf(MultiArrayView<2, T, S> const & img,
     labeled image, especially in conjunction with
     the \ref ArrayOfRegionStatistics functor. The results must be
     stored in the functor which serves as a return value.
-    
-    Note: For many common statistics, the use of \ref vigra::acc::extractFeatures() in combination 
+
+    Note: For many common statistics, the use of \ref vigra::acc::extractFeatures() in combination
     with \ref FeatureAccumulators is more convenient.
 
     <b> Declarations:</b>
@@ -585,7 +585,7 @@ inspectImageIf(MultiArrayView<2, T, S> const & img,
     functor(accessor1(ix1), accessor2(ix2));  // return not used
     \endcode
     \deprecatedEnd
-    
+
     \see InspectFunctor, FeatureAccumulators
 */
 doxygen_overloaded_function(template <...> void inspectTwoImages)
@@ -805,7 +805,7 @@ inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
         functor(accessor1(ix1), accessor2(ix2));
     \endcode
     \deprecatedEnd
-    
+
     \see InspectFunctor, FeatureAccumulators
 */
 doxygen_overloaded_function(template <...> void inspectTwoImagesIf)

@@ -76,7 +76,7 @@ void pathCoordinates(
 
 
 template<class GRAPH>
-class LemonGraphShortestPathVisitor 
+class LemonGraphShortestPathVisitor
 :   public boost::python::def_visitor<LemonGraphShortestPathVisitor<GRAPH> >
 {
 public:
@@ -87,7 +87,7 @@ public:
 
     typedef LemonGraphShortestPathVisitor<GRAPH> VisitorType;
     // Lemon Graph Typedefs
-    
+
     typedef typename Graph::index_type       index_type;
     typedef typename Graph::Edge             Edge;
     typedef typename Graph::Node             Node;
@@ -173,13 +173,13 @@ public:
             (
                 python::arg("target"),
                 python::arg("out")=python::object()
-            ) 
+            )
         )
         .def("nodeCoordinatePath",registerConverters(&makeNodeCoordinatePath),
             (
                 python::arg("target"),
                 python::arg("out")=python::object()
-            ) 
+            )
         )
         .def("distance",&pyShortestPathSingleDist,
             (
@@ -199,7 +199,7 @@ public:
         ;
 
         python::def("_shortestPathDijkstra",&pyShortestPathDijkstraTypeFactory,
-            python::return_value_policy<python::manage_new_object>() 
+            python::return_value_policy<python::manage_new_object>()
         );
 
     }
@@ -207,7 +207,7 @@ public:
     std::string clsName_;
     template <class classT>
     void visit(classT& /*c*/) const
-    {   
+    {
         // - Dijkstra
         exportShortestPathAlgorithms();
     }
@@ -264,7 +264,7 @@ public:
     ){
         const typename  ShortestPathDijkstraType::PredecessorsMap & predMap = sp.predecessors();
         const Node source = sp.source();
-        //Node currentNode = target; 
+        //Node currentNode = target;
         // comput length of the path
         const size_t length = pathLength(Node(source),Node(target),predMap);
         nodeIdPath.reshapeIfEmpty(typename NumpyArray<1,Singleband<UInt32> >::difference_type(length));
@@ -273,7 +273,7 @@ public:
             pathIds(sp.graph(),source,target,predMap,nodeIdPath);
         }
         return nodeIdPath;
-        
+
     }
 
     static NumpyAnyArray makeNodeCoordinatePath(

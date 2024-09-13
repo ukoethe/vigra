@@ -34,21 +34,21 @@
 /************************************************************************/
 
 
-/*                                                          
- *  Opens an Andor .sif file as MultiImageView.             
- *  The width, height and number of images are extracted    
- *  from the ASCII encoded variable length header.          
- *                                                          
- *  Based on the Java-Code from                             
- *  http://rsb.info.nih.gov/ij/plugins/open-sif.html        
- *  written by                                              
- *  L. Stirling Churchman (stirling at stanford.edu)        
- *  Philippe Carl (pcarl at uni-muenster.de)                
- *  Yoshiyuki Arai (arai at phys1.med.osaka-u.ac.jp)        
- *                                                          
- *  Currently tested SIF versions: 4.16.12005.0             
- *                                 4.16.30001.0             
- *                                 4. 6.    3.0             
+/*
+ *  Opens an Andor .sif file as MultiImageView.
+ *  The width, height and number of images are extracted
+ *  from the ASCII encoded variable length header.
+ *
+ *  Based on the Java-Code from
+ *  http://rsb.info.nih.gov/ij/plugins/open-sif.html
+ *  written by
+ *  L. Stirling Churchman (stirling at stanford.edu)
+ *  Philippe Carl (pcarl at uni-muenster.de)
+ *  Yoshiyuki Arai (arai at phys1.med.osaka-u.ac.jp)
+ *
+ *  Currently tested SIF versions: 4.16.12005.0
+ *                                 4.16.30001.0
+ *                                 4. 6.    3.0
 */
 
 #ifndef VIGRA_SIFIMPORT_HXX
@@ -57,13 +57,13 @@
 #include <fstream>
 #include <cstring>
 #include <cstddef>
-#include <vector> 
+#include <vector>
 #include "multi_array.hxx"
 #include "array_vector.hxx"
 
 namespace vigra {
- 
- 
+
+
  /** \addtogroup VigraSIFImport Import of Images from Andor Cameras
 
     Read an Andor SIF file into a MultiArrayView.
@@ -89,9 +89,9 @@ class SIFImportInfo
     public:
         /** Construct SIFImportInfo object.
 
-            The header of the Andor SIF file \a filename is accessed to 
-            read the image properties. 
-            
+            The header of the Andor SIF file \a filename is accessed to
+            read the image properties.
+
             \code
             SIFImportInfo info(filename);
             \endcode
@@ -106,7 +106,7 @@ class SIFImportInfo
          */
         VIGRA_EXPORT int height() const;
 
-        /** Get the stacksize, that is the number of 
+        /** Get the stacksize, that is the number of
             images contained in the dataset.
          */
         VIGRA_EXPORT int stacksize() const;
@@ -124,7 +124,7 @@ class SIFImportInfo
         VIGRA_EXPORT MultiArrayIndex shapeOfDimension(const int dim) const;
 
         /** Get the offset to the beginning of the actual data.
-            Everything before this point belongs to the 
+            Everything before this point belongs to the
             variable length header.
          */
         VIGRA_EXPORT std::ptrdiff_t getOffset() const;
@@ -133,14 +133,14 @@ class SIFImportInfo
          */
         VIGRA_EXPORT const char * getFileName() const;
 
-        /** Output all information such as shutter, Temperature etc. 
+        /** Output all information such as shutter, Temperature etc.
            as human readable output.
-          
+
         <b> Usage:</b>
-        
+
         <b>\#include</b> \<vigra/sifImport.hxx\><br>
         Namespace: vigra
-        
+
         \code
         SIFImportInfo info(filename);
         std::cout << info << std::endl; // print infos to the console
@@ -161,9 +161,9 @@ class SIFImportInfo
         double temperature1, temperature2;
         long long d;
         std::string cycleTime, temperature, exposureTime, EMGain,
-        verticalShiftSpeed, version, model, originalFilename, preAmpGain;   
+        verticalShiftSpeed, version, model, originalFilename, preAmpGain;
         size_t filesize;
-    
+
 };
 
 
@@ -171,24 +171,24 @@ class SIFImportInfo
 
     /** \brief Read the image data specified by the given \ref vigra::SIFImportInfo object
                 and write them into the given 'array'.
-                
-    The array must have the correct number of dimensions and shape for the dataset 
-    represented by 'info'. 
-    
+
+    The array must have the correct number of dimensions and shape for the dataset
+    represented by 'info'.
+
     <b> Declaration:</b>
-    
+
     \code
     namespace vigra {
-        void 
+        void
         readSIF(const SIFImportInfo &info, MultiArrayView<3, float> array);
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/sifImport.hxx\><br>
     Namespace: vigra
-    
+
     \code
     SIFImportInfo info(filename);
 
@@ -196,7 +196,7 @@ class SIFImportInfo
     typedef MultiArray<3, float>::difference_type Shape;
     MultiArray<3, float> in(Shape(info.width(), info.height(), info.stacksize()));
 
-    readSIF(info, in); 
+    readSIF(info, in);
     \endcode
 */
 VIGRA_EXPORT void readSIF(const SIFImportInfo &info, MultiArrayView<3, float> array);
@@ -215,7 +215,7 @@ inline void readSIF(const SIFImportInfo &info, MultiArrayView<3, float, Unstride
 /**
     \brief Read parts of the image data from an Andor SIF file specified with an SIFImportInfo object
     and write them into the MultiArray array.
-    
+
     \code
     SIFImportInfo info(filename);
 

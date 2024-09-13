@@ -32,7 +32,7 @@ namespace vigra{
 
 
 template<class GRAPH>
-class LemonGraphRagVisitor 
+class LemonGraphRagVisitor
 :   public boost::python::def_visitor<LemonGraphRagVisitor<GRAPH> >
 {
 public:
@@ -44,7 +44,7 @@ public:
 
     typedef LemonGraphRagVisitor<GRAPH> VisitorType;
     // Lemon Graph Typedefs
-    
+
     typedef typename Graph::index_type       index_type;
     typedef typename Graph::Edge             Edge;
     typedef typename Graph::Node             Node;
@@ -85,7 +85,7 @@ public:
     typedef NumpyMultibandNodeMap<Graph,MultiFloatNodeArray> MultiFloatNodeArrayMap;
 
 
-   
+
     const static unsigned int RagEdgeMapDim = IntrinsicGraphShape<RagGraph>::IntrinsicEdgeMapDimension;
     const static unsigned int RagNodeMapDim = IntrinsicGraphShape<RagGraph>::IntrinsicNodeMapDimension;
 
@@ -127,7 +127,7 @@ public:
 
     template <class classT>
     void visit(classT& /*c*/) const
-    {   
+    {
 
         // something like RagEdgeMap< std::vector< Edge > >
         exportRagAffiliatedEdges();
@@ -139,7 +139,7 @@ public:
 
 
 
-        // on the fly rag edge mean 
+        // on the fly rag edge mean
         {
 
 
@@ -148,7 +148,7 @@ public:
                 MeanFunctor<float>, float
             > ImplicitEdgeMap;
 
-            
+
             python::def("_ragEdgeFeatures",
                 registerConverters(
                     &pyRagEdgeMeanFromImplicit< float, float, ImplicitEdgeMap >
@@ -174,11 +174,11 @@ public:
                     python::arg("out")=python::object()
                 )
             );
-            
+
 
         }
 
-        
+
         // explicit rag features
         python::def("_ragEdgeFeaturesMb",registerConverters(&pyRagEdgeFeaturesMb<Multiband<float> >),
             (
@@ -291,9 +291,9 @@ public:
 
 
     static NumpyAnyArray getUVCoordinatesArray(
-        const RagAffiliatedEdges & vecVec, 
+        const RagAffiliatedEdges & vecVec,
         const Graph & graph,
-        const size_t ragEdgeIndex 
+        const size_t ragEdgeIndex
     ){
         const size_t pseudoDim = IntrinsicGraphShape<Graph>::IntrinsicNodeMapDimension;
         typedef typename GraphDescriptorToMultiArrayIndex<Graph>::IntrinsicNodeMapShape Shape;
@@ -343,7 +343,7 @@ public:
             if(seed!=0){
                 RagNode node = rag.nodeFromId(label);
                 ragSeedsArrayMap[node] = seed;
-            } 
+            }
         }
 
         return ragSeedsArray;
@@ -352,7 +352,7 @@ public:
 
 
 
-    static python::tuple 
+    static python::tuple
     pyProjectGroundTruth(
         const RagGraph &    rag,
         const Graph &       baseGraph,
@@ -433,7 +433,7 @@ public:
 
         vigra_precondition(rag.edgeNum()>=1,"rag.edgeNum()>=1 is violated");
 
-        vigra_precondition(accumulator==std::string("mean") || accumulator==std::string("sum") || 
+        vigra_precondition(accumulator==std::string("mean") || accumulator==std::string("sum") ||
                            accumulator==std::string("min")  || accumulator==std::string("max"),
             "currently the accumulators are limited to mean and sum and min and max"
         );
@@ -513,7 +513,7 @@ public:
 
         vigra_precondition(rag.edgeNum()>=1,"rag.edgeNum()>=1 is violated");
 
-        vigra_precondition(accumulator==std::string("mean") || accumulator==std::string("sum") || 
+        vigra_precondition(accumulator==std::string("mean") || accumulator==std::string("sum") ||
                            accumulator==std::string("min")  || accumulator==std::string("max"),
             "currently the accumulators are limited to mean and sum and min and max"
         );
@@ -593,7 +593,7 @@ public:
 
         // resize out
         ragEdgeFeaturesArray.reshapeIfEmpty(TaggedGraphShape<RagGraph>::taggedEdgeMapShape(rag));
-        
+
 
 
         // numpy arrays => lemon maps
@@ -633,14 +633,14 @@ public:
                 }
             }
         }
-        
 
-        // return 
+
+        // return
         return ragEdgeFeaturesArray;
 
     }
 
-    
+
     template<class T_PIXEL, class T, class OTF_EDGES>
     static NumpyAnyArray pyRagEdgeFeaturesFromImplicit(
         const RagGraph &           rag,
@@ -649,7 +649,7 @@ public:
         const OTF_EDGES & otfEdgeMap,
         NumpyArray<RagEdgeMapDim+1, T> ragEdgeFeaturesArray
     ){
-        
+
         // preconditions
         vigra_precondition(rag.edgeNum()>=1,"rag.edgeNum()>=1 is violated");
 
@@ -674,26 +674,26 @@ public:
         //in parallel with threadpool
         // -1 = use all cores
         parallel_foreach( -1, rag.edgeNum(),
-            [&](size_t /*thread_id*/, int id) 
+            [&](size_t /*thread_id*/, int id)
             {
                 auto feat = ragEdgeFeaturesArray.bindInner(id);
                 // init the accumulator chain with the appropriate statistics
                 AccumulatorChain<double,
                     Select<Mean, Sum, Minimum, Maximum, Variance, Skewness, Kurtosis, Quantiles> > a;
                 const std::vector<Edge> & affEdges = affiliatedEdges[id];
-                
+
                 // set n_bins = ceil( n_values**1./2.5 ) , clipped to [2,64]
-                // turned out to be suitable empirically 
+                // turned out to be suitable empirically
                 // see https://github.com/consti123/quantile_tests
-                size_t n_bins = std::pow( affiliatedEdges.size(), 1. / 2.5); 
+                size_t n_bins = std::pow( affiliatedEdges.size(), 1. / 2.5);
                 n_bins = std::max( n_bins_min, std::min(n_bins, n_bins_max) );
                 a.setHistogramOptions(HistogramOptions().setBinCount(n_bins));
-                
+
                 // accumulate the values of this edge
                 for(unsigned int k=1; k <= a.passesRequired(); ++k)
                     for(size_t i=0;i<affEdges.size();++i)
                         a.updatePassN( otfEdgeMap[affEdges[i]], k );
-                
+
                 feat[0] = get<Mean>(a);
                 feat[1] = get<Sum>(a);
                 feat[2] = get<Minimum>(a);
@@ -711,7 +711,7 @@ public:
                 feat[11] = quant[5];
             }
         );
-        
+
         return ragEdgeFeaturesArray;
 
     }
@@ -779,7 +779,7 @@ public:
         RagFloatNodeArray          ragNodeFeaturesArray=RagFloatNodeArray()
     ){
 
-        vigra_precondition(accumulator==std::string("mean") || accumulator==std::string("sum") || 
+        vigra_precondition(accumulator==std::string("mean") || accumulator==std::string("sum") ||
                            accumulator==std::string("min")  || accumulator==std::string("max"),
             "currently the accumulators are limited to mean and sum and min and max "
         );
@@ -853,7 +853,7 @@ public:
             }
         }
         else{
-           
+
         }
         return ragNodeFeaturesArray;
     }
@@ -1002,13 +1002,13 @@ public:
 
         // reshape out  ( last argument (out) will be reshaped if empty, and #channels is taken from second argument)
         //reshapeNodeMapIfEmpty(graph,ragNodeFeaturesArray,graphNodeFeaturesArray);
-        // numpy arrays => lemon maps 
+        // numpy arrays => lemon maps
         typename PyNodeMapTraits<Graph,   UInt32>::Map labelsWhichGeneratedRagArrayMap(graph, labelsWhichGeneratedRagArray);
         typename PyNodeMapTraits<RagGraph,T     >::Map ragNodeFeaturesArrayMap(rag,ragNodeFeaturesArray);
         typename PyNodeMapTraits<Graph,   T     >::Map graphNodeFeaturesArrayMap(graph,graphNodeFeaturesArray);
-        
 
-        projectBack(rag, graph, ignoreLabel, labelsWhichGeneratedRagArrayMap, 
+
+        projectBack(rag, graph, ignoreLabel, labelsWhichGeneratedRagArrayMap,
                     ragNodeFeaturesArrayMap, graphNodeFeaturesArrayMap);
 
 
@@ -1024,7 +1024,7 @@ public:
         }
         */
         return graphNodeFeaturesArray; // out
-        
+
     }
 
 private:

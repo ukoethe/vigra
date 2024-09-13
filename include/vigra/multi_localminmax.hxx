@@ -63,7 +63,7 @@ namespace detail_local_minima{
         static bool atBorder(const NODE_ITER & node ){
             return node.atBorder();
         }
-    }; 
+    };
 
 };
 
@@ -74,7 +74,7 @@ namespace boost_graph {
 // to access ReadablePropertyMap (input) and WritablePropertyMap (label)
 template <class Graph, class T1Map, class T2Map, class Compare>
 unsigned int
-localMinMaxGraph(Graph const &g, 
+localMinMaxGraph(Graph const &g,
                  T1Map const &src,
                  T2Map &dest,
                  typename property_traits<T2Map>::value_type marker,
@@ -92,21 +92,21 @@ localMinMaxGraph(Graph const &g,
 
     unsigned int count = 0;
     tie(node, srcend) = vertices(g);
-    for (; node != srcend; ++node) 
+    for (; node != srcend; ++node)
     {
         const T1 current = get(src, *node);
 
         if (!compare(current, threshold))
             continue;
-          
+
         if(!allowAtBorder && node.atBorder())
             continue;
-        
+
         tie(arc, nbend) = adjacent_vertices(*node, g);
-        for (;arc != nbend; ++arc) 
-            if (!compare(current, get(src, *arc))) 
+        for (;arc != nbend; ++arc)
+            if (!compare(current, get(src, *arc)))
                 break;
-                
+
         if (arc == nbend)
         {
             put(dest, *node, marker);
@@ -118,11 +118,11 @@ localMinMaxGraph(Graph const &g,
 
 } // namespace boost_graph
 
-namespace lemon_graph { 
+namespace lemon_graph {
 
 template <class Graph, class T1Map, class T2Map, class Compare>
 unsigned int
-localMinMaxGraph(Graph const &g, 
+localMinMaxGraph(Graph const &g,
                  T1Map const &src,
                  T2Map &dest,
                  typename T2Map::value_type marker,
@@ -134,21 +134,21 @@ localMinMaxGraph(Graph const &g,
     typedef typename Graph::OutArcIt  neighbor_iterator;
 
     unsigned int count = 0;
-    for (graph_scanner node(g); node != INVALID; ++node) 
+    for (graph_scanner node(g); node != INVALID; ++node)
     {
         typename T1Map::value_type current = src[*node];
 
         if (!compare(current, threshold))
             continue;
-        
+
         if(!allowAtBorder && vigra::detail_local_minima::NodeAtBorder<Graph>::atBorder(node))
             continue;
-        
+
         neighbor_iterator arc(g, *node);
-        for (; arc != INVALID; ++arc) 
-            if (!compare(current, src[g.target(*arc)])) 
+        for (; arc != INVALID; ++arc)
+            if (!compare(current, src[g.target(*arc)]))
                 break;
-                
+
         if (arc == INVALID)
         {
             dest[*node] = marker;
@@ -161,7 +161,7 @@ localMinMaxGraph(Graph const &g,
 
 template <class Graph, class T1Map, class T2Map, class Compare, class Equal>
 unsigned int
-extendedLocalMinMaxGraph(Graph const &g, 
+extendedLocalMinMaxGraph(Graph const &g,
                          T1Map const &src,
                          T2Map &dest,
                          typename T2Map::value_type marker,
@@ -171,9 +171,9 @@ extendedLocalMinMaxGraph(Graph const &g,
                          bool allowAtBorder = true)
 {
     typename Graph::template NodeMap<unsigned int> regions(g);
-    
+
     int max_region_label = labelGraph(g, src, regions, equal);
-    
+
     // assume that a region is a extremum until the opposite is proved
     std::vector<unsigned char> isExtremum(max_region_label+1, (unsigned char)1);
 
@@ -181,13 +181,13 @@ extendedLocalMinMaxGraph(Graph const &g,
     typedef typename Graph::OutArcIt  neighbor_iterator;
 
     unsigned int count = max_region_label;
-    for (graph_scanner node(g); node != INVALID; ++node) 
+    for (graph_scanner node(g); node != INVALID; ++node)
     {
         unsigned int label = regions[*node];
-        
+
         if(!isExtremum[label])
             continue;
-        
+
         typename T1Map::value_type current = src[*node];
 
         if (!compare(current, threshold) ||
@@ -197,10 +197,10 @@ extendedLocalMinMaxGraph(Graph const &g,
             --count;
             continue;
         }
-        
-        for (neighbor_iterator arc(g, *node); arc != INVALID; ++arc) 
+
+        for (neighbor_iterator arc(g, *node); arc != INVALID; ++arc)
         {
-            if (label != regions[g.target(*arc)] && compare(src[g.target(*arc)], current)) 
+            if (label != regions[g.target(*arc)] && compare(src[g.target(*arc)], current))
             {
                 isExtremum[label] = 0;
                 --count;
@@ -208,7 +208,7 @@ extendedLocalMinMaxGraph(Graph const &g,
             }
         }
     }
-    for (graph_scanner node(g); node != INVALID; ++node) 
+    for (graph_scanner node(g); node != INVALID; ++node)
     {
         if(isExtremum[regions[*node]])
             dest[*node] = marker;
@@ -218,7 +218,7 @@ extendedLocalMinMaxGraph(Graph const &g,
 
 } // namespace lemon_graph
 
-template <unsigned int N, class T1, class C1, 
+template <unsigned int N, class T1, class C1,
                           class T2, class C2,
           class Compare,
           class EqualityFunctor>
@@ -232,9 +232,9 @@ localMinMax(MultiArrayView<N, T1, C1> const & src,
 {
     vigra_precondition(src.shape() == dest.shape(),
         "localMinMax(): shape mismatch between input and output.");
-        
+
     NeighborhoodType neighborhood = DirectNeighborhood;
-    
+
     if(options.neigh == 0 || options.neigh == 2*N)
         neighborhood = DirectNeighborhood;
     else if(options.neigh == 1 || options.neigh == MetaPow<3, N>::value - 1)
@@ -242,15 +242,15 @@ localMinMax(MultiArrayView<N, T1, C1> const & src,
     else
         vigra_precondition(false,
             "localMinMax(): option object specifies invalid neighborhood type.");
-    
+
     T2 marker = (T2)options.marker;
-    
+
     GridGraph<N, undirected_tag> graph(src.shape(), neighborhood);
     if(options.allow_plateaus)
-        return lemon_graph::extendedLocalMinMaxGraph(graph, src, dest, marker, threshold, 
+        return lemon_graph::extendedLocalMinMaxGraph(graph, src, dest, marker, threshold,
                                             compare, equal, options.allow_at_border);
     else
-        return lemon_graph::localMinMaxGraph(graph, src, dest, marker, threshold, 
+        return lemon_graph::localMinMaxGraph(graph, src, dest, marker, threshold,
                                              compare, options.allow_at_border);
 }
 

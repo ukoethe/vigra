@@ -6,13 +6,13 @@
 template<class Policy>
 class VariableBandsImageTest
 : public ImageHierarchyTest<Policy>
-{    
+{
 public:
     typedef typename Policy::Image              Image;              // zu testende Klasse z.B. GrayImage, VariableBandsImage usw.
-    typedef typename Policy::ChildImage         ChildImage;         // unterscheidet sich von zu testender Klasse Image, nur wenn einer der abstrakten Klassen VariableBandImage oder SingleBandImage oder die Klasse SelectBandImage getestet wird, sonst entspricht es der Klasse Image.  
+    typedef typename Policy::ChildImage         ChildImage;         // unterscheidet sich von zu testender Klasse Image, nur wenn einer der abstrakten Klassen VariableBandImage oder SingleBandImage oder die Klasse SelectBandImage getestet wird, sonst entspricht es der Klasse Image.
     typedef typename Policy::value_type         value_type;         // value_type der zu testenden Klasse
     typedef typename Policy::child_value_type   child_value_type;   // value_type der Klasse an der die zu testende Klasse getestet wird, also z.B. VariableBandsImage wird am Beispiel von Vector2Image getestet dann ist child_value_type die value_type von Vector2Image
-    
+
     /** testet die clone() Methode der Klasse aus imagehierarchy
     */
     void testClone()
@@ -20,27 +20,27 @@ public:
         /*
         *  Im Falle der Aenderungsvornehmungen an einem der Images, werden die Aenderungen auch nur an einem sichtbar
         */
-        std::auto_ptr<typename Image::CloneType> image1(image1_->clone()); 
-        should(equal(*image1, *image1_));                                               
-        should(equalPixels(image1_->begin(),image1_->end(), image1->begin()));             
-        should(&(*image1) != &(*image1_));                                              
-        
+        std::auto_ptr<typename Image::CloneType> image1(image1_->clone());
+        should(equal(*image1, *image1_));
+        should(equalPixels(image1_->begin(),image1_->end(), image1->begin()));
+        should(&(*image1) != &(*image1_));
+
         /* Aenderung mit der init-Funktion
         */
-        image1->init(data[5]); 
+        image1->init(data[5]);
         should((*image1_->begin()) != static_cast<typename Image::PixelType> (data[5]));
         should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind(Pixels_not_equal_to<value_type>(), std::placeholders::_1, data[5])));
-        
+
         image1_->init(data[6]);
         should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind(Pixels_not_equal_to<value_type>(), std::placeholders::_1, data[5])));
         should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind(Pixels_not_equal_to<value_type>(), std::placeholders::_1, data[6])));
-        
+
         std::auto_ptr<typename Image::CloneType> image0(image0_->clone());
         should(equal(*image0, *image0_));
         should(equalPixels(image0_->begin(),image0_->end(), image0->begin()));image1_->init(data[6]);
         should(&(*image0) != &(*image0_));
     }
-    
+
     /** testet die shallowCopy() Methode der Klassen aus imagehierarchy.
     */
     void testShallowCopy()
@@ -52,30 +52,30 @@ public:
         *  und das entspricht nicht dem Sinn der shallowCopy
         */
         std::auto_ptr<Image> image1(image1_->shallowCopy());
-        should(equal(*image1, *image1_));     
+        should(equal(*image1, *image1_));
         should(&(*image1) != &(*image1_));
-        
+
         /* Aenderung mit der init-Funktion
         */
         image1->init(data[7]);
         should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind(Pixels_not_equal_to<value_type>(), std::placeholders::_1, data[7])));
         should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind(Pixels_not_equal_to<value_type>(), std::placeholders::_1, data[7])));
-        
+
         image1->init(data[8]);
         should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind(Pixels_not_equal_to<value_type>(), std::placeholders::_1, data[8])));
         should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind(Pixels_not_equal_to<value_type>(), std::placeholders::_1, data[8])));
-        
+
         /* Eine shallowCopy zeigt auf die selben Daten des kopierten Objektes
         */
         std::auto_ptr<Image> image1Copy(image1->shallowCopy());
         should(equal(*image1Copy, *image1_));
         should(&(*image1Copy) != &(*image1_));
-        
+
         image1Copy->init(data[9]);
         should(image1Copy->end() == std::find_if(image1Copy->begin(), image1Copy->end(), std::bind(Pixels_not_equal_to<value_type>(), std::placeholders::_1, data[9])));
         should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind(Pixels_not_equal_to<value_type>(), std::placeholders::_1, data[9])));
         should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind(Pixels_not_equal_to<value_type>(), std::placeholders::_1, data[9])));
-        
+
         std::auto_ptr<Image> image0(image0_->shallowCopy());
         should(equal(*image0, *image0_));
         should(&(*image0) != &(*image0_));
@@ -97,7 +97,7 @@ struct VariableBandsImageTestSuite
         add( testCase( &ImageTest<POLICY>::testInit));
         add( testCase( &ImageTest<POLICY>::testWidth));
         add( testCase( &ImageTest<POLICY>::testHeight));
-        add( testCase( &ImageTest<POLICY>::testSize)); 
+        add( testCase( &ImageTest<POLICY>::testSize));
         add( testCase( &ImageTest<POLICY>::testIsInside));
         add( testCase( &ImageTest<POLICY>::testOperatorIndex2D));
         add( testCase( &ImageTest<POLICY>::testOperatorIndex2DConst));
@@ -115,7 +115,7 @@ struct VariableBandsImageTestSuite
         add( testCase( &ImageTest<POLICY>::testOperatorDoubleIndexConst));
         add( testCase( &ImageTest<POLICY>::testAccessor));
         add( testCase( &ImageTest<POLICY>::testAccessorConst));
-        add( testCase( &ImageTest<POLICY>::testAllAccessAndSetMethods));        
+        add( testCase( &ImageTest<POLICY>::testAllAccessAndSetMethods));
         add( testCase( &ImageHierarchyTest<POLICY>::testInnerImageConstructor));
         add( testCase( &VariableBandsImageTest<POLICY>::testClone));
         add( testCase( &VariableBandsImageTest<POLICY>::testShallowCopy));

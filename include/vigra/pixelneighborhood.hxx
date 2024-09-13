@@ -192,7 +192,7 @@ class NeighborCode
         OppositeDirPrefix = 1,
         OppositeOffset = West
     };
-    
+
     template <int DUMMY>
     struct StaticData
     {

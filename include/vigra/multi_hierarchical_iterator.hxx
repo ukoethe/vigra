@@ -194,7 +194,7 @@ class HierarchicalIterator
     {
         return base_type(*this) += this->shape()[level-1] - this->point()[level-1];
     }
-    
+
     HierarchicalIterator getEndIterator() const
     {
         return HierarchicalIterator(*this) += this->shape() - this->point();
@@ -230,7 +230,7 @@ class HierarchicalIterator<N, HANDLES, 0>
 {
   public:
     static const int level = 0;
-    
+
     typedef CoupledHandleTraits<HANDLES> HandleTraits;
     typedef typename HandleTraits::value_type value_type;
     typedef typename HandleTraits::reference reference;
@@ -337,7 +337,7 @@ class HierarchicalIterator<N, HANDLES, 0>
     // {
         // return m_ptr [d[level]];
     // }
-    
+
     reference operator* ()
     {
         return HandleTraits::dereference(handles_);
@@ -347,14 +347,14 @@ class HierarchicalIterator<N, HANDLES, 0>
     {
         return HandleTraits::dereference(handles_);
     }
-    
+
     template <unsigned int TARGET_INDEX>
     typename CoupledHandleCast<TARGET_INDEX, HANDLES>::reference
     get()
     {
         return handles_.template get<TARGET_INDEX>();
     }
-    
+
     template <unsigned int TARGET_INDEX>
     typename CoupledHandleCast<TARGET_INDEX, HANDLES>::const_reference
     get() const
@@ -409,7 +409,7 @@ class HierarchicalIterator<N, HANDLES, 0>
         // const difference_type stride = 1;
         // return iterator(m_ptr, &stride, 0);
     // }
-    
+
     HierarchicalIterator getEndIterator() const
     {
         return HierarchicalIterator(*this) += shape() - point();
@@ -429,7 +429,7 @@ class HierarchicalIterator<N, HANDLES, 0>
     {
         return handles_.scanOrderIndex();
     }
-    
+
     HANDLES const & handles() const
     {
         return handles_;
@@ -441,7 +441,7 @@ class HierarchicalIterator<N, HANDLES, 0>
     {
         return *this;
     }
-    
+
     template <int K>
     HierarchicalIterator<N, HANDLES, 0> const &
     dim() const
@@ -451,7 +451,7 @@ class HierarchicalIterator<N, HANDLES, 0>
 
   // protected:
 
-    // difference_type 
+    // difference_type
     // total_stride(typename multi_difference_type::const_iterator d) const
     // {
         // return d[level];
@@ -465,7 +465,7 @@ struct HierarchicalIteratorType
 {
     /** Type of the CoupledHandle.*/
     typedef typename CoupledHandleType<N, T1, T2, T3, T4, T5>::type HandleType;
-  
+
     /** Type of the CoupledScanOrderIterator.*/
     typedef HierarchicalIterator<HandleType::dimensions, HandleType> IteratorType;
     typedef IteratorType                                             type;
@@ -478,7 +478,7 @@ struct HierarchicalIteratorType
 // : public CoupledIteratorType<N, T1, T2, T3, T4, T5>
 // {};
 
-/** Returns a HierarchicalIterator from shape to iterate over coordinates. 
+/** Returns a HierarchicalIterator from shape to iterate over coordinates.
  */
 template <int N>
 typename HierarchicalIteratorType<N>::type
@@ -486,11 +486,11 @@ createHierarchicalIterator(TinyVector<MultiArrayIndex, N> const & shape)
 {
     typedef typename CoupledHandleType<N>::type   P0;
     typedef HierarchicalIterator<N, P0> IteratorType;
-    
+
     return IteratorType(P0(shape));
 }
 
-/** Returns a HierarchicalIterator to simultaneously iterate over image m1 and its coordinates. 
+/** Returns a HierarchicalIterator to simultaneously iterate over image m1 and its coordinates.
  */
 template <unsigned int N1, class T1, class S1>
 typename HierarchicalIteratorType<N1, T1>::type
@@ -499,12 +499,12 @@ createHierarchicalIterator(MultiArrayView<N1, T1, S1> const & m1)
     typedef typename CoupledHandleType<N1, T1>::type             P1;
     typedef typename P1::base_type                               P0;
     typedef HierarchicalIterator<P1::dimensions, P1>         IteratorType;
-    
-    return IteratorType(P1(m1, 
+
+    return IteratorType(P1(m1,
                         P0(m1.shape())));
 }
 
-/** Returns a HierarchicalIterator to simultaneously iterate over images m1, m2 and their coordinates. 
+/** Returns a HierarchicalIterator to simultaneously iterate over images m1, m2 and their coordinates.
  */
 template <unsigned int N1, class T1, class S1,
           unsigned int N2, class T2, class S2>
@@ -516,13 +516,13 @@ createHierarchicalIterator(MultiArrayView<N1, T1, S1> const & m1,
     typedef typename P2::base_type                               P1;
     typedef typename P1::base_type                               P0;
     typedef HierarchicalIterator<P2::dimensions, P2> IteratorType;
-    
-    return IteratorType(P2(m2, 
-                        P1(m1, 
+
+    return IteratorType(P2(m2,
+                        P1(m1,
                         P0(m1.shape()))));
 }
 
-/** Returns a HierarchicalIterator to simultaneously iterate over images m1, m2, m3 and their coordinates. 
+/** Returns a HierarchicalIterator to simultaneously iterate over images m1, m2, m3 and their coordinates.
  */
 template <unsigned int N1, class T1, class S1,
           unsigned int N2, class T2, class S2,
@@ -537,14 +537,14 @@ createHierarchicalIterator(MultiArrayView<N1, T1, S1> const & m1,
     typedef typename P2::base_type                               P1;
     typedef typename P1::base_type                               P0;
     typedef HierarchicalIterator<P3::dimensions, P3> IteratorType;
-    
-    return IteratorType(P3(m3, 
-                        P2(m2, 
-                        P1(m1, 
+
+    return IteratorType(P3(m3,
+                        P2(m2,
+                        P1(m1,
                         P0(m1.shape())))));
 }
 
-/** Returns a HierarchicalIterator to simultaneously iterate over images m1, m2, m3, m4 and their coordinates. 
+/** Returns a HierarchicalIterator to simultaneously iterate over images m1, m2, m3, m4 and their coordinates.
  */
 template <unsigned int N1, class T1, class S1,
           unsigned int N2, class T2, class S2,
@@ -562,15 +562,15 @@ createHierarchicalIterator(MultiArrayView<N1, T1, S1> const & m1,
     typedef typename P2::base_type                               P1;
     typedef typename P1::base_type                               P0;
     typedef HierarchicalIterator<P4::dimensions, P4> IteratorType;
-    
-    return IteratorType(P4(m4, 
-                        P3(m3, 
-                        P2(m2, 
-                        P1(m1, 
+
+    return IteratorType(P4(m4,
+                        P3(m3,
+                        P2(m2,
+                        P1(m1,
                         P0(m1.shape()))))));
 }
 
-/** Returns a HierarchicalIterator to simultaneously iterate over images m1, m2, m3, m4, m5 and their coordinates. 
+/** Returns a HierarchicalIterator to simultaneously iterate over images m1, m2, m3, m4, m5 and their coordinates.
  */
 template <unsigned int N1, class T1, class S1,
           unsigned int N2, class T2, class S2,
@@ -591,12 +591,12 @@ createHierarchicalIterator(MultiArrayView<N1, T1, S1> const & m1,
     typedef typename P2::base_type                                   P1;
     typedef typename P1::base_type                                   P0;
     typedef HierarchicalIterator<P5::dimensions, P5> IteratorType;
-    
-    return IteratorType(P5(m5, 
-                        P4(m4, 
-                        P3(m3, 
-                        P2(m2, 
-                        P1(m1, 
+
+    return IteratorType(P5(m5,
+                        P4(m4,
+                        P3(m3,
+                        P2(m2,
+                        P1(m1,
                         P0(m1.shape())))))));
 }
 
@@ -607,7 +607,7 @@ zip(HierarchicalIterator<N, A> const & a, HierarchicalIterator<N, B> const & b)
 {
     vigra_precondition(a.shape() == b.shape() && a.scanOrderIndex() == b.scanOrderIndex(),
          "zip(HierarchicalIterator): iterators must have identical shape and position.");
-         
+
     typedef typename ZipCoupledHandles<A, B>::type Handle;
     typedef HierarchicalIterator<N, Handle> IteratorType;
     return IteratorType(ZipCoupledHandles<A, B>::construct(a.handles(), b.handles()));

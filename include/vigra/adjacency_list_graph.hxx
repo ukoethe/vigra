@@ -172,7 +172,7 @@ namespace vigra{
             }
 
             bool isBegin()const{
-                return graph_!=NULL &&  veryEnd_==false && pos_ == EdgeIt(*graph_);         
+                return graph_!=NULL &&  veryEnd_==false && pos_ == EdgeIt(*graph_);
             }
             void increment() {
                 if(inFirstHalf_){
@@ -190,21 +190,21 @@ namespace vigra{
                     }
                     return;
                 }
-            
-               
+
+
             }
             bool equal(ArcIt const& other) const{
                 return (
                     (
                         isEnd()==other.isEnd()                  &&
-                        inFirstHalf_==other.inFirstHalf_ 
+                        inFirstHalf_==other.inFirstHalf_
                     ) &&
                     (isEnd() || graph_==NULL || pos_==other.pos_ )
                     );
-                    
+
             }
 
-            const Arc & dereference() const { 
+            const Arc & dereference() const {
                 //std::cout<<graph_->id(*pos_)<<"\n";
                 arc_ = graph_->direct(*pos_,inFirstHalf_);
                 return arc_;
@@ -221,12 +221,12 @@ namespace vigra{
     } // namespace detail_adjacency_list_graph
 
 
-    /** \brief undirected adjacency list graph in the LEMON API 
+    /** \brief undirected adjacency list graph in the LEMON API
 
     */
     class AdjacencyListGraph
     {
-        
+
     public:
         // public typdedfs
         typedef Int64                                                     index_type;
@@ -252,10 +252,10 @@ namespace vigra{
         /// edge iterator
         typedef detail_adjacency_list_graph::ItemIter<GraphType,Edge>    EdgeIt;
         /// node iterator
-        typedef detail_adjacency_list_graph::ItemIter<GraphType,Node>    NodeIt; 
+        typedef detail_adjacency_list_graph::ItemIter<GraphType,Node>    NodeIt;
         /// arc iterator
         typedef detail_adjacency_list_graph::ArcIt<GraphType>            ArcIt;
-        
+
         /// incident edge iterator
         typedef detail::GenericIncEdgeIt<GraphType,NodeStorage,IncFilter >  IncEdgeIt;
         /// incoming arc iterator
@@ -289,7 +289,7 @@ namespace vigra{
         typedef Node                    vertex_descriptor;
 
 
-        /// default edge map 
+        /// default edge map
         template<class T>
         struct EdgeMap : DenseEdgeReferenceMap<GraphType,T> {
             EdgeMap(): DenseEdgeReferenceMap<GraphType,T>(){
@@ -302,7 +302,7 @@ namespace vigra{
             }
         };
 
-        /// default node map 
+        /// default node map
         template<class T>
         struct NodeMap : DenseNodeReferenceMap<GraphType,T> {
             NodeMap(): DenseNodeReferenceMap<GraphType,T>(){
@@ -315,7 +315,7 @@ namespace vigra{
             }
         };
 
-        /// default arc map 
+        /// default arc map
         template<class T>
         struct ArcMap : DenseArcReferenceMap<GraphType,T> {
             ArcMap(): DenseArcReferenceMap<GraphType,T>(){
@@ -333,7 +333,7 @@ namespace vigra{
     // public member functions
     public:
         /** \brief Constructor.
-         
+
             @param nodes : reserve space for so many nodes
             @param edges : reserve space for so many edges
         */
@@ -360,8 +360,8 @@ namespace vigra{
         */
         index_type maxArcId()const;
 
-        /** \brief Create an arc for the given edge \a e, oriented along the 
-            edge's natural (<tt>forward = true</tt>) or reversed 
+        /** \brief Create an arc for the given edge \a e, oriented along the
+            edge's natural (<tt>forward = true</tt>) or reversed
             (<tt>forward = false</tt>) direction (API: LEMON).
         */
         Arc direct(const Edge & edge,const bool forward)const;
@@ -407,7 +407,7 @@ namespace vigra{
         */
         Node runningNode(const IncEdgeIt & iter)const;
         /** \brief Return the end node of the edge the given iterator is referring to (API: LEMON).
-        */ 
+        */
         Node runningNode(const OutArcIt & iter)const;
 
 
@@ -443,7 +443,7 @@ namespace vigra{
         */
         Arc  findArc(const Node & u,const Node & v)const;
 
-        /* \brief add a new node to the graph. 
+        /* \brief add a new node to the graph.
             the next unused id will be assigned to the node
         */
         Node addNode();
@@ -471,7 +471,7 @@ namespace vigra{
         */
         Edge addEdge(const index_type u ,const index_type v);
 
-        
+
         size_t maxDegree()const{
             size_t md=0;
             for(NodeIt it(*this);it!=lemon::INVALID;++it){
@@ -484,7 +484,7 @@ namespace vigra{
         ////////////////////////
         // BOOST API
         /////////////////////////
-        // - sizes 
+        // - sizes
         // - iterators
         vertex_iterator  get_vertex_iterator()const;
         vertex_iterator  get_vertex_end_iterator()const  ;
@@ -517,7 +517,7 @@ namespace vigra{
         }
         size_t serializationSize()const{
 
-            // num edges + num nodes 
+            // num edges + num nodes
             // max edge id  + max node id
             size_t size=4;
 
@@ -526,7 +526,7 @@ namespace vigra{
 
 
             for(NodeIt iter(*this); iter!= lemon::INVALID ; ++iter){
-                size+= 2+this->degree(*iter)*2;    
+                size+= 2+this->degree(*iter)*2;
             }
 
             return size;
@@ -678,7 +678,7 @@ namespace vigra{
     }
 
 
-    inline AdjacencyListGraph::Node 
+    inline AdjacencyListGraph::Node
     AdjacencyListGraph::addNode(){
         const index_type id = nodes_.size();
         nodes_.push_back(NodeStorage(id));
@@ -686,7 +686,7 @@ namespace vigra{
         return Node(id);
     }
 
-    inline AdjacencyListGraph::Node 
+    inline AdjacencyListGraph::Node
     AdjacencyListGraph::addNode(const AdjacencyListGraph::index_type id){
         if((std::size_t)id == nodes_.size()){
             nodes_.push_back(NodeStorage(id));
@@ -716,7 +716,7 @@ namespace vigra{
     }
 
 
-    inline void 
+    inline void
     AdjacencyListGraph::assignNodeRange(const AdjacencyListGraph::index_type beginId, const AdjacencyListGraph::index_type endId){
         nodes_.clear();
         edges_.clear();
@@ -729,9 +729,9 @@ namespace vigra{
 
 
 
-    inline AdjacencyListGraph::Edge 
+    inline AdjacencyListGraph::Edge
     AdjacencyListGraph::addEdge(
-        const AdjacencyListGraph::Node & u , 
+        const AdjacencyListGraph::Node & u ,
         const AdjacencyListGraph::Node & v
     ){
         const Edge foundEdge  = findEdge(u,v);
@@ -750,10 +750,10 @@ namespace vigra{
             nodeImpl(v).insert(uid,eid);
             ++edgeNum_;
             return Edge(eid);
-        }   
+        }
     }
 
-    inline AdjacencyListGraph::Edge 
+    inline AdjacencyListGraph::Edge
     AdjacencyListGraph::addEdge(
         const AdjacencyListGraph::index_type u ,
         const AdjacencyListGraph::index_type v
@@ -763,9 +763,9 @@ namespace vigra{
         return addEdge(uu,vv);
     }
 
-    
-    
-    inline AdjacencyListGraph::Arc 
+
+
+    inline AdjacencyListGraph::Arc
     AdjacencyListGraph::direct(
         const AdjacencyListGraph::Edge & edge,
         const bool forward
@@ -780,8 +780,8 @@ namespace vigra{
             return Arc(lemon::INVALID);
     }
 
-    
-    inline AdjacencyListGraph::Arc 
+
+    inline AdjacencyListGraph::Arc
     AdjacencyListGraph::direct(
         const AdjacencyListGraph::Edge & edge,
         const AdjacencyListGraph::Node & node
@@ -797,7 +797,7 @@ namespace vigra{
         }
     }
 
-    
+
     inline bool
     AdjacencyListGraph::direction(
         const AdjacencyListGraph::Arc & arc
@@ -805,15 +805,15 @@ namespace vigra{
         return id(arc)<=maxEdgeId();
     }
 
-    
-    inline AdjacencyListGraph::Node 
+
+    inline AdjacencyListGraph::Node
     AdjacencyListGraph::u(
         const AdjacencyListGraph::Edge & edge
     )const{
         return Node(edges_[id(edge)].u());
     }
 
-    
+
     inline AdjacencyListGraph::Node
     AdjacencyListGraph::v(
         const AdjacencyListGraph::Edge & edge
@@ -822,8 +822,8 @@ namespace vigra{
     }
 
 
-    
-    inline AdjacencyListGraph::Node 
+
+    inline AdjacencyListGraph::Node
     AdjacencyListGraph::source(
         const AdjacencyListGraph::Arc & arc
     )const{
@@ -838,11 +838,11 @@ namespace vigra{
             const Edge edge = edgeFromId(edgeIndex);
             return u(edge);
         }
-    }   
+    }
 
 
-    
-    inline AdjacencyListGraph::Node 
+
+    inline AdjacencyListGraph::Node
     AdjacencyListGraph::target(
         const AdjacencyListGraph::Arc & arc
     )const{
@@ -878,94 +878,94 @@ namespace vigra{
     }
 
 
-    
-    inline AdjacencyListGraph::Node 
+
+    inline AdjacencyListGraph::Node
     AdjacencyListGraph::baseNode(
         const AdjacencyListGraph::IncEdgeIt & iter
     )const{
         return u(*iter);
     }
 
-    
-    inline AdjacencyListGraph::Node 
+
+    inline AdjacencyListGraph::Node
     AdjacencyListGraph::baseNode(
-        const AdjacencyListGraph::OutArcIt & iter 
+        const AdjacencyListGraph::OutArcIt & iter
     )const{
         return source(*iter);
     }
 
 
-    
-    inline AdjacencyListGraph::Node 
+
+    inline AdjacencyListGraph::Node
     AdjacencyListGraph::runningNode(
         const AdjacencyListGraph::IncEdgeIt & iter
     )const{
         return v(*iter);
     }
 
-    
-    inline AdjacencyListGraph::Node 
+
+    inline AdjacencyListGraph::Node
     AdjacencyListGraph::runningNode(
-        const AdjacencyListGraph::OutArcIt & iter 
+        const AdjacencyListGraph::OutArcIt & iter
     )const{
         return target(*iter);
     }
 
-    
-    inline AdjacencyListGraph::index_type 
+
+    inline AdjacencyListGraph::index_type
     AdjacencyListGraph::edgeNum()const{
         return edgeNum_;
     }
 
-    
-    inline AdjacencyListGraph::index_type 
+
+    inline AdjacencyListGraph::index_type
     AdjacencyListGraph::nodeNum()const{
         return nodeNum_;
     }
 
-    
-    inline AdjacencyListGraph::index_type 
+
+    inline AdjacencyListGraph::index_type
     AdjacencyListGraph::arcNum()const{
         return edgeNum()*2;
     }
 
-    
-    inline AdjacencyListGraph::index_type 
+
+    inline AdjacencyListGraph::index_type
     AdjacencyListGraph::maxEdgeId()const{
         return edges_.back().id();
     }
 
-    
-    inline AdjacencyListGraph::index_type 
+
+    inline AdjacencyListGraph::index_type
     AdjacencyListGraph::maxNodeId()const{
         return nodes_.back().id();
     }
 
-    
-    inline AdjacencyListGraph::index_type 
+
+    inline AdjacencyListGraph::index_type
     AdjacencyListGraph::maxArcId()const{
         return maxEdgeId()*2+1;
     }
 
-    // ids 
-    
-    inline AdjacencyListGraph::index_type 
+    // ids
+
+    inline AdjacencyListGraph::index_type
     AdjacencyListGraph::id(
         const AdjacencyListGraph::Node & node
     )const{
         return node.id();
     }
 
-    
-    inline AdjacencyListGraph::index_type 
+
+    inline AdjacencyListGraph::index_type
     AdjacencyListGraph::id(
         const AdjacencyListGraph::Edge & edge
     )const{
         return edge.id();
     }
 
-    
-    inline AdjacencyListGraph::index_type 
+
+    inline AdjacencyListGraph::index_type
     AdjacencyListGraph::id(
         const AdjacencyListGraph::Arc & arc
     )const{
@@ -973,8 +973,8 @@ namespace vigra{
     }
 
     // get edge / node from id
-    
-    inline AdjacencyListGraph::Edge 
+
+    inline AdjacencyListGraph::Edge
     AdjacencyListGraph::edgeFromId(
         const AdjacencyListGraph::index_type id
     )const{
@@ -984,8 +984,8 @@ namespace vigra{
             return Edge(lemon::INVALID);
     }
 
-    
-    inline AdjacencyListGraph::Node 
+
+    inline AdjacencyListGraph::Node
     AdjacencyListGraph::nodeFromId(
         const AdjacencyListGraph::index_type id
     )const{
@@ -995,8 +995,8 @@ namespace vigra{
             return Node(lemon::INVALID);
     }
 
-    
-    inline AdjacencyListGraph::Arc 
+
+    inline AdjacencyListGraph::Arc
     AdjacencyListGraph::arcFromId(
         const AdjacencyListGraph::index_type id
     )const{
@@ -1015,8 +1015,8 @@ namespace vigra{
         }
     }
 
-    
-    inline  AdjacencyListGraph::Edge  
+
+    inline  AdjacencyListGraph::Edge
     AdjacencyListGraph::findEdge(
         const AdjacencyListGraph::Node & a,
         const AdjacencyListGraph::Node & b
@@ -1031,8 +1031,8 @@ namespace vigra{
     }
 
 
-    
-    inline  AdjacencyListGraph::Arc  
+
+    inline  AdjacencyListGraph::Arc
     AdjacencyListGraph::findArc(
         const AdjacencyListGraph::Node & uNode,
         const AdjacencyListGraph::Node & vNode
@@ -1051,28 +1051,28 @@ namespace vigra{
 
 
     // iterators
-    
-    inline AdjacencyListGraph::vertex_iterator 
+
+    inline AdjacencyListGraph::vertex_iterator
     AdjacencyListGraph::get_vertex_iterator()const{
         return NodeIt(0,nodeNum());
     }
 
-    
-    inline AdjacencyListGraph::vertex_iterator 
-    AdjacencyListGraph::get_vertex_end_iterator()const{  
+
+    inline AdjacencyListGraph::vertex_iterator
+    AdjacencyListGraph::get_vertex_end_iterator()const{
         return NodeIt(nodeNum(),nodeNum());
     }
 
 
-    
-    inline AdjacencyListGraph::edge_iterator 
+
+    inline AdjacencyListGraph::edge_iterator
     AdjacencyListGraph::get_edge_iterator()const{
         return EdgeIt(0,edgeNum());
     }
 
-    
-    inline AdjacencyListGraph::edge_iterator 
-    AdjacencyListGraph::get_edge_end_iterator()const{  
+
+    inline AdjacencyListGraph::edge_iterator
+    AdjacencyListGraph::get_edge_end_iterator()const{
         return EdgeIt(edgeNum(),edgeNum());
     }
 

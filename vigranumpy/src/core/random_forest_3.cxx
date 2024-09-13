@@ -68,7 +68,7 @@ typedef DefaultRF<FeatureArrayType,LabelArrayType>::type RandomForestType;
 // random forest constructor
 RandomForestType *
 pythonConstructRandomForest3(
-        FeatureArrayType features, 
+        FeatureArrayType features,
         LabelArrayType labels,
         int treeCount,
         int mtry,
@@ -81,38 +81,38 @@ pythonConstructRandomForest3(
         size_t n_threads
         )
 {
-    
+
     RandomForestOptions rf_opts;
 
     rf_opts.tree_count(treeCount);
-    
+
     if(mtry > 0)
         rf_opts.features_per_node(mtry);
-    
+
     // TODO training_set_size -> can't find the corresponding parameter, afaik this is the number of bootstrap samples used
-    
+
     rf_opts.bootstrap_sampling(sample_with_replacement);
     rf_opts.min_num_instances(min_split_node_size);
     rf_opts.use_stratification(sample_classes_individually);
-    
+
     // this is the number of instances that is resampled in each split / this disables bootstrap sampling and
     rf_opts.resample_count(resample_count);
-    
+
     // expose the max tree depth, not in old rf afaik
     rf_opts.max_depth(max_depth);
-    
+
     //expose node complexity, not in okd rf afaik
     rf_opts.node_complexity_tau(tau);
-    
+
     // expose n_threads for multithreading
     rf_opts.n_threads(n_threads);
-    
+
     // TODO expose class_weights
     // class_weights(std::vector<double> const & v)
 
     // TODO expose the split criterion (GINI, ENTTROPY, KSD), not in old rf afaik
     // split(RandomForestOptionTags p_split)
-    
+
     // return pointer to the random forest
     PyAllowThreads _pythread;
     RandomForestType rf_tmp = random_forest(features, labels, rf_opts);
@@ -121,7 +121,7 @@ pythonConstructRandomForest3(
 }
 
 // prediction
-NumpyAnyArray 
+NumpyAnyArray
 pythonPredictProbabilities(const RandomForestType & rf,
                            FeatureArrayType features,
                            size_t n_threads,
@@ -136,7 +136,7 @@ pythonPredictProbabilities(const RandomForestType & rf,
     return res;
 }
 
-NumpyAnyArray 
+NumpyAnyArray
 pythonPredictLabels(const RandomForestType & rf,
                            FeatureArrayType features,
                            size_t n_threads,
@@ -152,14 +152,14 @@ pythonPredictLabels(const RandomForestType & rf,
 }
 
 #ifdef HasHDF5
-RandomForestType * 
+RandomForestType *
 pythonImportFromHDF5(const std::string & filename, const std::string & pathname )
-{ 
+{
     HDF5File h5ctx(filename);
     RandomForestType rf_tmp = random_forest_import_HDF5<FeatureArrayType,LabelArrayType>(h5ctx, pathname);
     RandomForestType * rf = new RandomForestType(rf_tmp);
     return rf;
-}                   
+}
 
 void pythonExportHDF5(const RandomForestType & rf,
         const std::string & filename,
@@ -169,20 +169,20 @@ void pythonExportHDF5(const RandomForestType & rf,
     random_forest_export_HDF5(rf, h5ctx, pathname);
 }
 #endif // HasHDF5
-            
+
 // expose the rf 3 to python
 // expose the rf 3 as a python class + basic API
 void exportRandomForest3()
 {
     using namespace python;
-    
+
     docstring_options doc_options(true, true, false);
-    
+
     enum_<RandomForestOptionTags>("RF3_MTRY_SWITCH")
         .value("RF3_MTRY_LOG", vigra::rf3::RF_LOG)
         .value("RF3_MTRY_SQRT",vigra::rf3::RF_SQRT)
         .value("RF3_MTRY_ALL", vigra::rf3::RF_ALL);
-    
+
     class_<RandomForestType> rfclass3("RandomForest3",python::no_init);
     //class_<RandomForestType> rfclass3("RandomForest3");
 
@@ -246,7 +246,7 @@ void exportRandomForest3()
         .def("predictLabels",
              registerConverters(&pythonPredictLabels),
              (
-              arg("features"), 
+              arg("features"),
              arg("n_threads")=1,
               arg("out")=object()),
              "Predict labels on 'features'.\n\n"

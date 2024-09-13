@@ -61,7 +61,7 @@ class HistogramOptions
 
     /** \brief If true, range mapping bounds are defined by minimum and maximum of the data. */
     bool local_auto_init;
-    
+
     /** Initialize members with default values:
 
     - minimum, maximum = 0.0
@@ -73,7 +73,7 @@ class HistogramOptions
       binCount(64),
       local_auto_init(false)
     {}
-    
+
     /** Set minimum = mi and maximum = ma. Requirement: mi < ma.
     */
     HistogramOptions & setMinMax(double mi, double ma)
@@ -112,7 +112,7 @@ class HistogramOptions
         local_auto_init = false;
         return *this;
     }
-    
+
     /** Return minimum < maximum.
     */
     bool validMinMax() const
@@ -128,9 +128,9 @@ class HistogramView
     int size_, stride_;
     DataType offset_;
     double scale_, scaleInverse_;
-    
+
   public:
-    HistogramView(DataType const & min, DataType const & max, int binCount, 
+    HistogramView(DataType const & min, DataType const & max, int binCount,
                   BinType * bins = 0, int stride = 1)
     : bins_(bins),
       size_(binCount),
@@ -139,14 +139,14 @@ class HistogramView
       scale_(double(binCount) / (max - min)),
       scaleInverse_(1.0 / scale_)
     {}
-    
+
     HistogramView & setData(BinType * bins , int stride = 1)
     {
         bins_ = bins;
         stride_ = stride;
         return *this;
     }
-    
+
     HistogramView & reset()
     {
         if(hasData())
@@ -154,7 +154,7 @@ class HistogramView
                 *(bins_ +k*stride_) = BinType();
         return *this;
     }
-    
+
     void getBinCenters(ArrayVector<DataType> * centers) const
     {
         for(int k=0; k < size_; ++k)
@@ -162,17 +162,17 @@ class HistogramView
             (*centers)[k] = mapItemInverse(k + 0.5) ;
         }
     }
-    
+
     int size() const
     {
         return size_;
     }
-    
+
     bool hasData() const
     {
         return bins_ != 0;
     }
-    
+
     BinType const & operator[](int k) const
     {
         return *(bins_ + k*stride_);
@@ -182,12 +182,12 @@ class HistogramView
     {
         return scale_ * (d - offset_);
     }
-    
+
     DataType mapItemInverse(double d) const
     {
         return DataType(d * scaleInverse_ + offset_);
     }
-    
+
     void add(DataType const & d, BinType weight = NumericTraits<BinType>::one())
     {
         get(int(mapItem(d))) += weight;
@@ -210,7 +210,7 @@ class TrapezoidKernel
 {
   public:
     typedef T value_type;
-    
+
     T operator[](double f) const
     {
         if(f < -0.5)
@@ -219,12 +219,12 @@ class TrapezoidKernel
             return 0.5*(1.5 - f);
         return 0.5;
     }
-    
+
     double radius() const
     {
         return 1.5;
     }
-    
+
     T findMaximum(double l, double c, double r) const
     {
         double curv = -2.0*c + r + l;
@@ -246,7 +246,7 @@ class TrapezoidKernel
                        : T(-0.5);
         }
     }
-    
+
     bool findMode(double l, double c, double r, double * m) const
     {
         double curv = -2.0*c + r + l;
@@ -265,34 +265,34 @@ class KernelHistogramView
 {
     KernelType kernel_;
     int radius_;
-    
+
   public:
-  
+
     typedef typename KernelType::value_type BinType;
     typedef HistogramView<DataType, BinType> BaseType;
 
-    KernelHistogramView(DataType const & min, DataType const & max, int binCount, 
+    KernelHistogramView(DataType const & min, DataType const & max, int binCount,
                         BinType * bins = 0, int stride = 1)
     : BaseType(min, max, binCount, bins, stride),
       radius_(kernel_.radius()-0.5) // FIXME: this needs generalization
     {}
-    
+
     void add(DataType const & d, BinType weight = NumericTraits<BinType>::one())
     {
         double mapped = this->mapItem(d);
         double f = mapped - std::floor(mapped) - kernel_.radius();
         int center = int(mapped);
-        
+
         for(int k=center+radius_; k>=center-radius_; --k, f += 1.0)
-        {   
+        {
             this->get(k) += weight*kernel_[f];
         }
     }
-    
+
     DataType findMode() const
     {
         double mmax = 0, vmax = 0, m;
-        
+
         for(int k=0; k<this->size(); ++k)
         {
             double l = k > 0
@@ -314,7 +314,7 @@ class KernelHistogramView
         }
         return this->mapItemInverse(mmax);
     }
-    
+
     template <class Array>
     void findModes(Array * modes)
     {
@@ -344,16 +344,16 @@ class Histogram
   public:
     typedef HistogramView<DataType, BinType> BaseType;
     ArrayVector<BinType> data_;
-    
+
   public:
-    Histogram(DataType const & min, DataType const & max, int binCount, 
+    Histogram(DataType const & min, DataType const & max, int binCount,
                   BinType * /*bins*/ = 0, int /*stride*/ = 1)
     : BaseType(min, max, binCount),
       data_(binCount)
     {
         this->setData(&data_[0]);
     }
-    
+
     Histogram const & reset()
     {
         this->setData(&data_[0]);

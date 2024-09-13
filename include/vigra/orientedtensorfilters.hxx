@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -58,30 +58,30 @@ namespace vigra {
 
     This function implements anisotropic tensor smoothing by an
     hourglass-shaped filters as described in
-    
+
     U. K&ouml;the: <a href="http://hci.iwr.uni-heidelberg.de/people/ukoethe/papers/index.php#cite_structureTensor">
-    <i>"Edge and Junction Detection with an Improved Structure Tensor"</i></a>, 
-     in: Proc. of 25th DAGM Symposium, Magdeburg 2003, Lecture Notes in Computer Science 2781, 
+    <i>"Edge and Junction Detection with an Improved Structure Tensor"</i></a>,
+     in: Proc. of 25th DAGM Symposium, Magdeburg 2003, Lecture Notes in Computer Science 2781,
      pp. 25-32, Heidelberg: Springer, 2003
-     
+
     It is closely related to the structure tensor (see \ref structureTensor()), but
-    replaces the linear tensor smoothing with a smoothing along edges only. 
+    replaces the linear tensor smoothing with a smoothing along edges only.
     Smoothing across edges is largely suppressed. This means that the
     image structure is preserved much better because nearby features
-    such as parallel edges are not blended into each other. 
-    
-    The hourglass filter is typically applied to a gradient tensor, i.e. the 
+    such as parallel edges are not blended into each other.
+
+    The hourglass filter is typically applied to a gradient tensor, i.e. the
     Euclidean product of the gradient with itself, which can be obtained by a
-    gradient operator followed with \ref vectorToTensor(), see example below. 
-    The hourglass shape of the filter can be interpreted as indicating the likely 
+    gradient operator followed with \ref vectorToTensor(), see example below.
+    The hourglass shape of the filter can be interpreted as indicating the likely
     continuations of a local edge element. The parameter <tt>sigma</tt> determines
-    the radius of the hourglass (i.e. how far the influence of the edge element 
-    reaches), and <tt>rho</tt> controls its opening angle (i.e. how narrow the 
+    the radius of the hourglass (i.e. how far the influence of the edge element
+    reaches), and <tt>rho</tt> controls its opening angle (i.e. how narrow the
     edge orientation os followed). Recommended values are <tt>sigma = 1.4</tt>
     (or, more generally, two to three times the scale of the gradient operator
-    used in the first step), and <tt>rho = 0.4</tt> which corresponds to an 
+    used in the first step), and <tt>rho = 0.4</tt> which corresponds to an
     opening angle of 22.5 degrees to either side of the edge.
-    
+
     <b> Declarations:</b>
 
     pass 2D array views:
@@ -129,7 +129,7 @@ namespace vigra {
     MultiArray<2, float>                  img(w,h);
     MultiArray<2, TinyVector<float, 2> >  gradient(w,h);
     MultiArray<2, TinyVector<float, 3> >  tensor(w,h), smoothedTensor(w,h);
-    
+
     gaussianGradient(img, gradient, 1.0);
     vectorToTensor(gradient, tensor);
     hourGlassFilter(tensor, smoothedTensor, 2.0, 0.4);
@@ -140,13 +140,13 @@ namespace vigra {
     FImage img(w,h);
     FVector2Image gradient(w,h);
     FVector3Image tensor(w,h), smoothedTensor(w,h);
-    
+
     gaussianGradient(srcImageRange(img), destImage(gradient), 1.0);
     vectorToTensor(srcImageRange(gradient), destImage(tensor));
     hourGlassFilter(srcImageRange(tensor), destImage(smoothedTensor), 2.0, 0.4);
     \endcode
     \deprecatedEnd
-    
+
     \see vectorToTensor()
 */
 doxygen_overloaded_function(template <...> void hourGlassFilter)
@@ -268,7 +268,7 @@ void ellipticGaussian(SrcIterator sul, SrcIterator slr, SrcAccessor src,
         DestIterator d = dul;
         for(int x=0; x<w; ++x, ++s.x, ++d.x)
         {
-            typedef typename 
+            typedef typename
                NumericTraits<typename SrcAccessor::component_type>::RealPromote TmpType;
             TmpType d1 = src.getComponent(s,0) + src.getComponent(s,2);
             TmpType d2 = src.getComponent(s,0) - src.getComponent(s,2);
@@ -276,7 +276,7 @@ void ellipticGaussian(SrcIterator sul, SrcIterator slr, SrcAccessor src,
             TmpType d4 = VIGRA_CSTD::sqrt(sq(d2) + sq(d3));
             TmpType excentricity = 1.0 - (d1 - d4) / (d1 + d4);
             double sigmax2 = -0.5 / sq((sigmax - sigmin)*excentricity + sigmin);
-            
+
             double phi = 0.5 * VIGRA_CSTD::atan2(d3, d2);
             double u = VIGRA_CSTD::sin(phi);
             double v = VIGRA_CSTD::cos(phi);
@@ -338,7 +338,7 @@ class FoerstnerKernelBase
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
     typedef VectorType::value_type    ValueType;
-  
+
     FoerstnerKernelBase(double scale, bool ringShaped = false)
     : radius_((int)(3.0*scale+0.5)),
       weights_(2*radius_+1, 2*radius_+1),
@@ -346,7 +346,7 @@ class FoerstnerKernelBase
     {
         double norm = 1.0 / (2.0 * M_PI * scale * scale);
         double s2 = -0.5 / scale / scale;
-        
+
         for(int y = -radius_; y <= radius_; ++y)
         {
             for(int x = -radius_; x <= radius_; ++x)
@@ -356,13 +356,13 @@ class FoerstnerKernelBase
                 vectors_(x+radius_,y+radius_) = d != 0.0 ?
                                                   VectorType(x/d, -y/d) :
                                                   VectorType(ValueType(0), ValueType(0));
-                weights_(x+radius_,y+radius_) = ringShaped ? 
+                weights_(x+radius_,y+radius_) = ringShaped ?
                                        norm * d2 * VIGRA_CSTD::exp(d2 * s2) :
                                        norm * VIGRA_CSTD::exp(d2 * s2);
             }
         }
-    }   
-    
+    }
+
     ResultType operator()(int /*x*/, int /*y*/, VectorType const &) const
     {
         // isotropic filtering
@@ -390,11 +390,11 @@ class Cos2RingKernel
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-  
+
     Cos2RingKernel(double scale)
     : FoerstnerKernelBase(scale, true)
     {}
-    
+
     ResultType operator()(int x, int y, VectorType const & v) const
     {
         if(x == 0 && y == 0)
@@ -411,11 +411,11 @@ class Cos2Kernel
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-  
+
     Cos2Kernel(double scale)
     : FoerstnerKernelBase(scale, false)
     {}
-    
+
     ResultType operator()(int x, int y, VectorType const & v) const
     {
         if(x == 0 && y == 0)
@@ -432,11 +432,11 @@ class Sin2RingKernel
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-  
+
     Sin2RingKernel(double scale)
     : FoerstnerKernelBase(scale, true)
     {}
-    
+
     ResultType operator()(int x, int y, VectorType const & v) const
     {
         if(x == 0 && y == 0)
@@ -453,11 +453,11 @@ class Sin2Kernel
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-  
+
     Sin2Kernel(double scale)
     : FoerstnerKernelBase(scale, false)
     {}
-    
+
     ResultType operator()(int x, int y, VectorType const & v) const
     {
         if(x == 0 && y == 0)
@@ -474,11 +474,11 @@ class Sin6RingKernel
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-  
+
     Sin6RingKernel(double scale)
     : FoerstnerKernelBase(scale, true)
     {}
-    
+
     ResultType operator()(int x, int y, VectorType const & v) const
     {
         if(x == 0 && y == 0)
@@ -495,11 +495,11 @@ class Sin6Kernel
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-  
+
     Sin6Kernel(double scale)
     : FoerstnerKernelBase(scale, false)
     {}
-    
+
     ResultType operator()(int x, int y, VectorType const & v) const
     {
         if(x == 0 && y == 0)
@@ -516,11 +516,11 @@ class Cos6RingKernel
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-  
+
     Cos6RingKernel(double scale)
     : FoerstnerKernelBase(scale, true)
     {}
-    
+
     ResultType operator()(int x, int y, VectorType const & v) const
     {
         if(x == 0 && y == 0)
@@ -537,11 +537,11 @@ class Cos6Kernel
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
-  
+
     Cos6Kernel(double scale)
     : FoerstnerKernelBase(scale, false)
     {}
-    
+
     ResultType operator()(int x, int y, VectorType const & v) const
     {
         if(x == 0 && y == 0)
@@ -572,7 +572,7 @@ void orientedTrigonometricFilter(SrcIterator sul, SrcIterator slr, SrcAccessor s
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
     int radius = kernel.radius_;
-    
+
     typedef typename SrcAccessor::value_type VectorType;
     typedef typename DestAccessor::value_type TensorType;
 

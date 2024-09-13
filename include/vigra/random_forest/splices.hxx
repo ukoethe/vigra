@@ -9,23 +9,23 @@ namespace vigra
  *
  * usage (with factory function _spl)
  *
- * // copy every even indexed element to a 5 x 5 
+ * // copy every even indexed element to a 5 x 5
  * // sized matrix
  * Matrix<double> a(10, 10)
  * MultiArrayView<2,double> b(_spl_shp(_spl(0,2,10),
  *                                     _spl(0,2,10)));
  * copy_splice(_spl(0,2,10),_spl(0,2,10), a, b);
- * 
+ *
  * it is also possible to supply iterator ranges
  * std::vector<int> indices;
  * indices.push_back(3) (...)
- * 
+ *
  * copy_splice(_spl(indices.begin(), indices.end()),
  *             _spl(a.shape(1)),
  *             a, b)
  *
  * if you only have a forward iterator then you must
- * specify the size of the splice with 
+ * specify the size of the splice with
  * _spl(set.begin(), set.end(), set.size());
  *
  * ok.. what we actually need is a decent iota iterator
@@ -65,17 +65,17 @@ class Splice<int>
     int size_;
     public:
     Splice(int begin, int end)
-    : begin_(begin), 
+    : begin_(begin),
       interval_(1),
       size_(end - begin)
     {}
 
-    Splice(int begin, int interval, int end) 
-    : begin_(begin), 
+    Splice(int begin, int interval, int end)
+    : begin_(begin),
       interval_(interval),
       size_(int(std::floor((double(end) -double(begin))/interval)))
     {}
-    
+
     int operator[](int index)
     {
         int ii = begin_ + index * interval_;
@@ -116,7 +116,7 @@ inline MultiArrayShape<2>::type _spl_shp(Splice<T> f,
 
 
 
-template<   class R, class F, 
+template<   class R, class F,
             class T, class C,
             class T2, class C2 >
 void copy_splice(  Splice<R> _first,

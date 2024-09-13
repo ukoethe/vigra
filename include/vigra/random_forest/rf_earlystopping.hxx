@@ -7,7 +7,7 @@
 namespace vigra
 {
 
-#if 0    
+#if 0
 namespace es_detail
 {
     template<class T>
@@ -34,7 +34,7 @@ public:
     template<class T>
     void set_external_parameters(ProblemSpec<T> const  &prob, int tree_count = 0, bool is_weighted = false)
     {
-        ext_param_ = prob; 
+        ext_param_ = prob;
         is_weighted_ = is_weighted;
         tree_count_ = tree_count;
     }
@@ -44,7 +44,7 @@ public:
          * \param weightIter Iterator to the weights delivered by current tree.
          * \param k          after kth tree
          * \param prob       Total probability array
-         * \param totalCt    sum of probability array. 
+         * \param totalCt    sum of probability array.
          */
     template<class WeightIter, class T, class C>
     bool after_prediction(WeightIter weightIter, int k, MultiArrayView<2, T, C> const &  prob , double totalCt)
@@ -64,9 +64,9 @@ public:
     double max_tree_p;
     int max_tree_;
     typedef StopBase SB;
-    
+
     ArrayVector<double> depths;
-    
+
     /** Constructor
      * \param max_tree number of trees to be used for prediction
      */
@@ -93,12 +93,12 @@ public:
         if(k < max_tree_)
            return false;
         depths.push_back(double(k+1)/double(SB::tree_count_));
-        return true;  
+        return true;
     }
 };
 
 /** Stop predicting after a certain amount of votes exceed certain proportion.
- *  case unweighted voting: stop if the leading class exceeds proportion * SB::tree_count_ 
+ *  case unweighted voting: stop if the leading class exceeds proportion * SB::tree_count_
  *  case weighted voting: stop if the leading class exceeds proportion * msample_ * SB::tree_count_ ;
  *                          (maximal number of votes possible in both cases)
  */
@@ -167,7 +167,7 @@ public:
      */
     StopIfConverging(double thresh, int num = 10)
     :
-        thresh_(thresh), 
+        thresh_(thresh),
         num_(num)
     {}
 
@@ -192,12 +192,12 @@ public:
             last_/= last_.norm(1);
             return false;
         }
-        else 
+        else
         {
             cur_ = prob;
             cur_ /= cur_.norm(1);
             last_ -= cur_;
-            double nrm = last_.norm(); 
+            double nrm = last_.norm();
             if(nrm < thresh_)
             {
                 depths.push_back(double(k+1)/double(SB::tree_count_));
@@ -214,11 +214,11 @@ public:
 
 
 /** Stop predicting if the margin prob(leading class) - prob(second class) exceeds a proportion
- *  case unweighted voting: stop if margin exceeds proportion * SB::tree_count_ 
+ *  case unweighted voting: stop if margin exceeds proportion * SB::tree_count_
  *  case weighted voting: stop if margin exceeds proportion * msample_ * SB::tree_count_ ;
  *                          (maximal number of votes possible in both cases)
  */
-class StopIfMargin : public StopBase  
+class StopIfMargin : public StopBase
 {
 public:
     double proportion_;
@@ -245,7 +245,7 @@ public:
         double a = prob[argMax(prob)];
         prob[argMax(prob)] = 0;
         double b = prob[argMax(prob)];
-        prob[index] = a; 
+        prob[index] = a;
         double margin = a - b;
         if(SB::is_weighted_)
         {
@@ -276,15 +276,15 @@ public:
  * can be estimated with certainty over 1-alpha.
  * (Thesis, Rahul Nair Page 80 onwards: called the "binomial" criterion
  */
-class StopIfBinTest : public StopBase  
+class StopIfBinTest : public StopBase
 {
 public:
-    double alpha_;  
+    double alpha_;
     MultiArrayView<2, double> n_choose_k;
     /** Constructor
      * \param alpha specify alpha (=proportion) value for binomial test.
      * \param nck_ Matrix with precomputed values for n choose k
-     * nck_(n, k) is n choose k. 
+     * nck_(n, k) is n choose k.
      */
     StopIfBinTest(double alpha, MultiArrayView<2, double> nck_)
     :
@@ -292,7 +292,7 @@ public:
         n_choose_k(nck_)
     {}
     typedef StopBase SB;
-    
+
     /**ArrayVector that will contain the fraction of trees that was visited before terminating
      */
     ArrayVector<double> depths;
@@ -323,14 +323,14 @@ public:
         double p_a = double(n_b - n_a + n_tilde)/double(2* n_tilde);
         vigra_precondition(p_a <= 1, "probability should be smaller than 1");
         double cum_val = 0;
-        int c = 0; 
+        int c = 0;
   //      std::cerr << "prob: " << p_a << std::endl;
         if(n_a <= 0)n_a = 0;
         if(n_b <= 0)n_b = 0;
         for(int ii = 0; ii <= n_b + n_a;++ii)
         {
 //            std::cerr << "nb +ba " << n_b + n_a << " " << ii <<std::endl;
-            cum_val += binomial(n_b + n_a, ii, p_a); 
+            cum_val += binomial(n_b + n_a, ii, p_a);
             if(cum_val >= 1 -alpha_)
             {
                 c = ii;
@@ -356,17 +356,17 @@ public:
  * a specified value alpha.
  * (Thesis, Rahul Nair Page 80 onwards: called the "toChange" criterion
  */
-class StopIfProb : public StopBase  
+class StopIfProb : public StopBase
 {
 public:
-    double alpha_;  
+    double alpha_;
     MultiArrayView<2, double> n_choose_k;
-    
-    
+
+
     /** Constructor
      * \param alpha specify alpha (=proportion) value
      * \param nck_ Matrix with precomputed values for n choose k
-     * nck_(n, k) is n choose k. 
+     * nck_(n, k) is n choose k.
      */
     StopIfProb(double alpha, MultiArrayView<2, double> nck_)
     :
@@ -406,7 +406,7 @@ public:
         double p = 0;
         for(int ii = n_needed; ii < n_tilde; ++ii)
             p += binomial(n_tilde, ii, 0.5);
-        
+
         if(p >= 1-alpha_)
         {
             depths.push_back(double(k+1)/double(SB::tree_count_));

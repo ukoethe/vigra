@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -96,18 +96,18 @@ struct IterablePartitonTest
         testReps(ufd,testRep);
         shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
 
-            
+
 
         ufd.merge(0,1);
         trueReps(ufd,trueRep);
         testReps(ufd,testRep);
         shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
-        
+
         ufd.merge(0,2);
         trueReps(ufd,trueRep);
         testReps(ufd,testRep);
         shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
-        
+
         ufd.merge(0,3);
         trueReps(ufd,trueRep);
         testReps(ufd,testRep);
@@ -158,7 +158,7 @@ struct IterablePartitonTest
         testReps(ufd,testRep);
         shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
     }
-    
+
 };
 
 
@@ -316,11 +316,11 @@ struct AdjacencyListGraph2MergeGraphTest{
         should(1==g.id( allEdges[1] ) );
         should(2==g.id( allEdges[2] ) );
         should(3==g.id( allEdges[3] ) );
-        
-     
+
+
         std::vector<Arc>  allArcs( abegin,aend);
         should(allArcs.size() ==8);
-          
+
         should(0==g.id( allArcs[0] ) );
         should(1==g.id( allArcs[1] ) );
         should(2==g.id( allArcs[2] ) );
@@ -367,7 +367,7 @@ struct AdjacencyListGraph2MergeGraphTest{
     {
         // create merge graph adpator
         MergeGraphType g(graph2x2_);;
-        
+
         // check sources and targets of arcs which are just the "natural edges"
         should(  g.source(g.arcFromId(0)) == g.u(g.edgeFromId(0)) );
         should(  g.source(g.arcFromId(1)) == g.u(g.edgeFromId(1)) );
@@ -410,7 +410,7 @@ struct AdjacencyListGraph2MergeGraphTest{
         // create merge graph adpator
         MergeGraphType g(graph2x2_);
 
-        
+
 
         {
             EdgeIt begin(g);
@@ -418,7 +418,7 @@ struct AdjacencyListGraph2MergeGraphTest{
 
             should(begin!=lemon::INVALID);
 
-            
+
             std::vector<Edge> edgeVec(begin,invalid);
             shouldEqual(4,edgeVec.size());
             shouldEqual(0,g.id(edgeVec[0]));
@@ -454,7 +454,7 @@ struct AdjacencyListGraph2MergeGraphTest{
             EdgeIt end(g,g.edgeFromId(2));
 
             should(begin!=lemon::INVALID);
-            should(end!=lemon::INVALID);    
+            should(end!=lemon::INVALID);
             should(begin!=end);
 
             shouldEqual(std::distance(begin,end),1);
@@ -484,7 +484,7 @@ struct AdjacencyListGraph2MergeGraphTest{
             NodeIt begin(g);
             NodeIt invalid(lemon::INVALID);
 
-            should(begin!=lemon::INVALID);            
+            should(begin!=lemon::INVALID);
             std::vector<Node> nodeVec(begin,invalid);
             shouldEqual(4,nodeVec.size());
             shouldEqual(1,g.id(nodeVec[0]));
@@ -520,7 +520,7 @@ struct AdjacencyListGraph2MergeGraphTest{
             NodeIt end(g,g.nodeFromId(3));
 
             should(begin!=lemon::INVALID);
-            should(end!=lemon::INVALID);    
+            should(end!=lemon::INVALID);
             should(begin!=end);
 
             shouldEqual(std::distance(begin,end),1);
@@ -550,7 +550,7 @@ struct AdjacencyListGraph2MergeGraphTest{
             ArcIt begin(g);
             ArcIt invalid(lemon::INVALID);
             should(begin!=lemon::INVALID);
-            shouldEqual(std::distance(begin,invalid),8);            
+            shouldEqual(std::distance(begin,invalid),8);
             std::vector<Arc> arcVec(begin,invalid);
             shouldEqual(8,arcVec.size());
             shouldEqual(0,g.id(arcVec[0]));
@@ -602,7 +602,7 @@ struct AdjacencyListGraph2MergeGraphTest{
             ArcIt end(g,g.arcFromId(2));
 
             should(begin!=lemon::INVALID);
-            should(end!=lemon::INVALID);    
+            should(end!=lemon::INVALID);
             should(begin!=end);
 
             shouldEqual(std::distance(begin,end),1);
@@ -756,7 +756,7 @@ struct AdjacencyListGraph2MergeGraphTest{
             should(eSet.find(e13)==eSet.end());
         }
 
-    
+
     }
 
 
@@ -828,7 +828,7 @@ struct AdjacencyListGraph2MergeGraphTest{
             should(source1==n3 || source2==n3);
 
         }
-    
+
     }
 
 
@@ -879,7 +879,7 @@ struct AdjacencyListGraph2MergeGraphTest{
             Node target = g.target(arc);
             shouldEqual(g.id(source),g.id(n2));
             shouldEqual(g.id(target),g.id(n4));
-            
+
         }
         {
             OutArcIt a(g,n3);
@@ -899,7 +899,7 @@ struct AdjacencyListGraph2MergeGraphTest{
             should(a==b);
             shouldEqual(std::distance(a,b),0);
         }
-    
+
     }
 
 
@@ -979,7 +979,7 @@ struct AdjacencyListGraph2MergeGraphTest{
         shouldEqual(g.edgeNum(),12);
         shouldEqual(g.maxEdgeId(),graph.maxEdgeId());
         shouldEqual(degreeSum(g),g.edgeNum()*2);
-        // check degrees 
+        // check degrees
         shouldEqual(g.degree(n1),2);
         shouldEqual(g.degree(n2),3);
         shouldEqual(g.degree(n3),2);
@@ -992,7 +992,7 @@ struct AdjacencyListGraph2MergeGraphTest{
 
 
         /////////////////
-        // merge 4|5 
+        // merge 4|5
         //////////////////
         g.contractEdge(e45);
         // CURRENT GRAPH:
@@ -1004,8 +1004,8 @@ struct AdjacencyListGraph2MergeGraphTest{
         // 7 |8 | 9
         shouldEqual(g.nodeNum(),8);
         shouldEqual(g.edgeNum(),11);
-        
-        // check degrees 
+
+        // check degrees
         shouldEqual(g.degree(n1),2);
         shouldEqual(g.degree(g.reprNode(n1)),2);
         shouldEqual(g.degree(g.reprNode(n2)),3);
@@ -1042,7 +1042,7 @@ struct AdjacencyListGraph2MergeGraphTest{
         // __ __  _
         // 7 |8 | 9
 
-        // check degrees 
+        // check degrees
         shouldEqual(g.degree(g.reprNode(n1)),4);
         shouldEqual(g.degree(g.reprNode(n2)),2);
         shouldEqual(g.degree(g.reprNode(n3)),2);
@@ -1080,7 +1080,7 @@ struct AdjacencyListGraph2MergeGraphTest{
         shouldEqual(g.nodeNum(),6);
         shouldEqual(g.edgeNum(),8);
         shouldEqual(degreeSum(g),g.edgeNum()*2);
-        // check degrees 
+        // check degrees
         shouldEqual(g.degree(g.reprNode(n1)),4);
         shouldEqual(g.degree(g.reprNode(n2)),2);
         shouldEqual(g.degree(g.reprNode(n3)),2);
@@ -1114,7 +1114,7 @@ struct AdjacencyListGraph2MergeGraphTest{
         shouldEqual(g.nodeNum(),5);
         shouldEqual(g.edgeNum(),7);
         shouldEqual(degreeSum(g),g.edgeNum()*2);
-        // check degrees 
+        // check degrees
         shouldEqual(g.degree(g.reprNode(n1)),4);
         shouldEqual(g.degree(g.reprNode(n2)),2);
         shouldEqual(g.degree(g.reprNode(n3)),2);
@@ -1145,7 +1145,7 @@ struct AdjacencyListGraph2MergeGraphTest{
         shouldEqual(g.nodeNum(),4);
         shouldEqual(g.edgeNum(),4);
         shouldEqual(degreeSum(g),g.edgeNum()*2);
-        // check degrees 
+        // check degrees
         shouldEqual(g.degree(g.reprNode(n1)),3);
         shouldEqual(g.degree(g.reprNode(n2)),1);
         shouldEqual(g.degree(g.reprNode(n3)),1);
@@ -1169,14 +1169,14 @@ struct AdjacencyListGraph2MergeGraphTest{
         // CURRENT GRAPH:
         // --------------
         // 1  2   3
-        //         
+        //
         // 4  5   6
         // __ __  _
         // 7 |8   9
         shouldEqual(g.nodeNum(),3);
         shouldEqual(g.edgeNum(),3);
         shouldEqual(degreeSum(g),g.edgeNum()*2);
-        // check degrees 
+        // check degrees
         shouldEqual(g.degree(g.reprNode(n1)),2);
         shouldEqual(g.degree(g.reprNode(n2)),2);
         shouldEqual(g.degree(g.reprNode(n3)),2);
@@ -1201,14 +1201,14 @@ struct AdjacencyListGraph2MergeGraphTest{
         // CURRENT GRAPH:
         // --------------
         // 1  2   3
-        //         
+        //
         // 4  5   6
-        // __     
+        // __
         // 7 |8   9
         shouldEqual(g.nodeNum(),2);
         shouldEqual(g.edgeNum(),1);
         shouldEqual(degreeSum(g),g.edgeNum()*2);
-        // check degrees 
+        // check degrees
         shouldEqual(g.degree(g.reprNode(n1)),1);
         shouldEqual(g.degree(g.reprNode(n2)),1);
         shouldEqual(g.degree(g.reprNode(n3)),1);
@@ -1232,14 +1232,14 @@ struct AdjacencyListGraph2MergeGraphTest{
         // CURRENT GRAPH:
         // --------------
         // 1  2   3
-        //         
+        //
         // 4  5   6
-        // __     
+        // __
         // 7 |8   9
         shouldEqual(g.nodeNum(),1);
         shouldEqual(g.edgeNum(),0);
         shouldEqual(degreeSum(g),g.edgeNum()*2);
-        // check degrees 
+        // check degrees
         shouldEqual(g.degree(g.reprNode(n1)),0);
         shouldEqual(g.degree(g.reprNode(n2)),0);
         shouldEqual(g.degree(g.reprNode(n3)),0);
@@ -1344,7 +1344,7 @@ struct AdjacencyListGraph2MergeGraphTest{
         should( g.findEdge(n1,n7)==lemon::INVALID);
         should( g.findEdge(n1,n8)==lemon::INVALID);
         should( g.findEdge(n1,n9)==lemon::INVALID);
-        // 
+        //
         should( g.findEdge(n2,n3)!=lemon::INVALID);
         should( g.findEdge(n2,n4)==lemon::INVALID);
         should( g.findEdge(n2,n5)!=lemon::INVALID);
@@ -1530,7 +1530,7 @@ struct AdjacencyListGraph2MergeGraphTest{
         // CURRENT GRAPH:
         // --------------
         // 1 |2  3
-        // __     
+        // __
         // 4 |5  6
         // __ __ _
         // 7 |8 |9
@@ -1582,7 +1582,7 @@ struct AdjacencyListGraph2MergeGraphTest{
         // CURRENT GRAPH:
         // --------------
         // 1 |2  3
-        // __     
+        // __
         // 4 |5  6
         //    __ _
         // 7 |8 |9
@@ -1634,7 +1634,7 @@ struct AdjacencyListGraph2MergeGraphTest{
         // CURRENT GRAPH:
         // --------------
         // 1 |2  3
-        // __     
+        // __
         // 4 |5  6
         //    __ _
         // 7 |8  9
@@ -1691,14 +1691,14 @@ struct AdjacencyListGraph2MergeGraphTest{
 };
 
 
- 
+
 struct AdjacencyListGraphMergeGraphAdaptorTestSuite
 : public vigra::test_suite
 {
     AdjacencyListGraphMergeGraphAdaptorTestSuite()
     : vigra::test_suite("AdjacencyListGraphMergeGraphAdaptorTestSuite")
-    {   
-        
+    {
+
         add( testCase( &IterablePartitonTest<UInt32>::iteratorTest1));
         add( testCase( &IterablePartitonTest<UInt32>::iteratorTest2));
         add( testCase( &IterablePartitonTest<Int32>::iteratorTest1));
@@ -1714,7 +1714,7 @@ struct AdjacencyListGraphMergeGraphAdaptorTestSuite
         add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphIncEdgeItTest));
         //add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphInArcItTest));
         //add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphOutArcItTest));
-        
+
 
         // test which do some merging
         add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphMergeGridDegreeTest));

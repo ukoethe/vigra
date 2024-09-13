@@ -49,7 +49,7 @@
 
 These macros allow to perform execution speed measurements. Results are reported
 in <i>milliseconds</i>.
-However, note that timings below 1 msec are generally subject to round-off errors. 
+However, note that timings below 1 msec are generally subject to round-off errors.
 Under LINUX, you can \#define VIGRA_HIRES_TIMING to get better
 accuracy, but this requires linking against librt.
 
@@ -58,7 +58,7 @@ Basic usage:
    void time_it()
    {
        USETICTOC
-  
+
        TIC
         ...    code to be timed
        TOC
@@ -69,16 +69,16 @@ Basic usage:
    }
 \endcode
 
-Instead of TOC, which outputs the time difference to std::cerr, 
+Instead of TOC, which outputs the time difference to std::cerr,
 you may use TOCN (the time difference in <i>msec</i> as a double)
-or TOCS (the time difference as a std::string). 
+or TOCS (the time difference as a std::string).
 
 Alternatively, you can perform nested timing like so:
 \code
    void time_it()
    {
        USE_NESTED_TICTOC
-  
+
        TICPUSH
         ...         code to be timed
            TICPUSH
@@ -88,7 +88,7 @@ Alternatively, you can perform nested timing like so:
        TOC          print total time
    }
 \endcode
-  
+
 */
 
 /** \file timing.hxx  Timing macros for runtime measurements
@@ -108,7 +108,7 @@ Alternatively, you can perform nested timing like so:
   \hideinitializer
 
   \def TOC
-  Stop timing and output result (the time difference w.r.t. the last TIC or TICPUSH 
+  Stop timing and output result (the time difference w.r.t. the last TIC or TICPUSH
   instance) to std::cerr.
   \hideinitializer
 
@@ -118,19 +118,19 @@ Alternatively, you can perform nested timing like so:
   \hideinitializer
 
   \def TOCN
-  Stop timing. This macro evaluates to the time difference (w.r.t. the last TIC 
+  Stop timing. This macro evaluates to the time difference (w.r.t. the last TIC
   or TICPUSH) in msec as a double.
   \hideinitializer
-  
+
   \def TOCS
-  Stop timing. This macro evaluates to the time difference (w.r.t. the last TIC 
-  or TICPUSH) as a std::string (including units). 
+  Stop timing. This macro evaluates to the time difference (w.r.t. the last TIC
+  or TICPUSH) as a std::string (including units).
   \hideinitializer
 
   \def TICTOCLOOP_BEGIN(inner_repetitions,outer_repetitions)
   Executes the code block up to TICTOCLOOP_END outer_repetitions x
   inner_repetitions times. The measurement is averaged over the
-  inner_repetitions, and the best result of the outer_repetitions is 
+  inner_repetitions, and the best result of the outer_repetitions is
   reported to std::cerr.
   \hideinitializer
 
@@ -152,7 +152,7 @@ Alternatively, you can perform nested timing like so:
         QueryPerformanceFrequency(&frequency);
         return 1000.0 / frequency.QuadPart;
     }
-    
+
     static const double timerUnit = queryTimerUnit();
 
     inline double tic_toc_diff_num(LARGE_INTEGER const & tic)
@@ -164,7 +164,7 @@ Alternatively, you can perform nested timing like so:
 
     inline std::string tic_toc_diff_string(LARGE_INTEGER const & tic)
     {
-        double diff = tic_toc_diff_num(tic); 
+        double diff = tic_toc_diff_num(tic);
         std::stringstream s;
         s << diff << " msec";
         return s.str();
@@ -197,7 +197,7 @@ Alternatively, you can perform nested timing like so:
     }
 
     } // unnamed namespace
-    
+
     #define USETICTOC LARGE_INTEGER tic_timer;
     #define USE_NESTED_TICTOC std::vector<LARGE_INTEGER> tic_timer;
     #define TIC QueryPerformanceCounter(&tic_timer);
@@ -211,7 +211,7 @@ Alternatively, you can perform nested timing like so:
 
     #if defined(VIGRA_HIRES_TIMING) && !defined(__CYGWIN__)
         // requires linking against librt
-    
+
         #include <time.h>
 
         namespace {
@@ -226,7 +226,7 @@ Alternatively, you can perform nested timing like so:
 
         inline std::string tic_toc_diff_string(timespec const & tic)
         {
-            double diff = tic_toc_diff_num(tic); 
+            double diff = tic_toc_diff_num(tic);
             std::stringstream s;
             s << diff << " msec";
             return s.str();
@@ -236,7 +236,7 @@ Alternatively, you can perform nested timing like so:
         {
             std::cerr << tic_toc_diff_string(tic) << std::endl;
         }
-        
+
         inline double tic_toc_diff_num(std::vector<timespec> & tic)
         {
             double res = tic_toc_diff_num(tic.back());
@@ -269,7 +269,7 @@ Alternatively, you can perform nested timing like so:
                         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &(tic_timer.back()));
 
     #else
-    
+
         #include <sys/time.h>
 
         namespace {
@@ -281,15 +281,15 @@ Alternatively, you can perform nested timing like so:
             return  ((toc.tv_sec*1000.0 + toc.tv_usec/1000.0) -
                         (tic.tv_sec*1000.0 + tic.tv_usec/1000.0));
         }
-        
+
         inline std::string tic_toc_diff_string(timeval const & tic)
         {
-            double diff = tic_toc_diff_num(tic); 
+            double diff = tic_toc_diff_num(tic);
             std::stringstream s;
             s << diff << " msec";
             return s.str();
         }
-        
+
         inline void tic_toc_diff(timeval const & tic)
         {
             std::cerr << tic_toc_diff_string(tic)<< std::endl;
@@ -332,7 +332,7 @@ Alternatively, you can perform nested timing like so:
 
 // TICTOCLOOP runs the body inner_repetitions times, and minimizes the result over a number of outer_repetitions runs,
 //  outputting the final minimal average to std::cerr
-// We enclose the loop in a dummy do { ... } while(false) in order to make this a true single statement 
+// We enclose the loop in a dummy do { ... } while(false) in order to make this a true single statement
 //  (instead of just a scope).
 #define TICTOCLOOP_BEGIN(inner_repetitions,outer_repetitions) \
     do { \
@@ -342,7 +342,7 @@ Alternatively, you can perform nested timing like so:
         TIC \
         for (size_t tictocinnercounter_=0; tictocinnercounter_<inner_repetitions; ++tictocinnercounter_) { \
 
-        
+
 #define TICTOCLOOP_END \
                 } \
         const double tictoc_cur_ = TOCN; \
@@ -357,7 +357,7 @@ Alternatively, you can perform nested timing like so:
 
 #else // NDEBUG
 
-#define USETICTOC 
+#define USETICTOC
 #define TIC
 #define TOC
 #define TOCN 0.0

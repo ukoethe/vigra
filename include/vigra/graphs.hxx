@@ -396,11 +396,11 @@ enum ContainerTag
 
 /**
  * @brief The PropertyMap is used to store Node or Arc information of graphs.
- * 
+ *
  * @tparam <KEYTYPE> the key type
  * @tparam <MAPPEDTYPE> the mapped type
  * @tparam <ContainerTag = MapTag> whether to use a map or a vector as underlying storage
- * 
+ *
  * @note
  * In contrast to std::map, operator[] does not insert elements. Use insert() instead.
  * If ContainerTag == MapTag: at() and operator[] behave like std::map::at().
@@ -713,10 +713,10 @@ public:
     {
         if (k.id() < 0)
             throw std::out_of_range("PropertyMap::insert(): Key must not be negative.");
-        
+
         if (k.id() >= indices_.size())
             indices_.resize(k.id()+1, -1);
-        
+
         if (indices_[k.id()] == -1)
         {
             indices_[k.id()] = map_.size();
@@ -780,7 +780,7 @@ public:
     {
         return map_.size();
     }
-    
+
     size_t erase(key_type const & k)
     {
         if (k.id() < 0 || k.id() >= indices_.size() || indices_[k.id()] == -1)

@@ -56,7 +56,7 @@ namespace vigra{
 
     NumpyAnyArray pySerializeAdjacencyListGraph(
         const AdjacencyListGraph & graph,
-        NumpyArray<1, UInt32> serialization 
+        NumpyArray<1, UInt32> serialization
     ){
         serialization.reshapeIfEmpty( NumpyArray<1, UInt32>::difference_type(graph.serializationSize()));
         graph.serialize(serialization.begin());
@@ -66,7 +66,7 @@ namespace vigra{
 
     void pyDeserializeAdjacencyListGraph(
         AdjacencyListGraph & graph,
-        const NumpyArray<1, UInt32> & serialization 
+        const NumpyArray<1, UInt32> & serialization
     ){
         graph.clear();
         graph.deserialize(serialization.begin(),serialization.end());
@@ -74,7 +74,7 @@ namespace vigra{
 
 
     void defineAdjacencyListGraph(){
-        
+
         typedef AdjacencyListGraph  Graph;
         // define graph itself
         const std::string clsName = "AdjacencyListGraph";
@@ -98,6 +98,6 @@ namespace vigra{
         .def("deserialize",registerConverters(&pyDeserializeAdjacencyListGraph) )
         ;
     }
-} 
+}
 
 

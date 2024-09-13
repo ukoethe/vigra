@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -48,7 +48,7 @@
 #include "vigra/multi_array.hxx"
 #include "vigra/multi_convolution.hxx"
 #include "vigra/basicimageview.hxx"
-#include "vigra/convolution.hxx" 
+#include "vigra/convolution.hxx"
 #include "vigra/navigator.hxx"
 #include "vigra/random.hxx"
 
@@ -87,7 +87,7 @@ struct MultiArraySeparableConvolutionTest
         typedef typename Image::value_type T;
 
         int size = image.size();
-        for( int k = 0; k < size; ++k ) 
+        for( int k = 0; k < size; ++k )
         {
             typedef typename NumericTraits<typename Image::value_type>::isIntegral isIntegral;
             if(isIntegral::value)
@@ -103,11 +103,11 @@ struct MultiArraySeparableConvolutionTest
         const int width = shape[0];
         const int height = shape[1];
         const int depth = shape[2];
-        for( int z = 0; z < depth; ++z ) 
+        for( int z = 0; z < depth; ++z )
         {
-            for( int y = 0; y < height; ++y ) 
+            for( int y = 0; y < height; ++y )
             {
-                for( int x = 0; x < width; ++x ) 
+                for( int x = 0; x < width; ++x )
                 {
                     const Image3D::value_type val = Image3D::value_type(x + y + z);
                     image( x, y, z ) = val;
@@ -124,18 +124,18 @@ struct MultiArraySeparableConvolutionTest
         const int width = shape[0];
         const int height = shape[1];
         const int depth = shape[2];
-        for( int z = 0; z < depth; ++z ) 
+        for( int z = 0; z < depth; ++z )
         {
-            for( int y = 0; y < height; ++y ) 
+            for( int y = 0; y < height; ++y )
             {
-                for( int x = 0; x < width; ++x ) 
+                for( int x = 0; x < width; ++x )
                 {
-                
+
                     Image3D::value_type val = 80;
 
                     if( (x > b) && x < (width-b) &&
                             (y > b) && y < (height-b) &&
-                            (z > b)    && z < (depth-b) ) 
+                            (z > b)    && z < (depth-b) )
                     {
                         val = 220;
                     }
@@ -144,7 +144,7 @@ struct MultiArraySeparableConvolutionTest
             }
         }
     }
-    
+
     // - - - - - - - - - - - - - - - - - - - - - - - -
 
     void test_1DValidity( const Image3D &src, float ksize )
@@ -153,7 +153,7 @@ struct MultiArraySeparableConvolutionTest
         Image3D dn( src.shape() );
         Image3D dest3( src.shape() );
 
-        for( int d = 0; d < 3; ++d ) 
+        for( int d = 0; d < 3; ++d )
         {
             std::vector<vigra::Kernel1D<float> > kernels( 3 );
             kernels[d].initGaussianDerivative( ksize, 1 );
@@ -166,11 +166,11 @@ struct MultiArraySeparableConvolutionTest
                                             destMultiArray(d1),
                                             d,
                                             kernels[d] );
- 
+
             shouldEqualSequence(    dn.begin(), dn.end(), d1.begin() );
         }
 
-        for( int d = 0; d < 3; ++d ) 
+        for( int d = 0; d < 3; ++d )
         {
             std::vector<vigra::Kernel1D<float> > kernels( 3 );
             kernels[d].initGaussianDerivative( ksize, 1 );
@@ -178,7 +178,7 @@ struct MultiArraySeparableConvolutionTest
             separableConvolveMultiArray(src, dn, kernels.begin());
 
             convolveMultiArrayOneDimension(src, d1, d, kernels[d] );
- 
+
             shouldEqualSequence(    dn.begin(), dn.end(), d1.begin() );
         }
     }
@@ -204,13 +204,13 @@ struct MultiArraySeparableConvolutionTest
                                         destMultiArray(dst1),
                                         0, kernx );
 
-        for( z = 0; z < depth; ++z ) 
+        for( z = 0; z < depth; ++z )
         {
             BasicImageView<Image3D::value_type> sslice =
                 makeBasicImageView( src.bindOuter(z) );
             BasicImageView<Image3D::value_type> dslice =
                 makeBasicImageView( dst2.bindOuter(z) );
-            
+
             vigra::separableConvolveX( srcImageRange(sslice), destImage(dslice),
                                                                  vigra::kernel1d(kernx) );
         }
@@ -223,13 +223,13 @@ struct MultiArraySeparableConvolutionTest
                                         destMultiArray(dst1),
                                         1, kerny );
 
-        for( z = 0; z < depth; ++z ) 
+        for( z = 0; z < depth; ++z )
         {
             BasicImageView<Image3D::value_type> sslice =
                 makeBasicImageView( src.bindOuter(z) );
             BasicImageView<Image3D::value_type> dslice =
                 makeBasicImageView( dst2.bindOuter(z) );
-            
+
             vigra::separableConvolveY( srcImageRange(sslice), destImage(dslice),
                                                                  vigra::kernel1d(kerny) );
         }
@@ -254,7 +254,7 @@ struct MultiArraySeparableConvolutionTest
                 makeBasicImageView( src.bindOuter(z) );
             BasicImageView<Image3D::value_type> dslice =
                 makeBasicImageView( d2.bindOuter(z) );
-            
+
             vigra::convolveImage( srcImageRange(sslice), destImage(dslice),
                                     kernels[0], kernels[1] );
         }
@@ -308,24 +308,24 @@ struct MultiArraySeparableConvolutionTest
         //kernels[1].setBorderTreatment(BORDER_TREATMENT_REFLECT);
 
         Image3D res(shape);
-        separableConvolveMultiArray(srcMultiArrayRange(srcImage), destMultiArray(res), 
+        separableConvolveMultiArray(srcMultiArrayRange(srcImage), destMultiArray(res),
                                     kernels.begin());
 
         typedef Shape3 S;
         int w = shape[0], h = shape[1], d = shape[2];
-        S start[] = { S(0, 0, 25), S(30, 0, 0), S(0, 30, 0), 
-                      S(2, h-1, 20), S(15, 1, d-2), S(2, 14, 1), 
+        S start[] = { S(0, 0, 25), S(30, 0, 0), S(0, 30, 0),
+                      S(2, h-1, 20), S(15, 1, d-2), S(2, 14, 1),
                       S(0,0,0), S(0, 0, 34), S(0, 12, 0) };
-        S stop[]  = { S(w, h, 26), S(31, h, d), S(w, 31, d), 
-                      S(w-2, h, 30), S(28, h-1, d), S(w-2, 44, d-1), 
+        S stop[]  = { S(w, h, 26), S(31, h, d), S(w, 31, d),
+                      S(w-2, h, 30), S(28, h-1, d), S(w-2, 44, d-1),
                       S(w,h,d), S(w, 1, 39), S(w-1, 26, 1) };
         for(int k=0; k<9; ++k)
         {
             Image3D subarray(stop[k]-start[k]);
-            separableConvolveMultiArray(srcImage, subarray, 
+            separableConvolveMultiArray(srcImage, subarray,
                                         kernels.begin(), start[k], stop[k]);
 
-            shouldEqualSequenceTolerance(subarray.begin(), subarray.end(), 
+            shouldEqualSequenceTolerance(subarray.begin(), subarray.end(),
                                          res.subarray(start[k], stop[k]).begin(), 1e-6);
         }
     }
@@ -342,7 +342,7 @@ struct MultiArraySeparableConvolutionTest
             kernel.initGaussianDerivative( ksize, 1 );
 
 
-        for( int i = 0; i < 3; ++i ) 
+        for( int i = 0; i < 3; ++i )
         {
             const int d = 2-i;
 
@@ -380,11 +380,11 @@ struct MultiArraySeparableConvolutionTest
         const int width = shape[0];
         const int height = shape[1];
         const int depth = shape[2];
-        for( int z = b; z < depth-b; ++z ) 
+        for( int z = b; z < depth-b; ++z )
         {
-            for( int y = b; y < height-b; ++y ) 
+            for( int y = b; y < height-b; ++y )
             {
-                for( int x = b; x < width-b; ++x ) 
+                for( int x = b; x < width-b; ++x )
                 {
                     shouldEqualTolerance( dot(grad(x,y,z), v), v2, 1e-5 );
                 }
@@ -397,15 +397,15 @@ struct MultiArraySeparableConvolutionTest
     void test_gradient_magnitude()
     {
         using namespace functor;
-        
+
         MultiArrayShape<2>::type shape(30,40);
         int size = shape[0]*shape[1];
 
         MultiArray<2, double > src(shape), mgrad(shape), rmgrad(shape);
         MultiArray<2, TinyVector<double, 2> > grad(shape);
-        
+
         makeRandom(src);
-        
+
         gaussianGradientMagnitude(src, rmgrad, 1.0);
         gaussianGradientMultiArray(src, grad, 1.0 );
         transformMultiArray(grad, mgrad, norm(Arg1()));
@@ -418,9 +418,9 @@ struct MultiArraySeparableConvolutionTest
 
         MultiArray<2, TinyVector<double, 3> > rgb(shape);
         MultiArrayView<3, Multiband<double> > expanded(rgb.expandElements(2));
-       
+
         makeRandom(expanded);
-        
+
         mgrad.init(0);
         gaussianGradientMagnitude(srcImageRange(rgb), destImage(mgrad), 1.0);
         rmgrad.init(0);
@@ -443,9 +443,9 @@ struct MultiArraySeparableConvolutionTest
 
         MultiArray<2, double > src(shape), laplacian(shape);
         MultiArray<2, double> rlaplacian(shape[0], shape[1]);
-        
+
         makeRandom(src);
-        
+
         laplacianOfGaussian(srcImageRange(src), destImage(rlaplacian), 2.0);
         laplacianOfGaussianMultiArray(srcMultiArrayRange(src), destMultiArray(laplacian), 2.0 );
 
@@ -486,14 +486,14 @@ struct MultiArraySeparableConvolutionTest
         MultiArray<2, double > src(shape);
         MultiArray<2, TinyVector<double, 3> > hessian(shape), hessian1(shape);
         BasicImage<TinyVector<double, 3> > rhessian(shape[0], shape[1]);
-        
+
         makeRandom(src);
-        
+
         typedef VectorComponentAccessor<TinyVector<double, 3> > BandAccessor;
-        hessianMatrixOfGaussian(srcImageRange(src), 
-                                destImage(rhessian, BandAccessor(0)), 
-                                destImage(rhessian, BandAccessor(1)), 
-                                destImage(rhessian, BandAccessor(2)), 
+        hessianMatrixOfGaussian(srcImageRange(src),
+                                destImage(rhessian, BandAccessor(0)),
+                                destImage(rhessian, BandAccessor(1)),
+                                destImage(rhessian, BandAccessor(2)),
                                 2.0);
         hessianOfGaussianMultiArray(srcMultiArrayRange(src), destMultiArray(hessian), 2.0 );
 
@@ -512,14 +512,14 @@ struct MultiArraySeparableConvolutionTest
         MultiArray<2, double > src(shape);
         MultiArray<2, TinyVector<double, 3> > st(shape), st1(shape);
         BasicImage<TinyVector<double, 3> > rst(shape[0], shape[1]);
-        
+
         makeRandom(src);
-        
+
         typedef VectorComponentAccessor<TinyVector<double, 3> > BandAccessor;
-        structureTensor(srcImageRange(src), 
-                        destImage(rst, BandAccessor(0)), 
-                        destImage(rst, BandAccessor(1)), 
-                        destImage(rst, BandAccessor(2)), 
+        structureTensor(srcImageRange(src),
+                        destImage(rst, BandAccessor(0)),
+                        destImage(rst, BandAccessor(1)),
+                        destImage(rst, BandAccessor(2)),
                         1.5, 3.0);
         structureTensorMultiArray(srcMultiArrayRange(src), destMultiArray(st), 1.5, 3.0 );
 
@@ -545,33 +545,33 @@ struct MultiArraySeparableConvolutionTest
     }
 
 
-    void test_Valid1() 
+    void test_Valid1()
     {
         test_1DValidity( srcImage, kernelSize );
     }
 
-    void test_Valid3() 
+    void test_Valid3()
     {
      test_1DValidityB( srcImage, kernelSize );
     }
 
-    void test_Valid2() 
+    void test_Valid2()
     {
         test_2DValidity( srcImage, kernelSize );
     }
 
-    void test_InplaceN() 
+    void test_InplaceN()
     {
         test_inplacenessN( srcImage, kernelSize );
     }
 
-    void test_Inplace1() 
+    void test_Inplace1()
     {
         test_inplaceness1( srcImage, kernelSize, false );
         test_inplaceness1( srcImage, kernelSize, true );
     }
 
-    void test_gradient1() 
+    void test_gradient1()
     {
         test_gradient1( srcImage, false );
         test_gradient1( srcImage, true );
@@ -1188,7 +1188,7 @@ std::string perform_test(int argc, test_data & argv,
     log_name("outer sigma", outer);
     log_name("global_tol", global_tol);
     log_name("local_tol", local_tol);
-    
+
     if (intp_type == 0)
     {
         log_name("resizing without interpolation");

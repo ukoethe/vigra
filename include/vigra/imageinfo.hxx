@@ -140,12 +140,12 @@ class ImageExportInfo
             by \ref setFileType(). Recognized extensions: '.bmp', '.exr', '.gif',
             '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
             '.tif', '.tiff', '.xv', '.hdr'.
-            
+
             EXR support requires libopenexr, JPEG support requires libjpeg,
             PNG support requires libpng and TIFF support requires libtiff.
-            
+
             If the data is exported to TIFF, the \a mode may be "a", in which case
-            the exported image is appended to the existing file, resulting in a 
+            the exported image is appended to the existing file, resulting in a
             multi-page TIFF image.
          **/
     VIGRA_EXPORT ImageExportInfo( const char * filename, const char * mode = "w" );
@@ -417,8 +417,8 @@ class ImageImportInfo
             (only available if libtiff is installed.)
             <DT><b>VIFF:</b><DD> Khoros Visualization image file.
             </DL>
-            
-            The parameter \a page can be used in conjunction with multi-page TIFF 
+
+            The parameter \a page can be used in conjunction with multi-page TIFF
             files in order to specify the desired page (i.e. image) in the file.
          **/
     VIGRA_EXPORT ImageImportInfo( const char * filename, unsigned int page = 0 );

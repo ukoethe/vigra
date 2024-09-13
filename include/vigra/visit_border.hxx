@@ -56,7 +56,7 @@ struct visit_border_impl
     {
         static const unsigned int D = K - 1;
         typedef visit_border_impl<D> next;
-        
+
         if(block_difference[D] == -1)
         {
             MultiArrayIndex last = v_data.shape(D) - 1;
@@ -116,13 +116,13 @@ struct visit_border_impl<0>
             {
                 visitor(*u_data_it, *u_labels_it, *v_data_it, *v_labels_it, block_difference);
             }
-        } 
+        }
         else if(neighborhood == IndirectNeighborhood)
         {
             typedef GridGraph<N, undirected_tag> Graph;
             typedef typename Graph::NodeIt GraphScanner;
             typedef typename Graph::OutArcIt NeighborIterator;
-            
+
             static const int global_dim_number = Shape::static_size;
             TinyVector<unsigned int, N> dim_mapping; // mapping of every local dimension to their actual global dimension indices
             int local_dims_pos = 0;
@@ -162,7 +162,7 @@ struct visit_border_impl<0>
 template <unsigned int N, class Data, class S1,
                           class Label, class S2,
           class Shape, class Visitor>
-inline void 
+inline void
 visitBorder(const MultiArrayView<N, Data, S1>& u_data, MultiArrayView<N, Label, S2> u_labels,
             const MultiArrayView<N, Data, S1>& v_data, MultiArrayView<N, Label, S2> v_labels,
             const Shape& difference, NeighborhoodType neighborhood, Visitor visitor)

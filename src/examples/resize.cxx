@@ -101,7 +101,7 @@ bool resizeImageFile(const vigra::ImageImportInfo &info, const vigra::Shape2 &ne
 int main(int argc, char ** argv)
 {
     using namespace vigra;
-    
+
     if((argc < 3) || (argc > 5))
     {
         std::cout << "Usage: " << argv[0] << " infile outfile [factor] [method]" << std::endl;

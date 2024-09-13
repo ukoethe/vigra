@@ -78,13 +78,13 @@ struct NumpyArrayValuetypeTraits<FFTWComplex<float> >
 template <class T>
 NumpyAnyArray
 pythonCreateGaborFilter(typename MultiArrayView<2,T>::difference_type shape,
-                        double orientation, 
+                        double orientation,
                         double centerFrequency,
-                        double angularSigma, 
-                        double radialSigma, 
+                        double angularSigma,
+                        double radialSigma,
                         NumpyArray<2,Singleband<T> > res)
 {
-    res.reshapeIfEmpty(TaggedShape(shape, NumpyAnyArray::defaultAxistags(3)).toFrequencyDomain(), 
+    res.reshapeIfEmpty(TaggedShape(shape, NumpyAnyArray::defaultAxistags(3)).toFrequencyDomain(),
             "createGaborFilter(): Output array has wrong shape.");
 
     {
@@ -97,7 +97,7 @@ pythonCreateGaborFilter(typename MultiArrayView<2,T>::difference_type shape,
 
 // template <unsigned int N, int SIGN>
 // NumpyAnyArray
-// pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float> > > in, 
+// pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float> > > in,
                        // NumpyArray<N, Multiband<FFTWComplex<float> > > res)
 // {
     // res.reshapeIfEmpty(in.shape(), in.strideOrdering(),
@@ -136,7 +136,7 @@ pythonCreateGaborFilter(typename MultiArrayView<2,T>::difference_type shape,
 
 template <unsigned int N, int SIGN>
 NumpyAnyArray
-pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float> > > in, 
+pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float> > > in,
                        NumpyArray<N, Multiband<FFTWComplex<float> > > res)
 {
     res.reshapeIfEmpty(in.taggedShape().toFrequencyDomain(SIGN == FFTW_FORWARD
@@ -147,7 +147,7 @@ pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float> > > in,
     {
         PyAllowThreads _pythread;
         FFTWPlan<N-1, float> plan(in.bindOuter(0), res.bindOuter(0), SIGN);
-        
+
         for(MultiArrayIndex k=0; k<in.shape(N-1); ++k)
         {
             plan.execute(in.bindOuter(k), res.bindOuter(k));
@@ -183,19 +183,19 @@ pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float> > > in,
 //        problems (sudden crashes)?
 template <unsigned int N>
 NumpyAnyArray
-pythonFourierTransformR2C(NumpyArray<N, Multiband<float> > in, 
+pythonFourierTransformR2C(NumpyArray<N, Multiband<float> > in,
                           NumpyArray<N, Multiband<FFTWComplex<float> > > res)
 {
     res.reshapeIfEmpty(in.taggedShape().toFrequencyDomain(),
             "fourierTransformR2C(): Output has wrong shape.");
-        
+
     {
         PyAllowThreads _pythread;
-        // static_cast<typename NumpyArray<N, Multiband<FFTWComplex<float> > >::view_type &>(res) = 
+        // static_cast<typename NumpyArray<N, Multiband<FFTWComplex<float> > >::view_type &>(res) =
             // static_cast<typename NumpyArray<N, Multiband<float> >::view_type const &>(in);
         res = in;
         FFTWPlan<N-1, float> plan(res.bindOuter(0), res.bindOuter(0), FFTW_FORWARD);
-        
+
         for(MultiArrayIndex k=0; k<res.shape(N-1); ++k)
         {
             plan.execute(res.bindOuter(k), res.bindOuter(k));

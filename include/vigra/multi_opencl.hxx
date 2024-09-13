@@ -274,7 +274,7 @@ namespace multi_math {
 //@{
 /**
    \class cl_charNAccessor_COMP
-   
+
    access the first component.
 
    \class cl_TYPE3WriteAccessor_s1

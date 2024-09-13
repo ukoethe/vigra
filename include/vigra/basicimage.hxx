@@ -464,7 +464,7 @@ VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE)
 /** \brief Fundamental class template for images.
 
     <b>deprecated</b>, use \ref vigra::MultiArray instead
-    
+
     A customized memory allocator can be specified as a templated argument
     and passed in the constructor.
 
@@ -803,11 +803,11 @@ class BasicImage
     }
 
         /** reset image to specified size and skip initialization
-            if possible (use this if <tt>value_type</tt> is a built-in type 
-            or <tt>TinyVector&lt;builtin&gt&</tt> and the data is 
+            if possible (use this if <tt>value_type</tt> is a built-in type
+            or <tt>TinyVector&lt;builtin&gt&</tt> and the data is
             immediately overridden afterwards). If <tt>value_type</tt> requires
             initialization, <tt>SkipInitialization</tt> is ignored.
-            
+
             Usage:
             \code
             image.resize(new_width, new_height, SkipInitialization);
@@ -815,7 +815,7 @@ class BasicImage
         */
     void resize(std::ptrdiff_t width, std::ptrdiff_t height, SkipInitializationTag)
     {
-        resizeImpl(width, height, NumericTraits<value_type>::zero(), 
+        resizeImpl(width, height, NumericTraits<value_type>::zero(),
                    CanSkipInitialization<value_type>::value);
     }
 

@@ -6,7 +6,7 @@
 
 template<class Vector2ImageP>                                           // bei dem template handelt es sich um Vector2Image, der einer der folgenden Varianten einnehmen kann: FVector2Image, DVector2Image, Vector2Image
 class Vector2ImagePolicy
-: public TestPolicy<Vector2ImageP> 
+: public TestPolicy<Vector2ImageP>
 {
 
 public:
@@ -18,12 +18,12 @@ public:
     typedef std::vector<value_type>             data_array_type;
     typedef std::vector<child_value_type>       child_data_array_type;
     typedef typename value_type::value_type     type;
- 
+
     static data_array_type getData()
     {
         type frgb = 0.1;
         static value_type data[15];
-    
+
         for(int i = 0; i <= 14 ; i ++)
         {
             data[i] = value_type((i+frgb), (2*i + frgb));
@@ -31,7 +31,7 @@ public:
         static data_array_type data_vector(data, data+sizeof(data)/sizeof(value_type));
         return data_vector;
     }
-     
+
     static child_data_array_type getChildData()
     {
         return getData();

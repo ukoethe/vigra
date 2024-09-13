@@ -29,11 +29,11 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
- 
+
+
 #ifndef VIGRA_COLORCONVERSIONS_HXX
 #define VIGRA_COLORCONVERSIONS_HXX
 
@@ -54,8 +54,8 @@ inline ValueType gammaCorrection(double value, double gamma)
     typedef typename NumericTraits<ValueType>::RealPromote Promote;
     return NumericTraits<ValueType>::fromRealPromote(
               RequiresExplicitCast<Promote>::cast(
-                (value < 0.0) 
-                    ? -std::pow(-value, gamma) 
+                (value < 0.0)
+                    ? -std::pow(-value, gamma)
                     : std::pow(value, gamma)));
 }
 
@@ -65,7 +65,7 @@ inline ValueType gammaCorrection(double value, double gamma, double norm)
     typedef typename NumericTraits<ValueType>::RealPromote Promote;
     return NumericTraits<ValueType>::fromRealPromote(
               RequiresExplicitCast<Promote>::cast(
-                (value < 0.0) 
+                (value < 0.0)
                     ? -norm*std::pow(-value/norm, gamma)
                     : norm*std::pow(value/norm, gamma)));
 }
@@ -77,8 +77,8 @@ inline ValueType sRGBCorrection(double value, double norm)
     typedef typename NumericTraits<ValueType>::RealPromote Promote;
     return NumericTraits<ValueType>::fromRealPromote(
               RequiresExplicitCast<Promote>::cast(
-                (value <= 0.0031308) 
-                    ? norm*12.92*value 
+                (value <= 0.0031308)
+                    ? norm*12.92*value
                     : norm*(1.055*std::pow(value, 0.41666666666666667) - 0.055)));
 }
 
@@ -89,7 +89,7 @@ inline ValueType inverse_sRGBCorrection(double value, double norm)
     typedef typename NumericTraits<ValueType>::RealPromote Promote;
     return NumericTraits<ValueType>::fromRealPromote(
              RequiresExplicitCast<Promote>::cast(
-                (value <= 0.04045) 
+                (value <= 0.04045)
                     ? norm*value / 12.92
                     : norm*VIGRA_CSTD::pow((value + 0.055)/1.055, 2.4)));
 }
@@ -103,7 +103,7 @@ inline ValueType inverse_sRGBCorrection(double value, double norm)
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     <UL>
     <LI> <b>RGB/sRGB/R'G'B'</b><br>
         <em>linear and non-linear (gamma corrected) additive color</em>
@@ -115,7 +115,7 @@ inline ValueType inverse_sRGBCorrection(double value, double norm)
         <LI> \ref vigra::RGBPrime2RGBFunctor
         </UL><p>
     <LI> <b>XYZ</b><br>
-        <em>device independent color representation 
+        <em>device independent color representation
                (according to Publication CIE  No  15.2 "Colorimetry"
                 and ITU-R Recommendation BT.709)</em>
         <p>
@@ -126,7 +126,7 @@ inline ValueType inverse_sRGBCorrection(double value, double norm)
         <LI> \ref vigra::XYZ2RGBPrimeFunctor
         </UL><p>
     <LI> <b>L*a*b* </b><br>
-        <em>perceptually uniform color representation 
+        <em>perceptually uniform color representation
                (according to Publication CIE No 15.2 "Colorimetry" and
                ITU-R Recommendation BT.709)</em>
         <p>
@@ -141,7 +141,7 @@ inline ValueType inverse_sRGBCorrection(double value, double norm)
         <LI> \ref lab2Polar()
         </UL><p>
     <LI> <b>L*u*v* </b><br>
-        <em>perceptually uniform color representation 
+        <em>perceptually uniform color representation
                (according to Publication CIE No 15.2 "Colorimetry" and
                ITU-R Recommendation BT.709)</em>
         <p>
@@ -183,70 +183,70 @@ inline ValueType inverse_sRGBCorrection(double value, double norm)
         <LI> \ref yPrimeIQ2Polar()
         </UL><p>
     </UL>
-    
+
     \anchor _details
     This module provides conversion from RGB/R'G'B' into more perceptually uniform
-    color spaces. In image analysis, colors are usually converted into another color space 
-    in order to get good estimates of perceived color differences by just calculating 
-    Euclidean distances between the transformed colors. The L*a*b* and L*u*v* were 
+    color spaces. In image analysis, colors are usually converted into another color space
+    in order to get good estimates of perceived color differences by just calculating
+    Euclidean distances between the transformed colors. The L*a*b* and L*u*v* were
     designed with exactly this application in mind and thus give the best results. But these
     conversions are also the most computationally demanding. The Y'PbPr color difference
-    space (designed for coding digital video) is computationally much cheaper, and 
-    almost as good. Y'CbCr represents essentially the same transformation, but the color values 
-    are scaled so that they can be stored with 8 bits per channel with minimal loss of 
+    space (designed for coding digital video) is computationally much cheaper, and
+    almost as good. Y'CbCr represents essentially the same transformation, but the color values
+    are scaled so that they can be stored with 8 bits per channel with minimal loss of
     information. The other transformations are of lesser interest here: XYZ is a device independent
-    (but not perceptually uniform) color representation, and Y'IQ and Y'UV are the color 
+    (but not perceptually uniform) color representation, and Y'IQ and Y'UV are the color
     spaces used by the PAL and NTSC analog video standards. Detailed information about
-    these color spaces and their transformations can be found in 
+    these color spaces and their transformations can be found in
     <a href="http://www.poynton.com/ColorFAQ.html">Charles Poynton's Color FAQ</a>
-    
+
     When you want to perform a color conversion, you must first know in which
     color space the data are given. Although this sounds trivial, it is
-    quite often done wrong, because the distinction between RGB and sRGB (still images) or R'G'B' 
+    quite often done wrong, because the distinction between RGB and sRGB (still images) or R'G'B'
     (digital video) is frequently overlooked: nowadays, most still images are stored in
     sRGB space, and treating them as RGB leads to wrong results (although the color primaries
     are named the same). RGB and R'G'B' are related by a so called <em>gamma correction</em>:
-    
+
     \f[
         C' = C_{max} \left(\frac{C_{RGB}}{C_{max}} \right)^{0.45} \qquad
     \f]
-    
-    where C represents one of the color channels R, G, and B, and \f$ C_{max} \f$ usually equals 255. 
+
+    where C represents one of the color channels R, G, and B, and \f$ C_{max} \f$ usually equals 255.
     The sRGB color space realizes a slight enhancement of this definition:
-    
+
     \f[
         C_{sRGB} = \left\{\begin{array}{ll}
         12.92\,C_{RGB} & \textrm{ if }\frac{C_{RGB}}{C_{max}} \le 0.00304 \\
         C_{max}\left( 1.055 \left(\frac{C_{RGB}}{C_{max}}\right)^{1/2.4}-0.055\right) & \textrm{ otherwise}
         \end{array} \right.
     \f]
-    
-    sRGB has now become a widely accepted international standard (IEC 61966-2.1) which is used by most 
-    consumer products (digital cameras, printers, and screens). In practice, you can 
+
+    sRGB has now become a widely accepted international standard (IEC 61966-2.1) which is used by most
+    consumer products (digital cameras, printers, and screens). In practice, you can
     distinguish between linear and gamma-corrected red, green, and blue by displaying the images: if they look
-    too dark, they are probably RGB, if they are OK, they are likely sRGB. (However, there are still a few older 
-    graphics cards and display programs which silently apply an additional gamma correction to every image, 
+    too dark, they are probably RGB, if they are OK, they are likely sRGB. (However, there are still a few older
+    graphics cards and display programs which silently apply an additional gamma correction to every image,
     so that RGB appears correct and sRGB is too bright.) Whether or not the data are represented
     in the sRGB color space can also be seen in the color space tag of an image's EXIF data, if available.
-    
-    The distinction between RGB and R'G'B' is important because some conversions start at 
-    RGB (XYZ, L*a*b*, L*u*v*), while others start at R'G'B' (Y'PbPr, Y'CbCr, Y'IQ, and Y'UV). 
-    The names of VIGRA's color conversion functors always make clear to which color space 
+
+    The distinction between RGB and R'G'B' is important because some conversions start at
+    RGB (XYZ, L*a*b*, L*u*v*), while others start at R'G'B' (Y'PbPr, Y'CbCr, Y'IQ, and Y'UV).
+    The names of VIGRA's color conversion functors always make clear to which color space
     they must be applied.
-   
+
     In addition VIGRA provides a <em>\ref PolarColors "polar coordinate interface"</em>
     to several color spaces (L*a*b*, L*u*v*, Y'PbPr, Y'CbCr, Y'IQ, and Y'UV). This
     interface makes use of the fact that these color spaces are conceptually similar:
-    they represent colors by a "brightness" coordinate (L* or Y') and a pair of 
+    they represent colors by a "brightness" coordinate (L* or Y') and a pair of
     "chromaticity" coordinates that span a plane of colors with equal brightness.
     The polar representation transforms chroma coordinates into a color "angle"
-    (similar to hue in the HSV system) and a "saturation". The polar coordinates are 
+    (similar to hue in the HSV system) and a "saturation". The polar coordinates are
     normalized so that a color angle of 0 degrees is always associated with red
     (green is at about 120 degrees, blue at about 240 degrees - exact values differ
-    between color spaces). A saturation of 1 is the highest saturation that any RGB color 
-    in the unit cube can have after transformation into the respective color space, 
-    and saturation 0 corresponds to gray. Polar coordinates provide a more intuitive 
-    interface to color specification by users and make different color spaces somewhat 
+    between color spaces). A saturation of 1 is the highest saturation that any RGB color
+    in the unit cube can have after transformation into the respective color space,
+    and saturation 0 corresponds to gray. Polar coordinates provide a more intuitive
+    interface to color specification by users and make different color spaces somewhat
     comparable.
 */
 //@{
@@ -256,58 +256,58 @@ inline ValueType inverse_sRGBCorrection(double value, double norm)
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the transformation
-    
+
     \f[
         R' = R_{max} \left(\frac{R}{R_{max}} \right)^{0.45} \qquad
         G' = G_{max} \left(\frac{G}{G_{max}} \right)^{0.45} \qquad
         B' = B_{max} \left(\frac{B}{B_{max}} \right)^{0.45}
     \f]
-    
+
     By default, \f$ R_{max} = G_{max} = B_{max} = 255 \f$. This default can be overridden
-    in the constructor. If both source and target colors components are stored 
+    in the constructor. If both source and target colors components are stored
     as <tt>unsigned char</tt>, a look-up-table will be used to speed up the transformation.
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
     */
 template <class From, class To = From>
 class RGB2RGBPrimeFunctor
 {
   public:
-  
+
         /** the functor's argument type
         */
     typedef TinyVector<From, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<To, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<To, 3> value_type;
-  
+
         /** the result component's promote type
         */
     typedef typename NumericTraits<To>::RealPromote component_type;
-    
+
         /** Default constructor.
             The maximum value for each RGB component defaults to 255
         */
     RGB2RGBPrimeFunctor()
     : max_(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGB2RGBPrimeFunctor(component_type max)
     : max_(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -318,29 +318,29 @@ class RGB2RGBPrimeFunctor
             detail::gammaCorrection<To>(rgb[1], 0.45, max_),
             detail::gammaCorrection<To>(rgb[2], 0.45, max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
     }
-    
+
   private:
-    component_type max_;    
+    component_type max_;
 };
 
 template <>
 class RGB2RGBPrimeFunctor<unsigned char, unsigned char>
 {
     unsigned char lut_[256];
-        
+
   public:
-  
+
     typedef TinyVector<unsigned char, 3> argument_type;
-    
+
     typedef TinyVector<unsigned char, 3> result_type;
-    
+
     typedef TinyVector<unsigned char, 3> value_type;
-    
+
     RGB2RGBPrimeFunctor()
     {
         for(int i=0; i<256; ++i)
@@ -348,7 +348,7 @@ class RGB2RGBPrimeFunctor<unsigned char, unsigned char>
             lut_[i] = detail::gammaCorrection<unsigned char>(i, 0.45, 255.0);
         }
     }
-    
+
     RGB2RGBPrimeFunctor(double max)
     {
         for(int i=0; i<256; ++i)
@@ -356,13 +356,13 @@ class RGB2RGBPrimeFunctor<unsigned char, unsigned char>
             lut_[i] = detail::gammaCorrection<unsigned char>(i, 0.45, max);
         }
     }
-    
+
     template <class V>
     TinyVector<unsigned char, 3> operator()(V const & rgb) const
     {
         return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
@@ -381,61 +381,61 @@ class FunctorTraits<RGB2RGBPrimeFunctor<From, To> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
-    The sRGB color space is a slight improvement over the R'G'B' space. It is now a widely accepted 
+
+    The sRGB color space is a slight improvement over the R'G'B' space. It is now a widely accepted
     international standard (IEC 61966-2.1) which is used by most consumer products
     (digital cameras, printers, and screens). The functor realizes the transformation
-    
+
     \f[
         C_{sRGB} = \left\{ \begin{array}{ll}
         12.92\,C_{RGB} & \textrm{ if }\frac{C_{RGB}}{C_{max}} \le 0.0031308 \\
         C_{max}\left( 1.055 \left(\frac{C_{RGB}}{C_{max}}\right)^{1/2.4}-0.055\right) & \textrm{ otherwise}
         \end{array}  \right.
     \f]
-    
+
     where C is any of the primaries R, G, and B. By default, \f$ C_{max} = 255 \f$ (this default can be
     overridden in the constructor). If both source and target color components are stored
     as <tt>unsigned char</tt>, a look-up-table will be used to speed up the transformation.
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
     */
 template <class From, class To = From>
 class RGB2sRGBFunctor
 {
   public:
-  
+
         /** the functor's argument type
         */
     typedef TinyVector<From, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<To, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<To, 3> value_type;
-  
+
         /** the result component's promote type
         */
     typedef typename NumericTraits<To>::RealPromote component_type;
-    
+
         /** Default constructor.
             The maximum value for each RGB component defaults to 255
         */
     RGB2sRGBFunctor()
     : max_(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGB2sRGBFunctor(component_type max)
     : max_(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -446,29 +446,29 @@ class RGB2sRGBFunctor
             detail::sRGBCorrection<To>(rgb[1], max_),
             detail::sRGBCorrection<To>(rgb[2], max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "sRGB";
     }
-    
+
   private:
-    component_type max_;    
+    component_type max_;
 };
 
 template <>
 class RGB2sRGBFunctor<unsigned char, unsigned char>
 {
     unsigned char lut_[256];
-        
+
   public:
-  
+
     typedef TinyVector<unsigned char, 3> argument_type;
-    
+
     typedef TinyVector<unsigned char, 3> result_type;
-    
+
     typedef TinyVector<unsigned char, 3> value_type;
-    
+
     RGB2sRGBFunctor()
     {
         for(int i=0; i<256; ++i)
@@ -476,7 +476,7 @@ class RGB2sRGBFunctor<unsigned char, unsigned char>
             lut_[i] = detail::sRGBCorrection<unsigned char>(i, 255.0);
         }
     }
-    
+
     RGB2sRGBFunctor(double max)
     {
         for(int i=0; i<256; ++i)
@@ -484,13 +484,13 @@ class RGB2sRGBFunctor<unsigned char, unsigned char>
             lut_[i] = detail::sRGBCorrection<unsigned char>(i, max);
         }
     }
-    
+
     template <class V>
     TinyVector<unsigned char, 3> operator()(V const & rgb) const
     {
         return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
     }
-    
+
     static std::string targetColorSpace()
     {
         return "sRGB";
@@ -509,58 +509,58 @@ class FunctorTraits<RGB2sRGBFunctor<From, To> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the transformation
-    
+
     \f[
         R = R_{max} \left(\frac{R'}{R_{max}} \right)^{1/0.45} \qquad
         G = G_{max} \left(\frac{G'}{G_{max}} \right)^{1/0.45} \qquad
         B = B_{max} \left(\frac{B'}{B_{max}} \right)^{1/0.45}
     \f]
-    
+
     By default, \f$ R_{max} = G_{max} = B_{max} = 255 \f$. This default can be overridden
-    in the constructor. If both source and target color components are stored 
+    in the constructor. If both source and target color components are stored
     as <tt>unsigned char</tt>, a look-up-table will be used to speed up the transformation.
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class From, class To = From>
 class RGBPrime2RGBFunctor
 {
   public:
-  
+
         /** the functor's argument type
         */
     typedef TinyVector<From, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<To, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<To, 3> value_type;
-  
+
         /** the result component's promote type
         */
     typedef typename NumericTraits<To>::RealPromote component_type;
-    
+
         /** Default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2RGBFunctor()
     : max_(255.0), gamma_(1.0/0.45)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2RGBFunctor(component_type max)
     : max_(max), gamma_(1.0/0.45)
     {}
-    
+
         /** apply the transformation
         */
     result_type operator()(argument_type const & rgb) const
@@ -570,7 +570,7 @@ class RGBPrime2RGBFunctor
             detail::gammaCorrection<To>(rgb[1], gamma_, max_),
             detail::gammaCorrection<To>(rgb[2], gamma_, max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB";
@@ -583,17 +583,17 @@ class RGBPrime2RGBFunctor
 
 template <>
 class RGBPrime2RGBFunctor<unsigned char, unsigned char>
-{    
+{
     unsigned char lut_[256];
-        
+
   public:
-  
+
     typedef TinyVector<unsigned char, 3> argument_type;
-    
+
     typedef TinyVector<unsigned char, 3> result_type;
-    
+
     typedef TinyVector<unsigned char, 3> value_type;
-    
+
     RGBPrime2RGBFunctor()
     {
         for(int i=0; i<256; ++i)
@@ -601,7 +601,7 @@ class RGBPrime2RGBFunctor<unsigned char, unsigned char>
             lut_[i] = detail::gammaCorrection<unsigned char>(i, 1.0/0.45, 255.0);
         }
     }
-    
+
     RGBPrime2RGBFunctor(double max)
     {
         for(int i=0; i<256; ++i)
@@ -609,13 +609,13 @@ class RGBPrime2RGBFunctor<unsigned char, unsigned char>
             lut_[i] = detail::gammaCorrection<unsigned char>(i, 1.0/0.45, max);
         }
     }
-    
+
     template <class V>
     TinyVector<unsigned char, 3> operator()(V const & rgb) const
     {
         return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB";
@@ -634,61 +634,61 @@ class FunctorTraits<RGBPrime2RGBFunctor<From, To> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
-    The sRGB color space is a slight improvement over the R'G'B' space. Is is now a widely accepted 
+
+    The sRGB color space is a slight improvement over the R'G'B' space. Is is now a widely accepted
     international standard (IEC 61966-2.1) which is used by most consumer products
     (digital cameras, printers, and screens). The functor realizes the transformation
-    
+
     \f[
         C_{RGB} = \left\{\begin{array}{ll}
         C_{sRGB} / 12.92 & \textrm{if }\frac{C_{sRGB}}{C_{max}} \le 0.04045 \\
         C_{max}\left( \frac{C_{sRGB}/C_{max}+0.055}{1.055}\right)^{2.4} & \textrm{otherwise}
         \end{array}\right.
     \f]
-    
-    where C is one of the color channels R, G, or B, and \f$ C_{max}\f$ equals 255 by default (This default 
-    can be overridden in the constructor). If both source and target color components are stored 
+
+    where C is one of the color channels R, G, or B, and \f$ C_{max}\f$ equals 255 by default (This default
+    can be overridden in the constructor). If both source and target color components are stored
     as <tt>unsigned char</tt>, a look-up-table will be used to speed up the transformation.
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class From, class To = From>
 class sRGB2RGBFunctor
 {
   public:
-  
+
         /** the functor's argument type
         */
     typedef TinyVector<From, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<To, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<To, 3> value_type;
-  
+
         /** the result component's promote type
         */
     typedef typename NumericTraits<To>::RealPromote component_type;
-    
+
         /** Default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     sRGB2RGBFunctor()
     : max_(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     sRGB2RGBFunctor(component_type max)
     : max_(max)
     {}
-    
+
         /** apply the transformation
         */
     result_type operator()(argument_type const & rgb) const
@@ -698,7 +698,7 @@ class sRGB2RGBFunctor
             detail::inverse_sRGBCorrection<To>(rgb[1], max_),
             detail::inverse_sRGBCorrection<To>(rgb[2], max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB";
@@ -710,17 +710,17 @@ class sRGB2RGBFunctor
 
 template <>
 class sRGB2RGBFunctor<unsigned char, unsigned char>
-{    
+{
     unsigned char lut_[256];
-        
+
   public:
-  
+
     typedef TinyVector<unsigned char, 3> argument_type;
-    
+
     typedef TinyVector<unsigned char, 3> result_type;
-    
+
     typedef TinyVector<unsigned char, 3> value_type;
-    
+
     sRGB2RGBFunctor()
     {
         for(int i=0; i<256; ++i)
@@ -728,7 +728,7 @@ class sRGB2RGBFunctor<unsigned char, unsigned char>
             lut_[i] = detail::inverse_sRGBCorrection<unsigned char>(i, 255.0);
         }
     }
-    
+
     sRGB2RGBFunctor(double max)
     {
         for(int i=0; i<256; ++i)
@@ -736,13 +736,13 @@ class sRGB2RGBFunctor<unsigned char, unsigned char>
             lut_[i] = detail::inverse_sRGBCorrection<unsigned char>(i, max);
         }
     }
-    
+
     template <class V>
     TinyVector<unsigned char, 3> operator()(V const & rgb) const
     {
         return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB";
@@ -761,9 +761,9 @@ class FunctorTraits<sRGB2RGBFunctor<From, To> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     According to ITU-R Recommendation BT.709, the functor realizes the transformation
-    
+
     \f[
         \begin{array}{rcl}
         X & = & 0.412453\enspace R / R_{max} + 0.357580\enspace G / G_{max} + 0.180423\enspace B / B_{max}\\
@@ -771,24 +771,24 @@ class FunctorTraits<sRGB2RGBFunctor<From, To> >
         Z & = & 0.019334\enspace R / R_{max} + 0.119193\enspace G / G_{max} + 0.950227\enspace B / B_{max}
         \end{array}
     \f]
-    
+
     By default, \f$ R_{max} = G_{max} = B_{max} = 255 \f$. This default can be overridden
-    in the constructor. X, Y, and Z are always positive and reach their maximum for white. 
-    The white point is obtained by transforming RGB(255, 255, 255). It corresponds to the 
+    in the constructor. X, Y, and Z are always positive and reach their maximum for white.
+    The white point is obtained by transforming RGB(255, 255, 255). It corresponds to the
     D65 illuminant. Y represents the <em>luminance</em> ("brightness") of the color. The above
     transformation is officially defined in connection with the sRGB color space (i.e. when the RGB values
     are obtained by inverse gamma correction of sRGB), other color spaces use slightly different numbers
     or another standard illuminant (which gives raise to significantly different numbers).
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class RGB2XYZFunctor
 {
   public:
-  
+
         /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -796,29 +796,29 @@ class RGB2XYZFunctor
         /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGB2XYZFunctor()
     : max_(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGB2XYZFunctor(component_type max)
     : max_(max)
     {}
-    
+
         /** apply the transformation
         */
     result_type operator()(argument_type const & rgb) const
@@ -833,7 +833,7 @@ class RGB2XYZFunctor
         result[2] = Convert::cast(0.019334*red + 0.119193*green + 0.950227*blue);
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "XYZ";
@@ -855,25 +855,25 @@ class FunctorTraits<RGB2XYZFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the transformation
-    
+
     \f[
         R'G'B' \Rightarrow RGB \Rightarrow XYZ
     \f]
-    
-    See vigra::RGBPrime2RGBFunctor and vigra::RGB2XYZFunctor for a description of the two 
+
+    See vigra::RGBPrime2RGBFunctor and vigra::RGB2XYZFunctor for a description of the two
     steps.
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class RGBPrime2XYZFunctor
 {
   public:
-  
+
         /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -881,29 +881,29 @@ class RGBPrime2XYZFunctor
         /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
+
         /** default constructor
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2XYZFunctor()
     : gamma_(1.0/ 0.45), max_(component_type(255.0))
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2XYZFunctor(component_type max)
     : gamma_(1.0/ 0.45), max_(max)
     {}
-    
+
         /** apply the transformation
         */
     result_type operator()(argument_type const & rgb) const
@@ -918,7 +918,7 @@ class RGBPrime2XYZFunctor
         result[2] = Convert::cast(0.019334*red + 0.119193*green + 0.950227*blue);
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "XYZ";
@@ -941,9 +941,9 @@ class FunctorTraits<RGBPrime2XYZFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     According to ITU-R Recommendation BT.709, the functor realizes the transformation
-    
+
     \f[
         \begin{array}{rcl}
         R & = & R_{max} (3.2404813432\enspace X - 1.5371515163\enspace Y - 0.4985363262\enspace Z) \\
@@ -951,50 +951,50 @@ class FunctorTraits<RGBPrime2XYZFunctor<T> >
         B & = & B_{max} (0.0556466391\enspace X - 0.2040413384\enspace Y + 1.0573110696\enspace Z)
         \end{array}
     \f]
-    
+
     By default, \f$ R_{max} = G_{max} = B_{max} = 255 \f$. This default can be overridden
     in the constructor. This is the inverse transform of vigra::RGB2XYZFunctor.
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class XYZ2RGBFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     component_type max_;
-    
+
   public:
         /** the functor's argument type. (Actually, the argument type
             is more general: <TT>V</TT> with arbitrary
             <TT>V</TT>. But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<T, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<T, 3> value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     XYZ2RGBFunctor()
     : max_(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     XYZ2RGBFunctor(component_type max)
     : max_(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -1008,7 +1008,7 @@ class XYZ2RGBFunctor
                           NumericTraits<T>::fromRealPromote(green * max_),
                           NumericTraits<T>::fromRealPromote(blue * max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB";
@@ -1027,59 +1027,59 @@ class FunctorTraits<XYZ2RGBFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the transformation
-    
+
     \f[
         XYZ \Rightarrow RGB \Rightarrow R'G'B'
     \f]
-    
-    See vigra::XYZ2RGBFunctor and vigra::RGB2RGBPrimeFunctor for a description of the two 
+
+    See vigra::XYZ2RGBFunctor and vigra::RGB2RGBPrimeFunctor for a description of the two
     steps.
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class XYZ2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     double gamma_;
     component_type max_;
-    
+
   public:
-  
+
   public:
         /** the functor's argument type. (actually, the argument type
-            can be any vector type with the same interface. 
+            can be any vector type with the same interface.
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<T, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<T, 3> value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     XYZ2RGBPrimeFunctor()
     : gamma_(0.45), max_(component_type(255.0))
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     XYZ2RGBPrimeFunctor(component_type max)
     : gamma_(0.45), max_(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -1093,7 +1093,7 @@ class XYZ2RGBPrimeFunctor
                           NumericTraits<T>::fromRealPromote(detail::gammaCorrection<component_type>(green, gamma_) * max_),
                           NumericTraits<T>::fromRealPromote(detail::gammaCorrection<component_type>(blue, gamma_) * max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
@@ -1112,40 +1112,40 @@ class FunctorTraits<XYZ2RGBPrimeFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the transformation
-    
+
     \f[
         \begin{array}{rcl}
         L^{*} & = & 116 \left( \frac{Y}{Y_n} \right)^\frac{1}{3}-16 \quad \mbox{if} \quad 0.008856 < \frac{Y}{Y_n}\\
         & & \\
         L^{*} & = & 903.3\enspace \frac{Y}{Y_n} \quad \mbox{otherwise} \\
         & & \\
-        
-        u' & = & \frac{4 X}{X+15 Y + 3 Z}, \quad 
+
+        u' & = & \frac{4 X}{X+15 Y + 3 Z}, \quad
              v' = \frac{9 Y}{X+15 Y + 3 Z}\\
         & & \\
         u^{*} & = & 13 L^{*} (u' - u_n'), \quad v^{*} = 13 L^{*} (v' - v_n')
         \end{array}
     \f]
-    
-    where \f$(X_n, Y_n, Z_n) = (0.950456, 1.0, 1.088754)\f$ is the reference white point of standard illuminant D65, 
-    and \f$u_n' = 0.197839, v_n'=0.468342\f$ are the quantities \f$u', v'\f$ calculated for this point. 
-    \f$L^{*}\f$ represents the <em>lightness</em> ("brightness") of the color, and \f$u^{*}, v^{*}\f$ code the 
+
+    where \f$(X_n, Y_n, Z_n) = (0.950456, 1.0, 1.088754)\f$ is the reference white point of standard illuminant D65,
+    and \f$u_n' = 0.197839, v_n'=0.468342\f$ are the quantities \f$u', v'\f$ calculated for this point.
+    \f$L^{*}\f$ represents the <em>lightness</em> ("brightness") of the color, and \f$u^{*}, v^{*}\f$ code the
     chromaticity. (Instead of the rationals \f$\frac{216}{24389}\f$ and \f$\frac{24389}{27}\f$, the original standard gives the
-    rounded values 0.008856 and 903.3. As <a href="http://www.brucelindbloom.com/index.html?LContinuity.html">Bruce Lindbloom</a> 
-    points out, the rounded values give raise to a discontinuity which is removed by the accurate rationals. This bug will be fixed 
+    rounded values 0.008856 and 903.3. As <a href="http://www.brucelindbloom.com/index.html?LContinuity.html">Bruce Lindbloom</a>
+    points out, the rounded values give raise to a discontinuity which is removed by the accurate rationals. This bug will be fixed
     in future versions of the CIE Luv standard.)
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class XYZ2LuvFunctor
 {
   public:
-  
+
         /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -1153,21 +1153,21 @@ class XYZ2LuvFunctor
         /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
+
     XYZ2LuvFunctor()
     : gamma_(1.0/3.0),
       kappa_(24389.0/27.0),
       epsilon_(216.0/24389.0)
     {}
-    
+
     template <class V>
     result_type operator()(V const & xyz) const
     {
@@ -1194,7 +1194,7 @@ class XYZ2LuvFunctor
         }
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Luv";
@@ -1216,18 +1216,18 @@ class FunctorTraits<XYZ2LuvFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the inverse of the transformation described in vigra::XYZ2LuvFunctor
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class Luv2XYZFunctor
 {
   public:
-  
+
         /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -1235,20 +1235,20 @@ class Luv2XYZFunctor
         /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
+
     Luv2XYZFunctor()
     : gamma_(3.0),
       ikappa_(27.0/24389.0)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -1268,15 +1268,15 @@ class Luv2XYZFunctor
             component_type vprime = Convert::cast(luv[2] / 13.0 / luv[0] + 0.468342);
 
             result[1] = Convert::cast(
-                            luv[0] < 8.0 
-                                ? luv[0] * ikappa_ 
+                            luv[0] < 8.0
+                                ? luv[0] * ikappa_
                                 : VIGRA_CSTD::pow((luv[0] + 16.0) / 116.0, gamma_));
             result[0] = Convert::cast(9.0*uprime*result[1] / 4.0 / vprime);
             result[2] = Convert::cast(((9.0 / vprime - 15.0)*result[1] - result[0])/ 3.0);
         }
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "XYZ";
@@ -1298,9 +1298,9 @@ class FunctorTraits<Luv2XYZFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the transformation
-    
+
     \f[
         \begin{array}{rcl}
         L^{*} & = & 116 \left( \frac{Y}{Y_n} \right)^\frac{1}{3}-16 \quad \mbox{if} \quad \frac{216}{24389} < \frac{Y}{Y_n}\\
@@ -1312,23 +1312,23 @@ class FunctorTraits<Luv2XYZFunctor<T> >
         b^{*} & = & 200 \left[ \left( \frac{Y}{Y_n} \right)^\frac{1}{3} - \left( \frac{Z}{Z_n} \right)^\frac{1}{3} \right] \\
         \end{array}
     \f]
-    
-    where \f$(X_n, Y_n, Z_n) = (0.950456, 1.0, 1.088754)\f$ is the reference white point of standard illuminant D65. 
-    \f$L^{*}\f$ represents the <em>lightness</em> ("brightness") of the color, and \f$a^{*}, b^{*}\f$ code the 
+
+    where \f$(X_n, Y_n, Z_n) = (0.950456, 1.0, 1.088754)\f$ is the reference white point of standard illuminant D65.
+    \f$L^{*}\f$ represents the <em>lightness</em> ("brightness") of the color, and \f$a^{*}, b^{*}\f$ code the
     chromaticity. (Instead of the rationals \f$\frac{216}{24389}\f$ and \f$\frac{24389}{27}\f$, the original standard gives the
-    rounded values 0.008856 and 903.3. As <a href="http://www.brucelindbloom.com/index.html?LContinuity.html">Bruce Lindbloom</a> 
-    points out, the rounded values give raise to a discontinuity which is removed by the accurate rationals. This bug will be fixed 
+    rounded values 0.008856 and 903.3. As <a href="http://www.brucelindbloom.com/index.html?LContinuity.html">Bruce Lindbloom</a>
+    points out, the rounded values give raise to a discontinuity which is removed by the accurate rationals. This bug will be fixed
     in future versions of the CIE Lab standard.)
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class XYZ2LabFunctor
 {
   public:
-  
+
         /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -1336,21 +1336,21 @@ class XYZ2LabFunctor
         /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
+
     XYZ2LabFunctor()
     : gamma_(1.0/3.0),
       kappa_(24389.0/27.0),
       epsilon_(216.0/24389.0)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -1361,8 +1361,8 @@ class XYZ2LabFunctor
         component_type ygamma = Convert::cast(std::pow((double)xyz[1], gamma_));
         component_type zgamma = Convert::cast(std::pow(xyz[2] / 1.088754, gamma_));
         component_type L = Convert::cast(
-                              xyz[1] < epsilon_ 
-                                  ? kappa_ * xyz[1] 
+                              xyz[1] < epsilon_
+                                  ? kappa_ * xyz[1]
                                   : 116.0 * ygamma - 16.0);
         result_type result;
         result[0] = L;
@@ -1370,7 +1370,7 @@ class XYZ2LabFunctor
         result[2] = Convert::cast(200.0*(ygamma - zgamma));
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Lab";
@@ -1392,18 +1392,18 @@ class FunctorTraits<XYZ2LabFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the inverse of the transformation described in vigra::XYZ2LabFunctor
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class Lab2XYZFunctor
 {
   public:
-  
+
         /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -1411,22 +1411,22 @@ class Lab2XYZFunctor
         /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
+
         /** the functor's value type
         */
     Lab2XYZFunctor()
     : gamma_(3.0),
       ikappa_(27.0/24389.0)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -1446,7 +1446,7 @@ class Lab2XYZFunctor
         result[2] = Z;
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "XYZ";
@@ -1468,16 +1468,16 @@ class FunctorTraits<Lab2XYZFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the transformation
-    
+
     \f[
         RGB \Rightarrow XYZ \Rightarrow L^*u^*v^*
     \f]
-    
-    See vigra::RGB2XYZFunctor and vigra::XYZ2LuvFunctor for a description of the two 
+
+    See vigra::RGB2XYZFunctor and vigra::XYZ2LuvFunctor for a description of the two
     steps. The resulting color components will have the following bounds:
-    
+
     \f[
         \begin{array}{rcl}
         0 \leq & L^* & \leq 100 \\
@@ -1487,7 +1487,7 @@ class FunctorTraits<Lab2XYZFunctor<T> >
     \f]
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
@@ -1497,11 +1497,11 @@ class RGB2LuvFunctor
     L in [0, 100]
     u in [-83.077, 175.015]
     v in [-134.101, 107.393]
-    maximum saturation: 179.04 
+    maximum saturation: 179.04
     red = [53.2406, 175.015, 37.7522]
     */
   public:
-  
+
         /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -1509,29 +1509,29 @@ class RGB2LuvFunctor
         /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef typename XYZ2LuvFunctor<component_type>::result_type result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef typename XYZ2LuvFunctor<component_type>::result_type value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGB2LuvFunctor()
     : rgb2xyz(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGB2LuvFunctor(component_type max)
     : rgb2xyz(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -1539,7 +1539,7 @@ class RGB2LuvFunctor
     {
         return xyz2luv(rgb2xyz(rgb));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Luv";
@@ -1562,16 +1562,16 @@ class FunctorTraits<RGB2LuvFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the transformation
-    
+
     \f[
         RGB \Rightarrow XYZ \Rightarrow L^*a^*b^*
     \f]
-    
-    See vigra::RGB2XYZFunctor and vigra::XYZ2LabFunctor for a description of the two 
+
+    See vigra::RGB2XYZFunctor and vigra::XYZ2LabFunctor for a description of the two
     steps. The resulting color components will have the following bounds:
-    
+
     \f[
         \begin{array}{rcl}
         0 \leq & L^* & \leq 100 \\
@@ -1581,7 +1581,7 @@ class FunctorTraits<RGB2LuvFunctor<T> >
     \f]
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
@@ -1590,12 +1590,12 @@ class RGB2LabFunctor
     /*
     L in [0, 100]
     a in [-86.1813, 98.2352]
-    b in [-107.862, 94.4758] 
+    b in [-107.862, 94.4758]
     maximum saturation: 133.809
     red = [53.2406, 80.0942, 67.2015]
     */
   public:
-  
+
         /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -1603,29 +1603,29 @@ class RGB2LabFunctor
         /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef typename XYZ2LabFunctor<component_type>::result_type result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef typename XYZ2LabFunctor<component_type>::result_type value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGB2LabFunctor()
     : rgb2xyz(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGB2LabFunctor(component_type max)
     : rgb2xyz(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -1633,7 +1633,7 @@ class RGB2LabFunctor
     {
         return xyz2lab(rgb2xyz(rgb));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Lab";
@@ -1656,44 +1656,44 @@ class FunctorTraits<RGB2LabFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the inverse of the transformation described in vigra::RGB2LuvFunctor
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class Luv2RGBFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     XYZ2RGBFunctor<T> xyz2rgb;
     Luv2XYZFunctor<component_type> luv2xyz;
-    
+
   public:
         /** the functor's argument type. (Actually, the argument type
-            can be any vector type with the same interface. 
+            can be any vector type with the same interface.
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef typename XYZ2RGBFunctor<T>::result_type result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef typename XYZ2RGBFunctor<T>::result_type value_type;
-    
+
     Luv2RGBFunctor()
     : xyz2rgb(255.0)
     {}
-    
+
     Luv2RGBFunctor(component_type max)
     : xyz2rgb(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -1701,7 +1701,7 @@ class Luv2RGBFunctor
     {
         return xyz2rgb(luv2xyz(luv));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB";
@@ -1720,51 +1720,51 @@ class FunctorTraits<Luv2RGBFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the inverse of the transformation described in vigra::RGB2LabFunctor
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class Lab2RGBFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     XYZ2RGBFunctor<T> xyz2rgb;
     Lab2XYZFunctor<component_type> lab2xyz;
-    
+
   public:
-  
+
         /** the functor's argument type. (Actually, the argument type
-            can be any vector type with the same interface. 
+            can be any vector type with the same interface.
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef typename XYZ2RGBFunctor<T>::result_type result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef typename XYZ2RGBFunctor<T>::result_type value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     Lab2RGBFunctor()
     : xyz2rgb(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     Lab2RGBFunctor(component_type max)
     : xyz2rgb(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -1772,7 +1772,7 @@ class Lab2RGBFunctor
     {
         return xyz2rgb(lab2xyz(lab));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB";
@@ -1791,16 +1791,16 @@ class FunctorTraits<Lab2RGBFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the transformation
-    
+
     \f[
         R'G'B' \Rightarrow RGB \Rightarrow XYZ \Rightarrow L^*u^*v^*
     \f]
-    
-    See vigra::RGBPrime2RGBFunctor, vigra::RGB2XYZFunctor and vigra::XYZ2LuvFunctor for a description of the three 
+
+    See vigra::RGBPrime2RGBFunctor, vigra::RGB2XYZFunctor and vigra::XYZ2LuvFunctor for a description of the three
     steps. The resulting color components will have the following bounds:
-    
+
     \f[
         \begin{array}{rcl}
         0 \leq & L^* & \leq 100 \\
@@ -1810,14 +1810,14 @@ class FunctorTraits<Lab2RGBFunctor<T> >
     \f]
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class RGBPrime2LuvFunctor
 {
   public:
-  
+
         /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -1825,29 +1825,29 @@ class RGBPrime2LuvFunctor
         /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef typename XYZ2LuvFunctor<component_type>::result_type result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef typename XYZ2LuvFunctor<component_type>::result_type value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2LuvFunctor()
     : rgb2xyz(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2LuvFunctor(component_type max)
     : rgb2xyz(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -1855,7 +1855,7 @@ class RGBPrime2LuvFunctor
     {
         return xyz2luv(rgb2xyz(rgb));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Luv";
@@ -1878,16 +1878,16 @@ class FunctorTraits<RGBPrime2LuvFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the transformation
-    
+
     \f[
         R'G'B' \Rightarrow RGB \Rightarrow XYZ \Rightarrow L^*a^*b^*
     \f]
-    
-    See vigra::RGBPrime2RGBFunctor, vigra::RGB2XYZFunctor and vigra::XYZ2LabFunctor for a description of the three 
+
+    See vigra::RGBPrime2RGBFunctor, vigra::RGB2XYZFunctor and vigra::XYZ2LabFunctor for a description of the three
     steps. The resulting color components will have the following bounds:
-    
+
     \f[
         \begin{array}{rcl}
         0 \leq & L^* & \leq 100 \\
@@ -1897,14 +1897,14 @@ class FunctorTraits<RGBPrime2LuvFunctor<T> >
     \f]
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class RGBPrime2LabFunctor
 {
   public:
-  
+
         /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -1912,29 +1912,29 @@ class RGBPrime2LabFunctor
         /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef typename XYZ2LabFunctor<component_type>::result_type result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef typename XYZ2LabFunctor<component_type>::result_type value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2LabFunctor()
     : rgb2xyz(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2LabFunctor(component_type max)
     : rgb2xyz(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -1942,7 +1942,7 @@ class RGBPrime2LabFunctor
     {
         return xyz2lab(rgb2xyz(rgb));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Lab";
@@ -1965,51 +1965,51 @@ class FunctorTraits<RGBPrime2LabFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the inverse of the transformation described in vigra::RGBPrime2LuvFunctor
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class Luv2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     XYZ2RGBPrimeFunctor<T> xyz2rgb;
     Luv2XYZFunctor<component_type> luv2xyz;
-    
+
   public:
-  
+
         /** the functor's argument type. (Actually, the argument type
-            can be any vector type with the same interface. 
+            can be any vector type with the same interface.
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef typename XYZ2RGBFunctor<T>::result_type result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef typename XYZ2RGBFunctor<T>::result_type value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     Luv2RGBPrimeFunctor()
     : xyz2rgb(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     Luv2RGBPrimeFunctor(component_type max)
     : xyz2rgb(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -2017,7 +2017,7 @@ class Luv2RGBPrimeFunctor
     {
         return xyz2rgb(luv2xyz(luv));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
@@ -2036,51 +2036,51 @@ class FunctorTraits<Luv2RGBPrimeFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the inverse of the transformation described in vigra::RGBPrime2LabFunctor
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class Lab2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     XYZ2RGBPrimeFunctor<T> xyz2rgb;
     Lab2XYZFunctor<component_type> lab2xyz;
-    
+
   public:
-  
+
         /** the functor's argument type. (Actually, the argument type
-            can be any vector type with the same interface. 
+            can be any vector type with the same interface.
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef typename XYZ2RGBFunctor<T>::result_type result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef typename XYZ2RGBFunctor<T>::result_type value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     Lab2RGBPrimeFunctor()
     : xyz2rgb(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     Lab2RGBPrimeFunctor(component_type max)
     : xyz2rgb(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -2088,7 +2088,7 @@ class Lab2RGBPrimeFunctor
     {
         return xyz2rgb(lab2xyz(lab));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
@@ -2107,9 +2107,9 @@ class FunctorTraits<Lab2RGBPrimeFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     According to ITU-R Recommendation BT.601, the functor realizes the transformation
-    
+
     \f[
         \begin{array}{rcl}
         Y' & = & 0.299\enspace R / R_{max} + 0.587\enspace G / G_{max} + 0.114\enspace B / B_{max}\\
@@ -2117,12 +2117,12 @@ class FunctorTraits<Lab2RGBPrimeFunctor<T> >
         Pr & = & 0.5\enspace R / R_{max} + 0.4186875892\enspace G / G_{max} + 0.0813124108\enspace B / B_{max}
         \end{array}
     \f]
-    
+
     By default, \f$ R_{max} = G_{max} = B_{max} = 255 \f$. This default can be overridden
     in the constructor. Y' represents the <em>luminance</em> ("brightness") of the color, and
-    Pb and Pr are the blue (B'-Y') and red (R'-Y') color difference components. 
+    Pb and Pr are the blue (B'-Y') and red (R'-Y') color difference components.
     The transformation is scaled so that the following bounds apply:
-    
+
     \f[
         \begin{array}{rcl}
         0 \leq & Y' & \leq 1 \\
@@ -2132,7 +2132,7 @@ class FunctorTraits<Lab2RGBPrimeFunctor<T> >
     \f]
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
@@ -2146,7 +2146,7 @@ class RGBPrime2YPrimePbPrFunctor
     red = [0.299, -0.168736, 0.5]
     */
   public:
-  
+
         /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -2154,29 +2154,29 @@ class RGBPrime2YPrimePbPrFunctor
         /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2YPrimePbPrFunctor()
     : max_(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2YPrimePbPrFunctor(component_type max)
     : max_(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -2186,14 +2186,14 @@ class RGBPrime2YPrimePbPrFunctor
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
-        
+
         result_type result;
         result[0] = Convert::cast(0.299*red + 0.587*green + 0.114*blue);
         result[1] = Convert::cast(-0.1687358916*red - 0.3312641084*green + 0.5*blue);
         result[2] = Convert::cast(0.5*red - 0.4186875892*green - 0.0813124108*blue);
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Y'PbPr";
@@ -2215,50 +2215,50 @@ class FunctorTraits<RGBPrime2YPrimePbPrFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the inverse of the transformation described in vigra::RGBPrime2YPrimePbPrFunctor
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class YPrimePbPr2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     component_type max_;
-    
+
   public:
-  
+
         /** the functor's argument type. (Actually, the argument type
-            can be any vector type with the same interface. 
+            can be any vector type with the same interface.
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<T, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<T, 3> value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     YPrimePbPr2RGBPrimeFunctor()
     : max_(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     YPrimePbPr2RGBPrimeFunctor(component_type max)
     : max_(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -2272,7 +2272,7 @@ class YPrimePbPr2RGBPrimeFunctor
                            NumericTraits<T>::fromRealPromote(ngreen * max_),
                            NumericTraits<T>::fromRealPromote(nblue * max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
@@ -2291,9 +2291,9 @@ class FunctorTraits<YPrimePbPr2RGBPrimeFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     According to the PAL analog video standard, the functor realizes the transformation
-    
+
     \f[
         \begin{array}{rcl}
         Y' & = & 0.299\enspace R / R_{max} + 0.587\enspace G / G_{max} + 0.114\enspace B / B_{max}\\
@@ -2301,11 +2301,11 @@ class FunctorTraits<YPrimePbPr2RGBPrimeFunctor<T> >
         Q & = & 0.212\enspace R / R_{max} - 0.523\enspace G / G_{max} + 0.311\enspace B / B_{max}
         \end{array}
     \f]
-    
+
     By default, \f$ R_{max} = G_{max} = B_{max} = 255 \f$. This default can be overridden
-    in the constructor. Y' represents the <em>luminance</em> ("brightness") of the color. 
+    in the constructor. Y' represents the <em>luminance</em> ("brightness") of the color.
     The transformation is scaled so that the following bounds apply:
-    
+
     \f[
         \begin{array}{rcl}
         0 \leq & Y' & \leq 1 \\
@@ -2315,7 +2315,7 @@ class FunctorTraits<YPrimePbPr2RGBPrimeFunctor<T> >
     \f]
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
@@ -2329,7 +2329,7 @@ class RGBPrime2YPrimeIQFunctor
     red = [0.299, 0.596, 0.212]
     */
   public:
-  
+
         /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -2337,29 +2337,29 @@ class RGBPrime2YPrimeIQFunctor
         /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2YPrimeIQFunctor()
     : max_(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2YPrimeIQFunctor(component_type max)
     : max_(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -2369,14 +2369,14 @@ class RGBPrime2YPrimeIQFunctor
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
-        
+
         result_type result;
         result[0] = Convert::cast(0.299*red + 0.587*green + 0.114*blue);
         result[1] = Convert::cast(0.596*red - 0.274*green - 0.322*blue);
         result[2] = Convert::cast(0.212*red - 0.523*green + 0.311*blue);
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Y'IQ";
@@ -2398,50 +2398,50 @@ class FunctorTraits<RGBPrime2YPrimeIQFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the inverse of the transformation described in vigra::RGBPrime2YPrimeIQFunctor
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class YPrimeIQ2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     component_type max_;
-    
+
   public:
-  
+
         /** the functor's argument type. (Actually, the argument type
-            can be any vector type with the same interface. 
+            can be any vector type with the same interface.
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<T, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<T, 3> value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     YPrimeIQ2RGBPrimeFunctor()
     : max_(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     YPrimeIQ2RGBPrimeFunctor(component_type max)
     : max_(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -2455,7 +2455,7 @@ class YPrimeIQ2RGBPrimeFunctor
                            NumericTraits<T>::fromRealPromote(ngreen * max_),
                            NumericTraits<T>::fromRealPromote(nblue * max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
@@ -2474,9 +2474,9 @@ class FunctorTraits<YPrimeIQ2RGBPrimeFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     According to the NTSC analog video standard, the functor realizes the transformation
-    
+
     \f[
         \begin{array}{rcl}
         Y' & = & 0.299\enspace R / R_{max} + 0.587\enspace G / G_{max} + 0.114\enspace B / B_{max}\\
@@ -2484,11 +2484,11 @@ class FunctorTraits<YPrimeIQ2RGBPrimeFunctor<T> >
         V & = & 0.615\enspace R / R_{max} - 0.515\enspace G / G_{max} - 0.100\enspace B / B_{max}
         \end{array}
     \f]
-    
+
     By default, \f$ R_{max} = G_{max} = B_{max} = 255 \f$. This default can be overridden
-    in the constructor. Y' represents the <em>luminance</em> ("brightness") of the color. 
+    in the constructor. Y' represents the <em>luminance</em> ("brightness") of the color.
     The transformation is scaled so that the following bounds apply:
-    
+
     \f[
         \begin{array}{rcl}
         0 \leq & Y' & \leq 1 \\
@@ -2498,7 +2498,7 @@ class FunctorTraits<YPrimeIQ2RGBPrimeFunctor<T> >
     \f]
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
@@ -2512,7 +2512,7 @@ class RGBPrime2YPrimeUVFunctor
     red = [0.299, -0.147, 0.615]
     */
   public:
-  
+
         /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -2520,29 +2520,29 @@ class RGBPrime2YPrimeUVFunctor
         /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2YPrimeUVFunctor()
     : max_(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2YPrimeUVFunctor(component_type max)
     : max_(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -2552,14 +2552,14 @@ class RGBPrime2YPrimeUVFunctor
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
-        
+
         result_type result;
         result[0] = Convert::cast(0.299*red + 0.587*green + 0.114*blue);
         result[1] = Convert::cast(-0.1471376975*red - 0.2888623025*green + 0.436*blue);
         result[2] = Convert::cast(0.6149122807*red - 0.5149122807*green - 0.100*blue);
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Y'UV";
@@ -2581,50 +2581,50 @@ class FunctorTraits<RGBPrime2YPrimeUVFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the inverse of the transformation described in vigra::RGBPrime2YPrimeUVFunctor
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class YPrimeUV2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     component_type max_;
-    
+
   public:
-  
+
         /** the functor's argument type. (Actually, the argument type
-            can be any vector type with the same interface. 
+            can be any vector type with the same interface.
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<T, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<T, 3> value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     YPrimeUV2RGBPrimeFunctor()
     : max_(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     YPrimeUV2RGBPrimeFunctor(component_type max)
     : max_(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -2638,7 +2638,7 @@ class YPrimeUV2RGBPrimeFunctor
                            NumericTraits<T>::fromRealPromote(ngreen * max_),
                            NumericTraits<T>::fromRealPromote(nblue * max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
@@ -2657,11 +2657,11 @@ class FunctorTraits<YPrimeUV2RGBPrimeFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     This functor basically applies the same transformation as vigra::RGBPrime2YPrimePbPrFunctor
     but the color components are scaled so that they can be coded as 8 bit integers with
     minimal loss of information:
-    
+
     \f[
         \begin{array}{rcl}
         16\leq & Y' & \leq 235 \\
@@ -2671,7 +2671,7 @@ class FunctorTraits<YPrimeUV2RGBPrimeFunctor<T> >
     \f]
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
@@ -2685,7 +2685,7 @@ class RGBPrime2YPrimeCbCrFunctor
     red = [81.481, 90.203, 240]
     */
   public:
-  
+
         /** the result's component type
         */
     typedef typename NumericTraits<T>::RealPromote component_type;
@@ -2693,29 +2693,29 @@ class RGBPrime2YPrimeCbCrFunctor
         /** the functor's argument type
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<component_type, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2YPrimeCbCrFunctor()
     : max_(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2YPrimeCbCrFunctor(component_type max)
     : max_(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -2725,14 +2725,14 @@ class RGBPrime2YPrimeCbCrFunctor
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
-        
+
         result_type result;
         result[0] = Convert::cast(16.0 + 65.481*red + 128.553*green + 24.966*blue);
         result[1] = Convert::cast(128.0 - 37.79683972*red - 74.20316028*green + 112.0*blue);
         result[2] = Convert::cast(128.0 + 112.0*red - 93.78601998*green - 18.21398002*blue);
         return result;
     }
-    
+
     static std::string targetColorSpace()
     {
         return "Y'CbCr";
@@ -2754,50 +2754,50 @@ class FunctorTraits<RGBPrime2YPrimeCbCrFunctor<T> >
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     The functor realizes the inverse of the transformation described in vigra::RGBPrime2YPrimeCbCrFunctor
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 */
 template <class T>
 class YPrimeCbCr2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
-    
+
     component_type max_;
-    
+
   public:
-  
+
         /** the functor's argument type. (Actually, the argument type
-            can be any vector type with the same interface. 
+            can be any vector type with the same interface.
             But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
-  
+
         /** the functor's result type
         */
     typedef TinyVector<T, 3> result_type;
-  
+
         /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<T, 3> value_type;
-    
+
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     YPrimeCbCr2RGBPrimeFunctor()
     : max_(255.0)
     {}
-    
+
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     YPrimeCbCr2RGBPrimeFunctor(component_type max)
     : max_(max)
     {}
-    
+
         /** apply the transformation
         */
     template <class V>
@@ -2807,7 +2807,7 @@ class YPrimeCbCr2RGBPrimeFunctor
         component_type y  = Convert::cast(ycbcr[0] - 16.0);
         component_type cb = Convert::cast(ycbcr[1] - 128.0);
         component_type cr = Convert::cast(ycbcr[2] - 128.0);
-        
+
         component_type nred   = Convert::cast(0.00456621*y + 0.006258928571*cr);
         component_type ngreen = Convert::cast(0.00456621*y - 0.001536322706*cb - 0.003188108420*cr);
         component_type nblue  = Convert::cast(0.00456621*y + 0.007910714286*cb);
@@ -2815,7 +2815,7 @@ class YPrimeCbCr2RGBPrimeFunctor
                            NumericTraits<T>::fromRealPromote(ngreen * max_),
                            NumericTraits<T>::fromRealPromote(nblue * max_));
     }
-    
+
     static std::string targetColorSpace()
     {
         return "RGB'";
@@ -2889,13 +2889,13 @@ YUV: white = [229.992, 1, 9.81512e-17]
 
 /** \ingroup ColorConversions
     \defgroup PolarColors Polar Color Coordinates
-    
+
     Transform colors from/to a polar representation (hue, brightness, saturation).
-    In many situations, this is more intuitive than direct initialization in a 
-    particular color space. The polar coordinates are 
+    In many situations, this is more intuitive than direct initialization in a
+    particular color space. The polar coordinates are
     normalized so that a color angle of 0 degrees is always associated with red
     (green is at about 120 degrees, blue at about 240 degrees - exact values differ
-    between color spaces). A saturation of 1 is the highest saturation that any RGB color 
+    between color spaces). A saturation of 1 is the highest saturation that any RGB color
     gets after transformation into the respective color space, and saturation 0 corresponds to
     gray. Thus, different color spaces become somewhat comparable.
 */
@@ -2904,27 +2904,27 @@ YUV: white = [229.992, 1, 9.81512e-17]
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     <b> Declarations:</b>
-    
+
     \code
     TinyVector<float, 3>
     polar2Lab(double color, double brightness, double saturation);
-    
+
     TinyVector<float, 3>
     polar2Lab(TinyVector<float, 3> const & polar);
     \endcode
-    
+
     \arg color - the color angle in degrees
     \arg brightness - between 0 and 1
     \arg saturation - between 0 and 1
-    
+
     L*a*b* polar coordinates of some important colors:
-    
+
     \code
     black   = [*, 0, 0]    * - arbitrary
     white   = [*, 1, 0]    * - arbitrary
-    
+
     red     = [      0, 0.532406, 0.781353]
     yellow  = [62.8531, 0.971395, 0.724189]
     green   = [96.0184, 0.877351, 0.895108]
@@ -2938,7 +2938,7 @@ polar2Lab(double color, double brightness, double saturation)
 {
     double angle = (color+39.9977)/180.0*M_PI;
     double normsat = saturation*133.809;
-    
+
     TinyVector<float, 3> result;
     result[0] = float(100.0*brightness);
     result[1] = float(normsat*VIGRA_CSTD::cos(angle));
@@ -2957,17 +2957,17 @@ polar2Lab(V const & polar)
 /** \brief Create polar representation form L*a*b*
 
     <b> Declaration:</b>
-    
+
     \code
     namespace vigra {
         TinyVector<float, 3> lab2Polar(TinyVector<float, 3> const & lab);
     }
     \endcode
-    
+
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
-    This realizes the inverse of the transformation described in 
+
+    This realizes the inverse of the transformation described in
     \ref polar2Lab().
 */
 template <class V>
@@ -2990,27 +2990,27 @@ lab2Polar(V const & lab)
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     <b> Declarations:</b>
-    
+
     \code
     TinyVector<float, 3>
     polar2Luv(double color, double brightness, double saturation);
-    
+
     TinyVector<float, 3>
     polar2Luv(TinyVector<float, 3> const & polar);
     \endcode
-    
+
     \arg color - the color angle in degrees
     \arg brightness - between 0 and 1
     \arg saturation - between 0 and 1
-    
+
     L*u*v* polar coordinates of some important colors:
-    
+
     \code
     black   = [*, 0, 0]    * - arbitrary
     white   = [*, 1, 0]    * - arbitrary
-    
+
     red     = [      0, 0.532406,        1]
     yellow  = [   73.7, 0.971395, 0.597953]
     green   = [115.552, 0.877351, 0.758352]
@@ -3024,7 +3024,7 @@ polar2Luv(double color, double brightness, double saturation)
 {
     double angle = (color+12.1727)/180.0*M_PI;
     double normsat = saturation*179.04;
-    
+
     TinyVector<float, 3> result;
     result[0] = float(100.0*brightness);
     result[1] = float(normsat*VIGRA_CSTD::cos(angle));
@@ -3042,17 +3042,17 @@ polar2Luv(V const & polar)
 /** \brief Create polar representation form L*u*v*
 
     <b> Declaration:</b>
-    
+
     \code
     namespace vigra {
         TinyVector<float, 3> luv2Polar(TinyVector<float, 3> const & luv);
     }
     \endcode
-    
+
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
-    This realizes the inverse of the transformation described in 
+
+    This realizes the inverse of the transformation described in
     \ref polar2Luv().
 */
 template <class V>
@@ -3075,27 +3075,27 @@ luv2Polar(V const & luv)
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     <b> Declarations:</b>
-    
+
     \code
     TinyVector<float, 3>
     polar2YPrimePbPr(double color, double brightness, double saturation);
-    
+
     TinyVector<float, 3>
     polar2YPrimePbPr(TinyVector<float, 3> const & polar);
     \endcode
-    
+
     \arg color - the color angle in degrees
     \arg brightness - between 0 and 1
     \arg saturation - between 0 and 1
-    
+
     Y'PbPr polar coordinates of some important colors:
-    
+
     \code
     black   = [*, 0, 0]    * - arbitrary
     white   = [*, 1, 0]    * - arbitrary
-    
+
     red     = [      0,  0.299, 0.988419]
     yellow  = [62.1151,  0.886, 0.948831]
     green   = [123.001,  0.587,        1]
@@ -3109,7 +3109,7 @@ polar2YPrimePbPr(double color, double brightness, double saturation)
 {
     double angle = (color+18.6481)/180.0*M_PI;
     double normsat = saturation*0.533887;
-    
+
     TinyVector<float, 3> result;
     result[0] = float(brightness);
     result[1] = float(-normsat*VIGRA_CSTD::sin(angle));
@@ -3127,17 +3127,17 @@ polar2YPrimePbPr(V const & polar)
 /** \brief Create polar representation form Y'PbPr
 
     <b> Declaration:</b>
-    
+
     \code
     namespace vigra {
         TinyVector<float, 3> yPrimePbPr2Polar(TinyVector<float, 3> const & ypbpr);
     }
     \endcode
-    
+
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
-    This realizes the inverse of the transformation described in 
+
+    This realizes the inverse of the transformation described in
     \ref polar2YPrimePbPr().
 */
 template <class V>
@@ -3160,27 +3160,27 @@ yPrimePbPr2Polar(V const & ypbpr)
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     <b> Declarations:</b>
-    
+
     \code
     TinyVector<float, 3>
     polar2YPrimeCbCr(double color, double brightness, double saturation);
-    
+
     TinyVector<float, 3>
     polar2YPrimeCbCr(TinyVector<float, 3> const & polar);
     \endcode
-    
+
     \arg color - the color angle in degrees
     \arg brightness - between 0 and 1
     \arg saturation - between 0 and 1
-    
+
     Y'CbCr polar coordinates of some important colors:
-    
+
     \code
     black   = [*, 0, 0]    * - arbitrary
     white   = [*, 1, 0]    * - arbitrary
-    
+
     red     = [      0,  0.299, 0.988419]
     yellow  = [62.1151,  0.886, 0.948831]
     green   = [123.001,  0.587,        1]
@@ -3194,7 +3194,7 @@ polar2YPrimeCbCr(double color, double brightness, double saturation)
 {
     double angle = (color+18.6482)/180.0*M_PI;
     double normsat = saturation*119.591;
-    
+
     TinyVector<float, 3> result;
     result[0] = float(brightness*219.0 + 16.0);
     result[1] = float(-normsat*VIGRA_CSTD::sin(angle)+128.0);
@@ -3212,17 +3212,17 @@ polar2YPrimeCbCr(V const & polar)
 /** \brief Create polar representation form Y'CbCr
 
     <b> Declaration:</b>
-    
+
     \code
     namespace vigra {
         TinyVector<float, 3> yPrimeCbCr2Polar(TinyVector<float, 3> const & ycbcr);
     }
     \endcode
-    
+
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
-    This realizes the inverse of the transformation described in 
+
+    This realizes the inverse of the transformation described in
     \ref polar2YPrimeCbCr().
 */
 template <class V>
@@ -3247,27 +3247,27 @@ yPrimeCbCr2Polar(V const & ycbcr)
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     <b> Declarations:</b>
-    
+
     \code
     TinyVector<float, 3>
     polar2YPrimeIQ(double color, double brightness, double saturation);
-    
+
     TinyVector<float, 3>
     polar2YPrimeIQ(TinyVector<float, 3> const & polar);
     \endcode
-    
+
     \arg color - the color angle in degrees
     \arg brightness - between 0 and 1
     \arg saturation - between 0 and 1
-    
+
     Y'IQ polar coordinates of some important colors:
-    
+
     \code
     black   = [*, 0, 0]    * - arbitrary
     white   = [*, 1, 0]    * - arbitrary
-    
+
     red     = [      0, 0.299,        1]
     yellow  = [63.5851, 0.886, 0.707681]
     green   = [137.231, 0.587, 0.933362]
@@ -3281,7 +3281,7 @@ polar2YPrimeIQ(double color, double brightness, double saturation)
 {
     double angle = (color-19.5807)/180.0*M_PI;
     double normsat = saturation*0.632582;
-    
+
     TinyVector<float, 3> result;
     result[0] = float(brightness);
     result[1] = float(normsat*VIGRA_CSTD::cos(angle));
@@ -3299,17 +3299,17 @@ polar2YPrimeIQ(V const & polar)
 /** \brief Create polar representation form Y'IQ
 
     <b> Declaration:</b>
-    
+
     \code
     namespace vigra {
         TinyVector<float, 3> yPrimeIQ2Polar(TinyVector<float, 3> const & yiq);
     }
     \endcode
-    
+
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
-    This realizes the inverse of the transformation described in 
+
+    This realizes the inverse of the transformation described in
     \ref polar2YPrimeIQ().
 */
 template <class V>
@@ -3332,27 +3332,27 @@ yPrimeIQ2Polar(V const & yiq)
 
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
+
     <b> Declarations:</b>
-    
+
     \code
     TinyVector<float, 3>
     polar2YPrimeUV(double color, double brightness, double saturation);
-    
+
     TinyVector<float, 3>
     polar2YPrimeUV(TinyVector<float, 3> const & polar);
     \endcode
-    
+
     \arg color - the color angle in degrees
     \arg brightness - between 0 and 1
     \arg saturation - between 0 and 1
-    
+
     Y'UV polar coordinates of some important colors:
-    
+
     \code
     black   = [*, 0, 0]    * - arbitrary
     white   = [*, 1, 0]    * - arbitrary
-    
+
     red     = [      0, 0.299,        1]
     yellow  = [63.5851, 0.886, 0.707681]
     green   = [137.231, 0.587, 0.933362]
@@ -3366,7 +3366,7 @@ polar2YPrimeUV(double color, double brightness, double saturation)
 {
     double angle = (color+13.4569)/180.0*M_PI;
     double normsat = saturation*0.632324;
-    
+
     TinyVector<float, 3> result;
     result[0] = float(brightness);
     result[1] = float(-normsat*VIGRA_CSTD::sin(angle));
@@ -3384,17 +3384,17 @@ polar2YPrimeUV(V const & polar)
 /** \brief Create polar representation form Y'UV
 
     <b> Declaration:</b>
-    
+
     \code
     namespace vigra {
         TinyVector<float, 3> yPrimeUV2Polar(TinyVector<float, 3> const & yuv);
     }
     \endcode
-    
+
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
-    
-    This realizes the inverse of the transformation described in 
+
+    This realizes the inverse of the transformation described in
     \ref polar2YPrimeUV().
 */
 template <class V>
@@ -3415,6 +3415,6 @@ yPrimeUV2Polar(V const & yuv)
 
 //@}
 
-} // namespace vigra 
+} // namespace vigra
 
 #endif /* VIGRA_COLORCONVERSIONS_HXX */

@@ -156,7 +156,7 @@ polynomialMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
 
 /** \brief Warp an image according to an polynomial transformation.
 
-    To get more information about the structure of the matrix, 
+    To get more information about the structure of the matrix,
     see \ref polynomialMatrix2DFromCorrespondingPoints().
 
     <b>\#include</b> \<vigra/polynomial_registration.hxx\><br>

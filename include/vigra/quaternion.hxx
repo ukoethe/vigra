@@ -51,17 +51,17 @@ namespace vigra {
     Quaternions are mainly used as a compact representation for 3D rotations because
     they are much less prone to round-off errors than rotation matrices, especially
     when many rotations are concatenated. In addition, the angle/axis interpretation
-    of normalized quaternions is very intuitive. Read the 
-    <a href="http://en.wikipedia.org/wiki/Quaternion">Wikipedia entry on quaternions</a> 
+    of normalized quaternions is very intuitive. Read the
+    <a href="http://en.wikipedia.org/wiki/Quaternion">Wikipedia entry on quaternions</a>
     for more information on the mathematics.
-    
+
     See also: \ref QuaternionOperations
 */
 template<class ValueType>
 class Quaternion {
   public:
     typedef TinyVector<ValueType, 3> Vector;
-    
+
         /** the quaternion's valuetype
         */
     typedef ValueType value_type;
@@ -87,9 +87,9 @@ class Quaternion {
     Quaternion(ValueType w = 0, ValueType x = 0, ValueType y = 0, ValueType z = 0)
     : w_(w), v_(x, y, z)
     {}
-    
+
         /** Construct a quaternion with real value and imaginary vector.
-        
+
             Equivalent to <tt>Quaternion(w, v[0], v[1], v[2])</tt>.
         */
     Quaternion(ValueType w, const Vector &v)
@@ -101,7 +101,7 @@ class Quaternion {
     Quaternion(const Quaternion &q)
     : w_(q.w_), v_(q.v_)
     {}
-    
+
         /** Copy assignment.
         */
     Quaternion & operator=(Quaternion const & other)
@@ -110,7 +110,7 @@ class Quaternion {
         v_ = other.v_;
         return *this;
     }
-    
+
         /** Assign \a w to the real part and set the imaginary part to zero.
         */
     Quaternion & operator=(ValueType w)
@@ -176,21 +176,21 @@ class Quaternion {
     void setX(ValueType x) { v_[0] = x; }
     void setY(ValueType y) { v_[1] = y; }
     void setZ(ValueType z) { v_[2] = z; }
-    
+
         /** Access entry at index (0 <=> w(), 1 <=> v[0] etc.).
         */
     value_type & operator[](int index)
     {
         return (&w_)[index];
     }
-    
+
         /** Read entry at index (0 <=> w(), 1 <=> v[0] etc.).
         */
     value_type operator[](int index) const
     {
         return (&w_)[index];
     }
-    
+
         /** Magnitude.
         */
     NormType magnitude() const
@@ -206,7 +206,7 @@ class Quaternion {
     }
 
         /** Add \a w to the real part.
-        
+
             If the quaternion represents a rotation, the rotation angle is
             increased by \a w.
         */
@@ -226,7 +226,7 @@ class Quaternion {
     }
 
         /** Subtract \a w from the real part.
-        
+
             If the quaternion represents a rotation, the rotation angle is
             decreased by \a w.
         */
@@ -260,8 +260,8 @@ class Quaternion {
     }
 
         /** Multiply assignment.
-        
-            If the quaternions represent rotations, the rotations of <tt>this</tt> and 
+
+            If the quaternions represent rotations, the rotations of <tt>this</tt> and
             \a other are concatenated.
         */
     Quaternion &operator*=(Quaternion const &other)
@@ -405,7 +405,7 @@ Quaternion<ValueType> conj(Quaternion<ValueType> const & q)
 template<typename Type>
 inline Quaternion<Type>
 operator+(const Quaternion<Type>& t1,
-           const Quaternion<Type>& t2) 
+           const Quaternion<Type>& t2)
 {
   return Quaternion<Type>(t1) += t2;
 }
@@ -414,7 +414,7 @@ operator+(const Quaternion<Type>& t1,
 template<typename Type>
 inline Quaternion<Type>
 operator+(const Quaternion<Type>& t1,
-           const Type& t2) 
+           const Type& t2)
 {
   return Quaternion<Type>(t1) += t2;
 }
@@ -423,7 +423,7 @@ operator+(const Quaternion<Type>& t1,
 template<typename Type>
 inline Quaternion<Type>
 operator+(const Type& t1,
-           const Quaternion<Type>& t2) 
+           const Quaternion<Type>& t2)
 {
   return Quaternion<Type>(t1) += t2;
 }
@@ -432,7 +432,7 @@ operator+(const Type& t1,
 template<typename Type>
 inline Quaternion<Type>
 operator-(const Quaternion<Type>& t1,
-           const Quaternion<Type>& t2) 
+           const Quaternion<Type>& t2)
 {
   return Quaternion<Type>(t1) -= t2;
 }
@@ -441,7 +441,7 @@ operator-(const Quaternion<Type>& t1,
 template<typename Type>
 inline Quaternion<Type>
 operator-(const Quaternion<Type>& t1,
-           const Type& t2) 
+           const Type& t2)
 {
   return Quaternion<Type>(t1) -= t2;
 }
@@ -450,7 +450,7 @@ operator-(const Quaternion<Type>& t1,
 template<typename Type>
 inline Quaternion<Type>
 operator-(const Type& t1,
-           const Quaternion<Type>& t2) 
+           const Quaternion<Type>& t2)
 {
   return Quaternion<Type>(t1) -= t2;
 }
@@ -459,7 +459,7 @@ operator-(const Type& t1,
 template<typename Type>
 inline Quaternion<Type>
 operator*(const Quaternion<Type>& t1,
-           const Quaternion<Type>& t2) 
+           const Quaternion<Type>& t2)
 {
   return Quaternion<Type>(t1) *= t2;
 }
@@ -468,11 +468,11 @@ operator*(const Quaternion<Type>& t1,
 template<typename Type>
 inline Quaternion<Type>
 operator*(const Quaternion<Type>& t1,
-           double t2) 
+           double t2)
 {
   return Quaternion<Type>(t1) *= t2;
 }
-  
+
     /// Multiplication with a scalar on the left.
 template<typename Type>
 inline Quaternion<Type>
@@ -486,7 +486,7 @@ operator*(double t1,
 template<typename Type>
 inline Quaternion<Type>
 operator/(const Quaternion<Type>& t1,
-           const Quaternion<Type>& t2) 
+           const Quaternion<Type>& t2)
 {
   return Quaternion<Type>(t1) /= t2;
 }
@@ -495,11 +495,11 @@ operator/(const Quaternion<Type>& t1,
 template<typename Type>
 inline Quaternion<Type>
 operator/(const Quaternion<Type>& t1,
-           double t2) 
+           double t2)
 {
   return Quaternion<Type>(t1) /= t2;
 }
-  
+
     /// Division of a scalar by a Quaternion.
 template<typename Type>
 inline Quaternion<Type>

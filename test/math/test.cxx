@@ -404,19 +404,19 @@ struct FunctionsTest
             shouldEqual(vigra::sin_pi(x), 0.0);
             shouldEqual(vigra::cos_pi(x+0.5), 0.0);
         }
-        
+
         for(double x = -4.5; x <= 4.5; x += 2.0)
         {
             shouldEqual(vigra::sin_pi(x), -1.0);
             shouldEqual(vigra::cos_pi(x+0.5), 1.0);
         }
-        
+
         for(double x = -3.5; x <= 4.5; x += 2.0)
         {
             shouldEqual(vigra::sin_pi(x), 1.0);
             shouldEqual(vigra::cos_pi(x+0.5), -1.0);
         }
-        
+
         for(double x = -4.0; x <= 4.0; x += 0.0625)
         {
             shouldEqualTolerance(vigra::sin_pi(x), std::sin(M_PI*x), 1e-14);
@@ -481,42 +481,42 @@ struct FunctionsTest
 
     void testBessel()
     {
-        // Reference values computed to 16 digits with Python.mpmath. 
+        // Reference values computed to 16 digits with Python.mpmath.
         // Casual comparison showed no difference to Mathematica's results.
         double x[] = { 1.0, 4.0, 6.0 };
         double besseljnref[] = {
-            7.6519768655796649e-01, -3.9714980986384740e-01, 1.5064525725099692e-01, 
-            5.7672480775687329e-01, -3.2757913759146523e-01, -4.6828234823458334e-03, 
-            4.8609126058589103e-01, -2.4287320996018547e-01, -1.1299172042407525e-01, 
-            4.3017147387562193e-01, -1.6755558799533424e-01, -1.8093519033665686e-01, 
-            3.9123236045864818e-01, -1.0535743487538894e-01, -2.1960268610200856e-01, 
-            3.6208707488717234e-01, -5.5038855669513713e-02, -2.3828585178317879e-01, 
-            3.3919660498317961e-01, -1.4458842084785106e-02, -2.4372476722886663e-01, 
-            3.2058907797982628e-01, 1.8376032647858614e-02, -2.4057094958616052e-01, 
-            3.0506707225300012e-01, 4.5095329080457235e-02, -2.3197310306707983e-01, 
-            2.9185568526512001e-01, 6.6976198673670620e-02, -2.2004622511384700e-01, 
-            2.8042823052537585e-01, 8.5006705446061023e-02, -2.0620569442259729e-01, 
-            2.7041248255096445e-01, 9.9950477050301592e-02, -1.9139539469541733e-01, 
-            2.6153687541034509e-01, 1.1240023492610679e-01, -1.7624117645477547e-01, 
-            2.5359797330294920e-01, 1.2281915265293869e-01, -1.6115376768165826e-01, 
-            2.4643993656993257e-01, 1.3157198580936999e-01, -1.4639794400255970e-01    
+            7.6519768655796649e-01, -3.9714980986384740e-01, 1.5064525725099692e-01,
+            5.7672480775687329e-01, -3.2757913759146523e-01, -4.6828234823458334e-03,
+            4.8609126058589103e-01, -2.4287320996018547e-01, -1.1299172042407525e-01,
+            4.3017147387562193e-01, -1.6755558799533424e-01, -1.8093519033665686e-01,
+            3.9123236045864818e-01, -1.0535743487538894e-01, -2.1960268610200856e-01,
+            3.6208707488717234e-01, -5.5038855669513713e-02, -2.3828585178317879e-01,
+            3.3919660498317961e-01, -1.4458842084785106e-02, -2.4372476722886663e-01,
+            3.2058907797982628e-01, 1.8376032647858614e-02, -2.4057094958616052e-01,
+            3.0506707225300012e-01, 4.5095329080457235e-02, -2.3197310306707983e-01,
+            2.9185568526512001e-01, 6.6976198673670620e-02, -2.2004622511384700e-01,
+            2.8042823052537585e-01, 8.5006705446061023e-02, -2.0620569442259729e-01,
+            2.7041248255096445e-01, 9.9950477050301592e-02, -1.9139539469541733e-01,
+            2.6153687541034509e-01, 1.1240023492610679e-01, -1.7624117645477547e-01,
+            2.5359797330294920e-01, 1.2281915265293869e-01, -1.6115376768165826e-01,
+            2.4643993656993257e-01, 1.3157198580936999e-01, -1.4639794400255970e-01
         };
         double besselynref[] = {
-            8.8256964215676956e-02, -1.6940739325064992e-02, -2.8819468398157916e-01, 
-            -1.0703243154093754e-01, 1.4786314339122683e-01, -3.0266723702418485e-01, 
-            -1.6040039348492374e-01, 2.2985790254811306e-01, -2.6303660482037811e-01, 
-            -1.8202211595348500e-01, 2.6808060304231507e-01, -2.0509487811877961e-01, 
-            -1.9214228737369318e-01, 2.8294322431117191e-01, -1.4494951186809379e-01, 
-            -1.9706088806443733e-01, 2.8511777841103764e-01, -8.9252841434580163e-02, 
-            -1.9930679029227036e-01, 2.8035255955745608e-01, -4.0297251103395833e-02, 
-            -2.0006390460040860e-01, 2.7184139484930947e-01, 1.5698795407253514e-03, 
-            -1.9994686666043449e-01, 2.6140472921203017e-01, 3.6815736940746704e-02, 
-            -1.9929926580524435e-01, 2.5009898312668521e-01, 6.6197858895869655e-02, 
-            -1.9832403085028555e-01, 2.3854272714494473e-01, 9.0526604143921052e-02, 
-            -1.9714613354518651e-01, 2.2709735924007149e-01, 1.1056356972736049e-01, 
-            -1.9584504763522584e-01, 2.1597027298252575e-01, 1.2698414345087472e-01, 
-            -1.9447256680104227e-01, 2.0527533641239212e-01, 1.4036965442780550e-01, 
-            -1.9306306446008192e-01, 1.9506914688206353e-01, 1.5121244335755843e-01        
+            8.8256964215676956e-02, -1.6940739325064992e-02, -2.8819468398157916e-01,
+            -1.0703243154093754e-01, 1.4786314339122683e-01, -3.0266723702418485e-01,
+            -1.6040039348492374e-01, 2.2985790254811306e-01, -2.6303660482037811e-01,
+            -1.8202211595348500e-01, 2.6808060304231507e-01, -2.0509487811877961e-01,
+            -1.9214228737369318e-01, 2.8294322431117191e-01, -1.4494951186809379e-01,
+            -1.9706088806443733e-01, 2.8511777841103764e-01, -8.9252841434580163e-02,
+            -1.9930679029227036e-01, 2.8035255955745608e-01, -4.0297251103395833e-02,
+            -2.0006390460040860e-01, 2.7184139484930947e-01, 1.5698795407253514e-03,
+            -1.9994686666043449e-01, 2.6140472921203017e-01, 3.6815736940746704e-02,
+            -1.9929926580524435e-01, 2.5009898312668521e-01, 6.6197858895869655e-02,
+            -1.9832403085028555e-01, 2.3854272714494473e-01, 9.0526604143921052e-02,
+            -1.9714613354518651e-01, 2.2709735924007149e-01, 1.1056356972736049e-01,
+            -1.9584504763522584e-01, 2.1597027298252575e-01, 1.2698414345087472e-01,
+            -1.9447256680104227e-01, 2.0527533641239212e-01, 1.4036965442780550e-01,
+            -1.9306306446008192e-01, 1.9506914688206353e-01, 1.5121244335755843e-01
         };
 
         for(int n = 0; n < 15; ++n)
@@ -651,7 +651,7 @@ struct FunctionsTest
         shouldEqual(crc, 77705727u);
 
         const int size = 446;
-        char t[size+1] =  
+        char t[size+1] =
             "Lorem ipsum dolor sit amet, consectetur adipisicing elit, "
             "sed do eiusmod tempor incididunt ut labore et dolore magna "
             "aliqua. Ut enim ad minim veniam, quis nostrud exercitation "
@@ -1090,7 +1090,7 @@ struct AutodiffTest
         should(closeAtTolerance(pow(N1(3.0, 1.0), 2.0), N1(9.0, 6.0)));
         should(closeAtTolerance(pow(3.0, N1(2.0, 1.0)), N1(9.0, 9.0*log(3.0))));
         should(closeAtTolerance(pow(N2(3.0, 1.0, 0.0), N2(2.0, 0.0, 1.0)), N2(9.0, 6.0, 9.0*log(3.0))));
-        
+
         // check constraints
         N1 x(2.3, 1.0);
         N2 a(1.2,2.3,3.4), b(4.5,5.6,6.7);
@@ -1255,7 +1255,7 @@ struct QuaternionTest
         shouldEqual(q*2.0, Q(2,4,6,8));
         shouldEqual(2.0*q, Q(2,4,6,8));
 
-        Q q1 = q / q;       
+        Q q1 = q / q;
         shouldEqualTolerance(q1[0], 1.0, 1e-16);
         shouldEqualTolerance(q1[1], 0.0, 1e-16);
         shouldEqualTolerance(q1[2], 0.0, 1e-16);
@@ -1271,7 +1271,7 @@ struct QuaternionTest
         Q q(1.0, 2.0, 3.0, 4.0);
         q /= norm(q);
 
-        double ref[3][3] = {{-2.0/3.0,  0.4/3.0, 2.2/3.0 }, 
+        double ref[3][3] = {{-2.0/3.0,  0.4/3.0, 2.2/3.0 },
                             { 2.0/3.0, -1.0/3.0, 2.0/3.0 },
                             { 1.0/3.0,  2.8/3.0, 0.4/3.0 } };
 
@@ -1472,9 +1472,9 @@ struct FixedPoint16Test
 
         shouldEqual((vigra::FixedPoint16<1, vigra::FPOverflowSaturate>(3.75).value), (1 << 15)-1);
         shouldEqual((vigra::FixedPoint16<1, vigra::FPOverflowSaturate>(-3.75).value), -(1 << 15));
-        try { vigra::FixedPoint16<1, vigra::FPOverflowError>(3.75); failTest("No exception thrown"); } 
+        try { vigra::FixedPoint16<1, vigra::FPOverflowError>(3.75); failTest("No exception thrown"); }
         catch(vigra::PreconditionViolation &) {}
-        try { vigra::FixedPoint16<1, vigra::FPOverflowError>(-3.75); failTest("No exception thrown"); } 
+        try { vigra::FixedPoint16<1, vigra::FPOverflowError>(-3.75); failTest("No exception thrown"); }
         catch(vigra::PreconditionViolation &) {}
 
         vigra::FixedPoint16<4> v(3.75);
@@ -1555,7 +1555,7 @@ struct FixedPoint16Test
         typedef vigra::FixedPoint16<8> FP8;
         typedef vigra::FixedPoint16<13> FP13;
         typedef vigra::FixedPoint16<15> FP15;
-        
+
         FP1 t0(0), t1(0.75), t2(0.25);
         signed char v1 = 1, v2 = 2, v4 = 4, v8 = 8;
 
@@ -1566,7 +1566,7 @@ struct FixedPoint16Test
         shouldEqual(FP2(t1) /= t2, FP2(3));
         shouldEqual(FP2(t1) /= t0, vigra::NumericTraits<FP2>::max());
         shouldEqual(FP2(-t1) /= t0, vigra::NumericTraits<FP2>::min());
-        
+
         FP2 res;
         shouldEqual(add(t1, t1, res), FP2(1.5));
         shouldEqual(sub(t1, t1, res), FP2(0));
@@ -1594,9 +1594,9 @@ struct FixedPoint16Test
 
         shouldEqual((vigra::FixedPoint16<2, vigra::FPOverflowSaturate>(t1*FP7(v8)).value), (1 << 15)-1);
         shouldEqual((vigra::FixedPoint16<2, vigra::FPOverflowSaturate>(t1*FP7(-v8)).value), -(1 << 15));
-        try { vigra::FixedPoint16<2, vigra::FPOverflowError>(t1*FP7(v8)); failTest("No exception thrown"); } 
+        try { vigra::FixedPoint16<2, vigra::FPOverflowError>(t1*FP7(v8)); failTest("No exception thrown"); }
         catch(vigra::PreconditionViolation &) {}
-        try { vigra::FixedPoint16<2, vigra::FPOverflowError>(t1*FP7(-v8)); failTest("No exception thrown"); } 
+        try { vigra::FixedPoint16<2, vigra::FPOverflowError>(t1*FP7(-v8)); failTest("No exception thrown"); }
         catch(vigra::PreconditionViolation &) {}
 
         shouldEqual((FP13(t1 * FP7(v1))).value, 3);
@@ -1663,7 +1663,7 @@ struct FixedPoint16Test
         shouldEqual(vigra::atan2(FP1(0), FP1(-1)), FP2(M_PI));
         shouldEqual(vigra::atan2(FP1(1), FP1(0)), FP2(0.5*M_PI));
         shouldEqual(vigra::atan2(FP1(-1), FP1(0)), FP2(-0.5*M_PI));
-        
+
         for(int i = -179; i < 180; ++i)
         {
             double angle = M_PI*i/180.0;
@@ -1948,7 +1948,7 @@ struct LinalgTest
         for(unsigned int i=0, k=0; i<c; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(a2(i,j), tref2[k]);
-        
+
         shouldEqual(trace(a2), 3.0);
 
         Matrix id = vigra::identityMatrix<double>(r);
@@ -2037,7 +2037,7 @@ struct LinalgTest
         Matrix matColumnMean = Matrix(1, 2, columnMean);
         Matrix matRowMean = Matrix(3, 1, rowMean);
         shouldEqualSequence(matColumnMean.data(), matColumnMean.data()+2, a.mean(0).data());
-        shouldEqualSequence(matRowMean.data(), matRowMean.data()+3, a.mean(1).data());  
+        shouldEqualSequence(matRowMean.data(), matRowMean.data()+3, a.mean(1).data());
     }
 
     void testArgMinMax()
@@ -2338,7 +2338,7 @@ struct LinalgTest
             shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
 
             Matrix c = transpose(a) * a; // make a symmetric positive definite matrix
-            Matrix d = transpose(a) * b; 
+            Matrix d = transpose(a) * b;
             should(linearSolve (c, d, x, "Cholesky"));
             ax = c * x;
             shouldEqualSequenceTolerance(ax.data(), ax.data()+size, d.data(), epsilon);
@@ -2569,7 +2569,7 @@ struct LinalgTest
                               0.0, 0.2, 0.0,
                               0.0, 0.0, 0.23076923076923081,
                               0.0, 0.4, 0.0 };
-            
+
         Matrix m(3, 5, data2), piref(5, 3, refdata), pitref(transpose(piref));
         Matrix pi = inverse(m);
         shouldEqual(pi.shape(), Shape(5, 3));

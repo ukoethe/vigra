@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -62,24 +62,24 @@ namespace vigra {
 /** \brief Calculate the gradient energy tensor for a scalar valued image.
 
     These function calculates the gradient energy tensor (GET operator) as described in
-    
-    M. Felsberg, U. K&ouml;the: 
-    <i>"GET: The Connection Between Monogenic Scale-Space and Gaussian Derivatives"</i>, 
-    in: R. Kimmel, N. Sochen, J. Weickert (Eds.): Scale Space and PDE Methods in Computer Vision, 
+
+    M. Felsberg, U. K&ouml;the:
+    <i>"GET: The Connection Between Monogenic Scale-Space and Gaussian Derivatives"</i>,
+    in: R. Kimmel, N. Sochen, J. Weickert (Eds.): Scale Space and PDE Methods in Computer Vision,
     Proc. of Scale-Space 2005, Lecture Notes in Computer Science 3459, pp. 192-203, Heidelberg: Springer, 2005.
-    
-    U. K&ouml;the, M. Felsberg: 
-    <i>"Riesz-Transforms Versus Derivatives: On the Relationship Between the Boundary Tensor and the Energy Tensor"</i>, 
+
+    U. K&ouml;the, M. Felsberg:
+    <i>"Riesz-Transforms Versus Derivatives: On the Relationship Between the Boundary Tensor and the Energy Tensor"</i>,
     in: ditto, pp. 179-191.
 
-    with the given filters: The derivative filter \a derivKernel is applied to the appropriate image dimensions 
-    in turn (see the papers above for details), and the other dimension is smoothed with \a smoothKernel. 
-    The kernels can be as small as 3x1, e.g. [0.5, 0, -0.5] and [3.0/16.0, 10.0/16.0, 3.0/16.0] respectively.  
+    with the given filters: The derivative filter \a derivKernel is applied to the appropriate image dimensions
+    in turn (see the papers above for details), and the other dimension is smoothed with \a smoothKernel.
+    The kernels can be as small as 3x1, e.g. [0.5, 0, -0.5] and [3.0/16.0, 10.0/16.0, 3.0/16.0] respectively.
     The output image must have 3 bands which will hold the
     tensor components in the order t11, t12 (== t21), t22. The signs of the output are adjusted for a right-handed
     coordinate system. Thus, orientations derived from the tensor will be in counter-clockwise (mathematically positive)
     order, with the x-axis at zero degrees (this is the standard in all VIGRA functions that deal with orientation).
-    
+
     <b> Declarations:</b>
 
     pass 2D array views:
@@ -157,29 +157,29 @@ void gradientEnergyTensor(SrcIterator supperleft, SrcIterator slowerright, SrcAc
 
     int w = slowerright.x - supperleft.x;
     int h = slowerright.y - supperleft.y;
-    
-    typedef typename 
+
+    typedef typename
        NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
-    typedef BasicImage<TmpType> TmpImage;    
-    TmpImage gx(w, h), gy(w, h), 
-             gxx(w, h), gxy(w, h), gyy(w, h), 
+    typedef BasicImage<TmpType> TmpImage;
+    TmpImage gx(w, h), gy(w, h),
+             gxx(w, h), gxy(w, h), gyy(w, h),
              laplace(w, h), gx3(w, h), gy3(w, h);
-    
-    convolveImage(srcIterRange(supperleft, slowerright, src), destImage(gx), 
+
+    convolveImage(srcIterRange(supperleft, slowerright, src), destImage(gx),
                   derivKernel, smoothKernel);
-    convolveImage(srcIterRange(supperleft, slowerright, src), destImage(gy), 
+    convolveImage(srcIterRange(supperleft, slowerright, src), destImage(gy),
                   smoothKernel, derivKernel);
-    convolveImage(srcImageRange(gx), destImage(gxx), 
+    convolveImage(srcImageRange(gx), destImage(gxx),
                   derivKernel, smoothKernel);
-    convolveImage(srcImageRange(gx), destImage(gxy), 
+    convolveImage(srcImageRange(gx), destImage(gxy),
                   smoothKernel, derivKernel);
-    convolveImage(srcImageRange(gy), destImage(gyy), 
+    convolveImage(srcImageRange(gy), destImage(gyy),
                   smoothKernel, derivKernel);
-    combineTwoImages(srcImageRange(gxx), srcImage(gyy), destImage(laplace), 
+    combineTwoImages(srcImageRange(gxx), srcImage(gyy), destImage(laplace),
                      std::plus<TmpType>());
-    convolveImage(srcImageRange(laplace), destImage(gx3), 
+    convolveImage(srcImageRange(laplace), destImage(gx3),
                   derivKernel, smoothKernel);
-    convolveImage(srcImageRange(laplace), destImage(gy3), 
+    convolveImage(srcImageRange(laplace), destImage(gy3),
                   smoothKernel, derivKernel);
     typename TmpImage::iterator gxi  = gx.begin(),
                                 gyi  = gy.begin(),
@@ -190,7 +190,7 @@ void gradientEnergyTensor(SrcIterator supperleft, SrcIterator slowerright, SrcAc
                                 gy3i = gy3.begin();
     for(int y = 0; y < h; ++y, ++dupperleft.y)
     {
-        typename DestIterator::row_iterator d = dupperleft.rowIterator(); 
+        typename DestIterator::row_iterator d = dupperleft.rowIterator();
         for(int x = 0; x < w; ++x, ++d, ++gxi, ++gyi, ++gxxi, ++gxyi, ++gyyi, ++gx3i, ++gy3i)
         {
             dest.setComponent(sq(*gxxi) + sq(*gxyi) - *gxi * *gx3i, d, 0);

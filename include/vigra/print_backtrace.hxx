@@ -39,19 +39,19 @@
 /* Quick-and-dirty way to print a backtrace upon a signal in Linux.
 
    Especially useful if you can't use a debugger (e.g. on TravisCI).
-   
+
    Usage:
-   
+
    Make sure to compile in debug mode.
    Have "addr2line" installed (was already present on TravisCI and our local machines).
-   
+
    #include <vigra/print_backtrace.hxx>
-   
+
    int main(int argc, char** argv)
    {
        program_name = argv[0];
        signal(SIGSEGV, &vigra_print_backtrace);  // catch the desired signal
-       
+
        run_buggy_code();
    }
 */
@@ -59,7 +59,7 @@
 #include <execinfo.h>
 #include <stdio.h>
 #include <stdlib.h>
-    
+
 
 static char * program_name;
 
@@ -76,7 +76,7 @@ static void vigra_print_backtrace(int sig)
     char **messages = (char **)NULL;
     static const int BACKTRACE_SIZE = 100;
     void *stack_traces[BACKTRACE_SIZE];
-    
+
     fprintf(stderr, "caught signal %d, printing backtrace\n\n", sig);
 
     trace_size = backtrace(stack_traces, BACKTRACE_SIZE);
@@ -92,5 +92,5 @@ static void vigra_print_backtrace(int sig)
     if (messages) { free(messages); }
     exit(1);
 }
-    
+
 #endif // VIGRA_PRINT_BACKTRACE_HXX

@@ -52,7 +52,7 @@ namespace vigra
 template <class InValue, class OutValue>
 NumpyAnyArray
 pythonShockFilter(NumpyArray<3, Multiband<InValue> > image,
-                  float sigma, 
+                  float sigma,
                   float rho,
                   float upwind_factor_h,
                   unsigned int iterations,
@@ -69,7 +69,7 @@ pythonShockFilter(NumpyArray<3, Multiband<InValue> > image,
             MultiArrayView<2, InValue,  StridedArrayTag> bimage = image.bindOuter(k);
 
 
-            shockFilter(bimage,bres, sigma, 
+            shockFilter(bimage,bres, sigma,
                 rho, upwind_factor_h, iterations);
         }
     }
@@ -176,8 +176,8 @@ void defineFilters2D()
     def("shockFilter",
         registerConverters(&pythonShockFilter<float, float>),
         (
-            arg("image"), 
-            arg("sigma"), 
+            arg("image"),
+            arg("sigma"),
             arg("rho"),
             arg("updwindFactorH") ,
             arg("iterations"),
@@ -188,8 +188,8 @@ void defineFilters2D()
         "For details see shockFilter_ in the vigra C++ documentation.\n");
 
 
-    
-    
+
+
 
 
     def("totalVariationFilter",

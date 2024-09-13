@@ -116,7 +116,7 @@ class SplitBase
         t_data.push_back(in.class_count_);
     }
 
-    NodeBase & createNode() 
+    NodeBase & createNode()
     {
         return node_;
     }
@@ -153,7 +153,7 @@ class SplitBase
                       ArrayVector<Region> /*childs*/,
                       Random /*randint*/)
     {
-#ifndef __clang__   
+#ifndef __clang__
         // FIXME: This compile-time checking trick does not work for clang.
         CompileTimeError SplitFunctor__findBestSplit_member_was_not_defined;
 #endif
@@ -188,7 +188,7 @@ class SplitBase
         detail::Normalise<RF_Tag>::exec(ret.prob_begin(), ret.prob_end());
 //        std::copy(ret.prob_begin(), ret.prob_end(), std::ostream_iterator<double>(std::cerr, ", " ));
 //        std::cerr << std::endl;
-        ret.weights() = region.size();  
+        ret.weights() = region.size();
         return e_ConstProbNode;
     }
 
@@ -205,7 +205,7 @@ class SortSamplesByDimensions
     double thresVal_;
   public:
 
-    SortSamplesByDimensions(DataMatrix const & data, 
+    SortSamplesByDimensions(DataMatrix const & data,
                             MultiArrayIndex sortColumn,
                             double thresVal = 0.0)
     : data_(data),
@@ -219,7 +219,7 @@ class SortSamplesByDimensions
     }
     void setThreshold(double value)
     {
-        thresVal_ = value; 
+        thresVal_ = value;
     }
 
     bool operator()(MultiArrayIndex l, MultiArrayIndex r) const
@@ -240,7 +240,7 @@ class DimensionNotEqual
 
   public:
 
-    DimensionNotEqual(DataMatrix const & data, 
+    DimensionNotEqual(DataMatrix const & data,
                             MultiArrayIndex sortColumn)
     : data_(data),
       sortColumn_(sortColumn)
@@ -265,10 +265,10 @@ class SortSamplesByHyperplane
 
   public:
 
-    SortSamplesByHyperplane(DataMatrix              const & data, 
+    SortSamplesByHyperplane(DataMatrix              const & data,
                             Node<i_HyperplaneNode>  const & node)
-    :       
-            data_(data), 
+    :
+            data_(data),
             node_(node)
     {}
 
@@ -279,7 +279,7 @@ class SortSamplesByHyperplane
         double result_l = -1 * node_.intercept();
         for(int ii = 0; ii < node_.columns_size(); ++ii)
         {
-            result_l +=     rowVector(data_, l)[node_.columns_begin()[ii]] 
+            result_l +=     rowVector(data_, l)[node_.columns_begin()[ii]]
                         *   node_.weights()[ii];
         }
         return result_l;
@@ -293,7 +293,7 @@ class SortSamplesByHyperplane
 };
 
 /** makes a Class Histogram given indices in a labels_ array
- *  usage: 
+ *  usage:
  *      MultiArrayView<2, T2, C2> labels = makeSomeLabels()
  *      ArrayVector<int> hist(numberOfLabels(labels), 0);
  *      RandomForestClassCounter<T2, C2, ArrayVector> counter(labels, hist);
@@ -309,7 +309,7 @@ class RandomForestClassCounter
 
   public:
 
-    RandomForestClassCounter(DataSource  const & labels, 
+    RandomForestClassCounter(DataSource  const & labels,
                              CountArray & counts)
     : labels_(labels),
       counts_(counts)
@@ -360,13 +360,13 @@ public:
      * and class weights
      */
     template<class Array, class Array2>
-    double operator()        (Array     const & hist, 
-                              Array2    const & weights, 
+    double operator()        (Array     const & hist,
+                              Array2    const & weights,
                               double            total = 1.0) const
     {
         return impurity(hist, weights, total);
     }
-    
+
     /** calculate the gini based impurity based on class histogram
      */
     template<class Array>
@@ -374,7 +374,7 @@ public:
     {
         return impurity(hist, total);
     }
-    
+
     /** static version of operator(hist total)
      */
     template<class Array>
@@ -386,8 +386,8 @@ public:
     /** static version of operator(hist, weights, total)
      */
     template<class Array, class Array2>
-    static double impurity   (Array     const & hist, 
-                              Array2    const & weights, 
+    static double impurity   (Array     const & hist,
+                              Array2    const & weights,
                               double            total)
     {
 
@@ -409,7 +409,7 @@ public:
             }
         }
         entropy             = total * entropy;
-        return entropy; 
+        return entropy;
     }
 };
 
@@ -422,13 +422,13 @@ public:
      * and class weights
      */
     template<class Array, class Array2>
-    double operator()        (Array     const & hist, 
-                              Array2    const & weights, 
+    double operator()        (Array     const & hist,
+                              Array2    const & weights,
                               double            total = 1.0) const
     {
         return impurity(hist, weights, total);
     }
-    
+
     /** calculate the gini based impurity based on class histogram
      */
     template<class Array>
@@ -436,7 +436,7 @@ public:
     {
         return impurity(hist, total);
     }
-    
+
     /** static version of operator(hist total)
      */
     template<class Array>
@@ -448,8 +448,8 @@ public:
     /** static version of operator(hist, weights, total)
      */
     template<class Array, class Array2>
-    static double impurity   (Array     const & hist, 
-                              Array2    const & weights, 
+    static double impurity   (Array     const & hist,
+                              Array2    const & weights,
                               double            total)
     {
 
@@ -468,7 +468,7 @@ public:
                 gini           += w*( hist[ii]*( 1.0 - w * hist[ii]/total ) );
             }
         }
-        return gini; 
+        return gini;
     }
 };
 
@@ -486,7 +486,7 @@ class ImpurityLoss
   public:
 
     template<class T>
-    ImpurityLoss(DataSource  const & labels, 
+    ImpurityLoss(DataSource  const & labels,
                                 ProblemSpec<T> const & ext_)
     : labels_(labels),
       counts_(ext_.class_count_, 0.0),
@@ -506,7 +506,7 @@ class ImpurityLoss
         std::transform(counts.begin(), counts.end(),
                        counts_.begin(), counts_.begin(),
                        std::plus<double>());
-        total_counts_ = std::accumulate( counts_.begin(), 
+        total_counts_ = std::accumulate( counts_.begin(),
                                          counts_.end(),
                                          0.0);
         return impurity_(counts_, class_weights_, total_counts_);
@@ -518,7 +518,7 @@ class ImpurityLoss
         std::transform(counts.begin(), counts.end(),
                        counts_.begin(), counts_.begin(),
                        std::minus<double>());
-        total_counts_ = std::accumulate( counts_.begin(), 
+        total_counts_ = std::accumulate( counts_.begin(),
                                          counts_.end(),
                                          0.0);
         return impurity_(counts_, class_weights_, total_counts_);
@@ -551,18 +551,18 @@ class ImpurityLoss
     {
         reset();
         std::copy(resp.begin(), resp.end(), counts_.begin());
-        total_counts_ = std::accumulate(counts_.begin(), counts_.end(), 0.0); 
+        total_counts_ = std::accumulate(counts_.begin(), counts_.end(), 0.0);
         return impurity_(counts_,class_weights_, total_counts_);
     }
-    
+
     ArrayVector<double> const & response()
     {
         return counts_;
     }
 };
-    
-    
-    
+
+
+
     template <class DataSource>
     class RegressionForestCounter
     {
@@ -574,9 +574,9 @@ class ImpurityLoss
         ArrayVector <double>    tmp_;
         size_t                  count_;
         int*                    end_;
-        
+
         template<class T>
-        RegressionForestCounter(DataSource const & labels, 
+        RegressionForestCounter(DataSource const & labels,
                                 ProblemSpec<T> const & ext_)
         :
         labels_(labels),
@@ -585,7 +585,7 @@ class ImpurityLoss
         tmp_(ext_.response_size_),
         count_(0)
         {}
-        
+
         template<class Iter>
         double increment (Iter begin, Iter end)
         {
@@ -593,22 +593,22 @@ class ImpurityLoss
             {
                 ++count_;
                 for(unsigned int ii = 0; ii < mean_.size(); ++ii)
-                    tmp_[ii] = labels_(*iter, ii) - mean_[ii]; 
+                    tmp_[ii] = labels_(*iter, ii) - mean_[ii];
                 double f  = 1.0 / count_,
                 f1 = 1.0 - f;
                 for(unsigned int ii = 0; ii < mean_.size(); ++ii)
-                    mean_[ii] += f*tmp_[ii]; 
+                    mean_[ii] += f*tmp_[ii];
                 for(unsigned int ii = 0; ii < mean_.size(); ++ii)
                     variance_[ii] += f1*sq(tmp_[ii]);
             }
-            double res = std::accumulate(variance_.begin(), 
+            double res = std::accumulate(variance_.begin(),
                                          variance_.end(),
                                          0.0,
                                          std::plus<double>());
             //std::cerr << res << "  ) = ";
             return res;
         }
-        
+
         template<class Iter>      //This is BROKEN
         double decrement (Iter begin, Iter end)
         {
@@ -619,11 +619,11 @@ class ImpurityLoss
 
             begin = end;
             end   = end + count_;
-            
+
 
             for(unsigned int ii = 0; ii < mean_.size(); ++ii)
             {
-                mean_[ii] = 0;        
+                mean_[ii] = 0;
                 for(Iter iter = begin; iter != end; ++iter)
                 {
                     mean_[ii] += labels_(*iter, ii);
@@ -635,7 +635,7 @@ class ImpurityLoss
                     variance_[ii] += (labels_(*iter, ii) - mean_[ii])*(labels_(*iter, ii) - mean_[ii]);
                 }
             }
-            double res = std::accumulate(variance_.begin(), 
+            double res = std::accumulate(variance_.begin(),
                                          variance_.end(),
                                          0.0,
                                          std::plus<double>());
@@ -643,30 +643,30 @@ class ImpurityLoss
             return res;
         }
 
-        
+
         template<class Iter, class Resp_t>
         double init (Iter begin, Iter end, Resp_t /*resp*/)
         {
             reset();
             return this->increment(begin, end);
-            
+
         }
-        
-        
+
+
         ArrayVector<double> const & response()
         {
             return mean_;
         }
-        
+
         void reset()
         {
             mean_.init(0.0);
             variance_.init(0.0);
-            count_ = 0; 
+            count_ = 0;
         }
     };
-    
-    
+
+
 template <class DataSource>
 class RegressionForestCounter2
 {
@@ -679,7 +679,7 @@ public:
     size_t                  count_;
 
     template<class T>
-    RegressionForestCounter2(DataSource const & labels, 
+    RegressionForestCounter2(DataSource const & labels,
                             ProblemSpec<T> const & ext_)
     :
         labels_(labels),
@@ -688,7 +688,7 @@ public:
         tmp_(ext_.response_size_),
         count_(0)
     {}
-    
+
     template<class Iter>
     double increment (Iter begin, Iter end)
     {
@@ -696,15 +696,15 @@ public:
         {
             ++count_;
             for(int ii = 0; ii < mean_.size(); ++ii)
-                tmp_[ii] = labels_(*iter, ii) - mean_[ii]; 
+                tmp_[ii] = labels_(*iter, ii) - mean_[ii];
             double f  = 1.0 / count_,
                    f1 = 1.0 - f;
             for(int ii = 0; ii < mean_.size(); ++ii)
-                mean_[ii] += f*tmp_[ii]; 
+                mean_[ii] += f*tmp_[ii];
             for(int ii = 0; ii < mean_.size(); ++ii)
                 variance_[ii] += f1*sq(tmp_[ii]);
         }
-        double res = std::accumulate(variance_.begin(), 
+        double res = std::accumulate(variance_.begin(),
                                variance_.end(),
                                0.0,
                                std::plus<double>())
@@ -721,12 +721,12 @@ public:
             double f  = 1.0 / count_,
                    f1 = 1.0 - f;
             for(int ii = 0; ii < mean_.size(); ++ii)
-                mean_[ii] = (mean_[ii] - f*labels_(*iter,ii))/(1-f); 
+                mean_[ii] = (mean_[ii] - f*labels_(*iter,ii))/(1-f);
             for(int ii = 0; ii < mean_.size(); ++ii)
                 variance_[ii] -= f1*sq(labels_(*iter,ii) - mean_[ii]);
             --count_;
         }
-        double res =  std::accumulate(variance_.begin(), 
+        double res =  std::accumulate(variance_.begin(),
                                variance_.end(),
                                0.0,
                                std::plus<double>())
@@ -743,15 +743,15 @@ public:
         {
             ++count_;
             for(int ii = 0; ii < mean_.size(); ++ii)
-                tmp_[ii] = labels_(*iter, ii) - mean_[ii]; 
+                tmp_[ii] = labels_(*iter, ii) - mean_[ii];
             double f  = 1.0 / count_,
                    f1 = 1.0 - f;
             for(int ii = 0; ii < mean_.size(); ++ii)
-                mean_[ii] += f*tmp_[ii]; 
+                mean_[ii] += f*tmp_[ii];
             for(int ii = 0; ii < mean_.size(); ++ii)
                 variance_[ii] += f1*sq(tmp_[ii]);
         }
-        return std::accumulate(variance_.begin(), 
+        return std::accumulate(variance_.begin(),
                                variance_.end(),
                                0.0,
                                std::plus<double>())
@@ -765,15 +765,15 @@ public:
         {
             --count_;
             for(int ii = 0; ii < mean_.size(); ++ii)
-                tmp_[ii] = labels_(*iter, ii) - mean_[ii]; 
+                tmp_[ii] = labels_(*iter, ii) - mean_[ii];
             double f  = 1.0 / count_,
                    f1 = 1.0 + f;
             for(int ii = 0; ii < mean_.size(); ++ii)
-                mean_[ii] -= f*tmp_[ii]; 
+                mean_[ii] -= f*tmp_[ii];
             for(int ii = 0; ii < mean_.size(); ++ii)
                 variance_[ii] -= f1*sq(tmp_[ii]);
         }
-        return std::accumulate(variance_.begin(), 
+        return std::accumulate(variance_.begin(),
                                variance_.end(),
                                0.0,
                                std::plus<double>())
@@ -786,7 +786,7 @@ public:
         reset();
         return this->increment(begin, end, resp);
     }
-    
+
 
     ArrayVector<double> const & response()
     {
@@ -797,7 +797,7 @@ public:
     {
         mean_.init(0.0);
         variance_.init(0.0);
-        count_ = 0; 
+        count_ = 0;
     }
 };
 
@@ -841,7 +841,7 @@ public:
     BestGiniOfColumn()
     {}
 
-    template<class T> 
+    template<class T>
     BestGiniOfColumn(ProblemSpec<T> const & ext)
     :
         class_weights_(ext.class_weights_),
@@ -850,65 +850,65 @@ public:
         bestCurrentCounts[0].resize(ext.class_count_);
         bestCurrentCounts[1].resize(ext.class_count_);
     }
-    template<class T> 
+    template<class T>
     void set_external_parameters(ProblemSpec<T> const & ext)
     {
-        class_weights_ = ext.class_weights_; 
+        class_weights_ = ext.class_weights_;
         ext_param_ = ext;
         bestCurrentCounts[0].resize(ext.class_count_);
         bestCurrentCounts[1].resize(ext.class_count_);
     }
     /** calculate the best gini split along a Feature Column
      * \param column  the feature vector - has to support the [] operator
-     * \param labels  the label vector 
-     * \param begin 
+     * \param labels  the label vector
+     * \param begin
      * \param end     (in and out)
      *                begin and end iterators to the indices of the
-     *                samples in the current region. 
+     *                samples in the current region.
      *                the range begin - end is sorted by the column supplied
      *                during function execution.
      * \param region_response
      *                ???
-     *                class histogram of the range. 
+     *                class histogram of the range.
      *
-     *  precondition: begin, end valid range, 
-     *                class_counts positive integer valued array with the 
+     *  precondition: begin, end valid range,
+     *                class_counts positive integer valued array with the
      *                class counts in the current range.
-     *                labels.size() >= max(begin, end); 
+     *                labels.size() >= max(begin, end);
      *  postcondition:
-     *                begin, end sorted by column given. 
-     *                min_gini_ contains the minimum gini found or 
+     *                begin, end sorted by column given.
+     *                min_gini_ contains the minimum gini found or
      *                NumericTraits<double>::max if no split was found.
      *                min_index_ contains the splitting index in the range
      *                or invalid data if no split was found.
-     *                BestCirremtcounts[0] and [1] contain the 
-     *                class histogram of the left and right region of 
-     *                the left and right regions. 
+     *                BestCirremtcounts[0] and [1] contain the
+     *                class histogram of the left and right region of
+     *                the left and right regions.
      */
     template<   class DataSourceF_t,
-                class DataSource_t, 
-                class I_Iter, 
+                class DataSource_t,
+                class I_Iter,
                 class Array>
     void operator()(DataSourceF_t   const & column,
                     DataSource_t    const & labels,
-                    I_Iter                & begin, 
+                    I_Iter                & begin,
                     I_Iter                & end,
                     Array           const & region_response)
     {
-        std::sort(begin, end, 
+        std::sort(begin, end,
                   SortSamplesByDimensions<DataSourceF_t>(column, 0));
-        typedef typename 
+        typedef typename
             LossTraits<LineSearchLossTag, DataSource_t>::type LineSearchLoss;
         LineSearchLoss left(labels, ext_param_); //initialize left and right region
         LineSearchLoss right(labels, ext_param_);
 
-        
 
-        min_gini_ = right.init(begin, end, region_response);  
+
+        min_gini_ = right.init(begin, end, region_response);
         min_threshold_ = *begin;
-        min_index_     = 0;  //the starting point where to split 
-        DimensionNotEqual<DataSourceF_t> comp(column, 0); 
-        
+        min_index_     = 0;  //the starting point where to split
+        DimensionNotEqual<DataSourceF_t> comp(column, 0);
+
         I_Iter iter = begin;
         I_Iter next = std::adjacent_find(iter, end, comp);
         //std::cerr << std::distance(begin, end) << std::endl;
@@ -922,14 +922,14 @@ public:
             if(loss < min_gini_ && !closeAtTolerance(loss, min_gini_))
 #else
             if(loss < min_gini_ )
-#endif 
+#endif
             {
                 bestCurrentCounts[0] = left.response();
                 bestCurrentCounts[1] = right.response();
 #ifdef CLASSIFIER_TEST
                 min_gini_       = loss < min_gini_? loss : min_gini_;
 #else
-                min_gini_       = loss; 
+                min_gini_       = loss;
 #endif
                 min_index_      = next - begin +1 ;
                 min_threshold_  = (double(column(*next,0)) + double(column(*(next +1), 0)))/2.0;
@@ -944,14 +944,14 @@ public:
 
     template<class DataSource_t, class Iter, class Array>
     double loss_of_region(DataSource_t const & labels,
-                          Iter & begin, 
-                          Iter & end, 
+                          Iter & begin,
+                          Iter & end,
                           Array const & region_response) const
     {
-        typedef typename 
+        typedef typename
             LossTraits<LineSearchLossTag, DataSource_t>::type LineSearchLoss;
         LineSearchLoss region_loss(labels, ext_param_);
-        return 
+        return
             region_loss.init(begin, end, region_response);
     }
 
@@ -966,17 +966,17 @@ namespace detail
         static void exec(Region & /*in*/, LabelT & /*labels*/)
         {}
     };
-    
+
     template<>
     struct Correction<ClassificationTag>
     {
         template<class Region, class LabelT>
-        static void exec(Region & region, LabelT & labels) 
+        static void exec(Region & region, LabelT & labels)
         {
             if(std::accumulate(region.classCounts().begin(),
                                region.classCounts().end(), 0.0) != region.size())
             {
-                RandomForestClassCounter<   LabelT, 
+                RandomForestClassCounter<   LabelT,
                                             ArrayVector<double> >
                     counter(labels, region.classCounts());
                 std::for_each(  region.begin(), region.end(), counter);
@@ -996,7 +996,7 @@ class ThresholdSplit: public SplitBase<Tag>
 
 
     typedef SplitBase<Tag> SB;
-    
+
     ArrayVector<Int32>          splitColumns;
     ColumnDecisionFunctor       bgfunc;
 
@@ -1023,7 +1023,7 @@ class ThresholdSplit: public SplitBase<Tag>
     template<class T>
     void set_external_parameters(ProblemSpec<T> const & in)
     {
-        SB::set_external_parameters(in);        
+        SB::set_external_parameters(in);
         bgfunc.set_external_parameters( SB::ext_param_);
         int featureCount_ = SB::ext_param_.column_count_;
         splitColumns.resize(featureCount_);
@@ -1047,15 +1047,15 @@ class ThresholdSplit: public SplitBase<Tag>
         if(region.size() == 0)
         {
            std::cerr << "SplitFunctor::findBestSplit(): stackentry with 0 examples encountered\n"
-                        "continuing learning process...."; 
+                        "continuing learning process....";
         }
-        // calculate things that haven't been calculated yet. 
+        // calculate things that haven't been calculated yet.
         detail::Correction<Tag>::exec(region, labels);
 
 
         // Is the region pure already?
         region_gini_ = bgfunc.loss_of_region(labels,
-                                             region.begin(), 
+                                             region.begin(),
                                              region.end(),
                                              region.classCounts());
         if(region_gini_ <= SB::ext_param_.precision_)
@@ -1063,7 +1063,7 @@ class ThresholdSplit: public SplitBase<Tag>
 
         // select columns  to be tried.
         for(int ii = 0; ii < SB::ext_param_.actual_mtry_; ++ii)
-            std::swap(splitColumns[ii], 
+            std::swap(splitColumns[ii],
                       splitColumns[ii+ randint(features.shape(1) - ii)]);
 
         // find the best gini index
@@ -1074,10 +1074,10 @@ class ThresholdSplit: public SplitBase<Tag>
         {
             //this functor does all the work
             bgfunc(columnVector(features, splitColumns[k]),
-                   labels, 
-                   region.begin(), region.end(), 
+                   labels,
+                   region.begin(), region.end(),
                    region.classCounts());
-            min_gini_[k]            = bgfunc.min_gini_; 
+            min_gini_[k]            = bgfunc.min_gini_;
             min_indices_[k]         = bgfunc.min_index_;
             min_thresholds_[k]      = bgfunc.min_threshold_;
 #ifdef CLASSIFIER_TEST
@@ -1103,15 +1103,15 @@ class ThresholdSplit: public SplitBase<Tag>
         //        especially near the root.
         if(closeAtTolerance(current_min_gini, region_gini_))
             return  this->makeTerminalNode(features, labels, region, randint);
-        
+
         //create a Node for output
         Node<i_ThresholdNode>   node(SB::t_data, SB::p_data);
         SB::node_ = node;
         node.threshold()    = min_thresholds_[bestSplitIndex];
         node.column()       = splitColumns[bestSplitIndex];
-        
-        // partition the range according to the best dimension 
-        SortSamplesByDimensions<MultiArrayView<2, T, C> > 
+
+        // partition the range according to the best dimension
+        SortSamplesByDimensions<MultiArrayView<2, T, C> >
             sorter(features, node.column(), node.threshold());
         IndexIterator bestSplit =
             std::partition(region.begin(), region.end(), sorter);
@@ -1136,19 +1136,19 @@ namespace rf
 
 /** This namespace contains additional Splitfunctors.
  *
- * The Split functor classes are designed in a modular fashion because new split functors may 
- * share a lot of code with existing ones. 
- * 
- * ThresholdSplit implements the functionality needed for any split functor, that makes its 
+ * The Split functor classes are designed in a modular fashion because new split functors may
+ * share a lot of code with existing ones.
+ *
+ * ThresholdSplit implements the functionality needed for any split functor, that makes its
  * decision via one dimensional axis-parallel cuts. The Template parameter defines how the split
- * along one dimension is chosen. 
+ * along one dimension is chosen.
  *
  * The BestGiniOfColumn class chooses a split that minimizes one of the Loss functions supplied
- * (GiniCriterion for classification and LSQLoss for regression). Median chooses the Split in a 
- * kD tree fashion. 
+ * (GiniCriterion for classification and LSQLoss for regression). Median chooses the Split in a
+ * kD tree fashion.
  *
  *
- * Currently defined typedefs: 
+ * Currently defined typedefs:
  * \code
  * typedef  ThresholdSplit<BestGiniOfColumn<GiniCriterion> >                 GiniSplit;
  * typedef  ThresholdSplit<BestGiniOfColumn<LSQLoss>, RegressionTag>         RegressionSplit;
@@ -1175,7 +1175,7 @@ public:
     Median()
     {}
 
-    template<class T> 
+    template<class T>
     Median(ProblemSpec<T> const & ext)
     :
         class_weights_(ext.class_weights_),
@@ -1184,73 +1184,73 @@ public:
         bestCurrentCounts[0].resize(ext.class_count_);
         bestCurrentCounts[1].resize(ext.class_count_);
     }
-  
-    template<class T> 
+
+    template<class T>
     void set_external_parameters(ProblemSpec<T> const & ext)
     {
-        class_weights_ = ext.class_weights_; 
+        class_weights_ = ext.class_weights_;
         ext_param_ = ext;
         bestCurrentCounts[0].resize(ext.class_count_);
         bestCurrentCounts[1].resize(ext.class_count_);
     }
-     
+
     template<   class DataSourceF_t,
-                class DataSource_t, 
-                class I_Iter, 
+                class DataSource_t,
+                class I_Iter,
                 class Array>
     void operator()(DataSourceF_t   const & column,
                     DataSource_t    const & labels,
-                    I_Iter                & begin, 
+                    I_Iter                & begin,
                     I_Iter                & end,
                     Array           const & region_response)
     {
-        std::sort(begin, end, 
+        std::sort(begin, end,
                   SortSamplesByDimensions<DataSourceF_t>(column, 0));
-        typedef typename 
+        typedef typename
             LossTraits<LineSearchLossTag, DataSource_t>::type LineSearchLoss;
         LineSearchLoss left(labels, ext_param_);
         LineSearchLoss right(labels, ext_param_);
         right.init(begin, end, region_response);
 
         min_gini_ = NumericTraits<double>::max();
-        min_index_ = floor(double(end - begin)/2.0); 
+        min_index_ = floor(double(end - begin)/2.0);
         min_threshold_ =  column[*(begin + min_index_)];
-        SortSamplesByDimensions<DataSourceF_t> 
+        SortSamplesByDimensions<DataSourceF_t>
             sorter(column, 0, min_threshold_);
         I_Iter part = std::partition(begin, end, sorter);
-        DimensionNotEqual<DataSourceF_t> comp(column, 0); 
+        DimensionNotEqual<DataSourceF_t> comp(column, 0);
         if(part == begin)
         {
             part= std::adjacent_find(part, end, comp)+1;
-            
+
         }
         if(part >= end)
         {
-            return; 
+            return;
         }
         else
         {
             min_threshold_ = column[*part];
         }
-        min_gini_ = right.decrement(begin, part) 
+        min_gini_ = right.decrement(begin, part)
               +     left.increment(begin , part);
 
         bestCurrentCounts[0] = left.response();
         bestCurrentCounts[1] = right.response();
-        
+
         min_index_      = part - begin;
     }
 
     template<class DataSource_t, class Iter, class Array>
     double loss_of_region(DataSource_t const & labels,
-                          Iter & begin, 
-                          Iter & end, 
+                          Iter & begin,
+                          Iter & end,
                           Array const & region_response) const
     {
-        typedef typename 
+        typedef typename
             LossTraits<LineSearchLossTag, DataSource_t>::type LineSearchLoss;
         LineSearchLoss region_loss(labels, ext_param_);
-        return 
+        return
             region_loss.init(begin, end, region_response);
     }
 
@@ -1278,7 +1278,7 @@ public:
     RandomSplitOfColumn()
     {}
 
-    template<class T> 
+    template<class T>
     RandomSplitOfColumn(ProblemSpec<T> const & ext)
     :
         class_weights_(ext.class_weights_),
@@ -1288,8 +1288,8 @@ public:
         bestCurrentCounts[0].resize(ext.class_count_);
         bestCurrentCounts[1].resize(ext.class_count_);
     }
-    
-    template<class T> 
+
+    template<class T>
     RandomSplitOfColumn(ProblemSpec<T> const & ext, Random_t & random_)
     :
         class_weights_(ext.class_weights_),
@@ -1299,75 +1299,75 @@ public:
         bestCurrentCounts[0].resize(ext.class_count_);
         bestCurrentCounts[1].resize(ext.class_count_);
     }
-  
-    template<class T> 
+
+    template<class T>
     void set_external_parameters(ProblemSpec<T> const & ext)
     {
-        class_weights_ = ext.class_weights_; 
+        class_weights_ = ext.class_weights_;
         ext_param_ = ext;
         bestCurrentCounts[0].resize(ext.class_count_);
         bestCurrentCounts[1].resize(ext.class_count_);
     }
-     
+
     template<   class DataSourceF_t,
-                class DataSource_t, 
-                class I_Iter, 
+                class DataSource_t,
+                class I_Iter,
                 class Array>
     void operator()(DataSourceF_t   const & column,
                     DataSource_t    const & labels,
-                    I_Iter                & begin, 
+                    I_Iter                & begin,
                     I_Iter                & end,
                     Array           const & region_response)
     {
-        std::sort(begin, end, 
+        std::sort(begin, end,
                   SortSamplesByDimensions<DataSourceF_t>(column, 0));
-        typedef typename 
+        typedef typename
             LossTraits<LineSearchLossTag, DataSource_t>::type LineSearchLoss;
         LineSearchLoss left(labels, ext_param_);
         LineSearchLoss right(labels, ext_param_);
         right.init(begin, end, region_response);
 
-        
+
         min_gini_ = NumericTraits<double>::max();
         int tmp_pt = random.uniformInt(std::distance(begin, end));
         min_index_ = tmp_pt;
         min_threshold_ =  column[*(begin + min_index_)];
-        SortSamplesByDimensions<DataSourceF_t> 
+        SortSamplesByDimensions<DataSourceF_t>
             sorter(column, 0, min_threshold_);
         I_Iter part = std::partition(begin, end, sorter);
-        DimensionNotEqual<DataSourceF_t> comp(column, 0); 
+        DimensionNotEqual<DataSourceF_t> comp(column, 0);
         if(part == begin)
         {
             part= std::adjacent_find(part, end, comp)+1;
-            
+
         }
         if(part >= end)
         {
-            return; 
+            return;
         }
         else
         {
             min_threshold_ = column[*part];
         }
-        min_gini_ = right.decrement(begin, part) 
+        min_gini_ = right.decrement(begin, part)
               +     left.increment(begin , part);
 
         bestCurrentCounts[0] = left.response();
         bestCurrentCounts[1] = right.response();
-        
+
         min_index_      = part - begin;
     }
 
     template<class DataSource_t, class Iter, class Array>
     double loss_of_region(DataSource_t const & labels,
-                          Iter & begin, 
-                          Iter & end, 
+                          Iter & begin,
+                          Iter & end,
                           Array const & region_response) const
     {
-        typedef typename 
+        typedef typename
             LossTraits<LineSearchLossTag, DataSource_t>::type LineSearchLoss;
         LineSearchLoss region_loss(labels, ext_param_);
-        return 
+        return
             region_loss.init(begin, end, region_response);
     }
 

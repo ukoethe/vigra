@@ -104,12 +104,12 @@ struct FFTWReal2Complex<long double>
 
 /** \brief Wrapper class for the FFTW complex types '<TT>fftw_complex</TT>'.
 
-    This class encapsulates the low-level complex number types provided by the 
-    <a href="http://www.fftw.org/">FFTW Fast Fourier Transform</a> library (i.e. 
-    '<TT>fftw_complex</TT>', '<TT>fftwf_complex</TT>', '<TT>fftwl_complex</TT>'). 
-    In particular, it provides constructors, member functions and 
+    This class encapsulates the low-level complex number types provided by the
+    <a href="http://www.fftw.org/">FFTW Fast Fourier Transform</a> library (i.e.
+    '<TT>fftw_complex</TT>', '<TT>fftwf_complex</TT>', '<TT>fftwl_complex</TT>').
+    In particular, it provides constructors, member functions and
     \ref FFTWComplexOperators "arithmetic operators" that make FFTW complex numbers
-    compatible with <tt>std::complex</tt>. In addition, the class defines 
+    compatible with <tt>std::complex</tt>. In addition, the class defines
     transformations to polar coordinates and \ref FFTWComplexAccessors "accessors".
 
     FFTWComplex implements the concepts \ref AlgebraicField and
@@ -630,19 +630,19 @@ struct MultiMathOperand<FFTWComplex<Real> >
 {
     typedef MultiMathOperand<FFTWComplex<Real> > AllowOverload;
     typedef FFTWComplex<Real> result_type;
-    
+
     static const int ndim = 0;
-    
+
     MultiMathOperand(FFTWComplex<Real> const & v)
     : v_(v)
     {}
-    
+
     template <class SHAPE>
     bool checkShape(SHAPE const &) const
     {
         return true;
     }
-    
+
     template <class SHAPE>
     FFTWComplex<Real> const & operator[](SHAPE const &) const
     {
@@ -654,12 +654,12 @@ struct MultiMathOperand<FFTWComplex<Real> >
 
     void reset(unsigned int /*LEVEL*/) const
     {}
-    
+
     FFTWComplex<Real> const & operator*() const
     {
         return v_;
     }
-    
+
     FFTWComplex<Real> v_;
 };
 
@@ -676,53 +676,53 @@ class FFTWAllocator
     typedef Ty& reference;
     typedef const Ty& const_reference;
     typedef Ty value_type;
-    
+
     pointer address(reference val) const
         { return &val; }
-        
+
     const_pointer address(const_reference val) const
         { return &val; }
-        
+
     template<class Other>
     struct rebind
     {
         typedef FFTWAllocator<Other> other;
     };
-    
+
     FFTWAllocator() throw()
     {}
-    
+
     template<class Other>
     FFTWAllocator(const FFTWAllocator<Other>& /*right*/) throw()
     {}
-    
+
     template<class Other>
     FFTWAllocator& operator=(const FFTWAllocator<Other>& /*right*/)
     {
         return *this;
     }
-    
+
     pointer allocate(size_type count, void * = 0)
     {
         return (pointer)fftw_malloc(count * sizeof(Ty));
     }
-    
+
     void deallocate(pointer ptr, size_type /*count*/)
     {
         fftw_free(ptr);
     }
-    
+
     void construct(pointer ptr, const Ty& val)
     {
         new(ptr) Ty(val);
-        
+
     }
-    
+
     void destroy(pointer ptr)
     {
         ptr->~Ty();
     }
-    
+
     size_type max_size() const throw()
     {
         return NumericTraits<std::ptrdiff_t>::max() / sizeof(Ty);
@@ -747,29 +747,29 @@ class allocator<vigra::FFTWComplex<Real> >
 
     pointer address(reference val) const
         { return &val; }
-        
+
     const_pointer address(const_reference val) const
         { return &val; }
-        
+
     template<class Other>
     struct rebind
     {
         typedef allocator<Other> other;
     };
-    
+
     allocator() throw()
     {}
-    
+
     template<class Other>
     allocator(const allocator<Other>& /*right*/) throw()
     {}
-    
+
     template<class Other>
     allocator& operator=(const allocator<Other>& /*right*/)
     {
         return *this;
     }
-    
+
     pointer allocate(size_type count, void * = 0)
     {
         return (pointer)fftw_malloc(count * sizeof(value_type));
@@ -779,18 +779,18 @@ class allocator<vigra::FFTWComplex<Real> >
     {
         fftw_free(ptr);
     }
-    
+
     void construct(pointer ptr, const value_type& val)
     {
         new(ptr) value_type(val);
-        
+
     }
-    
+
     void destroy(pointer ptr)
     {
         ptr->~value_type();
     }
-    
+
     size_type max_size() const throw()
     {
         return vigra::NumericTraits<std::ptrdiff_t>::max() / sizeof(value_type);
@@ -1081,7 +1081,7 @@ inline FFTWComplex<R> pow(const FFTWComplex<R> &a, R const & e)
 template <class R>
 inline FFTWComplex<R> pow(const FFTWComplex<R> &a, const FFTWComplex<R> & e)
 {
-    return std::pow(reinterpret_cast<std::complex<R> const &>(a), 
+    return std::pow(reinterpret_cast<std::complex<R> const &>(a),
                      reinterpret_cast<std::complex<R> const &>(e));
 }
 
@@ -1515,9 +1515,9 @@ class FFTWPhaseAccessor
 /** \addtogroup FourierTransform Fast Fourier Transform
 
     VIGRA provides a powerful C++ API for the popular <a href="http://www.fftw.org/">FFTW library</a>
-    for fast Fourier transforms. There are two versions of the API: an older one based on image 
+    for fast Fourier transforms. There are two versions of the API: an older one based on image
     iterators (and therefore restricted to 2D) and a new one based on \ref MultiArrayView that
-    works for arbitrary dimensions. In addition, the functions \ref convolveFFT() and 
+    works for arbitrary dimensions. In addition, the functions \ref convolveFFT() and
     \ref applyFourierFilter() provide an easy-to-use interface for FFT-based convolution,
     a major application of Fourier transforms.
 */
@@ -1801,63 +1801,63 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
 
 /** \brief Compute forward and inverse Fourier transforms.
 
-    The array referring to the spatial domain (i.e. the input in a forward transform, 
+    The array referring to the spatial domain (i.e. the input in a forward transform,
     and the output in an inverse transform) may be scalar or complex. The array representing
-    the frequency domain (i.e. output for forward transform, input for inverse transform) 
+    the frequency domain (i.e. output for forward transform, input for inverse transform)
     must always be complex.
-    
-    The new implementations (those using MultiArrayView arguments) perform a normalized transform, 
-    whereas the old ones (using 2D iterators or argument objects) perform an un-normalized 
+
+    The new implementations (those using MultiArrayView arguments) perform a normalized transform,
+    whereas the old ones (using 2D iterators or argument objects) perform an un-normalized
     transform (i.e. the result of the inverse transform is scaled by the number of pixels).
 
-    In general, input and output arrays must have the same shape, with the exception of the 
-    special <a href="http://www.fftw.org/doc/Multi_002dDimensional-DFTs-of-Real-Data.html">R2C 
+    In general, input and output arrays must have the same shape, with the exception of the
+    special <a href="http://www.fftw.org/doc/Multi_002dDimensional-DFTs-of-Real-Data.html">R2C
     and C2R modes</a> defined by FFTW.
-    
+
     The R2C transform reduces the redundancy in the Fourier representation of a real-valued signal:
-    Since the Fourier representation of a real signal is symmetric, about half of the Fourier coefficients 
-    can simply be dropped. By convention, this reduction is applied to the first (innermost) dimension, 
+    Since the Fourier representation of a real signal is symmetric, about half of the Fourier coefficients
+    can simply be dropped. By convention, this reduction is applied to the first (innermost) dimension,
     such that <tt>fourier.shape(0) == spatial.shape(0)/2 + 1</tt> holds. The correct frequency domain
     shape can be conveniently computed by means of the function \ref fftwCorrespondingShapeR2C().
-    
-    Note that your program must always link against <tt>libfftw3</tt>. If you want to compute Fourier 
+
+    Note that your program must always link against <tt>libfftw3</tt>. If you want to compute Fourier
     transforms for <tt>float</tt> or <tt>long double</tt> arrays, you must <i>additionally</i> link against <tt>libfftw3f</tt> and <tt>libfftw3l</tt> respectively. (Old-style functions only support <tt>double</tt>).
-    
+
     The Fourier transform functions internally create <a href="http://www.fftw.org/doc/Using-Plans.html">FFTW plans</a>
     which control the algorithm details. The plans are creates with the flag <tt>FFTW_ESTIMATE</tt>, i.e.
     optimal settings are guessed or read from saved "wisdom" files. If you need more control over planning,
     you can use the class \ref FFTWPlan.
-    
+
     <b> Declarations:</b>
 
     use complex-valued MultiArrayView arguments (this works for arbitrary dimension N):
     \code
     namespace vigra {
         template <unsigned int N, class Real, class C1, class C2>
-        void 
-        fourierTransform(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+        void
+        fourierTransform(MultiArrayView<N, FFTWComplex<Real>, C1> in,
                          MultiArrayView<N, FFTWComplex<Real>, C2> out);
 
         template <unsigned int N, class Real, class C1, class C2>
-        void 
-        fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+        void
+        fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in,
                                 MultiArrayView<N, FFTWComplex<Real>, C2> out);
     }
     \endcode
 
-    use real-valued MultiArrayView in the spatial domain, complex-valued MultiArrayView 
+    use real-valued MultiArrayView in the spatial domain, complex-valued MultiArrayView
     in the frequency domain (this works for arbitrary dimension N, and also supports
     the R2C and C2R transform, depending on the array shape in the frequency domain):
     \code
     namespace vigra {
         template <unsigned int N, class Real, class C1, class C2>
-        void 
-        fourierTransform(MultiArrayView<N, Real, C1> in, 
+        void
+        fourierTransform(MultiArrayView<N, Real, C1> in,
                          MultiArrayView<N, FFTWComplex<Real>, C2> out);
 
         template <unsigned int N, class Real, class C1, class C2>
-        void 
-        fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+        void
+        fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in,
                                 MultiArrayView<N, Real, C2> out);
     }
     \endcode
@@ -1911,7 +1911,7 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
 
     fourierTransformInverse(srcImageRange(fourier), destImage(inverseFourier));
     \endcode
-    
+
     new-style examples (using MultiArray):
     \code
     // compute Fourier transform of a real array, using the R2C algorithm
@@ -1936,8 +1936,8 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
     MultiArray<2, double> dest(src.shape());
     fourierTransformInverse(fourier, dest);
     \endcode
-    Complex input arrays are handled in the same way. 
-    
+    Complex input arrays are handled in the same way.
+
 */
 doxygen_overloaded_function(template <...> void fourierTransform)
 
@@ -2035,7 +2035,7 @@ fourierTransformInverse(triple<FFTWComplexImage::const_traverser,
 
     The DC entry of the filter must be in the upper left, which is the
     position where FFTW expects it (see \ref moveDCToUpperLeft()).
-    
+
     See also \ref convolveFFT() for corresponding functionality on the basis of the
     \ref MultiArrayView interface.
 
@@ -2405,7 +2405,7 @@ void applyFourierFilterFamilyImpl(
     ImageArray<DestImage> &results)
 {
     // FIXME: sa is not used
-    // (maybe check if StandardAccessor, else copy?)    
+    // (maybe check if StandardAccessor, else copy?)
 
     // make sure the filter images have the right dimensions
     vigra_precondition((srcLowerRight - srcUpperLeft) == filters.imageSize(),
