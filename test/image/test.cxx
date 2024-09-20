@@ -506,26 +506,26 @@ struct ImageContainerTests
 {
     ImageImportInfo info;
     int w, h;
-    FImage lennaImage;
+    FImage astronautImage;
 
     ImageContainerTests()
-        : info("lenna.xv"),
+        : info("astronaut.xv"),
           w(info.width()), h(info.height()),
-          lennaImage(w, h)
+          astronautImage(w, h)
     {
-        importImage(info, destImage(lennaImage));
+        importImage(info, destImage(astronautImage));
     }
 
     void initArrayWithImageTest()
     {
-        ImageArray<FImage> threeLennas(3, lennaImage);
+        ImageArray<FImage> threeAstronauts(3, astronautImage);
         CompareFunctor cmp;
-        inspectTwoImages(srcImageRange(threeLennas[0]), srcImage(threeLennas[2]), cmp);
+        inspectTwoImages(srcImageRange(threeAstronauts[0]), srcImage(threeAstronauts[2]), cmp);
         shouldEqual(cmp(), 0.0);
 
         Diff2D newsize(50, 50);
-        threeLennas.resizeImages(newsize);
-        for (ImageArray<FImage>::iterator it= threeLennas.begin(); it!= threeLennas.end(); it++)
+        threeAstronauts.resizeImages(newsize);
+        for (ImageArray<FImage>::iterator it= threeAstronauts.begin(); it!= threeAstronauts.end(); it++)
             shouldEqual((*it).size(), newsize);
     }
 

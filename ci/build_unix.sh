@@ -17,6 +17,12 @@ if [[ `uname` == 'Darwin' ]]; then
     export SHLIB_EXT=".dylib"
     # I - hmaarrrfk - forget why the definition of LDFLAGS here is necessary
     export LDFLAGS="-undefined dynamic_lookup ${LDFLAGS}"
+
+    # clang14 introduced a new default that turns this flag on on osx arm64 leading
+    # to failing tests. Setting it off restores clang13 behavior and seems in line
+    # with x86 compilation.
+    # ref: https://github.com/llvm/llvm-project/issues/91824
+    export CXXFLAGS="-ffp-contract=off ${CXXFLAGS}"
 else
     export SHLIB_EXT=".so"
 fi

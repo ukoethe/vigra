@@ -107,7 +107,7 @@
     And here are the results:
     <table cellspacing = "10">
     <TR valign = "bottom">
-    <TD> \image html lenna_color_small.gif "input file 1" </TD>
+    <TD> \image html astronaut_color_small.gif "input file 1" </TD>
     <TD> \image html oi_small.jpg "input file 2" </TD>
     <TD> \image html dissolved_color.gif "dissolved output file" </TD>
     </TR>
@@ -132,7 +132,7 @@
     And here are the results:
     <Table cellspacing = "10">
     <TR valign = "bottom">
-    <TD> \image html lenna_color_small.gif "input file" </TD>
+    <TD> \image html astronaut_color_small.gif "input file" </TD>
     <TD> \image html lenna_composite_color.gif "composite output file" </TD>
     </TR>
     </Table>

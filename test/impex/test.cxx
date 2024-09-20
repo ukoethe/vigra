@@ -73,7 +73,7 @@ public:
 
     ByteImageExportImportTest ()
     {
-        vigra::ImageImportInfo info ("lenna.xv");
+        vigra::ImageImportInfo info ("astronaut.xv");
 
         const int w = info.width ();
         const int h = info.height ();
@@ -128,7 +128,7 @@ public:
 
     void testIsImage()
     {
-        should(isImage("lenna.xv"));
+        should(isImage("astronaut.xv"));
         should(!isImage("no-image.txt"));
         should(!isImage("filename-does-not-exist.gif"));
     }
@@ -169,7 +169,7 @@ public:
     {
         MultiArray<2, RGBValue<unsigned char> > rgb;
 
-        importImage("lenna.xv", rgb);
+        importImage("astronaut.xv", rgb);
 
         should (rgb.shape(0) == img.width());
         should (rgb.shape(1) == img.height());
@@ -272,7 +272,7 @@ public:
 #if defined(HasTIFF)
         for (int i=0; i < 3; ++i)
         {
-            std::string fileName = std::string("lenna_") + vigra::asString(i) + ".tif";
+            std::string fileName = std::string("astronaut_") + vigra::asString(i) + ".tif";
             vigra::ImageImportInfo ininfo (fileName.c_str());
             Image inimg(ininfo.width(), ininfo.height());
             importImage(ininfo, destImage(inimg));
@@ -284,7 +284,7 @@ public:
         {
             vigra::ImageImportInfo ininfo ("resseq.tif", j);
             Image inimg(ininfo.width(), ininfo.height());
-            std::string fileName = std::string("lenna_") + vigra::asString(j) + ".tif";
+            std::string fileName = std::string("astronaut_") + vigra::asString(j) + ".tif";
             importImage(ininfo, destImage(inimg));
             vigra::ImageImportInfo originfo (fileName.c_str());
             Image origimg(originfo.width(), originfo.height());
@@ -419,7 +419,7 @@ class ByteRGBImageExportImportTest
 public:
     ByteRGBImageExportImportTest ()
     {
-        vigra::ImageImportInfo info ("lennargb.xv");
+        vigra::ImageImportInfo info ("astronautrgb.xv");
 
         int w = info.width ();
         int h = info.height ();
@@ -446,7 +446,7 @@ public:
         Image ref (info.width (), info.height ());
 
         importImage (info, destImage (res));
-        importImage (vigra::ImageImportInfo("lenna_gifref.xv"), destImage (ref));
+        importImage (vigra::ImageImportInfo("astronaut_gifref.xv"), destImage (ref));
 
         Image::ScanOrderIterator i = ref.begin ();
         Image::ScanOrderIterator i1 = res.begin ();
@@ -776,7 +776,7 @@ public:
     FloatImageExportImportTest ()
     : rereadType("DOUBLE")
     {
-        vigra::ImageImportInfo info ("lenna.xv");
+        vigra::ImageImportInfo info ("astronaut.xv");
 
         int w = info.width ();
         int h = info.height ();
@@ -785,7 +785,7 @@ public:
 
         importImage (info, destImage (img));
 
-        vigra::ImageImportInfo rinfo ("lennafloat.xv");
+        vigra::ImageImportInfo rinfo ("astronautfloat.xv");
 
         reread.resize (w, h);
 
@@ -1017,7 +1017,7 @@ public:
 
     FloatRGBImageExportImportTest ()
     {
-        vigra::ImageImportInfo info ("lennargb.xv");
+        vigra::ImageImportInfo info ("astronautrgb.xv");
 
         int w = info.width ();
         int h = info.height ();
@@ -1026,7 +1026,7 @@ public:
 
         importImage (info, destImage (img));
 
-        vigra::ImageImportInfo rinfo ("lennafloatrgb.xv");
+        vigra::ImageImportInfo rinfo ("astronautfloatrgb.xv");
 
         reread.resize (w, h);
 
@@ -1591,7 +1591,7 @@ public:
         MultiArray<2, RGBValue<UInt8> > rgb(1,1);
 
         try {
-            importImage(ImageImportInfo("lennargb.xv"), rgb);
+            importImage(ImageImportInfo("astronautrgb.xv"), rgb);
             failTest( "Failed to throw exception." );
         }
         catch( vigra::PreconditionViolation & e ) {
@@ -1603,7 +1603,7 @@ public:
         MultiArray<2, TinyVector<UInt8, 4> > vec4;
 
         try {
-            importImage("lennargb.xv", vec4);
+            importImage("astronautrgb.xv", vec4);
             failTest( "Failed to throw exception." );
         }
         catch( vigra::PreconditionViolation & e ) {
@@ -1620,7 +1620,7 @@ public:
     GrayscaleImportExportAlphaTest()
     {
 #if defined(HasTIFF)
-        vigra::ImageImportInfo info("lenna_masked_gray.tif");
+        vigra::ImageImportInfo info("astronaut_masked_gray.tif");
 
         image_.resize(info.size());
         alpha_.resize(info.size());
@@ -1733,7 +1733,7 @@ public:
     RGBImportExportAlphaTest()
     {
 #if defined(HasTIFF)
-        vigra::ImageImportInfo info("lenna_masked_color.tif");
+        vigra::ImageImportInfo info("astronaut_masked_color.tif");
 
         image_.resize(info.size());
         alpha_.resize(info.size());
