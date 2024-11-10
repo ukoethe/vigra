@@ -490,7 +490,7 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     CoupledScanOrderIterator operator--(int)
     {
         CoupledScanOrderIterator res(*this);
-        std::advance(this, -1);
+        std::advance(*this, -1);
         return res;
     }
 
