@@ -721,7 +721,7 @@ public:
      * also: adjust class counts and borders
      */
     template<class TR, class IntT, class TopT,class Feat>
-        void visit_internal_node(TR & tr, IntT index, TopT node_t,Feat & features)
+        void visit_internal_node(TR & tr, IntT index, [[maybe_unused]] TopT node_t, Feat & features)
         {
             last_node_id=index;
             if(adjust_thresholds)
@@ -913,7 +913,6 @@ class OOB_Error : public VisitorBase
     void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST &, int index)
     {
         // go through the samples
-        int total_oob =0;
         // FIXME: magic number 10000: invoke special treatment when when msample << sample_count
         //                            (i.e. the OOB sample ist very large)
         //                     40000: use at most 40000 OOB samples per class for OOB error estimate
@@ -937,8 +936,6 @@ class OOB_Error : public VisitorBase
                 // update number of trees in which current sample is oob
                 ++oobCount[oob_indices[ll]];
 
-                // update number of oob samples in this tree.
-                ++total_oob;
                 // get the predicted votes ---> tmp_prob;
                 int pos =  rf.tree(index).getToLeaf(rowVector(pr.features(),oob_indices[ll]));
                 Node<e_ConstProbNode> node ( rf.tree(index).topology_,
@@ -967,8 +964,6 @@ class OOB_Error : public VisitorBase
                     // update number of trees in which current sample is oob
                     ++oobCount[ll];
 
-                    // update number of oob samples in this tree.
-                    ++total_oob;
                     // get the predicted votes ---> tmp_prob;
                     int pos =  rf.tree(index).getToLeaf(rowVector(pr.features(),ll));
                     Node<e_ConstProbNode> node ( rf.tree(index).topology_,
