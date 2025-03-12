@@ -388,7 +388,9 @@ RandomAccessSet<Key,Compare,Alloc>::insert
    }
 }
 
-/// insert a sequence of elements with a hint for the position
+/// insert an element with a hint for the position.  If the positional hint is
+/// consistent with value_comp() / the value / the neighbours, the element is
+/// inserted at position, otherwise we fall back to insertion without hint.
 ///
 /// \param position iterator to the position
 /// \param value element to insert
@@ -400,8 +402,8 @@ RandomAccessSet<Key,Compare,Alloc>::insert
    const typename RandomAccessSet<Key,Compare,Alloc>::value_type& value
 )
 {
-   if((position == begin() || this->operator()(*(position-1),value))
-   && (position == end() || this->operator()(value, *position))) {
+   if((position == begin() || value_comp()(*(position-1),value))
+   && (position == end() || value_comp()(value, *position))) {
        return vector_.insert(position, value);
    }
    return insert(value).first;
