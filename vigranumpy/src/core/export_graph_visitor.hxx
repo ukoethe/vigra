@@ -402,10 +402,8 @@ public:
         typedef GraphItemHelper<Graph,ITEM> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  ItemHelper::maxItemId(g)  ));
         std::fill(out.begin(),out.end(),false);
-        size_t  counter=0;
         for(ITEM_IT i(g);i!=lemon::INVALID;++i){
             out(g.id(*i))=true;
-            ++counter;
         }
         return out;
     }

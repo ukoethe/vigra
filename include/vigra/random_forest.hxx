@@ -1358,9 +1358,6 @@ void RandomForest<LabelType, PreprocessorTag>
     {
         ArrayVector<double>::const_iterator weights;
 
-        //totalWeight == totalVoteCount!
-        double totalWeight = 0.0;
-
         //Let each tree classify...
         for(int k=0; k<options_.tree_count_; ++k)
         {
@@ -1374,8 +1371,6 @@ void RandomForest<LabelType, PreprocessorTag>
                 double cur_w = weights[l] * (weighted * (*(weights-1))
                                            + (1-weighted));
                 prob(row, l) += static_cast<T>(cur_w);
-                //every weight in totalWeight.
-                totalWeight += cur_w;
             }
         }
     }

@@ -241,10 +241,14 @@ struct CountingIteratorCompare<T, true>
     */
 template<class T = std::ptrdiff_t>
 class CountingIterator
-: public std::iterator<std::random_access_iterator_tag,
-                       T, std::ptrdiff_t, T const *, T>
 {
   public:
+    typedef std::random_access_iterator_tag iterator_category;
+    typedef T value_type;
+    typedef std::ptrdiff_t difference_type;
+    typedef T const* pointer;
+    typedef T reference;
+
     CountingIterator()
     : begin_(0)
     , end_(0)
@@ -403,5 +407,15 @@ range(T end)
 //@}
 
 } // namespace vigra
+
+template <typename T>
+struct std::iterator_traits<typename vigra::CountingIterator<T>> 
+{
+   typedef typename vigra::CountingIterator<T>::iterator_category iterator_category;
+   typedef typename vigra::CountingIterator<T>::value_type value_type;
+   typedef typename vigra::CountingIterator<T>::difference_type difference_type;
+   typedef typename vigra::CountingIterator<T>::pointer pointer;
+   typedef typename vigra::CountingIterator<T>::reference reference;
+}; 
 
 #endif
