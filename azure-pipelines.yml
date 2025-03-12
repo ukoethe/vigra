@@ -30,10 +30,12 @@ jobs:
     steps:
       # Conda was removed from macos vmImages 13 and 14
       - script: |
+          CONDA=~/conda
           curl -fsSLo Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-$(uname -m).sh"
-          bash Miniforge3.sh -b -p "${HOME}/conda"
+          bash Miniforge3.sh -b -p "${CONDA}"
           rm Miniforge3.sh
-          source "${HOME}/conda/etc/profile.d/conda.sh"
+          source "${CONDA}/etc/profile.d/conda.sh"
+          echo "##vso[task.setvariable variable=CONDA]$CONDA";
         displayName: Install miniforge in runner
       - bash: echo "##vso[task.prependpath]~/conda/bin"
         displayName: Add conda to PATH
