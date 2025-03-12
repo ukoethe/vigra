@@ -510,11 +510,9 @@ void rank_selection      (FeatureT              const & features,
                            "matrix and number of features in previously used "
                            "result struct mismatch!");
     }
-
-    int ii = 0;
+    
     for(; iter != selected.end(); ++iter)
     {
-        ++ii;
         MultiArray<2, double> cur_feats;
         detail::choose( features,
                         selected.begin(),
