@@ -458,7 +458,6 @@ void BmpDecoderImpl::read_rle4_data ()
     bool painting = true;
 
     int x = 0;
-    int y = 0;
 
     while (painting) {
 
@@ -482,7 +481,6 @@ void BmpDecoderImpl::read_rle4_data ()
 
                     // so we are at the beginning of the next bmp line.
                     x = 0;
-                    ++y;
 
                     break;
                 }
@@ -500,7 +498,6 @@ void BmpDecoderImpl::read_rle4_data ()
                     if (x == info_header.width) {
                         mover -= line_size + ncomp*x;
                         x = 0;
-                        ++y;
                     }
 
                     unsigned int dx = stream.get ();
@@ -518,7 +515,6 @@ void BmpDecoderImpl::read_rle4_data ()
                     // y movement.
                     if (dy != 0) {
                         mover -= line_size*dy;
-                        y += dy;
                     }
 
                     break;
@@ -655,7 +651,6 @@ void BmpDecoderImpl::read_rle8_data ()
     bool painting = true;
 
     int x = 0;
-    int y = 0;
 
     while (painting) {
 
@@ -679,7 +674,6 @@ void BmpDecoderImpl::read_rle8_data ()
 
                     // so we are at the beginning of the next bmp line.
                     x = 0;
-                    ++y;
 
                     break;
                 }
@@ -697,7 +691,6 @@ void BmpDecoderImpl::read_rle8_data ()
                     if (x == info_header.width) {
                         mover -= line_size + ncomp*x;
                         x = 0;
-                        ++y;
                     }
 
                     unsigned int dx = stream.get ();
@@ -715,7 +708,6 @@ void BmpDecoderImpl::read_rle8_data ()
                     // y movement.
                     if (dy != 0) {
                         mover -= line_size*dy;
-                        y += dy;
                     }
                     break;
                 }
