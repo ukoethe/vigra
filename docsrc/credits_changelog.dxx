@@ -75,7 +75,7 @@
 
       <li> lnw contributed fixes for C++ compilers in 2025.
 
-      <li> parona-source contributed improvements to regex in python.
+      <li> Alfred Wingate (parona-source) contributed improvements to regex in python.
 
       <li> t0b3 contributed improvements to the CI testing infrastructure for python 3.13.
 
