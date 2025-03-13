@@ -73,11 +73,33 @@
 
       <li> David St&ouml;ckel contributed the 3D convex hull functionality.
 
+      <li> lnw contributed fixes for C++ compilers in 2025.
+
+      <li> parona-source contributed improvements to regex in python.
+
+      <li> t0b3 contributed improvements to the CI testing infrastructure for python 3.13.
+
+      <li> sertonix contributed to improvements to the testing scripts.
+
       <li> Numerous people reported and fixed bugs and made suggestions.
 </ul>
 
 Many thanks to all!
 <p>
+
+<b> Changes from Version 1.12.1 to 1.12.2 (2025/03/13)</b>
+
+<ul>
+
+      <li> fix typo in multi_iterator_coupled -- Contributed by lnw -- https://github.com/ukoethe/vigra/pull/592
+      <li> fix RandomAccessSet::insert(pos, val) function for gcc-15 and clang-19 -- Contributed by lnw -- https://github.com/ukoethe/vigra/pull/599
+      <li> Do not inherit from std::iterator as it is deprecated in c++17 -- Contributed by lnw -- https://github.com/ukoethe/vigra/pull/601
+      <li> Move away from inline global regex flag -- Contributed by parona-source -- https://github.com/ukoethe/vigra/pull/594
+      <li> CI: add python 3.13 -- Contributed by t0b3 -- https://github.com/ukoethe/vigra/pull/595
+      <li> Use posix shell instead of bash for tests -- Contributed by sertonix -- https://github.com/ukoethe/vigra/pull/600
+      <li> Fix macos runner on CI -- Contributed by k-dominik -- https://github.com/ukoethe/vigra/pull/603
+
+</ul>
 
 <b> Changes from Version 1.12.0 to 1.12.1 (2024/09/02)</b>
 
@@ -104,7 +126,7 @@ Many thanks to all!
 
       <li> Updated/Fixed CI, including various fixes for the build system (Mark Harfouche, John Kirkham, Dominik Kutra)
 
-      <li> Various fixes / improved compatility to support updated dependencies (hdf5 5.12, numpy>=1.20, sphinx>=1.8.0, python 3, h5py 3.0) (Mark Harfouche, John Kirkham, Ullrich Koethe, Dominik Kutra, Hans Meine) 
+      <li> Various fixes / improved compatility to support updated dependencies (hdf5 5.12, numpy>=1.20, sphinx>=1.8.0, python 3, h5py 3.0) (Mark Harfouche, John Kirkham, Ullrich Koethe, Dominik Kutra, Hans Meine)
 
       <li> Fixed Matlab compilation (Joachim B&ouml;rger)
 
