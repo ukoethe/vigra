@@ -133,10 +133,10 @@ struct ConvolutionTest
         line_kernel.initExplicitly(Diff2D(-2,0), Diff2D(2,0)) = 1, 4,   12,   4, 1 ;
         line_kernel.normalize(1);
 
-        ImageImportInfo info("lenna128.xv");
+        ImageImportInfo info("astronaut128.xv");
 
-        lenna.resize(info.width(), info.height());
-        importImage(info, destImage(lenna));
+        astronaut.resize(info.width(), info.height());
+        importImage(info, destImage(astronaut));
 
         Image::ScanOrderIterator i = rampimg.begin();
         Image::ScanOrderIterator end = rampimg.end();
@@ -338,17 +338,17 @@ struct ConvolutionTest
 
     void simpleSharpeningTest()
     {
-        Image dest_lenna(lenna);
-        simpleSharpening(srcImageRange(lenna), destImage(dest_lenna), 0.8);
+        Image dest_astronaut(astronaut);
+        simpleSharpening(srcImageRange(astronaut), destImage(dest_astronaut), 0.8);
 
         Image dest_correct;
-        ImageImportInfo info_correct("lenna_simple_sharpening_orig.xv");
+        ImageImportInfo info_correct("astronaut_simple_sharpening_orig.xv");
         dest_correct.resize(info_correct.width(), info_correct.height());
         importImage(info_correct, destImage(dest_correct));
 
-        Image::iterator i_dest = dest_lenna.begin();
-        Image::iterator end_dest = dest_lenna.end();
-        Image::Accessor acc_dest = dest_lenna.accessor();
+        Image::iterator i_dest = dest_astronaut.begin();
+        Image::iterator end_dest = dest_astronaut.end();
+        Image::Accessor acc_dest = dest_astronaut.accessor();
         Image::iterator i_dest_correct = dest_correct.begin();
         Image::Accessor acc_dest_correct = dest_correct.accessor();
 
@@ -356,26 +356,26 @@ struct ConvolutionTest
             shouldEqualTolerance(acc_dest(i_dest) , acc_dest_correct(i_dest_correct), 1e-15);
         }
 
-        dest_lenna.init(0.0);
-        simpleSharpening(View(lenna), View(dest_lenna), 0.8);
+        dest_astronaut.init(0.0);
+        simpleSharpening(View(astronaut), View(dest_astronaut), 0.8);
 
         using namespace multi_math;
-        should(all(abs(View(dest_lenna) - View(dest_correct)) < 3e-13));
+        should(all(abs(View(dest_astronaut) - View(dest_correct)) < 3e-13));
     }
 
     void gaussianSharpeningTest()
     {
-        Image dest_lenna(lenna);
-        gaussianSharpening(srcImageRange(lenna), destImage(dest_lenna), 3., 0.7);
+        Image dest_astronaut(astronaut);
+        gaussianSharpening(srcImageRange(astronaut), destImage(dest_astronaut), 3., 0.7);
 
         Image dest_correct;
-        ImageImportInfo info_correct("lenna_gaussian_sharpening_orig.xv");
+        ImageImportInfo info_correct("astronaut_gaussian_sharpening_orig.xv");
         dest_correct.resize(info_correct.width(), info_correct.height());
         importImage(info_correct, destImage(dest_correct));
 
-        Image::iterator i_dest = dest_lenna.begin();
-        Image::iterator end_dest = dest_lenna.end();
-        Image::Accessor acc_dest = dest_lenna.accessor();
+        Image::iterator i_dest = dest_astronaut.begin();
+        Image::iterator end_dest = dest_astronaut.end();
+        Image::Accessor acc_dest = dest_astronaut.accessor();
         Image::iterator i_dest_correct = dest_correct.begin();
         Image::Accessor acc_dest_correct = dest_correct.accessor();
 
@@ -384,11 +384,11 @@ struct ConvolutionTest
             shouldEqualTolerance(acc_dest(i_dest) , acc_dest_correct(i_dest_correct), 1e-6);
         }
 
-        dest_lenna.init(0.0);
-        gaussianSharpening(View(lenna), View(dest_lenna), 3., 0.7);
+        dest_astronaut.init(0.0);
+        gaussianSharpening(View(astronaut), View(dest_astronaut), 3., 0.7);
 
         using namespace multi_math;
-        should(all(abs(View(dest_lenna) - View(dest_correct)) < 1e-6));
+        should(all(abs(View(dest_astronaut) - View(dest_correct)) < 1e-6));
     }
 
     void stdConvolutionTestOnConstImage()
@@ -444,9 +444,9 @@ struct ConvolutionTest
 
 
         //@todo Import<->Export funktioniert nicht wie frueher???
-//         Image dest_lenna(lenna);
-//         convolveImage(srcImageRange(lenna), destImage(dest_lenna), kernel2d(sym_kernel, BORDER_TREATMENT_REFLECT));
-//         exportImage(srcImageRange(dest_lenna), ImageExportInfo("lenna_convolve_128x120.xv"));
+//         Image dest_astronaut(astronaut);
+//         convolveImage(srcImageRange(astronaut), destImage(dest_astronaut), kernel2d(sym_kernel, BORDER_TREATMENT_REFLECT));
+//         exportImage(srcImageRange(dest_astronaut), ImageExportInfo("astronaut_convolve_128x120.xv"));
 
     }
 
@@ -960,12 +960,12 @@ struct ConvolutionTest
         gauss.initGaussian(scale);
         gauss.setBorderTreatment(BORDER_TREATMENT_REFLECT);
 
-        Image tmp1(lenna.size()), tmp2(lenna.size()), tmp3(lenna.size());
+        Image tmp1(astronaut.size()), tmp2(astronaut.size()), tmp3(astronaut.size());
 
-        separableConvolveX(srcImageRange(lenna), destImage(tmp1), kernel1d(gauss));
+        separableConvolveX(srcImageRange(astronaut), destImage(tmp1), kernel1d(gauss));
         separableConvolveY(srcImageRange(tmp1), destImage(tmp2), kernel1d(gauss));
 
-        gaussianSmoothing(srcImageRange(lenna), destImage(tmp1), scale);
+        gaussianSmoothing(srcImageRange(astronaut), destImage(tmp1), scale);
 
         Image::ScanOrderIterator i1 = tmp1.begin();
         Image::ScanOrderIterator i1end = tmp1.end();
@@ -978,15 +978,15 @@ struct ConvolutionTest
         }
 
         tmp1 = 0.0;
-        separableConvolveX(View(lenna), View(tmp1), gauss);
+        separableConvolveX(View(astronaut), View(tmp1), gauss);
         separableConvolveY(View(tmp1), View(tmp3),  gauss);
-        gaussianSmoothing(View(lenna), View(tmp1), scale);
+        gaussianSmoothing(View(astronaut), View(tmp1), scale);
         should(View(tmp1) == View(tmp2));
         should(View(tmp1) == View(tmp3));
 
         // test recursive approximation
-        Image recursive(lenna.size());
-        recursiveGaussianFilterX(srcImageRange(lenna), destImage(tmp2), scale);
+        Image recursive(astronaut.size());
+        recursiveGaussianFilterX(srcImageRange(astronaut), destImage(tmp2), scale);
         recursiveGaussianFilterY(srcImageRange(tmp2), destImage(recursive), scale);
 
         i1 = tmp1.begin();
@@ -998,11 +998,11 @@ struct ConvolutionTest
         {
             double diff = abs(acc(i1) - acc(i2));
             sum += diff;
-            should(diff < 6.0);
+            should(diff < 11.0);
         }
-        should(sum / lenna.width() / lenna.height() < 0.5);
+        should(sum / astronaut.width() / astronaut.height() < 0.9);
 
-        recursiveGaussianFilterX(View(lenna), View(tmp1), scale);
+        recursiveGaussianFilterX(View(astronaut), View(tmp1), scale);
         recursiveGaussianFilterY(View(tmp1), View(tmp2), scale);
         should(View(recursive) == View(tmp2));
     }
@@ -1012,13 +1012,13 @@ struct ConvolutionTest
         vigra::Kernel1D<double> smooth3;
         smooth3.initOptimalSmoothing3();
 
-        Image tmp1(lenna.size());
-        Image tmp2(lenna.size());
+        Image tmp1(astronaut.size());
+        Image tmp2(astronaut.size());
 
-        separableConvolveX(srcImageRange(lenna), destImage(tmp1), kernel1d(smooth3));
+        separableConvolveX(srcImageRange(astronaut), destImage(tmp1), kernel1d(smooth3));
         separableConvolveY(srcImageRange(tmp1), destImage(tmp2), kernel1d(smooth3));
 
-        gaussianSmoothing(srcImageRange(lenna), destImage(tmp1), 0.68);
+        gaussianSmoothing(srcImageRange(astronaut), destImage(tmp1), 0.68);
 
         Image::ScanOrderIterator i1 = tmp1.begin();
         Image::ScanOrderIterator i1end = tmp1.end();
@@ -1027,7 +1027,7 @@ struct ConvolutionTest
 
         for(; i1 != i1end; ++i1, ++i2)
         {
-            shouldEqualTolerance(acc(i1), acc(i2), 1e-2);
+            shouldEqualTolerance(acc(i1), acc(i2), 1e-1);
         }
     }
 
@@ -1036,13 +1036,13 @@ struct ConvolutionTest
         vigra::Kernel1D<double> smooth5;
         smooth5.initOptimalSmoothing5();
 
-        Image tmp1(lenna.size());
-        Image tmp2(lenna.size());
+        Image tmp1(astronaut.size());
+        Image tmp2(astronaut.size());
 
-        separableConvolveX(srcImageRange(lenna), destImage(tmp1), kernel1d(smooth5));
+        separableConvolveX(srcImageRange(astronaut), destImage(tmp1), kernel1d(smooth5));
         separableConvolveY(srcImageRange(tmp1), destImage(tmp2), kernel1d(smooth5));
 
-        gaussianSmoothing(srcImageRange(lenna), destImage(tmp1), 0.867);
+        gaussianSmoothing(srcImageRange(astronaut), destImage(tmp1), 0.867);
 
         Image::ScanOrderIterator i1 = tmp1.begin();
         Image::ScanOrderIterator i1end = tmp1.end();
@@ -1051,30 +1051,30 @@ struct ConvolutionTest
 
         for(; i1 != i1end; ++i1, ++i2)
         {
-            shouldEqualTolerance(acc(i1), acc(i2), 1e-2);
+            shouldEqualTolerance(acc(i1), acc(i2), 1e-1);
         }
     }
 
     void separableGradientTest()
     {
-        Image sepgrad(lenna.size());
-        importImage(vigra::ImageImportInfo("lenna128sepgrad.xv"), destImage(sepgrad));
+        Image sepgrad(astronaut.size());
+        importImage(vigra::ImageImportInfo("astronaut128sepgrad.xv"), destImage(sepgrad));
 
         vigra::Kernel1D<double> gauss;
         gauss.initGaussian(1.0);
         vigra::Kernel1D<double> grad;
         grad.initGaussianDerivative(1.0, 1);
 
-        Image tmp1(lenna);
+        Image tmp1(astronaut);
         tmp1.init(0.0);
-        Image tmp2(lenna);
+        Image tmp2(astronaut);
         tmp2.init(0.0);
-        Image tmp3(lenna);
+        Image tmp3(astronaut);
 
-        separableConvolveX(srcImageRange(lenna), destImage(tmp3), kernel1d(grad));
+        separableConvolveX(srcImageRange(astronaut), destImage(tmp3), kernel1d(grad));
         separableConvolveY(srcImageRange(tmp3), destImage(tmp1), kernel1d(gauss));
 
-        separableConvolveX(srcImageRange(lenna), destImage(tmp3), kernel1d(gauss));
+        separableConvolveX(srcImageRange(astronaut), destImage(tmp3), kernel1d(gauss));
         separableConvolveY(srcImageRange(tmp3), destImage(tmp2), kernel1d(grad));
 
         Image::ScanOrderIterator i1 = tmp1.begin();
@@ -1093,29 +1093,29 @@ struct ConvolutionTest
         // compare with 2D convolution
         vigra::Kernel2D<double> gradx;
         gradx.initSeparable(grad, gauss);
-        Image nsgrad(lenna.size());
-        convolveImage(srcImageRange(lenna), destImage(nsgrad), kernel2d(gradx));
+        Image nsgrad(astronaut.size());
+        convolveImage(srcImageRange(astronaut), destImage(nsgrad), kernel2d(gradx));
 
         using namespace vigra::functor;
 
         combineTwoImages(srcImageRange(nsgrad), srcImage(tmp1), destImage(nsgrad), Arg1() - Arg2());
-        Image zero(lenna.size(), 0.0);
+        Image zero(astronaut.size(), 0.0);
         shouldEqualSequenceTolerance(nsgrad.data(), nsgrad.data()+nsgrad.width()*nsgrad.height(),
                                      zero.data(), 1e-12);
     }
 
     void gradientTest()
     {
-        Image sepgrad(lenna.size());
-        importImage(vigra::ImageImportInfo("lenna128sepgrad.xv"), destImage(sepgrad));
+        Image sepgrad(astronaut.size());
+        importImage(vigra::ImageImportInfo("astronaut128sepgrad.xv"), destImage(sepgrad));
 
 
-        Image tmpx(lenna.size());
-        Image tmpy(lenna.size());
-        Image mag(lenna.size());
+        Image tmpx(astronaut.size());
+        Image tmpy(astronaut.size());
+        Image mag(astronaut.size());
 
-        gaussianGradient(View(lenna), View(tmpx), View(tmpy), 1.0);
-        gaussianGradientMagnitude(srcImageRange(lenna), destImage(mag), 1.0);
+        gaussianGradient(View(astronaut), View(tmpx), View(tmpy), 1.0);
+        gaussianGradientMagnitude(srcImageRange(astronaut), destImage(mag), 1.0);
 
         Image::ScanOrderIterator i1 = tmpx.begin();
         Image::ScanOrderIterator i1end = tmpx.end();
@@ -1134,19 +1134,19 @@ struct ConvolutionTest
 
     void optimalGradient3Test()
     {
-        Image tmp(lenna.size());
-        Image tmpx(lenna.size());
-        Image tmpy(lenna.size());
+        Image tmp(astronaut.size());
+        Image tmpx(astronaut.size());
+        Image tmpy(astronaut.size());
 
         vigra::Kernel1D<double> diff;
         diff.initSymmetricDifference();
         vigra::Kernel1D<double> smooth3;
         smooth3.initOptimalFirstDerivativeSmoothing3();
 
-        separableConvolveX(srcImageRange(lenna), destImage(tmp), kernel1d(diff));
+        separableConvolveX(srcImageRange(astronaut), destImage(tmp), kernel1d(diff));
         separableConvolveY(srcImageRange(tmp), destImage(tmpx), kernel1d(smooth3));
 
-        separableConvolveX(srcImageRange(lenna), destImage(tmp), kernel1d(smooth3));
+        separableConvolveX(srcImageRange(astronaut), destImage(tmp), kernel1d(smooth3));
         separableConvolveY(srcImageRange(tmp), destImage(tmpy), kernel1d(diff));
 
         double sum = 0.0, mi = 0.0, ma = 0.0;
@@ -1163,26 +1163,27 @@ struct ConvolutionTest
             mi = std::min(mi, grad);
             ma = std::max(ma, grad);
         }
-        should(std::fabs(sum- 130000.0) < 1000.0);
+
+        should(std::fabs(sum - 205000.0) < 1000.0);
         shouldEqual(mi, 0.0);
-        should(std::fabs(ma - 68.0) < 1.0);
+        should(std::fabs(ma - 101.0) < 1.0);
     }
 
     void optimalLaplacian3Test()
     {
-        Image tmp(lenna.size());
-        Image tmpx(lenna.size());
-        Image tmpy(lenna.size());
+        Image tmp(astronaut.size());
+        Image tmpx(astronaut.size());
+        Image tmpy(astronaut.size());
 
         vigra::Kernel1D<double> diff;
         diff.initSecondDifference3();
         vigra::Kernel1D<double> smooth3;
         smooth3.initOptimalSecondDerivativeSmoothing3();
 
-        separableConvolveX(srcImageRange(lenna), destImage(tmp), kernel1d(diff));
+        separableConvolveX(srcImageRange(astronaut), destImage(tmp), kernel1d(diff));
         separableConvolveY(srcImageRange(tmp), destImage(tmpx), kernel1d(smooth3));
 
-        separableConvolveX(srcImageRange(lenna), destImage(tmp), kernel1d(smooth3));
+        separableConvolveX(srcImageRange(astronaut), destImage(tmp), kernel1d(smooth3));
         separableConvolveY(srcImageRange(tmp), destImage(tmpy), kernel1d(diff));
 
         double sum = 0.0, mi = 0.0, ma = 0.0;
@@ -1199,69 +1200,69 @@ struct ConvolutionTest
             mi = std::min(mi, lap);
             ma = std::max(ma, lap);
         }
-        should(std::fabs(sum) < 90.0);
-        should(std::fabs(mi + 120.0) < 1.0);
-        should(std::fabs(ma - 117.0) < 1.0);
+        should(std::fabs(sum) < 32.0);
+        should(std::fabs(mi + 256.0) < 1.0);
+        should(std::fabs(ma - 235.0) < 1.0);
     }
 
     void optimalGradient5Test()
     {
-        Image tmp(lenna.size());
-        Image tmpx(lenna.size());
-        Image tmpy(lenna.size());
-        Image mag(lenna.size());
+        Image tmp(astronaut.size());
+        Image tmpx(astronaut.size());
+        Image tmpy(astronaut.size());
+        Image mag(astronaut.size());
 
         vigra::Kernel1D<double> diff;
         diff.initOptimalFirstDerivative5();
         vigra::Kernel1D<double> smooth5;
         smooth5.initOptimalFirstDerivativeSmoothing5();
 
-        separableConvolveX(srcImageRange(lenna), destImage(tmp), kernel1d(diff));
+        separableConvolveX(srcImageRange(astronaut), destImage(tmp), kernel1d(diff));
         separableConvolveY(srcImageRange(tmp), destImage(tmpx), kernel1d(smooth5));
 
-        separableConvolveX(srcImageRange(lenna), destImage(tmp), kernel1d(smooth5));
+        separableConvolveX(srcImageRange(astronaut), destImage(tmp), kernel1d(smooth5));
         separableConvolveY(srcImageRange(tmp), destImage(tmpy), kernel1d(diff));
 
-        gaussianGradientMagnitude(srcImageRange(lenna), destImage(mag), 0.906);
+        gaussianGradientMagnitude(srcImageRange(astronaut), destImage(mag), 0.906);
 
-        for(int y=1; y<lenna.height()-1; ++y)
+        for(int y=1; y<astronaut.height()-1; ++y)
         {
-            for(int x=1; x<lenna.width()-1; ++x)
+            for(int x=1; x<astronaut.width()-1; ++x)
             {
                 double grad = vigra::hypot(tmpx(x,y), tmpy(x,y));
-                should(std::fabs(grad-mag(x,y)) < 2.0);
+                should(std::fabs(grad-mag(x,y)) < 3.0);
             }
         }
     }
 
     void optimalLaplacian5Test()
     {
-        Image tmp(lenna.size());
-        Image tmpx(lenna.size());
-        Image tmpy(lenna.size());
-        Image lap(lenna.size());
-        Image lap1(lenna.size());
+        Image tmp(astronaut.size());
+        Image tmpx(astronaut.size());
+        Image tmpy(astronaut.size());
+        Image lap(astronaut.size());
+        Image lap1(astronaut.size());
 
         vigra::Kernel1D<double> diff;
         diff.initOptimalSecondDerivative5();
         vigra::Kernel1D<double> smooth5;
         smooth5.initOptimalSecondDerivativeSmoothing5();
 
-        separableConvolveX(srcImageRange(lenna), destImage(tmp), kernel1d(diff));
+        separableConvolveX(srcImageRange(astronaut), destImage(tmp), kernel1d(diff));
         separableConvolveY(srcImageRange(tmp), destImage(tmpx), kernel1d(smooth5));
 
-        separableConvolveX(View(lenna), View(tmp), smooth5);
+        separableConvolveX(View(astronaut), View(tmp), smooth5);
         separableConvolveY(View(tmp), View(tmpy), diff);
 
-        laplacianOfGaussian(srcImageRange(lenna), destImage(lap), 0.817);
-        laplacianOfGaussian(View(lenna), View(lap1), 0.817);
+        laplacianOfGaussian(srcImageRange(astronaut), destImage(lap), 0.817);
+        laplacianOfGaussian(View(astronaut), View(lap1), 0.817);
 
-        for(int y=2; y<lenna.height()-2; ++y)
+        for(int y=2; y<astronaut.height()-2; ++y)
         {
-            for(int x=2; x<lenna.width()-2; ++x)
+            for(int x=2; x<astronaut.width()-2; ++x)
             {
                 double l = tmpx(x,y) + tmpy(x,y);
-                should(std::fabs(l-lap(x,y)) < 4.0);
+                should(std::fabs(l-lap(x,y)) < 6.0);
                 shouldEqual(lap(x,y), lap1(x,y));
             }
         }
@@ -1269,17 +1270,16 @@ struct ConvolutionTest
 
     void gradientRGBTest()
     {
-        RGBImage input(lenna.size());
-        importImage(vigra::ImageImportInfo("lenna128rgb.xv"), destImage(input));
+        RGBImage input(astronaut.size());
+        importImage(vigra::ImageImportInfo("astronaut128rgb.xv"), destImage(input));
 
-        Image sepgrad(lenna.size());
-        importImage(vigra::ImageImportInfo("lenna128rgbsepgrad.xv"), destImage(sepgrad));
+        Image sepgrad(astronaut.size());
+        importImage(vigra::ImageImportInfo("astronaut128rgbsepgrad.xv"), destImage(sepgrad));
 
-
-        RGBImage tmpx(lenna.size());
-        RGBImage tmpy(lenna.size());
-        Image mag(lenna.size());
-        Image resmag(lenna.size());
+        RGBImage tmpx(astronaut.size());
+        RGBImage tmpy(astronaut.size());
+        Image mag(astronaut.size());
+        Image resmag(astronaut.size());
 
         gaussianGradient(srcImageRange(input), destImage(tmpx), destImage(tmpy), 1.0);
         gaussianGradientMagnitude(srcImageRange(input), destImage(mag), 1.0);
@@ -1303,19 +1303,19 @@ struct ConvolutionTest
 
     void hessianTest()
     {
-        Image refxx(lenna.size());
-        Image refxy(lenna.size());
-        Image refyy(lenna.size());
+        Image refxx(astronaut.size());
+        Image refxy(astronaut.size());
+        Image refyy(astronaut.size());
 
-        importImage(vigra::ImageImportInfo("lennahessxx.xv"), destImage(refxx));
-        importImage(vigra::ImageImportInfo("lennahessyy.xv"), destImage(refyy));
-        importImage(vigra::ImageImportInfo("lennahessxy.xv"), destImage(refxy));
+        importImage(vigra::ImageImportInfo("astronauthessxx.xv"), destImage(refxx));
+        importImage(vigra::ImageImportInfo("astronauthessyy.xv"), destImage(refyy));
+        importImage(vigra::ImageImportInfo("astronauthessxy.xv"), destImage(refxy));
         {
-            Image resxx(lenna.size());
-            Image resxy(lenna.size());
-            Image resyy(lenna.size());
+            Image resxx(astronaut.size());
+            Image resxy(astronaut.size());
+            Image resyy(astronaut.size());
 
-            hessianMatrixOfGaussian(srcImageRange(lenna),
+            hessianMatrixOfGaussian(srcImageRange(astronaut),
                 destImage(resxx), destImage(resxy), destImage(resyy), 1.0);
 
             Image::ScanOrderIterator i1 = resxx.begin();
@@ -1336,11 +1336,11 @@ struct ConvolutionTest
             }
         }
         {
-            Image resxx(lenna.size());
-            Image resxy(lenna.size());
-            Image resyy(lenna.size());
+            Image resxx(astronaut.size());
+            Image resxy(astronaut.size());
+            Image resyy(astronaut.size());
 
-            hessianMatrixOfGaussian(View(lenna),
+            hessianMatrixOfGaussian(View(astronaut),
                                     View(resxx), View(resxy), View(resyy), 1.0);
 
             Image::ScanOrderIterator i1 = resxx.begin();
@@ -1364,24 +1364,24 @@ struct ConvolutionTest
 
     void structureTensorTest()
     {
-        Image resxx(lenna.size());
-        Image resxy(lenna.size());
-        Image resyy(lenna.size());
-        Image refxx(lenna.size());
-        Image refxy(lenna.size());
-        Image refyy(lenna.size());
+        Image resxx(astronaut.size());
+        Image resxy(astronaut.size());
+        Image resyy(astronaut.size());
+        Image refxx(astronaut.size());
+        Image refxy(astronaut.size());
+        Image refyy(astronaut.size());
 
         typedef BasicImage<TinyVector<double, 3> > VectorImage;
-        VectorImage resst(lenna.size());
+        VectorImage resst(astronaut.size());
 
-        structureTensor(View(lenna),
+        structureTensor(View(astronaut),
                         View(resxx), View(resxy), View(resyy), 1.0, 2.0);
 
-        structureTensor(View(lenna), MultiArrayView<2, TinyVector<double, 3> >(resst), 1.0, 2.0);
+        structureTensor(View(astronaut), MultiArrayView<2, TinyVector<double, 3> >(resst), 1.0, 2.0);
 
-        importImage(vigra::ImageImportInfo("lennastxx.xv"), destImage(refxx));
-        importImage(vigra::ImageImportInfo("lennastyy.xv"), destImage(refyy));
-        importImage(vigra::ImageImportInfo("lennastxy.xv"), destImage(refxy));
+        importImage(vigra::ImageImportInfo("astronautstxx.xv"), destImage(refxx));
+        importImage(vigra::ImageImportInfo("astronautstyy.xv"), destImage(refyy));
+        importImage(vigra::ImageImportInfo("astronautstxy.xv"), destImage(refxy));
 
         Image::ScanOrderIterator i1 = resxx.begin();
         Image::ScanOrderIterator i1end = resxx.end();
@@ -1407,15 +1407,14 @@ struct ConvolutionTest
 
     void structureTensorRGBTest()
     {
-        RGBImage input(lenna.size());
-        importImage(vigra::ImageImportInfo("lenna128rgb.xv"), destImage(input));
+        RGBImage input(astronaut.size());
+        importImage(vigra::ImageImportInfo("astronaut128rgb.xv"), destImage(input));
 
         typedef BasicImage<TinyVector<double, 3> > VectorImage;
-        VectorImage resst(lenna.size()), refst(lenna.size());
+        VectorImage resst(astronaut.size()), refst(astronaut.size());
 
-        structureTensor(srcImageRange(lenna), destImage(resst), 1.0, 2.0);
-
-        importImage(vigra::ImageImportInfo("lennargbst.xv"), destImage(refst));
+        structureTensor(srcImageRange(astronaut), destImage(resst), 1.0, 2.0);
+        importImage(vigra::ImageImportInfo("astronautrgbst.xv"), destImage(refst));
 
         VectorImage::ScanOrderIterator i1 = resst.begin();
         VectorImage::ScanOrderIterator i1end = resst.end();
@@ -1463,16 +1462,16 @@ struct ConvolutionTest
         vigra::Kernel2D<double> gauss2;
         gauss2.initSeparable(gauss1, gauss1);
 
-        Image tmp1(lenna);
+        Image tmp1(astronaut);
         tmp1 = 0.0;
 
-        convolveImage(srcImageRange(lenna), destImage(tmp1), kernel2d(gauss2));
+        convolveImage(srcImageRange(astronaut), destImage(tmp1), kernel2d(gauss2));
 
-        Image tmp2(lenna);
-        Image tmp3(lenna);
+        Image tmp2(astronaut);
+        Image tmp3(astronaut);
         tmp3 = 0.0;
 
-        separableConvolveX(srcImageRange(lenna), destImage(tmp2), kernel1d(gauss1));
+        separableConvolveX(srcImageRange(astronaut), destImage(tmp2), kernel1d(gauss1));
         separableConvolveY(srcImageRange(tmp2), destImage(tmp3), kernel1d(gauss1));
 
         Image::Iterator y1 = tmp1.upperLeft() - gauss2.upperLeft();
@@ -2075,20 +2074,20 @@ struct ConvolutionTest
 
     void recursiveGradientTest()
     {
-        ImageImportInfo info("lenna128recgrad.xv");
+        ImageImportInfo info("astronaut128recgrad.xv");
 
         Image recgrad(info.width(), info.height());
         importImage(info, destImage(recgrad));
 
-        Image tmp1(lenna);
+        Image tmp1(astronaut);
         tmp1 = 0.0;
-        Image tmp2(lenna);
+        Image tmp2(astronaut);
         tmp2 = 0.0;
 
-        recursiveFirstDerivativeX(View(lenna), View(tmp1), 1.0);
+        recursiveFirstDerivativeX(View(astronaut), View(tmp1), 1.0);
         recursiveSmoothY(View(tmp1), View(tmp1), 1.0);
 
-        recursiveSmoothX(View(lenna), View(tmp2), 1.0);
+        recursiveSmoothX(View(astronaut), View(tmp2), 1.0);
         recursiveFirstDerivativeY(View(tmp2), View(tmp2), 1.0);
 
         Image::ScanOrderIterator i1 = tmp1.begin();
@@ -2134,22 +2133,22 @@ struct ConvolutionTest
     void nonlinearDiffusionTest()
     {
 
-        Image res(lenna.size());
+        Image res(astronaut.size());
 
-        Image comp(lenna.size());
-        importImage(vigra::ImageImportInfo("lenna128nonlinear.xv"), destImage(comp));
+        Image comp(astronaut.size());
+        importImage(vigra::ImageImportInfo("astronaut128nonlinear.xv"), destImage(comp));
 
-        nonlinearDiffusion(srcImageRange(lenna), destImage(res),
+        nonlinearDiffusion(srcImageRange(astronaut), destImage(res),
                            vigra::DiffusivityFunctor<double>(4.0), 4.0);
         shouldEqualSequenceTolerance(res.begin(), res.end(), comp.begin(), 1e-7);
 
         res = 0;
-        nonlinearDiffusion(View(lenna), View(res),
+        nonlinearDiffusion(View(astronaut), View(res),
                            vigra::DiffusivityFunctor<double>(4.0), 4.0);
         shouldEqualSequenceTolerance(res.begin(), res.end(), comp.begin(), 1e-7);
     }
 
-    Image constimg, lenna, rampimg, sym_image, unsym_image;
+    Image constimg, astronaut, rampimg, sym_image, unsym_image;
     vigra::Kernel2D<double> sym_kernel, unsym_kernel, line_kernel;
 
 };
@@ -2260,7 +2259,7 @@ struct ResamplingConvolutionTest
         Gaussian<double> gauss(0.7);
         Rational<int> samplingRatio(2,1), offset(1,4);
 
-        ImageImportInfo info("lenna128.xv");
+        ImageImportInfo info("astronaut128.xv");
         FImage img(info.size());
         importImage(info, destImage(img));
 
@@ -2290,7 +2289,7 @@ struct ImagePyramidTest
 
     ImagePyramidTest()
     {
-        ImageImportInfo ginfo("lenna128.xv");
+        ImageImportInfo ginfo("astronaut128.xv");
         w = ginfo.width();
         h = ginfo.height();
         img.resize(w, h);
@@ -2324,7 +2323,7 @@ struct ImagePyramidTest
             if(i==0)
                 continue;
 
-            std::sprintf(buf, "lenna_level%d.xv", i);
+            std::sprintf(buf, "astronaut_level%d.xv", i);
             ImageImportInfo info(buf);
             shouldEqual(info.size(), pyramid[i].size());
 
@@ -2335,7 +2334,7 @@ struct ImagePyramidTest
 
         for(int i=0; i<=2; ++i)
         {
-            std::sprintf(buf, "lenna_levellap%d.xv", i);
+            std::sprintf(buf, "astronaut_levellap%d.xv", i);
             ImageImportInfo info(buf);
             shouldEqual(info.size(), laplacian[i].size());
 
