@@ -73,7 +73,7 @@
 
       <li> David St&ouml;ckel contributed the 3D convex hull functionality.
 
-      <li> lnw contributed fixes for C++ compilers in 2025.
+      <li> Lukas Wirz (lnw) contributed fixes for C++ compilers in 2025.
 
       <li> Alfred Wingate (parona-source) contributed improvements to regex in python.
 
