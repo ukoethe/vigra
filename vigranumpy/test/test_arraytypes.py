@@ -457,9 +457,9 @@ def checkCompatibility(obj, compatible):
 
 def testAxisTags():
     axistags = AxisTags(AxisInfo.c(description="RGB"),
-                        AxisInfo.ft(3.0, "time frequency"),
-                        AxisInfo.y(0.5),
-                        AxisInfo.z(4, "confocal depth"))
+                        AxisInfo.ft(resolution=3.0, description="time frequency", unit="sec"),
+                        AxisInfo.y(resolution=0.5, unit="mm"),
+                        AxisInfo.z(resolution=4, description="confocal depth", unit="nm"))
 
     json = '''{
   "axes": [
@@ -467,25 +467,29 @@ def testAxisTags():
       "key": "c",
       "typeFlags": 1,
       "resolution": 0,
-      "description": "RGB"
+      "description": "RGB",
+      "unit": ""
     },
     {
       "key": "t",
       "typeFlags": 24,
       "resolution": 3,
-      "description": "time frequency"
+      "description": "time frequency",
+      "unit": "sec"
     },
     {
       "key": "y",
       "typeFlags": 2,
       "resolution": 0.5,
-      "description": ""
+      "description": "",
+      "unit": "mm"
     },
     {
       "key": "z",
       "typeFlags": 2,
       "resolution": 4,
-      "description": "confocal depth"
+      "description": "confocal depth",
+      "unit": "nm"
     }
   ]
 }'''
@@ -501,6 +505,9 @@ def testAxisTags():
     assert_equal(readBack[1].resolution, 3)
     assert_equal(readBack[2].resolution, 0.5)
     assert_equal(readBack[3].resolution, 4)
+    assert_equal(readBack[1].unit, "sec")
+    assert_equal(readBack[2].unit, "mm")
+    assert_equal(readBack[3].unit, "nm")
 
     import pickle
     s = pickle.dumps(axistags)
@@ -514,6 +521,10 @@ def testAxisTags():
     assert_equal(unpickled[1].resolution, 3)
     assert_equal(unpickled[2].resolution, 0.5)
     assert_equal(unpickled[3].resolution, 4)
+    assert_equal(unpickled[1].unit, "sec")
+    assert_equal(unpickled[2].unit, "mm")
+    assert_equal(unpickled[3].unit, "nm")
+
 
     # FIXME: add more tests here
     defaultTags = arraytypes.VigraArray.defaultAxistags('cxyt')
