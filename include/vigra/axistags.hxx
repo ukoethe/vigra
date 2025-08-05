@@ -64,11 +64,12 @@ class AxisInfo
                     AllAxes = 2*UnknownAxisType-1 };
 
     AxisInfo(std::string key = "?", AxisType typeFlags = UnknownAxisType,
-             double resolution = 0.0, std::string description = "")
+             double resolution = 0.0, std::string description = "", std::string unit = "")
     : key_(key),
       description_(description),
       resolution_(resolution),
-      flags_(typeFlags)
+      flags_(typeFlags),
+      unit_(unit)
     {}
 
     std::string key() const
@@ -94,6 +95,16 @@ class AxisInfo
     void setResolution(double resolution)
     {
         resolution_ = resolution;
+    }
+
+    std::string unit() const
+    {
+        return unit_;
+    }
+
+    void setUnit(std::string const & unit)
+    {
+        unit_ = unit;
     }
 
     AxisType typeFlags() const
@@ -168,6 +179,11 @@ class AxisInfo
         {
             res += ", resolution=";
             res += asString(resolution_);
+        }
+        if(unit_ != "")
+        {
+            res += ", unit=";
+            res += unit_;
         }
         res += ")";
         if(description_ != "")
@@ -247,54 +263,54 @@ class AxisInfo
     }
 
     // factory functions for standard tags
-    static AxisInfo x(double resolution = 0.0, std::string const & description = "")
+    static AxisInfo x(double resolution = 0.0, std::string const & description = "", std::string const & unit = "")
     {
-        return AxisInfo("x", Space, resolution, description);
+        return AxisInfo("x", Space, resolution, description, unit);
     }
 
-    static AxisInfo y(double resolution = 0.0, std::string const & description = "")
+    static AxisInfo y(double resolution = 0.0, std::string const & description = "", std::string const & unit = "")
     {
-        return AxisInfo("y", Space, resolution, description);
+        return AxisInfo("y", Space, resolution, description, unit);
     }
 
-    static AxisInfo z(double resolution = 0.0, std::string const & description = "")
+    static AxisInfo z(double resolution = 0.0, std::string const & description = "", std::string const & unit = "")
     {
-        return AxisInfo("z", Space, resolution, description);
+        return AxisInfo("z", Space, resolution, description, unit);
     }
 
-    static AxisInfo n(double resolution = 0.0, std::string const & description = "")
+    static AxisInfo n(double resolution = 0.0, std::string const & description = "", std::string const & unit = "")
     {
-        return AxisInfo("n", Space, resolution, description);
+        return AxisInfo("n", Space, resolution, description, unit);
     }
 
-    static AxisInfo e(double resolution = 0.0, std::string const & description = "")
+    static AxisInfo e(double resolution = 0.0, std::string const & description = "", std::string const & unit = "")
     {
-        return AxisInfo("e", Edge, resolution, description);
+        return AxisInfo("e", Edge, resolution, description, unit);
     }
 
-    static AxisInfo t(double resolution = 0.0, std::string const & description = "")
+    static AxisInfo t(double resolution = 0.0, std::string const & description = "", std::string const & unit = "")
     {
-        return AxisInfo("t", Time, resolution, description);
+        return AxisInfo("t", Time, resolution, description, unit);
     }
 
-    static AxisInfo fx(double resolution = 0.0, std::string const & description = "")
+    static AxisInfo fx(double resolution = 0.0, std::string const & description = "", std::string const & unit = "")
     {
-        return AxisInfo("x", AxisType(Space | Frequency), resolution, description);
+        return AxisInfo("x", AxisType(Space | Frequency), resolution, description, unit);
     }
 
-    static AxisInfo fy(double resolution = 0.0, std::string const & description = "")
+    static AxisInfo fy(double resolution = 0.0, std::string const & description = "", std::string const & unit = "")
     {
-        return AxisInfo("y", AxisType(Space | Frequency), resolution, description);
+        return AxisInfo("y", AxisType(Space | Frequency), resolution, description, unit);
     }
 
-    static AxisInfo fz(double resolution = 0.0, std::string const & description = "")
+    static AxisInfo fz(double resolution = 0.0, std::string const & description = "", std::string const & unit = "")
     {
-        return AxisInfo("z", AxisType(Space | Frequency), resolution, description);
+        return AxisInfo("z", AxisType(Space | Frequency), resolution, description, unit);
     }
 
-    static AxisInfo ft(double resolution = 0.0, std::string const & description = "")
+    static AxisInfo ft(double resolution = 0.0, std::string const & description = "", std::string const & unit = "")
     {
-        return AxisInfo("t", AxisType(Time | Frequency), resolution, description);
+        return AxisInfo("t", AxisType(Time | Frequency), resolution, description, unit);
     }
 
     static AxisInfo c(std::string const & description = "")
@@ -302,7 +318,7 @@ class AxisInfo
         return AxisInfo("c", Channels, 0.0, description);
     }
 
-    std::string key_, description_;
+    std::string key_, description_, unit_;
     double resolution_;
     AxisType flags_;
 };
@@ -421,7 +437,8 @@ class AxisTags
             s << "      \"key\": \"" << axes_[k].key() << "\",\n";
             s << "      \"typeFlags\": " << (unsigned int)axes_[k].typeFlags() << ",\n";
             s << "      \"resolution\": " << std::setprecision(17) << axes_[k].resolution() << ",\n";
-            s << "      \"description\": \"" << axes_[k].description() << "\"\n";
+            s << "      \"description\": \"" << axes_[k].description() << "\",\n";
+            s << "      \"unit\": \"" << axes_[k].unit() << "\"\n";
             s << "    }";
         }
         s << "\n  ]\n}";
@@ -579,6 +596,26 @@ class AxisTags
     void scaleResolution(std::string const & key, double factor)
     {
         get(key).resolution_ *= factor;
+    }
+
+    std::string unit(int k) const
+    {
+        return get(k).unit_;
+    }
+
+    std::string unit(std::string const & key) const
+    {
+        return unit(index(key));
+    }
+
+    void setUnit(int k, std::string const & u)
+    {
+        get(k).setUnit(u);
+    }
+
+    void setUnit(std::string const & key, std::string const & u)
+    {
+        setUnit(index(key), u);
     }
 
     std::string description(int k) const

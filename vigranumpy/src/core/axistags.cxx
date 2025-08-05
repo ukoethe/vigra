@@ -103,9 +103,9 @@ generic__deepcopy__(python::object copyable, python::dict memo)
     return result;
 }
 
-AxisInfo AxisInfo__call__(AxisInfo const & i, double resolution, std::string const & description)
+AxisInfo AxisInfo__call__(AxisInfo const & i, double resolution, std::string const & description, std::string const & unit)
 {
-    return AxisInfo(i.key(), i.typeFlags(), resolution, description);
+    return AxisInfo(i.key(), i.typeFlags(), resolution, description, unit);
 }
 
 AxisInfo AxisInfo_x()
@@ -564,6 +564,8 @@ void defineAxisTags()
          "    :type typeFlags: :class:`~vigra.AxisType`\n"
          "    :param resolution: the resolution (step size) of the axis\n"
          "                       (e.g. 0.0 means 'unknown')\n"
+         "    :param unit: the unit of measurement corresponding to resolution of the axis\n"
+         "                       (can be left undefined)\n"
          "    :param description: an arbitrary string giving additional information \n"
          "                        about the axis.\n\n"
          "In addition, AxisInfo defines the following factories for the most common\n"
@@ -595,14 +597,16 @@ void defineAxisTags()
          "        Factory for an axisinfo object describing the 't' axis\n"
          "        in the Fourier domain.\n\n",
          no_init)
-        .def(init<std::string, AxisInfo::AxisType, double, std::string>(
+        .def(init<std::string, AxisInfo::AxisType, double, std::string, std::string>(
              (arg("key")="?", arg("typeFlags")=AxisInfo::UnknownAxisType,
-              arg("resolution")=0.0, arg("description")="")))
+              arg("resolution")=0.0, arg("description")="", arg("unit") = "")))
         .def(init<AxisInfo const &>())
         .def_readonly("key", &AxisInfo::key_,
              "\n(read-only property, type 'string') the key of the axis.\n")
         .def_readwrite("description", &AxisInfo::description_,
              "\n(read/write property, type 'string') the string description of the axis.\n")
+        .def_readwrite("unit", &AxisInfo::unit_,
+             "\n(read/write property, type 'string') the string unit of the axis.\n")
         .def_readwrite("resolution", &AxisInfo::resolution_,
              "\n(read/write property, type 'float') the resolution of the axis. The resolution\n"
              "will be automatically adjusted whenever the image size changes, e.g. due to a call\n"
@@ -656,7 +660,7 @@ void defineAxisTags()
         .def("__copy__", &generic__copy__<AxisInfo>)
         .def("__deepcopy__", &generic__deepcopy__<AxisInfo>)
         .def("__repr__", &AxisInfo::repr)
-        .def("__call__", &AxisInfo__call__, (arg("resolution") = 0.0, arg("description") = ""))
+        .def("__call__", &AxisInfo__call__, (arg("resolution") = 0.0, arg("description") = "", arg("unit") = ""))
         .add_static_property("x", &AxisInfo_x)
         .add_static_property("y", &AxisInfo_y)
         .add_static_property("z", &AxisInfo_z)
@@ -687,12 +691,12 @@ void defineAxisTags()
             "can be accessed via the index operator, where the argument can either be\n"
             "the axis index or the axis key::\n\n"
             "    >>> print(array.axistags[0])\n"
-            "    AxisInfo: 'x' (type: Space, resolution=1.2)\n"
+            "    AxisInfo: 'x' (type: Space, resolution=1.2, unit = 'cm')\n"
             "    >>> print(array.axistags['x'])\n"
-            "    AxisInfo: 'x' (type: Space, resolution=1.2)\n"
+            "    AxisInfo: 'x' (type: Space, resolution=1.2, unit = 'cm')\n"
             "    >>> array.axistags['x'].resolution = 2.0\n"
             "    >>> print(array.axistags['x'])\n"
-            "    AxisInfo: 'x' (type: Space, resolution=2)\n\n",
+            "    AxisInfo: 'x' (type: Space, resolution=2, unit = 'cm')\n\n",
             no_init)
         .def("__init__", make_constructor(&AxisTags_create,
             default_call_policies(),
@@ -769,6 +773,13 @@ void defineAxisTags()
             (void (AxisTags::*)(int, std::string const &))&AxisTags::setDescription)
         .def("setDescription",
             (void (AxisTags::*)(std::string const &, std::string const &))&AxisTags::setDescription)
+        .def("unit", (std::string (AxisTags::*)(int) const)&AxisTags::unit)
+        .def("unit",
+             (std::string (AxisTags::*)(std::string const &) const)&AxisTags::unit)
+        .def("setUnit",
+            (void (AxisTags::*)(int, std::string const &))&AxisTags::setUnit)
+        .def("setUnit",
+            (void (AxisTags::*)(std::string const &, std::string const &))&AxisTags::setUnit)
         .def("setChannelDescription", &AxisTags::setChannelDescription,
              "Set a description for the channel axis, if one exists::\n\n"
              "    axistags.setChannelDescription('colors are in Lab color space')\n\n"
