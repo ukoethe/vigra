@@ -555,7 +555,7 @@ void defineAxisTags()
     class_<AxisInfo>("AxisInfo",
          "\n"
          "An object describing a single axis.\n\nConstructor:\n\n"
-         ".. method:: AxisInfo(key='?', typeFlags=AxisType.UnknownAxisType, resolution=0.0, description='')\n\n"
+         ".. method:: AxisInfo(key='?', typeFlags=AxisType.UnknownAxisType, resolution=0.0, description='', unit='')\n\n"
          "    :param key: the key of the axis,\n"
          "                e.g. 'x' (x-axis), 'c' (channel axis), '?' (unknown)\n"
          "    :type key: string\n"
@@ -564,36 +564,36 @@ void defineAxisTags()
          "    :type typeFlags: :class:`~vigra.AxisType`\n"
          "    :param resolution: the resolution (step size) of the axis\n"
          "                       (e.g. 0.0 means 'unknown')\n"
-         "    :param unit: the unit of measurement corresponding to resolution of the axis\n"
-         "                       (can be left undefined)\n"
          "    :param description: an arbitrary string giving additional information \n"
          "                        about the axis.\n\n"
+         "    :param unit: the unit of measurement corresponding to resolution of the axis\n"
+         "                       (can be left undefined)\n"
          "In addition, AxisInfo defines the following factories for the most common\n"
          "cases:\n\n"
          "   ``AxisInfo.c`` or ``AxisInfo.c(description='a description')``:\n"
          "        Factory for an axisinfo object describing the 'c' (channel) axis.\n"
-         "   ``AxisInfo.x`` or ``AxisInfo.x(resolution=0.0, description='')``:\n"
+         "   ``AxisInfo.x`` or ``AxisInfo.x(resolution=0.0, description='', unit='')``:\n"
          "        Factory for an axisinfo object describing the 'x' (spatial) axis.\n"
-         "   ``AxisInfo.y`` or ``AxisInfo.y(resolution=0.0, description='')``:\n"
+         "   ``AxisInfo.y`` or ``AxisInfo.y(resolution=0.0, description='', unit='')``:\n"
          "        Factory for an axisinfo object describing the 'y' (spatial) axis.\n"
-         "   ``AxisInfo.z`` or ``AxisInfo.z(resolution=0.0, description='')``:\n"
+         "   ``AxisInfo.z`` or ``AxisInfo.z(resolution=0.0, description='', unit='')``:\n"
          "        Factory for an axisinfo object describing the 'z' (spatial) axis.\n"
-         "   ``AxisInfo.z`` or ``AxisInfo.n(resolution=0.0, description='')``:\n"
+         "   ``AxisInfo.z`` or ``AxisInfo.n(resolution=0.0, description='', unit='')``:\n"
          "        Factory for an axisinfo object describing the 'n' (spatial) axis.\n"
-         "   ``AxisInfo.e`` or ``AxisInfo.e(resolution=0.0, description='')``:\n"
+         "   ``AxisInfo.e`` or ``AxisInfo.e(resolution=0.0, description='', unit='')``:\n"
          "        Factory for an axisinfo object describing the 'e' (edge) axis.\n"
-         "   ``AxisInfo.t`` or ``AxisInfo.t(resolution=0.0, description='')``:\n"
+         "   ``AxisInfo.t`` or ``AxisInfo.t(resolution=0.0, description='', unit='')``:\n"
          "        Factory for an axisinfo object describing the 't' (time) axis.\n"
-         "   ``AxisInfo.fx`` or ``AxisInfo.fx(resolution=0.0, description='')``:\n"
+         "   ``AxisInfo.fx`` or ``AxisInfo.fx(resolution=0.0, description='', unit='')``:\n"
          "        Factory for an axisinfo object describing the 'x' axis\n"
          "        in the Fourier domain.\n"
-         "   ``AxisInfo.fy`` or ``AxisInfo.fy(resolution=0.0, description='')``:\n"
+         "   ``AxisInfo.fy`` or ``AxisInfo.fy(resolution=0.0, description='', unit='')``:\n"
          "        Factory for an axisinfo object describing the 'y' axis\n"
          "        in the Fourier domain.\n"
-         "   ``AxisInfo.fz`` or ``AxisInfo.fz(resolution=0.0, description='')``:\n"
+         "   ``AxisInfo.fz`` or ``AxisInfo.fz(resolution=0.0, description='', unit='')``:\n"
          "        Factory for an axisinfo object describing the 'z' axis\n"
          "        in the Fourier domain.\n"
-         "   ``AxisInfo.ft`` or ``AxisInfo.ft(resolution=0.0, description='')``:\n"
+         "   ``AxisInfo.ft`` or ``AxisInfo.ft(resolution=0.0, description='', unit='')``:\n"
          "        Factory for an axisinfo object describing the 't' axis\n"
          "        in the Fourier domain.\n\n",
          no_init)
@@ -650,9 +650,15 @@ void defineAxisTags()
              "contains the given axistype.\n")
         .def("compatible", &AxisInfo::compatible,
              "\naxisinfo1.compatible(axisinfo2) yields True when the two axisinfo objects "
-             "have the same keys and types, or either of the two is 'unknown'.\n")
-        .def(self == self)
-        .def(self != self)
+             "have the same keys and types, or either of the two is 'unknown'.\n"
+             "Note that, as this does not compare axis resolutions or units, \n"
+             "there may still be mismatch or incompatibility in that regard.")
+        .def(self == self,
+            "Compares 2 sets of AxisInfos for equality through typeFlags and axis keys\n"
+            "Note that this does not compare axis resolutions or units")
+        .def(self != self,
+            "Compares 2 sets of AxisInfos for inequality through typeFlags and axis keys\n"
+            "Note that this does not compare axis resolutions or units")
         .def(self < self)
         .def(self <= self)
         .def(self > self)
