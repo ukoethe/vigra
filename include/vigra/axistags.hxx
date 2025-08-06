@@ -315,7 +315,7 @@ class AxisInfo
 
     static AxisInfo c(std::string const & description = "")
     {
-        return AxisInfo("c", Channels, 0.0, description);
+        return AxisInfo("c", Channels, 0.0, description, "");
     }
 
     std::string key_, description_, unit_;
