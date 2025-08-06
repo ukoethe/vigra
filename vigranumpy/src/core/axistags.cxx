@@ -649,7 +649,7 @@ void defineAxisTags()
              "\naxisinfo.isType(axistype) yields True when :attr:`~vigra.AxisInfo.typeFlags` "
              "contains the given axistype.\n")
         .def("compatible", &AxisInfo::compatible,
-             "\naxisinfo1.compatible(axisinfo2) yields True when the two axisinfo objects "
+             "\naxisinfo1.compatible(axisinfo2) yields True when the two axisinfo objects\n"
              "have the same keys and types, or either of the two is 'unknown'.\n"
              "Note that, as this does not compare axis resolutions or units, \n"
              "there may still be mismatch or incompatibility in that regard.")
