@@ -653,12 +653,9 @@ void defineAxisTags()
              "have the same keys and types, or either of the two is 'unknown'.\n"
              "Note that, as this does not compare axis resolutions or units, \n"
              "there may still be mismatch or incompatibility in that regard.")
-        .def(self == self,
-            "Compares 2 sets of AxisInfos for equality through typeFlags and axis keys\n"
-            "Note that this does not compare axis resolutions or units")
-        .def(self != self,
-            "Compares 2 sets of AxisInfos for inequality through typeFlags and axis keys\n"
-            "Note that this does not compare axis resolutions or units")
+        //Equality comparisons (note does not compare axis resolutions or units)
+        .def(self == self)
+        .def(self != self)
         .def(self < self)
         .def(self <= self)
         .def(self > self)
