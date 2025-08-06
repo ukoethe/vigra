@@ -457,7 +457,7 @@ def checkCompatibility(obj, compatible):
 
 def testAxisTags():
     axistags = AxisTags(AxisInfo.c(description="RGB"),
-                        AxisInfo.ft(resolution=3.0, description="time frequency", unit="sec"),
+                        AxisInfo.ft(resolution=3.0, description="time frequency", unit="Hz"),
                         AxisInfo.y(resolution=0.5, unit="mm"),
                         AxisInfo.z(resolution=4, description="confocal depth", unit="nm"))
 
@@ -475,7 +475,7 @@ def testAxisTags():
       "typeFlags": 24,
       "resolution": 3,
       "description": "time frequency",
-      "unit": "sec"
+      "unit": "Hz"
     },
     {
       "key": "y",
@@ -505,7 +505,7 @@ def testAxisTags():
     assert_equal(readBack[1].resolution, 3)
     assert_equal(readBack[2].resolution, 0.5)
     assert_equal(readBack[3].resolution, 4)
-    assert_equal(readBack[1].unit, "sec")
+    assert_equal(readBack[1].unit, "Hz")
     assert_equal(readBack[2].unit, "mm")
     assert_equal(readBack[3].unit, "nm")
 
@@ -521,7 +521,7 @@ def testAxisTags():
     assert_equal(unpickled[1].resolution, 3)
     assert_equal(unpickled[2].resolution, 0.5)
     assert_equal(unpickled[3].resolution, 4)
-    assert_equal(unpickled[1].unit, "sec")
+    assert_equal(unpickled[1].unit, "Hz")
     assert_equal(unpickled[2].unit, "mm")
     assert_equal(unpickled[3].unit, "nm")
 
