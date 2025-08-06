@@ -653,8 +653,7 @@ void defineAxisTags()
              "have the same keys and types, or either of the two is 'unknown'.\n"
              "Note that, as this does not compare axis resolutions or units, \n"
              "there may still be mismatch or incompatibility in that regard.")
-        //Equality comparisons (note does not compare axis resolutions or units)
-        .def(self == self)
+        .def("__eq__", &AxisInfo::operator==, "Equality comparison. Note: does not compare axis resolutions or units.")
         .def(self != self)
         .def(self < self)
         .def(self <= self)
