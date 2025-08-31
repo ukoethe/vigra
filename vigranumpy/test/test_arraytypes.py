@@ -49,6 +49,7 @@ import vigranumpytest as vt
 from vigra.arraytypes import AxisTags, AxisInfo
 import platform
 IS_PYPY = platform.python_implementation() == 'PyPy'
+IS_GEQ_3_14 = sys.version_info >= (3, 14)
 
 
 numpyHasPtp = numpy.__version__.startswith(("1.", "2.0.", "2.1.", "2.2.", "2.3."))
@@ -95,7 +96,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         def testCopy(img):
             b = cls(img, order='A')
             if not IS_PYPY:
-                assert_equal(sys.getrefcount(b), 2)
+                assert_equal(sys.getrefcount(b), 1 if IS_GEQ_3_14 else 2)
             assert b.__class__ is img.__class__
             assert_equal(b.shape, img.shape)
             assert_equal(b.strides, img.strides)
@@ -106,7 +107,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
             assert not numpy.may_share_memory(b, img)
             b = img.copy(order='A')
             if not IS_PYPY:
-                assert_equal(sys.getrefcount(b), 2)
+                assert_equal(sys.getrefcount(b), 1 if IS_GEQ_3_14 else 2)
             assert_equal(b.shape, img.shape)
             assert_equal(b.strides, img.strides)
             assert_equal(b.order, img.order)
@@ -148,7 +149,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         assert isinstance(img, numpy.ndarray)
         assert_equal(img.dtype, numpy.float32)
         if not IS_PYPY:
-            assert_equal(sys.getrefcount(img), 2)
+            assert_equal(sys.getrefcount(img), 1 if IS_GEQ_3_14 else 2)
 
         # test shape
         checkShape(img.shape, vshape)
@@ -215,7 +216,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         # test shape, strides, and copy for 'F' order
         img = cls(fshape, order='F')
         if not IS_PYPY:
-            assert_equal(sys.getrefcount(img), 2)
+            assert_equal(sys.getrefcount(img), 1 if IS_GEQ_3_14 else 2)
         checkShape(img.shape, fshape)
         checkStride(img.strides, ffstrides)
         assert_equal(img.axistags, faxistags)
@@ -246,7 +247,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         # test shape, strides, and copy for 'A' order (should be equal to 'V' order)
         img = cls(vshape, order='A')
         if not IS_PYPY:
-            assert_equal(sys.getrefcount(img), 2)
+            assert_equal(sys.getrefcount(img), 1 if IS_GEQ_3_14 else 2)
         checkShape(img.shape, vshape)
         checkStride(img.strides, fvstrides)
         if channels > 1:
@@ -267,7 +268,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         # test shape, strides, and copy for 'C' order
         img = cls(cshape, order='C')
         if not IS_PYPY:
-            assert_equal(sys.getrefcount(img), 2)
+            assert_equal(sys.getrefcount(img), 1 if IS_GEQ_3_14 else 2)
         checkShape(img.shape, cshape)
         checkStride(img.strides, fcstrides)
         assert_equal(img.axistags, caxistags)
@@ -299,7 +300,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         img = cls(vshape, order="V")
         b = cls(img, dtype=numpy.uint8, order='V')
         if not IS_PYPY:
-            assert_equal(sys.getrefcount(b), 2)
+            assert_equal(sys.getrefcount(b), 1 if IS_GEQ_3_14 else 2)
         assert_equal(b.dtype, numpy.uint8)
         checkShape(b.shape, img.shape)
         checkStride(b.strides, computeVStrides(b.shape, hasChannelAxis))
@@ -323,7 +324,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         img = cls(cshape, order="C")
         b = cls(img, dtype=numpy.uint8, order='C')
         if not IS_PYPY:
-            assert_equal(sys.getrefcount(b), 2)
+            assert_equal(sys.getrefcount(b), 1 if IS_GEQ_3_14 else 2)
         checkShape(b.shape, img.shape)
         checkStride(b.strides, computeCStrides(b.shape))
         assert_equal(b.axistags, img.axistags)
@@ -341,7 +342,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         img = cls(fshape, order="F")
         b = cls(img, dtype=numpy.uint8, order='F')
         if not IS_PYPY:
-            assert_equal(sys.getrefcount(b), 2)
+            assert_equal(sys.getrefcount(b), 1 if IS_GEQ_3_14 else 2)
         checkShape(b.shape, img.shape)
         checkStride(b.strides, computeFStrides(b.shape))
         assert_equal(b.axistags, img.axistags)
