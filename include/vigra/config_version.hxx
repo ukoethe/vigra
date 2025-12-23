@@ -39,7 +39,7 @@
 
     #define VIGRA_VERSION_MAJOR 1
     #define VIGRA_VERSION_MINOR 12
-    #define VIGRA_VERSION_PATCH 2
-    #define VIGRA_VERSION "1.12.2"
+    #define VIGRA_VERSION_PATCH 3
+    #define VIGRA_VERSION "1.12.3"
 
 #endif /* VIGRA_CONFIG_VERSION_HXX */
