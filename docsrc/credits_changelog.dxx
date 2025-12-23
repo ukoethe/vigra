@@ -87,6 +87,14 @@
 Many thanks to all!
 <p>
 
+<b> Changes from Version 1.12.2 to 1.12.3 (2025/03/13)</b>
+
+<ul>
+
+      <li> Vigra Numpy: fix compatibility with numpy 2.4. The methods ptp of the Vigra arrays are conditionally removed if numpy 2.4 or greater is detected.
+
+</ul>
+
 <b> Changes from Version 1.12.1 to 1.12.2 (2025/03/13)</b>
 
 <ul>

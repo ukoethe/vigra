@@ -36,6 +36,8 @@
 import copy, sys
 import numpy
 
+numpyHasPtp = numpy.__version__.startswith(("1.", "2.0.", "2.1.", "2.2.", "2.3."))
+
 
 def preserve_doc(f):
     f.__doc__ = eval('numpy.ndarray.%s.__doc__' % f.__name__)
@@ -263,13 +265,14 @@ of 'numpy.ndarray'.
             del res.axistags[axis]
         return res
 
-    @preserve_doc
-    def ptp(self, axis=None, out=None):
-        res = numpy.ndarray.ptp(self, axis, out)
-        if axis is not None:
-            res.axistags = res.copy_axistags()
-            del res.axistags[axis]
-        return res
+    if numpyHasPtp:
+        @preserve_doc
+        def ptp(self, axis=None, out=None):
+            res = numpy.ndarray.ptp(self, axis, out)
+            if axis is not None:
+                res.axistags = res.copy_axistags()
+                del res.axistags[axis]
+            return res
 
     @preserve_doc
     def ravel(self, order='C'):

@@ -51,7 +51,7 @@ import platform
 IS_PYPY = platform.python_implementation() == 'PyPy'
 
 
-numpyHasComplexNegateBug = numpy.version.version.startswith('1.0')
+numpyHasPtp = numpy.__version__.startswith(("1.", "2.0.", "2.1.", "2.2.", "2.3."))
 
 try:
     vt.testAny()
@@ -1471,8 +1471,9 @@ def testMethods():
     assert_equal(ones.prod(), 1.0)
     assert (ones.prod(axis='y') == [1]*ones.shape[0]).all()
 
-    assert_equal(a.ptp(), a.size-1)
-    assert (a.ptp(axis='x') == [a.shape[0]-1]*a.shape[1]).all()
+    if numpyHasPtp:
+        assert_equal(a.ptp(), a.size-1)
+        assert (a.ptp(axis='x') == [a.shape[0]-1]*a.shape[1]).all()
 
     r = arraytypes.ScalarImage((2,2))
     r.ravel()[...] = range(4)
@@ -1555,8 +1556,7 @@ def testUfuncs():
         b = -a
         assert_equal(t, b.dtype)
         assert_equal(a.axistags, b.axistags)
-        if not numpyHasComplexNegateBug or t is not clongdouble:
-            assert (b == -t(2)).all()
+        assert (b == -t(2)).all()
         b = a + a
         assert_equal(t, b.dtype)
         assert_equal(a.axistags, b.axistags)
