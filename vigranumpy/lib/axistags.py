@@ -1,4 +1,5 @@
 import numpy as np
+numpyHasPtp = np.__version__.startswith(("1.", "2.0.", "2.1.", "2.2.", "2.3."))
 
 
 class TaggedArray(np.ndarray):
@@ -88,11 +89,12 @@ class TaggedArray(np.ndarray):
             del res.axistags[axis]
         return res
 
-    def ptp(self, axis=None, out=None):
-        res = np.ndarray.ptp(self, axis, out)
-        if axis is not None:
-            del res.axistags[axis]
-        return res
+    if numpyHasPtp:
+        def ptp(self, axis=None, out=None):
+            res = np.ndarray.ptp(self, axis, out)
+            if axis is not None:
+                del res.axistags[axis]
+            return res
 
     def ravel(self, order='C'):
         res = np.ndarray.ravel(self, order)
