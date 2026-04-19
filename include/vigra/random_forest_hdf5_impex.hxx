@@ -39,6 +39,7 @@
 #include "config.hxx"
 #include "random_forest.hxx"
 #include "hdf5impex.hxx"
+#include <algorithm>
 #include <string>
 
 namespace vigra
@@ -292,6 +293,9 @@ bool rf_import_HDF5(RandomForest<T, Tag> & rf,
     // get all groups in base path
     // no check for the rf_hdf5_tree prefix...
     std::vector<std::string> names = h5context.ls();
+    // HDF5File::ls() uses H5_ITER_NATIVE, which does not guarantee alphabetical
+    // order. Sort so that trees are imported in the same order they were exported.
+    std::sort(names.begin(), names.end());
     std::vector<std::string>::const_iterator j;
     for (j = names.begin(); j != names.end(); ++j)
     {
