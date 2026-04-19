@@ -194,7 +194,7 @@ VIGRA_DEFINE_STL_FUNCTOR(std::logical_or, VigraFalseType, VigraTrueType)
 VIGRA_DEFINE_STL_FUNCTOR(std::negate, VigraTrueType, VigraFalseType)
 VIGRA_DEFINE_STL_FUNCTOR(std::logical_not, VigraTrueType, VigraFalseType)
 
-#if !( (__cplusplus >= 202002L) || (defined(_MSC_VER) && _MSVC_LANG >= 202002L) )
+#if !( (__cplusplus >= 201703L) || (defined(_MSC_VER) && _MSVC_LANG >= 201703L) )
 VIGRA_DEFINE_STL_FUNCTOR(std::binary_negate, VigraFalseType, VigraTrueType)
 VIGRA_DEFINE_STL_FUNCTOR(std::unary_negate, VigraTrueType, VigraFalseType)
 #endif
