@@ -2,11 +2,16 @@ set -ex
 
 PYTHON_VERSION="${PYTHON_VERSION:-3.10}"
 
+# As of Aug 31, 2025, Python 3.14 is only available in the conda-forge python_rc channel
+# We just choose to unconditionally add it here for simplicity of testing
+
 conda config --show
 conda create \
     --quiet --yes \
     --override-channels \
-    -c conda-forge -c nodefaults \
+    -c conda-forge/label/python_rc \
+    -c conda-forge \
+    -c nodefaults \
     --name vigra \
     python=${PYTHON_VERSION} pytest c-compiler cxx-compiler \
     zlib libjpeg-turbo libpng libtiff hdf5 fftw \

@@ -13,6 +13,8 @@ jobs:
           PYTHON_VERSION: 3.12
         py313:
           PYTHON_VERSION: 3.13
+        py314:
+          PYTHON_VERSION: 3.14
     steps:
       - script: bash ci/build_unix.sh
   - job: lint
