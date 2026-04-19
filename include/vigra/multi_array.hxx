@@ -2310,12 +2310,14 @@ MultiArrayView <N, T, StrideTag>::bindAt (difference_type_1 n, difference_type_1
     }
     else
     {
-        std::copy (m_shape.begin (), m_shape.begin () + n, shape.begin ());
-        std::copy (m_shape.begin () + n+1, m_shape.end (),
-                   shape.begin () + n);
-        std::copy (m_stride.begin (), m_stride.begin () + n, stride.begin ());
-        std::copy (m_stride.begin () + n+1, m_stride.end (),
-                   stride.begin () + n);
+        // Explicit loop (rather than std::copy) so GCC can see the compile-time
+        // NNew bound and avoid a -Wstringop-overflow false positive.
+        for (int k = 0; k < NNew; ++k)
+        {
+            int const src = (k < n) ? k : (k + 1);
+            shape[k]  = m_shape[src];
+            stride[k] = m_stride[src];
+        }
     }
     return MultiArrayView <N-1, T, StridedArrayTag>
         (shape, stride, m_ptr + d * m_stride[n]);
