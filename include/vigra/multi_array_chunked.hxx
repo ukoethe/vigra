@@ -1647,7 +1647,7 @@ class ChunkedArray
         for(unsigned int k=0; k<N; ++k)
         {
             UInt32 bits = log2i(chunk_shape[k]);
-            vigra_precondition(chunk_shape[k] == MultiArrayIndex(1 << bits),
+            vigra_precondition(chunk_shape[k] == (MultiArrayIndex(1) << bits),
                                "ChunkedArray: chunk_shape elements must be powers of 2.");
             res[k] = bits;
          }

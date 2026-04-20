@@ -120,7 +120,12 @@ copyLineWithBorderTreatment(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             }
             case BORDER_TREATMENT_AVOID:
             {
-                // nothing to do
+                // Don't write to the left-border output positions, but still
+                // advance past them so the main copy loop below starts at a
+                // valid source position (iss = is + leftBorder). Without this,
+                // iss would point before the source buffer.
+                id += -leftBorder;
+                leftBorder = 0;
                 break;
             }
             case BORDER_TREATMENT_REFLECT:
