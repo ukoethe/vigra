@@ -41,6 +41,7 @@
 #include <string>
 #include "vigra/error.hxx"
 #include "vigra/tinyvector.hxx"
+#include "array_vector.hxx"
 
 namespace vigra {
 
