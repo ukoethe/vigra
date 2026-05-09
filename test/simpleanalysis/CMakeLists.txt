@@ -7,4 +7,4 @@ else()
     VIGRA_ADD_TEST(test_simpleanalysis test.cxx LIBRARIES vigraimpex)
 endif()
 
-VIGRA_COPY_TEST_DATA(noiseNormalizationTest.xv slantedEdgeMTF.xv lenna128.xv)
+VIGRA_COPY_TEST_DATA(noiseNormalizationTest.xv slantedEdgeMTF.xv astronaut128.xv)

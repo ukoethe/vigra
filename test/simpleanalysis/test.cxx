@@ -2332,7 +2332,7 @@ struct AffineRegistrationTest
 
     AffineRegistrationTest()
     {
-        ImageImportInfo info("lenna128.xv");
+        ImageImportInfo info("astronaut128.xv");
         image.resize(info.size());
         importImage(info, destImage(image));
     }

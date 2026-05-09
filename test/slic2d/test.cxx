@@ -59,35 +59,35 @@ struct SlicTest
     typedef typename MultiArrayShape<N>::type     Shape;
 
     ImageImportInfo info;
-    FRGBArray lennaImage;
+    FRGBArray astronautImage;
 
     SlicTest()
-    :   info("lenna.xv"),
-        lennaImage(info.shape())
+    :   info("astronaut.xv"),
+        astronautImage(info.shape())
     {
-        importImage(info, destImage(lennaImage));
-        transformMultiArray(srcMultiArrayRange(lennaImage), destMultiArray(lennaImage), RGBPrime2LabFunctor<float>());
+        importImage(info, destImage(astronautImage));
+        transformMultiArray(srcMultiArrayRange(astronautImage), destMultiArray(astronautImage), RGBPrime2LabFunctor<float>());
     }
 
     void test_seeding()
     {
         Shape seeds_ref[] = {
-               Shape(24, 22),
+               Shape(26, 22),
                Shape(65, 22),
-               Shape(102, 20),
-               Shape(24, 59),
-               Shape(63, 60),
+               Shape(103, 20),
+               Shape(26, 59),
+               Shape(65, 59),
                Shape(104, 61),
-               Shape(24, 100),
+               Shape(26, 98),
                Shape(65, 100),
-               Shape(104, 100)
+               Shape(102, 99)
         };
 
         // get grad mag image
-        FArray gradMag(lennaImage.shape());
-        gaussianGradientMagnitude(lennaImage, gradMag, 3.0);
+        FArray gradMag(astronautImage.shape());
+        gaussianGradientMagnitude(astronautImage, gradMag, 3.0);
 
-        IArray labels(lennaImage.shape());
+        IArray labels(astronautImage.shape());
         int maxSeedlabel = generateSlicSeeds(gradMag, labels, 39, 1);
         shouldEqual(maxSeedlabel, 9);
 
@@ -107,15 +107,15 @@ struct SlicTest
 
     void test_slic()
     {
-        IArray labels(lennaImage.shape()), labels_ref(lennaImage.shape());
+        IArray labels(astronautImage.shape()), labels_ref(astronautImage.shape());
 
-        int seedDistance = 8;
+        int seedDistance = 9;
         // compute seeds automatically
-        int maxlabel = slicSuperpixels(lennaImage, labels, 20.0, seedDistance, SlicOptions().minSize(0).iterations(40));
+        int maxlabel = slicSuperpixels(astronautImage, labels, 20.0, seedDistance, SlicOptions().minSize(0).iterations(40));
 
-        shouldEqual(maxlabel, 245);
+        shouldEqual(maxlabel, 201);
 
-        // exportImage(srcImageRange(labels), ImageExportInfo("slic.xv"));
+        // exportImage(srcImageRange(labels), ImageExportInfo("slic.xv").setForcedRangeMapping(0.0, 1.0, 0.0, 1.0));
         importImage(ImageImportInfo("slic.xv"), destImage(labels_ref));
 
         should(labels == labels_ref);
